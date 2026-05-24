@@ -23,7 +23,19 @@ Thử thách lần này sẽ thú vị hơn: thread `progress_bar` sẽ cần ph
 
 Chúng ta vẫn giữ nguyên 3 thread (Fetcher, Progress, Processor), nhưng công cụ điều phối sẽ được nâng cấp.
 
-- **Shared Components**:C++`std::string downloaded_data; bool data_updated = false; // Predicate cho dữ liệu mới bool download_complete = false; // Predicate cho việc hoàn tất std::mutex data_mutex; // Bảo vệ data và cờ data_updated std::mutex completed_mutex; // Bảo vệ cờ download_complete // Nâng cấp từ polling lên CV std::condition_variable cv_data; std::condition_variable cv_completed;`
+- **Shared Components**:
+
+```cpp
+std::string downloaded_data; 
+bool data_updated = false; // Predicate cho dữ liệu mới 
+bool download_complete = false; // Predicate cho việc hoàn tất 
+std::mutex data_mutex; // Bảo vệ data và cờ data_updated 
+std::mutex completed_mutex; // Bảo vệ cờ download_complete 
+// // Nâng cấp từ polling lên CV 
+std::condition_variable cv_data;
+std::condition_variable cv_completed;
+```
+
 - **Luồng hoạt động**:
   - `Fetcher` sẽ `notify()` cho `cv_data` mỗi khi có block dữ liệu mới, và `notify()` cho `cv_completed` khi hoàn tất.
   - `Processor` sẽ `wait()` trên `cv_completed`.
@@ -39,7 +51,7 @@ Thread này không thay đổi nhiều, chỉ thay `sleep` bằng `notify`.
 
 C++
 
-```
+```cpp
 void fetch_data() {
     for (int i = 0; i < 5; ++i) {
         std::this_thread::sleep_for(500ms); // Giả lập việc tải
@@ -66,7 +78,7 @@ Thread này trở nên cực kỳ đơn giản và hiệu quả. Không còn vò
 
 C++
 
-```
+```cpp
 void process_data() {
     std::unique_lock<std::mutex> lock(completed_mutex);
 
@@ -90,7 +102,7 @@ Chúng ta sử dụng `wait()` cho việc 1 và `wait_for()` với timeout cực
 
 C++
 
-```
+```cpp
 void progress_bar() {
     while (true) {
         // 1. Chờ dữ liệu mới một cách hiệu quả
