@@ -11,10 +11,10 @@ interface Props {
 const PAGE = 120;
 
 // Hàng mục lục pure + memo: chỉ render lại khi props đổi (theo guideline react)
-const DocRow = memo(function DocRow({ d, active }: { d: DocMeta; active: boolean }) {
+const DocRow = memo(function DocRow({ d, active, num }: { d: DocMeta; active: boolean; num: number }) {
   return (
     <NavLink to={docRoute(d)} className={active ? 'doc-link active' : 'doc-link'} title={d.file}>
-      <span className="doc-link-title">{d.title}</span>
+      <span className="doc-link-title"><span className="doc-num">{num}.</span> {d.title}</span>
       <span className="doc-link-dir">{d.dir || d.top}</span>
     </NavLink>
   );
@@ -65,8 +65,8 @@ export default function Sidebar({ docs, tops, activeId }: Props) {
         ))}
       </div>
       <nav className="doc-list" aria-label="Danh sách bài viết">
-        {filtered.slice(0, shown).map((d) => (
-          <DocRow key={d.id} d={d} active={d.id === activeId} />
+        {filtered.slice(0, shown).map((d, i) => (
+          <DocRow key={d.id} d={d} active={d.id === activeId} num={i + 1} />
         ))}
         {filtered.length === 0 && <p className="muted">Không có bài nào khớp.</p>}
       </nav>

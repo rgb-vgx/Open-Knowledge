@@ -155,6 +155,7 @@ code { font-family: Consolas, 'Cascadia Code', Menlo, monospace; }
 .doc-link:hover { background: var(--color-muted); text-decoration: none; }
 .doc-link.active { background: var(--color-muted); border-left-color: var(--color-accent); }
 .doc-link-title { display: block; font-size: 0.86rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.doc-num { color: var(--color-muted-foreground); font-variant-numeric: tabular-nums; margin-right: 2px; }
 .doc-link-dir { font-size: 0.72rem; color: var(--color-muted-foreground); }
 
 /* ---------- home ---------- */

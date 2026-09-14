@@ -8,7 +8,8 @@ export default function Home({ index }: { index: DocsIndex }) {
   const nav = useNavigate();
   const [q, setQ] = useState('');
   const cards = Object.entries(index.tops).sort((a, b) => b[1] - a[1]);
-  const recent = [...index.docs].filter((d) => d.date).sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 8);
+  // Gợi ý đọc: bài đầu tiên của 8 chủ đề lớn nhất (không dùng ngày tháng)
+  const suggested = cards.slice(0, 8).map(([t]) => index.docs.find((d) => d.top === t)!).filter(Boolean);
 
   return (
     <div className="home">
@@ -51,14 +52,14 @@ export default function Home({ index }: { index: DocsIndex }) {
         </div>
       </section>
 
-      {recent.length > 0 && (
+      {suggested.length > 0 && (
         <section aria-labelledby="recent-h">
-          <h2 id="recent-h">Mới cập nhật</h2>
+          <h2 id="recent-h">Gợi ý đọc</h2>
           <ul className="recent">
-            {recent.map((d) => (
+            {suggested.map((d) => (
               <li key={d.id}>
                 <Link to={docRoute(d)}>{d.title}</Link>
-                <span className="muted"> · {d.top}{d.date ? ` · ${String(d.date).slice(0, 10)}` : ''}</span>
+                <span className="muted"> · {d.top}</span>
               </li>
             ))}
           </ul>

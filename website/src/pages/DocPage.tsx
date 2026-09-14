@@ -89,7 +89,7 @@ export default function DocPage({ index }: { index: DocsIndex }) {
         </p>
         <h1>{meta.title}</h1>
         <p className="muted meta">
-          {meta.date ? `${String(meta.date).slice(0, 10)} · ` : ''}{meta.file}
+          Bài {pos + 1}/{siblings.length} trong {meta.top} · {meta.file}
         </p>
         {err && <p className="error">Không tải được nội dung: {err}</p>}
         {!md && !err && <p className="muted">Đang tải markdown và render ra HTML…</p>}
