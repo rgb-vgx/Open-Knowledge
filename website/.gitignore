@@ -1,0 +1,6 @@
+node_modules/
+build/
+dist/
+public/docs/
+public/docs-index.json
+*.local

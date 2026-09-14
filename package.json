@@ -2,13 +2,14 @@
   "name": "open-knowledge",
   "version": "1.0.0",
   "private": true,
-  "description": "Proxy scripts for website/ (Docusaurus). Content lives in markdown across this repo; run commands from here.",
+  "description": "Web React thuần đọc 886 file markdown. Content là markdown ở repo này; chạy lệnh từ đây.",
   "scripts": {
-    "dev": "npm --prefix website run start",
-    "start": "npm --prefix website run start",
+    "dev": "npm --prefix website run dev",
+    "start": "npm --prefix website run dev",
     "build": "npm --prefix website run build",
-    "sync": "npm --prefix website run sync",
-    "serve": "npm --prefix website run serve",
+    "sync": "npm --prefix website run build-index",
+    "serve": "npm --prefix website run preview",
+    "preview": "npm --prefix website run preview",
     "typecheck": "npm --prefix website run typecheck"
   }
 }
