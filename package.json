@@ -1,0 +1,14 @@
+{
+  "name": "open-knowledge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Proxy scripts for website/ (Docusaurus). Content lives in markdown across this repo; run commands from here.",
+  "scripts": {
+    "dev": "npm --prefix website run start",
+    "start": "npm --prefix website run start",
+    "build": "npm --prefix website run build",
+    "sync": "npm --prefix website run sync",
+    "serve": "npm --prefix website run serve",
+    "typecheck": "npm --prefix website run typecheck"
+  }
+}
