@@ -1,295 +1,106 @@
-Hi, this is Stephane from Conduktor,
+# Topics, Partitions và Offsets: Xương Sống Của Kafka
 
-and welcome to this first lecture
+Nếu database có Table để chứa dữ liệu, thì Kafka có **Topic**. Nhưng khác với Table — bạn không thể `SELECT`, không thể `UPDATE`, không thể `DELETE` trên Topic. Vậy Topic thực sự là gì, và tại sao Kafka lại chia nhỏ nó thành **Partitions** với **Offsets**? Hiểu đúng 3 khái niệm này là bạn đã nắm được 50% kiến trúc Kafka.
 
-on a topic named Kafka Topics.
+---
 
-So, Kafka topics are a particular stream of data
+## 1. Topic: Dòng Chảy Dữ Liệu, Không Phải Bảng Dữ Liệu
 
-within your Kafka cluster.
+**Topic** là một luồng dữ liệu (data stream) có tên trong Kafka cluster. Một cluster có thể chứa bao nhiêu Topic tùy ý: `logs`, `purchases`, `twitter_tweets`, `trucks_gps`... Tên Topic chính là định danh duy nhất của nó.
 
-So Kafka cluster can have many topics.
+So sánh nhanh với database để dễ hình dung:
 
-It could be named, for example logs, purchases,
+| Table (Database) | Topic (Kafka) |
+|---|---|
+| Có schema, có constraint | Không kiểm tra dữ liệu — gửi gì cũng nhận |
+| Hỗ trợ JSON, text... nhưng thường bị ràng buộc kiểu | Hỗ trợ mọi định dạng: JSON, Avro, text, binary |
+| Query được bằng SQL | **Không query được** |
+| Ghi + đọc + sửa + xóa | Chỉ **append** (ghi nối tiếp) và đọc lại |
 
-twitter_tweets, trucks_gps, and so on.
+Điểm mấu chốt: chuỗi các message trong một Topic được gọi là **data stream** — và đó chính là lý do Kafka được gọi là *data streaming platform*. Dữ liệu chảy xuyên suốt qua Topic, chứ không nằm yên chờ bạn query.
 
-So, a topic in Kafka is a stream of data.
+Bạn đưa dữ liệu vào Topic bằng **Producer**, và đọc dữ liệu ra bằng **Consumer**. Không có con đường nào khác.
 
-And if you wanted to make a parallel to databases,
+## 2. Tại Sao Phải Chia Topic Thành Partitions?
 
-well, a topic is similar to what a table would be
+Một Topic có thể được chia thành nhiều **Partition**. Ví dụ một Topic có 3 partitions: partition `0`, `1`, `2` (đánh số từ 0). Message gửi vào Topic sẽ rơi vào một trong các partition này.
 
-in a database, but without all the constraints.
+```mermaid
+graph TB
+    subgraph "Topic: trucks_gps"
+        P0["Partition 0<br/>offset 0 → 1 → 2 → ... → 9"]
+        P1["Partition 1<br/>offset 0 → 1 → 2 → ..."]
+        P2["Partition 2<br/>offset 0 → 1 → 2 → ..."]
+    end
+    PROD["Producers<br/>(đội xe tải)"] --> P0
+    PROD --> P1
+    PROD --> P2
+    P0 --> CONS1["Consumer: Location Dashboard"]
+    P1 --> CONS1
+    P2 --> CONS1
+    P0 --> CONS2["Consumer: Notification Service"]
+    P1 --> CONS2
+    P2 --> CONS2
+```
 
-Because you send whatever you want to a Kafka topic,
+Tại sao lại phức tạp hóa như vậy thay vì để tất cả message trong một hàng đợi duy nhất?
 
-there is no data verification.
+Câu trả lời của một System Engineer là hai chữ: **khả năng mở rộng (scalability)** và **song song hóa (parallelism)**.
 
-And it will explain to you what it means later on.
+* Một partition đơn lẻ bị giới hạn bởi tốc độ ghi/đọc của một máy (broker). Chia thành 10, 100 partitions nghĩa là bạn có thể dàn trải tải ghi và tải đọc ra nhiều máy, nhiều consumer cùng đọc song song.
+* Nhiều consumer groups khác nhau có thể cùng đọc một Topic mà không ảnh hưởng lẫn nhau (xem sơ đồ: Dashboard và Notification Service cùng đọc `trucks_gps`).
 
-So you can have as many topics as you want
+Việc chọn bao nhiêu partition là đủ (3, 10 hay 100) là một quyết định thiết kế quan trọng — sẽ có bài riêng về cách chọn partition count và replication factor sau.
 
-in your Kafka cluster.
+## 3. Offset: "Số Thứ Tự" Chỉ Có Ý Nghĩa Trong Partition Của Nó
 
-And the way to identify a topic in a Kafka cluster
+Mỗi message khi được ghi vào một partition sẽ nhận một id tăng dần bắt đầu từ `0, 1, 2, ...`. Id này gọi là **Offset**.
 
-is by its name.
+Ba tính chất của Offset bạn phải khắc cốt ghi tâm:
 
-That's why I have logs, purchases,
+1. **Thứ tự trong partition được đảm bảo.** Message có offset `3` luôn đứng sau offset `2` trong cùng partition, và consumer đọc theo đúng thứ tự offset.
+2. **Offset chỉ có ý nghĩa cục bộ (local).** Offset `3` ở partition `0` và offset `3` ở partition `1` là hai message hoàn toàn khác nhau, không liên quan gì đến nhau.
+3. **Offset không bao giờ tái sử dụng.** Kể cả khi message cũ đã bị xóa do hết hạn lưu trữ, offset vẫn tiếp tục tăng. Không có chuyện "lấp chỗ trống".
 
-twitter_tweets truck_gps,
+Hệ quả trực tiếp: **thứ tự message chỉ được đảm bảo *trong* một partition, không đảm bảo *giữa các* partitions.** Đây là một trong những hiểu lầm phổ biến nhất khi mới học Kafka. Nếu nghiệp vụ của bạn bắt buộc có thứ tự toàn cục (ví dụ lịch sử giao dịch của một tài khoản), bạn phải dồn chúng về cùng một partition — bằng cách dùng **Key**, sẽ học ở bài Producer ngay sau.
 
-those are all names for my Kafka topics.
+Mặc định, nếu message không có key, Producer gán nó vào một partition **ngẫu nhiên** (thực tế là round-robin / sticky — chi tiết ở bài Partitioner).
 
-So, these Kafka topics support any kind of message formats.
+## 4. Ví Dụ Thực Tế: Đội Xe Tải `trucks_gps`
 
-And then, you can send, for example, Json, Avro,
+Hãy tưởng tượng bạn quản lý một đội xe tải, mỗi xe gắn một thiết bị GPS báo vị trí về Kafka mỗi 20 giây. Mỗi message trông như thế này:
 
-text file, binary, whatever you want.
+```json
+{ "truck_id": "truck_42", "lat": 10.762622, "lon": 106.660172, "ts": "2026-09-16T07:00:20Z" }
+```
 
-The sequence of the messages in a topic,
+Bạn tạo một Topic tên `trucks_gps` với 10 partitions. Luồng chảy như sau:
 
-is called a data stream.
+1. Hàng trăm xe (producers) liên tục append message vào Topic.
+2. Hai hệ thống cùng đọc **chung một luồng dữ liệu** mà không tranh chấp nhau:
+   * **Location Dashboard**: đọc stream để vẽ vị trí real-time của toàn bộ đội xe lên bản đồ.
+   * **Notification Service**: đọc cùng stream đó để gửi SMS cho khách khi xe giao hàng gần tới.
 
-And this is why Kafka is called a data streaming platform,
+Đây chính là sức mạnh của mô hình log tập trung: một dòng dữ liệu, nhiều consumer độc lập.
 
-because you make data stream through topics.
+---
 
-You cannot query topics.
+## 5. Bốn Tính Chất "Luật Sắt" Của Topic
 
-So topics are similar to table database,
+1. **Immutable (bất biến).** Một khi message đã ghi vào partition thì không thể sửa, không thể xóa riêng lẻ. Muốn "sửa" thì chỉ có cách ghi thêm một message mới.
+2. **Lưu trữ có thời hạn.** Dữ liệu không ở lại mãi. Mặc định Kafka giữ **7 ngày** (1 tuần), sau đó tự động xóa — và hoàn toàn có thể cấu hình lại theo nhu cầu.
+3. **Thứ tự chỉ trong partition.** Đã nói ở trên, nhưng đáng nhắc lại lần nữa vì quan trọng.
+4. **Partition càng nhiều, song song càng cao — nhưng không miễn phí.** Mỗi partition tốn tài nguyên (file handle, memory, replication). Đừng tạo 1000 partitions "cho chắc".
 
-but you cannot query them,
+## Cạm Bẫy Thường Gặp
 
-instead to add data into a Kafka topic,
+* **Coi Offset như id toàn cục.** Sai. Offset `100` ở partition `0` không hề "mới hơn" offset `50` ở partition `1`. Muốn biết message nào mới hơn phải nhìn timestamp trong payload, không nhìn offset cross-partition.
+* **Mang tư duy database vào Kafka: đòi UPDATE/DELETE một message.** Không làm được. Kafka là append-only log. Muốn "quên" dữ liệu cũ thì chờ retention xóa, muốn "đính chính" thì ghi message bù, hoặc dùng log compaction (học ở phần Advanced).
+* **Tưởng dữ liệu tồn tại mãi mãi.** Mặc định 7 ngày là mất. Nếu cần lưu dài hạn, phải đổ sang hệ thống khác (S3, HDFS, database) bằng Kafka Connect hoặc consumer riêng.
+* **Cần thứ tự toàn cục nhưng lại để message tràn ngẫu nhiên qua nhiều partitions.** Muốn giữ thứ tự cho một thực thể (một xe, một user, một đơn hàng) thì bắt buộc phải dùng key để pin về cùng partition.
 
-we're going to use Kafka Producers.
+## Kết Luận
 
-And to read data from a topic,
+Tóm lại một câu: **Topic là dòng dữ liệu bất biến, được chia thành nhiều Partitions để mở rộng song song, mỗi message trong partition được đánh số thứ tự bằng Offset.**
 
-we're going to use Kafka Consumers.
-
-But there is no querying capability within Kafka.
-
-Okay, so these topics, they're general,
-
-but you can divide them into partitions.
-
-So, a topic can be made up of for example, 100 partitions.
-
-But in my example,
-
-I'm going to have a Kafka topic with three partitions,
-
-partition zero, one and two.
-
-Now the messages sent to Kafka topic
-
-are going to end up in these partitions,
-
-and messages within each partition are going to be ordered.
-
-So, my first messages into partition zero
-
-will have the id zero, one and then two,
-
-and then all the way up to nine.
-
-And then as I keep on writing messages into my partition,
-
-this id is going to increase.
-
-So this is the same case when I go and write data
-
-into partition one of my Kafka topic,
-
-the id will keep on increasing and so on.
-
-So, the messages in these partitions where they are written,
-
-they are getting a id,
-
-that's incrementing from zero to whatever.
-
-And this id is called a Kafka partition offset, okay?
-
-So you will hear me saying offsets a lot in this course.
-
-So as we can see, each partition has different offsets.
-
-Now, Kafka topics are also immutable.
-
-That means that once the data is written into a partition,
-
-it cannot be changed.
-
-So, we cannot delete data in Kafka,
-
-you cannot update data in Kafka,
-
-you have to keep on writing to the partition.
-
-Okay, so now let's take an example of trucks_gps
-
-to make more increase.
-
-So say you have a fleet of trucks and each truck has a GPS,
-
-and the GPS reports its position to Apache Kafka.
-
-Then each truck will send a message to Kafka
-
-every 20 seconds, for example,
-
-and each message will contain some information
-
-such as the truck id and the truck position,
-
-for example the latitude and the longitude.
-
-So we have a bunch of trucks
-
-and are going to be data producers,
-
-and they will send data into a topic,
-
-a Kafka topic, named trucks_gps
-
-that will contain the positions of all trucks.
-
-So the topic send the data into the trucks_gps topic
-
-and then because the topic is made of partitions
-
-as we've seen,
-
-we choose to create a topic with 10 partitions.
-
-Now that's an arbitrary number,
-
-and I will will tell you how later on in this course,
-
-how to select the number of partitions for your topic.
-
-So once this topic is created in Kafka,
-
-well, we have a use case, right?
-
-For example, we want to have consumers
-
-that will consume that trucks_gps data
-
-and send it into a location dashboard.
-
-So we can track the location of all our trucks in real time.
-
-Or maybe we also want to have a notification service
-
-consume the same stream of data.
-
-And that notification service will, for example,
-
-send notifications to the customers
-
-when the delivery is closed.
-
-So, this is why Kafka is very helpful
-
-because well multiple services are reading
-
-from the same stream of data.
-
-Okay, so now let's note some important things
-
-about topics, partitions and offsets.
-
-So once a data is written to a partition
-
-it will not be changed.
-
-It cannot be changed that that's called immutability.
-
-It's very important you understand this.
-
-Data in Kafka is only kept for a limited time.
-
-And the default is one week, although that is configurable.
-
-That means that after one week, your data will disappear.
-
-And the offsets only have a meaning
-
-for a specific partition.
-
-As you can see, the offsets are repeated across partitions.
-
-So offset three in partition zero represents a message,
-
-but it doesn't represent of course the same data
-
-as offset three in partition one.
-
-And the offsets are not going to be reused
-
-even if previous messages have been deleted, okay?
-
-It keeps on increasing incrementally one by one,
-
-as you send messages into your Kafka topic.
-
-Now, that means also that the order of messages
-
-is guaranteed only within a partition
-
-but not across partitions.
-
-And that is very important to understand,
-
-and I will repeat this later on this course again, okay?
-
-But what this means is that,
-
-well the messages within each partition,
-
-they have offsets increasing,
-
-so that means the are in order.
-
-And we read them in the order of the offsets.
-
-But then across partitions, we have no control, Okay?
-
-So if we need ordering, we'll see how we can achieve this.
-
-And then the data when sent to a Kafka topic,
-
-is going to be assigned to a random partition, okay?
-
-For example, zero, one or two, in this example.
-
-Unless you provide a key,
-
-and I will show you what this does when we have a key.
-
-And in a Kafka topic,
-
-you can have as many partitions as you want, okay?
-
-We have three, sometimes 10, sometimes 100.
-
-And again, we'll see how we can determine
-
-what is the right number of partitions for our topic.
-
-Okay, so that's it for this lecture.
-
-We've seen what are Kafka topics, partitions
-
-and offsets that hold messages.
-
-And we've seen already some specificity aspects about Kafka.
-
-So, I hope you liked this lecture
-
-and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ trả lời câu hỏi còn bỏ ngỏ: ai quyết định message rơi vào partition nào, và **Key** điều khiển việc đó ra sao — qua nhân vật **Producer**.

@@ -1,217 +1,109 @@
-So let's have a quick look
+# Conduktor UI: Nhìn Lại Mọi Lệnh CLI Bằng Click Chuột
 
-at the conductor UI so you can see what is available.
+Suốt section CLI chúng ta gõ lệnh trong terminal mù: tạo topic, produce, consume, describe group, reset offset. Bài này đổi gió — mở Conduktor UI để thấy chính những thao tác đó hiện lên trực quan thế nào. Hiểu song song CLI ↔ UI giúp bạn đi nhanh gấp đôi: học bằng UI cho trực quan, vận hành production bằng CLI cho script hóa được.
 
-So we have in the home, the information about our cluster
+---
 
-and the top left, we can select a cluster, even manage them,
+## 1. Bài Toán: Khi Nào Dùng UI, Khi Nào Dùng CLI?
 
-and you could add clusters if you wanted to
+CLI mạnh khi SSH vào server, viết script CI/CD, xả lag hàng loạt lúc sự cố. UI mạnh khi học, khi cần soi một message cụ thể, khi reset offset mà muốn nhìn rõ kế hoạch trước khi bấm. Conduktor bao cả hai: mọi click trong UI đều tương ứng một lệnh CLI bạn đã học, và ngược lại.
 
-by just having your cluster name, the technical name ID,
+Bài này đi một vòng các màn hình chính theo đúng thứ tự section CLI: cluster → topics → produce → consumer groups → mở rộng enterprise.
 
-and the bootstrap servers,
+## 2. Home Và Quản Lý Cluster
 
-as well as any authentication method if necessary.
+Mở Conduktor, góc trái trên là bộ chọn cluster. Một Conduktor quản lý nhiều cluster cùng lúc (local, staging, production), chuyển qua lại không cần đổi terminal hay sửa `--bootstrap-server`.
 
-And we give you guides to connect to so many kinds of Kafka.
+Mỗi cluster khai báo 3 thứ — đúng 3 mảnh của lệnh CLI:
 
-So we can select multiple clusters.
+* Tên hiển thị + technical ID.
+* Bootstrap servers (ví dụ `localhost:9092` hay URL Playground).
+* Phương thức xác thực (SASL/SSL — chính là nội dung file `playground.config` ở bài Topics CLI).
 
-Here we have this one,
+Trang Home hiện trạng thái cluster, danh sách topic/subject xem gần đây. Có hướng dẫn kết nối sẵn cho từng loại Kafka (local, MSK, Confluent Cloud...) — đỡ phải đoán flag.
 
-and in there we have a view around some index and state
+## 3. Topics: Soi Record, Produce Test, Tạo Topic Có Label
 
-and the recently viewed topics subjects and so on.
+### 3.1. Xem record trong topic
 
-So if you go into topics,
+Vào Topics → chọn `first_topic`. Bạn thấy bảng record với key, value, timestamp — tương đương lệnh:
 
-you will find all the topics that you know.
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic first_topic --from-beginning \
+  --formatter kafka.tools.DefaultMessageFormatter \
+  --property print.timestamp=true \
+  --property print.key=true \
+  --property print.value=true \
+  --property print.partition=true
+```
 
-For example, for the first topic, I can find all my records
+Click vào một message cụ thể thấy thêm headers và metadata (partition, offset) — thứ mà CLI phải gõ formatter mới ra. Muốn xem riêng một partition (như demo lọc Partition 0 ở bài Consumer CLI), UI có bộ lọc partition sẵn, bấm Apply là xong.
 
-with the key, the values, the timestamps, and so on.
+Tính năng đáng tiền nhất khi debug: **reprocess message** — gửi lại message đó sang cùng topic hoặc topic khác trong một click. Bằng CLI bạn phải consume ra file rồi produce lại thủ công.
 
-I can click on a specific message
+### 3.2. Produce test ngay trong UI
 
-and get some details such as, for example, what was the key,
+Tab Produce cho phép nhập key + value rồi bấm gửi — tương đương một dòng trong `kafka-console-producer.sh`. Chưa hết, UI còn hai chế độ CLI không có:
 
-what was the value, as well as any headers
+* **Generate ngẫu nhiên:** bấm generate là có chuỗi ngẫu nhiên cho key/value, khỏi nghĩ test data.
+* **Produce liên tục theo nhịp:** bật chế độ tự động, interval 1 giây → mỗi giây một record chảy vào topic. Muốn test consumer chịu tải nhẹ hay demo lag tăng dần thì đây là cách nhanh nhất, không cần viết vòng lặp shell.
 
-and metadata if necessary.
+Kèm theo là cấu hình headers nếu cần — ngang với `--property` của console producer nhưng có form điền.
 
-And I can, for example, reprocess a message.
+### 3.3. Tạo topic có label
 
-So this is allowing you to send the message again
+Topics → Create: đặt tên, chọn partitions, replication factor, thêm cấu hình tùy biến — tương đương:
 
-to the same or a new topic.
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 \
+  --create --topic demo --partitions 3 --replication-factor 1
+```
 
-So some other stuff we can do is the produce window.
+UI cộng thêm **labels** (ví dụ `team: dev`, `env: demo`) để lọc và gom nhóm hàng trăm topic trong công ty. CLI không có khái niệm label — đây là lớp quản trị của Conduktor phủ lên trên Kafka thuần. Tạo xong quay lại danh sách, refresh là thấy tag `team: dev` gắn trên topic mới.
 
-So here we can set up a key, we can set up a value,
+## 4. Consumer Groups: Xem Lag Và Reset Không Cần Nhớ Flag
 
-and we can even generate it.
+Mục Consumer Groups liệt kê mọi group — tương đương `kafka-consumer-groups.sh --list`. Click vào `my-first-application` thấy LAG từng partition, consumer nào ôm partition nào — chính là bảng `--describe` ở bài 043 nhưng tô màu, sort được.
 
-So if you can, for example, generate some string,
+Reset offset trong UI: chọn topic, chọn partition (hoặc tất cả), chọn strategy (`Earliest`, `Latest`, `Shift by`, `To datetime`...) rồi preview kết quả trước khi xác nhận. Tương đương cặp:
 
-here we go, we have generated a random string
+```bash
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+  --group my-first-application \
+  --reset-offsets --to-earliest --topic third_topic --dry-run
 
-for the value and we can produce it.
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+  --group my-first-application \
+  --reset-offsets --to-earliest --topic third_topic --execute
+```
 
-And as you can see, the message has been sent,
+Điểm hơn của UI: khó gõ nhầm tên group, khó quên `--topic`, luôn thấy preview NEW-OFFSET trước khi commit. Với thao tác nguy hiểm như reset, UI là lựa chọn an toàn hơn — đúng như kết luận bài 044.
 
-but we can do a little more, I'm going to zoom out.
+Mục này hiện trống Schema Registry và Kafka Connect nếu cluster chưa cấu hình — bình thường ở môi trường học. Khi công ty bạn có, chúng sẽ hiện ở đây để quản trị tập trung.
 
-We can set headers if we wanted to.
+## 5. Các Mảnh Enterprise: Gateway, Brokers, Bảo Mật, Quản Trị Chi Phí
 
-We can set flow, for example,
+Phần còn lại của menu là lý do công ty trả tiền cho Conduktor thay vì dùng tool miễn phí:
 
-we can send one record at a time.
+* **Kafka Gateway:** luật nâng cao — topic policy (ép mọi topic mới phải có replication factor 3), mã hóa từng field, audit ai đọc topic nào, bắt buộc message có schema ID. CLI không làm được lớp này.
+* **Brokers:** xem có bao nhiêu broker, version, ai là controller, phân bố partition — thông tin mà CLI phải ghép từ `kafka-topics.sh --describe` nhiều topic mới ra.
+* **Service accounts + Self-service:** tạo tài khoản cho từng ứng dụng, cho developer tự xin tạo topic theo quy trình phê duyệt thay vì xin admin gõ lệnh hộ.
+* **ksqlDB:** chạy truy vấn stream SQL trực tiếp từ UI.
+* **Chargeback:** thống kê team nào dùng Kafka nhiều nhất để chia chi phí — bài toán quản trị thuần túy, ngoài phạm vi CLI.
+* **Rules:** luật chất lượng dữ liệu (ví dụ cấm message không có key lên topic thanh toán).
 
-We want to generate a random value and a random key,
+Học thì chưa cần đụng tới, nhưng biết chúng ở đâu để sau này không bỡ ngỡ khi vào công ty.
 
-and they're going to be strings.
+## Cạm Bẫy Thường Gặp
 
-And so what's going to happen is that we're going
+* **Học chỉ bằng UI rồi đứng hình khi SSH vào server production.** Mọi màn hình trên đều có lệnh CLI tương đương đã học từ bài 036 tới 044 — hãy tự dịch ngược mỗi click thành lệnh.
+* **Dùng produce liên tục trong UI quên tắt.** Interval 1 giây chạy nền suốt buổi họp là topic đầy message rác, LAG các group phình to. Produce test xong thì dừng ngay.
+* **Nhầm cluster khi thao tác (local vs production).** UI chuyển cluster chỉ bằng một click — nhanh nhưng nguy hiểm. Trước khi delete topic hay reset offset, liếc góc trái trên xác nhận đúng cluster, giống như kiểm tra `--bootstrap-server` trước khi Enter ở CLI.
+* **Tin rằng UI thấy được tất cả.** Label, gateway policy, chargeback là dữ liệu của Conduktor, không nằm trong Kafka. Bỏ Conduktor thì mất chúng — còn topic, message, offset thì vẫn nguyên trên broker.
 
-to produce one record per second.
+## Kết Luận
 
-Now up and I need to repeat it of course.
+Tóm một câu: **Conduktor UI là mặt trực quan của đúng những lệnh CLI bạn đã học — soi record thay `--formatter`, produce test thay console producer, reset offset có preview thay `--dry-run/--execute` — cộng thêm lớp quản trị enterprise (label, gateway, chargeback) mà CLI thuần không có.**
 
-So automatic and we say interval is one second.
-
-So that means that here, every one second,
-
-a record is going to be produced to our topic.
-
-And this can be very handy if want
-
-to test quickly your topic or your producers.
-
-You can have a very quick producer right here in our UI.
-
-We can have a look at the topic configuration.
-
-So if you go into topics in here
-
-and create a new topic, you can name it whatever you want.
-
-Have any partitions and replication factor you want,
-
-you can add labels, for example,
-
-I will say this one is demo.
-
-And we'll have a label, for example, development team dev.
-
-And this is just a label that's gonna allow you
-
-to filter it in the UI.
-
-So lemme show you, and also you can fully customize
-
-any settings if you wanted to for that topic,
-
-but no need right now.
-
-So let's create this topic.
-
-Go back to our list of topics.
-
-And as you can see now my demo topic right here is created.
-
-And upon doing a refresh, we have access to here,
-
-this tag of team dev.
-
-So we can order our topics and group them
-
-very easily, directly in this UI.
-
-So lots to explore, but what else can I show you?
-
-Schema registry is if you want to set up a schema registry
-
-with Kafka right now we have non setups.
-
-We can manage our consumer groups
-
-and we can reset them, see the lags and so on,
-
-directly from conductor, we can connect conductor
-
-with something called Kafka Connect.
-
-Again, this is not set up,
-
-but all of this is done in the cluster configuration.
-
-We have a Kafka gateway.
-
-So this is to create more advanced rules
-
-such as topic policies, field level encryption, audit,
-
-and schema ID present.
-
-And if you want, you can book a demo to see how that works.
-
-You can manage all your brokers, you can see
-
-how many brokers you have, the versions you have,
-
-if you have a controller, et cetera, et cetera.
-
-As well as deploy them in the graph if you want
-
-to have actually alerting that we can enable as well.
-
-Service accounts.
-
-So this is to create accounts for your applications,
-
-ksqlDB to manage ksqlDB directly from conductor,
-
-chargeback for you to also get access to figuring out which
-
-of your teams are using Kafka the most
-
-and divide the cost by them.
-
-And then you have self-service.
-
-So you can register applications in Apache Kafka,
-
-you can have a way to have requests for creating topics
-
-and topic policies.
-
-And finally, you can have rules as well.
-
-So you can have very strict data quality rules
-
-in case you need them.
-
-So conductor is a lot more than just Kafka as you've seen.
-
-But the basics of Kafka are covered of course as well.
-
-But this really allows you to go from a simple dev UI
-
-to a full production management system
-
-for Apache Kafka in your company.
-
-So that's it for an overview of the UI.
-
-Now in the next lectures you may see the UI being a little
-
-bit different, but I will use the core functionality
-
-for topics and consumer groups.
-
-So there should be enough for us.
-
-So I hope you liked it
-
-and I will see you in the next lecture.
+Section CLI và UI tới đây khép lại: bạn đã tự tay tạo topic, bơm message, đọc theo group, soi lag và tua offset. Từ bài sau chúng ta nâng cấp hẳn: không gõ tay từng message nữa mà viết Producer và Consumer thật bằng Java SDK — bước vào phần lập trình Kafka.

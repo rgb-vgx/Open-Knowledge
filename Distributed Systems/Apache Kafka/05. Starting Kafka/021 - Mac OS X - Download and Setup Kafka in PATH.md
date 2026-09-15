@@ -1,275 +1,139 @@
-Hi, this is Stefan from Conductor
+# Mac: Cài Java + Kafka Binaries Và Đưa Vào PATH (Cách Thủ Công)
 
-and in this lecture we're going
+Bài này dành riêng cho **macOS**. Mục tiêu duy nhất: gõ được `kafka-topics.sh` từ bất kỳ thư mục nào để chọc vào cluster Kafka (dù cluster đó chạy bằng Docker ở bài `020` hay chạy tay ở bài `022`).
 
-to set up the Kafka binaries.
+Đây là cách cài **thủ công** (tải ZIP từ apache.org). Nếu muốn nhanh gọn bằng brew thì xem bài `023`, nhưng nên đọc bài này trước để hiểu PATH là gì.
 
-So this step is needed
+---
 
-even if you have used Conductor and Docker to start Kafka.
+## 1. Chuẩn Bị: Hiểu Vì Sao Cần Bước Này
 
-This is so that we can run Kafka CLI commands
+Kafka không có installer .dmg. Bạn tải một thư mục chứa sẵn các file `.sh` trong `bin/`, và bạn phải tự bảo macOS "nhớ" đường dẫn tới chúng qua biến môi trường `PATH`. Chưa có `PATH` thì mỗi lần chạy lệnh bạn phải gõ full đường dẫn dài ngoằng.
 
-directly from our computer against our Kafka cluster.
+Checklist trước khi bắt đầu:
 
-So for this,
+- macOS Intel hoặc Apple Silicon (M1/M2/M3 đều được, chỉ khác bản JDK khi tải).
+- Đã có Terminal + quyền cài phần mềm.
+- Kafka từ 4.0 trở lên (bản dùng KRaft, không cần ZooKeeper).
 
-we're going to install the latest Java stable version.
+## 2. Bước 1 — Cài Java JDK 21 (Amazon Corretto)
 
-So JDK version 21.
+Kafka viết bằng Java nên bắt buộc có JDK 21.
 
-We're going to install Kafka from this webpage.
+1. Google `java jdk corretto amazon`, mở trang Amazon Corretto.
+2. Chọn **Download Corretto 21** (bản LTS mới nhất).
+3. Kéo xuống chọn đúng **macOS** + đúng kiến trúc:
+   - Mac M1/M2/M3: chọn **aarch64** (ARM64).
+   - Mac Intel cũ: chọn **x64**.
+   - Tải nhầm bản Intel trên máy M sẽ bị macOS đòi cài Rosetta — tải lại bản aarch64 là xong.
+4. Mở file `.pkg` vừa tải, Next → Next để cài như app bình thường.
 
-We will extract the content on your Mac.
+Kiểm tra ngay trong Terminal:
 
-We'll set up the $PATH environment variables
+```bash
+java --version
+```
 
-for easy access to the Kafka binaries
+Thấy dòng kiểu `openjdk 21 ... Corretto` là đạt. Nếu vẫn thấy Java 8/11/17 cũ thì máy bạn đang có nhiều JDK — gỡ hoặc chỉnh `JAVA_HOME` để ưu tiên 21.
 
-and we'll be good to go.
+## 3. Bước 2 — Tải Và Giải Nén Kafka
 
-Note that all these steps can be replaced
+1. Google `apache kafka download`, mở trang Downloads của kafka.apache.org.
+2. Chọn version **4.0 trở lên**, mục **Binary downloads**, tải file `.tgz` (ví dụ `kafka_2.13-4.0.0.tgz`).
+3. Mở thư mục Downloads, double-click để giải nén (hoặc dùng lệnh):
 
-with the brew command.
+```bash
+cd ~/Downloads
+tar -xvzf kafka_2.13-4.0.0.tgz
+```
 
-And I will show this after in other videos,
+4. Chuyển thư mục Kafka ra ngoài cho gọn, ví dụ ngay dưới home:
 
-but I want show you first of all the manual method.
+```bash
+mv kafka_2.13-4.0.0 ~/
+cd ~/
+pwd
+ls | grep kafka
+```
 
-So let's get started.
+Lệnh `pwd` lúc này in ra `/Users/<ten-ban>`, và `ls` phải thấy thư mục Kafka nằm ngay đó. Mở thử thư mục `bin` bạn sẽ thấy hàng loạt file `kafka-topics.sh`, `kafka-server-start.sh`... — đó chính là CLI chúng ta cần.
 
-So here I'm going to install Java first.
+## 4. Bước 3 — Hiểu Vấn Đề PATH Trước Khi Sửa
 
-So I'm gonna type java jdk corretto amazon.
+Thử chạy lệnh bằng đường dẫn đầy đủ thì được:
 
-And I really like Amazon Corretto
+```bash
+~/kafka_2.13-4.0.0/bin/kafka-topics.sh
+```
 
-because Amazon Corretto
+Nhưng gõ gọn thì thất bại:
 
-gives us production-ready distributions of OpenJDK
+```bash
+kafka-topics.sh
+# zsh: command not found: kafka-topics.sh
+```
 
-and you can install them easily.
+Lý do: shell chỉ tìm lệnh trong các thư mục liệt kê ở biến `PATH`. Thư mục `bin` của Kafka chưa có trong danh sách đó. Việc cần làm là append thêm nó vào `PATH`.
 
-So you go on the website of Amazon Corretto
+Lấy đường dẫn tuyệt đối tới `bin` trước:
 
-and then you download the latest LTS version.
+```bash
+cd ~/kafka_2.13-4.0.0/bin
+pwd
+```
 
-So here it's Download Corretto 21,
+Copy kết quả, ví dụ `/Users/thuyet/kafka_2.13-4.0.0/bin` — lát nữa dán vào file cấu hình.
 
-and that should be good to go.
+## 5. Bước 4 — Thêm Kafka Vào `~/.zshrc`
 
-And then in there you have the list of all the JDK versions.
+macOS mới dùng shell `zsh`, file cấu hình là `~/.zshrc` (không phải `.bashrc` như Linux).
 
-So you scroll down and I want to use macOS x,
+1. Mở file để sửa:
 
-this one with this architecture, this is fine.
+```bash
+nano ~/.zshrc
+```
 
-And you click on it, then you allow it,
+2. Thêm một dòng duy nhất ở cuối file (thay đường dẫn bằng kết quả `pwd` của bạn):
 
-this is going to download it, and then you install it.
+```bash
+export PATH="$PATH:/Users/thuyet/kafka_2.13-4.0.0/bin"
+```
 
-Okay, so now this is not the right one.
+Giải thích ngắn: giữ nguyên `PATH` cũ (`$PATH:`), nối thêm thư mục `bin` của Kafka vào sau.
 
-So if you get this prompt, actually,
+3. Lưu: `Ctrl + X`, nhấn `Y`, nhấn `Enter`. Kiểm tra lại:
 
-you probably need to install with the Rosetta prompt.
+```bash
+cat ~/.zshrc
+```
 
-You need to install the other one.
+4. Đóng hết Terminal đang mở, mở một Terminal mới hoàn toàn (hoặc chạy `source ~/.zshrc`). Đây là bước nhiều người quên nhất — không mở terminal mới thì `PATH` mới chưa có hiệu lực.
 
-So the aarch64.
+Kiểm tra:
 
-So let's try again.
+```bash
+kafka-topics.sh
+```
 
-And now we're good to go.
+Không còn `command not found` mà in ra hướng dẫn sử dụng của `kafka-topics` là thành công. Thử autocomplete cho sướng tay:
 
-So this installed Amazon Corretto natively on your computer.
+```bash
+kafka-<TAB><TAB>
+```
 
-All right, so now we're good to go.
+Bạn sẽ thấy hàng chục lệnh `kafka-console-producer.sh`, `kafka-console-consumer.sh`... gọi được từ bất kỳ đâu.
 
-This is because I have a Mac version with a M.
+## Lỗi Thường Gặp & Cách Fix
 
-Okay, so how do we make sure that this is installed?
+- **`java --version` vẫn ra Java 8/11:** máy có nhiều JDK. Fix: gỡ JDK cũ hoặc export `JAVA_HOME` trỏ về Corretto 21 trong `~/.zshrc` trước dòng PATH của Kafka.
+- **Tải nhầm JDK Intel trên Mac M:** trình cài đặt đòi Rosetta hoặc chạy chậm. Fix: tải lại bản **aarch64** của Corretto 21.
+- **Sửa `.bashrc` thay vì `.zshrc`:** PATH không có tác dụng vì Terminal mặc định chạy zsh. Fix: chuyển dòng export sang `~/.zshrc` rồi mở terminal mới.
+- **Quên mở terminal mới / quên `source`:** vẫn `command not found`. Fix: `source ~/.zshrc` hoặc đóng mở lại Terminal.
+- **Copy sai đường dẫn (thiếu `/bin`, sai version):** lệnh vẫn không tìm thấy. Fix: `pwd` lại trong đúng thư mục `bin` rồi dán lại.
 
-Well, I'm going to just open the Terminal,
+## Kết Luận
 
-so Launchpad and then I'm going to open a Terminal.
+Vậy là Mac của bạn đã có full Kafka CLI, sẵn sàng chọc vào broker Docker ở `127.0.0.1:9092` trong các bài thực hành sau.
 
-And if I type in, so I'm going to zoom in,
-
-java --version.
-
-As you can see I've opened JDK version 21.
-
-This is running Corretto, so this part is good to go.
-
-Okay, so next we're going to install Kafka.
-
-So I will just type apache kafka download.
-
-And here we have the version 4.0.
-
-So this is the one that I want to download minimum.
-
-And I'm going to download the binary.
-
-So you click here on Binary downloads.
-
-And we allow this.
-
-All right, so my Kafka is now downloaded
-
-so I can just look for it in my downloads page
-
-and I can just double click on it to extract it.
-
-So now this has been extracted with its files.
-
-Now I want to move this one level up.
-
-So I will just copy it
-
-and I press Command + Up to go one level up
-
-in this directory
-
-and then Command + V to paste it.
-
-And the idea now is that my Kafka
-
-is in my top level directory under stefanemaarek.
-
-So how do I make sure, well here if I type pwd,
-
-this is the current directory, /Users/stefanemaarek,
-
-and if I type ls,
-
-I can see that I find my Kafka directory in there.
-
-So that's pretty good.
-
-And now we want to set up the $PATH environment variables,
-
-because if you look in this directory under the bin folder,
-
-you will find a lot of .sh files,
-
-these .sh files right here.
-
-And they're very handy
-
-to allow you to start the CLI commands
-
-and to start a Kafka server if you want to.
-
-So you want to add those to the path
-
-so we can invoke them directly from the CLI.
-
-Okay, so you may ask me, "What's the path
-
-and why do I need it?"
-
-Well, if I wanted to start a Kafka command,
-
-I could just do like this
-
-and then I will choose the Kafka folder
-
-then bin and for example, kafka-topics.sh.
-
-So this is a way for me to launch the Kafka topics file
-
-command directly from the bin folder in this Kafka.
-
-So if I press enter, as you can see,
-
-here the command is returning some output,
-
-we'll learn how to use it later.
-
-But what I would like to just do
-
-is to just write kafka-topics.sh directly and have it work.
-
-But right now as you can see, it says command not found.
-
-So I need to set up the path.
-
-So that's fairly easy.
-
-The first thing I'm going to do
-
-is open a new tab on this, Command + T.
-
-So we're going to edit a file called .zshrc,
-
-.zshrc.
-
-So you do that now, and we're going to create this file.
-
-And next we need to set up the path.
-
-So let's go into our Kafka directory
-
-and into the bin directory,
-
-we type pwd and we get the full path of our bin directory.
-
-And now the only thing I have to do is to write
-
-PATH="$PATH:
-
-and then we paste in the path we just got.
-
-So you write this line right here,
-
-remember where the quote and the dollar signs go.
-
-Then you do Ctrl + X and Y to save, press Enter,
-
-make sure that this has been saved by doing a cat .zshrc
-
-to see that we have this indeed.
-
-And what I'm going to do now is close both my Terminals
-
-and I'm going to just open a new Terminal.
-
-So let's go ahead and open a Terminal right here.
-
-I'll zoom in again.
-
-And now if I type kafka-topics.sh,
-
-as you can see now I don't have a command not found,
-
-I have this command right here.
-
-So that means that my path has been set up successfully
-
-and I can run the Kafka commands.
-
-I just type kafka- and then command,
-
-tab, sorry for it to complete,
-
-and I have all these Kafka commands available to me
-
-that can run directly from anywhere on my Terminal.
-
-So that's perfect.
-
-So if you've started Kafka with Conductor already,
-
-you're good to go.
-
-You have the CLI tool installed on your computer.
-
-And if you haven't,
-
-I will show you in the next lecture
-
-how to start Kafka using now the CLI tools.
-
-So I will see you in the next lecture.
+Bài tiếp theo (`022`) chúng ta sẽ dùng chính binaries vừa cài để start một broker Kafka thật ở chế độ KRaft — dành cho bạn nào không muốn dùng Docker.

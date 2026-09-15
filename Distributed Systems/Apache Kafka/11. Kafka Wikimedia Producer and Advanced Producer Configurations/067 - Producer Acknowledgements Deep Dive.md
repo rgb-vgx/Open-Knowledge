@@ -1,441 +1,159 @@
-Hi, this is Stephane from Conduktor
+# Acks: Ba Mức Cam Kết Ghi Dữ Liệu Và Cái Giá Của Mất Dữ Liệu
 
-and we're going to learn about Producer Acknowledgements
+Producer gọi `send()` xong, khi nào mới được coi là thành công? Câu trả lời nằm ở một config duy nhất: `acks`. Hiểu sai config này, bạn sẽ mất dữ liệu mà không hiểu vì sao — hoặc ngược lại, làm hệ thống chậm đi mà không biết mình đang trả giá cho điều gì. Đây là config durability quan trọng nhất của Producer, phải nắm trước mọi tuning khác.
 
-or the acks setting.
+---
 
-So we see that producer sends data into our Kafka cluster
+## 1. Vấn đề: Gửi Thành Công Nghĩa Là Gì Trong Hệ Phân Tán?
 
-which hosts specific topic partitions
+Hãy hình dung luồng ghi của Wikimedia producer vào topic 3 partitions, replication factor 3:
 
-and then the rights are sequential.
+```mermaid
+graph LR
+    PROD["Producer<br/>send()"] --> LEADER["Leader broker<br/>partition 0"]
+    LEADER --> R2["Replica broker 2"]
+    LEADER --> R3["Replica broker 3"]
+    LEADER -.->|ack| PROD
+```
 
-But when producers send data into the brokers,
+Producer chỉ nói chuyện với leader. Còn việc leader đã replicate sang các replica khác chưa, producer không tự thấy được — nó chỉ biết qua gói ack trả về. Và `acks` chính là núm vặn quyết định leader phải làm tới mức nào mới được trả lời "ok".
 
-they can choose to receive
+Ba nấc, ba triết lý đánh đổi durability lấy latency:
 
-some acknowledgements of data rights.
+| `acks` | Leader trả ack khi nào | Độ an toàn | Độ trễ |
+|---|---|---|---|
+| `0` | Gửi đi là coi như xong, không chờ gì | Thấp nhất, mất dữ liệu lặng lẽ | Thấp nhất |
+| `1` | Leader ghi vào log local xong | Trung bình, mất nếu leader chết trước khi replicate | Trung bình |
+| `all` (`-1`) | Mọi in-sync replica đều ghi xong | Cao nhất | Cao nhất |
 
-They're basically acknowledgements of receipts.
+## 2. Cơ Chế: Mổ Từng Mức Acks
 
-So, we have acks equals zero
+### 2.1. `acks=0`: Bắn rồi quên
 
-and that means that the producer
+Producer coi message thành công ngay khoảnh khắc gói tin rời khỏi socket, không cần broker xác nhận gì cả. Leader có crash, disk có lỗi, message có rơi — producer không bao giờ biết.
 
-is not going to wait for an acknowledgements,
+- Ưu điểm duy nhất: throughput cao nhất, overhead network tối thiểu vì bỏ hẳn vòng ack.
+- Nhược điểm: mất dữ liệu trong im lặng, không retry được vì không biết lỗi.
+- Dùng khi nào: chỉ khi mất vài message không sao — ví dụ metric, log sampling, tracking phụ. Ngay cả thế, nhiều team vẫn tránh `acks=0` vì debug rất khó.
 
-which is a possible data loss
+### 2.2. `acks=1`: Leader ghi xong là đủ
 
-and actually doesn't even request a acknowledgement
+Producer chờ leader xác nhận đã ghi vào log của nó. Replication sang follower diễn ra ngầm sau đó, producer không chờ.
 
-and we'll see this why it leads to data loss
+Kịch bản mất dữ liệu kinh điển:
 
-in the next slide.
+1. Producer gửi, leader ghi xong, trả ack.
+2. Producer tưởng thành công, đi tiếp.
+3. Leader crash ngay sau đó, trước khi kịp replicate sang follower.
+4. Follower lên làm leader mới — message kia bốc hơi vĩnh viễn.
 
-We have acks equals one,
+Đây từng là default của Kafka 1.0 tới 2.8. Nó là điểm cân bằng "tạm ổn" ngày xưa, nhưng với yêu cầu durability hiện nay thì không còn đủ cho dữ liệu quan trọng.
 
-to wait for broker leader acknowledgements
+### 2.3. `acks=all` (`-1`): Mọi in-sync replica đều phải có dữ liệu
 
-which presents limited data loss opportunities
+Đây là mức đảm bảo cao nhất. Producer chỉ nhận ack khi leader và toàn bộ replica đang in-sync (ISR) đều đã ghi.
 
-and I will show you why as well in the future slide
+Ví dụ cluster 3 broker, replication factor 3, partition 0 do broker 101 làm leader:
 
-and then we have acks equals all
+1. Producer gửi tới leader 101.
+2. Leader forward sang replica 102 và 103.
+3. Cả hai replica ghi xong, ack về leader.
+4. Leader tổng hợp rồi mới ack về producer.
 
-or also minus one is the same value,
+Giá phải trả là latency cao hơn (thêm một vòng network leader → replica) và availability phụ thuộc vào số replica sống. Bù lại, chỉ cần còn đủ ISR thì dữ liệu không mất kể cả khi leader chết ngay sau ack.
 
-which is that the leader and the replicas
+> `all` và `-1` là cùng một giá trị. Trong log bạn sẽ thấy `acks = -1`, trong code nên viết `"all"` cho dễ đọc.
 
-have to acknowledge the data rights
+## 3. Config Chi Tiết: `acks` Không Đi Một Mình
 
-which leads to no data loss.
+### 3.1. `acks`
 
-So let's have a look at all these settings in detail.
+- **Ý nghĩa:** mức xác nhận ghi mà producer yêu cầu.
+- **Giá trị:** `0` | `1` | `all` (`-1`). Default: `1` ở client 1.0–2.8, `all` từ client 3.0 trở đi.
+- **Khi nào dùng:** dữ liệu quan trọng (đơn hàng, edit Wikimedia cần phân tích chính xác) luôn `all`. Metric phụ, log sampling mới cân nhắc `0`. Hầu như không còn lý do dùng `1` cho code mới.
 
-So first acks equals zero.
+### 3.2. `min.insync.replicas` (config phía broker/topic, không phải producer)
 
-So when you have acks equals zero,
+- **Ý nghĩa:** số replica in-sync tối thiểu phải có thì leader mới được chấp nhận write với `acks=all`. Là "ngưỡng an toàn" của phía server.
+- **Giá trị mẫu:** default `1` (chỉ cần leader sống là ghi được — thực chất không khác `acks=1` là mấy). Production khuyến nghị `2` đi với `replication.factor=3`.
+- **Khi nào dùng:** luôn set ở mức topic hoặc broker khi đã chọn `acks=all`. Ví dụ `min.insync.replicas=2` nghĩa là leader + ít nhất 1 follower phải ack. Nếu chỉ còn mình leader sống, broker thà trả lỗi `NotEnoughReplicasException` để producer retry, còn hơn nhận ghi rồi mất.
 
-the producer consider messages as successfully written
+### 3.3. Công thức availability: chịu được mấy broker chết?
 
-the moment they are sent to the broker
+Với `acks=all`, replication factor `N`, `min.insync.replicas=M`:
 
-without even waiting for the broker to accept it all.
+```text
+Số broker được phép down mà topic vẫn ghi được = N - M
+```
 
-And so that means that the producer sends data to the leader
+| Cấu hình | Chịu được | Nhận xét |
+|---|---|---|
+| RF=3, M=1 | 2 broker down | Ghi được nhiều nhất, nhưng còn 1 replica thì durability yếu |
+| RF=3, M=2 | 1 broker down | **Combo phổ biến nhất:** vừa bền vừa còn HA |
+| RF=3, M=3 | 0 broker down | Một broker hắt hơi là topic ngừng ghi — sai thiết kế Kafka |
 
-and then the leader does the writes.
+Ví dụ M=2, RF=3 mà broker 102 và 103 cùng down: producer gửi tới leader 101, leader thấy chỉ còn 1 ISR trong khi yêu cầu 2, bèn từ chối và ném exception. Producer (có `retries`) sẽ thử lại sau — thà chậm còn hơn mất.
 
-But if somehow the brokers goes offline
+Với `acks=0` hoặc `acks=1`, chỉ cần còn 1 ISR (chính leader) là ghi được — availability cao nhất nhưng durability thấp nhất.
 
-or some kind of exception happens,
+## 4. Code Ví Dụ
 
-we'll not know and we'll lose data.
+```java
+import org.apache.kafka.clients.producer.ProducerConfig;
+import java.util.Properties;
 
-So acks equals zero
+Properties props = new Properties();
+props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+        "org.apache.kafka.common.serialization.StringSerializer");
+props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+        "org.apache.kafka.common.serialization.StringSerializer");
 
-is useful where it's potentially okay to lose messages
+// Durability: mức cao nhất, dùng cho dữ liệu quan trọng
+props.setProperty(ProducerConfig.ACKS_CONFIG, "all"); // tương đương "-1"
+```
 
-such as when you, for example, do metrics collection
+Kiểm tra phía server cho topic lab (local 1 broker nên M phải là 1):
 
-and some people also argue that even in metrics collection
+```bash
+# Xem replication và ISR hiện tại
+kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic wikimedia.recentchange
 
-you don't wanna lose data
+# Ví dụ production: tạo topic RF=3, min ISR=2
+kafka-topics.sh --bootstrap-server localhost:9092 --create --topic orders \
+  --partitions 6 --replication-factor 3 \
+  --config min.insync.replicas=2
+```
 
-and people use acks equals zero sometimes
+> Trên local 1 broker, đừng set `min.insync.replicas=2` — mọi write `acks=all` sẽ thất bại vì không bao giờ đủ 2 ISR. Đây là lỗi phổ biến nhất khi bê preset production về local.
 
-because it produces the highest throughput setting
+## 5. Safe / High-Throughput Preset Liên Quan
 
-because, well, the overhead on the network is minimized,
+Bài này chốt dòng đầu tiên của preset Safe (chi tiết đầy đủ ở bài 070):
 
-but it is only for very, very specific use cases
+```java
+// SAFE baseline - dòng 1/6:
+props.setProperty(ProducerConfig.ACKS_CONFIG, "all");
 
-that acks equals zero would be acceptable to you
+// Đi kèm phía broker/topic (production):
+// replication.factor=3, min.insync.replicas=2
+// Local 1 broker: replication.factor=1, min.insync.replicas=1
+```
 
-where it's okay to lose data.
+Chưa đụng tới throughput. `acks=all` tăng latency một chút so với `acks=1` — phần tăng tốc (compression, batching) ở bài 072–074 sẽ bù lại mà không hy sinh durability này.
 
-So then we have acks equals one
+## 6. Cạm Bẫy Thường Gặp
 
-and when acks equals one,
+- **Tưởng `acks=all` nghĩa là mọi replica trên cluster.** Sai. Chỉ là mọi replica **in-sync** của partition đó. Replica đang lag quá xa bị đá khỏi ISR thì không tính — đó là lý do cần monitor ISR shrink.
+- **Set `acks=all` mà quên `min.insync.replicas`.** Default M=1 khiến `acks=all` nearly vô nghĩa khi chỉ còn leader: vẫn ack dù không còn bản copy nào khác. Combo đúng luôn là cặp đôi.
+- **Nhầm `all` với `-1` là hai chế độ khác nhau.** Chúng là một. Log in `-1`, code viết `"all"` — đừng set hai lần rồi tưởng có hai lớp bảo vệ.
+- **Đòi `acks=0` cho nhanh rồi bất ngờ khi mất log.** `acks=0` không retry được (không biết lỗi mà retry). Mất là mất lặng lẽ, không metric, không alert.
+- **Giữ `acks=1` vì "trước giờ vẫn chạy".** Đó là default cũ (1.0–2.8), không phải best practice hiện tại. Client 3.0+ đã chuyển default sang `all` — hãy theo.
+- **Bê `min.insync.replicas=2` về local 1 broker.** Producer fail 100% request với `NotEnoughReplicasException`. Local luôn M=1.
+- **Hiểu nhầm availability:** `acks=all` + M=2 + RF=3 mà chết 2 broker thì topic **ngừng ghi** (fail fast) — đó là chủ ý để bảo vệ dữ liệu, không phải bug. Muốn ghi tiếp thì chấp nhận hạ M, và chấp nhận rủi ro.
 
-the producer consider messages as successfully written
+## Kết Luận
 
-when the message was acknowledged only by the leader broker,
+Tóm lại một câu: **`acks` quyết định producer chờ tới đâu (`0` không chờ, `1` chờ leader, `all` chờ mọi ISR), và `acks=all` chỉ thực sự an toàn khi đi cùng `min.insync.replicas=2` trên `replication.factor=3` — combo chuẩn của mọi pipeline không được phép mất dữ liệu.**
 
-which is the default setting
-
-from Kafka version 1.0 to version 2.8,
-
-so it used to be the default for a very, very long time.
-
-And the producer sends data the leader,
-
-the leader writes the data actually
-
-and then responds to every request successfully,
-
-say yes, "I have successfully written the data."
-
-And then the data gets written over time like this.
-
-So the leader response is requested,
-
-but we have no guarantee of replication.
-
-Only the leader has the data
-
-and the replication is a background process
-
-and so we don't know if the data has been replicated.
-
-That means that if our leader broker
-
-goes offline unexpectedly
-
-but the replicas haven't gotten the chance yet
-
-to replicate the data,
-
-then we'll have a data loss
-
-and if an ack is not received though,
-
-the producer may go into a retry for the request
-
-to actually try to write the data successfully.
-
-So acks equals one gives us more overhead, of course,
-
-on the types of requests,
-
-but also more safety
-
-because now we want the leader
-
-to acknowledge the right
-
-but we don't have the guarantee
-
-the data is successfully replicated
-
-so there is a potential data loss.
-
-So this used to be the default from version 1.0 to 2.8
-
-and it was accessible,
-
-but people are evolving
-
-towards getting the safest kind of guarantee
-
-when writing you Apache Kafka
-
-and this is provided by acks equals all
-
-also interpreted as acks equals minus one.
-
-Okay, all and minus one are the same value.
-
-So when acks equals all,
-
-the producers consider the messages
-
-are successfully written,
-
-when the message is accepted
-
-by all in-sync replicas, so ISR.
-
-Which is a default value for Kafka 3.0 and over
-
-because this is the highest guarantee.
-
-So let's take an example.
-
-We have a Kafka broker,
-
-a cluster with three brokers.
-
-One of them is the leader for partition zero
-
-and the other two are replicas,
-
-so we have a replication factor of two
-
-and our producer is using acks equals all.
-
-So what happens?
-
-The producer sends the data to the leader.
-
-The leader will send it to the replica for replication
-
-which will acknowledge the write to the leader broker.
-
-Same for broker 103,
-
-it will have the replica data
-
-and acknowledge the writes
-
-and then the broker 101 says, "Okay, we're good."
-
-We can acknowledge the write as well.
-
-There is some synchronization happening
-
-that I'm going over really quickly
-
-because you don't need to know how it works
-
-and then you have the response back from the leader
-
-saying, "Hey, all the ISRs acknowledge your writes
-
-therefore you can acknowledge the writes as well."
-
-And the data gets written this way.
-
-So behind this complicated mechanism,
-
-we're getting the certainty
-
-that all the ISR in your cluster will have the data
-
-when it's successfully written and the ack is received.
-
-So this setting, acks equals all,
-
-actually goes hand in hand with another setting
-
-called min.insync.replicas.
-
-That means that the leader replica,
-
-when you do a write with acks equals all,
-
-is going to check if are enough in-sync replicas
-
-in your cluster to safely write the message
-
-and this is controlled by the setting min.insync.replicas.
-
-I will show you in a second.
-
-So if you have min.insync.replicas,
-
-which is the default,
-
-then it's okay as long as the only the broker leader
-
-successfully acknowledges your writes.
-
-If you have min.insync.replicas equals two,
-
-and this is a broker setting
-
-or a topic setting by the way,
-
-then it means you have at least the broker leader
-
-and one replica to successfully ack
-
-before returning a successful ack to the producer.
-
-So let's take an example with min.insync.replica equals two
-
-and a replication factor of three.
-
-So we have the same diagram as before, but, for example,
-
-if you have set min.insync.replica equals two
-
-for your brokers or your topic, then what happens?
-
-If broker 102 and broker 103 are down,
-
-then the producer sends data to the leader
-
-and says, "Hey I would like to write
-
-to at least two replicas."
-
-But the only replica available is the leader.
-
-So we have min.insync.replica available is one,
-
-but the setting says that it should be two.
-
-Therefore, the broker 101
-
-is going to respond to the producer
-
-and say, "There are not enough replicas
-
-and therefore is going to generate an exception.
-
-So acks equals all is great,
-
-but to get the safest data guarantee,
-
-it's recommended to have a replication factor of three
-
-and the min.insync.replica equals two
-
-because this guarantee
-
-that at least one other replica can get your data
-
-and therefore, if that replica doesn't exist,
-
-then the leader part, the broker is saying
-
-I'd rather not accept the right then risk losing data.
-
-And so is a producer responsibility to wait
-
-for the replicas to come back up
-
-before setting the data.
-
-So this is quite a common setup
-
-in companies that want the safest
-
-and highest guarantee in terms of replication. Okay?
-
-So this brings us into Kafka topic availability.
-
-So if we consider a replication factor of three
-
-and we have acks equal zero or acks equals one
-
-as long as we have 1 partition up and running
-
-and it's considered in-sync replica
-
-then the topic is going to be available for rights.
-
-So we can keep on writing to the leader.
-
-If we have acks equals all
-
-and we set min.insync.replica equals 1, which is a default
-
-then that means that the topic
-
-must have at least one partition up as an ISR
-
-and that in includes the leader.
-
-And so we can tolerate two brokers
-
-going down in that setting, okay.
-
-But if we have min.insync.replica equals two
-
-which was the setting I should show you before.
-
-Then we must have at least two ISR up
-
-to be having a successful right.
-
-And so we can consider that at most one broker is down.
-
-Therefore, if only one broker is down
-
-we still have the guarantee that two brokers available,
-
-two take the rights.
-
-And so we have the safest guarantee.
-
-So, if we have min.insync.replica equals three
-
-that doesn't make any sense
-
-because if you have a replication factor of three
-
-and min.insync.replica equals three
-
-then we don't tolerate any broker going down at all
-
-which is not how Kafka was designed.
-
-So in summary, if you have acks equals all
-
-and the replication factor
-
-of Nandmin.insyc.replicas equals to M
-
-then we can tolerate N minus M brokers curves going down
-
-for topic availability purposes.
-
-And by availability that means available for rights, okay.
-
-Reads regardless are still going to happen.
-
-So, the most popular combination
-
-is going to be acks equals all
-
-and min.isync.replicas equals two
-
-which is going to give you good data durability
-
-and good data availability, of course
-
-with the replication factor of three.
-
-And with these settings,
-
-you can withstand at most the loss of one Kafka broker.
-
-All right.
-
-So that's it for this very, very important setting.
-
-I hope you liked it.
-
-And I'll see you in the next lecture.
+Bài tiếp theo chúng ta xử lý nửa còn lại của durability: khi broker trả lỗi tạm thời (leader đang chuyển, replica chưa đủ...), producer tự thử lại ra sao — qua `retries`, `retry.backoff.ms` và `delivery.timeout.ms`.

@@ -1,99 +1,55 @@
-Hi, this is Stephane from Conduktor
+# Project Thực Tế: Stream Wikimedia Vào Kafka Rồi Đổ Ra OpenSearch
 
-and in this section we're going to go
+Học producer/consumer rời rạc mãi thì không thành kỹ năng. Phần này gom tất cả lại thành một pipeline thật: **producer đọc stream thay đổi Wikimedia → topic Kafka → consumer ghi vào OpenSearch** để search được. Bài này là bản overview: kiến trúc, yêu cầu, và lộ trình từ code tay tới Kafka Connect + Kafka Streams. Hai bài sau sẽ bắt tay implement.
 
-and implement a real-world project with our Kafka skills.
+---
 
-So this is a programming section
+## 1. Concept: Kiến trúc pipeline 2 chặng
 
-in which we're going to get data from Wikimedia
+```
+Wikimedia SSE stream  ──>  Kafka Producer (Java)  ──>  Topic: wikimedia.recentchange
+                                                              │
+                                                              v
+                                                    Kafka Consumer (Java)  ──>  OpenSearch index
+```
 
-as a stream through a Kafka Producer,
+* **Chặng 1 — Producer.** Nguồn là stream công khai của Wikimedia (RecentChange firehose: mỗi lần ai đó sửa Wikipedia, một event JSON chảy ra). Producer giữ kết nối stream mở liên tục (SSE — Server-Sent Events), mỗi event là một `ProducerRecord` vào topic. Không key phức tạp — quan trọng là throughput ổn định, reconnect khi stream đứt.
+* **Chặng 2 — Consumer.** Kéo event từ topic, parse JSON, ghi vào OpenSearch (fork open-source của Elasticsearch) để search/full-text. Consumer chạy poll loop + graceful shutdown + group như đã học; điểm mới là sink ghi ra hệ thống ngoài thay vì log.
+* **Vì sao bài này đáng làm?** Đây là lần đầu bạn thấy Kafka đúng vai trò của nó: **log trung tâm** giữa nguồn chảy liên tục và hệ đọc (search index). Nguồn có sập, consumer có restart — dữ liệu vẫn nằm trong topic chờ (retention 7 ngày default), không mất như gọi API trực tiếp.
 
-into Apache Kafka topics.
+Dù bạn không code Java cũng nên đọc: mọi khái niệm (topic, producer streaming, consumer sink, Connect/Streams ở chặng nâng cấp) đều là kiến thức Kafka thuần, độc lập ngôn ngữ.
 
-And then we're going to create a Kafka Consumer
+## 2. Code: Chưa code — chuẩn bị gì?
 
-that will take this data and send it to OpenSearch.
+Bài overview không có code mới. Thứ tự làm việc khuyến nghị:
 
-So this is a Java programming class
+1. Đọc 2 link demo cách dùng Wikimedia stream mà tác giả đính kèm ở bài text tiếp theo (xem stream JSON trông thế nào, thử mở bằng curl/browser).
+2. Tự implement trước theo khung đã học:
+   * Producer: vòng đọc stream → `producer.send(new ProducerRecord<>("wikimedia.recentchange", eventJson))` + callback + `flush/close`.
+   * Consumer: `subscribe` topic → `poll` → parse JSON → client OpenSearch `index()` → (giữ auto commit như bài 057, xử lý xong trước poll tiếp để giữ at-least-once).
+3. Không làm được cũng không sao — các bài walk-through sau sẽ code mẫu từng bước.
 
-but we are going to learn a lot
+Điều kiện tiên quyết từ phần 09: project Gradle chạy được, `kafka-clients` + `slf4j` đủ, topic tạo sẵn, cluster (localhost hoặc Playground) + một instance OpenSearch local/Docker để consumer trỏ tới.
 
-of Kafka-related concepts in this section.
+## 3. Chạy và kiểm tra (mục tiêu cuối phần)
 
-So even if you don't do programming,
+Pipeline coi là xong khi:
 
-please stick around and watch the lectures
+* Producer log `partition/offset` tăng đều (stream chảy → Kafka nhận).
+* Mở topic `wikimedia.recentchange` trên UI/CLI thấy event JSON mới liên tục.
+* Query OpenSearch trả về document vừa consume (search thử tiêu đề bài vừa sửa trên Wikipedia).
+* Kill consumer rồi bật lại: đọc tiếp từ committed offset, không mất event stream trong lúc consumer chết (chừng nào trong retention).
 
-above the programming lectures,
+## 4. Pitfalls
 
-and you will learn a lot about Kafka, still, okay?
+* **Nhảy vào code khi chưa xem stream mẫu.** Event Wikimedia có field lồng nhau, có event heartbeat rác. Không xem mẫu trước thì consumer parse lỗi hàng loạt. Mở link demo + quan sát JSON trước, code sau.
+* **Producer không reconnect.** Stream SSE đứt là bình thường (mạng, server đóng idle). Producer production phải có vòng reconnect + backoff; demo đơn giản ít nhất cũng phải log lỗi rõ thay vì chết im.
+* **Consumer ghi OpenSearch đồng bộ từng record mà topic burst.** Mỗi `poll()` trả về hàng trăm records, mỗi record một request HTTP riêng là chậm + dễ timeout → poll trễ → rebalance. Giải pháp: bulk index theo batch (một bulk cho cả `ConsumerRecords` vừa poll), đúng tinh thần "xử lý hết batch trước poll tiếp".
+* **Bỏ qua idempotency phía OpenSearch.** At-least-once của consumer nghĩa là event có thể đọc lại → ghi trùng document. Dùng event id của Wikimedia làm document `_id` để ghi lại cùng id thì ghi đè thay vì trùng.
+* **Nhầm mục tiêu 2 nấc.** Nấc 1 (bài tập): code tay producer + consumer Java. Nấc 2 (sau walk-through): thay producer tay bằng **SSE Source Connector**, thay đếm/thống kê bằng **Kafka Streams**, thay consumer tay bằng **Elasticsearch Sink Connector**. Đừng trộn: đang code tay lại lôi config Connect vào.
 
-If you are a Java developer and you're up for the task,
+## Kết Luận
 
-you can try to implement this on your own.
+Một câu: **Wikimedia chảy vào topic, topic nuôi OpenSearch — Kafka ở giữa làm bộ đệm bền vững.** Hiểu kiến trúc này thì phần code sau chỉ là lắp ráp kỹ năng cũ.
 
-So the Wikimedia stream is going to be right here.
-
-I will provide you the link in the next text lecture,
-
-and you can also look at demos into how this can be used
-
-at these two different links.
-
-And we'll look at them in the next lectures as well.
-
-So once you have done this with the Kafka Producer,
-
-you can send data into Apache Kafka,
-
-and then you could try
-
-to write your own Kafka Consumer as well
-
-to send data into OpenSearch.
-
-So try implementing it,
-
-but if you don't succeed, don't worry.
-
-There is a walk-through of the implementation
-
-in this course as well.
-
-So we do this because I want to show you a little teaser.
-
-So once we have done okay all the Kafka Producer
-
-and the Kafka Consumer,
-
-then we're going to go to the next level
-
-and implement it with more advanced concepts
-
-such as Kafka Connect and Kafka Streams.
-
-So we'll get a Kafka Connect SSE Source Connector
-
-to get data from Wikimedia into Apache Kafka.
-
-Then we'll use Kafka Streams to do a counter application
-
-and compute some statistics on our stream of data.
-
-And finally, we'll use Kafka Connect ElasticSearch Sink
-
-to send data into OpenSearch.
-
-And OpenSearch is just an open source fork
-
-of ElasticSearch.
-
-Hence, why I'm using ElasticSearch Sink in this instance.
-
-Okay? So I hope you're excited.
-
-And I will see you in the next lecture
-
-to start implementing.
+Bài tiếp theo (bài tập thực hành) chúng ta sẽ nhận đề bài chi tiết + link stream Wikimedia và hai link demo, tự implement producer trước rồi consumer sau — làm được tới đâu hay tới đó, rồi đối chiếu với bài solution walk-through.

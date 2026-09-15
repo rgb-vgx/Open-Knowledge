@@ -1,75 +1,100 @@
-Hi, this is Stephane from Conduktor
+# Chọn Đúng API Kafka: Bảng Quyết Định Từ Đầu Vào Đến Đầu Ra
 
-and just a quick lecture to show you,
+Bạn đã học 5 API: Producer, Consumer, Kafka Connect (Source/Sink), Kafka Streams (+ ksqlDB), Schema Registry. Câu hỏi phỏng vấn và câu hỏi thực tế giống hệt nhau: *"Dữ liệu ở đây, muốn ra kia — dùng cái gì?"* Bài này cho bạn cây quyết định để không bao giờ chọn sai.
 
-to conclude the section,
+---
 
-and find out which API is right for you.
+## 1. Nguyên Tắc Vàng: Hỏi "Dữ Liệu Đang Ở Đâu, Muốn Đi Về Đâu?"
 
-So, let's take an example.
+Mọi pipeline Kafka đều trả lời 2 câu hỏi:
 
-If you have a source database
+1. **Điểm xuất phát là gì?** Dữ liệu đã nằm ở hệ ngoài, hay do chính app bạn sinh ra?
+2. **Điểm đến là gì?** Kafka, hệ ngoài, hay topic Kafka khác?
 
-and your data already is somewhere
+Trả lời xong 2 câu này, bảng dưới cho bạn đáp án ngay.
 
-and you want to put it into Kafka
+## 2. Bảng Quyết Định Chi Tiết
 
-you would have to think about using Kafka Connect Source.
+| # | Điểm xuất phát | Điểm đến | API đúng | Ví dụ thực tế |
+|---|---|---|---|---|
+| 1 | Dữ liệu đã ở hệ ngoài (DB, API, file, SaaS) | Kafka topic | **Kafka Connect Source** | Debezium CDC hút transactions từ PostgreSQL; Wikimedia SSE Source hút stream Wikipedia |
+| 2 | Chính app của bạn sinh ra (mobile, web, IoT, xe tải) | Kafka topic (source of truth) | **Kafka Producer** | App tài xế gửi GPS; video player gửi vị trí xem; app ngân hàng gửi ngưỡng cảnh báo |
+| 3 | Kafka topic | Kafka topic khác (có tính toán) | **Kafka Streams** (hoặc ksqlDB nếu thích SQL) | Đếm bot/human, window 10s, join user_position + taxi_position ra surge_pricing |
+| 4 | Kafka topic | Hệ lưu trữ ngoài (để phân tích/lưu dài hạn) | **Kafka Connect Sink** | Elasticsearch Sink đổ vào OpenSearch; S3 Sink đổ vào data lake; JDBC Sink đổ vào warehouse |
+| 5 | Kafka topic | Hành động một lần rồi quên (gửi mail, SMS, push) | **Kafka Consumer** | Notification service đọc `user_alerts` rồi bắn push; service gửi email xác nhận |
+| 6 | Bất kỳ pipeline nào trên, khi có >1 team hoặc schema tiến hóa | Giữ format đúng theo thời gian | **Schema Registry** (đi kèm, không thay thế) | Avro schema cho `orders-value`, check backward compatibility trước khi thêm field |
 
-If you want to produce the data directly into Kafka,
+Ghi nhớ nhanh bằng một dòng chảy chuẩn:
 
-for example, because the data originates from your trucks
+```mermaid
+graph LR
+    EXT[(DB / API / SaaS)] -->|1. Connect Source| K1[(Kafka)]
+    APP[App của bạn] -->|2. Producer| K1
+    K1 -->|3. Streams / ksqlDB| K2[(Kafka topic mới)]
+    K2 -->|4. Connect Sink| STORE[(S3 / ES / HDFS / JDBC)]
+    K2 -->|5. Consumer| ACT[Email / SMS / Push]
+    SR[(6. Schema Registry)] -. governance .-> K1
+    SR -. governance .-> K2
+```
 
-and you wanna send it directly into Kafka
+Đọc sơ đồ từ trái sang phải chính là vòng đời dữ liệu điển hình: **vào Kafka (1-2) -> biến đổi trong Kafka (3) -> ra ngoài hoặc kích hoạt hành động (4-5), tất cả dưới sự giám sát format (6).**
 
-as your source of truth, then you would use a Kafka Producer
+## 3. Ba Cặp Dễ Nhầm Nhất
 
-which is what we've been programming.
+### 3.1. Connect Source vs Producer
 
-Then to do Kafka to Kafka transformations
+| | Connect Source | Producer |
+|---|---|---|
+| Dữ liệu đã tồn tại ở đâu đó chưa? | Rồi (DB, API, file) | Chưa — app bạn là nơi sinh ra đầu tiên |
+| Ai viết code kết nối? | Dùng connector có sẵn, chỉ cấu hình | Bạn viết code producer |
+| Ví dụ | CDC đọc transaction log PostgreSQL | App mobile gửi vị trí qua service proxy rồi produce |
 
-you would use Kafka Streams,
+Sai lầm điển hình: viết Producer `SELECT * FROM orders` polling database mỗi 5 giây. Vừa chậm, vừa miss deletes, vừa đè DB. Dùng Debezium CDC Source thay thế.
 
-which is a library that we just saw,
+### 3.2. Kafka Streams vs ksqlDB
 
-or KSQL DB, which is a database
+Cả hai đều làm Kafka-to-Kafka, khác nhau ở giao diện:
 
-that allows you to do SQL queries on top of Kafka
+| | Kafka Streams | ksqlDB |
+|---|---|---|
+| Viết bằng | Java code (DSL / Processor API) | SQL (`CREATE STREAM ... SELECT ... EMIT CHANGES`) |
+| Triển khai | Thư viện nhúng trong app, deploy như app thường | Database/cluster riêng chạy queries |
+| Khi nào chọn? | Logic phức tạp, cần test unit, team mạnh Java | Truy vấn nhanh, prototype, team mạnh SQL |
 
-by also leveraging internally Kafka Streams.
+Bản chất ksqlDB chạy trên nền Streams — chọn cái nào là chọn giao diện, không phải chọn engine khác.
 
-Then if you wanted to send data into a target
+### 3.3. Connect Sink vs Consumer
 
-for storage and for analysis later on
+| | Connect Sink | Consumer |
+|---|---|---|
+| Mục đích | Đổ dữ liệu vào **hệ lưu trữ** để phân tích sau (S3, ES, HDFS, JDBC) | Kích hoạt **hành động** một lần (gửi mail, push, trừ kho) |
+| Dữ liệu sau khi đọc | Còn cần nguyên vẹn lâu dài | Xử lý xong có thể quên |
+| Ví dụ | Đổ `wikimedia.recentchange` vào OpenSearch để search | Đọc `user_alerts` để bắn SMS cảnh báo gian lận |
 
-then Kafka Connect Sink would be your main API.
+Nếu đích đến là nơi "nằm lại" (store) thì Sink. Nếu đích đến là việc "làm một lần" (action) thì Consumer.
 
-But if you have for example,
+## 4. Schema Registry Đứng Ở Đâu?
 
-the final goal of just sending an email
+Registry không nằm trong dòng chảy chính mà đứng **bên cạnh mọi mũi tên**:
 
-and then it goes away.
+* Producer/Connect Source serialize qua Registry trước khi ghi.
+* Streams app deserialize/serialize qua Registry ở cả đầu đọc và đầu ghi.
+* Connect Sink/Consumer deserialize qua Registry khi đọc.
 
-Then a Kafka Consumer would be a perfect API for you.
+Nhờ vậy một lần đổi schema được kiểm tra compatibility một chỗ, thay vì mỗi team tự kiểm tra một kiểu.
 
-And behind the scenes, obviously, you would use something
+## Cạm Bẫy Thường Gặp
 
-like schema registry to make sure your data is correct
+* **Mặc định cái gì cũng Producer/Consumer.** Đây là low-level API. Có connector sẵn mà không dùng là tự mua việc: mất fault-tolerance, idempotence, distribution người khác đã làm sẵn.
+* **Dùng Streams để copy nguyên xi topic sang hệ ngoài.** Streams chỉ ra topic Kafka khác. Muốn ra S3/ES thì phải nối tiếp Sink Connector — đừng viết Streams ghi thẳng vào Elasticsearch.
+* **Dùng Connect cho transform phức tạp.** Connect chỉ có Single Message Transforms đơn giản. Join, window, aggregate theo thời gian là việc của Streams.
+* **Quên Registry ở pipeline "tạm thời".** Pipeline tạm sống 3 tháng rồi thành vĩnh viễn với 4 teams cùng dùng. Gắn Registry từ đầu rẻ hơn migrate sau gấp nhiều lần.
+* **Nối app mobile/trình duyệt trực tiếp vào Kafka.** Luôn qua service proxy (Producer) để validate, auth, rate-limit. Không có ngoại lệ.
 
-and your data types are going to be accurate
+## Kết Luận
 
-alongside your pipelines.
+Tóm lại một đoạn: **ngoài vào Kafka thì Connect Source, app sinh ra thì Producer, Kafka thành Kafka thì Streams (hay ksqlDB nếu thích SQL), Kafka ra kho thì Connect Sink, Kafka ra hành động thì Consumer, và Schema Registry đứng cạnh tất cả để giữ format.**
 
-So hopefully this diagram makes sense.
+Nắm vững bảng quyết định này là bạn đã hiểu Kafka ở tầm kiến trúc — đúng như mục tiêu của cả section.
 
-And this is, if you understand it,
-
-you've basically understood Kafka
-
-in terms of an architecture perspective.
-
-And I'm very proud of you.
-
-All right, that's it.
-
-I will see you in the next lecture.
+Bài tiếp theo chúng ta rời khỏi APIs và bước vào thế giới thực: **chọn partition count và replication factor sao cho đúng ngay từ đầu**, vì chọn sai hai con số này thì API hay đến mấy cũng không cứu được.

@@ -1,379 +1,121 @@
-Hello, this is Stephane from Conduktor,
+# Kafka Console Consumer CLI: Đọc Message Và Kiểm Chứng Thứ Tự Per-Partition
 
-and in this lecture we're going to learn how to use
+Producer đã bơm message vào topic ở bài trước. Bài này chúng ta đọc lại chúng bằng `kafka-console-consumer.sh` — và nhân tiện kiểm chứng tận mắt khẳng định quan trọng nhất của Kafka: **thứ tự chỉ đảm bảo trong một partition, không đảm bảo giữa các partitions.**
 
-the Kafka console consumer CLI.
+---
 
-So we know that consumers can read, from partitions,
+## 1. Bài Toán: Tại Sao Consumer Chạy Mà Không Thấy Gì?
 
-the data in order,
+Người mới hay gặp cảnh: chạy consumer, terminal đứng im, tưởng consumer hỏng. Thực ra 90% là do consumer mặc định **chỉ đọc message mới (tail)** — message gửi từ trước đó nó bỏ qua hết. Hiểu hai chế độ đọc là xong:
 
-and as well in the group, we'll see this later on.
+* Mặc định: chỉ nhận message gửi **sau** thời điểm consumer khởi động.
+* `--from-beginning`: đọc toàn bộ từ offset 0 tới hiện tại.
 
-And so we're going to practice an example
+## 2. Đọc Message Mới Nhất (Tail Mode)
 
-to read a Kafka topic.
+Chuẩn bị: tạo `second_topic` 3 partitions để thấy hiệu ứng phân tán (topic 1 partition ở bài trước không đủ):
 
-So we'll consume from the tale of the topic.
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 \
+  --create --topic second_topic --partitions 3 --replication-factor 1
+```
 
-That means only new messages.
+Đọc tail:
 
-We'll also consume from the beginning of the topic
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic second_topic
+```
 
-to see all the stuff from the beginning.
+* `--topic second_topic` — topic cần đọc.
+* Không có `--from-beginning` nghĩa là tail mode: đứng chờ message mới.
 
-And, finally, we're going also show options
+Terminal đứng im là bình thường — vì chưa ai gửi gì sau thời điểm consumer chạy. Mở thêm một terminal thứ hai, chạy producer phân tán đều:
 
-to see both the key and the values
+```bash
+kafka-console-producer.sh --bootstrap-server localhost:9092 \
+  --topic second_topic \
+  --producer-property partitioner.class=org.apache.kafka.clients.producer.RoundRobinPartitioner
+```
 
-in the output of our consumer.
+* `partitioner.class=RoundRobinPartitioner` — ép mỗi message sang partition kế tiếp. Chỉ dùng để học: nhìn rõ message nhảy qua lại giữa partitions. **Tuyệt đối không dùng ở production** — đây là partitioner kém hiệu quả nhất, phá vỡ batching (mặc định Kafka dồn ~16KB vào cùng partition cho nhanh).
 
-So let's get started.
+Gõ ở producer:
 
-So let's go ahead and practice the Kafka console consumer
+```
+>hello world
+>my name is Stephane
+>it's working
+```
 
-so we can reproduce with the CLI where we saw with the UI.
+Cả 3 dòng hiện ngay ở terminal consumer. Nhấn `Ctrl+C` để dừng consumer. Chạy lại đúng lệnh consumer đó mà không gửi gì thêm — terminal lại đứng im. Đó chính là tail mode: message cũ đã bị bỏ qua.
 
-So in this example,
+## 3. Đọc Từ Đầu: `--from-beginning`
 
-we're going to use this command right here.
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic second_topic --from-beginning
+```
 
-So you can always type the command to see the documentation
+* `--from-beginning` — đọc từ offset 0 của mọi partition.
 
-but we'll learn the most important options right now.
+Output mẫu (thứ tự có thể khác máy bạn):
 
-So we have the topics in one partition
+```
+hello world
+it's working
+my name is Stephane
+one
+three
+two
+```
 
-but I want to create a second topic
+Bạn gửi theo thứ tự `hello world → my name is Stephane → it's working → one → two → three`, nhưng đọc ra lại lộn xộn (`three` trước `two`, `two` trước `one`). Đây không phải bug — là hệ quả tất yếu của 3 partitions: mỗi partition giữ thứ tự nội bộ, nhưng consumer đọc gộp từ 3 partitions thì thứ tự toàn cục không còn.
 
-with three partitions to show different behaviors,
+Đối chứng: đọc `first_topic` (1 partition) với `--from-beginning` sẽ ra đúng thứ tự gửi 100%. Muốn scale (nhiều partition) thì phải chấp nhận mất thứ tự toàn cục — đánh đổi cốt lõi của Kafka.
 
-if the data is distributed or not.
+## 4. Hiện Partition, Key, Timestamp Với `--formatter`
 
-So if we have a look now,
+Output mặc định chỉ in value — không biết message từ partition nào. Thêm formatter để soi:
 
-the second topic is created
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic second_topic --from-beginning \
+  --formatter kafka.tools.DefaultMessageFormatter \
+  --property print.timestamp=true \
+  --property print.key=true \
+  --property print.value=true \
+  --property print.partition=true
+```
 
-using the "kafka topics" command,
+* `--formatter kafka.tools.DefaultMessageFormatter` — bộ format output của consumer.
+* `print.timestamp=true` — in thời điểm message được ghi.
+* `print.key=true` — in key (mặc định ẩn, bài Producer ta gửi key null nên cột này sẽ là `null`).
+* `print.value=true` — in value.
+* `print.partition=true` — in số partition chứa message. Đây là flag quan trọng nhất bài này.
 
-and we're going to consume that topic.
+Output mẫu:
 
-So right now we don't consume the first topic yet.
+```
+CreateTime:1700000000000  Partition:1  null  hello world
+CreateTime:1700000001000  Partition:1  null  one
+CreateTime:1700000002000  Partition:2  null  my name is Stephane
+CreateTime:1700000003000  Partition:2  null  two
+CreateTime:1700000004000  Partition:0  null  it's working
+CreateTime:1700000005000  Partition:0  null  three
+```
 
-Right now let's just consume the second topic.
+Đọc bảng này, mọi thắc mắc ở mục 3 được giải đáp: trong partition 1, `hello world` đứng trước `one` — đúng thứ tự; trong partition 2, `my name is Stephane` trước `two` — đúng thứ tự. Chỉ khi gộp 3 partitions lại mới thấy "lộn xộn". Trên UI Conduktor bạn cũng kiểm chứng được bằng cách lọc theo partition (Topics → `second_topic` → filter Partition 0 → chỉ còn 2 message).
 
-So when we launch this "console consumer" command,
+## Cạm Bẫy Thường Gặp
 
-as you can see the second topic is being consumed
+* **Consumer chạy mà trống trơn.** Kiểm tra ngay: có quên `--from-beginning` không? Producer đã gửi gì sau khi consumer chạy chưa?
+* **Hoảng vì message "sai thứ tự".** Với topic nhiều partition, đó là hành vi đúng. Cần thứ tự toàn cục cho một thực thể (một user, một đơn hàng) thì dùng key để pin về cùng partition.
+* **Mang `RoundRobinPartitioner` lên production.** Nhắc lại: chỉ dùng để demo. Production để Kafka tự batch theo sticky partitioner mặc định.
+* **Đọc topic nhiều partition bằng một console consumer rồi kết luận throughput thấp.** Một consumer đọc gộp nhiều partition không đại diện cho tốc độ thật — throughput thật đến từ consumer group nhiều consumer (bài sau).
 
-but nothing happens.
+## Kết Luận
 
-That's because we haven't sent any messages into the topic,
+Tóm một câu: **`kafka-console-consumer.sh --topic <tên>` đọc message mới, thêm `--from-beginning` để đọc từ đầu, thêm `--formatter ... --property print.partition=true` để thấy thứ tự per-partition — và chính output đó chứng minh thứ tự toàn cục không tồn tại trên topic nhiều partition.**
 
-and you will observe the same behavior.
-
-So if I do the same command with the first topic,
-
-as you can see, still no messages are being consumed
-
-because we consume from right now,
-
-not from the previous messages,
-
-but we'll see how to consume from the beginning
-
-in a few seconds.
-
-Let's do it again.
-
-We are going to consume right here,
-
-and I'm going to start a command
-
-in the bottom to start producing.
-
-So I have my consumer on top and my producer in the bottom.
-
-You can open a different terminal for you,
-
-for me, it's a shortcut,
-
-Command, Shift, D for my special terminal or school item.
-
-But you can just open another terminal window
-
-and achieve the exact same behavior.
-
-Let's do a console producer,
-
-and we're going to pass in a few important things.
-
-So number one, we produce to the second topic,
-
-the topic we just created.
-
-And number two, we pass in a producer property
-
-called the "partitioner" class,
-
-and this is called a "RoundRobinPartitioner".
-
-The reason I'm using this round robin partitioner
-
-is because I want to produce to one partition at a time,
-
-and change every partition.
-
-If you do not use this round robin partitioner,
-
-There have been
-
-so many optimizations built in into Kafka right now
-
-that you will keep on producing to the same partition
-
-up until you send about 16 kilobytes of data,
-
-and then you will switch partition,
-
-which is very difficult to demonstrate
-
-as a teaching mechanism
-
-but is great for production settings.
-
-But because we are learning Kafka,
-
-and I want to show you what happens
-
-when you produce to multiple partitions,
-
-I'm going to be using this round robin partitioner.
-
-But, again, do not use this in production.
-
-This is most likely
-
-the most inefficient partitioner you can ever find.
-
-So we are in this round robin partitioner,
-
-and now if I just send a message, "Hello World.
-
-My name
-
-is Stephane.
-
-It's working."
-
-As you can see, while we see the messages appear
-
-in the console consumer.
-
-So that's pretty cool.
-
-So to just stop a consumer, you do Control, C,
-
-and, again, if I run the same command and press "Enter",
-
-as you can see, nothing happens
-
-because you need to actually be sending messages
-
-again to the topic.
-
-So
-
-"one",
-
-"two",
-
-and "three".
-
-And, of course, these messages are appearing in my consumer.
-
-So you may be asking me,
-
-"How do we consume from the beginning?"
-
-Well, there is an option called "Consume from beginning".
-
-So let's run this right now
-
-and press "Enter".
-
-So as you can see, we have the messages appearing.
-
-So all the messages I sent are here, there's six messages,
-
-but it turns out that they're not in the same order
-
-I sent them.
-
-So as you can see,
-
-the "three",
-
-for example,
-
-and the "two" were out order from the "one".
-
-But that's actually normal.
-
-It's because I have three partitions.
-
-And so the data is only read in order by partition.
-
-I will show you this in a second
-
-to show you the partition number
-
-so we can observe that behavior,
-
-but for now, just accept this.
-
-And if you
-
-just do
-
-consume the first topic instead
-
-from the beginning
-
-you're going to find all the messages I've sent in order
-
-because there's only one partition.
-
-And because there's one partition,
-
-you will have everything in order but you don't scale.
-
-In Kafka you want to scale,
-
-and so therefore you need multiple partitions,
-
-and the producer will produce to different partitions.
-
-And we will consume from different partitions
-
-with different consumers at the same time,
-
-another behavior we'll see in the next lecture.
-
-So to go back to our example with the second
-
-topic with three partitions,
-
-let's go ahead and try to display the partition number.
-
-So for this, we have this entire command right here
-
-that I'm going to describe to you in a second.
-
-And so in here what we do
-
-is that we are actually going to
-
-use a formatter,
-
-and the formatter is using the default message formatter.
-
-And this is to format the output of the CLI command.
-
-And first property is "print timestamp true"
-
-to know when the message get received.
-
-Second is "print key true" to print the key
-
-because we don't see the key right now
-
-in the default console consumer.
-
-"Print value true" to also get the value of course
-
-and "print partition true"
-
-to get the partition number the message got assigned to.
-
-Finally, we use "from beginning"
-
-to read the messages from the beginning.
-
-So let's press "Enter".
-
-And we have some interesting information.
-
-So now it makes more sense as to the output we got
-
-because well, the message, "My name is Stephane."
-
-get assigned to partition 2,
-
-and the message "two" get assigned to partition 2,
-
-and so therefore I see them in order
-
-from within the partition 2.
-
-And then "It's working." and the message, "three"
-
-gets sent to partition 0,
-
-and "Hello Wold." and "one" gets sent to partition 1.
-
-So, again, remember that we get ordering per partition,
-
-and that makes sense.
-
-And this is why it's good to remember this in Kafka.
-
-You don't get full ordering because that makes no sense.
-
-You get ordering per partition.
-
-And this command we just ran allows you to see this.
-
-And this is similar if you went into the UI
-
-and you are looking at the topic called "Second topic".
-
-So let's refresh this page and look at "Second topic".
-
-And you could filter by partition, for example,
-
-and just look at partition 0 and "Apply",
-
-and we'll find only two messages.
-
-And if you click on a specific message right here,
-
-you can look at the metadata,
-
-and you see that it's partition 0 of set 1.
-
-So that's very helpful,
-
-and hopefully that allows you to understand the behavior
-
-of producers and consumers.
-
-And, of course, well, if I keep on producing to my topics,
-
-so
-
-"another one",
-
-"yet another",
-
-and then "last one", as you can see for these messages,
-
-they get sent to partition 1
-
-and then partition 2 and then partition 0.
-
-All right.
-
-So that's it for this lecture. I hope you liked it.
-
-And I will see you in the next lecture.
+Bài tiếp theo chúng ta nâng cấp lên consumer group: chạy nhiều console consumer cùng một `--group` để xem Kafka chia partitions cho từng consumer ra sao, và chuyện gì xảy ra khi số consumer vượt số partition.

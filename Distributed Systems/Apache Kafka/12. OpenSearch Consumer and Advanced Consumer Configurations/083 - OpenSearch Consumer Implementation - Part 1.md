@@ -1,299 +1,175 @@
-Hi, this is Stephane Maarek from Conduktor.
+# OpenSearch Consumer Part 1: Kết Nối Client Và Tạo Index Wikimedia Bằng Java
 
-And in this lecture, we're going to go ahead
+Bài trước (082) bạn đã gõ tay `PUT /my-first-index` trên Dev Tools. Bài này biến thao tác đó thành code Java: viết `createOpenSearchClient()` chạy được cả local lẫn Bonsai, rồi tạo index `wikimedia` bằng `CreateIndexRequest`. Đây là Part 1 trong chuỗi 6 parts — chỉ lo kết nối và index, chưa đụng tới Kafka.
 
-and implement our open search consumer.
+---
 
-So let's click on open search consumer
+## 1. Vấn đề: Code Kết Nối OpenSearch Vì Sao Nên Copy, Không Nên Tự Mò?
 
-and we have to start writing some code.
+Không như `KafkaConsumer` chỉ cần 3 dòng properties, `RestHighLevelClient` phải xử lý 2 kịch bản hoàn toàn khác nhau:
 
-So typically what we want
+* Local Docker: `http://localhost:9200`, không auth, không SSL.
+* Bonsai Cloud: `https://user:pass@host`, có basic auth, có SSL.
 
-is to first create an OpenSearch Client,
+Tự viết từ đầu rất dễ sai `HttpHost`, `CredentialsProvider`, `RestClientBuilder`. Cách làm thực tế của senior: **copy block `createOpenSearchClient()` đã test, hiểu nguyên lý, đổi mỗi `connString`**. Bài này đi theo cách đó — không giấu, nhưng cũng không sa đà vào HTTP client internals vì đó không phải kiến thức Kafka.
 
-then we'll create our Kafka Client,
+Khung chương trình Part 1:
 
-then we'll have our main code logic
+```mermaid
+graph TB
+    MAIN["main()"] --> C["createOpenSearchClient()<br/>parse connString"]
+    C --> CHK["indices().exists(wikimedia)?"]
+    CHK -->|chưa có| CRT["indices().create(wikimedia)"]
+    CHK -->|đã có| SKIP["log: already exists"]
+    CRT --> CLOSE["try-with-resources<br/>tự close client"]
+    SKIP --> CLOSE
+```
 
-and then we'll close things.
+Part này chưa có `KafkaConsumer`. Part 2 (084) mới thêm consumer và vòng `poll()`.
 
-So at high level, this is what we want.
+## 2. Cơ Chế: `RestHighLevelClient` Bọc REST Thế Nào?
 
-So to create an OpenSearch Client,
+Java High Level Client là lớp bọc đồng bộ (blocking) quanh REST API bạn đã học:
 
-it's not very interesting for me to just go through that
+| REST tay (082) | Java tương đương (Part 1) |
+|---|---|
+| `GET /` | `RestClient.builder(HttpHost)` + `RestHighLevelClient` |
+| `GET /wikimedia` (check 200/404) | `client.indices().exists(new GetIndexRequest("wikimedia"), RequestOptions.DEFAULT)` → `boolean` |
+| `PUT /wikimedia` | `client.indices().create(new CreateIndexRequest("wikimedia"), RequestOptions.DEFAULT)` |
 
-because this is not Kafka related knowledge.
+Hai điểm Java khác REST tay:
 
-And honestly, the code is quite complicated
+* Mọi gọi network đều ném `IOException` (checked exception) — `main()` phải `throws IOException` hoặc try-catch.
+* Client giữ connection pool — **bắt buộc close**. Cách sạch nhất là try-with-resources để dù success hay exception cũng close.
 
-because sometimes we connect to a secure OpenSearch,
+## 3. Code: Từng Đoạn Trong `OpenSearchConsumer.java`
 
-sometimes not.
+Giả thiết bạn đã có class rỗng từ bài 079, package `io.conduktor.demos.kafka.opensearch`.
 
-So the recommendation is for you to copy this block of code
+### 3.1. Connection string — một biến, hai môi trường
 
-and paste it.
+```java
+// Docker local:
+String connString = "http://localhost:9200";
 
-So this code that I wrote here
+// Bonsai Cloud — comment dòng trên, mở dòng dưới:
+// String connString = "https://user-xxxx:pass-yyyy@host-zzz.bonsai.io";
+```
 
-I will still walk you through it,
+Giải thích: toàn bộ hàm tạo client bên dưới chỉ đọc `connString`. Đổi môi trường là đổi một dòng này, không sửa logic. Đừng hard-code host/user/pass rải rác khắp file.
 
-is to create an open search clients
+### 3.2. `createOpenSearchClient()` — parse URI rồi chọn nhánh auth
 
-also called the RestHighLevelClient.
+```java
+public static RestHighLevelClient createOpenSearchClient(String connString) {
+    URI connUri = URI.create(connString);
+    String userInfo = connUri.getUserInfo(); // null nếu local, "user:pass" nếu Bonsai
 
-So there's a connection string.
+    if (userInfo == null) {
+        // Nhánh đơn giản: Docker local, không security
+        return new RestHighLevelClient(
+            RestClient.builder(new HttpHost(connUri.getHost(), connUri.getPort(), connUri.getScheme())));
+    }
 
-And if you're using Docker,
+    // Nhánh có security: Bonsai Cloud
+    String[] auth = userInfo.split(":");
+    CredentialsProvider cp = new BasicCredentialsProvider();
+    cp.setCredentials(AuthScope.ANY,
+        new UsernamePasswordCredentials(auth[0], auth[1]));
 
-you should connect to http://localhost:9200.
+    SSLContext sslContext = HttpClients.custom()
+        .setDefaultCredentialsProvider(cp)
+        .build()
+        .getSSLContext(); // chi tiết SSL gom gọn ở đây
 
-If you're using Bonsai, I will show you how to edit this
+    return new RestHighLevelClient(
+        RestClient.builder(new HttpHost(connUri.getHost(), connUri.getPort(), connUri.getScheme()))
+            .setHttpClientConfigCallback(hacb -> hacb
+                .setDefaultCredentialsProvider(cp)
+                .setSSLContext(sslContext)));
+}
+```
 
-right after when we start running some code.
+Giải thích từng nhánh:
 
-So then we are extracting some information
+* `URI.create()` tách host/port/scheme/userInfo trong một nốt nhạc. Đừng tự `split("://")` thủ công.
+* Nhánh `userInfo == null` (local): chỉ cần `HttpHost(host, port, "http")`. Đây là nhánh bạn dùng nếu theo bài 080.
+* Nhánh có `userInfo` (Bonsai): tách `user:pass`, nhét vào `BasicCredentialsProvider`, gắn thêm `SSLContext` vì scheme là `https`. Phức tạp hơn 3 lần — lý do bài 080 khuyên dùng Docker khi học.
 
-and then we're building the RestHighLevelClient
+### 3.3. `main()` — tạo client, tạo index nếu chưa có, tự close
 
-based on the proper security here with our security,
+```java
+Logger log = LoggerFactory.getLogger(OpenSearchConsumer.class.getSimpleName());
 
-so it's simple and here with security
+try (RestHighLevelClient openSearchClient = createOpenSearchClient(connString)) {
 
-so it's a bit more complicated.
+    boolean indexExists = openSearchClient.indices()
+        .exists(new GetIndexRequest("wikimedia"), RequestOptions.DEFAULT);
 
-So let's not waste any time on this.
+    if (!indexExists) {
+        CreateIndexRequest createIndexRequest = new CreateIndexRequest("wikimedia");
+        openSearchClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+        log.info("The Wikimedia Index has been created!");
+    } else {
+        log.info("The Wikimedia Index already exists.");
+    }
 
-This is all set up.
+} // try-with-resources tự gọi openSearchClient.close()
+```
 
-So the next thing we have to do now
+Giải thích từng đoạn:
 
-is to actually create this client.
+* `Logger` (SLF4J): từ Part này trở đi mọi quan sát đều qua `log.info`, không `System.out.println`. Log ra `_id`, số records, "offsets committed" ở các Part sau đều nhờ logger này.
+* `try (RestHighLevelClient ...)` — try-with-resources. Khi khối try kết thúc (kể cả exception), `close()` tự chạy, giải phóng connection pool. Code cũ viết `openSearchClient.close()` tay ở cuối hàm rất dễ quên khi exception — đừng dùng.
+* `indices().exists(GetIndexRequest)` trả `boolean`. **Bắt buộc check trước khi create**, vì create index đã tồn tại ném `ResourceAlreadyExistsException` — lần chạy đầu thì OK, chạy lại là crash. Đây chính là lỗi bạn gặp nếu bỏ bước check.
+* `RequestOptions.DEFAULT` — options mặc định (headers, timeout). Mọi gọi High Level Client đều cần tham số này. Cứ truyền `DEFAULT` khi học.
+* `throws IOException` phải khai trên `main()` vì cả `exists()` và `create()` đều ném checked exception.
 
-So we're gonna say RestHighLevelClient.
+### 3.4. Chạy thử và đọc log
 
-In the midst OpenSearchClient
+Chạy lần 1 (index chưa có):
 
-= createOpenSearchClient
+```
+The Wikimedia Index has been created!
+```
 
-with this is the function that I just created right now.
+Chạy lần 2:
 
-We still need to have a lot logger
+```
+The Wikimedia Index already exists.
+```
 
-so let's create a logger.
+Nếu thấy `ResourceAlreadyExistsException` nghĩa là bạn quên bước `exists()`. Nếu thấy `Connection refused` nghĩa là OpenSearch chưa lên (`docker compose ps` / check `:9200`), không phải code sai. Đổi sang Bonsai thì đổi `connString`, chạy lại phải thấy `created` (vì cloud là cluster mới, chưa có index).
 
-So Logger log =
+Verify bằng Dev Tools:
 
-and we'll have an SLA four jLogger.Logger factory of course
+```
+GET /wikimedia
+```
 
-.getLogger
+Trả `200` là Part 1 đạt.
 
-and then OpenSearchConsumer.class.getSimpleName.
+## 4. Bảng So Sánh: Hai Nhánh Client
 
-So we have access to our Logger on this OpenSearchConsumer
+| Tiêu chí | Local (`http://localhost:9200`) | Bonsai (`https://user:pass@host`) |
+|---|---|---|
+| Auth | Không, `getUserInfo() == null` | Basic auth từ URL |
+| SSL | Không | Có, `SSLContext` |
+| Code | ~5 dòng | ~15 dòng |
+| Lỗi điển hình | `Connection refused` (container chưa lên) | `401 Unauthorized` (copy thiếu pass) |
+| Khi nào dùng | Học, test bulk/replay thoải mái | Máy không chạy Docker |
 
-and we have our OpenSearchClient.
+## 5. Pitfalls
 
-So before we go into all the Kafka parts
+* **Bỏ check `exists()` rồi thắc mắc "lần 2 crash".** OpenSearch create là idempotent về ý tưởng nhưng API thì ném exception khi trùng. Luôn check trước.
+* **Quên `throws IOException` / try-catch.** Java không compile. Mọi call High Level Client đều checked.
+* **Không close client.** Chạy vài lần là cạn connection, IDE treo. Dùng try-with-resources như mẫu.
+* **Trộn version client/server.** `opensearch-rest-high-level-client:1.2.4` đi với server `1.x`. Lấy client 2.x là constructor đổi, code mẫu vỡ.
+* **Để lộ Bonsai URL lên Git.** URL chứa full-access credentials. Học xong regenerate. Dùng biến môi trường hoặc file local không commit nếu làm project thật.
+* **Nhầm Dashboards `:5601` với API `:9200` trong `connString`.** Java chỉ nói với `:9200` (hoặc `:443` của Bonsai). Trỏ vào `:5601` là lỗi protocol.
 
-let's first deal a little bit
+## Kết Luận
 
-with how the OpenSearchClient works.
+Tóm một câu: **Part 1 đã có client nói được với cả local lẫn cloud, và index `wikimedia` được tạo idempotent (chạy lại không crash) với resource tự đóng.**
 
-So what I'm going to do is that I'm going to say,
-
-hey, we need to create the index on the OpenSearch
-
-if it doesn't exist already."
-
-So for this, we need to first to first
-
-do our OpenSearch queries
-
-and so to do so we have to use a CreateIndexRequest
-
-to send that request of course.
-
-So we'll name it, a createIndexRequest
-
-and it's going to be a new CreateIndexRequest.
-
-And we need to provide an index name.
-
-For this, we're going to use "wikimedia" as our index name.
-
-And now we need to actually execute that request.
-
-So for this, you do clients.
-
-So openSearchClient.indexes
-
-to do a request on the index domain,
-
-and then you do .create
-
-and this takes a createIndexRequest as a result.
-
-So let's have the createIndexRequest
-
-and then some request options.
-
-And for this, you can just type in default,
-
-DEFAULT and press Enter
-
-and you're good to go.
-
-So this request right here
-
-is going to create the wikimedia index.
-
-So there is an error here.
-
-It says that it can be into a IO exception.
-
-So we are going to add throws IOException to the top.
-
-And this, after this we need to close the OpenSearchClient
-
-so we can do openSearchClient.close.
-
-And this works, but something I like to do even more
-
-is that we can do a try block in Java with a parenthesis.
-
-And in the try block you just pass in the openSearchClient.
-
-And that means that if the try block succeeds
-
-or if it fails at the end no matter what
-
-the openSearchClient is going to be closed by this block.
-
-So it's a bit of a Java magic, but this works.
-
-So, perfect, we're good to go.
-
-So we are doing a CreateIndexRequest.
-
-I'm going to run this code now
-
-(mouse clicking)
-
-and it exited properly.
-
-So let's maybe add a little bit of logging.
-
-So log.info and then "The Wikimedia Index has been created."
-
-Let's run this again.
-
-And we're getting an exception now.
-
-Well, because the resource already exists.
-
-So we need to have a little bit more logic in here.
-
-So we need to check whether or not the things exist.
-
-So for this, there is Client.indexes.exists
-
-and we need to pass in a getIndexRequest.
-
-So we'll do a new getIndexRequest
-
-and it takes an index as a result, as an input.
-
-So Wikimedia is my index.
-
-And then again, the DEFAULT RequestOptions.
-
-So this returns a boolean
-
-and so I'll call it bool indexExists equals this
-
-and it's not bool it's boolean.
-
-And now I can say if the indexExists,
-
-if it doesn't exist.
-
-So if not indexExists, then run this code
-
-else maybe do log.info "The Wikimedia Index already exists."
-
-So let's run this code right here.
-
-So it says "The Wikimedia Index already exists."
-
-This is good.
-
-And then let's practice running this against Bonsai.
-
-So to do so let's go into the Bonsai URL
-
-and then let's go onto Settings,
-
-not here, excuse me
-
-and go into Access, Credentials.
-
-And in here I have some credentials with full access.
-
-So you copy this entire URL right here
-
-which contains your username, your password, and so on.
-
-And I'm going to regenerate this at the end
-
-so that you don't have access to my credentials.
-
-So you copy this
-
-and you paste this in all the way to the top of your code.
-
-So I will have it here and I will comment this line.
-
-So now a change, I have a long connection string,
-
-based it right from Bonsai.
-
-But this is going to allow me to run this code
-
-right against Bonsai.
-
-So let's run the main again.
-
-And this time,
-
-it should say that we are recreating the Wikimedia Index
-
-because it was not created already on Bonsai
-
-and cool, "The Wikimedia Index has been created."
-
-So once we're there, what we've confirmed is that
-
-we were able to start writing some code
-
-start writing some API codes against OpenSearch
-
-either locally or on Bonsai.
-
-So we're good to go.
-
-And now in the next lecture
-
-we're going to spend some time writing our Kafka consumer
-
-so that we can start processing some data from Kafka
-
-and sending it into ElasticSearch or OpenSearch efficiently.
-
-So that's it for this lecture,
-
-I hope you liked it
-
-and I will see you in the next lecture.
+Bài tiếp theo (084 — Part 2) chúng ta giữ nguyên đoạn này và thêm nửa còn lại: tạo `KafkaConsumer`, `subscribe("wikimedia.recentchange")`, `poll()` từng batch và đẩy mỗi record thành một `IndexRequest` — để dữ liệu chảy end-to-end lần đầu, dù còn thô và chưa an toàn.

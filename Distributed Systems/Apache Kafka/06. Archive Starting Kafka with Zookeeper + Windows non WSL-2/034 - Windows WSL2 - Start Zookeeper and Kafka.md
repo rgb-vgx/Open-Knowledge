@@ -1,163 +1,80 @@
-Okay, so now that's Windows WSL2 is started,
+# [Archive] Windows WSL2: Start Kafka Kèm ZooKeeper (Chế Độ Cũ, Chỉ Để Tham Khảo)
 
-we can install a Kafka Broker with Zookeeper.
+> Bài thuộc section **Archive**: chế độ Kafka + ZooKeeper đã bị loại bỏ từ Kafka 4.0. Nếu bạn học mới hoàn toàn, hãy dùng chế độ **KRaft** ở bài `028` và bỏ qua bài này. Chỉ đọc tiếp khi bạn phải维护 cluster cũ vẫn chạy ZooKeeper.
 
-So it will look like this,
+Bài này dành riêng cho **Windows đã có WSL2 + Ubuntu**. Toàn bộ thao tác chạy **trong terminal Ubuntu** — các lệnh y hệt bài Linux `033` vì WSL2 bản chất là Ubuntu. Điểm cần cẩn thận duy nhất là **phải khớp version Kafka trong đường dẫn config**.
 
-directly running on Windows WSL2.
+---
 
-So for this, it is very similar to the Linux instructions.
+## 1. Mục Tiêu Và Chuẩn Bị
 
-We'll be starting Zookeeper using the binaries
+Hết bài này bạn có: ZooKeeper chạy ở cửa sổ Ubuntu thứ nhất, Kafka chạy ở cửa sổ Ubuntu thứ hai, broker nghe ở `localhost:9092` (từ góc nhìn Ubuntu).
 
-and then starting Kafka in another process
+Điều kiện:
 
-using the binaries, as well.
+- Đã cài Java + Kafka 3.x + PATH trong Ubuntu (bài `027`, nhưng dùng bản 3.x còn ZooKeeper).
+- Mở **2 cửa sổ Ubuntu** (mở app Ubuntu 2 lần, không phải PowerShell), cả hai để mở suốt buổi thực hành.
 
-So let's get started.
+## 2. Bước 1 — Start ZooKeeper (Ubuntu Thứ Nhất)
 
-Okay, so back on Windows,
+Trong cửa sổ Ubuntu đầu tiên:
 
-I'm going to clear my screen,
+```bash
+cd ~/kafka_2.13-3.1.0
+bin/zookeeper-server-start.sh config/zookeeper.properties
+```
 
-and I'm going to apply the exact same instructions as here.
+Lưu ý hay gây lỗi nhất bài này: đường dẫn `kafka_2.13-3.1.0/config/zookeeper.properties` chứa **version Kafka**. Máy bạn tải bản nào thì gõ đúng bản đó — copy lệnh mẫu mà sai version là báo `No such file` ngay. Không chắc thì `ls ~` để xem tên thư mục thực tế rồi gõ lại.
 
-So for this we're going to start Zookeeper first,
+File `zookeeper.properties` này tải kèm sẵn trong Kafka, không cần sửa gì khi học. Đợi log bind port 2181, không ERROR, là thành công. Giữ nguyên cửa sổ.
 
-and to do so, we need to run this command,
+## 3. Bước 2 — Start Kafka (Ubuntu Thứ Hai)
 
-pointing to the configuration file of Zookeeper.
+Trong cửa sổ Ubuntu thứ hai:
 
-So it's very easy.
+```bash
+cd ~/kafka_2.13-3.1.0
+bin/kafka-server-start.sh config/server.properties
+```
 
-We're just going to copy this part right here,
+Cũng kiểm tra version trong đường dẫn như Bước 1 (ví dụ `3.1.0` vs `3.6.0`). Đợi tới `Kafka Server started` là xong.
 
-paste it in, and the only thing that you change
+Verify ở cửa sổ thứ ba:
 
-is the path to the Zookeeper configuration file
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --list
+```
 
-because if I just do press enter right here,
+Không lỗi kết nối là đạt.
 
-I'm going to get an error saying that
+## 4. Bước 3 (Tùy Chọn) — Đổi Nơi Lưu Data
 
-I cannot find this file, okay.
+Ngó hai file cấu hình để biết data nằm đâu:
 
-It's because I have the wrong path.
+```bash
+grep "^dataDir" ~/kafka_2.13-3.1.0/config/zookeeper.properties
+grep "^log.dirs" ~/kafka_2.13-3.1.0/config/server.properties
+```
 
-So, just to clear it,
+Mặc định:
 
-make sure you are using the correct Kafka version
+```bash
+dataDir=/tmp/zookeeper
+log.dirs=/tmp/kafka-logs
+```
 
-in this command right here.
+Muốn giữ data lâu thì sửa hai dòng này sang thư mục ổn định rồi restart cả hai (ZooKeeper trước, Kafka sau). Học thì để mặc định.
 
-So we have kafka_2.13-3.1.0/config/zookeeper.properties,
+## Lỗi Thường Gặp & Cách Fix
 
-which is a file that is downloaded directly
+- **Sai version trong đường dẫn config:** `No such file or directory`. Fix: `ls ~` xem tên thư mục Kafka thực tế, sửa lại version trong lệnh.
+- **Start Kafka trước ZooKeeper:** Kafka thoát vì không tìm thấy ZooKeeper. Fix: đúng thứ tự ZooKeeper trước.
+- **Gõ lệnh trong PowerShell thay vì Ubuntu:** báo không tìm thấy `bin/...`. Fix: mọi lệnh bài này chỉ chạy trong Ubuntu.
+- **Dùng Kafka 4.x:** không còn ZooKeeper. Fix: quay về bài `028` dùng KRaft.
+- **Lỗi mạng cross-boundary (ngoài Ubuntu không kết nối được):** bug IPv6 WSL2. Fix: xem bài `029` (sửa `listeners` trong `server.properties`).
 
-when you download Kafka.
+## Kết Luận
 
-So you press enter, and that's it.
+Vậy là bạn đã dựng được cluster Kafka + ZooKeeper kiểu cũ ngay trong WSL2.
 
-Zookeeper is started in this terminal.
-
-So what I can do now is I can start a new terminal
-
-because we need to run Kafka in a separate terminal.
-
-So we go ahead and scroll down,
-
-and then we're going to open another Shell window
-
-and copy this, okay.
-
-And we will paste it in again here.
-
-So this is going to start Kafka
-
-using the kafka-server-start.sh command,
-
-and we have to point it to server.properties,
-
-which is a properties file
-
-in the configuration of Kafka that we downloaded.
-
-But again I need to change this zero for a one,
-
-just to make sure that we have the correct property file.
-
-So let's press Enter.
-
-And here we go, Kafka is started now,
-
-and we have Zookeeper here as well.
-
-So we have both things started,
-
-and we're good to go.
-
-It's going to be stable on Windows.
-
-And you need to keep both these windows open
-
-to have Kafka up and running.
-
-So this is pretty good.
-
-And one last bit of information is that it swaps.
-
-You can change the Zookeeper to property file,
-
-or you can change the server to property file,
-
-to edit the data dictionary,
-
-the dictionary, the data storage space.
-
-So I'm going to stop Kafka
-
-and stopping Zookeeper, clear my screen; I will show you.
-
-So if you go into your Kafka directory config
-
-and then a zookeeper.properties,
-
-in here we have a dataDir right here, this line,
-
-which is right now /tmp/zookeeper,
-
-which is good enough for what we need, okay.
-
-But you can change it to any space you want on your machine.
-
-And then, if you were to edit these server.properties,
-
-so this is a configuration file of Kafka,
-
-then you scroll down, and you will find
-
-at some point a setting called logs.dirs.
-
-And right now it's pointing to /temp/Kafka logs,
-
-which works for me again.
-
-But you can change this to anywhere you want
-
-on your computer if you wanted to, okay.
-
-Well that's it for this lecture.
-
-We have started Kafka in Zookeeper,
-
-and we need to obviously relaunch the comment
-
-for it to work properly.
-
-But congratulations, you have a stable Kafka version
-
-on Windows WSL2.
-
-All right, that's it.
-
-I will see you in the next lecture.
+Bài tiếp theo (`035`) là trường hợp đặc biệt nhất: chạy Kafka **native trên Windows không qua WSL2** — chỉ nên đọc để biết vì sao không nên dùng.

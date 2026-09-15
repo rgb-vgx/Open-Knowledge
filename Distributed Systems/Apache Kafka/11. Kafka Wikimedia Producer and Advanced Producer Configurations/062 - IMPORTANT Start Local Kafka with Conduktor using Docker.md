@@ -1,155 +1,126 @@
-Hi, this is Stephane Maarek from Conduktor,
+# Dựng Kafka Localhost Bằng Docker: Zookeeper, Broker, Schema Registry Và Conduktor UI Trong Một Lệnh
 
-and in this lecture
+Muốn học Producer nghiêm túc thì bạn cần một Kafka thật trên máy mình: gửi record đi, thấy nó nằm ở partition nào, consumer đọc lại được ngay. Cài tay từng thành phần — Zookeeper, Kafka, Schema Registry, UI — vừa lâu vừa dễ lệch config. Bài này giải quyết đúng một việc: dựng trọn bộ môi trường localhost bằng Docker Compose để từ bài sau chỉ việc code.
 
-we're going to start Kafka and Zookeeper
+---
 
-as well as the Schema Registry and Conduktor platform,
+## 1. Vấn đề: Tại Sao Cần Docker Compose Cho Bài Lab Này?
 
-using something called Docker Compose.
+Từ các phần trước bạn đã chạy Kafka bằng CLI hoặc một broker đơn lẻ. Sang phần Wikimedia Producer, nhu cầu tăng lên:
 
-So, Docker Compose is a way
+- Cần **Kafka + Zookeeper** chạy ổn định ở `localhost:9092`.
+- Cần **Schema Registry** sẵn sàng cho các phần sau (dù phần này chưa dùng tới).
+- Cần **Conduktor Platform** — UI để tạo topic, xem partition, đọc message trực quan thay vì chỉ dùng `kafka-console-consumer`.
 
-for you to start multiple Docker containers,
+Cài riêng từng thứ thì mỗi thứ một lệnh, một file config, một port. Docker Compose gom tất cả vào một file khai báo duy nhất: bốn container, đúng network, đúng biến môi trường, khởi động cùng nhau.
 
-and the reason I'm doing this is that
+> Nếu bạn chỉ muốn Kafka + Zookeeper trần trụi không UI, có thể bỏ qua bài này và dùng CLI như cũ. Nhưng để theo đúng mạch demo (tạo topic bằng UI, soi message bằng UI), hãy làm theo bài này.
 
-because I want us to use a localhost environment
+## 2. Cơ Chế: Docker Compose Khởi Động Gì?
 
-comprised of Zookeeper and Kafka,
+Một file `docker-compose.yml` của Conduktor thường khai báo bốn service:
 
-but I also want to use the Schema Registry,
+| Service | Vai trò | Port quan trọng |
+|---|---|---|
+| `zoo1` | Zookeeper — lưu metadata cluster, chọn controller | `2181` |
+| `kafka1` | Broker Kafka duy nhất ở local | `9092` (client), `29092` (docker internal, tùy file) |
+| `schema-registry` | Schema Registry — quản lý Avro/Protobuf schema | `8081` |
+| `conduktor-platform` | UI quản trị: topic, consumer, broker config | `8080` |
 
-and I also want to use Conduktor platform,
+Khi bạn nhấn Play (hoặc `docker compose up -d`), Docker sẽ pull image nếu chưa có, tạo network chung, rồi start theo thứ tự phụ thuộc. Kafka đăng ký với Zookeeper, Schema Registry trỏ về Kafka, Conduktor trỏ về cả hai. Bạn không phải nối tay bất cứ thứ gì.
 
-and doing the setup without Docker Compose
+## 3. Các Bước Triển Khai Chi Tiết
 
-would be a great, great pain.
+### 3.1. Dọn dẹp Kafka cũ để tránh đụng port
 
-So, I want us to do this,
+Nếu trước đó bạn đang chạy Kafka/Zookeeper bằng CLI (`zookeeper-server-start.sh`, `kafka-server-start.sh`), hãy tắt hết. Broker local chiếm `9092`, Zookeeper chiếm `2181` — để chúng sống song song với container là lỗi phổ biến nhất: producer báo `Connection refused` hoặc `Leader not available` mà không hiểu vì sao.
 
-this way you can follow the lectures,
+### 3.2. Cài Docker và kiểm tra Docker đang chạy
 
-you can skip this step if you just want Kafka
+Cài đúng bản cho hệ điều hành của bạn: Docker Desktop for Mac / Windows, hoặc Docker Engine for Linux. Sau khi cài, mở Docker Desktop và xác nhận engine ở trạng thái Running. Lần đầu pull image Kafka + Conduktor có thể mất vài phút tùy mạng — hoàn toàn bình thường.
 
-and Zookeeper on localhosts without a UI.
+### 3.3. Khởi động bốn service
 
-In that case, you just started using the Command Line,
+Trong thư mục chứa file `docker-compose.yml` của khóa học:
 
-but if you want to follow along with me and use the UI,
+```bash
+docker compose up -d
+docker compose ps
+docker compose logs -f conduktor-platform
+```
 
-stop Kafka and stop Zookeeper,
+Bạn sẽ thấy bốn container ở trạng thái `running`: `zoo1`, `kafka1`, `schema-registry`, `conduktor-platform`. Trong log của Conduktor, khi thấy dòng báo platform đã started là thành công.
 
-so that they're not running,
+Để dừng khi không dùng nữa:
 
-and then you go to the Docker website
+```bash
+docker compose stop
+docker compose down
+```
 
-where you can install Docker for Mac,
+### 3.4. Đăng nhập Conduktor UI
 
-Docker for Windows, or Docker for Linux.
+Mở trình duyệt vào:
 
-And when you're done with the installation
+```text
+http://localhost:8080
+```
 
-please make sure that Docker is running,
+Thông tin đăng nhập mặc định được khai báo sẵn trong file Compose:
 
-and when Docker is running, you'll see something like this.
+```text
+Email:    admin@conduktor.io
+Password: admin
+```
 
-So, you may not have as much data as me,
+Vào mục Console, bạn sẽ thấy nó đã kết nối sẵn tới local Kafka cluster. Từ đây có thể tạo topic, xem partition, đọc message, soi broker config — mọi thứ bạn từng làm bằng CLI giờ có UI.
 
-but you'll see that Docker is running and we're good.
+### 3.5. Kiểm tra Kafka vẫn reachable từ code và CLI
 
-And then from this page, you're gonna click on Services,
+UI chỉ là lớp nhìn. Producer Java của bạn vẫn kết nối như bình thường:
 
-the two chevrons here, to play,
+```java
+props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+```
 
-and it's going to download the containers,
+Và CLI vẫn dùng được song song:
 
-and then it's going to start them.
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --list
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic wikimedia.recentchange
+```
 
-So, I've already downloaded them,
+Nếu cả UI và CLI đều thấy cùng một cluster, môi trường của bạn đã chuẩn.
 
-so it's going to be a little bit quicker,
+## 4. Code Và Config Tham Khảo
 
-and I will show you in a second.
+Không có code Java trong bài này, nhưng hãy ghi nhớ ba hằng số sẽ dùng xuyên suốt section:
 
-So, we have here, these four services that are running.
+```bash
+# Broker cho producer/consumer
+BOOTSTRAP_SERVERS=127.0.0.1:9092
 
-Okay, we see the Conduktor platform,
+# UI quản trị
+CONDUKTOR_URL=http://localhost:8080  # admin@conduktor.io / admin
 
-the Kafka Schema Registry, Kafka1, and Zoo1.
+# Zookeeper (hầu như không cần đụng tới trực tiếp)
+ZOOKEEPER=127.0.0.1:2181
+```
 
-So, this starts everything for you,
+## 5. Safe / High-Throughput Preset Liên Quan
 
-and this comes preconfigured,
+Bài này chưa đụng tới `acks`, `retries` hay `compression.type`. Nhưng có một nguyên tắc môi trường ảnh hưởng trực tiếp tới độ safe ở bài sau: **local chỉ có 1 broker**, nên `replication.factor=1` và `min.insync.replicas=1`. Đừng bê nguyên preset production (`replication.factor=3`, `min.insync.replicas=2`) vào local — producer với `acks=all` sẽ báo `NotEnoughReplicasException` vì không đủ replica để ack.
 
-and then, if you go under your logs
+## 6. Cạm Bẫy Thường Gặp
 
-for the Conduktor platform,
+- **Đụng port 9092 / 2181 / 8080.** Triệu chứng: container restart liên tục hoặc producer không connect được. Cách fix: tắt Kafka CLI cũ, tắt ứng dụng đang chiếm 8080, rồi `docker compose up -d` lại.
+- **Quên pull image lần đầu rồi tưởng treo.** Lần đầu tải vài trăm MB. Hãy xem tab Images/Containers trong Docker Desktop để biết tiến độ, đừng Ctrl+C giữa chừng.
+- **Sửa password trong Compose nhưng đăng nhập bằng password cũ.** Credential nằm trong file Compose. Đổi ở file thì phải `docker compose up -d --force-recreate` thì container mới nhận.
+- **Nhầm bootstrap address trong container vs ngoài host.** Code chạy trên máy host thì dùng `localhost:9092` / `127.0.0.1:9092`. Địa chỉ dạng `kafka1:29092` chỉ dùng cho container nói chuyện với nhau bên trong Docker network.
+- **Để Docker ngủ (pause) trên laptop rồi producer timeout hàng loạt.** Khi máy sleep, broker trong container cũng đứng. Dậy lại thì `delivery.timeout.ms` có thể đã hết — đơn giản là restart producer.
 
-you should see something like this,
+## Kết Luận
 
-which means that Conduktor is running.
+Tóm lại một câu: **Docker Compose cho bạn một Kafka localhost hoàn chỉnh (Zookeeper + Broker + Schema Registry + Conduktor UI) trong một lệnh, để từ bài sau mọi demo producer đều chạy trên cùng một môi trường thống nhất.**
 
-So, back into your web browser.
-
-Now, how do you access Conduktor?
-
-Well, the access Conduktor badge is going
-
-to localhost Port 8080,
-
-and by refreshing it, you have this page,
-
-the login is admin@conduktor.io
-
-and the password is admin.
-
-And this is how you connect to Conduktor.
-
-So, you can find the password in here.
-
-So, if you scroll down in Docker Compose,
-
-excuse me, and you look at the bottom,
-
-you will find that we set the admin@conduktor.io
-
-as the admin email, and admin as the password.
-
-So, now we have this running.
-
-So, we are on localhost 8080.
-
-This is where Conduktor is normally going to be running,
-
-and by default, if you're go into console,
-
-you're connected to my local Kafka cluster,
-
-which has been preconfigured,
-
-and you can do anything you want from there.
-
-On top of it, you are able to connect
-
-to Kafka on port 80, on port 9092, just as usual.
-
-So, you can do everything you've done with the CLI so far,
-
-as well as use the Conduktor UI but on localhost.
-
-So, it's a bit of a more involved setup
-
-but it's good for you to see a Docker setup, as well.
-
-So, once you've done that,
-
-you're good to go to the programming section,
-
-and I will be running everything
-
-against my localhost so you can follow along.
-
-All right, that's it.
-
-I hope you liked it, and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ lấy "nguyên liệu" thật cho producer: stream thay đổi real-time của Wikimedia — một nguồn dữ liệu throughput cao, JSON text, chảy liên tục khoảng vài chục message mỗi giây, lý tưởng để demo mọi config producer phía sau.

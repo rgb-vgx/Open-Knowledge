@@ -1,235 +1,97 @@
-Hi, this is Stephane from Conduktor.
+# Schema Registry: Người Gác Cổng Giữ Cho Dữ Liệu Kafka Không Vỡ Theo Thời Gian
 
-And in this lecture,
+Bạn có topic `orders` với 5 teams cùng ghi vào. Một ngày đẹp trời, team Thanh Toán đổi field `amount` từ string sang integer cho "gọn", team khác đổi `user_id` thành `userId` cho "hợp convention". Không ai báo ai. Sáng hôm sau 3 consumers crash hàng loạt vì deserializer fail, dashboard sai số, job Streams dừng. Kafka có ngăn được không? Không — vì broker chỉ thấy bytes.
 
-I'm going to show you what is the schema registry
+**Schema Registry** sinh ra để ngăn thảm họa đó từ trước khi dữ liệu kịp vào Kafka.
 
-and why we need it.
+---
 
-So, Kafka is very efficient because it takes bytes
+## 1. Khi Nào Bạn Bắt Buộc Cần Schema Registry?
 
-as an input and then publishes them to consumers.
+Cần ngay khi **nhiều hơn một team (hoặc nhiều hơn một version code) cùng đọc/ghi một topic**, hoặc khi schema có khả năng tiến hóa:
 
-Okay, so there is no data verification done.
+* Producer thêm/xóa/đổi tên field, đổi kiểu dữ liệu theo thời gian.
+* Consumer nhiều version khác nhau cùng đọc một topic (mobile v1, v2, backend mới/cũ).
+* Pipeline dài: Connect -> Kafka -> Streams -> Connect -> warehouse. Một mắt xích đổi format là sập cả chuỗi.
 
-Your producers just produces a series of zeros and ones
+Ngược lại, nếu bạn làm demo một mình, một producer một consumer, schema cố định JSON tự do — chưa cần Registry cũng chạy được. Nhưng hãy coi đó là nợ kỹ thuật: càng để lâu, chi phí gắn governance càng đắt.
 
-and then your consumers read these zeros and ones.
+Quy tắc một câu: **topic càng nhiều người dùng, dữ liệu càng cần sống lâu, thì càng cần Schema Registry sớm.**
 
-And then the producer to produce these zeros and ones
+## 2. Vì Sao Broker Kafka Không Thể Tự Kiểm Tra Dữ Liệu?
 
-they will use a serializer and the consumer to consume them,
+Đây là điểm nhiều người thắc mắc: "Sao Kafka không validate luôn cho tiện?"
 
-they will use a deserializer.
+Câu trả lời nằm ở triết lý hiệu năng của Kafka:
 
-But what if the producers starts sending bad data?
+1. **Broker chỉ thấy bytes, không parse.** Producer serialize object thành mảng bytes (`zeros and ones`), broker nhận và phân phối bytes đó mà không đọc hiểu, thậm chí không load vào memory (cơ chế **zero-copy**). Nhờ vậy Kafka đạt throughput hàng GB/giây.
+2. **Nếu broker phải parse + validate từng message**, nó sẽ tốn CPU, tăng latency, mất đi lợi thế tốc độ — Kafka sẽ biến thành database kiểm tra ràng buộc, không còn là log streaming nhanh nữa.
+3. Vì vậy **validation phải tách ra component riêng**: Schema Registry. Producer/Consumer nói chuyện với Registry để lấy schema và kiểm tra, broker vẫn giữ vai trò "người đưa thư mù" siêu nhanh.
 
-For example, a different format.
+Hiểu đúng: **Kafka nhanh chính vì nó không hiểu dữ liệu của bạn. Schema Registry tồn tại để bù lại phần "hiểu" đó mà không làm Kafka chậm đi.**
 
-Or what if the fields get renamed?
+## 3. Kiến Trúc: Producer, Consumer Và Registry Phối Hợp Ra Sao?
 
-What if the data format changes from one day to another?
+```mermaid
+graph LR
+    P[Producer<br/>Avro Serializer] -->|1. gửi schema nếu chưa có<br/>2. validate| SR[(Schema Registry)]
+    SR -->|schema OK| P
+    P -->|3. gửi Avro bytes<br/>schema externalized| K[(Kafka Topic<br/>chỉ chứa bytes + schema id)]
+    K -->|4. đọc Avro bytes| C[Consumer<br/>Avro Deserializer]
+    C -->|5. lấy schema theo id| SR
+    SR -->|schema| C
+    C --> T[(Targets<br/>DB / Dashboard / App)]
+```
 
-Then on-consumers will break
+Luồng chi tiết:
 
-because they are not aware of this
+**Phía Producer (ghi):**
 
-they expect a specific deserializer
+1. Trước khi gửi, Producer kiểm tra schema của record với Registry (qua `AvroSerializer`). Nếu schema chưa đăng ký, nó đăng ký mới.
+2. Registry kiểm tra **compatibility** với các version cũ của cùng subject (ví dụ `demo-schemaregistry-value`). Không tương thích thì **reject ngay, dữ liệu không bao giờ tới Kafka**.
+3. Nếu đạt, Producer chỉ gửi **Avro bytes gọn nhẹ + schema id (vài bytes)** vào Kafka, không gửi cả schema cồng kềnh theo từng message. Đây là lý do payload Avro qua Registry nhỏ hơn JSON thuần rất nhiều.
 
-and then they will crash on runtime
+**Phía Consumer (đọc):**
 
-because while the deserializer is failing.
+4. Consumer đọc bytes từ Kafka, thấy schema id đi kèm.
+5. Deserializer hỏi Registry lấy schema tương ứng id đó, rồi giải mã thành object. Consumer nhiều version khác nhau vẫn đọc được nhờ quy tắc compatibility.
 
-That means you need a schema registry.
+### 3.1. Ba định dạng schema được hỗ trợ
 
-We need data to be self describable.
+| Format | Đặc điểm | Khi nào chọn? |
+|---|---|---|
+| **Avro** | Chuẩn mặc định, gọn, hỗ trợ evolution tốt, cộng đồng Kafka dùng nhiều nhất | Mặc định khi chưa có lý do đặc biệt |
+| **Protobuf** | Gọn, mạnh về cross-language (gRPC stack), evolution tốt | Hệ microservices đa ngôn ngữ, đã dùng gRPC |
+| **JSON Schema** | Dễ đọc, dễ debug, tương thích với JSON hiện có | Team mới chuyển từ JSON thuần, cần gắn governance dần dần |
 
-We want to be able to evolve data over time
+Cả ba đều hỗ trợ kiểm tra **backward / forward / full compatibility** — bài 102 sẽ thấy tận tay thế nào là "compatible".
 
-without breaking the downstream consumers.
+### 3.2. Có pipeline và không có pipeline Registry khác nhau thế nào?
 
-So we need schemas and a schema registry.
+| Không có Registry | Có Registry |
+|---|---|
+| Producer gửi gì Kafka nhận nấy, sai format phát hiện lúc consumer crash | Sai format bị chặn ở Producer, consumer không bao giờ thấy dữ liệu bẩn |
+| Đổi tên field = sập downstream không báo trước | Đổi field phải qua kiểm tra compatibility, vỡ thì báo lỗi ngay lúc đăng ký schema |
+| Mỗi message mang full JSON keys lặp lại, tốn dung lượng | Mỗi message chỉ mang values + schema id, schema lưu một lần ở Registry |
 
-And schema describe how the data looks like.
+## 4. Cảnh Báo Vận Hành Không Thể Bỏ Qua
 
-So, what if the Kafka Brokers themselves were verifying
+Schema Registry một khi đưa vào là thành **critical component**:
 
-all the messages they receive?
+* **Phải high-availability.** Registry sập thì Producer mới không đăng ký schema được, Consumer mới không giải mã được. Coi nó quan trọng như chính Kafka cluster.
+* **Producer/Consumer đều phải sửa code** (đổi sang Avro/Protobuf Serializer/Deserializer + config `schema.registry.url`). Đổi xong code thực tế dễ dùng hơn, nhưng phải lên kế hoạch migrate, không thể "bật một cái là xong".
+* **Có learning curve.** Avro schema (record, fields, types, defaults) hay Protobuf IDL đều cần học. Đừng đánh giá thấp thời gian team làm quen.
+* **Bản quyền cần lưu ý:** Schema Registry của Confluent là **source-available, không phải open-source thuần**. Có các alternative open-source khác trong hệ sinh thái, nhưng Confluent là chuẩn phổ biến nhất trong khóa này.
 
-It would break what Kafka, what makes Kafka so good
+## Cạm Bẫy Thường Gặp
 
-because Kafka doesn't even read or parse your data.
+* **Nghĩ "dữ liệu nhỏ, team nhỏ nên khỏi cần".** Vấn đề schema không tỉ lệ với dung lượng mà tỉ lệ với số người chạm vào topic và tuổi thọ dữ liệu. Topic sống 2 năm với 3 teams thì kiểu gì cũng tiến hóa.
+* **Tự viết validator tay trong mỗi consumer ("if field missing thì bỏ qua").** Kết quả là mỗi consumer một kiểu "tha thứ" khác nhau, dữ liệu bẩn lan khắp hệ thống. Tập trung validation ở một chỗ duy nhất là Registry.
+* **Đổi schema mà không hiểu compatibility levels.** Thêm field bắt buộc không default sẽ phá backward compatibility — consumer cũ crash. Quy tắc vàng: field mới phải có default hoặc optional (chi tiết thực hành ở bài 102).
+* **Để Registry single-node ở production.** Node đó chết là toàn bộ pipeline ghi mới đứng hình. Chạy cluster + backup metadata.
 
-So there is no CPU so it doesn't try to interpret it.
+## Kết Luận
 
-It just takes bytes as an inputs
+Hãy nhớ một câu: **Kafka giữ cho dữ liệu chảy nhanh, Schema Registry giữ cho dữ liệu chảy đúng.** Broker không validate để giữ tốc độ zero-copy, Registry đứng bên cạnh làm người gác cổng: lưu schema, chặn dữ liệu bẩn trước khi vào Kafka, và cho phép schema tiến hóa mà không sập downstream.
 
-without even loading them into memory.
-
-It's called zero copy.
-
-So Kafka just takes in bytes and distributes bytes.
-
-And so as far as Kafka is concerned,
-
-it doesn't care if you have an integer,
-
-a string, whatever you want Kafka just takes it in.
-
-So Kafka cannot do the guard dwell
-
-of being a schema registry.
-
-So instead the schema registry
-
-needs to be a separate components
-
-and the producers and consumers
-
-will need to be able to talk to the schema registry.
-
-The schema registry should be able to reject bad data
-
-before it is sent to Kafka.
-
-And a common data format must be agreed upon
-
-by the schema registry.
-
-So that data format needs to support schema.
-
-It needs to support schemas evolution
-
-to change the schema over time,
-
-and it needs to be lightweight.
-
-So you have schema registry
-
-and then you Apache Avro as the data format.
-
-But now you also have Protobuf and JSON schemas
-
-also supported by the schema registry.
-
-So if you look at a pipeline without a schema registry,
-
-it looks like this.
-
-Source, sensor producers sends to Kafka,
-
-sends to consumer, sends to targets.
-
-Here, we don't have a concept of schemas.
-
-But if we have a schema registry, things will change.
-
-So, the schema registry will store the schemas
-
-for your producer and your consumer.
-
-It will be able to enforce backward forward
-
-and full compatibility on topics.
-
-If you want to evolve your schemas
-
-and you can decrease the size of the payload
-
-sent to Kafka.
-
-How? Let me show you.
-
-So we have Kafka now, and we have also a schema registry
-
-that is separate components.
-
-Now the producer before sending to Kafka,
-
-will send the schema in the schema registry
-
-if this schema is not yet inserted.
-
-Then the schema registry is going to validate
-
-the schema itself with Kafka.
-
-And then if all good,
-
-then the producer is going to send avro data to Kafka.
-
-But the schema is externalized in the schema registry.
-
-Now, when a consumer reads data from Kafka,
-
-it's first going to receive avro data,
-
-and the deserializer will say,
-
-well, you need a schema to read the data with.
-
-So the consumer is going to retrieve the schema
-
-from the schema registry.
-
-The consumer can now produce your object
-
-and you can write to your targets.
-
-So, this one little optimization actually is very efficient
-
-and very useful.
-
-So using a schema registry has a lot of benefits
-
-but it implies you need to set it up well,
-
-make sure it's highly available because it becomes
-
-a critical component of your architecture.
-
-And then you need to of course change the producer
-
-and consumer code but actually,
-
-it becomes even easier to use them.
-
-Apache Avro as a format is awesome
-
-but has a learning curve.
-
-And you can also learn alternatively Protobuf or JSON schema
-
-but nonetheless, you have to learn something.
-
-The schema registry is distributed by confluent.
-
-For example, it's free and source available.
-
-And that means it's not open source
-
-but the source is available.
-
-A little bit different.
-
-And there are other open-source alternatives
-
-that may exist out there in the wild
-
-but I don't have references here.
-
-Okay?
-
-Now, it takes time to set up a schema registry
-
-and we don't cover the usage
-
-in this course of the schema registry
-
-but we're still going to do a small demo.
-
-Okay?
-
-So hopefully you understand the need of a schema registry
-
-and I will see you in the next lecture for a demo.
+Bài tiếp theo chúng ta làm thật: **tạo topic `demo-schemaregistry`, đăng ký Avro schema v1, produce thử dữ liệu đúng/sai để thấy Registry reject ra sao, rồi evolve lên v2 tương thích.**

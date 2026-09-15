@@ -1,413 +1,89 @@
-Hi, this is Stéphane from Conduktor
+# Dựng Project Kafka-Java Từ Con Số 0: Gradle, JDK 11 Và Dependency Đầu Tiên
 
-and welcome to this lecture.
+Chưa có project chạy được thì mọi bài Producer/Consumer sau đều vô nghĩa. Bài này dựng từ con số 0 một project `kafka-beginners-course` với module `kafka-basics`, khai báo đúng 3 dependency (`kafka-clients`, `slf4j-api`, `slf4j-simple`) và chạy thử `Hello World` để xác nhận môi trường sạch trước khi đụng vào Kafka.
 
-So in this lecture, we're going to set up our Kafka project
+---
 
-with a Java language to start programming against Kafka.
+## 1. Concept: Vì Sao Setup Này Quan Trọng?
 
-And to do so, prerequisites is that
+Ba quyết định môi trường bạn cần chốt ngay từ đầu:
 
-you should have downloaded and
+* **JDK 11.** Khóa này dùng Amazon Corretto 11 (JDK 11 của AWS). Oracle JDK 11 hay JDK 17 cũng thường chạy được, nhưng 11 là version đã được kiểm chứng — dùng đúng để khỏi mất thời gian debug version.
+* **Gradle thay vì Maven.** Code Java sau này giống hệt nhau, chỉ khác file khai báo dependency. Gradle được chọn vì ngắn gọn, ít sai syntax hơn cho người mới.
+* **IntelliJ IDEA Community.** Dùng VS Code hay Eclipse vẫn được, nhưng mọi thao tác demo (New Module, reload Gradle, allow multiple instances cho consumer group) đều làm trên IntelliJ — dùng đúng IDE để follow 1:1.
 
-installed IntelliJ Community IDEA.
+Nguyên tắc tổ chức: project cha `kafka-beginners-course` (GroupId `io.conduktor.demos`, version `1.0-SNAPSHOT`) chứa module con `kafka-basics`. Code học tập nằm hết trong module con, không dùng thư mục `src/main` của project cha.
 
-This is the development environment
+## 2. Code Từng Bước
 
-I'm going to use to program.
+### Bước 1 — Tạo project Gradle + module con
 
-And you can use the one you want, if you wanted to.
+1. Mở IntelliJ IDEA, chọn New Project, phía trái chọn **Gradle**, language **Java**, Project SDK chọn **Corretto 11** (hoặc JDK 11 bạn đã cài).
+2. Đặt tên `kafka-beginners-course`, GroupId `io.conduktor.demos`, ArtifactId `kafka-beginners-course`, Version `1.0-SNAPSHOT`.
+3. Đợi Gradle sync xong, xóa thư mục `src/main` + `src/test` ở project cha (chỉ dùng cho demo tổ chức, không code ở đó).
+4. Right-click project cha, New rồi Module, lại chọn Gradle + Java 11, đặt tên module là `kafka-basics` (GroupId giữ nguyên, ArtifactId `kafka-basics`).
+5. Từ giờ chỉ sửa file `build.gradle` **nằm trong thư mục `kafka-basics`**, đừng nhầm với file của project cha.
 
-If you're a VS Code fan or if you're an Eclipse fan,
+### Bước 2 — Khai báo 3 dependency bắt buộc
 
-you can do this but it will be harder for you
+Mở `kafka-basics/build.gradle`, trong block `dependencies` thêm đúng 3 dòng (lấy từ Maven Central, search `kafka-clients`, `slf4j-api`, `slf4j-simple`):
 
-to follow along with me.
+```gradle
+dependencies {
+    implementation 'org.apache.kafka:kafka-clients:3.1.0'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
+}
+```
 
-Also, we need to install Java 11 JDK.
+Lưu ý hai điểm transcript nhấn mạnh:
 
-So, I like Amazon Corretto 11, so you can Google it
+* Xóa các dòng `testImplementation` mẫu (JUnit) nếu bạn chưa cần test.
+* Nếu copy từ trang Maven Central mà nó ghi `testImplementation`, sửa thành `implementation` cho cả 3 dòng trên.
 
-and find link for Linux, Windows, or Mac, okay?
+Xong thì bấm **Load Gradle Changes** (hoặc nút refresh trong tab Gradle bên phải) để pull dependency về. Kiểm tra: mục **External Libraries** bên trái phải xuất hiện `kafka-clients`, `slf4j-api`, `slf4j-simple`. Không thấy nghĩa là chưa reload.
 
-But if you have, for example,
+### Bước 3 — Class đầu tiên để xác nhận môi trường
 
-the Oracle Java JDK for version 11, it's fine as well.
+Tạo class `io.conduktor.demos.kafka.ProducerDemo` dưới `kafka-basics/src/main/java` (New rồi Java Class, gõ full tên này để IntelliJ tự tạo package):
 
-If you go, as well, for say, version 17,
+```java
+package io.conduktor.demos.kafka;
 
-I think it's good as well, but I know that 11 is working.
+public class ProducerDemo {
 
-This is why I recommend you to install Java 11 JDK.
+    public static void main(String[] args) {
+        System.out.println("Hello world");
+    }
+}
+```
 
-Next is, there's a question sometimes when you start
+### Bước 4 — Chỉnh Build and Run dùng IntelliJ IDEA
 
-with a Java project, people ask me,
+Vào Settings (Preferences trên Mac), Build, Execution, Deployment rồi Build Tools rồi Gradle:
 
-"should I start with Maven or with Gradle?"
+* **Build and run using:** chọn `IntelliJ IDEA` (kinh nghiệm của tác giả: chạy consumer/producer đa instance ổn định hơn).
+* **Run tests using:** giữ `Gradle` là được.
 
-So I prefer to use Gradle in this instance, for this course,
+Apply rồi bấm Run `ProducerDemo.main()`. Thấy `Hello world` trong cửa sổ Run là môi trường đã sạch.
 
-because I find it easier to write and easier to read,
+## 3. Chạy Và Kiểm Tra
 
-and it will lead to less syntax errors
+* Run thành công: console hiện `Hello world`, không báo `ClassNotFoundException` cho `KafkaProducer` hay `LoggerFactory`.
+* Mở External Libraries: thấy `Gradle: org.apache.kafka:kafka-clients:3.1.0`, `slf4j-api-1.7.36`, `slf4j-simple-1.7.36`.
+* Chạy lần 2 vẫn ra kết quả trong cửa sổ Run dạng IntelliJ (không phải Gradle task output dài dòng).
 
-and less errors overall.
+Nếu thiếu log `Hello world` mà báo lỗi slf4j, 99% là bạn quên sửa `testImplementation` thành `implementation` hoặc chưa bấm reload Gradle.
 
-If you certainly wish to use Maven
+## 4. Pitfalls
 
-because you're a Maven expert,
+* **Sửa nhầm `build.gradle` của project cha.** Triệu chứng: reload xong vẫn `cannot resolve KafkaProducer`. Luôn kiểm tra đường dẫn file có `kafka-basics/` ở đầu.
+* **Quên reload Gradle sau khi paste dependency.** IntelliJ không tự pull — phải bấm Load Gradle Changes.
+* **Dùng JDK 17+ rồi lỗi lạ.** Thử về Corretto 11 trước khi nghi ngờ code.
+* **Để Build and run using Gradle mặc định.** Vẫn chạy được bài đơn, nhưng tới bài consumer group chạy 2-3 instance song song sẽ khó `Allow multiple instances` và log rối hơn.
 
-then I have written some instructions on my website,
+## Kết Luận
 
-Conduktor.io/kafka, and then you can find how to
+Tóm lại: **project cha + module `kafka-basics` + 3 dependency `implementation` + Run bằng IntelliJ = nền móng xong.** Từ đây mọi bài sau chỉ việc duplicate class và thêm code Kafka, không đụng tới setup nữa.
 
-create a Kafka project using Maven.
-
-And either way, you know, either if you use Gradle or Maven,
-
-the code will be the same
-
-and your Java project should work the same.
-
-So in this section, what I'm going to do
-
-is that I'm going to set up our project using Gradle
-
-and get back to you.
-
-Okay, so I've opened IntelliJ IDEA
-
-and I'm going to click on New Project.
-
-Now, on the left hand side,
-
-I'm greeted with a couple options.
-
-You may see less, but you should have Gradle as an option.
-
-And then I will choose Java for my Gradle.
-
-For the Project SDK, make sure you select, for example,
-
-Corretto 11, if you've installed JDK 11
-
-through Amazon Corretto, or choose a JDK you just installed
-
-through this dropdown.
-
-For me, I will keep it as Corretto 11.
-
-I'll click on Next, and then you have to give it a name.
-
-So I'll choose kafka-beginners-course,
-
-and then place it on a location on your computer.
-
-In terms of the Artifact Coordinates, you can specify them.
-
-Then for GroupId, I will enter io.Conduktor.demos.
-
-And for the ArtifactId, I will keep it as
-
-kafka-beginners-course, as well as the Version,
-
-I will keep it as 1.0-SNAPSHOT.
-
-So I'll finish it.
-
-And this is creating a new project for me
-
-that I can find right here.
-
-So next, it's gonna take a little bit of time
-
-for Gradle to synchronize,
-
-but you're going to see a couple of folders appearing
-
-on the left hand side.
-
-Now I like to create subprojects for this course,
-
-just to keep things organized.
-
-So we're actually not going to use this source directory
-
-with main and test.
-
-We're going to actually delete it.
-
-So I'm going to go ahead and delete this one.
-
-And this is just a very special step
-
-for me to set up subprojects, okay?
-
-And then I'll right-click on kafka-beginners-course.
-
-I will do New, and then Module.
-
-And yet again, I'm going to use Gradle Java version 11,
-
-okay?
-
-And next, I'm going to click on Next
-
-and bring a new project, okay?
-
-This one is going to be called kafka-basics
-
-because we'll start to see first the kafka-basics.
-
-The GroupId is still the same
-
-and the ArtifactId is now kafka-basics.
-
-So we'll finish this.
-
-And now you see underneath now of my kafka-beginners-course,
-
-there is a kafka-basics.
-
-Now it's very possible that IntelliJ will keep on recreating
-
-source main and test for me,
-
-but this folder you should not use, okay?
-
-You should use the one within kafka-basics,
-
-and then we have a build.gradle file in it.
-
-So don't get mistaken.
-
-Use the build.gradle file in the kafka-basics directory.
-
-Okay. So next, once I've done that,
-
-I need to first pull in the Kafka dependencies, okay?
-
-So in this build.gradle file,
-
-I'm going to add the Kafka dependencies
-
-so we can start using Apache Kafka.
-
-So to do so, I'm going to go on Google
-
-and I will type "kafka maven", and then enter.
-
-So I get the org.apache.kafka repository on Maven.
-
-I will click on kafka-clients, okay?
-
-Make sure the kafka-clients one.
-
-And then you see, you get some information.
-
-The latest version is 3.1.0.
-
-So I'm going to click on 3.1.0,
-
-and then I will choose the Gradle (Short).
-
-You can choose Gradle long or Gradle (Short).
-
-I'll choose the Gradle (Short).
-
-And I will copy this entire BLOB of text right here
-
-that I will paste.
-
-And so, we need to paste it under our dependencies.
-
-So right underneath the dependencies block right here,
-
-I can paste this one.
-
-So this one represents the kafka-clients.
-
-And we have two more dependencies,
-
-their logging dependencies, that we should be getting.
-
-So to do, we're going to go left
-
-and the first one is called slf4j api.
-
-So, here it is.
-
-So I'm going to take slf4j-api.
-
-Again, take the latest version.
-
-I will pick the version 1.7.36.
-
-I will choose a non-beta one, okay?
-
-So this is good.
-
-I'll use the Gradle (Short)
-
-and I will paste this one here, okay?
-
-And then finally, I need to get SLF4J simple
-
-and this is for, again, logging.
-
-So I'll type in slf4j simple.
-
-And then, again, choose the exact same version.
-
-Copy this and paste it in here.
-
-Great.
-
-I don't need to test my code right now,
-
-so I will remove these implementations of the units.
-
-And one last thing you need to change is that
-
-here it says "testImplementation".
-
-So you copy it and you just have it as "implementation".
-
-So the three dependencies are implementation.
-
-So once we have this, then we've set up our Java project
-
-with Gradle and we need to pull in these dependencies.
-
-So to do so, on the right hand side, you may see here
-
-there is, like, Load Gradle Changes.
-
-You can also access it directly on the right hand side.
-
-There's a Gradle.
-
-And then there is this, like, a refresh button
-
-to reload all Gradle projects.
-
-So what it's going to do is it's going to actually
-
-pull your dependencies as External Libraries, okay?
-
-So how do you know this?
-
-Well, under...
-
-Sorry. Here, External Libraries.
-
-On the left hand side, you should start seeing some Kafka.
-
-So as you can see here,
-
-I have some Kafka clients available to me
-
-and I have slf4j-api and simple.
-
-So this is thanks to reloading the Gradle projects.
-
-So remember, if you don't find a dependency,
-
-remember to reload these Gradle projects.
-
-Okay, so we are almost there.
-
-Now to finish the setup,
-
-I'm going to go under kafka-basics,
-
-source, main, and then Java.
-
-And underneath here, I'm going to create a New,
-
-and then it has to be a Java Class,
-
-and I will name it io.Conduktor.demos.kafka.ProducerDemo.
-
-So this is going to create for me the folder
-
-io.Conduktor.demos.kafka
-
-under class ProducerDemo.
-
-And I have my first class being created.
-
-Now we just need to make sure that it works.
-
-So I'm going to type "main', and then tab.
-
-So this is a little shortcut.
-
-So, you do M-A-I-N, and then you can press enter
-
-or you can press the tab key.
-
-And this is automatically going to generate
-
-the public static void, okay?
-
-Which is, like, the class you need to start
-
-running some code in Java.
-
-And then I'll just do a System.out.println("Hello world").
-
-This is just to make sure that
-
-your Java code is working, okay?
-
-You add a semicolon at the end,
-
-and then we can press one of these arrows.
-
-So I'll press this one, Run 'ProducerDemo.Main()'.
-
-And as you can see, the "Hello World" is being run.
-
-And the last thing I'm going to do is
-
-go under IntelliJ IDEA, Preference,
-
-and then under Build, Execution, Deployment,
-
-under Build Tools, the first one, and Gradle,
-
-I'm going to choose to build and run using IntelliJ IDEA.
-
-This is because I found it to be working better when we go
-
-into deeper into the programming.
-
-So it's just a little trick.
-
-So it should be good, anyway, but I'd like to build and run
-
-using IntelliJ IDEA and the run test using Gradle is fine.
-
-I will apply it.
-
-Press enter.
-
-Test one more time that this is working.
-
-So I'm building it and then it's running it.
-
-And then very soon, perfect.
-
-I get the "Hello World" in this kind of window
-
-and I like this kind of window to get my results, okay?
-
-So that's it for this lecture.
-
-We have set up our Kafka project base.
-
-And then in the next lecture,
-
-we're going to get started by writing our producer.
+Bài tiếp theo chúng ta sẽ viết `ProducerDemo` thật sự: set `bootstrap.servers`, `key.serializer`/`value.serializer`, tạo `KafkaProducer<String, String>`, gửi một `ProducerRecord` vào topic `demo_java` rồi verify bằng console consumer.

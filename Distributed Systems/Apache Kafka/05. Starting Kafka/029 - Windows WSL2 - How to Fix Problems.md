@@ -1,243 +1,124 @@
-Okay, so if you just run Kafka on WSL2,
+# Windows WSL2: Fix Lỗi Mạng Khiến CLI Ngoài Ubuntu Không Kết Nối Được Broker
 
-you may get an issue, at some point in this course,
+Bài này dành riêng cho **Windows WSL2 đã start broker ở bài `028`**. Hiện tượng: chạy `kafka-topics.sh` **trong Ubuntu thì được**, nhưng chạy cùng lệnh từ **PowerShell, Java code, hay Conduktor ngoài Ubuntu** thì dính lỗi `node not available` / timeout — dù broker vẫn đang chạy ngon lành.
 
-based on a networking bug on WSL2.
+Nguyên nhân là bug networking IPv6 của WSL2 + cấu hình `listeners` mặc định. Bài này hướng dẫn cả hai cách fix — chỉ cần một cách có tác dụng là dừng.
 
-So let me show you what the bug is and how to solve it.
+---
 
-So you have started Zookeeper,
+## 1. Tái Hiện Lỗi Để Chắc Bạn Gặp Đúng Bệnh
 
-and then you have started Kafka on WSL2,
+Trong Ubuntu (broker đang chạy), lệnh này thành công:
 
-and everything is working.
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --list
+```
 
-And if you try to launch a, for example,
+Nhưng cùng câu lệnh tương đương chạy từ PowerShell ngoài (sau khi đã cài binaries Windows + PATH), hoặc từ Java client / Conduktor trỏ về `localhost:9092`, lại phun lỗi kiểu:
 
-kafkatopics.sh commands,
+```bash
+# Ví dụ lỗi điển hình
+WARN [AdminClient] - Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+```
 
-and you'll see them later on, okay.
+Nhớ kỹ: lỗi chỉ xảy ra **cross-boundary** (ngoài Ubuntu chọc vào broker trong Ubuntu). Lệnh trong Ubuntu vẫn chạy thì broker không hề hỏng — đừng xóa data hay cài lại Kafka.
 
-In this course, I just wanna show you one of them,
+## 2. Chuẩn Bị: Dừng Broker Trước Khi Sửa
 
-and you say, I want to go to Kafka,
+Mọi cách dưới đây đều sửa file `config/server.properties` nên phải dừng broker trước:
 
-so localhost:002, and you run all these commands,
+1. Quay lại cửa sổ Ubuntu đang chạy Kafka, nhấn `Ctrl + C`.
+2. Đợi log dừng hẳn rồi mới sửa file.
 
-then this is going to work.
+## 3. Cách 1 — Tắt IPv6 + Ghim `listeners` Về `localhost` (Khuyên Dùng)
 
-I see there's no errors and so on.
+Đây là cách đơn giản nhất và đủ cho toàn bộ khóa học.
 
-Everything was working fine.
+Chạy hai lệnh sau trong Ubuntu để tắt IPv6 (có thể hỏi password sudo):
 
-But then if you run these commands outside of the Ubuntu,
+```bash
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+```
 
-so, for example, if you run this command
+Thấy in ra `net.ipv6.conf.all.disable_ipv6 = 1` là lệnh có tác dụng. Nếu lệnh báo lỗi / không hỗ trợ trên WSL của bạn thì bỏ qua cũng được — chỉ cần bước sửa `listeners` dưới đây là đủ (xem mục lỗi thường gặp).
 
-on PowerShell, after having installed the
+Tiếp theo, sửa file cấu hình broker:
 
-Kafka topic utility on your Windows desktop, for example,
+```bash
+nano ~/kafka_2.13-4.0.0/config/server.properties
+```
 
-and try to run this command,
+Tìm dòng `listeners` (thường bị comment bằng `#`), sửa/ thêm thành:
 
-as you can see
+```bash
+listeners=PLAINTEXT://localhost:9092
+```
 
-you're gonna get a lot of these node not available errors.
+Lưu: `Ctrl + X`, `Y`, `Enter`. Verify lại:
 
-So this is because of the issue I wanna tell you about
+```bash
+grep "^listeners" ~/kafka_2.13-4.0.0/config/server.properties
+```
 
-and this will happen
+Phải thấy đúng `listeners=PLAINTEXT://localhost:9092`.
 
-if you run on PowerShell, a command line
+Start broker lại:
 
-if you run from Java, or if you run from Conduktor.
+```bash
+cd ~/kafka_2.13-4.0.0
+bin/kafka-server-start.sh config/server.properties
+```
 
-So all these things we can fix.
+Đợi `Kafka Server started`, kiểm tra log lúc khởi động có dòng `listeners = PLAINTEXT://localhost:9092` — đó là bằng chứng config mới đã ăn. Giờ thử lại lệnh từ PowerShell / Java / Conduktor: hết lỗi `node not available` là xong.
 
-So when you do encounter this bug
+## 4. Cách 2 — Giữ IPv6, Dùng Loopback Address `::1` (Nếu Không Muốn Tắt IPv6)
 
-please go back to this lecture and do the following fixes.
+Nếu bạn không muốn đụng tới IPv6 hệ thống, làm ngược lại Cách 1:
 
-So the option, number one we have
+1. Bật lại IPv6 (nếu đã tắt ở Cách 1):
 
-so we have to stop the broker.
+```bash
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=0
+```
 
-So let me stop the broker right now on this one.
+2. Dừng broker (`Ctrl + C`), mở lại `server.properties`:
 
-So,
+```bash
+nano ~/kafka_2.13-4.0.0/config/server.properties
+```
 
-okay, the broker is now stopped.
+3. Sửa `listeners` thành địa chỉ loopback IPv6 (ngoặc vuông là bắt buộc):
 
-So the first we can do is to disable IPv6.
+```bash
+listeners=PLAINTEXT://[::1]:9092
+```
 
-So this is an IPv6 issue and
+4. Lưu, start broker lại như Cách 1.
+5. Từ giờ mọi client ngoài Ubuntu phải trỏ bootstrap server về `[::1]:9092` thay vì `localhost:9092`:
 
-running these two commands will disable IPv6.
+```bash
+kafka-topics.sh --bootstrap-server "[::1]:9092" --list
+```
 
-So let me clear that thing.
+Cách này lằng nhằng hơn (phải nhớ đổi bootstrap server ở mọi lệnh và mọi đoạn code), nên chỉ dùng khi bạn có lý do riêng phải giữ IPv6.
 
-So you can paste the command in here and then press enter.
+## 5. Khi Cả Hai Cách Đều Không Ăn
 
-You may be prompted for entering your route user password.
+1. Đọc lại trang troubleshooting networking WSL2 trên conduktor.io (link trong video gốc) — WSL update có thể đổi hành vi mạng.
+2. Nếu vẫn bó tay: bỏ chạy broker tay trong WSL2, chuyển sang chạy broker bằng **Docker + Conduktor** (bài `020`). Docker Desktop tự xử lý networking host↔container ổn định hơn nhiều, CLI trong Ubuntu vẫn chọc vào `localhost:9092` bình thường.
 
-Then when this command is run, you can see
+## Lỗi Thường Gặp & Cách Fix
 
-you'll see the net IPv6, conf disable all IPv6 one.
+- **Lệnh `sysctl` báo lỗi / `permission denied`:** quên `sudo`, hoặc kernel WSL của bạn không cho đổi tham số này. Fix: thêm `sudo` phía trước; nếu vẫn lỗi thì bỏ qua lệnh `sysctl`, chỉ sửa `listeners` — nhiều máy chỉ cần vậy là đủ.
+- **Sửa `server.properties` mà broker vẫn log `listeners` cũ:** bạn sửa nhầm file (sai version thư mục) hoặc quên restart broker. Fix: `grep "^listeners"` đúng file vừa sửa, rồi `Ctrl + C` + start lại.
+- **Sửa xong thì cả trong Ubuntu cũng không kết nối được:** gõ sai cú pháp `listeners` (thiếu `PLAINTEXT://`, sai port, sai ngoặc `[::1]`). Fix: copy đúng `listeners=PLAINTEXT://localhost:9092` (Cách 1) rồi restart.
+- **Cách 2 vẫn timeout:** quên đổi bootstrap server sang `[::1]:9092` ở phía client. Fix: client ngoài Ubuntu và client trong Ubuntu lúc này dùng địa chỉ khác nhau — kiểm tra lại từng lệnh.
+- **Nhầm lẫn giữa PowerShell và Ubuntu khi verify:** luôn nhớ broker chạy ở đâu thì verify trong đó trước (`localhost:9092` trong Ubuntu), rồi mới verify cross-boundary từ PowerShell.
 
-So that means that this was run correctly
+## Kết Luận
 
-and you run also the second command,
+Tóm lại: lỗi này không phải do bạn cài sai — đó là bug mạng WSL2. **Cách 1 (tắt IPv6 + `listeners=PLAINTEXT://localhost:9092`)** giải quyết được cho đại đa số học viên.
 
-and by disabling IPv6, we're going to solve that issue,
-
-and it doesn't change your thing for the course.
-
-So when both these things are done, so you will go
-
-and edit the file server, config/server.properties
-
-And in this file, you will scroll down
-
-and you may find the listeners one,
-
-so you edit the listeners and you have plain texts
-
-and then you add localhost 9 0 9 2. Okay.
-
-So you keep it like this.
-
-Then you save this file.
-
-So now this file's been properly edited and
-
-you can verifying by running a cat command
-
-to make sure that indeed
-
-when we go to find the file right here,
-
-listeners equals plain text local host 9 0 9 2.
-
-So we're good.
-
-Now we're going to run again, the Kafka start command.
-
-So we run the Kafka start command,
-
-and we know that things have been properly edited
-
-because if we look at the settings called listeners in here
-
-so you scroll up and find listeners
-
-you see it says plain text, localhost 9 0 9 2.
-
-So we're good.
-
-And then from here, if I run the Kafka Topics command
-
-As you see it it's completed without any error.
-
-So that's fixed my networking issue.
-
-So that's one way of doing things,
-
-and it works fine, if when running.
-
-So let me show you the other errors it can get.
-
-So I'm going to stop this.
-
-If you get an error while running this command
-
-to disable IPv6, then don't worry if it doesn't work,
-
-that means that IPv6 is not enabled
-
-for your VM and that's fine.
-
-And therefore, you just need to do the things that I said
-
-around modifying your "server.properties" file
-
-just to change that configuration.
-
-So this is good.
-
-There's one way of doing things.
-
-And if you prefer not to disable, IPv6
-
-you can do something else.
-
-So in here you can
-
-I'm going to re-enable these networking settings.
-
-So I'll set them to zero and I'll set the other one.
-
-So this is the other one, this one to zero clear.
-
-And I'm going again to edit my server, that properties file.
-
-And for listeners this time
-
-I'm going to go into the recommendation link from here
-
-that we have on Conduktor I.O.
-
-And in listeners, you, instead of having localhost,
-
-you add this, and this is called
-
-the loop back address for IPv6.
-
-So you go back in here and, you, instead of localhost,
-
-So let's edit this,
-
-instead of localhost you have
-
-this loop back address right here.
-
-Then you save your file.
-
-Then you start your server.
-
-So using the same command as before
-
-and now for things to work in your Kafka topics command
-
-your bootstrap server is not localhost anymore.
-
-It is the actual Lu back server,
-
-So what I just copied right now,
-
-press enter and things work again. Okay.
-
-So these are the two main fixes.
-
-If it still doesn't work,
-
-you can look at this page to see how to fix it again.
-
-And if it still doesn't work anymore, okay
-
-if there's still no way to make it work
-
-then what we would suggest is
-
-for you to have a look at running Kafka, not on WSL2
-
-but running Kafka on Windows directly or through Conduktor.
-
-But that's it for this lecture.
-
-I hope you liked it.
-
-This is a troubleshooting error lecture.
-
-I hope you liked it.
-
-And I will see you in the next lecture.
+Section Windows WSL2 tới đây là hết. Bài tiếp theo chúng ta rời phần setup, bắt đầu làm việc thật với Topic, Producer và Consumer trên cluster vừa dựng.

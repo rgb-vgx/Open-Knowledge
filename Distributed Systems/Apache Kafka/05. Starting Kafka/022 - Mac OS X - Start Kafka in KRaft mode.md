@@ -1,109 +1,105 @@
-Okay, so let's go ahead and now start Kafka.
+# Mac: Start Kafka Ở Chế Độ KRaft (Không Cần ZooKeeper)
 
-So the way we do it is that on the Kafka website,
+Bài này dành riêng cho **macOS đã cài binaries ở bài `021`**. Chúng ta sẽ start một broker Kafka thật chạy trực tiếp trên Mac ở chế độ **KRaft** — chế độ mặc định từ Kafka 4.0, không cần ZooKeeper nữa.
 
-under Get Started, you'll find Quick Start
+Nếu broker Docker ở bài `020` của bạn vẫn chạy tốt thì bài này là tùy chọn. Nhưng nên làm một lần để hiểu Kafka khởi động ra sao.
 
-and you scroll down.
+---
 
-So we did get Kafka and we've unzipped it.
+## 1. Mục Tiêu Và Chuẩn Bị
 
-And now we need to first generate a cluster UUID.
+Hết bài này bạn có: 1 broker Kafka chạy foreground trong Terminal, lắng nghe ở `localhost:9092`, dữ liệu lưu ở `/tmp/kraft-combined-logs`.
 
-So for this, we run this command
+Điều kiện tiên quyết:
 
-called KAFKA_CLUSTER_ID= this.
+- Đã làm xong bài `021`: có thư mục Kafka (ví dụ `~/kafka_2.13-4.0.0`) và `kafka-topics.sh` gọi được từ mọi nơi.
+- Đã tắt broker Docker cũ nếu muốn tránh đụng port 9092, hoặc để nguyên và chấp nhận chỉ chạy 1 trong 2.
+- Biết rằng cửa sổ chạy Kafka phải **để mở suốt buổi thực hành** — tắt là broker dừng.
 
-So the best thing to do is to cd into the Kafka directory.
+Tài liệu gốc của các lệnh dưới đây nằm ở trang **Get Started → Quickstart** trên kafka.apache.org. Các lệnh trong bài này bám đúng thứ tự đó.
 
-So make sure you are in the Kafka directory right now.
+## 2. Bước 1 — Vào Đúng Thư Mục Kafka
 
-And then we run this command.
+Mọi lệnh format và start đều dùng đường dẫn tương đối (`bin/...`, `config/...`) nên bắt buộc phải đứng trong thư mục Kafka trước:
 
-So KAFKA_CLUSTER_ID=
+```bash
+cd ~/kafka_2.13-4.0.0
+pwd
+```
 
-and then we'll use the kafka-storage.sh command.
+Kiểm tra nhanh hai file quan trọng còn nguyên:
 
-So we press Enter
+```bash
+ls bin/kafka-storage.sh config/server.properties
+```
 
-and we're going to get a random UUID
+Cả hai đều phải tồn tại. Mất một trong hai là bạn đang đứng nhầm thư mục.
 
-stored in this variable.
+## 3. Bước 2 — Sinh Cluster ID
 
-And next, we need to format the log directory.
+KRaft yêu cầu mỗi cluster có một ID duy nhất. Lệnh sau vừa sinh UUID ngẫu nhiên vừa lưu vào biến môi trường `KAFKA_CLUSTER_ID`:
 
-So we just copy again this command right here
+```bash
+KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+echo $KAFKA_CLUSTER_ID
+```
 
-and press Enter.
+Thấy in ra một chuỗi UUID dạng `8a1f...` là đạt. Lưu ý: biến này chỉ sống trong terminal hiện tại — đừng đóng terminal giữa chừng, nếu đóng thì làm lại từ bước này.
 
-And now all the information
+## 4. Bước 3 — Format Thư Mục Log
 
-is going to be stored in a tmp directory.
+Lệnh này khởi tạo thư mục dữ liệu theo đúng cluster ID vừa sinh:
 
-And then finally, we start the Kafka server.
+```bash
+bin/kafka-storage.sh format --standalone -t $KAFKA_CLUSTER_ID -c config/server.properties
+```
 
-So this is going to start the Kafka server
+Thấy log báo `Formatting ... with metadata ...` và không có ERROR là xong. Hiểu đơn giản: Kafka đang "định dạng ổ cứng" của nó trước khi ghi dữ liệu.
 
-with this file called config/server.properties.
+Muốn biết dữ liệu sẽ nằm ở đâu, ngó nhanh file cấu hình:
 
-So we can have a look at it real quick
+```bash
+grep "^log.dirs" config/server.properties
+```
 
-using the nano command for example.
+Mặc định là:
 
-And this file is the configuration file for Kafka.
+```bash
+log.dirs=/tmp/kraft-combined-logs
+```
 
-So it's a file you would have to modify
+> Nhược điểm của mặc định này: `/tmp` trên Mac có thể bị dọn khi reboot — mất sạch data. Học thì không sao, nhưng muốn giữ data lâu dài thì sửa `log.dirs` sang đường dẫn ổn định. Chỉ cần biết vậy, chưa cần sửa ngay.
 
-if you wanted to have more brokers, et cetera, et cetera.
+## 5. Bước 4 — Start Broker
 
-We don't need right now but you can have a look at it.
+Chạy broker ở foreground:
 
-And there's nothing you need to modify right here.
+```bash
+bin/kafka-server-start.sh config/server.properties
+```
 
-The only thing you should know
+Đợi log chạy một lúc, tới khi thấy dòng `Kafka Server started` (kèm version 4.x) là thành công. Đừng `Ctrl + C`, đừng đóng cửa sổ này.
 
-is that the logs dir is tmp/kraft-combined-logs directory.
+Mở **một Terminal thứ hai** để verify broker đang nghe:
 
-So by default, everything will be written there.
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --list
+```
 
-And so if the tmp file is deleted
+Lần đầu chưa có topic nào nên lệnh trả về rỗng — rỗng mà không báo lỗi kết nối chính là thành công. Muốn chắc hơn thì tạo thử một topic rồi xóa (cách làm chi tiết ở các bài Topic sau).
 
-then you will lose your Kafka data.
+Dừng broker khi không cần nữa: quay lại cửa sổ chạy Kafka, nhấn `Ctrl + C`.
 
-But this is the one thing I would modify
+## Lỗi Thường Gặp & Cách Fix
 
-if you want to have a more robust setup.
+- **`KAFKA_CLUSTER_ID: parameter null or not set` khi format:** bạn mở terminal mới sau bước 2 nên biến môi trường bị mất. Fix: làm lại từ Bước 2 trong cùng một terminal.
+- **`Address already in use` / port 9092 bị chiếm:** broker Docker ở bài `020` vẫn đang chạy. Fix: `docker compose down` trong thư mục stack, hoặc dừng container Kafka trong Docker Desktop rồi start lại.
+- **`java.lang.UnsupportedClassVersionError`:** Java đang dùng không phải 21. Fix: `java --version` để kiểm tra, cài lại Corretto 21 theo bài `021`.
+- **Mất data sau khi restart máy:** do `log.dirs` nằm ở `/tmp`. Đây là hành vi mặc định, không phải bug. Muốn giữ data thì sửa `log.dirs` trong `config/server.properties` sang thư mục khác rồi format + start lại từ đầu.
+- **`command not found: kafka-topics.sh` ở terminal thứ hai:** PATH chưa có hiệu lực ở cửa sổ mới. Fix: mở terminal mới hoàn toàn hoặc `source ~/.zshrc`.
 
-But for now, we're very happy with these defaults.
+## Kết Luận
 
-So let's exit this
+Vậy là bạn đã tự tay sinh cluster ID, format storage và start broker KRaft trên Mac — đúng 3 việc mà Docker trước đây làm hộ bạn.
 
-and we're just going to start the Kafka server.
-
-So now you can do it from this directory
-
-by running this command again.
-
-Press Enter and now Kafka should be started.
-
-And when you're good to go,
-
-it says Kafka Server started right here in the bottom
-
-and you're good to go.
-
-Now, when you have Kafka like this running,
-
-you need to leave a window open
-
-and if you wanted to run some commands,
-
-you will need to open a new window for example
-
-and this new window will be used to run the CLI command
-
-against your Kafka broker.
-
-So congratulations, you have started Kafka.
-
-I hope you liked it and I will see you in the next lecture.
+Bài tiếp theo (`023`) chúng ta xem con đường tắt hơn trên Mac: cài Kafka bằng `brew`, khỏi tải ZIP thủ công.

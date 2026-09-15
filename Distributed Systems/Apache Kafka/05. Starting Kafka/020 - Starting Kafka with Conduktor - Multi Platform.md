@@ -1,237 +1,78 @@
-Okay, so let's start Kafka
+# Khởi Động Kafka Bằng Docker: Một Lệnh Có Cả Broker + UI Conduktor
 
-with Conduktor on Docker.
+Bài này dành cho **mọi OS (Mac, Linux, Windows)**. Đây là cách được khuyên dùng nhất trong khóa học: một lệnh Docker Compose là bạn có sẵn 1 broker Kafka chạy ở `127.0.0.1:9092` kèm UI Conduktor ở `localhost:8080` để quản lý Topic trực quan.
 
-To me, that's the easiest way to start Apache Kafka,
+Xong bài này bạn vẫn cần làm thêm bài cài Kafka binaries + PATH đúng OS để có CLI — bài này chỉ lo phần broker + UI.
 
-but we must first install Docker Desktop.
+---
 
-And the UI will help us speed up development.
+## 1. Chuẩn Bị: Cài Docker Desktop
 
-So after this lecture, still follow how to install Kafka
+Lên Google gõ `install docker desktop`, mở trang chủ Docker và chọn đúng bản:
 
-on your operating system to use the CLI tools.
+- **Mac:** chọn Apple Silicon hay Intel tùy máy.
+- **Windows:** bắt buộc chọn backend **WSL2** khi cài (không dùng Hyper-V). Lý do: Kafka và mọi bài thực hành sau tương thích tốt nhất với WSL2, và đằng nào bạn cũng phải cài WSL2.
+- **Linux:** làm theo hướng dẫn Docker Engine / Docker Desktop cho distro của bạn.
 
-Okay, so on Google, type install docker desktop,
+Cài xong thì khởi động Docker Desktop. Lần đầu chưa có container nào cũng không sao, miễn là Docker đang ở trạng thái Running.
 
-and then click on Get Docker Desktop.
+Mẹo nhỏ trong Settings → Resources: cấp tối thiểu **8 GB RAM và 2 vCPU**. Máy khỏe thì cho hơn, Kafka + Conduktor ăn RAM khá nhiều.
 
-So you will have explanation for all the systems.
+Kiểm tra Docker đã sống chưa:
 
-So if you have a Mac, you can do Apple Silicon,
+```bash
+docker --version
+docker ps
+```
 
-or Intel if you have an older Mac.
+Cả hai lệnh đều chạy không báo lỗi là đạt.
 
-For Windows, you click on download.
+## 2. Lấy Stack `kafka-stack-docker-compose`
 
-And for Linux, you follow these instructions.
+Stack này do Conduktor chuẩn bị sẵn trên GitHub: `conduktor/kafka-stack-docker-compose`. Bạn không cần hiểu hết file compose, chỉ cần đúng file `conduktor-kafka-single`.
 
-So these are well written out, these instructions.
+Các bước thực hiện:
 
-For Windows, though, I wanna tell you something.
+1. Mở repo trên GitHub, tải ZIP hoặc clone nếu quen Git:
 
-So you scroll down, and then there is a question,
+```bash
+git clone https://github.com/conduktor/kafka-stack-docker-compose.git
+cd kafka-stack-docker-compose
+```
 
-should I use Hyper-V or WSL?
+2. Tìm file compose tên `conduktor-kafka-single.yml` (hoặc tên tương tự theo README hiện tại). File này đã cấu hình sẵn 3 thứ: PostgreSQL, Conduktor Console, và 1 broker Kafka ở chế độ KRaft.
+3. Mở README trong repo, kéo tới mục **Single Kafka, KRaft mode + Conduktor** để lấy đúng lệnh start. Về bản chất chỉ là:
 
-Well, it turns out
+```bash
+docker compose -f conduktor-kafka-single.yml up -d
+```
 
-that I would strongly, strongly, strongly recommend
+Lần đầu chạy sẽ tải nhiều image nên hơi lâu. Những lần sau chạy lại sẽ nhanh vì image đã cache.
 
-for you to use WSL.
+## 3. Kiểm Tra: Kafka + UI Có Lên Không?
 
-That's because it comes with better compatibility with Kafka
+1. Mở trình duyệt vào `http://localhost:8080`. Bạn sẽ thấy màn hình đăng nhập Conduktor Console. Tạo tài khoản local (ví dụ `stephane@example.com`) rồi đăng nhập.
+2. Nhìn góc màn hình phải thấy cluster **My Local Kafka** ở trạng thái healthy. Nếu chưa healthy ngay thì đợi 1-2 phút cho broker khởi động xong rồi refresh.
+3. Sanity check nhanh: vào mục Topics → tạo Topic mới tên `demo_topic` → quay lại danh sách thấy `demo_topic` là Kafka đang hoạt động tốt.
+4. Dọn dẹp để có cluster sạch cho các bài sau: xóa `demo_topic` vừa tạo (gõ `DELETE` xác nhận).
 
-and everything we do in this course.
+Từ giờ broker của bạn luôn lắng nghe ở:
 
-And also you are going to use WSL anyway.
+```bash
+# Bootstrap server dùng cho mọi CLI và code sau này
+127.0.0.1:9092
+```
 
-So when you install Docker Desktop, please use WSL.
+## Lỗi Thường Gặp & Cách Fix
 
-Also for the IP version,
+- **Docker Desktop chưa chạy mà đã `docker compose up`:** báo lỗi `Cannot connect to the Docker daemon`. Fix: mở Docker Desktop, đợi icon chuyển xanh rồi chạy lại.
+- **Port 8080 hoặc 9092 đã bị chiếm:** compose báo `port is already allocated`. Fix: tắt service cũ đang chiếm port, hoặc đổi port mapping trong file compose.
+- **Windows dùng Hyper-V thay vì WSL2:** broker vẫn lên nhưng CLI ngoài PowerShell và Conduktor hay chập chờn kết nối. Fix: chuyển Docker Desktop sang WSL2 backend, cài đặt lại theo bài `026`.
+- **Máy yếu, container Conduktor cứ restart:** thường do thiếu RAM. Fix: tăng RAM trong Docker Settings lên 8 GB, chạy lại `docker compose up -d`.
+- **UI khóa học trông hơi khác UI bạn thấy:** bình thường. Conduktor đã update giao diện sau khi quay video, nhưng nút Topics, Produce, Consume vẫn ở vị trí tương đương.
 
-Kafka is going to be installing local host.
+## Kết Luận
 
-So you'll be able to access it
+Vậy là bạn đã có Kafka + UI xịn chỉ bằng một lệnh Docker, không cần đụng tới Java hay file properties. Giữ nguyên stack này chạy xuyên suốt khóa học.
 
-just the way I'm doing it in this course.
-
-So that's very important for you,
-
-to use the WSL 2 backend when installing Docker Desktop.
-
-Then you go ahead and you start Docker Desktop,
-
-and it would look something like this.
-
-You may not have containers right now,
-
-but you'll be good to go to get started.
-
-Something I like to do in the settings
-
-is to click on the Settings here,
-
-and then you want to assign resources.
-
-So under Resources, you can set a different limit
-
-for CPU, memory.
-
-I would recommend at least eight gigabytes of memory
-
-and at least two vCPU.
-
-But if you have a better machine,
-
-you can always assign more,
-
-but at least, yeah,
-
-eight gigabytes of memory and two vCPUs.
-
-Next, head to Google and type kafka stack docker compose,
-
-and you will find on GitHub
-
-our conduktor/kafka-stack-docker-compose repository.
-
-And you should just download it.
-
-So you can download it right here as a ZIP file,
-
-or you can clone it if you know
-
-how to clone things in GitHub.
-
-So I will just download the ZIP to make it simple.
-
-Next, you can open the entire repository.
-
-And the one file we're interested into
-
-is called conduktor-kafka-single.
-
-So this is a Docker composed file
-
-which has a PostgreSQL database.
-
-It has conduktor console right here.
-
-And finally, it has Kafka that we launch.
-
-So you don't need to look at all these.
-
-These are been pre-configured for you,
-
-so no need to worry about it.
-
-The only thing we have to do is to go to the README,
-
-scroll down, and in the README,
-
-we'll have under here a Single Kafka, KRaft mode,
-
-plus Conduktor.
-
-A command to run, and it's called docker compose.
-
-So you're just going to run these command
-
-to start your stack.
-
-So copy this first command right here,
-
-let's copy it, and then you paste it.
-
-And this is going to download a lot of files.
-
-So for me, it was quick
-
-because I've already downloaded them.
-
-But as you can see, everything is starting.
-
-So you're gonna get a lot of log output
-
-after you download the files.
-
-But you should have a Kafka Server started
-
-and then your console is also going to be started.
-
-So when you do this,
-
-you have to wait a little bit of course,
-
-but you're gonna be able to access your UI in here.
-
-So if I go to localhost8080,
-
-I'm greeted to the Conduktor console.
-
-So I already have an account, so stephane@example.com
-
-and my password,
-
-and then you are logged in to the Conduktor UI.
-
-So you should see everything as healthy.
-
-If not, don't worry.
-
-It should, at some point, become healthy.
-
-But the idea is that you have access to your Kafka Cluster.
-
-So you can see on the top right
-
-that you have My Local Kafka cluster.
-
-If you go to Topics,
-
-you'll be able to view the topics as a sanity check
-
-where you could do is create a new topic,
-
-call it demo_topic, press Enter, and go back to Topics.
-
-If you see demo_topic in here being created,
-
-that means that your Kafka is working.
-
-So when you're good to go, you can also,
-
-if you wanted to, delete this topic,
-
-and then we'll have a clean Kafka.
-
-So I'll just type the word DELETE, and we're good to go.
-
-All right, that's it.
-
-So we've successfully launched Apache Kafka on Docker,
-
-and we have a UI as well to manage this,
-
-which is going to be very handy.
-
-This UI, as you see maybe in this course
-
-is going to be a little bit different
-
-from the one that's recorded in the next lectures.
-
-But the reason is that this is a more updated UI,
-
-but the functionality is exactly the same.
-
-And I'm pretty sure that you'll be able to find your way
-
-around where is the produce and the topic buttons
-
-in this course, okay?
-
-But that's it.
-
-I hope you liked it and I will see you in the next lecture.
+Nhưng CLI thì chưa có — bài tiếp theo cho Mac (`021`) chúng ta sẽ cài Java 21 + Kafka binaries và đưa vào PATH để gõ `kafka-topics.sh` từ bất kỳ đâu. Dùng Linux thì nhảy sang bài `024`, Windows WSL2 thì sang bài `026`.

@@ -1,93 +1,66 @@
-Hi, this is Stephane from Conduktor,
+# Kafka KRaft: Khi Kafka Tự Quản Mình, Không Cần Zookeeper Nữa
 
-and in this lecture we're going
+Bài trước bạn đã gặp Zookeeper — bác tổ trưởng sắp về hưu. Bài này gặp người kế nhiệm: **KRaft**, chế độ Kafka tự quản metadata bằng chính giao thức Raft của mình. Vì sao phải thay, thay thì được gì, và bao giờ mới dám dùng production?
 
-to learn about the Kafka KRaft mode.
+---
 
-So a little bit of history in 2020,
+## 1. Vấn Đề Của Zookeeper: Càng To Càng Đuối
 
-the Kafka project started to work
+Zookeeper làm tốt ở quy mô vừa, nhưng khi cluster phình tới **hơn 100.000 partitions** thì Kafka + Zookeeper bắt đầu lộ vấn đề scaling. Metadata đồng bộ giữa hai hệ thống riêng biệt vừa chậm vừa phức tạp, vận hành phải nuôi hai cụm, bảo mật phải lo hai nơi.
 
-on removing the Zookeeper dependency from it.
+Năm **2020**, dự án Kafka khởi động **`KIP-500`**: xóa dependency Zookeeper, đưa quản lý metadata vào chính Kafka bằng giao thức đồng thuận **Raft** — gọi là **KRaft (Kafka Raft)**.
 
-It's called KIP-500.
+## 2. KRaft Mang Lại Những Gì?
 
-Why, well, when Zookeeper was being used,
+Bỏ một hệ thống riêng đi thì lợi ích tới theo chùm:
 
-Kafka clusters were having some scaling issues
+1. **Scale lên hàng triệu partitions.** Không còn nút thắt Zookeeper, trần scaling bay từ 100.000 lên **hàng triệu partitions**.
+2. **Một hệ thống duy nhất để nuôi.** Deploy, monitor, support, administer — tất cả chỉ còn Kafka. Hết cảnh nửa đêm Zookeeper dở chứng mà Kafka vô can.
+3. **Một mô hình security duy nhất.** Trước đây phải lo security Kafka **và** security Zookeeper (mà Zookeeper lại kém secure hơn). Giờ chỉ còn một.
+4. **Một process duy nhất để start.** Hết cảnh start Zookeeper xong mới được start Kafka.
+5. **Controller shutdown và recovery nhanh hơn rõ rệt.** Blog benchmark của dự án cho thấy cả thời gian shutdown có kiểm soát lẫn recovery sau shutdown đột ngột đều **cải thiện đáng kể** so với mode Zookeeper.
 
-if you have over 100,000 partitions,
+```mermaid
+graph TB
+    subgraph Với Zookeeper - 2 hệ thống
+        ZK[Zookeeper Quorum<br/>+ Leader] -->|quản lý| B1[Broker 101]
+        ZK -->|quản lý| B2[Broker 102]
+        ZK -->|quản lý| B3[Broker 103]
+    end
+```
 
-which is a lot of partitions.
+```mermaid
+graph TB
+    subgraph Với KRaft - 1 hệ thống
+        K1[Broker 101<br/>Quorum member] <--> K2[Broker 102<br/>Quorum member]
+        K2 <--> K3[Broker 103<br/>QUORUM LEADER ★]
+        K1 <--> K3
+    end
+```
 
-But, by removing Zookeeper,
+Nhìn hai sơ đồ là thấy ngay sự gọn gàng: không còn tầng Zookeeper đứng ngoài, chỉ còn các Broker tự bầu **Quorum Leader** trong nội bộ.
 
-now Apache Kafka can scale to millions of partitions,
+## 3. Mốc Version Phải Nhớ: Khi Nào Dám Dùng Production?
 
-and becomes easier to maintain and set up.
+Đây là phần dễ trả lời sai nhất, vì mốc thay đổi theo thời gian. Theo transcript của khóa học:
 
-It also improves stability.
+* **Kafka 3.x (từ 3.0)**: đã có KRaft để vọc — nhưng **chưa production-ready**.
+* **Kafka 3.3.1** (qua **`KIP-833`**): KRaft mới chính thức **production-ready**.
+* **Kafka 4.0**: chỉ còn KRaft, **không hỗ trợ Zookeeper nữa**.
 
-It makes it easy to monitor, support, and administer Kafka.
+Quy ra hành động: học và lab thì bật KRaft thoải mái (khóa này có hướng dẫn launch cluster ở KRaft mode), nhưng quyết định production thì nhìn version mình đang chạy mà đối chiếu ba mốc trên. Đừng nghe "KRaft hay lắm" rồi bê vào cluster công ty đang chạy Kafka 3.0.
 
-You have a single security model for the whole system
+Analogy kiểu Việt Nam: Zookeeper là ban quản lý khu trọ thuê ngoài — thu tiền, giữ chìa khóa, hòa giải tranh chấp. KRaft là khu trọ tự quản: cư dân (Broker) tự bầu tổ trưởng (Quorum Leader), tự giữ sổ sách. Bớt một tầng trung gian thì ít cãi nhau hơn, nhưng ngày đầu tự quản mà chưa có quy chế (version chưa ready) thì cũng loạn — phải chờ quy chế chín (3.3.1) mới dám giao nhà.
 
-because now you only have to deal with Kafka security,
+## Cạm Bẫy Thường Gặp
 
-and not Zookeeper security.
+* **Bật KRaft trên version chưa ready rồi chạy production.** Có từ 3.0 không có nghĩa production được từ 3.0. Mốc production-ready là 3.3.1.
+* **Tưởng KRaft chỉ là "tắt Zookeeper đi".** Không. Metadata, leader election, controller — tất cả được viết lại trên Raft bên trong Kafka. Đây là thay tim, không phải gỡ phụ kiện.
+* **Migrate cluster Zookeeper cũ sang KRaft kiểu "xóa đi cài lại".** Migration có quy trình riêng, bridge mode riêng (ngoài phạm vi bài này). Đừng tự ý đập cluster production để "lên KRaft cho hiện đại".
+* **Quên KRaft không xóa nhu cầu hiểu Zookeeper.** Cluster cũ ngoài kia vẫn đầy Zookeeper (bài trước). Hiểu cả hai mới đi làm được.
 
-Also, there's just a single process
+## Kết Luận
 
-to start with Apache Kafka.
+Tóm lại một câu: **KRaft (KIP-500) thay Zookeeper bằng Raft nội bộ để Kafka scale tới hàng triệu partitions, gọn thành một hệ thống, một security, một process — có từ Kafka 3.0, production-ready từ 3.3.1 (KIP-833), và thành bắt buộc ở Kafka 4.0.**
 
-It gives you, as well, faster controller shutdown
-
-and recovery time.
-
-So Kafka KRaft is implemented as of Kafka 3.X version,
-
-so 3.0 and so on,
-
-but it has been production-ready only since Kafka 3.3.1.
-
-So, KIP-833.
-
-Also, Kafka 4.0 will be released only with KRaft support.
-
-There's going to be no Zookeeper support
-
-in the KRaft mechanism.
-
-So with the KRaft architecture, if we look at the Zookeeper,
-
-we have a Zookeeper Quorum
-
-with a leader to handle our Kafka brokers.
-
-But then with a Quorum controller,
-
-there is only Kafka brokers
-
-and one of them is the Quorum leader.
-
-So we can see the simplified architecture.
-
-Also, KRaft gives us performance improvements.
-
-So this comes from a blog,
-
-and as you can see the control shutdown time
-
-as well as the recovery time after uncontrolled shutdown
-
-is substantially better.
-
-So, overall KRaft is a great improvement
-
-and this is something we cover in this course
-
-into how to launch a cluster in KRaft mode.
-
-So that's it.
-
-I hope you liked it, and I will see you in the next lecture.
+Bài tiếp theo chúng ta khép lại toàn bộ phần Theory: điểm lại một lượt từ Broker, Topic, Replication tới Producer acks, Consumer Group, Zookeeper và KRaft trước khi xắn tay dựng Kafka trên máy.

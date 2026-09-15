@@ -1,345 +1,117 @@
-Okay, so we are going to set up Kafka on Windows non-WSL2
+# [Archive] Windows Không WSL2: Chạy Kafka Native (Không Nên Dùng)
 
-but it can work but there are caveats you should know.
+> Bài thuộc section **Archive** và là bài **không nên làm theo**. Chạy Kafka native trên Windows (không qua WSL2, không qua Docker) dính hai lỗi fatal `KAFKA-8811` và `KAFKA-1194` không có cách fix triệt để. Đọc bài này để hiểu vì sao, rồi quay về con đường đúng: **Docker (bài `020`)** hoặc **WSL2 (bài `026` → `029`)**.
 
-You cannot delete topics or you will have an error
+Bài này dành cho **Windows không có WSL2** (Windows cũ) — trường hợp duy nhất còn phải nhắc tới cách native.
 
-and you can Google KAFKA-8811 to have a look.
+---
 
-And if you use it for more than a week
+## 1. Vì Sao Không Nên Chạy Native Trên Windows?
 
-then a segment will be deleted.
+Hai lỗi đã biết, tra Google theo mã là ra chi tiết:
 
-And then you will have an error named KAFKA-1194.
+| Lỗi | Khi nào dính | Hậu quả |
+|---|---|---|
+| `KAFKA-8811` | Xóa một Topic bất kỳ | Broker báo lỗi, không phục hồi được |
+| `KAFKA-1194` | Chạy quá ~1 tuần (segment bị xóa theo retention) | Broker chết, phải xóa sạch data + start lại từ đầu |
 
-So these errors are fatal errors
+Conduktor xây tính năng chạy Kafka trong Docker một phần để né đúng hai lỗi này (tắt topic deletion, giữ data lâu). Nếu máy bạn chạy được Docker hay WSL2 thì không có lý do gì để chịu hai lỗi trên.
 
-and you will not be able to recover Kafka from it
+Phần còn lại của bài là quy trình native đầy đủ — chỉ thực hiện khi bạn không còn lựa chọn nào khác.
 
-unless you clean all data in Kafka
+## 2. Chuẩn Bị
 
-and then restart Kafka fresh.
+- Windows có quyền cài phần mềm + sửa biến môi trường.
+- Sẽ cần: Java JDK (Corretto), Kafka 3.x Scala 2.13, WinRAR/7-Zip (Windows không giải nén `.tgz` tốt), PowerShell.
 
-So my point is, if you're using Windows,
+## 3. Bước 1 — Cài Java JDK (Amazon Corretto)
 
-as soon as you are going to do some
+1. Google `Amazon Corretto download`, mở trang chủ.
+2. Chọn bản **Windows x64 MSI** (JDK 11 cho Kafka 3.x thời đó; Kafka mới cần JDK 21 — chọn theo version Kafka bạn dùng).
+3. Tải về, chạy file MSI, Next → Next → Finish.
 
-important stuff in Kafka, things are going to crash
+Kiểm tra trong Command Prompt hoặc PowerShell **mới**:
 
-and you're going to complain to me.
+```powershell
+java -version
+```
 
-So my recommendation is,
+Thấy `openjdk ... Corretto` là đạt.
 
-if you can please do the steps from before
+## 4. Bước 2 — Tải Và Giải Nén Kafka Về Thẳng `C:\`
 
-using Kafka Windows WSL2
+1. Google `download kafka`, chọn version 3.x Scala 2.13, tải file `.tgz` về Downloads.
+2. Windows giải nén `.tgz` rất tệ nên cài thêm **WinRAR** hoặc **7-Zip** trước.
+3. Chuột phải file `.tgz` → Extract ra, bạn sẽ thấy thư mục lồng 2 cấp (thư mục trong thư mục) — lấy thư mục trong cùng.
+4. **Cut** thư mục đó dán thẳng vào `C:\`, ví dụ thành `C:\kafka_2.13-3.1.0`. Lý do: đường dẫn Windows càng ngắn càng tốt — đường dẫn dài + khoảng trắng (như `C:\Users\Tên Có Dấu\...`) hay làm script `.bat` của Kafka lỗi linh tinh.
 
-because this is the most stable way of doing Kafka,
+Kết quả mong muốn:
 
-else I recommend that you start Kafka within Conduktor.
+```powershell
+dir C:\kafka_2.13-3.1.0
+```
 
-This is why we built this feature
+Phải thấy hai thư mục `bin` và `config`.
 
-is to really help you avoid these issues.
+## 5. Bước 3 — Hiểu Khác Biệt `bin\windows` Trước Khi Chạy Lệnh
 
-For example, we disable topic deletion
+Trên Linux/Mac lệnh nằm ở `bin/*.sh`. Trên Windows native, binaries nằm riêng ở **`bin\windows\*.bat`**. Gõ `bin\kafka-topics.sh` trong PowerShell là sai chắc chắn — phải là:
 
-and we make sure that data is kept for a long time.
+```powershell
+cd C:\kafka_2.13-3.1.0
+.\bin\windows\kafka-topics.bat
+```
 
-So if you just want simplicity and I think you do,
+Thấy in ra hướng dẫn sử dụng là đúng. Nhớ quy ước này cho mọi lệnh sau: cứ lệnh nào cũng có bản `.bat` trong `bin\windows`.
 
-then start Kafka within Conduktor
+## 6. Bước 4 — Thêm Kafka Vào PATH Của Windows
 
-and you should be good to go.
+Để gõ `kafka-topics` từ mọi nơi:
 
-Nonetheless, here is a tutorial showing you
+1. Copy đường dẫn đầy đủ tới thư mục windows, ví dụ `C:\kafka_2.13-3.1.0\bin\windows`.
+2. Start Menu gõ `environment` → mở **Edit the system environment variables** → nút **Environment Variables** → mục **Path** → **Edit** → **New** → dán đường dẫn vừa copy → OK hết.
+3. **Đóng hết PowerShell đang mở, mở lại cửa sổ mới** (biến môi trường chỉ nạp khi mở shell mới).
 
-how this is going to work.
+Kiểm tra từ thư mục bất kỳ:
 
-Okay, so the first thing we have to do
+```powershell
+kafka-topics.bat
+```
 
-is to install Java 11.
+Hết lỗi `not recognized`, in ra hướng dẫn sử dụng là thành công.
 
-So I'm going to install Java 11
+## 7. Bước 5 — Start ZooKeeper Rồi Start Kafka (2 Cửa Sổ PowerShell)
 
-and then I will type Corretto
+Mở **2 cửa sổ PowerShell**, cả hai `cd` vào thư mục Kafka, cả hai **để mở suốt buổi học**.
 
-'cause we will install Amazon Corretto Java.
+Cửa sổ 1 — start ZooKeeper trước:
 
-So we are going to go to the Downloads page
+```powershell
+cd C:\kafka_2.13-3.1.0
+.\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+```
 
-and then we're going to look for Windows X64.
+Đợi ZooKeeper bind port 2181. Giữ nguyên cửa sổ.
 
-And we'll use this one, the MSI,
+Cửa sổ 2 — start Kafka:
 
-download it and then I will run it.
+```powershell
+cd C:\kafka_2.13-3.1.0
+.\bin\windows\kafka-server-start.bat .\config\server.properties
+```
 
-So this will install Java JDK 11
+Đợi tới `Kafka Server started` là xong. Từ giờ `kafka-topics.bat` và mọi CLI khác gọi được từ PowerShell bất kỳ.
 
-which is going to allow me to start Apache Kafka.
+## Lỗi Thường Gặp & Cách Fix
 
-So let's install it Next, Next, Next.
+- **`'kafka-topics' is not recognized`:** PATH chưa ăn (quên mở PowerShell mới) hoặc dán thiếu `\bin\windows`. Fix: mở PowerShell mới, kiểm tra lại biến Path.
+- **Gõ nhầm `.sh` thay vì `.bat`:** PowerShell không chạy được script shell Linux. Fix: luôn dùng bản `.bat` trong `bin\windows`.
+- **Đặt Kafka ở đường dẫn dài / có dấu / có khoảng trắng:** script `.bat` lỗi khó hiểu. Fix: chuyển về `C:\kafka_2.13-3.1.0` như Bước 4.
+- **Dính `KAFKA-8811` (sau khi xóa Topic) hoặc `KAFKA-1194` (sau ~1 tuần):** không fix được, phải xóa sạch data (`/tmp/kafka-logs`, `/tmp/zookeeper` hoặc `log.dirs`/`dataDir` tương ứng) rồi start lại từ đầu — và từ đó **đừng xóa Topic nữa**. Fix triệt để duy nhất: chuyển sang Docker hoặc WSL2.
+- **Start Kafka trước ZooKeeper:** Kafka thoát ngay. Fix: ZooKeeper trước, Kafka sau.
 
-And we're good to go.
+## Kết Luận
 
-Yes, I would like to install Java
+Vậy là bạn đã biết toàn bộ quy trình native — và quan trọng hơn là biết **vì sao không nên dùng nó**. Trừ khi máy quá cũ không cài nổi WSL2/Docker, hãy quên cách này đi.
 
-and we're good to go.
-
-So how can we check if Java is installed?
-
-Well, if you start a Command Prompt for example
-
-and type Java -version, then you're going to get
-
-open JDK version 11 and then it's gonna say Corretto,
-
-so that means that Java has been successfully installed.
-
-So this is quite nice.
-
-We have one step down.
-
-Next we need to go to Apache Kafka
-
-and actually download Kafka.
-
-So for this, you can just type download Kafka,
-
-here and then choose version 3.1.0
-
-and then choose Scala 2.13, you download it.
-
-And then it's going to appear directly on your computer.
-
-So once it's on your computer, go on your File Explorer
-
-look at your Downloads
-
-and you're going to have to extract it
-
-which is going to be difficult on a Windows.
-
-So we need to download something like WinRAR to extract it.
-
-So I will install WinRAR as well
-
-to be able to extract this thing.
-
-So let's download it.
-
-We'll open it, Yes, Install, OK, we're good to go.
-
-Thanks you.
-
-So now what we can do is go back to our Explorer,
-
-go to our Downloads and then in our Downloads
-
-we can find Kafka right here, perfect.
-
-And we're going to right click
-
-and do Extract to Kafka 2.13-3.1.0.
-
-So Kafka is being extracted, this is great.
-
-And let's try to find it, here it is.
-
-So we have this, I'm going to,
-
-there are two folders one in the other,
-
-this is a bit weird but anyway I will just take this one.
-
-I will Copy it, Cut it actually.
-
-And then I'm going to go under C, the root
-
-and I'm going to paste this in.
-
-So it's important because I like to have Kafka
-
-at the roots of my C Drive just for easy access, okay?
-
-Okay, so next we're going to have to open
-
-something like PowerShell or Command Prompt,
-
-whatever you prefer
-
-but I like PowerShell, so I will use PowerShell
-
-and I will open it in here
-
-and I will try to change the properties
-
-to have a much bigger font so you can see everything.
-
-Okay, perfect.
-
-So we have PowerShell and from PowerShell,
-
-we're going to start Kafka.
-
-So how do we do this?
-
-Well, first of all, we're going to have to navigate into C.
-
-So we are in C and then we can navigate
-
-within the Kafka directory.
-
-So we are within it, okay?
-
-So what we want to do is to start Kafka
-
-and all the Kafka directories are in the bin folder.
-
-So ls bin is going to show you
-
-that within this directory we have been Bin
-
-and we have all the Kafka binaries in here.
-
-And then under Config,
-
-we'll have all the Kafka configs, okay?
-
-So we can run a command very simply
-
-by doing bin\slash and then for example, kafka-topics.sh.
-
-And this is nice, but in nuts actually .sh,
-
-I made a mistake.
-
-I'm way too used to Linux systems.
-
-So it's not bin\kafka-topics.sh,
-
-it's bin\windows\ and then kafka-topics.bat.
-
-And this is because under Windows
-
-the binary for Windows are under a Windows folder, okay?
-
-So if you do this and press Enter,
-
-then the command is going to work
-
-and you can just allow access, this is fine.
-
-The command is going to work and you get this output.
-
-But what we'd like to do is to just do kafka-topics
-
-from any place on our computer and for it to work, okay?
-
-But it's not going to work out of the bats.
-
-So what we can do for this to work
-
-is to edit our path variable our environment variable.
-
-So we go here and we type environment
-
-and here we can edit the system environment variables.
-
-So you click on then Environment Variables
-
-and under Path we can edit it
-
-and here we can add a new value and just paste it,
-
-paste the full path of this.
-
-So I'm going to copy this full path
-
-all the way down to Windows, to New,
-
-and then paste it here and then press OK.
-
-So once the path is set, then what I have to do is just
-
-open a new window of PowerShell.
-
-So what I'm going to do is close this one
-
-and then I'll go back here and open PowerShell again.
-
-So why do you do this?
-
-Well, because when we start this,
-
-now I'm into any directory.
-
-If I do kafka-topics, then the command is going to work
-
-and I get the output of kafka-topics, so this is great.
-
-And that was thanks to editing the path.
-
-So anyway, back into my C and then Kafka directory,
-
-so I can do zookeeper-server-start.
-
-So we need to start Zookeeper first.
-
-So zookeeper-server and then start, okay?
-
-.bat or without bat if you want, it doesn't matter.
-
-After that, we set out the path.
-
-And then what I'm going to do is just
-
-give a config to this file.
-
-So I'll do config\zookeeper.properties
-
-and I press Tab to complete, I press Enter.
-
-And all of a sudden Zookeeper is started.
-
-So this is great.
-
-And next I can run another Windows PowerShell, okay?
-
-I will go again into my C directory and then Kafka.
-
-In here I'm going to run a kafka-server-start command
-
-provide a config and this time
-
-the config is going to be server.properties, press Enter.
-
-And Kafka is now started.
-
-So this worked, this is all good.
-
-Kafka is started, Zookeeper is started
-
-and you should be able to go along with this course, okay?
-
-But just so you know after a week things will break
-
-or after deleting a topic things will break
-
-so do not delete topics for example.
-
-Otherwise use a Conduktor to launch Kafka
-
-and it will make your life a lot easier.
-
-Nonetheless there you go, you can start Kafka.
-
-You can even run Kafka commands, any Kafka command
-
-now from PowerShell just by doing for example,
-
-kafka-topics and so on.
-
-So we're good to go, we have enough to get started
-
-and I will see you in the next lecture.
+Tới đây section setup Kafka khép lại. Từ bài sau trở đi chúng ta làm việc thật với Topic, Producer, Consumer trên cluster đã dựng — và mọi lệnh mẫu trong khóa học đều dùng cú pháp Linux (`*.sh`), khớp với Docker / Mac / Linux / WSL2.

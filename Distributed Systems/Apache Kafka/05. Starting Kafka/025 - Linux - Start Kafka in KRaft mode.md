@@ -1,151 +1,100 @@
-Hi, this is Stefan from Conduktor,
+# Linux: Start Kafka Ở Chế Độ KRaft (Không Cần ZooKeeper)
 
-and in this lecture we're going
+Bài này dành riêng cho **Linux đã cài binaries ở bài `024`**. Chúng ta sẽ start một broker Kafka thật chạy trực tiếp trên Linux ở chế độ **KRaft** — mặc định từ Kafka 4.0, không cần ZooKeeper.
 
-to set up a Kafka broker using Linux in KRaft mode.
+Nếu broker Docker ở bài `020` vẫn chạy tốt thì bài này là tùy chọn. Nhưng nên làm một lần để hiểu 3 thao tác khởi động cốt lõi: sinh cluster ID → format storage → start server.
 
-That means just alone without something called ZooKeeper.
+---
 
-So for this, we have two comments to run.
+## 1. Mục Tiêu Và Chuẩn Bị
 
-We're going to create a cluster ID
+Hết bài này bạn có: 1 broker Kafka chạy foreground trong Terminal, version 4.x, lắng nghe ở `localhost:9092`, dữ liệu lưu ở `/tmp/kraft-combined-logs`.
 
-and format the storage using the kafka-storage.sh command.
+Điều kiện tiên quyết:
 
-And then we're going to start Kafka using the binaries.
+- Đã làm xong bài `024`: có thư mục Kafka dưới home và `kafka-topics.sh` gọi được từ mọi nơi.
+- Chỉ chạy **một broker tại một thời điểm**: nếu Docker (`020`) đang chiếm port 9092 thì `docker compose down` trước.
+- Cửa sổ chạy Kafka phải **để mở suốt buổi thực hành**.
 
-So let's get started.
+Tài liệu gốc: trang **Get Started → Quickstart** trên kafka.apache.org. Các lệnh dưới đây bám đúng thứ tự đó.
 
-Okay, so now we're going to start Kafka.
+## 2. Bước 1 — Vào Đúng Thư Mục Kafka
 
-For this, on the Kafka website under Get Started Quickstart,
+Mọi lệnh format/start dùng đường dẫn tương đối (`bin/...`, `config/...`) nên phải đứng trong thư mục Kafka:
 
-we're going to scroll down,
+```bash
+cd ~/kafka_2.13-4.0.0
+pwd
+ls bin/kafka-storage.sh config/server.properties
+```
 
-and we're going to run these comments right here.
+Cả hai file đều phải tồn tại. (Tên thư mục có thể khác version, ví dụ `kafka_2.13-4.1.0` — thay cho đúng máy bạn.)
 
-So let's clear our screen.
+## 3. Bước 2 — Sinh Cluster ID
 
-And the first thing we have to do
+KRaft yêu cầu mỗi cluster có một ID duy nhất:
 
-is to go into the Kafka folder.
+```bash
+KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+echo $KAFKA_CLUSTER_ID
+```
 
-And from there we're going to generate a cluster UUID.
+Thấy in ra chuỗi UUID là đạt. Biến này chỉ sống trong terminal hiện tại — đừng đóng terminal giữa chừng.
 
-This is necessary to just give an ID to our cluster.
+## 4. Bước 3 — Xem File Cấu Hình Rồi Format Storage
 
-So I copy this command,
+Trước khi format, ngó nhanh file cấu hình để biết data sẽ đi đâu:
 
-and I paste it in.
+```bash
+cat config/server.properties | grep "^log.dirs"
+```
 
-All right, done.
+Mặc định:
 
-Next, we need to format the log directories.
+```bash
+log.dirs=/tmp/kraft-combined-logs
+```
 
-So the log directories
+> Nhớ điểm này: `/tmp` có thể bị dọn khi reboot — mất sạch data. Học thì không sao, production thì phải sửa `log.dirs` sang ổ ổn định.
 
-is where your Kafka data is going to be stored.
+Giờ format thư mục log theo cluster ID vừa sinh:
 
-So this is an information stored
+```bash
+bin/kafka-storage.sh format --standalone -t $KAFKA_CLUSTER_ID -c config/server.properties
+```
 
-in this file called config/server.properties.
+Thấy log `Formatting ... with metadata ...` và không có ERROR là xong.
 
-So let me cat it
+## 5. Bước 4 — Start Broker Và Verify
 
-so we can see what's inside.
+Chạy broker ở foreground (có thể gọi từ mọi nơi vì PATH đã setup, nhưng nhớ trỏ đúng file config):
 
-And the important part in this file
+```bash
+kafka-server-start.sh ~/kafka_2.13-4.0.0/config/server.properties
+```
 
-is your configuration of Kafka,
+Đợi log tới dòng `Kafka Server started` (kèm `Kafka version 4.x`) là thành công. Giữ nguyên cửa sổ này.
 
-but the very important line is around here,
+Mở **Terminal thứ hai** để verify:
 
-which I will find right here,
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --list
+```
 
-so log.dirs=/tmp/kraft-combined-logs.
+Trả về rỗng mà không lỗi kết nối chính là broker đã sống (chưa có topic nào nên list rỗng là đúng).
 
-So this is where your Kafka data is going to be stored.
+Dừng broker khi xong: quay lại cửa sổ chạy Kafka, `Ctrl + C`.
 
-So if you lose access to this temp directory,
+## Lỗi Thường Gặp & Cách Fix
 
-your Kafka data is going to be gone, but there's no need.
+- **`KAFKA_CLUSTER_ID: parameter null or not set`:** mở terminal mới sau Bước 2 nên biến môi trường mất. Fix: làm lại từ Bước 2 trong cùng một terminal.
+- **Port 9092 đã dùng (`Address already in use`):** broker Docker hoặc một broker tay khác vẫn chạy. Fix: `docker compose down` hoặc kill tiến trình cũ, chỉ giữ một broker.
+- **`UnsupportedClassVersionError`:** Java không phải 21. Fix: `java -version`, cài lại Corretto 21 theo bài `024` và chọn đúng JDK bằng `update-alternatives`.
+- **Đứng nhầm thư mục khi chạy lệnh tương đối:** báo `No such file or directory` cho `bin/...` hoặc `config/...`. Fix: `cd` về đúng thư mục Kafka rồi chạy lại, hoặc dùng đường dẫn tuyệt đối + `kafka-server-start.sh` từ PATH.
+- **Mất data sau reboot:** hành vi mặc định do `log.dirs=/tmp/...`, không phải bug. Muốn giữ data: sửa `log.dirs` sang thư mục khác rồi format + start lại từ đầu.
 
-And for this tutorial and this course, this is enough,
+## Kết Luận
 
-but it's a setting you should know.
+Vậy là bạn đã tự start được broker KRaft trên Linux bằng đúng 3 lệnh gốc của Apache Kafka.
 
-So when we run this command right here,
-
-bin/kafka-storage-sh. format --standalone,
-
-and then this cluster ID,
-
-this is going to actually format this directory
-
-I just showed you.
-
-So let's clear our screen,
-
-and we're going to paste our command.
-
-And actually, not the right one.
-
-So let's do again.
-
-I do again.
-
-Here, copy
-
-and paste.
-
-Press enter.
-
-Okay, so now this has been done,
-
-and now we can just start the Kafka server
-
-with this one command.
-
-So you can actually run it from anywhere.
-
-So the only thing to notice is that you need
-
-to reference this server.properties file.
-
-So let's just run it.
-
-Copy and paste it.
-
-Press enter, and here we go.
-
-My Kafka server is now started.
-
-As you can see, it says Kafka version 4.0.0 for me,
-
-and the Kafka server is started.
-
-So that's perfect.
-
-We have started Apache Kafka.
-
-And now if we wanted to run any commands
-
-against our cluster, we need to have a new window
-
-and run the commands from there.
-
-So this window must remain opened for Kafka to be running.
-
-And if you wanted to stop Kafka,
-
-you would just press Ctrl + C to stop Kafka,
-
-and you'd be good to go.
-
-All right, so that's it for this lecture.
-
-I hope you liked it.
-
-We started Kafka with one broker directly using the CLA,
-
-and I will see you in the next lecture.
+Chuỗi Linux tới đây là xong. Bài tiếp theo (`026`) chúng ta đổi sang **Windows**: cài WSL2 + Ubuntu — bước bắt buộc trước khi làm bất kỳ bài Kafka nào trên Windows.

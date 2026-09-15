@@ -1,101 +1,133 @@
-Hi, this is Stephane from Conduktor
+# Dựng OpenSearch Trên Cloud Bonsai: 10 Phút Có Cluster Không Cần Docker
 
-and let's go to bonsai.io.
+Bài trước đã dựng OpenSearch local bằng Docker — nhanh và reset thoải mái. Bài này dành cho đường còn lại: máy yếu, không cài được Docker, hoặc mạng công ty chặn Docker Hub. Chúng ta dựng OpenSearch managed trên Bonsai (bonsai.io) để vẫn theo được toàn bộ 6 Parts mà không cần local.
 
-And here we are able to go to the pricing page
+---
 
-and actually start on the free tier at Free Sandbox Cluster
+## 1. Vấn đề: Khi Nào Cloud Thắng Docker?
 
-that will have Elasticsearch or OpenSearch,
+Docker local lý tưởng, nhưng có 3 trường hợp nó thua:
 
-and we need to have OpenSearch.
+* Máy 8GB RAM, chạy IntelliJ + Docker Desktop + OpenSearch heap 512MB là đơ.
+* Không có quyền admin để cài Docker / WSL2 trên Windows.
+* Chỉ muốn học logic Consumer (idempotence, commit, bulk), không muốn vật lộn với `docker compose logs`.
 
-So let's select this tier.
+Managed OpenSearch giải quyết cả 3: không tốn RAM local, không cài gì, hỏng thì xóa cluster tạo lại trên web. Cái giá phải trả: phải chờ provision ~10 phút, có auth trong connection string, và quota free tier giới hạn (đừng bulk hàng triệu docs test).
 
-Then you need to enter your contact details.
+Nguyên tắc: **chỉ chọn một đường**. Đã chạy Docker thành công ở bài 080 thì đọc lướt bài này để biết, rồi nhảy sang bài 082.
 
-Next, you can answer a few questions
+## 2. Cơ Chế: Bonsai Cấp Gì Cho Bạn?
 
-around what you're going to do,
+```mermaid
+graph LR
+    YOU["Browser + Java code"] -->|HTTPS + basic auth| BONSAI["Bonsai Cluster<br/>KAFKA_COURSE<br/>OpenSearch 1.x"]
+    BONSAI --> CONSOLE["Bonsai Console<br/>(thay Dashboards :5601)"]
+    BONSAI --> API["REST API :443<br/>(thay localhost:9200)"]
+```
 
-but I will just click on No, thanks.
+* Bonsai tạo một cluster OpenSearch thật trên AWS (bạn chọn region), version `1.x`.
+* Bạn nhận 2 thứ: **Console URL** (web UI chạy thử `GET /`) và **Access URL dạng `https://username:password@host`** — đây chính là connection string Java code sẽ dùng ở Part 1.
+* Code Java không đổi logic, chỉ đổi nhánh `createOpenSearchClient()`: từ no-auth (`http://localhost:9200`) sang có-auth (parse user/pass, gắn `BasicCredentialsProvider`, dùng `https`).
 
-And then click on Next.
+Lưu ý bản quyền: Bonsai cho chọn cả Elasticsearch và OpenSearch. Section này **bắt buộc OpenSearch 1.x**. Chọn nhầm Elasticsearch là client `opensearch-rest-high-level-client:1.2.4` báo lỗi version.
 
-Finally, a Cluster Name.
+## 3. Code Và Thao Tác: Từng Bước Dựng Cluster
 
-I like to have it as KAFKA_COURSE.
+Không có code Java ở bài này — chỉ có 5 bước click và 1 bước verify. Nhưng phải làm đúng thứ tự.
 
-Now, very important,
+### 3.1. Tạo tài khoản và chọn Free Sandbox
 
-we need to choose OpenSearch 1.0.0
+1. Vào `bonsai.io` → Pricing → **Free Sandbox Cluster**.
+2. Nhập email, xác nhận qua link email (không xác nhận thì cluster không provision).
+3. Trả lời vài câu hỏi survey → bấm `No, thanks` / `Next` để bỏ qua.
 
-or whatever version of OpenSearch is available
+### 3.2. Cấu hình cluster — 3 lựa chọn quyết định
 
-but in the one point something range, okay.
+| Lựa chọn | Giá trị đúng | Sai lầm phổ biến |
+|---|---|---|
+| Cluster Name | `KAFKA_COURSE` (đúng như khóa học để dễ đối chiếu) | Đặt tên có dấu / space gây lỗi URL |
+| Engine + Version | **OpenSearch 1.0.0** (hoặc bản 1.x mới nhất trong list) | Chọn Elasticsearch 7.x/8.x → vỡ client |
+| Region | Region gần bạn nhất (ví dụ `EU West Ireland` nếu ở EU, `Sydney` nếu ở APAC) | Chọn US trong khi ở VN → latency cao, test bulk chậm |
 
-Do not choose ElasticSearch.
+Bấm **Provision**. Chờ. Đừng sốt ruột bấm provision 2 lần — sẽ ra 2 cluster tốn quota.
 
-So OpenSearch 1.0.0, we're good to go.
+### 3.3. Chờ provision và verify bằng `GET /`
 
-And then we're going to use the AWS EU West Ireland Region,
+Mới provision xong, bấm vào cluster `KAFKA_COURSE` → Console. Gõ:
 
-just because I'm close to it.
+```
+GET /
+```
 
-But again, you could, for example
+Nếu trả về:
 
-use one of these other regions if you're close to the US,
+```json
+{
+  "message": "Cluster not found. It may take a few moments for new cluster to be created."
+}
+```
 
-or if you're in the Asia Pacific, you can go to Sydney.
+hoặc `404` → **đợi thêm 10 phút**, đừng gửi ticket support. Sau ~5–10 phút chạy lại, kết quả mong đợi:
 
-So let's provision this cluster
+```json
+{
+  "name" : "xxxx",
+  "cluster_name" : "bonsai-xxx",
+  "version" : {
+    "number" : "1.0.0",
+    "distribution" : "opensearch"
+  },
+  "tagline" : "The OpenSearch Project: https://opensearch.org/"
+}
+```
 
-and there is a email confirmation link
+Thấy `tagline: The OpenSearch Project` là cluster sống.
 
-before we get started.
+### 3.4. Lấy credentials cho Java code (dùng ở Part 1)
 
-So I have validated my email.
+Vào **Settings → Access → Credentials → Full Access**. Copy toàn bộ URL dạng:
 
-Now I have access to my Kafka Course Cluster
+```
+https://user-xxxx:pass-yyyy@host-zzz.bonsai.io
+```
 
-which is running OpenSearch, so we're good to go.
+* Giữ URL này như password. Đừng commit lên Git, đừng paste lên forum.
+* Cuối khóa học nhớ **Regenerate** để vô hiệu hóa URL đã lộ trong video/bài mẫu.
+* Trong code Part 1 (bài 083), bạn paste URL này vào biến `connString`, comment dòng `http://localhost:9200` lại. Hàm `createOpenSearchClient()` sẽ tự parse host, user, pass.
 
-Let's click on KAFKA_COURSE
+```java
+// Local Docker:
+// String connString = "http://localhost:9200";
+// Bonsai Cloud (comment dòng trên, mở dòng dưới):
+// String connString = "https://user-xxxx:pass-yyyy@host-zzz.bonsai.io";
+```
 
-and there we get access to the console
+Chi tiết parse auth sẽ mổ ở bài 083 — ở đây chỉ cần biết URL nằm ở đâu.
 
-and the console is similar to what we had
+## 4. So Sánh: Docker Local vs Bonsai Cloud Khi Học 6 Parts
 
-with OpenSearch dashboards
+| Tác vụ trong section | Docker local (`:9200`) | Bonsai cloud |
+|---|---|---|
+| Tạo index `wikimedia` (Part 1) | Instant | Thêm ~200–500ms latency/querry, vẫn OK |
+| Poll + index từng record (Part 2) | Nhanh, log mượt | Hơi chậm do HTTPS cross-region, vẫn học được |
+| Bulk 500 records (Part 5) | Lag tụt nhanh | Lag tụt chậm hơn, đừng lo — không phải code sai |
+| Reset offsets / rewind (Part 6) | `down -v` hoặc 1 click Conduktor | Chỉ reset trên Conduktor/CLI, không xóa được server |
+| Debug `Connection refused` | Check `docker ps`, port 9200 | Check URL copy thiếu `https://`, sai pass, cluster chưa ready |
+| Chi phí | RAM local | Free quota — đừng bulk loop vô hạn |
 
-in which we can actually some commands in here.
+Mẹo thực tế: nếu dùng Bonsai, ở Part 2 hãy để `auto.offset.reset=latest` (đừng để `earliest` với topic Wikimedia nhiều history) để khỏi kéo hàng chục nghìn docs qua Internet về index — tốn quota và chậm.
 
-So what you need to do, is just for example,
+## 5. Pitfalls
 
-do a GET and then press on play.
+* **Chọn Elasticsearch thay vì OpenSearch.** Lỗi version mismatch, `override.main.response.version` không cứu được. Xóa cluster tạo lại, chọn **OpenSearch 1.x**.
+* **Test `GET /` quá sớm rồi kết luận "Bonsai lỗi".** Cluster mới cần 5–10 phút. Đợi, refresh, chạy lại.
+* **Copy thiếu password trong URL.** URL Bonsai dài, copy thiếu 1 ký tự là Java báo `401 Unauthorized`. Copy bằng nút copy của trang, đừng gõ tay.
+* **Để lộ credentials.** URL chứa user/pass full access. Không commit, không chụp màn hình public. Học xong thì regenerate.
+* **Dùng Bonsai để bulk test hiệu năng.** Free tier IOPS thấp. Part 5 chỉ cần thấy "500 records/batch" là đạt, đừng benchmark so với Docker rồi kết luận code chậm.
+* **Tạo 2 cluster vì tưởng cluster đầu hỏng.** Tốn quota free, dễ nhầm URL giữa 2 cluster trong code. Một cluster `KAFKA_COURSE` là đủ cả section.
 
-And if you get a 404 message: Cluster not found.
+## Kết Luận
 
-It may take a few moments for new cluster to be created.
+Tóm một câu: **xong bài này bạn có cluster OpenSearch 1.x sống trên cloud, verify được bằng `GET /`, và cầm trong tay connection string có auth để Part 1 dùng.**
 
-Please contact support if it doesn't work.
-
-So don't contact the support, okay.
-
-Wait about 10 minutes.
-
-And then after 10 minutes, this command would succeed.
-
-And as you can see, it was less than 10 minutes.
-
-Now my OpenSearch cluster is started
-
-and we're good to go, okay.
-
-So once you have this,
-
-you're either set up locally or on the cloud to get started.
-
-And then in the next lecture
-
-we're going to practice using OpenSearch.
+Bài tiếp theo (082) cả hai đường (Docker lẫn Bonsai) hội tụ: chúng ta luyện OpenSearch 101 — `PUT/GET/DELETE` index và document bằng tay trên Dev Tools/Console — để khi code Java gọi `IndexRequest` bạn đã hiểu nó tương đương lệnh REST nào.

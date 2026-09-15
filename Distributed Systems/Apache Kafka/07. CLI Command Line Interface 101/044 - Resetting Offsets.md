@@ -1,173 +1,135 @@
-Hi, this is Difen from Conduktor and
+# Resetting Offsets: Tua Lại Con Trỏ Consumer — Thao Tác Nguy Hiểm Nhất Section
 
-in this lecture we're going to learn about how
+Consumer group nhớ vị trí bằng offset đã commit. Bình thường nó chỉ tiến về phía trước. Bài này học cách bẻ con trỏ đó quay ngược lại để đọc lại dữ liệu cũ — kỹ năng cứu nguy khi deploy code lỗi bỏ sót message, nhưng cũng là thao tác dễ gây đọc trùng hàng loạt hoặc bỏ qua dữ liệu nếu làm ẩu.
 
-to reset offsets using the Kafka consumer group's Command.
+---
 
-So we've seen that consumers read from a consumer group
+## 1. Bài Toán: Deploy Lỗi, Cần Đọc Lại 5 Message Vừa Bỏ Qua
 
-and then they commit offsets once in a while
+Tình huống ở bài trước: `my-first-application` đọc `third_topic`, producer gửi thêm A, B, C, D, E tạo lag 2, 1, 2. Giả sử consumer chạy bản code lỗi, commit offset nhưng xử lý sai — 5 message coi như mất dù vẫn nằm trong topic (Kafka giữ 7 ngày mặc định). Xóa group rồi đọc lại từ đầu thì quá thô bạo. Reset offset cho phép tua chính xác về điểm cần thiết.
 
-which allows them to restart the reads
+Điều kiện tiên quyết, nhắc 3 lần vì quan trọng:
 
-from where the offset was last committed.
+> **Không một consumer nào của group được đang chạy khi reset. Dừng hết consumer trước, reset xong mới khởi động lại.**
 
-So in this example we'll start and we'll stop at
+Reset trong lúc consumer chạy sẽ bị từ chối (báo lỗi `member still active`) hoặc tệ hơn — consumer đang chạy commit đè lên vị trí bạn vừa reset.
 
-console consumer.
+## 2. Quy Trình Chuẩn: `--describe` → `--dry-run` → `--execute`
 
-We'll reset the offsets
+Mọi lần reset đều đi 3 bước. Bỏ bước nào cũng là liều lĩnh.
 
-and then we'll start console consumer again
+### Bước 1 — Xem vị trí hiện tại
 
-and see the outcome.
+```bash
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+  --describe --group my-first-application
+```
 
-So let's describe the consumer group
+```
+GROUP                TOPIC        PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG
+my-first-application third_topic  0          14              16              2
+my-first-application third_topic  1          13              14              1
+my-first-application third_topic  2          25              27              2
+```
 
-we have created from before.
+Group đang nợ 5 message — đúng 5 message code lỗi vừa xử lý sai.
 
-So, if we have a look at my first application,
+### Bước 2 — Chạy thử với `--dry-run`
 
-currently we see that the lag is two, two, and one.
+```bash
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+  --group my-first-application \
+  --reset-offsets --to-earliest \
+  --topic third_topic --dry-run
+```
 
-So if we consume, we'll be consuming five messages.
+* `--reset-offsets` — chuyển lệnh sang chế độ reset (không có flag này thì các flag bên dưới vô nghĩa).
+* `--to-earliest` — tua về offset nhỏ nhất còn lưu trong partition (đầu dữ liệu còn retention).
+* `--topic third_topic` — giới hạn reset trên topic này (bỏ flag topic là reset toàn bộ topic group đang đọc — cực kỳ nguy hiểm).
+* `--dry-run` — chỉ in kế hoạch, **không thay đổi gì**.
 
-But we can also, for example,
+Output mẫu:
 
-reset the offsets of this application
+```
+GROUP                TOPIC        PARTITION  NEW-OFFSET
+my-first-application third_topic  0          0
+my-first-application third_topic  1          0
+my-first-application third_topic  2          0
+```
 
-to the very beginning to read all the messages.
+NEW-OFFSET = 0/0/0 nghĩa là sẽ đọc lại từ đầu. Kiểm tra kỹ bảng này — đây là cơ hội cuối để phát hiện mình chọn nhầm chiến lược.
 
-So the Kafka consumer groups has a thing
+### Bước 3 — Thực thi với `--execute`
 
-called reset Offsets.
+```bash
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+  --group my-first-application \
+  --reset-offsets --to-earliest \
+  --topic third_topic --execute
+```
 
-So minus, minus reset Offsets.
+* `--execute` — thực sự ghi offset mới. Thay `--dry-run` bằng `--execute`, không bao giờ dùng cả hai cùng lúc.
 
-And then we can set to earliest,
+Kiểm tra lại bằng `--describe`: LAG phình to (bằng toàn bộ message trong topic) vì CURRENT-OFFSET về 0 trong khi LOG-END-OFFSET đứng yên. Khởi động lại consumer cùng group — nó đọc lại toàn bộ từ đầu. Đọc xong, LAG về 0.
 
-which is the earliest the data exists in the topic.
+Trên UI Conduktor (Consumer Groups → chọn group → Reset Offsets) bạn làm được điều tương tự bằng vài click: chọn topic, chọn partition, chọn strategy — trực quan hơn và khó gõ nhầm hơn CLI.
 
-And then we specify dry run to know what
+## 3. Khi Nào Dùng Chiến Lược Nào?
 
-the assignment will be, but we don't run it yet.
+`--to-earliest` chỉ là một trong nhiều chiến lược. Chọn sai là đọc trùng cả triệu message hoặc nhảy cóc mất dữ liệu:
 
-So if we do this, minus, minus, and then a dry run,
+```bash
+# Về đầu dữ liệu còn lưu (đọc lại toàn bộ)
+--reset-offsets --to-earliest --topic third_topic --execute
 
-as you can see, and this is for first topic but
+# Về cuối topic (bỏ qua mọi message cũ, chỉ đọc message mới từ giờ)
+--reset-offsets --to-latest --topic third_topic --execute
 
-we are consume actually the third topic.
+# Lùi/tới N message từ vị trí hiện tại (âm = lùi, dương = tới)
+--reset-offsets --shift-by -10 --topic third_topic --execute
 
-So if we do a dry run for this, as you can see, it says
+# Nhảy tới offset tuyệt đối (khi đã biết chính xác con số từ log lỗi)
+--reset-offsets --to-offset 12345 --topic third_topic:0 --execute
 
-that the new offsets is going to be zero, zero, and zero.
+# Nhảy tới thời điểm (đọc lại từ 8h sáng hôm qua, ví dụ sau sự cố deploy lúc 7h)
+--reset-offsets --to-datetime 2026-09-15T08:00:00.000 --topic third_topic --execute
 
-Which makes sense because that's the beginning of my topic.
+# Về vị trí đã commit hiện tại (hủy các thay đổi reset thử nghiệm chưa execute)
+--reset-offsets --to-current --topic third_topic --execute
+```
 
-So to fix type we need the execute flag.
+Bảng quyết định nhanh:
 
-So instead of minus, minus, dry run
+| Tình huống | Chiến lược |
+|---|---|
+| Code lỗi bỏ sót, cần xử lý lại toàn bộ | `--to-earliest` |
+| Dữ liệu cũ đã vô nghĩa (test, spam), chỉ cần message mới | `--to-latest` |
+| Chỉ lỗi N message gần nhất (biết số lượng) | `--shift-by -N` |
+| Biết chính xác offset hỏng từ log/monitoring | `--to-offset <số>` |
+| Biết chính xác thời điểm sự cố bắt đầu | `--to-datetime <mốc>` |
+| Reset nhầm, muốn hoàn tác trước khi consumer chạy lại | `--to-current` (chỉ có tác dụng nếu offset chưa bị consumer mới commit đè) |
 
-we do minus, minus, execute.
+Lưu ý `--to-datetime`: Kafka tìm offset đầu tiên có timestamp ≥ mốc bạn đưa, theo timestamp ghi của broker (hoặc timestamp trong payload tùy cấu hình topic). Sai lệch vài message quanh mốc là bình thường — đừng mong chính xác tuyệt đối.
 
-Which is going to actually execute resetting the offsets.
+Có thể giới hạn theo partition: `--topic third_topic:0,1` chỉ reset partition 0 và 1, partition 2 giữ nguyên. Hữu ích khi chỉ một partition bị lỗi key lệch.
 
-So if we have a look right now, do minus, minus, execute.
+## 4. Ba Kịch Bản Tuyệt Đối Không Reset Bừa
 
-And now the new offsets are zero.
+1. **Consumer vẫn đang chạy.** Dừng hết đã. Reset trong lúc rebalance có thể cho kết quả nửa vời: partition này reset xong, partition kia bị commit đè.
+2. **Không giới hạn `--topic` trên group đọc nhiều topic.** Một lệnh reset không `--topic` tua toàn bộ group — hệ thống downstream nhận lũ đọc trùng từ mọi nguồn cùng lúc.
+3. **Reset về `--to-latest` để "xả lag cho nhanh".** Lag là triệu chứng, không phải bệnh. Xả bằng cách bỏ qua message nghĩa là chấp nhận mất dữ liệu. Chỉ dùng khi đã xác nhận với nghiệp vụ rằng dữ liệu nợ đó bỏ được.
 
-So instead of using the CLI, we can use for example
+Mọi thao tác reset ở production nên đi kèm: ghi lại output `--describe` trước reset (để hoàn tác), chạy `--dry-run` và paste kết quả vào ticket/change request, reset giờ thấp điểm, và báo trước cho team downstream về đợt đọc trùng sắp tới (consumer cần idempotent để chịu được đọc trùng — chủ đề của phần Exactly-Once sau này).
 
-this console consumer to have a look.
+## Cạm Bẫy Thường Gặp
 
-And if we have a look right here, as you can see
+* **Nhầm `--dry-run` với `--execute`.** Chạy `--dry-run` xong tưởng đã reset, khởi động consumer và ngạc nhiên vì không đọc lại gì. Luôn `--describe` sau reset để xác nhận offset đã đổi.
+* **Dùng `--shift-by` số dương quá tay.** `--shift-by 10000` trong lúc LAG chỉ 100 là nhảy qua cả message chưa đọc — mất dữ liệu âm thầm, không báo lỗi.
+* **Reset xong quên khởi động lại consumer rồi kết luận "reset không có tác dụng".** LAG sau reset phình to là đúng — phải chạy consumer nó mới xả.
+* **Reset group sai vì tên giống nhau (`billing` vs `billing-retry`).** `--list` và `--describe` đúng tên trước, copy-paste tên group thay vì gõ tay.
 
-on Conduktor, we see now that the lag is greater than zero
+## Kết Luận
 
-because while we have reset to the beginning.
+Tóm một câu: **reset offset là dừng hết consumer → `--describe` ghi lại vị trí → `--dry-run` kiểm tra kế hoạch → `--execute` → `--describe` xác nhận → mới khởi động lại consumer; chọn `--to-earliest` để đọc lại toàn bộ, `--shift-by -N` / `--to-datetime` để tua chính xác, `--to-latest` chỉ khi chấp nhận mất dữ liệu cũ.**
 
-So, now we know where we are.
-
-And so, of course we would get the exact same result
-
-by using the consumer groups command to describe our group,
-
-so my first application, and we'll find the exact same lag
-
-as before.
-
-So this makes sense.
-
-And now of course, if we run a console consumer,
-
-that's called my first application that has been reset
-
-and we read this topic, third topic, we'll see that
-
-because we have reset the offsets, then we read
-
-all the messages again.
-
-So if we run a describe on the group now,
-
-because the consumer has been run, now the lag
-
-is zero everywhere and we can verify this right here.
-
-So the one thing you should know is that the resets
-
-cannot happen when the consumer is running.
-
-So the consumer must be off and no consumers is
-
-part of the group to reset the offsets.
-
-So for this, let's just stop
-
-this consumer and we
-
-can also choose to reset the Offsets directly from the UI.
-
-So, we can choose the topic we want, the partitions we want,
-
-and the strategy we want.
-
-So lots of options and I do earliest
-
-and now we're back to offsets refreshed at zero.
-
-So, just two ways of doing things again
-
-but you can get very funky with this CLI.
-
-And if you have a look at the Kafka
-
-consumer groups documentation, you'll see
-
-that you have a lot of different arguments you can set
-
-to latest to an offset, to a daytime, to current.
-
-You can set the shift by and so on,
-
-so lots of different options
-
-but usually it becomes quite complicated to use the CLI.
-
-And this is why a UI may become preferable
-
-when resetting offsets
-
-because you actually get a lot more information
-
-into what you want to do
-
-and be very specific about what happens.
-
-It allows you to iterate faster.
-
-All right, that's it.
-
-So we've seen consumer offset resets.
-
-I hope you liked it, and I will see you in the next lecture.
+Section CLI tới đây là trọn vẹn: tạo topic, produce, consume, group, soi lag, reset offset. Bài tiếp theo chúng ta rời terminal một chút để nhìn lại toàn bộ những gì vừa làm dưới góc UI Conduktor — công cụ giúp bạn làm mọi thao tác trên bằng click chuột khi không muốn gõ lệnh.

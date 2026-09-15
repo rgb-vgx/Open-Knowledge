@@ -1,431 +1,123 @@
-Hi, this Stephane from Conduktor,
+# Kafka Console Producer CLI: Gửi Message Đầu Tiên Vào Topic
 
-and in this lecture,
+Topic đã tạo ở bài trước vẫn rỗng. Bài này chúng ta cho dữ liệu chảy vào bằng `kafka-console-producer.sh` — công cụ gửi message thủ công từ terminal. Đây là cách nhanh nhất để test pipeline, giả lập producer thật trước khi viết code.
 
-we're going to practice using the Kafka console producer
+---
 
-to start producing data into our Kafka topics.
+## 1. Bài Toán: Kiểm Tra Topic Có Nhận Dữ Liệu Không?
 
-So we're going to practice two use cases.
+Bạn vừa tạo `first_topic`. Làm sao biết nó hoạt động? Viết ngay một producer Java thì quá nặng cho một câu hỏi đơn giản. Console producer giải quyết trong 10 giây: gõ lệnh, nhập từng dòng, mỗi dòng Enter là một message vào Kafka.
 
-We're going to practice without sending keys.
+Hai kịch bản bài này bao phủ:
 
-So the key will be null
+1. Produce không key (key = null) — mặc định, message phân tán round-robin/sticky qua các partition.
+2. Produce có key — cùng key luôn về cùng partition, giữ thứ tự theo thực thể.
 
-and the data will be distributed across all partitions
+## 2. Produce Cơ Bản Không Key
 
-or we can produce with keys
+### 2.1. Lệnh chuẩn
 
-to have the same key always go to the same partition.
+```bash
+kafka-console-producer.sh --command-config playground.config \
+  --bootstrap-server <playground-bootstrap-url> \
+  --topic first_topic
+```
 
-So let's have a look right now.
+```bash
+# Cùng lệnh trên localhost không bảo mật
+kafka-console-producer.sh --bootstrap-server localhost:9092 \
+  --topic first_topic
+```
 
-So let's practice using the Kafka console producer.
+* `--topic first_topic` — topic đích, bắt buộc phải tồn tại trước (xem ngoại lệ auto-create ở mục 4).
+* `--command-config` + `--bootstrap-server` — thông tin kết nối, giống hệt bài Topics CLI.
+* Không có `--property` gì thêm nghĩa là key = null.
 
-For this, go into your code
+Chạy xong terminal hiện dấu `>` chờ nhập. Gõ thử:
 
-and open the file named one Kafka console producer.
+```
+>hello world
+>my name is Stephane from Conduktor
+>I love Kafka
+```
 
-So again, we'll run the same commands
+Mỗi dòng Enter là một message đã vào Kafka. Nhấn `Ctrl+C` để thoát producer.
 
-both on Conduktor platform and local host.
+Vào UI Conduktor mở `first_topic` bạn sẽ thấy 3 message với key `null` và value đúng 3 dòng trên. Nếu dùng localhost không UI, sang bài Consumer sau bạn sẽ đọc lại để kiểm chứng.
 
-They're very similar.
+### 2.2. Tùy biến độ tin cậy với `--producer-property`
 
-So first things first,
+```bash
+kafka-console-producer.sh --bootstrap-server localhost:9092 \
+  --topic first_topic \
+  --producer-property acks=all
+```
 
-if you don't have any topics which I don't right now,
+* `--producer-property acks=all` — leader chờ tất cả ISR xác nhận mới trả ACK. Chậm hơn nhưng an toàn nhất, chống mất dữ liệu khi broker chết.
 
-I will go ahead and create my first topic
+Phía producer bạn không thấy gì khác — vẫn gõ dòng nào vào dòng đó. Điểm khác nằm ở backend: message chỉ được coi là ghi thành công khi đủ bản sao. Các giá trị `acks` cần nhớ: `0` (không chờ, nhanh nhất, dễ mất), `1` (chờ leader, mặc định), `all` (chờ đủ ISR, an toàn nhất).
 
-with one partition
+## 3. Produce Vào Topic Chưa Tồn Tại: Playground Báo Lỗi, Localhost Tự Tạo
 
-and we use one partition,
+```bash
+kafka-console-producer.sh --bootstrap-server localhost:9092 \
+  --topic new_topic
+```
 
-to demonstrate a special behavior.
+```
+>hello world
+```
 
-I will let you know later.
+Chuyện gì xảy ra tùy cluster:
 
-So my topic,
+* **Conduktor Playground (auto-create bị tắt):** sau vài giây bạn nhận lỗi `Topic new_topic not present in metadata` hoặc timeout. Kiểm tra `kafka-topics.sh --list` sẽ thấy `new_topic` không hề được tạo. Đây là hành vi đúng ở production — bắt buộc tạo topic explicit trước.
+* **Localhost mặc định (auto-create đang bật):** lần gửi đầu báo 1–2 cảnh báo `Leader not available`, lần thứ 3 trở đi gửi lọt. Chạy `--list` sẽ thấy `new_topic` tự xuất hiện với 1 partition (theo `num.partitions` trong `server.properties`).
 
-first topic is now created
+Đổi default nếu muốn:
 
-and the next thing we have to do is to produce to it.
+```properties
+# Trong server.properties của broker local
+num.partitions=3
+```
 
-For this,
+Từ đó topic auto-create sẽ có 3 partitions. Nhưng best practice nhắc lại lần nữa: **tắt auto-create ở production, luôn tạo topic bằng `kafka-topics.sh --create` với partition và replication factor explicit.**
 
-we're going to use the Kafka console producer Command.
+## 4. Produce Có Key: `--property parse.key=true`
 
-So you can look at its documentation
+Mặc định key luôn null. Muốn gửi key, thêm hai property:
 
-by just typing the Command,
+```bash
+kafka-console-producer.sh --bootstrap-server localhost:9092 \
+  --topic first_topic \
+  --property parse.key=true \
+  --property key.separator=:
+```
 
-and then you'll have access
+* `parse.key=true` — bật chế độ đọc key từ input.
+* `key.separator=:` — mọi thứ bên trái dấu `:` là key, bên phải là value.
 
-to the full documentation right here.
+Input mẫu:
 
-But in this lesson,
+```
+>example key:example value
+>name:Stephane
+```
 
-I'm going to teach you the most important one.
+Vào UI kiểm tra: message 1 có key `example key`, value `example value`; message 2 key `name`, value `Stephane`. Từ đây Kafka hash key để pin message về cùng partition — cùng `name` luôn về cùng partition, đảm bảo thứ tự per-key (đã học ở bài Topics/Partitions/Offsets).
 
-So let's go back to our console producer
+Vì `first_topic` hiện chỉ có 1 partition nên mọi message dồn về partition 0, chưa thấy được hiệu ứng phân tán. Sang bài Consumer với topic 3 partitions bạn sẽ thấy rõ cùng key về cùng partition khác nhau thế nào.
 
-and have a look at what we do.
+Lưu ý: ở chế độ parse key, dòng nào **không có dấu `:`** sẽ ném exception ngay. Đó không phải lỗi Kafka — là input của bạn sai format đã khai báo.
 
-So we're going to copy and paste this entire Command.
+## Cạm Bẫy Thường Gặp
 
-So the first part of the Command,
+* **Produce vào nhầm topic do gõ sai tên.** Trên Playground thì lỗi timeout khó hiểu; trên localhost thì vô tình tạo topic rác. Luôn `--list` trước khi produce.
+* **Tưởng `acks=all` làm producer hiện gì đó khác.** Không. Khác biệt nằm ở độ bền backend, không nằm ở output terminal.
+* **Quên `Ctrl+C` để thoát rồi tưởng terminal treo.** Dấu `>` là producer đang chờ input — cứ `Ctrl+C` là ra.
+* **Dùng console producer để benchmark.** Đừng. Nó gửi từng dòng thủ công, throughput thấp. Benchmark dùng `kafka-producer-perf-test.sh`.
 
-the producer, config player,
+## Kết Luận
 
-playground config,
+Tóm một câu: **`kafka-console-producer.sh --topic <tên> (+ --property parse.key=true --property key.separator=: nếu cần key)` là cách nhanh nhất để bơm dữ liệu test vào topic, mỗi dòng Enter là một message, luôn tạo topic trước thay vì trông chờ auto-create.**
 
-allows you to connect to a secure cluster
-
-and the bootstrap server is specifying where the cluster is.
-
-And then we just specify minus, minus topic,
-
-first topic,
-
-the Command is a little bit simpler
-
-when you connect to an unsecure cluster.
-
-So if you have a bootstrap server,
-
-at local host 9092
-
-and then topic, first topic, you're good to go.
-
-Okay, so let's go ahead and run this Command.
-
-And when you launch your console producer,
-
-you're going to have this Chevron on the left hand side
-
-which tells you that you're ready to produce.
-
-So I'm just going to say hello world.
-
-And then I'm going to say my name is Stephane from Conduktor
-
-and then I love Kafka.
-
-And every time you press enter,
-
-this is actually going to send a message into Kafka
-
-and this is where you have a new Chevron.
-
-And to just stop sending messages into Kafka,
-
-just press control C and you're out of the console producer.
-
-Now, we will see how to consume messages
-
-in the next lecture when you look at the console consumer.
-
-But if you wanted to do a quick shortcuts,
-
-you can go into the UI
-
-and then you can have a look at the fact that the messages
-
-have been consumed here
-
-with, "Halo World my name Stephane from Conduktor
-
-and I love Kafka."
-
-So this is a confirmation
-
-that our console producer has worked, of course.
-
-Next, we can actually enhance our producer.
-
-And when we start specifying properties
-
-to enhance his behavior,
-
-to change batching and so on,
-
-we can use the producer property argument.
-
-So in this example,
-
-I'm producing with properties
-
-and the property acks equals all.
-
-Just specify that every message
-
-should be acks by all brokers.
-
-So again, you won't see anything producer side that changes.
-
-But in the backend,
-
-if you say some message that is acked,
-
-of course the message is going to be acked by all brokers
-
-the way we learned about it
-
-just for fun and then learning.
-
-Okay, so we've specified six messages right now
-
-and these three have been acting of course
-
-because all my brokers are up, everything worked just fine.
-
-Another behavior you should have a look at
-
-is producing to a non-existent topic.
-
-So in this example,
-
-I have the same Command as before
-
-but I produced to the topic called, "New topic."
-
-And if you have a look at my topic list
-
-as you can see right now,
-
-there is no new topic.
-
-There's only one called, "First topic."
-
-So if you produce to a non-existing topic,
-
-you're going to have a different behavior
-
-based on different clusters.
-
-So for us, as you can see,
-
-there's a chevron.
-
-So it seems like everything is fine
-
-but if I type Hello Wold,
-
-you're going to have a sort of timeout
-
-or you're going to have a sort of error.
-
-And this is because we don't allow you
-
-to produce to a topic that doesn't exist.
-
-And as you can see,
-
-we get an error message
-
-saying that the topic is not in the metadata.
-
-So it was never created.
-
-We can verify this behavior
-
-by running a Kafka topics Command with a list,
-
-and to look at the fact that
-
-we only have first topic in here.
-
-So this is a different behavior you'll observe
-
-because if you try the exact same Command
-
-but on your Kafka boots,
-
-your Kafka on local host that you've just created
-
-with a default configuration
-
-and you say, "Hello world,"
-
-you see two warnings saying,
-
-"Leader not available."
-
-Because it actually is no leader
-
-for the topic that get auto created.
-
-So you may see once or twice
-
-but then after twice or three times of these error,
-
-the topic will have been created
-
-and the topic will have a leader.
-
-And so therefore this hello world worked.
-
-And you can verify this
-
-because while if you do a list of topics,
-
-as you can see,
-
-we can find the new topic that'll get auto created.
-
-And you should describe that topic in case of auto creation.
-
-It will have, for example, one partition.
-
-Partition count equals one,
-
-because this is the default you set for your Kafka cluster.
-
-So what you can do is that
-
-you can actually go and edit
-
-some configs in the server.properties file.
-
-So the file used to start your Kafka server with
-
-and you can add for example,
-
-number of partitions equals three.
-
-And by default,
-
-if you send messages
-
-to a non-existing topic again,
-
-then you will have three partitions by default.
-
-This is to make it a little bit easier
-
-for you to start with Kafka,
-
-but to be fair,
-
-and the best practice is
-
-and this shows be on many, many different clusters
-
-that auto topic creates will be disabled.
-
-And you are strongly encouraged
-
-to create the topics ahead of time,
-
-which is why we have disabled it
-
-on the Conduktor playground.
-
-So try to get used to it.
-
-Lastly, we can also produce using keys.
-
-So if you have a look at our first topic right now
-
-and we have a look at some messages
-
-as we can see, the key is null.
-
-So key null,
-
-value learning key null value
-
-just for fun and so on.
-
-Because by default,
-
-when we send a message using the console producer,
-
-it's going to send the null key.
-
-But we can actually produce with keys,
-
-and we've seen that when we produce with keys,
-
-the same key will go to the same partition,
-
-and that's the behavior we will verify later on.
-
-So if we have a look here,
-
-the producer with keys,
-
-I send this,
-
-I copy this entire Command
-
-and we have a look at the arguments right now.
-
-So the topic is still first topic,
-
-so something that already exists for us
-
-and the property is parse key true.
-
-So the key is going to be sent
-
-as part of this console producer
-
-and the property is key.separator is colon.
-
-So that means that when you produce messages,
-
-what is left of the colon is the key,
-
-and what is right of the colon is the value.
-
-So let's press enter.
-
-We'll have example, key example value
-
-and here is name Stephane.
-
-So in different keys and different values.
-
-And if we have a look now in the playground
-
-and refresh this page,
-
-I'm going to just refresh this view right here.
-
-As you can see now,
-
-the key is name,
-
-the value is Stephane
-
-and the key is example key.
-
-And the value is example value.
-
-Now, I can't really show you the same key
-
-goes to the same partition right now
-
-because we only have one partition.
-
-So all the messages will go to that one partition
-
-but we will see this behavior later on.
-
-And when you use such a producer
-
-where you have a key separator,
-
-of course if you just send something without a colon,
-
-you're going to get an exception,
-
-because while you haven't found any key separator.
-
-So that's it for this lecture.
-
-We've seen how the Kafka console producer works.
-
-I hope you liked it and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ đọc lại toàn bộ những message vừa gửi bằng `kafka-console-consumer.sh` — từ đọc message mới nhất, đọc từ đầu topic, tới hiện cả partition và timestamp để kiểm chứng thứ tự per-partition.

@@ -1,347 +1,145 @@
-Hey, this is from Stephane from Conduktor
+# Hands-On Schema Registry: Đăng Ký Schema, Chặn Dữ Liệu Bẩn, Evolve An Toàn
 
-and in this lecture we're going to start the Schema Registry
+Bài trước bạn đã hiểu vì sao cần Schema Registry. Bài này chúng ta làm thật trên Conduktor + Docker: tạo topic, đăng ký Avro schema, produce thử đúng/sai để thấy Registry reject, rồi evolve schema lên v2 mà không sập consumer.
 
-and start using it.
+---
 
-So using the Docker file we had from before,
+## 1. Khi Nào Dùng Quy Trình Này?
 
-we can start Kafka and the Schema Registry
+Đây là quy trình chuẩn mỗi khi bạn đưa một topic mới vào production có governance:
 
-and Conduktor configured properly.
+1. Tạo topic.
+2. Đăng ký schema v1 cho value (và key nếu cần).
+3. Producer chỉ được ghi dữ liệu đúng schema.
+4. Khi nghiệp vụ đổi, evolve schema có kiểm tra compatibility rồi mới deploy producer mới.
 
-So once we'll be using the Conduktor platform,
+Làm một lần cho quen, sau này mọi topic quan trọng (orders, payments, user_settings) đều lặp lại đúng 4 bước này.
 
-we'll be able to play with the Schema Registry.
+## 2. Kiến Trúc Demo
 
-So we will create a schema
+```mermaid
+graph LR
+    UI[Conduktor Platform] --> SR[(Schema Registry<br/>subject: demo-schemaregistry-value)]
+    UI -->|Produce Avro| K[(demo-schemaregistry)]
+    K -->|Consume<br/>auto-decode Avro| UI
+    SR -. validate .-> K
+```
 
-and then we'll send data using a producer
+Thành phần:
 
-into Apache Kafka using that schema,
+* Docker Compose có sẵn: ZooKeeper + Kafka + Schema Registry + Conduktor. Bấm start services là đủ, không cần cài tay.
+* Topic demo: `demo-schemaregistry`, strategy `TopicNameStrategy` — subject của schema value sẽ là `demo-schemaregistry-value`.
+* Format: **Avro**. Producer/Consumer trong demo là Conduktor UI với chế độ `Avro Schema Registry` (thay cho code Java, nhưng nguyên lý validate giống hệt).
 
-and we'll consume the data using a consumer as well.
+## 3. Hands-On: Đăng Ký Schema v1
 
-So this is the type of architectural we'll be having
+### 3.1. Tạo topic và mở Schema Registry
 
-and we'll be using the Avro type of data in our exercise,
+1. Trong Conduktor, tạo topic `demo-schemaregistry`.
+2. Mở tab Schema của topic — đang trống, chưa có schema nào.
+3. Sang mục Schema Registry bên trái, bấm tạo schema mới: type **Avro**, strategy **Topic Name**, topic name `demo-schemaregistry`, áp dụng cho **value**.
 
-and we'll look as well at schema evolution
+### 3.2. Nội dung `schema-v1.json`
 
-to see whether or not our producer
+```json
+{
+  "type": "record",
+  "name": "myrecord",
+  "fields": [
+    { "name": "f1", "type": "string" }
+  ]
+}
+```
 
-or our consumer can send and retrieve data from Kafka.
+Giải thích: record tên `myrecord` có đúng một field `f1` kiểu string. Mọi record ghi vào topic từ giờ phải có `f1` là string, không hơn không kém (ở v1).
 
-So just as a reminder,
+Tạo xong, refresh tab Schema của topic — schema đã gắn vào topic.
 
-under Conduktor platform and docker-compose.yml
+## 4. Hands-On: Produce Đúng Thì Qua, Sai Thì Bị Chặn
 
-you have started the services.
+Chuyển sang tab Produce của topic, chọn value type **Avro Schema Registry**.
 
-If not, click on this button
+**Thử 1 — đúng schema (`producer-v1.json`):**
 
-to make sure the services are running
+```json
+{ "f1": "value1" }
+```
 
-and you will have Zookeeper, Kafka is here,
+Bấm Produce: thành công. Registry chuyển JSON thành Avro bytes, consumer đọc lên vẫn thấy JSON nhờ Conduktor auto-decode.
 
-and of course, in the button we have the Schema Registry
+**Thử 2 — sai tên field:**
 
-that we set up as well automatically.
+```json
+{ "f2": "value1" }
+```
 
-So it's way easier for you to get started.
+Bấm Produce: **lỗi server, bị từ chối**. Thông báo nói rõ schema yêu cầu `f1`. Dữ liệu không bao giờ tới Kafka.
 
-So then when you're on Conduktor,
+**Thử 3 — sai kiểu dữ liệu:**
 
-you can go on the left on Schema Registry
+```json
+{ "f1": 123 }
+```
 
-and this is where we'll be dealing with our schema.
+Bấm Produce: **lỗi tiếp**, vì `f1` phải là string nhưng nhận integer.
 
-So currently we have zero schemas,
+Ba thử nghiệm này chính là giá trị của Registry: **phát hiện lỗi ở cửa ghi, thay vì để consumer crash lúc nửa đêm.** Gửi thêm `{"f1": "value2"}` để có dữ liệu sạch, rồi sang tab Consume kiểm tra — các message hiện ra bình thường dưới dạng JSON.
 
-but we'll be adding them very shortly.
+## 5. Hands-On: Evolve Lên Schema v2 Tương Thích
 
-So let's first create a topic
+Nghiệp vụ đổi: cần thêm field `f2` kiểu int. Không thể cứ thêm bừa — phải kiểm tra compatibility để consumer cũ vẫn đọc được.
 
-and this topic is going to be called demo-schemaregistry.
+### 5.1. Nội dung `schema-v2.json`
 
-So we create this topic
+```json
+{
+  "type": "record",
+  "name": "myrecord",
+  "fields": [
+    { "name": "f1", "type": "string" },
+    { "name": "f2", "type": "int", "default": 0 }
+  ]
+}
+```
 
-and as you can see right here,
+Điểm mấu chốt là `"default": 0`. Nhờ default này, record cũ (chỉ có `f1`) khi đọc bằng schema v2 sẽ tự nhận `f2 = 0` — đó chính là **backward compatibility**.
 
-there's no schema yet for this topic under the Schema tab.
+### 5.2. Kiểm tra rồi mới update
 
-So let's go in the Schema Registry
+1. Trong Schema Registry, mở version 1, paste schema v2 vào, bấm **Check compatibility**.
+2. Kết quả `Success: Your schema is compatible` — lúc này mới bấm Update lên version 2.
+3. Xem tab Structure: giờ có 2 fields `f1 (string)` và `f2 (int, default 0)`.
 
-and we're going to create schema.
+### 5.3. Produce với schema v2
 
-So the type is going to be Avro
+| Payload | Kết quả | Vì sao? |
+|---|---|---|
+| `{"f1": "value1", "f2": 123}` | Thành công | Đủ 2 fields đúng kiểu |
+| `{"f1": "value1"}` (thiếu f2) | Thành công, consumer thấy `f2 = 0` | Registry tự điền default |
+| `{"f1": "value1", "f2": "abcd"}` | Bị từ chối | `f2` phải là int |
 
-and the strategy is going to be Topic Name.
+Sang tab Consume xác nhận: record đủ 2 fields hiện `f2 = 123`, record thiếu `f2` hiện `f2 = 0` tự động.
 
-We're going to create a schema for the value of the topic,
+## 6. Quy Tắc Evolve An Toàn (Nhớ Nằm Lòng)
 
-so we need to enter a topic name.
+| Thao tác | An toàn? | Điều kiện |
+|---|---|---|
+| Thêm field mới | Có, nếu có `default` hoặc union với `null` | Consumer cũ dùng default, không crash |
+| Xóa field | Nguy hiểm, chỉ khi chắc không ai dùng | Phải kiểm tra forward compatibility |
+| Đổi tên field (`f1` -> `f2`) | Không — Registry coi như xóa + thêm | Muốn đổi tên phải giữ alias hoặc migrate có kế hoạch |
+| Đổi kiểu (`string` -> `int`) | Không, trừ khi kiểu mới đọc được dữ liệu cũ | Luôn bị reject ở ví dụ thử 3 |
 
-It's going to be demo-schemaregistry
+Có khóa học riêng chỉ nói về compatibility levels (BACKWARD, FORWARD, FULL, NONE), nhưng chỉ cần nhớ: **field mới luôn phải có default, không đổi tên/kiểu bừa bãi.**
 
-and so the computer name is demo-schemaregistry-value.
+## Cạm Bẫy Thường Gặp
 
-Here we have to copy the actual schema itself,
+* **Bỏ qua nút Check compatibility, cứ Update thẳng.** Đến lúc consumer cũ crash mới biết schema vỡ. Luôn check trước, update sau.
+* **Thêm field bắt buộc không default "cho sạch".** Sạch với producer mới, nhưng consumer cũ đọc record mới sẽ thiếu field và crash. Default không phải option trang trí — nó là cầu nối giữa 2 versions.
+* **Dùng một subject cho nhiều topic khác nhau.** Strategy `TopicNameStrategy` (`<topic>-value`) là mặc định an toàn. Dùng chung subject (RecordNameStrategy) khi chưa hiểu rõ sẽ gây xung đột compatibility giữa các topic.
+* **Tưởng Avro JSON trong UI là dữ liệu thật trong Kafka.** Trong Kafka là Avro bytes + schema id, rất gọn. JSON bạn thấy là Conduktor decode giúp. Đừng đo dung lượng topic bằng mắt nhìn UI.
 
-so this is called an Avro definition in JSON formats.
+## Kết Luận
 
-And so to enter our own definition,
+Bạn vừa đi hết vòng đời governance của một topic: đăng ký v1, chặn dữ liệu sai tên/kiểu ngay ở cửa ghi, evolve v2 thêm field có default, kiểm tra compatibility trước khi update, xác nhận consumer đọc được cả record cũ và mới.
 
-go into 2-kafka-extended, schema-registry, schema-v1.JSON.
-
-You copy this entire JSON
-
-and this is where we define our record called myrecord.
-
-So if you have a look in here,
-
-the name is myrecord, the type is record,
-
-and we have one field called f1, field one,
-
-and the type is string.
-
-So this is defining how the data
-
-should look like in our Kafka topic.
-
-So let's create this.
-
-So we have created this demo-schemaregistry-value schema
-
-and we have a summary of the schema itself,
-
-and we have the structure in here
-
-saying that there's one field called f1
-
-and the type is string,
-
-as well as the formats being Avro.
-
-So this is enough to get started,
-
-so back into our topic.
-
-I can refresh this page
-
-and as you can see now,
-
-the schema get populated for this topic
-
-and we have the schema we saw from before.
-
-So that means we can start producing data
-
-into our topic using that schema.
-
-So under the Produce tab,
-
-just go and choose for value Avro Schema Registry
-
-and you can be very quick
-
-and do Generate once to generate some fake data,
-
-or you can also go to producer-v1.JSON right here
-
-and copy and paste this value.
-
-So we have F1 of value, value1, which is a strength
-
-and if you try to produce right now, this is working.
-
-The data has been produced and accepted
-
-because the schema of this get converted into Avro
-
-and it was compliant with the schema
-
-we have defined from before.
-
-But watch what happens if I try to send another value
-
-and it contains the field f2
-
-and the value is value one.
-
-So we have changed the field name from f1 to f2.
-
-If I try to produce, I get a server error
-
-and it's saying that it cannot do it
-
-because it should be f1.
-
-And so that means that the data we are trying to send
-
-doesn't respect the schema we've defined for our topic
-
-and so therefore it's going to be refused
-
-and we cannot send the data to Kafka,
-
-so it's a really nice safeguard.
-
-So it protects against field names
-
-but also against data types.
-
-So if I change from value one to 123, for example,
-
-to have an integer
-
-and try to produce again,
-
-we're going to get another error.
-
-It says that the field f1 is expected to be of type string
-
-but we don't have the type string right now.
-
-We have the type integer,
-
-so again, we cannot send data to Kafka
-
-that does not respect the schema for the types as well.
-
-So the only way to do it is to actually send the field f1
-
-with a value that is of type string.
-
-So value two end here, it gets accepted.
-
-So now if you go under the Consume tab,
-
-as you can see, the messages are consumed automatically
-
-and Conduktor is smart enough to know this was Avro format
-
-and to display it as a JSON document.
-
-But as you can see, the value is Avro
-
-and this was possible thanks to this Schema Registry.
-
-So something else we can do
-
-is to go under the Schema Registry
-
-and we can make this Schema evolve.
-
-So we have version one,
-
-but we're going to update it with a different value.
-
-So back in here we have schema-v2
-
-and I'm going to copy and paste this,
-
-but what we're doing here is that we're adding
-
-a second field named f2 of type integer
-
-and the default value is zero.
-
-So we have made our schema evolved
-
-because now we're defining new fields.
-
-So we can check the compatibility
-
-and it says Success: Your schema is compatible
-
-because we're trying to make sure
-
-that any evolution of your Schema
-
-is compatible so that the producers
-
-and the consumers can keep on reading and writing data.
-
-Okay, so let's update it now that the schema is compatible
-
-and now we are on version two.
-
-So back in here, if you look at the structure,
-
-we now have two different fields.
-
-We have f1 of type string and f2 of type int
-
-and on top of it, f2 has a default of zero.
-
-So now if I go back to my topic
-
-and I go and produce,
-
-as you can see, I'm still using the Avro Schema Registry,
-
-but now I can generate my data.
-
-And we have f1, that's a string,
-
-so I'll have it as value one
-
-and f2 is an int, so I'll have it as 123.
-
-Now if we do produce this,
-
-as you can see, this works.
-
-So I can now add a field f2, and that's perfect.
-
-And if I don't have f2 as well, I'll just remove it.
-
-Let's see if that works, that works too
-
-because f2 had a default of zero.
-
-So automatically the zero value will be then added.
-
-So let's get convinced by this.
-
-So if you go under the Consume tab
-
-and have a look at it,
-
-as you can see now the f2 was added, 123,
-
-but then when we did not specify f2.
-
-Then the value zero automatically gets added
-
-because it is a default.
-
-And finally, if I try to enter f2
-
-but to be a string, for example,
-
-I'll just have it as 1234
-
-but in a string with an ABCD or whatever.
-
-And I produce this, I'm gonna get an error
-
-because well, f2 is expected to be an integer.
-
-So we really see the power of the Schema Registry.
-
-There is a whole course around it as well,
-
-but this really is important when you want to have safety
-
-and make sure that your Kafka data follows a specific format
-
-and a specific schema.
-
-So that's it for this lecture.
-
-I hope you liked it
-
-and I will see you in the next lecture.
+Bài tiếp theo khép lại section: **bảng quyết định chọn API** — Source hay Producer, Streams hay Consumer, Sink khi nào, và Schema Registry đứng ở đâu trong mọi pipeline.

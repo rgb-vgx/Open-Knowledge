@@ -1,147 +1,47 @@
-Hi, and welcome.
+# Gặp Thầy Của Bạn: Stephane Maarek Và Cách Học Không Bỏ Dở
 
-My name is Stephane Maarek,
+Bài trước bạn đã có bản đồ toàn khóa. Bài này lùi lại một bước rất con người: thầy của bạn là ai, liên lạc với thầy ở đâu, và thầy dặn gì để bạn đi hết khóa thay vì bỏ dở ở tuần hai.
 
-and I will be your instructor for this course.
+---
 
-I'm delighted to have you here.
+## 1. Thầy Là Ai Ngoài Cái Tên Trên Slide?
 
-I really hope that you enjoy this course
+Thầy là **Stephane Maarek** — người Pháp, nên nếu bạn nghe giọng hơi lơ lớ thì đó chính là "dấu vết" từ đất nước ngọt ngào của nước Pháp như thầy tự đùa.
 
-and that you will go all the way through with it.
+Hành trình của thầy vòng qua nhiều châu lục: sống ở **Mỹ, Úc, Mexico**, hiện tại ở **Bồ Đào Nha**. Và cũng vòng qua nhiều vai trong nghề: từng làm **data analyst, big data engineer, developer, AWS solutions architect** — rồi rẽ sang vai hiện tại và cũng là đam mê lớn nhất: **teacher**, người dạy online.
 
-This is just a two minutes introduction
+Hai mảng chuyên môn sâu nhất của thầy là **AWS certifications** và **Apache Kafka**. Trong mảng Kafka, thầy không chỉ dạy một khóa lẻ mà xây cả **Apache Kafka Series**, từng ngồi trong **Program Committee của Kafka Summit** — tức người duyệt xem ai xứng đáng lên sân khấu hội nghị Kafka lớn nhất thế giới.
 
-so that you get to know me.
+Nói ngắn gọn: bạn đang học từ người vừa làm data thật, vừa dạy Kafka cho hàng trăm nghìn người, vừa duyệt nội dung cho cả cộng đồng Kafka.
 
-And then we'll hop it right into the course.
+## 2. Hai Nơi Để Kết Nối — Mỗi Nơi Một Việc
 
-I'm French, so if you hear a small accent,
+Trước khi vào bài học, thầy chỉ đúng hai kênh để bạn kết nối. Mỗi kênh một vai trò riêng, đừng nhầm:
 
-this is where it comes from.
+1. **LinkedIn — kênh professional.** Nơi thầy chia sẻ tin tức hệ sinh thái **AWS và Kafka**, thông báo **khóa học mới**, và quan trọng nhất: **chúc mừng bạn khi bạn tag thầy vào certificate**. Học xong khóa hay đậu chứng chỉ, cứ đăng post khoe và mention thầy — thầy bảo thầy sẽ vào chúc mừng, vì nhìn học viên đạt mục tiêu chính là động lực lớn nhất của thầy.
+2. **Instagram — kênh con người.** Dự án cá nhân thầy bắt đầu từ hơn hai năm trước, gắn với sở thích **đi khắp thế giới và gặp học viên dọc đường**. Mỗi lần tới một điểm đến mới, thầy đăng post hẹn gặp. Tới nay đã gặp hơn **25 học viên**: ngồi tán gẫu về mục tiêu, khóa học giúp gì, sự nghiệp ra sao, rồi thầy viết post kể lại câu chuyện đó. Muốn có cơ hội gặp mặt, đọc story của học viên khác, hay xem hậu trường đời thường thì follow kênh này.
 
-The sweet country of France.
+Analogy kiểu Việt Nam: LinkedIn là phòng họp — nghiêm túc, khoe bằng cấp, bàn chuyện nghề. Instagram là quán cà phê vỉa hè — gặp mặt, kể chuyện, biết thầy ngoài đời là người ra sao.
 
-But I've also lived in the United States,
+## 3. Lời Dặn Quan Trọng Nhất: Đặt Mục Tiêu Ra Giấy
 
-in Australia, in Mexico, and now in Portugal.
+Trước khi bấm play bài tiếp theo, thầy bắt bạn làm một việc nghe rất "cũ kỹ": **đặt mục tiêu học tập**.
 
-My expertise is going to be around AWS certifications
+Vì sao? Vì đặt mục tiêu ra giấy làm tăng hẳn xác suất bạn **học hết khóa và học được nhiều**. Gợi ý của thầy rất cụ thể: ví dụ muốn **hoàn thành khóa trong ba tuần** — lấy giấy bút ra, viết mục tiêu đó xuống, dán ở chỗ dễ thấy, rồi bám lấy nó.
 
-and Apache Kafka.
+Kèm theo đó là hai lời khuyên thực dụng cho khóa học video:
 
-Why?
+* **Xem lại bao nhiêu lần cũng được.** Video sinh ra là để tua đi tua lại. Đoạn nào về Partition, Offset, Replication mà rối thì xem lại, đừng ngại.
+* **Chỉnh tốc độ playback cho hợp tai.** Nghe nhanh quá thì chậm lại, nghe chậm quá thì tăng tốc. Mục tiêu là bạn hiểu thầy, không phải bạn chịu đựng thầy.
 
-Well, because in my career, I've had the chance
+## Cạm Bẫy Thường Gặp
 
-to be a data analyst, a big data engineer, a developer,
+* **Nghe lướt vì tưởng bài chào hỏi không có gì.** Bài này chứa đúng hai thứ quyết định bạn có học hết khóa không: kênh hỏi bài và kỷ luật mục tiêu. Bỏ qua là tự làm khó mình.
+* **Đặt mục tiêu trong đầu thay vì viết ra.** Mục tiêu trong đầu bốc hơi sau ba ngày. Viết ra giấy, dán lên tường, nó mới có trọng lượng.
+* **Ngại tua lại vì sợ "mình chậm".** Khóa này đặc kiến thức phân tán — người tua lại nhiều mới là người hiểu sâu. Cảm giác "xem một lần là xong" thường là ảo giác hiểu.
 
-and an AWS solutions architect.
+## Kết Luận
 
-And obviously, well, (chuckles) today, I'm a teacher.
+Tóm lại một câu: **thầy bạn là Stephane Maarek — cựu data engineer turned teacher sống ở Bồ Đào Nha, kết nối professional qua LinkedIn, kết nối con người qua Instagram, và bài tập đầu tiên của bạn là viết mục tiêu học tập ra giấy.**
 
-I love to teach, and this is my passion.
-
-And I wanna help you achieve any goal you have
-
-through online learning.
-
-Before we get started with this course,
-
-there are two ways you can connect with me.
-
-First place is on LinkedIn,
-
-this is where I will share more professional updates,
-
-such as news on the AWS and the Kafka ecosystem,
-
-course releases, and most importantly,
-
-where I will congratulate you
-
-if you tag me on your course certificates.
-
-So for example, if you just completed the course
-
-or passed a certification, make a post and mention me.
-
-And I will make sure to congratulate you.
-
-I love to see my students reach their goals,
-
-this is my main motivation.
-
-The second way is on Instagram.
-
-Instagram is a big project of mine
-
-that I started over two years ago.
-
-I love to travel the world
-
-and I decided to meet students along the way.
-
-Every time I go to a new destination,
-
-I'll make a post and I will try to meet students.
-
-And to date, I've already met over 25 students.
-
-Anytime, I meet with students, we'll have a chat
-
-about your goals, how the course helps you,
-
-your achievements, your career, and then at the end,
-
-I will make a post about it.
-
-So if you wanna get a chance to meet me
-
-or read about other students' story
-
-or get more personal behind the scenes updates,
-
-then follow me on Instagram.
-
-Finally, before starting this course,
-
-I want you to set a goal.
-
-By setting a goal, you will have a much higher chance
-
-of finishing this course and learning a lot.
-
-So maybe you wanna finish your course
-
-in three weeks, that's perfect.
-
-Take a piece of paper and a pen, write your goal on it,
-
-and then stick with it.
-
-This is how you learn
-
-and this is how you'll make the most out of this course.
-
-And don't hesitate to go through the lectures
-
-as many times as needed.
-
-This is what video is used for.
-
-If necessary, you can speed up or slow down
-
-the playback speed so it becomes easier
-
-for you to understand me.
-
-So that's it for me.
-
-I hope you will enjoy this course.
-
-And I will see you in the next lecture.
-
-Happy learning.
-
-(upbeat music)
+Bài tiếp theo chúng ta chính thức vào phần Theory: mổ xẻ ba khái niệm xương sống mà nắm được là bạn hiểu 50% Kafka — **Topic, Partition và Offset**.

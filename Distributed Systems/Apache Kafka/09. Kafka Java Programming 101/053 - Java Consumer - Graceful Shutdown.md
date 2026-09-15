@@ -1,307 +1,153 @@
-Hi, this is Stefan from Conduktor
+# Graceful Shutdown: Tắt Consumer Sạch Với WakeupException Và Shutdown Hook
 
-and in this demo we're going to add a shutdown hook
+Bài trước vòng `while (true)` đọc ngon, nhưng tắt bằng nút Stop là kill abrupt — lần join sau mất ~30s, log rebalance rối tung. Bài này bọc consumer trong shutdown hook chuẩn: `consumer.wakeup()` + `WakeupException` + `mainThread.join()` + `consumer.close()`. Đây là pattern bắt buộc cho mọi consumer production.
 
-to our consumer code.
+---
 
-And this is going to allow us to just properly shut
+## 1. Concept: Vì Sao Không Thể `break` Vòng Poll?
 
-down the consumer just like we did previously
+`consumer.poll()` là blocking call — nó có thể đang chờ broker tới 1 giây. Không có cách nào từ thread khác "bẻ" vòng loop một cách an toàn ngoài cơ chế Kafka sinh ra cho việc này: `wakeup()`.
 
-properly shut down the producer.
+Luồng hoạt động:
 
-Let's duplicate this consumer demo
+1. JVM nhận tín hiệu shutdown (Ctrl+C, nút Stop, SIGTERM) → chạy **shutdown hook** bạn đã đăng ký bằng `Runtime.getRuntime().addShutdownHook()`.
+2. Trong hook, gọi `consumer.wakeup()`. Đây là method duy nhất của `KafkaConsumer` an toàn để gọi từ thread khác.
+3. Lần `poll()` đang chạy (hoặc lần kế tiếp) lập tức ném `WakeupException`.
+4. Bạn `catch (WakeupException)` — đây là exception **dự kiến**, chỉ log `consumer is starting to shut down`, không coi là lỗi.
+5. Khối `finally` gọi `consumer.close()` — đóng kết nối sạch, **commit offset** đã xử lý, gửi `LeaveGroup` để group rebalance ngay thay vì chờ timeout.
+6. Hook gọi `mainThread.join()` để chờ main thread chạy xong `finally` rồi JVM mới thoát hẳn.
 
-and I'll call this one "Consumer Demo With Shutdown".
+Hai `catch` riêng biệt là chủ ý: `WakeupException` (expected shutdown) vs `Exception` (unexpected — log error kèm stacktrace). Đừng gộp chung.
 
-Okay, so we are done.
+## 2. Code hoàn chỉnh
 
-We are going to keep the same Java application for now.
+Duplicate `ConsumerDemo` thành `ConsumerDemoWithShutdown`:
 
-We're going to keep the properties all the way.
+```java
+package io.conduktor.demos.kafka;
 
-This is perfect.
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-We are gonna keep the consumer
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Properties;
 
-but now we're going to actually just
+public class ConsumerDemoWithShutdown {
 
-before the subscribe creates what's called a shutdown hook.
+    private static final Logger log = LoggerFactory.getLogger(ConsumerDemoWithShutdown.class.getSimpleName());
 
-So the first thing we need to do is to get a reference
+    public static void main(String[] args) {
+        log.info("I am a Kafka consumer with graceful shutdown!");
 
-to the main thread, the current thread.
+        String groupId = "my-java-application";
+        String topic = "demo_java";
 
-So what we do is that we do final thread,
+        Properties properties = new Properties();
+        properties.setProperty("bootstrap.servers", "127.0.0.1:9092");
 
-main thread equals thread dot current thread.
+        // Nếu dùng Conduktor Playground: comment dòng trên, mở 4 dòng dưới
+        // properties.setProperty("bootstrap.servers", "cluster.playground.cdkt.io:9092");
+        // properties.setProperty("security.protocol", "SASL_SSL");
+        // properties.setProperty("sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"...\" password=\"...\";");
+        // properties.setProperty("sasl.mechanism", "PLAIN");
 
-And this is a reference
+        properties.setProperty("key.deserializer", StringDeserializer.class.getName());
+        properties.setProperty("value.deserializer", StringDeserializer.class.getName());
+        properties.setProperty("group.id", groupId);
+        properties.setProperty("auto.offset.reset", "earliest");
 
-to the thread that is running my program.
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 
-So this is the main thread
+        // 1. Giữ reference tới main thread để hook join vào
+        final Thread mainThread = Thread.currentThread();
 
-because we are in the main method right now.
+        // 2. Đăng ký shutdown hook — chạy khi JVM nhận tín hiệu tắt
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                log.info("Detected a shutdown, let's exit by calling consumer.wakeup()...");
+                consumer.wakeup();
 
-So it's a reference
+                // Chờ main thread chạy xong try/catch/finally rồi mới cho JVM thoát
+                try {
+                    mainThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
-because we'll be using it in a few seconds.
+        try {
+            // 3. Subscribe + poll loop nằm TRONG try để hứng WakeupException
+            consumer.subscribe(Arrays.asList(topic));
 
-And then we add the shutdown hook.
+            while (true) {
+                ConsumerRecords<String, String> records =
+                        consumer.poll(Duration.ofMillis(1000));
 
-So to add a shutdown hook, it's very easy,
+                for (ConsumerRecord<String, String> record : records) {
+                    log.info("Key: " + record.key() + ", Value: " + record.value());
+                    log.info("Partition: " + record.partition() + ", Offset: " + record.offset());
+                }
+            }
 
-we'll do run time dot get run time dot add, shutdown hook.
+        } catch (WakeupException e) {
+            // 4a. Expected — shutdown chủ động, không phải lỗi
+            log.info("Consumer is starting to shut down...");
 
-And this is a standard Java method.
+        } catch (Exception e) {
+            // 4b. Unexpected — lỗi thật, cần stacktrace
+            log.error("Unexpected exception in the consumer", e);
 
-We need to pass in a new thread called the hook.
+        } finally {
+            // 5. Luôn close: ngắt kết nối sạch + commit offset + leave group
+            consumer.close();
+            log.info("The consumer is now gracefully shut down.");
+        }
+    }
+}
+```
 
-So new thread.
+### Giải thích từng đoạn
 
-And then I'm going to open
+**`final Thread mainThread = Thread.currentThread()`.** Phải `final` để inner class `new Thread()` trong hook truy cập được. Đây là cầu nối giữa hook thread (thread 0 phụ) và main thread đang kẹt trong `poll()`.
 
-up the brackets and we'll do public void run to
+**`consumer.wakeup()` trong hook.** Một dòng nhưng là toàn bộ "phép thuật". Không gọi `consumer.close()` trực tiếp trong hook — close từ thread khác trong lúc poll đang chạy là unsafe. Wakeup chỉ "đánh thức" poll để nó tự ném exception, còn close vẫn chạy trên main thread trong `finally`.
 
-actually create this run method instead of a thread.
+**`mainThread.join()` trong hook.** Nếu thiếu dòng này, JVM có thể thoát ngay sau khi hook xong, main thread chưa kịp chạy `finally` → close dang dở, offset chưa commit, group không nhận `LeaveGroup`. `join()` ép hook chờ main làm xong. Phải bọc try/catch `InterruptedException`.
 
-So what is the thread that is going to run
+**`try` bao cả `subscribe` + `while`.** Transcript nhấn mạnh đưa cả subscribe vào try. Vì `poll()` ở dòng nào trong loop cũng có thể ném `WakeupException`, try phải bao toàn bộ loop.
 
-when we have a shutdown?
+**`finally { consumer.close(); }`.** Close làm 3 việc: revoke partitions đã assign, commit offset (với auto-commit), gửi leave group → các consumer còn lại rebalance **ngay lập tức** thay vì chờ session timeout. Đó là lý do bài sau demo 2-3 consumer tắt mở mượt mà.
 
-And the thread we're going to run is
+**Bỏ log `Polling...` mỗi vòng.** Bài group sau sẽ chạy nhiều instance song song — log polling mỗi giây nhân 3 instance sẽ nhấn chìm log quan trọng (rebalance, partition assignment). Transcript xóa dòng này từ đây.
 
-that first of all, we're going to say, "Hey,
+## 3. Chạy và kiểm tra
 
-we detected a shutdown because we have to take a shutdown."
+1. Run `ConsumerDemoWithShutdown.main()`. Thấy log join group rồi `poll` im lặng (không còn dòng Polling mỗi giây).
+2. Bấm Stop (hoặc Ctrl+C). Quan sát log theo đúng thứ tự:
+   * Thread phụ: `Detected a shutdown, let's exit by calling consumer.wakeup()...`
+   * Main thread: `Consumer is starting to shut down...`
+   * Log graceful: `revoking previously assigned partitions`, `leaving the group`, `metrics shut down`...
+   * Dòng cuối: `The consumer is now gracefully shut down.`
+3. Restart consumer ngay: join lại **nhanh** (vài giây), không còn cảnh chờ ~30s như bản kill abrupt. Vì group đã nhận `LeaveGroup` sạch.
+4. Produce thêm message trong lúc consumer tắt, bật lại: consumer đọc đúng batch mới từ committed offset, không đọc lại cũ, không mất mới.
 
-Let's exit by calling consumer dot wakeup
+## 4. Pitfalls
 
-and we'll see what the wakeup method is and how it works.
+* **Gọi `consumer.close()` trong hook thay vì `wakeup()`.** Close không thread-safe khi poll đang chạy — có thể deadlock hoặc `ConcurrentModificationException`. Luôn wakeup từ hook, close trên main thread.
+* **Quên `mainThread.join()`.** Triệu chứng: log `gracefully shut down` không bao giờ hiện, offset commit dở dang, lần sau đọc lại dữ liệu cũ. Hook thoát trước khi main dọn xong.
+* **Chỉ catch `Exception` chung, không catch riêng `WakeupException`.** Kết quả: mỗi lần tắt sạch log vẫn báo error đỏ lòm — gây hoảng không cần thiết và che mất lỗi thật. Tách hai catch như mẫu.
+* **Để `while (true)` ngoài try.** `WakeupException` ném ra ngoài try → rơi vào uncaught, `finally` không chạy, consumer không close. Try phải bao loop.
+* **Tưởng `close()` là mất offset.** Ngược lại: close với auto-commit sẽ commit nốt offset đã poll+xử lý. Kill -9 (không qua hook) mới mất cơ hội commit cuối.
 
-But this is the the trick to exit the while loop.
+## Kết Luận
 
-So once we do this, let's do actually a consumer dot wakeup.
+Một câu: **hook gọi `wakeup()`, poll ném `WakeupException`, main catch rồi `close()` trong `finally` — đó là shutdown graceful.** Thuộc pattern này trước khi đụng tới consumer group.
 
-And when we do a consumer dot wakeup,
-
-what's going to happen is
-
-that the next time we will do consumer dot poll in our code
-
-this is going to throw a wakeup exception.
-
-And this wakeup exception is what we want to be catching.
-
-So consumer dot wakeup is on the catch.
-
-And so once we allow and we tell the consumer, "Hey,
-
-you should throw an exception next time."
-
-Some code is going to execute after the while loop.
-
-So what we wanna do is to not finish our program just yet,
-
-we want to make sure that this shutdown hook is now waiting
-
-for the main program to finish.
-
-So here we'll join the main thread to allow the execution
-
-of the code in the main thread.
-
-And to this we'll do a main thread dot join.
-
-Now we need to try catch this.
-
-So I will surround it with try catch.
-
-So for me it was alt enter and then we have surrounded it
-
-with a try and catch statements.
-
-So to summarize, upon getting a shutdown hook
-
-we call consumer dot wake up
-
-which will trigger an exception
-
-in our consumer on this line of code.
-
-And then we will join the main thread
-
-to wait for all the code
-
-in this page to be completed and have no more execution.
-
-So because we know that this consumer is going
-
-to throw an exception on the dot pole method,
-
-we need to have a try around everything.
-
-So let's try around
-
-and we'll even add the consumer dot subscribe in there.
-
-So we'll try and we'll close it here.
-
-So on the try block we are trying
-
-and I will just have more space.
-
-So we try and we try this entire block of code and we know
-
-that at some point consumer dot poll is going
-
-to throw a wake up exception.
-
-So we catch a wake up exception E, and this is expected.
-
-So log the info, "consumer is starting to shut down".
-
-This is because this is expected
-
-and so it's not an exception we wanna react to,
-
-we expected it because this is a shutdown, but
-
-in case we catch an exception E that we don't know about.
-
-So this is an unexpected exception
-
-then we can have a log that error,
-
-"unexpected exception in the consumer".
-
-And then we can pass
-
-in the exception itself to see what is happening.
-
-And no matter what, if we have a unexpected exception
-
-or a wakeup exception, you wanna
-
-have a finally block to actually shut down your consumer.
-
-So we do consumer dot actual close
-
-to actually well close the consumer
-
-and this will also commit the Offsets.
-
-Good to know.
-
-And then finally we'll do like log dot info,
-
-the consumer is now gracefully shut down.
-
-Okay, so let's summarize because this
-
-was a bit of improvement.
-
-So we are creating a reference to the main thread.
-
-We add a shutdown hook, we wake up the consumer
-
-in the shutdown hook, and then we join the main thread so
-
-that the code after the try gets run, then the consumer
-
-on that poll throws the wake up exception, which is saying,
-
-"Hey, the consumer is starting to shut down."
-
-We go into the final block, we close the consumer,
-
-which is going to gracefully close any connection to Kafka
-
-and allow our group to rebalance, gracefully, by the way.
-
-And this will also commit Offsets.
-
-And finally we will have a final message saying,
-
-"The consumer is now gracefully shut down."
-
-So let's run our code now.
-
-So let's go ahead and run the consumer demo with shutdown.
-
-And we're going to see what happens
-
-when we try to exit our consumer.
-
-So in this case, we are joining a group
-
-and now our consumer is polling, polling, polling, polling.
-
-But if I click on here on exit,
-
-it's going to send a shutdown.
-
-So as you can see, thread zero, which is a new thread,
-
-not the main thread is saying, "Hey, I detected a shutdown
-
-let's exit by calling consumer dot wake up."
-
-So we were right here in the shutdown hook.
-
-That makes sense.
-
-And then the consumer that wake up got called.
-
-We went into poll,
-
-which triggered an exception because now we see
-
-that the main thread is saying,
-
-"Consumer is starting to shut down."
-
-So we were right here.
-
-Then we go and close the consumer.
-
-And this is what you see right here.
-
-As you can see, this is called a graceful shutdown
-
-of the consumer because now we're
-
-revoking the previously assigned partitions.
-
-We are resetting generation and so on.
-
-We're leaving the group.
-
-This is all the things that happen.
-
-Then the metrics shut down,
-
-the app info bar that's there also shuts down.
-
-And finally, when Kafka has done all its thing,
-
-we display one final message called, that says,
-
-"The consumer is now gracefully shut down."
-
-And that's it.
-
-We have successfully stopped our Kafka consumer gracefully,
-
-which is key to understanding what's going
-
-to happen in the next lecture
-
-because we're going to demonstrate consumer
-
-in consumer groups.
-
-So that's it.
-
-I hope you liked it and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ chạy 1 rồi 2 rồi 3 instance `ConsumerDemoWithShutdown` cùng `group.id` trên topic 3 partitions, quan sát rebalance chia partition (1 consumer ôm 3, 2 consumer chia 2-1, 3 consumer mỗi người 1) và tắt từng instance để thấy group tự chia lại ngay lập tức.

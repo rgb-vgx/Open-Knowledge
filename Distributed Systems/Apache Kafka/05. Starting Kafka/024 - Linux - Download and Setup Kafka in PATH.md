@@ -1,279 +1,152 @@
-Hi, this is Stephane from Conduktor,
+# Linux: Cài Java + Kafka Binaries Và Đưa Vào PATH
 
-and in this lecture,
+Bài này dành riêng cho **Linux (Ubuntu/Debian)**. Mục tiêu duy nhất: gõ được `kafka-topics.sh` từ bất kỳ thư mục nào để chọc vào cluster Kafka — dù cluster đó chạy bằng Docker (bài `020`) hay chạy tay (bài `025`).
 
-we're going to set up the Kafka binaries on Linux.
+Nội dung tương đương bài Mac `021`, nhưng lệnh cài Java và file cấu hình shell khác (`~/.bashrc` thay vì `~/.zshrc`).
 
-So even if you've used Conduktor and Docker to start Kafka,
+---
 
-you need to set up the Kafka binaries on your Linux machine
+## 1. Chuẩn Bị
 
-because we're going to use it
+Checklist trước khi bắt đầu:
 
-to start running the Kafka CLI commands.
+- Ubuntu (hoặc distro Debian-based). Distro RPM-based (Fedora/RHEL) thì chọn đúng tab hướng dẫn trên trang Corretto.
+- Có quyền sudo.
+- Kafka từ 4.0 trở lên (bản KRaft, không cần ZooKeeper).
 
-So first, we'll install Java JDK version 21.
+Toàn bộ bài gồm 3 việc: cài JDK 21 → tải + giải nén Kafka → thêm `bin` vào PATH.
 
-Then, we'll download Apache Kafka from this URL.
+## 2. Bước 1 — Cài Java JDK 21 (Amazon Corretto)
 
-Then, we'll extract the content on Linux
+Kafka bắt buộc chạy trên JDK 21.
 
-and set up the $PATH environment variables
+1. Google `install Amazon Corretto`, mở trang chủ Corretto.
+2. Chọn version **Corretto 21** (LTS mới nhất), sang tab **Linux**.
+3. Chọn đúng sub-tab **Debian-based** (Ubuntu) — trang sẽ hiện 2-3 lệnh: thêm repo/key rồi `apt install`.
 
-for easy access to the Kafka batteries.
+Chạy lần lượt trong Terminal (nhập password khi `sudo` hỏi):
 
-So, let's get started.
+```bash
+# 1. Thêm repo Corretto (copy đúng lệnh trên trang chủ)
+wget -O - https://apt.corretto.aws/corretto.key | sudo gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | sudo tee /etc/apt/sources.list.d/corretto.list
 
-Okay, so let's go ahead and type install Amazon Corretto.
+# 2. Cài Corretto 21
+sudo apt update
+sudo apt install -y java-21-amazon-corretto-jdk
+```
 
-We scroll down.
+> Lệnh thêm repo có thể thay đổi theo thời gian — luôn copy lệnh mới nhất trên trang Corretto, đừng học thuộc lệnh trong bài này.
 
-We click on this website.
+Kiểm tra:
 
-We're going to scroll down.
+```bash
+java -version
+```
 
-We'll choose the latest LTS version,
+Thấy `openjdk 21 ... Corretto` là đạt. Nếu máy có nhiều JDK và lệnh trên ra version khác, chọn lại JDK mặc định:
 
-which is Corretto 21 for me.
+```bash
+sudo update-alternatives --config java
+sudo update-alternatives --config javac
+```
 
-On the left hand side, there is Linux.
+Chọn số tương ứng với Corretto 21 rồi `java -version` lại.
 
-And then, you can click on install on Debian-based,
+## 3. Bước 2 — Tải Và Giải Nén Kafka
 
-RPM-based and Alpine Linux.
+1. Google `apache kafka download`, mở kafka.apache.org → Downloads.
+2. Chọn version **4.0 trở lên**, mục **Binary downloads**, tải file `.tgz`.
+3. File tải về nằm trong `~/Downloads` và thường đã tự bung (tùy trình duyệt). Nếu chưa bung, tự giải nén:
 
-So I'm using Ubuntu right now,
+```bash
+cd ~/Downloads
+tar -xvzf kafka_2.13-4.0.0.tgz
+```
 
-which is Debian-based Linux.
+4. Chuyển thư mục Kafka lên home cho gọn:
 
-And so it gives me the commands to run
+```bash
+mv kafka_2.13-4.0.0 ~/
+cd ~/
+ls | grep kafka
+```
 
-to just install Corretto properly.
+Phải thấy thư mục Kafka nằm ngay dưới home. Ngó thử thư mục quan trọng nhất:
 
-So I'm going to copy those
+```bash
+ls ~/kafka_2.13-4.0.0/bin | head
+```
 
-and I'm going to open a terminal,
+Thấy `kafka-topics.sh`, `kafka-server-start.sh`, `kafka-storage.sh`... là đúng.
 
-paste this first command in.
+## 4. Bước 3 — Hiểu Vấn Đề PATH Trước Khi Sửa
 
-So, let's do it again.
+Thử gọi lệnh bằng đường dẫn đầy đủ thì được:
 
-I'm going to just copy this one
+```bash
+~/kafka_2.13-4.0.0/bin/kafka-topics.sh
+```
 
-and paste it.
+Nhưng gõ gọn thì thất bại:
 
-Let's do it again,
+```bash
+kafka-topics.sh
+# command not found
+```
 
-copy and paste.
+Vì shell chỉ tìm lệnh trong các thư mục của biến `PATH`. Cần append thư mục `bin` của Kafka vào đó. Lấy đường dẫn tuyệt đối trước:
 
-Okay, here we go.
+```bash
+cd ~/kafka_2.13-4.0.0/bin
+pwd
+```
 
-So that's a good first step.
+Copy kết quả, ví dụ `/home/thuyet/kafka_2.13-4.0.0/bin`.
 
-Then, once you've added the repo,
+## 5. Bước 4 — Thêm Kafka Vào `~/.bashrc`
 
-you can install Corretto
+Linux dùng bash, file cấu hình là `~/.bashrc` (Mac dùng `~/.zshrc` — đây là khác biệt hay gây nhầm nhất giữa hai bài).
 
-by running this one command.
+1. Mở file:
 
-So we're just going to copy this command again.
+```bash
+nano ~/.bashrc
+```
 
-And for my first command,
+2. Cuộn xuống cuối file, thêm một dòng (thay đường dẫn bằng `pwd` của bạn):
 
-I just need to also enter the password.
+```bash
+export PATH="$PATH:/home/thuyet/kafka_2.13-4.0.0/bin"
+```
 
-So then, let's go again.
+3. Lưu: `Ctrl + X`, `Y`, `Enter`. Nạp lại cấu hình (hoặc đóng mở Terminal):
 
-We go to copy this command right here and paste it.
+```bash
+source ~/.bashrc
+```
 
-This is going to install Corretto.
+4. Kiểm tra từ một thư mục bất kỳ:
 
-And next we verify our Java version
+```bash
+cd ~/
+kafka-topics.sh
+```
 
-by doing the Java -version.
+Không còn `command not found` mà in ra hướng dẫn sử dụng là thành công.
 
-And if you get Corretto here, you're good to go.
+> Quy ước nhớ suốt khóa học: trên Linux/Mac-tải-tay/WSL2, mọi CLI Kafka đều **có đuôi `.sh`**. Chỉ bản brew trên Mac mới bỏ đuôi. Gõ sai là lệnh không chạy.
 
-That means you're set up.
+## Lỗi Thường Gặp & Cách Fix
 
-If not, you can scroll down in here.
+- **Copy lệnh cài Corretto cũ trên mạng, `apt update` báo lỗi key/repo:** Corretto đổi key theo thời gian. Fix: lên trang chủ Corretto copy lại bộ lệnh mới nhất cho Debian-based.
+- **`java -version` ra version cũ:** máy có nhiều JDK. Fix: `sudo update-alternatives --config java` (và `javac`) rồi chọn Corretto 21.
+- **Sửa nhầm `~/.zshrc` hoặc `~/.profile`:** PATH không có tác dụng vì Terminal Ubuntu chạy bash đọc `~/.bashrc`. Fix: chuyển dòng export sang `~/.bashrc` rồi `source ~/.bashrc`.
+- **Quên `source` / quên mở terminal mới:** vẫn `command not found`. Fix: `source ~/.bashrc` hoặc đóng mở Terminal.
+- **Sai đường dẫn (thiếu `/bin`, sai tên version):** Fix: `pwd` lại trong đúng thư mục `bin` rồi dán lại.
 
-And there is a way for you to run a command
+## Kết Luận
 
-called sudo update-alternatives
+Vậy là máy Linux đã có JDK 21 + full Kafka CLI, sẵn sàng chọc vào broker Docker ở `127.0.0.1:9092`.
 
-java and javac
-
-to make sure that you're using Corretto.
-
-This is a command,
-
-I'll show you what the output is.
-
-You run it in here if you need to,
-
-and you can choose the version of Java you need.
-
-But right now I've only have Corretto,
-
-so that's perfect.
-
-All right, so Java Corretto is installed
-
-and now I can move on to Kafka.
-
-So how do we do this?
-
-We're going to go into the Kafka websites,
-
-go to Apache Kafka downloads,
-
-click on this page.
-
-We want the release 4.0 or over,
-
-and we want the binary downloads.
-
-So I'm just going to click on binary download here
-
-and click on this file.
-
-And then, I'm just going to open files right here.
-
-So my file has been downloaded and it has been unzipped,
-
-and now I'm going to be able to have a look in it.
-
-So as you can see,
-
-I have multiple folders so that's perfect.
-
-And I'm going to move this one level up.
-
-So back into the command line 'cause we're in Linux,
-
-we'll do a cd Downloads
-
-and we're going to move this file called,
-
-this directory one level up.
-
-So now it's gone.
-
-And if I go one level up,
-
-I can find my Kafka directory.
-
-So that's perfect.
-
-So in this Kafka directory, in our Home,
-
-we have this Kafka directory.
-
-In there, we have multiple files,
-
-but one of them that's interesting to us is the bin.
-
-The bin contains the binaries
-
-of all the Kafka commands that we need.
-
-And so we need to add this to our path
-
-because right now to run a Kafka command,
-
-you will need to type in the full path to it.
-
-So the Kafka folder/bin/ for example,
-
-kafka-topics.ch.
-
-And then, it runs the command.
-
-But if you just type kafkatopics.sh
-
-and press Enter,
-
-it says command not found.
-
-So we wanna fix this.
-
-So for this, very simple,
-
-we just have to edit the path.
-
-So step number one is we need to edit
-
-our file named .bashrc.
-
-And in there at the very bottom of it,
-
-we're going to add PATH="$PATH:
-
-and then we need the full path to the Kafka binaries.
-
-So let's just open a new window,
-
-go to our Kafka bin folder,
-
-type in pwd,
-
-and you can copy like this, the full path,
-
-and then paste it in.
-
-So this is perfect.
-
-We do Control + X, Y, and Enter to save this file.
-
-And now if I close my terminals
-
-and I just go ahead
-
-and open one more time a terminal,
-
-if I type now kafkatopics.sh,
-
-as you can see,
-
-my command is now running.
-
-So this allows us to run any CLI
-
-from anywhere on your computer
-
-by setting up the path.
-
-So that's it, we've installed Amazon Corretto,
-
-so we have a Java version on our computer.
-
-We've installed the Kafka binaries
-
-and we've set up the path.
-
-So we're good to go to run any Kafka CLI.
-
-Just remember that for this setup,
-
-you need a .sh every time we use it.
-
-And we're good to go.
-
-If you launch Kafka using Conduktor
-
-and Docker in the previous lecture,
-
-then you're good to go as well.
-
-If you haven't done so,
-
-I will show you in the next lecture
-
-how to start Kafka manually on your Linux computer.
-
-All right, that's it.
-
-I hope you liked it
-
-and I will see you in the next lecture.
+Bài tiếp theo (`025`) chúng ta sẽ dùng chính binaries vừa cài để start một broker Kafka thật ở chế độ KRaft ngay trên Linux.

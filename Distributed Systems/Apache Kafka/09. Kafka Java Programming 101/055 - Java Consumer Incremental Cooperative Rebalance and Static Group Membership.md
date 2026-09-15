@@ -1,365 +1,82 @@
-Okay, so let's talk about consumer groups
+# Rebalance Eager Vs Cooperative: Vì Sao Cả Group Phải "Dừng Cả Thế Giới"?
 
-and partition rebalance strategies.
+Bài trước ta thấy rebalance chia lại partition mỗi khi thêm/bớt consumer. Nhưng rebalance có hai họ hoàn toàn khác nhau: **eager (stop-the-world)** mặc định cũ, và **cooperative (incremental)** mới. Bài này giải thích vì sao eager gây gián đoạn, cooperative khắc phục ra sao qua `CooperativeStickyAssignor`, và `group.instance.id` (static membership) giúp restart không rebalance thế nào. Bài sau sẽ thực hành ngay.
 
-So whenever you have consumers joining
+---
 
-and leaving a group, partitions are going to move.
+## 1. Concept: Hai kiểu rebalance
 
-And when partitions move between consumers
+### Eager rebalance — dừng cả thế giới
 
-it's called a rebalance, okay.
+Đây là hành vi mặc định của 3 assignor cũ: `RangeAssignor`, `RoundRobinAssignor`, `StickyAssignor`.
 
-These rebalance happens whenever a consumer leaves
+Kịch bản: group có 2 consumer đang giữ 3 partitions, consumer thứ 3 join vào.
 
-or joins a group.
+1. Tất cả consumer **dừng lại, từ bỏ toàn bộ partitions** đang giữ. Không ai được đọc gì trong lúc này.
+2. Cả group join lại, nhận assignment mới hoàn toàn (khá ngẫu nhiên, không đảm bảo ai lấy lại partition cũ).
+3. Bắt đầu đọc tiếp.
 
-And it also happens, for example,
+Hai vấn đề:
 
-if an administrator adds new partition into a topic.
+* **Stop-the-world.** Dù chỉ cần chuyển 1 partition cho member mới, cả group vẫn ngừng xử lý. Group càng lớn, thời gian đứng hình càng lâu (vài giây tới hàng chục giây).
+* **Mất tính ổn định.** Consumer có thể không lấy lại partition cũ — cache/local state gắn với partition cũ phải build lại.
 
-So as like an example,
+### Cooperative (incremental) rebalance — chỉ chuyển phần cần thiết
 
-we have three partitions and two consumers into a group.
+Triết lý: chỉ revoke đúng subset partitions cần di chuyển, ai không liên quan vẫn đọc bình thường. Có thể cần nhiều vòng (incremental) mới đạt assignment ổn định, nhưng không bao giờ dừng cả group.
 
-And then what happens is that's something
+Cùng kịch bản 2 → 3 consumer, 3 partitions:
 
-we've seen right away, right before,
+1. Group nhận ra chỉ cần chuyển `partition 2` cho member mới.
+2. Consumer 1 (giữ 0, 1) và consumer 2 (giữ 2) vẫn đọc 0, 1 bình thường; chỉ partition 2 bị revoke khỏi consumer 2.
+3. Partition 2 assign cho consumer 3, consumer 3 bắt đầu đọc. Xong — không ai bị gián đoạn ngoài partition di chuyển.
 
-is that a new consumer joins this group.
+## 2. Các `partition.assignment.strategy` cần biết
 
-And so the whole question is how do these partitions
+Config quyết định assignor: `partition.assignment.strategy` (trong Java consumer properties).
 
-get assigned to the consumers and what happens?
+| Assignor | Họ | Đặc điểm |
+|---|---|---|
+| `RangeAssignor` | Eager | Chia theo từng topic, dễ lệch khi nhiều topic số partition khác nhau. Từng là default. |
+| `RoundRobinAssignor` | Eager | Chia round-robin mọi partition mọi topic — cân (±1) nhưng mỗi lần rebalance vẫn stop-the-world. |
+| `StickyAssignor` | Eager | Khởi đầu cân như RoundRobin, khi member join/leave thì **giữ tối đa assignment cũ** (ít di chuyển nhất). Vẫn stop-the-world. |
+| `CooperativeStickyAssignor` | Cooperative | Giống Sticky nhưng theo giao thức cooperative — không dừng group. Lựa chọn khuyến nghị. |
 
-And based on, well, the strategies
+Mặc định Kafka 3.0 là danh sách `[RangeAssignor, CooperativeStickyAssignor]`:
 
-the outcomes can be different and you may be surprised.
+* Nghĩa là: nếu mọi member đều hỗ trợ cooperative thì dùng cooperative; còn không thì fallback Range (eager) để tương thích.
+* Muốn ép cooperative hoàn toàn: set strategy **chỉ còn** `CooperativeStickyAssignor`. Vì khác giao thức nên cần **rolling bounce** một lần (restart từng consumer): lần restart đầu group vẫn eager, từ lần thứ hai trở đi cả group đã cùng protocol cooperative.
 
-So the first one, and it's called a eager rebalance
+Hai hệ sinh thái đã bật cooperative mặc định: **Kafka Connect** và **Kafka Streams** (qua `StreamsPartitionAssignor`).
 
-and it's one of the default behavior.
+### Static group membership — restart không rebalance
 
-And so the eager rebalance has it like this.
+Vấn đề còn lại: consumer rời đi rồi quay lại (deploy, restart) vẫn trigger rebalance, vì mỗi lần join nó nhận `member.id` mới — group tưởng thành viên mới.
 
-So consumer three joins the group
+Fix: set `group.instance.id` (ví dụ `consumer-1`, `consumer-2`, `consumer-3`, mỗi instance một giá trị cố định, duy nhất). Consumer trở thành **static member**:
 
-and then all consumers are going to stop,
+* Rời đi rồi quay lại trong vòng `session.timeout.ms` → nhận lại đúng partitions cũ, **không rebalance**.
+* Quá timeout mới coi là chết thật → partition của nó mới được chuyển cho người khác.
+* Lợi ích lớn khi consumer giữ cache/state local theo partition (không phải build lại sau mỗi restart), và khi chạy trên Kubernetes hay rolling deploy liên tục.
 
-it's called eager.
+## 3. Chạy và kiểm tra (lý thuyết — thực hành ở bài sau)
 
-So all consumers stop
+Chưa cần chạy code bài này. Chỉ cần nhớ checklist khi đọc log ở bài thực hành:
 
-and they will give up their membership of partitions.
+* Dòng `partition.assignment.strategy` lúc consumer khởi động đang là gì (eager list cũ hay cooperative).
+* Khi member mới join: log ghi `revoked` toàn bộ (eager) hay chỉ 1 partition (cooperative)?
+* Consumer không bị revoke có tiếp tục poll ra dữ liệu trong lúc rebalance không?
 
-That means that no consumer is reading from no partitions.
+## 4. Pitfalls
 
-Then all consumers are going to rejoin the group
+* **Tưởng Sticky và CooperativeSticky giống nhau.** Sticky chỉ tối thiểu hóa di chuyển nhưng vẫn stop-the-world; CooperativeSticky mới không dừng group. Đọc thiếu chữ Cooperative là nhầm họ.
+* **Set `CooperativeStickyAssignor` cho một consumer mà quên các consumer còn lại.** Group chỉ cooperative khi **mọi member** cùng protocol. Trộn lẫn là group fallback eager — tưởng đã fix mà log vẫn stop-the-world.
+* **`group.instance.id` trùng nhau giữa các instance.** Static id phải duy nhất mỗi instance. Trùng id thì member sau đá member trước ra (fencing), rebalance liên tục — tệ hơn không dùng.
+* **Static member down quá `session.timeout.ms` rồi thắc mắc sao vẫn rebalance.** Đó là thiết kế: quá timeout thì group buộc phải chuyển partition đi, không giữ mãi được.
+* **Thêm partition vào topic rồi ngạc nhiên vì rebalance.** Admin tăng partitions cũng trigger rebalance như member join/leave — lên kế hoạch trước với topic đang chạy production.
 
-they were in and get a new partition assignments.
+## Kết Luận
 
-So that means that all these consumers are now
+Một câu: **eager dừng cả group để chia lại từ đầu, cooperative chỉ chuyển đúng partition cần thiết, static membership giữ chỗ cho người quay lại.** Ba mảnh ghép này là toàn bộ câu chuyện rebalance hiện đại.
 
-going to get new partitions
-
-assigned to them like this, okay.
-
-But it is quite random.
-
-And during a short period of time
-
-then the entire consumer group has stopped processing.
-
-So it's called the stop the world event.
-
-And there's no guarantee that your consumers
-
-are going to get back the partitions that they used to have.
-
-So these are two problems.
-
-Number one, maybe you want your consumers to
-
-get back the same partitions they had before.
-
-And number two
-
-maybe you don't want some consumers to stop consuming
-
-if they were reading from the same partition.
-
-You don't want this stop the world events.
-
-So therefore there is something called a
-
-cooperative rebalance, and this is quite recent in Kafka,
-
-also called incremental rebalance.
-
-So instead of reassigning all partitions to all consumer
-
-the strategy is to reassign a small subsets
-
-of the partitions from one consumer to another.
-
-And the consumers that we do not have
-
-any reassigned partitions
-
-they can still process the data uninterrupted,
-
-and it can go through several iterations
-
-to find a stable assignment,
-
-hence the name incremental.
-
-This avoids these stop the world events
-
-where all consumers stop processing data.
-
-So let's take an example.
-
-We have two consumers with three partitions.
-
-One just joins the consumer group.
-
-Now the incremental rebalance is smart
-
-and says, hey look at this.
-
-I only need to revoke partition two.
-
-And so therefore consumer one and consumer two
-
-can keep on reading from partition zero and one.
-
-And then after this,
-
-the partition two is going to be assigned
-
-to my consumer three
-
-and in part consumer three can start reading partition two.
-
-So this was less disruptive.
-
-It allowed us to keep on reading from the part the topics
-
-and only assign one partition to the consumer three.
-
-So this is quite handy
-
-and gives you a lot more stability for your consumer group.
-
-So how can you use the cooperative balance?
-
-Well, in the Kafka Consumer
-
-there's a setting called the partition assignment strategy.
-
-And the default is, or used to be sorry,
-
-view RangeAssignor, which assigns partition
-
-on the per topic basis and can lead to imbalance.
-
-And then there's RoundRobin.
-
-It's also an eager type of assignment.
-
-And all the partition across all topics are assigned
-
-in a round robin fashion, which is really good for balance
-
-because all the consumers will have plus minus one
-
-the same number of partitions.
-
-And you have StickyAssignor
-
-which is balanced just like RoundRobin
-
-in the beginning, okay
-
-and then it will minimize partition movements
-
-when a consumer joins
-
-or leaves the group in order to minimize movements.
-
-So these three partition, these three strategies
-
-are eager strategies.
-
-That means that every time you use them
-
-there's going to be a stop the world event
-
-and it's going to be just breaking your consumer group
-
-for a little bit of, for a few sec.
-
-And if your consumer group is big
-
-then it can take a while to reassign all the partitions.
-
-Therefore, the newer cooperative rebalance mechanism
-
-you can use is called the CooperativeStickyAssignor.
-
-So StickyAssignor is a strategy I just showed you
-
-where it minimizes the number of partition movements
-
-between consumers in order to minimize
-
-the number of movements of data, okay.
-
-But this time it supports the cooperative protocol
-
-and therefore the consumers can keep
-
-on consuming from the topic
-
-if the partition hasn't been moved for them.
-
-So the CooperativeStickyAssignor is really the best I think.
-
-But the default in Kafka 3.0 is now a list of assignor.
-
-It's RangeAssignor comma CopperativeStickyAssignor.
-
-And that means that it will only use
-
-the RangeAssignor by default,
-
-but then if you remove the RangeAssignor,
-
-then it will use the CooperativeStickyAssignor
-
-by just rolling,
-
-by just doing a single rolling bounce, okay.
-
-So I'm gonna show you how to do this right now.
-
-If you use Kafka Connect then you know what Kafka Connect is
-
-cooperative rebalance enabled by default.
-
-And if you use Kafka streams, then again, it is turned
-
-on by default using the StreamsPartitionAssignor.
-
-Okay, so let's have a look at one last thing,
-
-before we go into the practice.
-
-It's called the static group membership.
-
-So we've seen here that whenever consumers join
-
-or leave the group, there is going to be a
-
-a rebalance triggered because Kafka says that, okay
-
-we need to absolutely have all the partitions
-
-being read by all the consumers.
-
-But it is first all for you to say that,
-
-hey, when a consumer leaves
-
-then do not changes assignments, okay.
-
-So the reason why first, when it leaves and comes back
-
-there's a reassignment is that it gets a new member ID,
-
-'cause it leaves then upon signing up,
-
-boom, here's a new member ID for you.
-
-But if you specify a group instance ID
-
-as part of the consumer config
-
-then it makes the consumer a static member
-
-and you need to figure out
-
-what you want to put in this config.
-
-But what happens is that if you, for example
-
-have a consumer one with ID equals consumer one,
-
-a consumer two with ID equals consumer two
-
-and a consumer three with ID equals consumer three, okay.
-
-Then in case consumer three leaves the group
-
-then partition two is not going to be reassigned
-
-because consumer three was a static member.
-
-And so if the consumer joins back
-
-within the session time at millisecond,
-
-then the partition two will be reassigned
-
-to the consumer automatically without triggering rebalance.
-
-So this allows you, for example
-
-to restart your consumer and not be a
-
-and not be worried that a rebalance
-
-is going to happen, okay.
-
-But if your consumer is away for more than
-
-session time at milliseconds
-
-then a rebalance is going to happen
-
-and partition two is going to move over
-
-two different consumers.
-
-So it's up to you, whether or not
-
-you wanna use this feature
-
-but it's quite helpful when you have something
-
-like Kubernetes and so on.
-
-Also, this is very helpful
-
-if your consumers need to maintain a local cache
-
-and local states, because if you have this
-
-then you avoid rebuilding the cache
-
-by making sure that your consumers are assigned
-
-to a specific set of partitions, okay.
-
-So that's it for the rebalance protocol.
-
-I know it can be quite complicated
-
-but these are improvements of Kafka made recently.
-
-And I'm going to show you how to
-
-use the cooperative sticky rebalance, okay.
-
-So I'll see you in the next lecture.
+Bài tiếp theo chúng ta sẽ thực hành ngay: copy thành `ConsumerDemoCooperative`, set `partition.assignment.strategy=CooperativeStickyAssignor`, chạy 1-2-3 instance và đọc log `revoked/assigned` để thấy rebalance incremental khác eager thế nào.

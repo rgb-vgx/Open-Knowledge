@@ -1,193 +1,127 @@
-So as an alternative
+# Mac: Cài Và Chạy Kafka Bằng Brew (Con Đường Tắt)
 
-to using the Kafka batteries,
+Bài này dành riêng cho **macOS**. Đây là cách thay thế cho hai bài thủ công `021` + `022`: dùng **Homebrew** để cài Java + Kafka chỉ bằng vài lệnh, khỏi tải ZIP và giải nén bằng tay.
 
-you can use brew.
+Chọn một trong hai đường: hoặc thủ công (`021` + `022`), hoặc brew (bài này). Đừng trộn cả hai trên cùng một máy trừ khi bạn hiểu rõ PATH đang trỏ về đâu.
 
-And so the idea is that we'll install BREW on our computer,
+---
 
-then we'll install Kafka using brew
+## 1. Mục Tiêu Và Chuẩn Bị
 
-and that will automatically install the Java JDK
+Hết bài này bạn có: Kafka 4.x do brew quản lý, CLI gọi **không cần đuôi `.sh`** (ví dụ `kafka-topics` thay vì `kafka-topics.sh`), broker start được bằng một lệnh duy nhất.
 
-for you if you haven't done so already.
+Điều kiện:
 
-And then you can start Kafka using the binaries
+- macOS có quyền sudo (brew sẽ hỏi password).
+- Nếu trước đó đã làm cách thủ công (`021`), bạn sẽ cần comment dòng PATH cũ đi ở Bước 4 để tránh xung đột.
 
-provided with brew.
+## 2. Bước 1 — Cài Homebrew
 
-So let's get started.
+Mở trang `brew.sh`, copy lệnh cài đặt (dạng `/bin/bash -c "$(curl ...)"`) rồi chạy trong Terminal:
 
-Okay, so let's go ahead and install brew.
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
-So I'm going to stop Kafka on the left hand side
+Nhập password macOS khi được hỏi và chờ cài xong. Brew là package manager cho Mac — hiểu nôm na như `apt` trên Ubuntu: gõ một lệnh là nó tự tải + cài + cấu hình hộ bạn.
 
-by doing Ctrl C and clear my screen.
+Cài xong mà gõ `brew` vẫn báo `command not found` thì bạn thiếu bước đưa brew vào PATH. Trình cài đặt sẽ in ra 2-3 lệnh `echo ... >> ~/.zprofile` và `eval ...` — chạy đúng từng lệnh đó, rồi kiểm tra:
 
-This window I don't need.
+```bash
+brew --version
+```
 
-And here I'm just going to install Brew for Mac.
+## 3. Bước 2 — Cài Kafka Bằng Brew
 
-So you're going to click on Homebrew
+Chỉ một lệnh, brew sẽ tự kéo cả JDK về nếu máy chưa có:
 
-and there's a command right here.
+```bash
+brew install kafka
+```
 
-You're just copy it and you paste it.
+Chờ tải xong. Kiểm tra version:
 
-And then this is going to ask for your password.
+```bash
+kafka-topics --version
+```
 
-So you just enter your password and press enter.
+Điểm khác biệt lớn nhất so với cách thủ công: mọi lệnh của brew **không có đuôi `.sh`**. `kafka-topics` thay vì `kafka-topics.sh`, `kafka-server-start` thay vì `kafka-server-start.sh`. Nhớ kỹ để các bài sau không bị gõ sai.
 
-And it's going to just install everything you need
+Tìm xem binaries brew nằm ở đâu:
 
-to know to have brew.
+```bash
+which kafka-topics
+```
 
-So Brew is a way for you
+Kết quả thường là `/opt/homebrew/bin/kafka-topics` (Mac M) hoặc `/usr/local/bin/kafka-topics` (Mac Intel).
 
-to on your Mac if you don't know about it,
+## 4. Bước 3 — Hiểu File Cấu Hình Và Thư Mục Data Của Brew
 
-to quickly install packages
+Cách brew sắp xếp file khác cách tải ZIP:
 
-and software on your Mac using the command line.
+- File cấu hình: `/opt/homebrew/etc/kafka/server.properties` (Mac M; Intel thì `/usr/local/etc/kafka/server.properties`).
+- Thư mục data: trỏ tới nơi ổn định dưới `/opt/homebrew/var/...`, **không phải `/tmp`** như bản ZIP.
 
-So I'm going to wait for this to be done.
+Ngó nhanh để xác nhận:
 
-Okay, so brew is now installed on my computer.
+```bash
+cat /opt/homebrew/etc/kafka/server.properties | grep "^log.dirs"
+```
 
-If I type brew, I get command not found though
+Đây là ưu điểm của brew: data không nằm ở `/tmp` nên reboot máy không bị mất sạch như cách thủ công. Không cần sửa gì ở đây, chỉ cần biết để sau này tìm data khi cần.
 
-because I need to run these commands
+## 5. Bước 4 — Dọn Xung Đột PATH Nếu Từng Cài Thủ Công
 
-to add home brew to your path.
+Nếu bạn đã thêm dòng `export PATH=...kafka...bin` của bản ZIP vào `~/.zshrc` ở bài `021`, giờ có hai bộ Kafka trên máy — shell sẽ gọi bộ nào đứng trước trong PATH, rất dễ nhầm version.
 
-So you're just going to run this one right here.
+Mở file cấu hình và comment dòng cũ lại:
 
-Then the second one right here
+```bash
+nano ~/.zshrc
+```
 
-and the third one right here.
+Thêm dấu `#` vào đầu dòng PATH của bản ZIP cũ, ví dụ:
 
-Okay, so I'm going to clear my screen
+```bash
+# export PATH="$PATH:/Users/thuyet/kafka_2.13-4.0.0/bin"
+```
 
-and now I'm gonna type Brew and Brew is working.
+Lưu (`Ctrl + X`, `Y`, `Enter`), đóng mở lại Terminal rồi verify bạn đang dùng đúng bản brew:
 
-Alright, so CD to go back to my route, clear my screen.
+```bash
+which kafka-topics
+```
 
-And so I'm going to type brew install Kafka.
+Phải ra đường dẫn `/opt/homebrew/...` (hoặc `/usr/local/...`). Nếu vẫn ra bản cũ thì kiểm tra lại file `~/.zshrc`.
 
-And this is going to go ahead and install Kafka for me.
+## 6. Bước 5 — Start Broker
 
-So it's going to download Kafka
+Bản brew đã được format storage sẵn nên **bỏ qua** bước sinh cluster ID + format ở bài `022`. Chỉ cần một lệnh, trỏ đúng file cấu hình của brew:
 
-and any necessary libraries for me to run Kafka.
+```bash
+kafka-server-start /opt/homebrew/etc/kafka/server.properties
+```
 
-So this is a great setup because this will make sure
+(Mac Intel đổi `/opt/homebrew` thành `/usr/local`.)
 
-that your Kafka binary is running smoothly.
+Đợi log tới dòng `Kafka Server started` là xong. Giữ nguyên cửa sổ này, mở Terminal thứ hai để verify:
 
-Okay, so now Kafka 4.0 has been installed
+```bash
+kafka-topics --bootstrap-server localhost:9092 --list
+```
 
-and what I need to do is to start my server
+Trả về rỗng mà không lỗi kết nối là broker đã sống. Dừng broker: `Ctrl + C` ở cửa sổ chạy Kafka.
 
-and also look at the server property.
+## Lỗi Thường Gặp & Cách Fix
 
-So there's a few things you need to look about.
+- **`brew: command not found` sau khi cài:** chưa chạy các lệnh `echo >> ~/.zprofile` mà trình cài đặt in ra. Fix: cuộn lên copy đúng 2-3 lệnh đó, chạy lại, đóng mở Terminal.
+- **Gõ `kafka-topics.sh` báo không tìm thấy:** đúng rồi — bản brew bỏ đuôi `.sh`. Fix: gõ `kafka-topics` (không `.sh`).
+- **Broker báo port 9092 đã dùng:** broker Docker (`020`) hoặc broker thủ công (`022`) vẫn chạy. Fix: tắt bớt một cái, chỉ giữ một broker tại một thời điểm.
+- **Lệnh gọi ra bản Kafka cũ:** do PATH còn cả hai bản. Fix: `which kafka-topics` để xem đang gọi bản nào, comment PATH cũ như Bước 4.
+- **Sai đường dẫn config (`/opt/homebrew` vs `/usr/local`):** Mac M dùng `/opt/homebrew`, Mac Intel dùng `/usr/local`. Fix: `brew --prefix` để xem máy bạn dùng tiền tố nào rồi ghép tiếp `/etc/kafka/server.properties`.
 
-So the first one is that I'm going to show you
+## Kết Luận
 
-that the service, the properties file is in here.
+Vậy là bạn đã biết cả hai cách cài Kafka trên Mac: thủ công (hiểu sâu) và brew (nhanh gọn). Từ đây về sau mọi bài thực hành đều dùng được với broker nào cũng được, miễn là nó nghe ở `localhost:9092`.
 
-So if you do nano
-
-and then the file name, we are in the file name right here.
-
-So it's in a different location as before.
-
-It's very similar to the one we've seen.
-
-But one thing we should look at again is the logs dear.
-
-And as you can see now my home brew data for Kafka is going
-
-to be stored in this directory
-
-and it's not a temporary directory.
-
-So this is a permanent solution to store your Kafka data.
-
-So I'll just exit this file.
-
-That's one difference, one key difference.
-
-And then I'm going to clear the screen.
-
-So what I need to do now is to edit my .ZSHRC file.
-
-And I'm just going to add a comment here
-
-by hiding this hash sign.
-
-And this is to make sure that now we don't use the path from
-
-the things we've done before but only from Homebrew.
-
-So we just commented it out.
-
-So Ctrl X, Y, enter to save,
-
-and I'm going to just open a new window very simply.
-
-And now if I type Kafka topics for example,
-
-but without the .sh, as you can see now this is working
-
-and this Kafka topics command is coming
-
-actually directly from Homebrew.
-
-So how do we make sure I'll do which Kafka topics that SH.
-
-And it shows me
-
-that this is using the home brew bin folder,
-
-Kafka topics command.
-
-So now that means that I can run Kafka topics
-
-without that SH or any Kafka commands from any directory.
-
-So now the last thing I have to do,
-
-I'm going to click on go up just to make sure that I have
-
-my comments and actually I lost it.
-
-And now no need to actually format the storage
-
-because this has been done for us already.
-
-So the only thing I have to do now is to start Kafka.
-
-So for this I'm going to do Kafka server start
-
-and then I specify the command,
-
-the configuration file.
-
-So OPT, home Brew, ETC, Kafka server.properties,
-
-we press enter, and now Kafka is starting
-
-and has started automatically.
-
-So that's it now we've used Brew, different commands,
-
-but just remember them.
-
-But we've seen two installation methods
-
-to start Kafka on Mac OS, and we're good to go.
-
-So that's it for this lecture, I hope you liked it
-
-and I will see you in the next lecture.
+Bài tiếp theo (`024`) chúng ta đổi sân sang **Linux**: cài Java Corretto 21 + Kafka binaries + PATH trên Ubuntu.

@@ -1,229 +1,147 @@
-Hi, this Stephane from Conduktor,
+# Chạy Ứng Dụng Kafka Streams Đầu Tiên: Thống Kê Wikimedia Real-Time
 
-and in this lecture,
+Bài trước bạn đã hiểu Kafka Streams là thư viện biến topic này thành topic khác. Bài này chúng ta chạy thật một ứng dụng có sẵn: đọc `wikimedia.recentchange`, tính 3 loại thống kê, ghi ra 3 topic mới. Mục tiêu không phải hiểu từng dòng code Topology (cần cả khóa riêng), mà là nắm **quy trình vận hành**: build, chạy song song với Producer, kiểm chứng output, dọn dẹp internal topics.
 
-we're going to run a Kafka Stream application.
+---
 
-So we know we have the wikimedia.recentchange topic
+## 1. Khi Nào Dùng Hands-On Này?
 
-and the way it works, that we have a Kafka producer
+Dùng khi bạn cần kiểm chứng mẫu **Kafka-to-Kafka có tính toán**:
 
-that reads a stream from Wikimedia
+* Input đã có: topic `wikimedia.recentchange` (từ Producer Wikimedia ở phần trước hoặc từ Source Connector bài 098).
+* Muốn 3 outputs phục vụ 3 dashboard khác nhau mà không viết Consumer-Producer thủ công.
+* Muốn thấy tận mắt windowing (10 giây), group-by (theo website), filter (bot vs human) chạy real-time.
 
-and sends it into this topic.
+Nếu chỉ cần đổ nguyên xi sang hệ ngoài mà không tính toán, quay lại Kafka Connect Sink (bài 098). Đừng dùng Streams cho việc không có logic.
 
-Now we're going to run
+## 2. Kiến Trúc Chạy Demo
 
-a Kafka Streams application alongside,
+```mermaid
+graph LR
+    PROD[WikimediaChangeProducer<br/>chạy song song] --> K1[(wikimedia.recentchange)]
+    K1 --> APP[WikipediaStreamsProcessor<br/>3 topologies]
+    APP --> BOTS[(wikipedia.stats.bots)]
+    APP --> WEBS[(wikipedia.stats.websites)]
+    APP --> TS[(wikipedia.stats.timeseries<br/>window 10s)]
+    APP -. backup state .-> CH[(internal topics<br/>*-changelog, *-repartition)]
+```
 
-and this Streams application
+Điểm mấu chốt: **Producer và Streams app chạy song song**. Producer bơm dữ liệu real-time vào, Streams xử lý ngay khi record đến (one record at a time). Nếu chỉ chạy Streams mà không chạy Producer, app vẫn xử lý dữ liệu lịch sử cũ trong topic nhưng bạn không thấy số nhảy real-time.
 
-is going to compute some statistics on this topic.
+## 3. Hands-On: Chuẩn Bị Code
 
-It's going to compute if we have a bot, or not a bot,
+### 3.1. Kiểm tra dependency `build.gradle`
 
-it's going to compute the stats for each website
+```groovy
+dependencies {
+    implementation 'org.apache.kafka:kafka-streams:3.1.0'
+    // ... jackson, slf4j, kafka-clients đi kèm project mẫu
+}
+```
 
-and compute a timeseries
+Giải thích: chỉ cần đúng một dependency `kafka-streams` là đủ viết app. Version phải tương thích với Kafka cluster bạn chạy (demo dùng 3.1.0). Lệch major version là lỗi tương thích phổ biến nhất.
 
-of how many events we get per second.
+### 3.2. Cấu trúc code: config + topology + start
 
-So let's get started and run this Kafka Streams application.
+Bạn không cần hiểu chi tiết từng Processor, chỉ cần nhận ra 3 khối chuẩn mọi app Streams đều có:
 
-Okay, so on the code course you have downloaded,
+```java
+// 1. Config — giống Producer/Consumer quen thuộc
+Properties props = new Properties();
+props.put(StreamsConfig.APPLICATION_ID_CONFIG, "wikipedia-streams-app");
+props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
-there is a kafka-streams-wikimedia directory
+// 2. Topology — 3 nhánh tính toán
+StreamsBuilder builder = new StreamsBuilder();
+KStream<String, String> input = builder.stream("wikimedia.recentchange");
+// nhánh bot: filter(bot) -> count -> to(wikipedia.stats.bots)
+// nhánh website: groupBy(wiki) -> count -> to(wikipedia.stats.websites)
+// nhánh timeseries: windowedBy(10s) -> count -> to(wikipedia.stats.timeseries)
 
-that I've created.
+// 3. Start
+KafkaStreams streams = new KafkaStreams(builder.build(), props);
+streams.start();
+```
 
-And if you're going to build.gradle,
+Giải thích:
 
-we see that as a dependency,
+* `APPLICATION_ID_CONFIG` là danh tính của app: vừa là consumer `group.id`, vừa là tiền tố internal topics. Đổi id là thành app mới mất state.
+* `Serdes` phải khớp format topic. Demo dùng String cho đơn giản, production với Avro sẽ dùng Avro Serde gắn Schema Registry.
+* Mỗi nhánh topology là một pipeline độc lập đọc chung input — đây là sức mạnh của Streams: một input, nhiều outputs.
 
-there is kafka-streams: 3.1.0 that I've added.
+## 4. Hands-On: Chạy Và Kiểm Chứng
 
-This is what's necessary
+### Bước 1 — Chạy Streams app trước
 
-to write a Kafka Streams application.
+Chạy class `WikipediaStreamsProcessor` (Run trong IDE hoặc `./gradlew run`). Log sẽ hiện dày đặc vì app đang replay dữ liệu lịch sử trong topic. Đó là hành vi bình thường: Streams xử lý từ offset chưa commit.
 
-If we look in the code, this is way advance,
+### Bước 2 — Chạy Producer song song
 
-I have a course of course dedicated
+Chạy class `WikimediaChangeProducer` ở terminal/IDE thứ hai. Từ lúc này dữ liệu mới chảy vào real-time và Streams xử lý ngay lập tức.
 
-to learning Kafka Streams, but this is what
+### Bước 3 — Kiểm chứng 3 topic output trong Conduktor
 
-a Kafka Streams application look like, okay?
+Refresh danh sách topics, bạn sẽ thấy thêm (tổng khoảng 13 topics gồm cả internal):
 
-So we still need to configure Kafka Streams.
+**a) `wikipedia.stats.bots` — bot vs human:**
 
-So we see the same kind of properties
+```json
+{ "bots": 9000, "non_bots": 20000 }
+```
 
-we've seen from before.
+Refresh vài giây thấy số tăng — chứng tỏ count cộng dồn đang chạy.
 
-And then what I do is that I create a topology,
+**b) `wikipedia.stats.timeseries` — events mỗi 10 giây:**
 
-what's called topology,
+```json
+{ "window_start": "2026-09-16T07:00:00Z", "window_end": "2026-09-16T07:00:10Z", "count": 38 }
+```
 
-and then when the topology is done,
+Mỗi record là một window 10 giây. Số count mỗi window khác nhau (38, 235...) phản ánh lưu lượng edit thật của Wikipedia.
 
-I start it and run it.
+**c) `wikipedia.stats.websites` — count theo domain:**
 
-Now each topology is pretty complicated,
+```json
+{ "commons.wikimedia.org": 75, "en.wikipedia.org": 27, "eo.wikipedia.org": 1 }
+```
 
-and this is what I've created processors.
+Cho biết edits phân bố ra sao giữa các phiên bản ngôn ngữ — ví dụ tiếng Việt `vi.wikipedia.org` cũng sẽ xuất hiện khi có edit.
 
-And so we have, for example, a topology
+### Bước 4 — Nhận diện internal topics, đừng động vào
 
-for computing whether or not something is a bot,
+Bạn sẽ thấy các topic lạ như `wikipedia-streams-app-*-changelog`, `*-repartition`. Đó là **internal topics** Streams tự tạo để lưu state và shuffle dữ liệu khi `groupBy`. Tuyệt đối không xóa, không produce tay vào đó.
 
-we have a topology for counting events,
+### Bước 5 — Dọn dẹp
 
-and we have a topology for doing the website counts.
+```bash
+# dừng Producer trước (Ctrl+C), rồi dừng Streams app (Ctrl+C)
+# shutdown hook streams.close() sẽ commit offset và flush state sạch sẽ
+```
 
-So these are quite complicated
+Thứ tự dừng không bắt buộc, nhưng dừng Producer trước giúp bạn quan sát Streams "đuổi kịp" lag rồi về 0 trước khi tắt — cách kiểm tra app khỏe mạnh.
 
-and I don't expect you to understand
+## 5. So Sánh: Ba Outputs Nói Lên Điều Gì?
 
-that all what these are doing, okay,
+| Output | Loại tính toán Streams | Phục vụ ai? |
+|---|---|---|
+| `stats.bots` | Filter + global count | Đội chống spam/vandalism: bot có đang vượt human bất thường? |
+| `stats.websites` | Group-by key (`wiki`) + count | Đội vận hành: wiki nào đang nóng, cần scale cache? |
+| `stats.timeseries` | Tumbling window 10s + count | Dashboard real-time: lưu lượng edits theo thời gian |
 
-because it requires a full course to do it.
+Ba mẫu này bao phủ 80% nhu cầu Streams thực tế: lọc, gom theo key, gom theo thời gian. Nắm 3 mẫu là đủ đọc mọi topology phức tạp hơn.
 
-But the code is ready to be run,
+## Cạm Bẫy Thường Gặp
 
-and what we're going to do in this lecture
+* **Chỉ chạy Streams mà không chạy Producer, rồi kết luận "app không chạy".** App vẫn chạy nhưng chỉ replay lịch sử rồi đứng yên. Muốn thấy real-time phải có nguồn bơm liên tục.
+* **Hoảng vì log quá nhiều.** Replay lịch sử + internal topics + rebalance log là bình thường lần chạy đầu. Lần sau (đã có state) log sẽ êm hơn nhiều.
+* **Đổi `application.id` mỗi lần chạy thử.** Mỗi id mới là state mới, internal topics mới, replay từ đầu. Giữ id ổn định trong suốt quá trình dev một tính năng.
+* **Tự xóa internal topics "cho gọn".** Xóa là mất state, count cộng dồn tính lại từ 0 hoặc sai window. Coi chúng như database nội bộ của app.
+* **Kỳ vọng hiểu hết Topology sau một demo.** Code Processor, custom Serde, join KStream-KTable, Interactive Queries cần khóa Streams riêng. Bài này chỉ cần trả lời được: input là gì, output là gì, mỗi output dùng phép tính nào.
 
-is just see the fact that yes,
+## Kết Luận
 
-there is some code for Kafka Streams
+Bạn vừa vận hành pipeline Kafka-to-Kafka hoàn chỉnh: Producer bơm Wikimedia real-time, Streams app tính 3 thống kê song song, 3 topic output cập nhật liên tục để dashboard đọc.
 
-and we're going to run it.
-
-You click here and you run your Wikipedia Streams processor
-
-and your Kafka Stream application
-
-is going to be processing
-
-all the historical data that you have.
-
-So you'll see a lot of log output as you can see right here
-
-and it's going through a lot of stuff, as you can tell.
-
-And to make sure
-
-that it actually processes data in real time,
-
-what we should do is that we should also run
-
-our own Wikipedia producer
-
-in the background as well, in parallel,
-
-so that we know that everything is running in real-time.
-
-So, let's run the WikimediaChangeProducer as well.
-
-Perfect, so now we know that data
-
-is being produced in real-time as well
-
-and processed in real-time by our Streams application.
-
-So to verify the output,
-
-let's go into Conduktor and refresh this page.
-
-Now we see 13 topics, and so we have a few output topics.
-
-So we have the wikipedia.stats.bots
-
-which represents how many bots
-
-and non-bots we see over time.
-
-So as you can see, we saw 9,000 bots and 20,000 non-bots
-
-and this will get updated over time.
-
-So, I'm going to wait a little bit to get a new update here.
-
-And now as you can see, the values have been updated
-
-for this topic, so this is good.
-
-We can go into another topic,
-
-for example, the timeseries topic.
-
-This gives you information into,
-
-as we can look at the events,
-
-how many events we had in the last 10 seconds.
-
-So we had 38 events in the last 10 seconds
-
-and this is where the start time
-
-and the end time of my window.
-
-So this is what has been computed
-
-by my Kafka Streams application.
-
-As you can see, this changes over time.
-
-So we had 38, 235, and so on.
-
-So this gets updated
-
-as we go along with the timeseries computation.
-
-And finally, wikimedia.stats.websites
-
-which gives you some statistics
-
-around how many commons.wikimedia.org that we have, so 75,
-
-and then eo, we have 1, en we have 27, and so on.
-
-So this gives you the number of messages received
-
-per sub website of Wikipedia, which is very, very handy.
-
-And because this is a Streams application,
-
-all the topics you see right here
-
-are what's called internal topics.
-
-They're topics created by our Kafka Streams application
-
-to function correctly
-
-because it persists data into Kafka,
-
-and you don't have to worry
-
-about too much the value of these.
-
-These are internal topics because they end with -changelog,
-
-repartition, and so on.
-
-So that's it, we've run our first WikiStreams application.
-
-Now there's a whole course dedicated
-
-to understanding how that works,
-
-but to just finish this hands-on,
-
-just make sure you stop the producer
-
-and just make sure you also stop the Streams application.
-
-Alright, that's it, I hope you liked it,
-
-and I will see you in the next lecture.
+Bài tiếp theo chúng ta sang mảnh ghép thứ ba: **Schema Registry** — vì sao broker Kafka không thể tự kiểm tra dữ liệu, và ai sẽ đứng ra làm "người gác cổng" format cho mọi pipeline trên.

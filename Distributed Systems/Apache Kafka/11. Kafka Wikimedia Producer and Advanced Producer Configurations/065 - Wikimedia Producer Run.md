@@ -1,135 +1,92 @@
-So let's run our code.
+# Bấm Run Và Kiểm Chứng: Dữ Liệu Wikimedia Đã Vào Kafka Thật Chưa?
 
-And to do so we must first create this
+Code bài trước mới chỉ nằm trên IDE. Bài này trả lời câu hỏi quan trọng nhất của mọi pipeline: làm sao chắc chắn message đã vào đúng topic, đúng partition, consumer đọc được? Chúng ta sẽ tạo topic, run producer, rồi kiểm chứng bằng hai con đường độc lập — Conduktor UI và CLI.
 
-wikimedia.recentchange topic.
+---
 
-So, you can use the CLI or I'm going to use a Conduktor ui.
+## 1. Vấn đề: Producer Chạy Không Lỗi Chưa Có Nghĩa Là Dữ Liệu Đúng
 
-So I'm going to create this topic
+`producer.send()` là async và mặc định không ném exception ra mặt bạn khi broker có vấn đề nhẹ — nó retry ngầm hoặc buffer lại. Log thấy JSON chảy không đồng nghĩa Kafka đã commit. Vì vậy quy trình kiểm chứng chuẩn luôn có ba bước: tạo topic đúng spec trước, quan sát log producer, rồi đọc lại từ Kafka bằng một consumer độc lập.
 
-of three partitions and a replication factor
+## 2. Cơ Chế: Tạo Topic Trước Rồi Mới Gửi
 
-of one because we are only running one Kafka broker.
+### 2.1. Vì sao phải tạo topic `wikimedia.recentchange` bằng tay?
 
-So my topic is now created
+Bạn có thể để broker tự tạo topic (auto-create) khi producer gửi lần đầu, nhưng topic đó sẽ có 1 partition và `replication.factor=1` với mọi default — không thể hiện được phân phối đa partition, và sang môi trường khác default có thể khác. Tạo tay để chốt spec:
 
-and what I'm going to do now is just run this code.
+| Thuộc tính | Giá trị lab | Vì sao |
+|---|---|---|
+| Tên | `wikimedia.recentchange` | Khớp code `String topic` ở bài 064 |
+| Partitions | `3` | Đủ để thấy message phân phối (key null → sticky/round-robin) |
+| Replication factor | `1` | Local chỉ có 1 broker, để 3 sẽ lỗi `NotEnoughReplicas` |
 
-So you can click on the play button here
+Tạo bằng Conduktor UI: Console → Topics → Create Topic → điền tên, partitions = 3, RF = 1. Hoặc CLI:
 
-and let's see what happens when the log output comes.
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --create --topic wikimedia.recentchange --partitions 3 --replication-factor 1
+```
 
-Okay, so if we have a look here
+### 2.2. Chuyện gì xảy ra khi bấm Run?
 
-we have the producer configuration that is looking fine.
+1. Log in toàn bộ producer config (`acks`, `batch.size`, `linger.ms`, `compression.type`...) — hãy lướt qua để làm quen, bài 066 sẽ mổ chi tiết.
+2. Dòng `EventSource client using URI https://stream.wikimedia.org/...` báo SSE đã nối thành công.
+3. Hàng loạt `INFO` in nội dung JSON từng event — chứng tỏ `onMessage` đang được gọi và `send()` đang chạy.
+4. Song song, topic size trong Conduktor tăng liên tục (vài trăm record sau vài chục giây, lên MB rất nhanh). Mỗi record có key `null`, value là JSON với các field `type`, `title`, `user`, `bot`, `server_name`.
 
-And then in our log we're starting to get an event
+Key `null` là chủ ý của demo: message sẽ dàn đều trên 3 partitions thay vì dồn về một chỗ (cơ chế sticky partitioner ở bài 075).
 
-source client using this URI, so we're starting to read
+## 3. Config Liên Quan
 
-from the stream and then as we read from the stream
+Bài này không đổi config nào — nhưng có ba điểm cần đối chiếu với log khởi động:
 
-we get a lot of info log
+- **`bootstrap.servers = 127.0.0.1:9092`**: nếu log báo `Connection refused`, 99% là Docker Kafka chưa chạy hoặc đụng port (xem lại bài 062).
+- **`acks` và `enable.idempotence`**: giá trị bạn thấy ở đây chính là default của client version đang dùng. Client 3.x sẽ là `acks=-1 (all)` + `enable.idempotence=true`; client 2.8 sẽ là `acks=1` + `false`. Ghi nhớ để bài 070 đối chiếu.
+- **`batch.size=16384`, `linger.ms=0`, `compression.type=none`**: baseline chưa tuning. Bài 072-074 sẽ đổi cả ba.
 
-around all the data that is being sent to Apache Kafka.
+## 4. Code Ví Dụ: Hai Cách Đọc Lại Để Kiểm Chứng
 
-So as you can see the stream is quite fast
+Không cần sửa code producer. Chỉ cần đọc lại topic bằng hai cách độc lập.
 
-and it's happening in real time.
+### 4.1. Cách 1 — Conduktor UI (trực quan)
 
-And so therefore if I go into my consumer
+Vào topic `wikimedia.recentchange` → tab Consumer/Data. Nhấn Refresh sẽ thấy số record và dung lượng tăng theo thời gian thực. Click vào một record xem value: JSON đầy đủ `type`, `title`, `user`, `bot`, `server_name`. Chuyển qua lại giữa các partition để xác nhận message đã dàn đều chứ không dồn một chỗ.
 
-and I refresh right now, as you can see, I read 738 records.
+### 4.2. Cách 2 — CLI `kafka-console-consumer` (đối chứng)
 
-This is my topic size so far,
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic wikimedia.recentchange
+```
 
-how many partitions I have and so on.
+Lệnh này đọc từ "hiện tại trở đi" (latest), không đọc lại từ đầu — phù hợp vì stream chảy liên tục. Bạn sẽ thấy JSON tuôn màn hình, chứng tỏ producer và broker đều sống. Nhấn `Ctrl+C` để dừng. Nếu muốn đọc từ đầu:
 
-And all the data is here.
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic wikimedia.recentchange --from-beginning
+```
 
-So it's sent with a null key.
+Cẩn thận: topic vài phút đã có hàng nghìn record, `--from-beginning` sẽ tuôn rất lâu. Với mạng SSE nhanh, CLI gần như không đọc kịp để "ngắm" — đó chính là lý do UI tồn tại: pause, filter, xem từng record.
 
-So it's distributed across all partitions.
+## 5. Safe / High-Throughput Preset Liên Quan
 
-And if I click on the value,
+Chưa áp preset. Nhưng bài này cho bạn **baseline để so sánh**: với config mặc định, producer vẫn nuốt kịp ~30 msg/s của Wikimedia trên localhost mà không lỗi. Mọi tuning sau phải tốt hơn baseline ở ít nhất một chiều (an toàn hơn hoặc nhanh hơn) mà không phá chiều còn lại.
 
-I get some information about the data itself.
+```text
+Baseline bài 065 (để đối chiếu sau):
+- Topic: 3 partitions, RF=1, key=null -> dàn đều
+- Producer: default client -> chạy ổn, log chảy, consumer đọc được
+- Consumer: không cần config gì thêm dù sau này bật compression (broker/consumer tự xử)
+```
 
-So I can look at the Schema and whatever the data contains.
+## 6. Cạm Bẫy Thường Gặp
 
-So the type, the title, the user
+- **Chưa tạo topic mà trông chờ auto-create.** Vẫn chạy được nhưng topic chỉ có 1 partition — demo phân phối đa partition thất bại mà không báo lỗi rõ ràng.
+- **Tạo topic RF=3 trên local 1 broker.** Producer gửi với `acks=all` sẽ nhận `NotEnoughReplicasException`. Local luôn RF=1 trừ khi bạn dựng 3 broker.
+- **Producer báo nối được nhưng topic mãi rỗng.** Kiểm tra: (1) tên topic trong code khớp đúng `wikimedia.recentchange` (sai một ký tự là gửi sang topic khác, auto-create âm thầm); (2) mạng có ra được `stream.wikimedia.org` không (`curl -N` test như bài 063); (3) có bấm nhầm Stop ngay sau Run không.
+- **Dùng `--from-beginning` trên topic lớn rồi tưởng treo.** Không treo, chỉ là quá nhiều dữ liệu. Dùng consumer không `--from-beginning` hoặc xem UI.
+- **Kill producer bằng nút Stop và lo mất vài record cuối.** Bình thường ở lab: `send()` async còn vài record trong buffer chưa flush. Production sẽ dùng `flush()` + `close(timeout)` + callback — ra khỏi phạm vi bài này.
+- **Để producer chạy hàng giờ quên tắt.** Topic local phình lên hàng GB, đầy disk Docker. Lab chỉ cần chạy vài phút để kiểm chứng rồi tắt. Muốn chạy dài hãy đặt retention ngắn cho topic lab.
 
-whether or not it's a bot and so on.
+## Kết Luận
 
-So quite a lot of things I have to say.
+Tóm lại một câu: **tạo topic 3 partitions trước, bấm Run thấy log JSON chảy và topic size tăng, rồi đối chứng bằng cả Conduktor UI lẫn `kafka-console-consumer` — ba tín hiệu cùng xanh thì pipeline Wikimedia mới coi là chạy thật.**
 
-And then the server name that it belongs to.
-
-So this is really cool 'cause we have this consumer running
-
-and I can refresh it to get more data.
-
-So as you can see my topic size is getting bigger
-
-and bigger over time.
-
-So we are at 1.7 megabytes now.
-
-And this is running.
-
-Alternatively, you can also use a Command Line Interface
-
-to read our topic.
-
-So in here I can do a Kafka-console-consumer command
-
-and then I can connect to my bootstrap server local hosts.
-
-I don't need all these properties so I can just delete them.
-
-And the topic I'm gonna read from is the Wiki PJ topic.
-
-So let's get back at the name of it.
-
-So it's Wikimedia that recent change.
-
-So we're going to read this not
-
-from the beginning because we're streaming.
-
-So it's going to actually read
-
-from whatever is being sent right now.
-
-And once we are tapped into the topic, as you can see
-
-it's streaming data, so it's barely usable using a CLI.
-
-And then you do control c2 stop.
-
-This is why we, we built, this is to for you to
-
-have time to read the data and to have a look at it.
-
-But now we see that both the console consumer
-
-and Conduktor is working and our producer
-
-of course is working all against local hosts.
-
-That's pretty handy.
-
-Now to just exit, just click on the exit button
-
-and we are good with running this producer.
-
-All right, that's it.
-
-I hope you liked it.
-
-And in the next lecture we're going to see how
-
-we can optimize the throughput of this producer.
-
-So see you there.
+Bài tiếp theo chúng ta sẽ dừng lại một nhịp: mở log config producer vừa thấy ra mổ — `acks`, `batch.size`, `linger.ms`... mỗi cái nghĩa là gì, cái nào đáng tuning — để từ bài 067 đi sâu từng config một.

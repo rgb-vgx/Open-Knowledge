@@ -1,199 +1,78 @@
-Hi, this is Stephane from Conduktor.
+# Bản Đồ Toàn Khóa Kafka for Beginners: 4 Giờ Nền Tảng Rồi Mới Tới Thực Chiến
 
-So I will just give you an overview of what you're learning
+Bài trước bạn đã thấy Kafka sinh ra để đập tan bài toán tích hợp N×M. Bài này chúng ta trải bản đồ ra bàn: khóa học này đi qua những chặng nào, mỗi chặng cho bạn cái gì, bạn cần chuẩn bị gì trước khi lên đường, và học xong beginner thì đi đâu tiếp.
 
-in this course and how the course is structured.
+---
 
-So we'll start the Kafka theory section
+## 1. Học Thuyết Trước, Chạm Tay Ngay Sau: Logic Của Khóa Học
 
-where we will learn about Kafka cluster, Kafka brokers.
+Khóa này thuộc **Part 1 – Fundamentals**, khoảng **4 giờ content**, đi theo đúng thứ tự một engineer tiếp cận hệ thống mới: hiểu rồi mới sờ.
 
-We'll understand Kafka producers and how they take data
+1. **Kafka theory end-to-end.** Kafka cluster là gì, Broker làm gì, Producer đưa dữ liệu từ source system vào cluster ra sao, Consumer lấy dữ liệu ra gửi tới target system thế nào, cluster được quản lý bằng Zookeeper hay KRaft mode mới. Đây chính là phần Theory bạn đang đọc.
+2. **Dựng Kafka trên máy mình.** Hướng dẫn riêng cho **Linux, Windows, Mac**. Không học chay trên slide.
+3. **Kafka CLI.** Dùng command line để tạo Topic, produce, consume, quan sát cluster từ terminal.
+4. **Lập trình Java.** Viết code thật giao tiếp với Kafka — Producer đầu tiên, Consumer đầu tiên.
 
-from source systems into the Kafka cluster.
+Analogy quen thuộc: giống như học nấu phở — phải biết xương, bánh, gia vị là gì (theory), rồi mới vào bếp hầm xương (dựng máy), nếm thử (CLI), rồi tự nấu một nồi hoàn chỉnh (Java).
 
-We'll learn about consumers into how they take data
+## 2. Qua Được Nền Tảng Thì Tới Kiến Trúc Thật
 
-from the cluster and send it to target systems
+Hết Part 1, khóa học không dừng ở "hello world". Nó đẩy bạn sang các phần gắn với đời thật:
 
-and we'll learn how Kafka is managed either using Zookeeper
+* **Real-world architecture.** Viết một **Producer phức tạp hơn: Wikimedia producer bằng Java** (nguồn event thật chảy liên tục) và một **Consumer phức tạp hơn: OpenSearch consumer bằng Java** (đổ dữ liệu vào hệ thống search thật).
+* **Extended APIs.** Làm quen **Kafka Connect, Kafka Streams, Confluent Schema Registry** — ba mảnh ghép biến Kafka từ "đường ống" thành hệ sinh thái.
+* **Case studies enterprise.** Xem Kafka được dùng trong kiến trúc doanh nghiệp và các use case thực tế ra sao.
+* **Part 3 – Advanced.** Cấu hình Topic nâng cao và các lecture chuyên sâu bổ sung dần.
 
-or more recently using the Kafka craft mode.
+Nói ngắn gọn: nửa đầu cho bạn **hiểu đúng**, nửa sau cho bạn **làm được việc thật**.
 
-So what we'll learn in this course is also going to
+```mermaid
+graph LR
+    T[Theory] --> L[Dựng Kafka local]
+    L --> C[CLI]
+    C --> J[Java Producer/Consumer]
+    J --> R[Real-world: Wikimedia -> OpenSearch]
+    R --> E[Connect - Streams - Schema Registry]
+    E --> A[Advanced topic configs]
+```
 
-be an introduction to Conduktor
+## 3. Cần Chuẩn Bị Gì? Ít Hơn Bạn Tưởng
 
-to see how we can start Kafka
+Đây là **beginner's course** — bạn không cần biết Kafka từ trước. Nhưng có ba điều kiện cần nói thẳng:
 
-and use Kafka using a graphical UI
+1. **Biết dùng command line.** Không cần pro, nhưng phải mở được terminal và gõ lệnh cơ bản. Thầy sẽ đi chậm, nhưng nếu chưa bao giờ chạm terminal thì bạn sẽ đuối.
+2. **Biết một chút Java hoặc lập trình nói chung.** Khóa dùng **Java 11** để viết Producer/Consumer. Nếu không biết Java vẫn theo được: tải code mẫu về, chạy theo, tập trung nghe phần cấu hình Kafka. Nhưng biết Java thì lợi thế rõ rệt.
+3. **Ưu tiên Linux và Mac.** Hai hệ này chạy Kafka mượt nhất. Dùng **Windows** vẫn được — thầy có hướng dẫn và lưu ý riêng cho Windows — nhưng chuẩn bị tinh thần sẽ gặp vài đoạn lắt léo hơn.
 
-an intro to Kafka Connect
+Và điều kiện thứ tư, quan trọng nhất mà transcript nào thầy cũng nhắc: **sẵn sàng học một công nghệ mới hay ho**. Nghe sáo rỗng, nhưng với khóa 4 giờ đặc kiến thức thì thái độ quyết định bạn có tới được bài Streams hay bỏ cuộc ở bài Broker.
 
-Kafka Streams, Confluent Schema Registry.
+## 4. Khóa Này Dành Cho Ai?
 
-We'll learn about how Kafka is used in the enterprise
+* **Developer** muốn học cách viết và chạy application khai thác Kafka.
+* **Architect** muốn hiểu vai trò của Kafka trong pipeline enterprise.
+* **DevOps** muốn hiểu Topic, Partition và setup multi-broker vận hành ra sao.
 
-wether you're looking at Kafka architectures.
+Nếu bạn thuộc một trong ba nhóm trên thì đúng chỗ. Nếu bạn tìm khóa dạy vận hành cluster trăm brokers cho ngân hàng thì chưa — đó là chuyện của các volume sau.
 
-We'll have a look at some real world use cases.
+## 5. Học Xong Beginner Thì Đi Đâu? Đừng Lạc Trong Series
 
-We'll learn about the advanced APIs
+Thầy nói rất rõ vị trí của khóa này trong **Apache Kafka Series**:
 
-and topic configurations, and actually a lot more.
+* **Volume 1 (khóa này): Kafka for Beginners** — nền móng, operations cơ bản, viết Producer/Consumer đầu tiên.
+* **Hướng developer:** học tiếp **Kafka Connect, Kafka Streams, ksqlDB, Confluent Components**.
+* **Hướng admin/operator:** học tiếp **Kafka Security, Kafka Monitoring, Kafka Cluster Setup & Administration**.
 
-So the course is structured to be
+Hai chứng chỉ Confluent mà nhiều bạn nhắm tới cũng chia theo hai hướng đó: **Confluent Certification for Developers** và **Confluent Certification for Operators**. Thứ tự chuẩn là Beginners trước — khóa này đủ lớn để bạn hiểu Kafka thật sự — rồi mới rẽ nhánh theo nghề.
 
-with part one, the fundamentals.
+## Cạm Bẫy Thường Gặp
 
-So it's four hours of content in which first I walk you
+* **Nhảy thẳng vào Streams/Connect vì nghe "xịn".** Sai thứ tự. Chưa vững Producer, Consumer Group, Replication mà đụng vào Streams thì chỉ thấy API mà không hiểu chuyện gì chạy bên dưới.
+* **Dùng Windows nhưng bỏ qua phần caveat.** Tới lúc lệnh không chạy, path lỗi, lại tưởng Kafka hỏng. Hãy xem kỹ đoạn thầy dặn cho Windows.
+* **Không biết Java nên bỏ luôn phần lập trình.** Phí. Cứ tải code, chạy được, đọc config producer/consumer cũng đã hơn người chỉ đọc slide.
+* **Học để sưu tầm chứng chỉ mà chưa viết nổi một Producer.** Nhà tuyển dụng hỏi "acks=all khác acks=1 chỗ nào" mà ấp úng thì chứng chỉ nào cũng vô nghĩa.
 
-through the a Kafka theory end to end
+## Kết Luận
 
-so that you really understand what Kafka is about.
+Tóm lại một câu: **đây là Volume 1 cho người mới — 4 giờ fundamentals từ theory tới CLI tới Java, rồi tới kiến trúc thật với Wikimedia/OpenSearch, Connect, Streams, Schema Registry; chỉ cần biết terminal, chút Java 11, ưu tiên Linux/Mac là đủ để bắt đầu.**
 
-Then we'll go ahead and start Kafka on your machine.
-
-So we have different instructions based
-
-on Linux, Windows, Mac, et cetera, et cetera.
-
-Then we'll use the Kafka command line interface to
-
-start interacting with Kafka from our terminal.
-
-And then we'll do our Java programming
-
-to start writing code against Kafka.
-
-Next we'll have the real world architecture.
-
-So we'll actually do a more complex producer
-
-a wikimedia producer in Java
-
-as well as a more complex consumer
-
-the open search consumer again in Java.
-
-Then we'll have a look at the extended API
-
-such as Kafka Connect, Kafka Streams and Schema Registry.
-
-We'll look at case studies and we'll look
-
-at how Kafka is used in the enterprise.
-
-And finally, they will be a part three
-
-around advanced topic configurations
-
-and any other advanced lectures I will put there.
-
-So just a reminder that this is a beginner's course
-
-and you don't need to know Kafka at all.
-
-What you need to be able to is
-
-to use the command line though.
-
-And I will go slowly, but this is better
-
-if you have already used a terminal on your computer.
-
-We will do some Java programming.
-
-So it's good to have some knowledge
-
-of Java or programming, overall.
-
-And for this we will use Java 11.
-
-Although, if you don't know Java, this is fine.
-
-You can still download the code and follow along
-
-when I talk about Kafka configurations.
-
-Linux and Mac are strongly preferred.
-
-Although, if you have Windows I will show you
-
-the caveats of using Kafka on Windows
-
-and make sure you also have some instructions.
-
-Of course you need to be willing to learn
-
-a new, awesome technology, but if you're here today
-
-that means that you are willing to learn.
-
-So who is this course for?
-
-You may be a developer who wants to learn how to write
-
-and run applications that leverage Kafka.
-
-You may be an architect who wants to understand the role
-
-of Kafka in the enterprise pipeline
-
-or DevOps to understand how Kafka works in regards
-
-to topic partitions, as well as multi broker setup.
-
-So welcome to this course.
-
-This is Apache Kafka series and you're on volume one
-
-which is Kafka for beginners, which is going to
-
-give you a very strong base for Kafka
-
-learn basic operations
-
-and write your first consumers and producers.
-
-But there is Kafka Connect, Kafka Streams
-
-ksqIDB, Confluent Components, Kafka Security
-
-Kafka Monitoring and Operations, Kafka Cluster Setup
-
-and Administration in the Apache Kafka series.
-
-This is not in this course. These are other courses.
-
-And if you're preparing for certifications
-
-there is the Confluent Certification for Developers
-
-and the Confluent Certification for Operators.
-
-So people ask me, in which order should I take the courses?
-
-And is it enough?
-
-Well Kafka for beginners is your first course.
-
-And it is a big course
-
-and enough for you to really understand Kafka.
-
-And then if you wanna specialize as a developer
-
-Kafka Connect Kafka Streams, ksqIDB
-
-and Confluent Components are going to be key.
-
-And if you want to specialize
-
-as an admin, then Kafka security, Kafka Monitoring
-
-and Kafka Cluster Setup are going to be your best friends.
-
-Okay. So that's it for this lecture, welcome to this course
-
-and I will see you in the next lecture.
+Bài tiếp theo chúng ta gặp trực tiếp người dẫn đường: Stephane Maarek là ai, vì sao nên học từ anh, và hai nơi để kết nối với anh trong suốt khóa học.

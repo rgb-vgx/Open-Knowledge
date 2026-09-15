@@ -1,261 +1,151 @@
-Hi and welcome to this lecture
+# OpenSearch Consumer Part 3: Làm Consumer Idempotent Với Document ID Cố Định
 
-in which we will make our consumer idempotent.
+Bài trước (085) đã chỉ ra lỗ hổng chí mạng của Part 2: code đang at-least-once nhưng `_id` random nên đọc lại là duplicate thật. Bài này vá đúng chỗ đó — gắn `_id` cố định vào `IndexRequest` để ghi đè thay vì sinh mới. Đây là Part 3 trong chuỗi 6 parts: Part 1 nối client, Part 2 chảy data, Part 3 làm cho chảy lại cũng không bẩn.
 
-So the reason our consumer is not idempotent
+---
 
-right now is that in case we see the same message twice,
+## 1. Vấn đề: Vì Sao Đọc Lại Là Sinh Rác?
 
-it will get new ID
+Nhắc lại code Part 2:
 
-because we don't send any ID right now
+```java
+IndexRequest indexRequest = new IndexRequest("wikimedia")
+    .source(record.value(), XContentType.JSON); // không .id(...) => _id random
+```
 
-to open search.
+Mỗi lần `index()` là một `_id` random mới. Giờ tưởng tượng 2 kịch bản at-least-once rất thường gặp:
 
-And so therefore,
+* Consumer crash sau khi ghi OpenSearch nhưng trước khi commit offsets → restart đọc lại batch → mỗi message thành **2 documents** giống hệt nhau, khác `_id`.
+* Part 6 (091) cố ý reset offsets về quá khứ để replay → toàn bộ history thành duplicate.
 
-if we see the same message twice,
+Search `wikimedia` lúc đó trả về 2–3 bản copy của cùng một sự kiện sửa Wikipedia. Dashboard đếm sai, user thấy rác. Không thể chấp nhận.
 
-it will be inserted twice into open search,
+Yêu cầu: cùng một Kafka message, dù ghi bao nhiêu lần, trong OpenSearch chỉ có **một document**. Đó chính là định nghĩa **idempotent consumer**.
 
-which may not be a behavior we want.
+## 2. Cơ Chế: Ghi Đè Theo `_id` — Vũ Khí Của Search Engine
 
-We may not want to have duplicates
+Khác với Kafka append-only, OpenSearch cho phép ghi đè: `PUT /wikimedia/_doc/<id-cố-định>` lần 2 với cùng id sẽ **update tại chỗ** (`result: updated`, `_version` tăng), không sinh document mới. Bài 082 đã demo bằng tay.
 
-into open search and therefore we need
+Vậy toàn bộ bài toán idempotence rút gọn thành: **chọn `_id` nào để cùng một message luôn ra cùng một id?** Có 2 chiến lược:
 
-to send the ID into open search.
+```mermaid
+graph TB
+    REC["ConsumerRecord<br/>topic, partition, offset, value(JSON)"]
+    REC --> S1["Chiến lược 1: tọa độ Kafka<br/>topic-partition-offset"]
+    REC --> S2["Chiến lược 2: id trong data<br/>meta.id (gson)"]
+    S1 --> ID["IndexRequest.id(...)<br/>ghi đè => idempotent"]
+    S2 --> ID
+```
 
-How?
+| Chiến lược | Cách tạo id | Ưu | Nhược |
+|---|---|---|---|
+| 1. Tọa độ Kafka | `record.topic() + "-" + record.partition() + "-" + record.offset()` | Luôn có, mọi topic đều dùng được, không cần parse JSON | Id vô nghĩa với nghiệp vụ; đổi topic/repartition là id đổi; 2 pipeline khác nhau ghi cùng index dễ đụng |
+| 2. Id trong data (`meta.id`) | `JsonParser.parseString(value).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString()` | Id nghiệp vụ thật, stable kể cả replay cross-topic; search/debug dễ | Phải parse JSON mỗi record; phụ thuộc schema nguồn (mất field là vỡ); Wikimedia còn field `id` lẻ khác hay thiếu nên phải lấy đúng `meta.id` |
 
-Well, we have two different ways, okay?
+Khuyên dùng **chiến lược 2** cho pipeline này, giữ chiến lược 1 làm fallback khi data không có id. Code mẫu triển khai cả hai để bạn thấy tiến hóa, nhưng bản cuối chốt chiến lược 2.
 
-So we have two strategy.
+## 3. Code: Từ Tọa Độ Kafka Đến `extractId()`
 
-The strategy one
+### 3.1. Chiến lược 1 — id từ tọa độ (hiểu trong 1 phút)
 
-is to define an ID
+```java
+String id = record.topic() + "-" + record.partition() + "-" + record.offset();
 
-using Kafka record coordinates.
+IndexRequest indexRequest = new IndexRequest("wikimedia")
+    .source(record.value(), XContentType.JSON)
+    .id(id); // <-- thêm đúng một dòng này
+```
 
-What do I mean by that?
+Giải thích: cặp `(topic, partition, offset)` là duy nhất toàn cluster — không bao giờ có 2 messages cùng tọa độ. Gắn nó làm `_id` thì đọc lại message nào cũng ra đúng `_id` đó → ghi đè. Chạy thử, log `response.getId()` giờ in ra dạng `wikimedia.recentchange-0-12345` thay vì random — nhìn là biết idempotent đã bật.
 
-Well, we can say string ID equals,
+Nhược điểm để bạn cảm nhận: `_id` này không nói lên gì về sự kiện Wikipedia (ai sửa bài nào?). Replay từ topic khác / compact lại là id đổi. Nên chỉ dùng tạm.
 
-and then the record dot, excuse me,
+### 3.2. Chiến lược 2 — id từ `meta.id` trong JSON (bản chốt)
 
-the record dot topic
+Mở một document Wikimedia trong Dev Tools (`GET /wikimedia/_doc/<id-random-cũ>`), bạn sẽ thấy cấu trúc:
 
-plus the record dot partition plus
+```json
+{
+  "meta": { "id": "a1b2c3-...", "dt": "2026-...", "domain": "en.wikipedia.org" },
+  "id": 123456789,
+  "type": "edit",
+  "title": "Some Article",
+  "user": "..."
+}
+```
 
-the record dot offsets.
+Lưu ý bẫy: có **hai** trường tên na ná — `meta.id` (chuỗi UUID, luôn có) và `id` gốc (số, **không phải message nào cũng có**). Kinh nghiệm khóa học: luôn lấy `meta.id`. Lấy nhầm `id` gốc thì gặp message thiếu field là `NullPointerException`.
 
-Well, this is unique
+Hàm trích id bằng gson (đã khai dependency từ bài 079):
 
-because yes, there's going to be only one message
+```java
+private static String extractId(String json) {
+    return JsonParser.parseString(json)
+        .getAsJsonObject()
+        .getAsJsonObject("meta")   // xuống 1 cấp: { "id": ..., "dt": ... }
+        .get("id")                 // lấy field "id" trong "meta"
+        .getAsString();            // vì nó là chuỗi
+}
+```
 
-that has a defined topic, partition and offsets.
+Nhớ import đúng `com.google.gson.JsonParser` (gson), không lẫn với Jackson hay `javax.json`.
 
-So no matter what,
+Vòng lặp Part 2 giờ thành:
 
-even if the message itself does not contain any ID,
+```java
+for (ConsumerRecord<String, String> record : records) {
+    try {
+        String id = extractId(record.value()); // chiến lược 2, thay tọa độ
 
-then Kafka will contain a coordinate
+        IndexRequest indexRequest = new IndexRequest("wikimedia")
+            .source(record.value(), XContentType.JSON)
+            .id(id);
 
-of that record and we can use this
+        IndexResponse response = openSearchClient.index(indexRequest, RequestOptions.DEFAULT);
+        log.info("Inserted document with id " + response.getId());
+    } catch (Exception e) {
+        log.error("Failed to index record", e);
+    }
+}
+```
 
-as an ID when inserting it
+Giải thích thay đổi duy nhất: thêm 2 dòng (trích id + `.id(id)`). Còn lại giữ nguyên — vẫn ghi đơn lẻ, vẫn auto-commit. Part 4, 5 mới đụng tới commit và bulk.
 
-into our target database.
+### 3.3. Kiểm chứng idempotence bằng mắt
 
-So this is strategy one and we can use it.
+1. Run consumer, ghi lại vài `_id` trong log (giờ là dạng UUID của `meta.id`, đẹp và có nghĩa).
+2. Stop consumer khi offsets **chưa kịp commit** (hoặc chủ động reset về quá khứ như Part 6).
+3. Run lại → log in ra **đúng các `_id` cũ**.
+4. Dev Tools kiểm tra:
 
-And if we do so, then we need
+```
+GET /wikimedia/_doc/<một-id-cũ>
+```
 
-to add the ID into the index request.
+Phải thấy `_version: 2` (hoặc cao hơn) với `result: updated` trong lần ghi sau — chứng tỏ ghi đè, không sinh mới. Đếm tổng docs (`GET /wikimedia/_count`) trước và sau khi đọc lại phải **không tăng**.
 
-And to do so, you just add a new line right here.
+## 4. Bảng So Sánh: Trước Và Sau Part 3
 
-You dot ID and then we pass in the ID.
+| Tiêu chí | Part 2 (trước) | Part 3 (sau) |
+|---|---|---|
+| `_id` | Random mỗi lần ghi | Cố định theo `meta.id` |
+| Đọc lại batch | Duplicate 100% | Ghi đè, không tăng docs |
+| Replay Part 6 | Thảm họa | An toàn tuyệt đối |
+| Semantics hiệu lực | At-least-once (trùng thật) | At-least-once + idempotent = **effectively-once** |
+| Giá phải trả | Không | Parse JSON mỗi record (rẻ so với 1 HTTP call) |
 
-So that's strategy number one.
+Từ "effectively-once" cần hiểu đúng: bên dưới vẫn có thể đọc và ghi lại, nhưng người dùng search chỉ thấy **một** bản ghi đúng nhất. Với sink ngoài Kafka, đây là đích thực tế cao nhất — đừng mơ exactly-once kiểu transaction.
 
-And it will work fine.
+## 5. Pitfalls
 
-But the better strategy is
+* **Lấy nhầm `id` gốc thay vì `meta.id`.** Field `id` gốc thiếu ở một số message → NPE crash vòng lặp. Luôn `getAsJsonObject("meta").get("id")`.
+* **Import sai `JsonParser`.** IDE gợi ý nhiều `JsonParser` (Jackson, Kafka...). Phải là `com.google.gson.JsonParser` — đúng cái đã khai trong `build.gradle`.
+* **Tưởng gắn `.id()` là xong, bỏ try-catch.** Message JSON vỡ (Wikimedia thỉnh thoảng gửi payload lạ) làm `parseString` ném exception. Giữ try-catch quanh từng record như mẫu để một message xấu không giết cả batch.
+* **Dùng tọa độ Kafka rồi replay cross-topic và ngạc nhiên vì duplicate.** Tọa độ gắn với topic-partition-offset cụ thể. Đổi topic là đổi id. Đó là lý do bản chốt dùng `meta.id` nghiệp vụ.
+* **Đo hiệu năng rồi kết luận "parse JSON làm chậm".** Một lần parse gson ~microseconds, một lần `index()` HTTP ~milliseconds. Nút cổ chai là HTTP đơn lẻ — Part 5 (bulk) mới giải quyết, không phải bỏ id.
 
-that if your data itself provides you
+## Kết Luận
 
-with an ID, then use that.
+Tóm một câu: **Part 3 đã biến consumer thành idempotent bằng một dòng `.id(meta.id)` — đọc lại bao nhiêu lần cũng chỉ ghi đè, đạt effectively-once.**
 
-So let's have a look at our data
-
-and if we look at one of these messages,
-
-for example, and do a drill down in it,
-
-as you can see there is a meta ID field in here.
-
-So this ID field right here
-
-represents the ID that we're going to use
-
-for our program.
-
-You'll notice there's another ID right here
-
-but this ID in my experience is not there
-
-on every single message.
-
-So we're going to keep
-
-just doing the ID underneath meta, okay?
-
-So that means that we need to create a function
-
-that is going to extract the ID.
-
-So therefore, I can do string ID
-
-equals extract ID.
-
-And we need to pass into json.
-
-So record dot value with parenthesis.
-
-And I'm going to remove this.
-
-This is my strategy two,
-
-where we extract the ID from the json value.
-
-So now we need to write this function extract id.
-
-So let's go up outside of our main.
-
-And in here I'm going
-
-to do a private static string called Extract ID
-
-that gets a string Json as an input.
-
-And next we need to use a library from Google
-
-to actually deal with extracting the ID.
-
-So therefore what I'm going to do is
-
-I'm going to do return and this is directly
-
-from the gson library.
-
-So we use a Json Parser
-
-and make sure you import com.google.gson.
-
-Then we can do parse string json.
-
-And then we do get as a json object
-
-because well this string,
-
-everything here is a json object.
-
-Then we need to go one level down.
-
-So we do dot get and then meta.
-
-And meta is right here.
-
-This is meta.
-
-And again, this is a json object.
-
-So let's do dot get as json object.
-
-Then dot get id well because the ID is
-
-with a meta and the ID itself is a string.
-
-So in here what I can do is dot get as string.
-
-And here we go.
-
-We have found a way to extract the ID.
-
-So this is good.
-
-We are here.
-
-Scrolling down,
-
-we extract the ID right here,
-
-we add it into our index request
-
-and then in our index response, we get this ID.
-
-And so therefore that means that
-
-if we see twice the same message,
-
-elastic search is just going to update the one
-
-in place because we have provided an ID.
-
-So it's quite nice.
-
-Now if I run my open search consumer
-
-just to try this out,
-
-as we can see the IDs right
-
-here are good looking.
-
-They're the ones we expect
-
-and they are coming directly from our data sets.
-
-Okay, so this is pretty nice.
-
-It works really, really nicely.
-
-And now if we were to, for example,
-
-rerun our consumer because maybe these offsets
-
-have not been committed.
-
-These offsets of these messages
-
-have not been committed.
-
-When the rerun our code,
-
-we're going to find the same ID.
-
-And open search is smart enough to just update
-
-and not have duplicates.
-
-So effectively what we've done here is
-
-that we've made our consumer idempotent
-
-and therefore we are in
-
-at least once plus idempotent
-
-which means effectively once,
-
-effectively exactly once setting.
-
-Okay?
-
-So pretty cool.
-
-I hope you liked it
-
-and I will see you in the next lecture.
+Bài tiếp theo (087) chúng ta dừng code một nhịp để học **commit strategies**: `enable.auto.commit=true` + xử lý đồng bộ thì an toàn tới đâu, khi nào phải tắt auto-commit và gọi `commitSync()` tay — nền tảng để Part 4 (088) chuyển sang manual commit có kiểm soát.

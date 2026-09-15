@@ -1,265 +1,121 @@
-Hi, this is Stephane from Conduktor.
+# Kafka Trong 5 Phút: Vì Sao Công Ty Nào Lớn Lên Cũng Cần Nó?
 
-And welcome to this lecture
+Bài trước bạn đã biết mình sẽ học gì và học với ai. Giờ là câu hỏi lớn nhất của cả khóa: Kafka sinh ra để giải bài toán gì mà database hay API thông thường bó tay? Câu trả lời nằm ở một phép nhân đơn giản mà hậu quả của nó thì không đơn giản chút nào.
 
-in which I'm going to introduce Kafka to you.
+---
 
-So let's first go
+## 1. Điểm Xuất Phát: Một Source, Một Target Thì Quá Dễ
 
-with company challenges regarding data integration.
+Hãy tưởng tượng công ty bạn có một **source system** — ví dụ một database — và một bộ phận khác muốn lấy dữ liệu đó đưa sang **target system** của họ.
 
-So companies will have a source system,
+Luồng xử lý lúc này rất ngây thơ: ai đó viết một đoạn code, **extract** dữ liệu ra, **transform** cho đúng định dạng, rồi **load** vào đích. Xong. Không cần Kafka, không cần gì cả.
 
-for example, a database.
+Vấn đề là công ty không đứng yên. Nó lớn lên, và bài toán tích hợp dữ liệu lớn lên cùng nó.
 
-And at some point another part of the company
+## 2. Bài Toán N×M: Khi Tích Hợp Bùng Nổ Theo Cấp Số Nhân
 
-will want to take that data to put it into another system.
+Sau một thời gian, bạn không còn 1 source và 1 target nữa. Bạn có **nhiều source systems** và **nhiều target systems**, mà source nào cũng phải chia sẻ dữ liệu cho target nào.
 
-For example, a target system.
+Giả sử có **4 source** và **6 target**. Bạn phải viết bao nhiêu tích hợp? Không phải 4 + 6 = 10, mà là 4 × 6 = **24 integrations**.
 
-So the data has to move
+```mermaid
+graph LR
+    subgraph Source
+        S1[Source 1]
+        S2[Source 2]
+        S3[Source 3]
+        S4[Source 4]
+    end
+    subgraph Target
+        T1[Target 1]
+        T2[Target 2]
+        T3[Target 3]
+        T4[Target 4]
+        T5[Target 5]
+        T6[Target 6]
+    end
+    S1 --> T1 & T2 & T3 & T4 & T5 & T6
+    S2 --> T1 & T2 & T3 & T4 & T5 & T6
+    S3 --> T1 & T2 & T3 & T4 & T5 & T6
+    S4 --> T1 & T2 & T3 & T4 & T5 & T6
+```
 
-from a source system to a target system.
+*4 source × 6 target = 24 mũi tên chằng chịt. Cứ thêm một hệ thống mới là thêm cả chùm tích hợp mới.*
 
-And at first, it's very simple.
+Con số 24 mới chỉ là bề nổi. Mỗi tích hợp trong đó lại kéo theo bốn loại đau đầu, nhân lên theo từng mũi tên:
 
-Someone who writes some code
+1. **Protocol** — dữ liệu vận chuyển bằng gì? TCP, HTTP, REST, FTP, JDBC... mỗi hệ thống một kiểu, mỗi kiểu một thư viện, một cách debug khác nhau.
+2. **Data format** — dữ liệu parse ra sao? Binary, CSV, JSON, Avro, Protobuf... chỉ cần một bên đổi format là đầu bên kia vỡ.
+3. **Data schema và evolution** — chuyện gì xảy ra khi hình dạng dữ liệu ở source hoặc target thay đổi? Thêm một cột, đổi tên một field, là cả chuỗi tích hợp rung rinh.
+4. **Tải lên source system** — mỗi target kết nối vào là source phải chịu thêm connection và request để phục vụ extract. Source càng hot càng dễ sập vì bị "bám" quá nhiều.
 
-and then take the data, extract it, transform it,
+Analogy gần gũi: kiểu tích hợp trực tiếp này giống như trong xóm, nhà nào muốn gửi đồ cho nhà nào cũng phải tự chạy xe tới tận nơi. 10 nhà thì còn chạy được, 100 nhà thì cả xóm chỉ còn thấy xe chạy vòng vòng, không ai làm ăn gì nữa.
 
-and then load it.
+## 3. Kafka Đứng Giữa Để Decouple: Ai Cũng Chỉ Cần Biết Một Người
 
-Now, after a while, your company evolves
+Cách giải là đặt **Apache Kafka** vào giữa. Source và target vẫn còn đó, nhưng chúng không nói chuyện trực tiếp với nhau nữa.
 
-and has many source systems
+```mermaid
+graph LR
+    S1[Website events] --> K[Apache Kafka]
+    S2[Pricing data] --> K
+    S3[Financial transactions] --> K
+    S4[User interactions] --> K
+    K --> T1[(Database)]
+    K --> T2[Analytics]
+    K --> T3[Email system]
+    K --> T4[Audit system]
+```
 
-and also has many target systems.
+Luật chơi mới cực kỳ đơn giản:
 
-And now your data integration challenges
+* **Source system** chỉ có một trách nhiệm: gửi dữ liệu vào Kafka — thao tác này gọi là **producing**. Kafka trở thành nơi chứa **data stream** của toàn bộ dữ liệu từ mọi source.
+* **Target system** khi cần dữ liệu thì tap vào Kafka để lấy — gọi là **consuming**. Không cần biết dữ liệu gốc từ database nào, format gốc ra sao, chỉ cần biết đọc từ Kafka.
 
-just got a lot more complicated,
+Đặt vào ví dụ cụ thể cho dễ hình dung:
 
-because all your source systems must send data
+* Source có thể là **website events**, **pricing data**, **financial transactions**, **user interactions** — tất cả đều là dữ liệu sinh ra theo thời gian thực, tức **data streams**.
+* Target có thể là **database**, **hệ thống analytics**, **hệ thống email**, **hệ thống audit**.
 
-to all your target systems to share information.
+Mỗi bên giờ chỉ cần biết cách nói chuyện với Kafka, thay vì phải biết cách nói chuyện với tất cả các bên còn lại. Thêm một source mới? Chỉ cần nối vào Kafka. Thêm một target mới? Chỉ cần đọc từ Kafka. Số tích hợp tăng theo phép cộng, không còn theo phép nhân.
 
-And as we can see, we have a lot of integration.
+## 4. Vì Sao Lại Là Kafka Mà Không Phải Hàng Đợi Khác?
 
-So the previous architecture is that, for example,
+Kafka do **LinkedIn** tạo ra dưới dạng open source, nay được duy trì bởi các ông lớn như **Confluent, IBM, Cloudera, LinkedIn**. Nhưng "con nhà nòi" không phải lý do người ta chọn nó. Người ta chọn vì bốn đặc tính kiến trúc:
 
-if you have 4 source systems and 6 target systems,
+1. **Distributed, resilient, fault tolerant.** Kafka là hệ phân tán chịu lỗi. Ý nghĩa thực tế: bạn có thể **upgrade, bảo trì Kafka mà không phải hạ toàn bộ hệ thống**. Broker này restart thì broker khác vẫn phục vụ.
+2. **Horizontal scalability.** Thêm **Broker** vào cluster theo thời gian, scale tới **hàng trăm brokers**. Hết tải thì thêm máy, không cần đập đi viết lại.
+3. **Throughput khổng lồ + latency thấp.** Hàng **triệu messages mỗi giây** (Twitter là ví dụ ở quy mô đó), độ trễ đôi khi đo được **dưới 10ms**. Đó là lý do Kafka được gọi là **real-time system**.
+4. **Adoption rộng khắp.** Hơn **2.000 công ty** công khai đang dùng, **80% Fortune 100** có Kafka trong stack: LinkedIn, Airbnb, Netflix, Uber, Walmart... Nhưng bạn không cần là tập đoàn khổng lồ mới dùng được — cluster 3 brokers trên laptop cũng chạy tốt để học.
 
-you're going to have to write 24 integrations
+## 5. Kafka Được Dùng Vào Việc Gì Trong Thực Tế?
 
-to make it work.
+Các use case đời đầu: **messaging system**, **activity tracking**, gom **metrics** từ nhiều nơi, gom **application logs**.
 
-And each integration comes with difficulty
+Về sau mở rộng thêm:
 
-around the protocol, because the technology has changed.
+* **Stream processing** (qua Streams API — sẽ học ở phần sau).
+* **Decouple system dependencies và microservices**.
+* **Tích hợp big data**: Spark, Flink, Storm, Hadoop.
+* **Pub/sub cho microservices**.
 
-So maybe the data is going to be transported
+Ba ví dụ cụ thể để thấy Kafka chỉ là "đường ống", nghiệp vụ nằm ở hai đầu:
 
-over TCP, HTTP, REST, FTP, JDBC.
+* **Netflix** dùng Kafka để đưa ra **recommendation real-time** ngay trong lúc bạn đang xem phim.
+* **Uber** dùng Kafka gom dữ liệu user, taxi, trip theo thời gian thực để **dự báo nhu cầu và tính giá real-time**.
+* **LinkedIn** dùng Kafka để **chống spam** và thu thập user interactions nhằm gợi ý kết nối tốt hơn.
 
-The data format.
+Trong cả ba câu chuyện, Kafka không gợi ý phim, không tính giá cuốc xe, không kết bạn hộ bạn. Nó chỉ làm một việc: **transportation mechanism** — cho phép luồng dữ liệu khổng lồ chảy trong công ty mà không nghẽn.
 
-So how is the data parsed?
+## Cạm Bẫy Thường Gặp
 
-Is it Binary, CSV, JSON,
+* **Tưởng Kafka là database.** Sai. Kafka không query được bằng SQL, không update từng record. Nó là append-only log có thời hạn, đọc bằng Consumer chứ không phải SELECT.
+* **Tưởng đặt Kafka vào là hết phải lo schema.** Không. Kafka nhận mọi format (JSON, Avro, binary...) mà không kiểm tra. Nếu source đổi schema bừa bãi, target vẫn vỡ như thường — chỉ là vỡ ở phía đọc Kafka thay vì vỡ ở connection trực tiếp. Muốn quản schema tử tế phải dùng thêm Schema Registry.
+* **Nhầm "real-time" với "nhanh bằng mọi giá".** Latency dưới 10ms là năng lực của Kafka, không phải cam kết mặc định cho mọi cấu hình. Bật batch lớn, replication kỹ, acks=all thì latency sẽ đổi lấy durability — bài Producer acks sau này sẽ mổ xẻ tradeoff này.
+* **Thấy công ty lớn dùng thì bê nguyên kiến trúc về startup 5 người.** Netflix chạy hàng trăm brokers không có nghĩa bạn cũng cần thế để học. Bắt đầu từ 1–3 brokers, hiểu đúng bản chất rồi hãy scale.
 
-Avro, Protobuf, et cetera, et cetera?
+## Kết Luận
 
-Data schema and evolution,
+Tóm lại một câu: **tích hợp trực tiếp bùng nổ theo N×M và kéo theo bốn nỗi đau protocol, format, schema evolution, tải source — Kafka đứng giữa để decouple, source chỉ produce, target chỉ consume, còn Kafka lo chuyện vận chuyển real-time ở quy mô triệu message/giây.**
 
-what happens if the data changes in shape overall
-
-in your source or your target systems.
-
-And then each source system will also have an increased load
-
-from all the connections and the request
-
-to extract the data.
-
-So how do we solve this problem?
-
-Well, we bring some decoupling using Apache Kafka.
-
-So we still have our source systems and our target system,
-
-but in the middle, will sit Apache Kafka.
-
-What happens?
-
-Now the source systems are responsible for sending data.
-
-It's called producing for producing data into Apache Kafka.
-
-So now Apache Kafka is going to have a data stream
-
-of all your data, of all your source systems within it.
-
-And your target systems,
-
-if they ever need to receive data from your source systems,
-
-they will actually tap into the data of Apache Kafka,
-
-because Kafka is meant to actually receive and send data.
-
-So your target systems are now consuming from Apache Kafka,
-
-and everything looks
-
-a little bit better and a little bit more scalable.
-
-So if we go back to the same example,
-
-what can be your source systems for example?
-
-Well, it could be website events, pricing data,
-
-financial transaction, or user interactions.
-
-And all these things create data streams.
-
-That means data created in real time,
-
-and it is sent to Apache Kafka.
-
-Now your target systems
-
-could be databases, analytics systems,
-
-email systems, and audit system.
-
-So this is the kind of architecture we we'll implement.
-
-Now, why is Apache Kafka so good?
-
-Well, Kafka was created by LinkedIn.
-
-And you should know LinkedIn.
-
-It's a huge corporation.
-
-And it was created as an open source project.
-
-Now it's mainly maintained by big corporations
-
-such as Confluent, IBM, Cloudera, LinkedIn, and so on.
-
-It's distributed, has a resilient architecture,
-
-and is fault tolerant.
-
-That means that you can upgrade Kafka.
-
-You can do Kafka maintenance
-
-without taking the whole system down.
-
-Kafka is also very good,
-
-because it has horizontal scalability.
-
-That means that you can add brokers over time
-
-into your Kafka cluster.
-
-And you can scale to hundreds of broker.
-
-Kafka also has huge scale for messages throughputs.
-
-So you can have millions of messages per second.
-
-This is the case of Twitter.
-
-Also, it's really high performance.
-
-So you have really low latency.
-
-Sometimes it's measured in less than 10 millisecond,
-
-which is why we call Apache Kafka a real time system.
-
-Kafka also has a really wide adoption across the world.
-
-And if you're watching this video,
-
-that means that you know Kafka is being widely adopted.
-
-So over 2,000 firms are using Kafka publicly,
-
-and also 80% of the Fortune 100 are using Apache Kafka.
-
-Big names (indistinct) using Kafka are going to be
-
-LinkedIn, Airbnb, Netflix, Uber, and Walmart,
-
-but you don't need to be a mega corporation
-
-to use Apache Kafka.
-
-Now into the use cases, how is Apache Kafka used?
-
-It's used as a messaging system, activity tracking system.
-
-It's used to gather metrics from many different locations,
-
-gather application logs.
-
-It's used to be like the first use cases for Kafka.
-
-More recently, it's used for stream processing,
-
-and we'll see how to do that
-
-using the streams API for example.
-
-It's used to decouple system dependencies and microservices.
-
-It has integration with big data technologies
-
-such as Spark, Flink, Storm Hadoop.
-
-And as I said, it's also used for microservices pub/sub.
-
-So some more concrete example into how Kafka is being used.
-
-So Netflix is using Apache Kafka
-
-to apply recommendations in real time
-
-while you're watching TV shows.
-
-Uber is using Kafka to gather user taxi
-
-and trip data in real time and compute and forecast demand,
-
-also compute your pricing in real time.
-
-And LinkedIn uses Kafka to prevent spam,
-
-collect user interactions
-
-to make better connection recommendations in real time.
-
-So in all of that,
-
-Kafka is only used as the transportation mechanism,
-
-which allows huge data flows in your company.
-
-So by now you should know what Kafka is
-
-how it's used,
-
-and why and how it came to be.
-
-So that's it for this lecture.
-
-I hope you liked it.
-
-And I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ mở bản đồ toàn khóa: đi từ Kafka theory tới dựng cluster trên máy, gõ CLI, viết Producer/Consumer Java đầu tiên, rồi tới Connect, Streams, Schema Registry và kiến trúc enterprise.

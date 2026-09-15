@@ -1,99 +1,83 @@
-Hi, this Difan from Conduktor
+# Windows: Cài WSL2 + Ubuntu (Bước Bắt Buộc Trước Mọi Bài Kafka)
 
-and in this lecture we're going
+Bài này dành riêng cho **Windows 10 (bản 2004 trở lên) / Windows 11**. Đây là bước bắt buộc: mọi bài Kafka sau trên Windows đều chạy **bên trong Ubuntu trên WSL2**, không chạy native trên PowerShell.
 
-to install the Kafka binaries on Windows.
+Nếu bạn dùng Mac hay Linux thì bỏ qua bài này.
 
-But first we need to install WSL2.
+---
 
-So even if you started Conduktor with Docker
+## 1. Vì Sao Bắt Buộc WSL2?
 
-and Kafka with Docker,
+Kafka chạy native trên Windows rất bất ổn: không xóa được Topic (`KAFKA-8811`), segment bị xóa sau ~1 tuần là broker chết (`KAFKA-1194`). Chạy Kafka trong WSL2 (một máy Linux thật bên trong Windows) thì ổn định như chạy trên Ubuntu thật, đồng thời CLI, Docker, file config đều dùng cú pháp Linux thống nhất với giáo trình.
 
-it's important that you run these steps
+Điều kiện duy nhất: Windows 10 version 2004+ hoặc Windows 11. Windows cũ hơn không cài được WSL2 — khi đó con đường duy nhất ổn định là chạy Kafka bằng Docker (bài `020`).
 
-to also have the Kafka CLI commands available on Windows.
+## 2. Bước 1 — Cài WSL2 + Ubuntu Bằng Một Lệnh
 
-So first, to install WSL2,
+1. Mở **PowerShell với quyền Administrator** (chuột phải → Run as administrator).
+2. Chạy duy nhất một lệnh:
 
-we must have Windows 10 or above and then install WSL2.
+```powershell
+wsl --install
+```
 
-So let's go ahead and do this right now.
+Lệnh này làm 3 việc hộ bạn: bật tính năng Windows Subsystem for Linux, cài WSL2, và cài Ubuntu mặc định.
 
-Okay, so let's go ahead and install WSL on Windows.
+3. Chờ tải + cài xong. Máy có thể yêu cầu **restart** — cứ restart rồi mở lại PowerShell chạy tiếp `wsl --install` nếu nó chưa xong.
+4. Mẹo khi thấy màn hình đứng yên lâu: đừng gõ thêm lệnh mới, chỉ nhấn `Enter` 1-2 lần xem tiến trình có chạy tiếp không.
 
-So you just Google it and you click on
+Kiểm tra WSL đã nhận Ubuntu chưa (PowerShell thường):
 
-the first link from Microsoft Learn,
+```powershell
+wsl --list --verbose
+```
 
-to install WSL on Windows, and it's very simple,
+Thấy Ubuntu ở trạng thái Running hoặc Stopped là đạt.
 
-we have to only run one command.
+## 3. Bước 2 — Tạo Tài Khoản Ubuntu Lần Đầu
 
-The only prerequisite is to have a Windows 10
+Lần đầu Ubuntu khởi động, nó hỏi:
 
-version 2004 and higher or Windows 11.
+1. **Unix username:** đặt tên thường viết liền, ví dụ `thuyet`.
+2. **Password + retype:** nhập 2 lần (gõ không hiện ký tự nào là bình thường).
 
-So let's open PowerShell,
+Tạo xong bạn sẽ rơi vào prompt Linux kiểu `thuyet@DESKTOP:~$` — từ giờ bạn đang ở trong Linux thật, mọi lệnh Kafka sau gõ ở đây chứ không phải PowerShell.
 
-right click and run as administrator.
+Thoát ra và vào lại để quen tay:
 
-And then you type in wsl --install.
+```bash
+exit
+```
 
-Press enter.
+Rồi từ Start Menu gõ `Ubuntu`, mở app Ubuntu — bạn lại vào đúng máy Linux đó. Ghim app này ra taskbar vì sẽ dùng suốt khóa học.
 
-It's going to download the Windows subsystem for Linux.
+## 4. Bước 3 — Verify Môi Trường
 
-It's going to install it, enable a lot of features,
+Trong terminal Ubuntu, chạy thử vài lệnh để chắc mọi thứ ổn:
 
-and finally install Ubuntu on your system.
+```bash
+whoami
+pwd
+cat /etc/os-release | head -5
+```
 
-So I'm just going to pause the video until this is done
+Thấy username vừa tạo, home `/home/<ten-ban>`, và dòng `Ubuntu 22.04` (hoặc 24.04) là xong.
 
-and do not touch any key on your keyboard.
+Từ giờ quy ước trong mọi bài Windows-WSL2:
 
-If you think it's stuck, try to press enter once
+- **PowerShell** chỉ dùng để `wsl --install`, `wsl --list`, mở Docker Desktop.
+- **Terminal Ubuntu** dùng cho mọi việc còn lại: cài Java, tải Kafka, sửa PATH, start broker.
 
-or twice maximum and see if that helps.
+## Lỗi Thường Gặp & Cách Fix
 
-But I'm just going to wait until this is done.
+- **Windows báo WSL không hỗ trợ:** máy bạn dưới Windows 10 bản 2004. Fix: update Windows lên bản mới nhất, hoặc chuyển sang dùng Docker thuần (bài `020`).
+- **`wsl --install` báo đã cài nhưng không thấy Ubuntu:** chạy `wsl --list --online` để xem danh sách distro, rồi `wsl --install -d Ubuntu` để cài riêng Ubuntu.
+- **Màn hình cài đặt đứng yên:** nhấn `Enter` 1-2 lần, đợi thêm. Đừng mở thêm PowerShell khác chạy chồng lệnh.
+- **Quên password Ubuntu:** trong PowerShell chạy `wsl -u root passwd <username>` để đặt lại.
+- **Mở nhầm PowerShell thay vì Ubuntu để chạy lệnh Kafka:** các lệnh `apt`, `nano ~/.bashrc`, `./bin/*.sh` chỉ chạy trong Ubuntu. Fix: mở app Ubuntu từ Start Menu.
 
-Okay, so Ubuntu is now installed
+## Kết Luận
 
-and is going to be launched.
+Vậy là Windows của bạn giờ đã có một máy Ubuntu thật bên trong. Mọi bài tiếp theo (`027`, `028`, `029`) đều thao tác trong terminal Ubuntu này.
 
-So you press enter to enter your Unix user account name,
-
-then you enter a password,
-
-you retype it to make sure that you've typed it well
-
-and then you're good to go.
-
-So we have installed Ubuntu
-
-and now as you can see we are running inside
-
-of a Linux terminal.
-
-So now I am directly using WSL2, and this is Linux.
-
-Okay, so now let's close this window
-
-and in search I can type Ubuntu
-
-and this is not the right one, Ubuntu.
-
-And we can just open this.
-
-And now we have a specified terminal
-
-that will connect into Ubuntu and we are in WSL.
-
-So once you have this,
-
-you have completed the installation of WSL2,
-
-and I will see you in the next lecture
-
-to install Kafka.
+Bài tiếp theo (`027`) chúng ta sẽ cài Java 21 + Kafka binaries + PATH — ngay trong Ubuntu vừa cài, các bước giống hệt Linux.

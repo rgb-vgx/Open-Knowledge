@@ -1,281 +1,84 @@
-Hi, this is Stephane from Conduktor.
+# Zookeeper: Người Quản Lý Thầm Lặng Sắp Về Hưu Của Kafka
 
-And in this lecture,
+Bài trước bạn đã nắm acks và durability. Bài này gặp nhân vật đứng sau sân khấu từ ngày Kafka ra đời: **Zookeeper** — kẻ giữ danh sách Broker, tổ chức bầu Leader, phát thông báo thay đổi. Nó sắp về hưu, nhưng production ngoài kia vẫn đầy Zookeeper, nên không thể không học.
 
-we're going to learn about Zookeeper.
+---
 
-So, Zookeeper has been how Kafka was able to
+## 1. Zookeeper Là Gì Và Vì Sao Kafka Cần Nó?
 
-function all the way up until today,
+**Zookeeper** là một phần mềm riêng, chạy kèm Kafka từ thuở sơ khai. Mọi phiên bản Kafka **2.x trở về trước (tới 2.8) không thể chạy thiếu Zookeeper**: không start Zookeeper thì đừng mơ start được Kafka.
 
-but it's slowly disappearing
+Nó làm ba việc chính cho cluster:
 
-and it's going to be replaced.
+1. **Giữ danh sách Brokers.** Broker nào sống, Broker nào chết, Zookeeper nắm hết.
+2. **Tổ chức leader election.** Broker chết thì partition mất Leader — Zookeeper đứng ra dàn xếp bầu Leader mới từ các replica.
+3. **Phát thông báo thay đổi.** Topic mới được tạo, Broker lên/xuống, Topic bị xóa... Zookeeper gửi notification tới các Broker để cả làng cập nhật metadata.
 
-So you, what you may hear Zookeeper a lot
+```mermaid
+graph TB
+    subgraph Zookeeper Ensemble - 3 servers
+        Z1[ZK 1 - follower]
+        Z2[ZK 2 - LEADER ★]
+        Z3[ZK 3 - follower]
+    end
+    B101[Broker 101] <--> Z2
+    B102[Broker 102] <--> Z2
+    B103[Broker 103] <--> Z2
+    Z2 -.->|leader election<br/>metadata - notifications| B101 & B102 & B103
+```
 
-in the Kafka community today,
+Nói gọn: Broker lo dữ liệu, Zookeeper lo **metadata và điều phối**. Broker hỏi Zookeeper để biết "làng mình giờ có ai, ai làm Leader".
 
-and I will explain you everything you need to know
+## 2. Luật Lẻ Của Zookeeper: Số Server Luôn Lẻ
 
-in this lecture and the next.
+Zookeeper theo thiết kế chạy với **số server lẻ**: 1, 3, 5 hoặc 7 — hiếm khi hơn 7. Lý do là cơ chế bầu cử cần đa số tuyệt đối (quorum): 3 servers chịu được 1 chết, 5 chịu được 2 chết. Chạy số chẵn vừa tốn máy vừa không tăng khả năng chịu lỗi tương xứng.
 
-So, first let's look at Kafka with Zookeeper.
+Bản thân Zookeeper cũng có khái niệm **Leader và follower** riêng: **một Leader nhận write, còn lại phục vụ read**. Trong sơ đồ trên, ZK 2 là Leader, ZK 1 và ZK 3 là follower. Đừng nhầm Leader của Zookeeper với Leader của Kafka partition — hai cuộc bầu cử độc lập ở hai tầng khác nhau.
 
-So, Zookeeper, are managing Kafka brokers
+## 3. Hiểu Lầm Kinh Điển: Zookeeper Không Giữ Consumer Offset Nữa
 
-and Zookeeper is a software.
+Đây là chỗ thầy nhấn mạnh vì "không biết bao nhiêu người vẫn trả lời sai": ở Kafka **rất cũ**, Consumer lưu offset đã đọc vào Zookeeper. Nhưng từ **Kafka 0.10 trở đi**, offset chuyển sang internal Topic **`__consumer_offsets`** như bạn đã học ở bài Consumer Group.
 
-And Zookeeper is going to
+> **Zookeeper hiện tại không giữ bất kỳ consumer data nào.**
 
-keep a list of your Kafka brokers.
+Đi phỏng vấn mà trả lời "offset lưu trên Zookeeper" là lộ ngay mình đọc tài liệu từ thập kỷ trước. Nhớ mốc: **0.10 = offset rời Zookeeper về Kafka**.
 
-Zookeeper is also going to be very helpful for Kafka
+## 4. Lộ Trình Khai Tử: Từ Zookeeper Sang KRaft
 
-because whenever we have a broker going down,
+Ngay từ **Kafka 3.x**, Kafka đã có thể chạy độc lập không cần Zookeeper bằng cơ chế **Kafka Raft (KRaft)**. Và theo lộ trình, **Kafka 4.x sẽ bỏ Zookeeper hoàn toàn**.
 
-we need to perform a leader election
+Nghĩa là cộng đồng đang ở giai đoạn chuyển giao: cluster mới thì tiến tới KRaft, cluster cũ ngoài production thì vẫn đầy Zookeeper. Đó chính là lý do bài này tồn tại — bạn **vẫn phải học Zookeeper** vì đi làm thật sẽ gặp nó dài dài.
 
-to choose new leader for partitions,
+Muốn đọc sâu thì Google **`KIP-500`** — proposal khai tử Zookeeper của dự án Kafka. (Chi tiết KRaft học ngay bài sau.)
 
-and Zookeeper is going to help with this process.
+## 5. Luật Sắt Cho Developer Hiện Đại: Đừng Bao giờ Nối Client Vào Zookeeper
 
-Also, Zookeeper is going to send notifications
+Đây là lời dặn thầy nói với giọng "sẽ giận nếu bạn làm sai", nên deserves hẳn một mục riêng.
 
-to Kafka brokers in case of changes.
+Ngày xưa (thời tiền sử của Kafka), Producer nối vào Zookeeper, Consumer nối vào Zookeeper, admin client cũng nối vào Zookeeper. Giờ thì **tất cả Kafka clients và CLI tools đã được migrate sang chỉ nói chuyện với Kafka Broker**:
 
-For example, when a new topic is created
+* Producer → Broker. Consumer → Broker. Admin → Broker.
+* Ngay cả lệnh `kafka-topics` từ **Kafka 2.0/2.2** đã chuyển sang trỏ Broker thay vì Zookeeper.
 
-when a Kafka broker goes down, or comes up,
+Quy định cho developer hiện đại:
 
-deletion of topics and so on.
+1. **Không bao giờ dùng Zookeeper làm connection endpoint trong code hay CLI.** Chỉ trỏ `bootstrap.servers` về Broker.
+2. **Bảo vệ Zookeeper**: nếu còn dùng, chỉ cho Broker nối vào, cấm client nối trực tiếp — vì Zookeeper **kém secure hơn Kafka**. Mở cửa cho client là mở thêm mặt tấn công.
 
-So, Zookeeper has a lot of the Kafka metadata.
+Khi nào được bỏ Zookeeper? Lời khuyên của thầy ở thời điểm ghi hình: chừng nào **Kafka 4.0 chưa ra và ổn định**, production vẫn nên giữ Zookeeper cho Broker. Còn vọc vãnh học tập thì thầy sẽ demo cả cách start Kafka không Zookeeper ở phần hands-on — nhưng nhớ tag "chưa production-ready ở thời điểm đó".
 
-And Kafka all the way
+Analogy kiểu Việt Nam: Zookeeper giống như bác tổ trưởng dân phố sắp nghỉ hưu. Mọi giấy tờ hộ khẩu (metadata), bầu tổ phó mới (leader election), loa phường thông báo (notifications) đều qua tay bác. Phường đã có hệ thống số mới (KRaft) nhưng sổ giấy của bác vẫn đầy ngoài thực tế, nên bạn phải biết bác làm gì — chỉ có điều đừng tới nhà riêng của bác (nối client) mà giải quyết việc, hãy ra ủy ban (Broker) theo quy trình mới.
 
-up until version two.whatever
+## Cạm Bẫy Thường Gặp
 
-two.X, two.eight
+* **Nối Producer/Consumer thẳng vào Zookeeper.** Lỗi thời từ nhiều major version trước. Mọi client hiện đại chỉ nối Broker.
+* **Trả lời phỏng vấn rằng offset lưu trên Zookeeper.** Sai từ Kafka 0.10. Offset nằm ở `__consumer_offsets`.
+* **Tưởng bỏ Zookeeper là xong chuyện bảo mật.** Ngược lại: chừng nào còn Zookeeper là còn một mặt tấn công kém secure hơn Kafka — phải khóa nó chỉ nhận Broker.
+* **Chạy số Zookeeper chẵn "cho đối xứng".** Chẵn không tăng fault tolerance mà chỉ tốn máy. Cứ 1, 3, 5, 7.
+* **Thấy KRaft mới thì xóa Zookeeper khỏi cluster production cũ ngay.** Đừng. Lộ trình migrate phải chờ version ổn định — bài sau sẽ nói rõ mốc nào production-ready.
 
-it cannot work without Zookeeper.
+## Kết Luận
 
-So, Zookeeper has been since the beginning of Kafka,
+Tóm lại một câu: **Zookeeper là lớp điều phối metadata, bầu Leader và phát thông báo cho Kafka từ thuở sơ khai — không giữ consumer offset từ 0.10, client hiện đại tuyệt đối không nối vào nó, và nó đang trên đường về hưu khi Kafka 4.x tới.**
 
-a companion to Kafka brokers,
-
-and you cannot launch Kafka without launching Zookeeper.
-
-But now starting with Kafka 3.x,
-
-you can have Kafka work on its own without Zookeeper,
-
-it's called the Kafka Raft mechanism instead.
-
-So, it's Kraft or Kafka Raft.
-
-And if you wanna read more about it
-
-just go on Google
-
-and type KIP K-I-P 500.
-
-And then, in version Kafka four.whatever
-
-you will not have Zookeeper anymore.
-
-So, right now the community is transitioning to
-
-making Kafka work with Zookeeper correctly,
-
-and then, at some point,
-
-migrate and move without
-
-a, to a Zookeeper less Kafka.
-
-So, that means that Kafka with Zookeeper
-
-is necessary right now.
-
-And so we still need to learn about Zookeeper
-
-because you are going to see it in production a lot.
-
-So, Zookeeper by design is going to operate
-
-with an odd version of servers.
-
-So, you either you have one Zookeeper
-
-or three Zookeeper, or five Zookeeper,or seven Zookeeper
-
-Never more than seven usually.
-
-And Zookeeper also has a concept
-
-of leaders and the rest are followers.
-
-So, one for writes and the rest for reads.
-
-And something you may read on the internet
-
-but it's old information,
-
-and I still see it.
-
-So, it's information for you to know Kafka consumers
-
-in the old versions of Kafka
-
-used to store consumer offsets on Zookeeper.
-
-But now, as we know, they store consumer offsets
-
-on the internal Kafka topics named consumer offsets.
-
-So Zookeeper does not hold any consumer data, okay.
-
-Starting with Kafka version zero point 10.
-
-And I know this looks old,
-
-but it's still super important
-
-for me to say it because you have no idea how
-
-many people still get that wrong.
-
-So if you look at Zookeeper,
-
-we may have an example here with three Zookeeper servers.
-
-The second one is the leader,
-
-and then the brokers are connected to Zookeeper,
-
-and that's how they get their metadata.
-
-I'm not giving you too much information
-
-about Zookeeper because you don't need to know that much.
-
-All right.
-
-So the question is
-
-should you use Zookeeper?
-
-If you are managing Kafka brokers,
-
-the answer is yes.
-
-Until Kafka 4.0 is out and ready,
-
-then you should not use Kafka
-
-without Zookeeper in production.
-
-Okay. But I'm going to still show you
-
-in the hands on,
-
-how to start Kafka without Zookeeper,
-
-for you to have a play.
-
-But remember, it is not production ready yet.
-
-And then for your Kafka clients.
-
-So Kafka clients over time,
-
-they have been migrated to leverage the brokers
-
-as the only connection endpoint instead of Zookeeper.
-
-But before you used to connect your producer to Zookeeper
-
-you used to connect your consumer to Zookeeper.
-
-You used to connect your administration client
-
-to Zookeeper and so on.
-
-And so you may see the Zookeeper option.
-
-And on the online literature,
-
-you may see Zookeeper being written out elsewhere.
-
-Okay.
-
-But, if you're doing the most recent version of this course,
-
-then you should not use Zookeeper anymore.
-
-Okay?
-
-All the Kafka clients and CLI tools have been migrated
-
-to only leverage Kafka brokers as a connection end points.
-
-Okay, so even consumers that shouldn't connect
-
-to Kafka brokers because to Zookeepers, excuse me.
-
-And then since Kafka 2.0, 2.2
-
-the Kafka topics command also as well
-
-references Kafka brokers and not Zookeeper.
-
-And this is very important because the community
-
-did an effort to migrate all the comments before
-
-from Zookeeper to Kafka.
-
-Because when we are going to have Kafka without Zookeeper,
-
-then the clients will not have any issues,
-
-because they don't expect Zookeeper to be here.
-
-So also the reason why Zookeeper is going away is
-
-that because Zookeeper is less secure than Kafka.
-
-And so that means that you should protect Zookeeper
-
-if you use it to only accept connections from Kafka brokers
-
-but not from Kafka clients.
-
-So all in all, as a summary
-
-if you wanna be a great, and I'm teaching you to be great,
-
-a great modern day, Kafka developer,
-
-never ever use Zookeeper as a configuration
-
-in your Kafka clients.
-
-If you do it, I will look at you and be mad.
-
-Okay. And if you write a program as well, do not connect
-
-to Zookeeper, only connect to Kafka,
-
-But thankfully
-
-I'm going to teach you the right way in this course.
-
-All right.
-
-So that's all you need to know for Zookeeper.
-
-I hope you liked it.
-
-And I will see you in the next lecture.
+Bài tiếp theo chúng ta gặp người kế nhiệm: **KRaft (KIP-500)** — vì sao Kafka muốn xóa Zookeeper, kiến trúc gọn lại ra sao, và mốc version nào mới dám dùng production.

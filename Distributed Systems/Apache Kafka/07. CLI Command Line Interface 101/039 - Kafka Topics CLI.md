@@ -1,501 +1,188 @@
-Hi, this is Stephan from Conduktor,
+# Kafka Topics CLI: Tạo, Soi và Xóa Topic Bằng Tay
 
-and welcome to this lecture on using the Kafka topics CLI.
+Producer chưa gửi được message nào nếu topic chưa tồn tại (trừ khi bạn bật auto-create — điều không nên làm ở production). Bài này biến `kafka-topics.sh` thành con dao đa năng: tạo topic đúng số partition và replication factor ngay từ đầu, liệt kê, mô tả chi tiết từng partition đang nằm ở broker nào, và xóa khi không cần nữa.
 
-So we have a Kafka cluster,
+---
 
-and we know that it's made out of topics, and so
+## 1. Chuẩn Bị Kết Nối: File `playground.config`
 
-therefore we're going to do topic management using the CLI.
+Khi làm việc với cluster có bảo mật (như Conduktor Playground), mọi lệnh topics đều cần thêm thông tin xác thực. Cách làm là tạo một file config 3 dòng ngay tại thư mục bạn chạy lệnh:
 
-We're going to create Kafka topics.
+```bash
+# Nội dung file playground.config (3 dòng)
+security.protocol=SASL_SSL
+sasl.mechanism=PLAIN
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="..." password="...";
+```
 
-We're going to list Kafka topics, describe Kafka topics,
+Từ đây, mọi lệnh với Playground đều có tiền tố chung:
 
-increase the number of partitions in a Kafka topic,
+```bash
+kafka-topics.sh --command-config playground.config \
+  --bootstrap-server <playground-bootstrap-url> \
+  --list
+```
 
-and finally, we're going to delete a Kafka topic.
+* `--command-config playground.config` — truyền thông tin SASL/SSL cho cluster có bảo mật.
+* `--bootstrap-server` — URL của cluster. Với localhost không bảo mật thì bỏ `--command-config` đi, chỉ giữ `--bootstrap-server localhost:9092`.
 
-But if you are on Windows non WSL two,
+Một mẹo chẩn đoán: nếu chạy lệnh mà Kafka chỉ in ra cả trang help thay vì thực thi, nghĩa là bạn thiếu action (`--create`, `--list`, `--describe`, `--alter`, `--delete`). Đọc dòng lỗi đầu tiên, Kafka ghi rất rõ nguyên nhân.
 
-then please do not delete the topic,
+## 2. Tạo Topic: `--create`
 
-otherwise, things will crash fatally for you, okay?
+### 2.1. Tạo topic đơn giản nhất
 
-So let's get started and practice.
+```bash
+kafka-topics.sh --command-config playground.config \
+  --bootstrap-server <playground-bootstrap-url> \
+  --create --topic first_topic
+```
 
-Hi, this Stephan from Conduktor,
+```bash
+# Cùng lệnh trên localhost không bảo mật
+kafka-topics.sh --bootstrap-server localhost:9092 \
+  --create --topic first_topic
+```
 
-and in this lecture we're going to learn how to use
+* `--create` — hành động tạo mới.
+* `--topic first_topic` — tên topic. Đặt tên snake_case, không dấu, không khoảng trắng.
 
-the Kafka topic CLI to create and delete and list topics.
+Output mẫu khi thành công:
 
-And these files you can find in the section two
+```
+Created topic first_topic.
+```
 
-of this course called code download,
+Vào UI Conduktor (Console Home, chọn đúng playground ở góc phải) bạn sẽ thấy `first_topic` xuất hiện ngay — mặc định 3 partitions theo cấu hình của Playground.
 
-and you can download the code and unzip it,
+### 2.2. Chỉ định rõ số partition
 
-and you'll be good to go.
+```bash
+kafka-topics.sh --command-config playground.config \
+  --bootstrap-server <playground-bootstrap-url> \
+  --create --topic second_topic --partitions 5
+```
 
-So in this tutorial and for the CLI, I'm going to show you
+* `--partitions 5` — tạo topic với 5 partitions (đánh số 0–4).
 
-how to do it on the Conduktor platform,
+Luôn explicit số partition. Partition quyết định độ song song tối đa của consumer group (bao nhiêu consumer đọc cùng lúc). Tạo xong gần như không giảm được, chỉ tăng được — nên suy nghĩ trước, đừng để mặc định cho xong.
 
-but all the instructions
+### 2.3. Replication factor: vì sao localhost chỉ dùng được `--replication-factor 1`?
 
-for all these files right here are available
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 \
+  --create --topic third_topic --partitions 3 --replication-factor 2
+```
 
-for the Conduktor platform right here,
+Output mẫu (lỗi cố ý):
 
-and the very same instructions are available
+```
+Error: replication factor: 2 larger than available brokers: 1
+```
 
-if you wanted to decide to use Kafka on your local host.
+* `--replication-factor 2` — mỗi partition có 2 bản sao trên 2 broker khác nhau để chịu lỗi.
 
-The reason why I'm going to use the Conduktor platform is
+Nguyên tắc sắt: **replication factor không bao giờ được lớn hơn số broker.** Localhost của bạn chỉ có 1 broker nên chỉ dùng được `--replication-factor 1`. Trên Playground có hàng chục brokers (ví dụ 39 brokers), bạn có thể đặt 2, 3 tùy ý. Thực tế Playground ép mọi topic về replication factor 3 để tối ưu — dù bạn truyền `--replication-factor 1` hay `2`, kết quả describe vẫn ra 3.
 
-because we created a UI in this mixed learning visual.
+Best practice production: replication factor 3 cho topic quan trọng.
 
-So as such, I strongly recommend to follow the same way
+## 3. Liệt Kê Topic: `--list`
 
-as me, but again, you can do everything on a local host.
+```bash
+kafka-topics.sh --command-config playground.config \
+  --bootstrap-server <playground-bootstrap-url> \
+  --list
+```
 
-It will be the exact same commands on top of it.
+Output mẫu:
 
-This allows you to understand how to connect
+```
+first_topic
+second_topic
+third_topic
+```
 
-to a secure cluster, which is something
+Có UI thì list bằng mắt nhanh hơn, nhưng trên server không UI hoặc trong script CI/CD, đây là cách duy nhất để kiểm tra topic đã tồn tại chưa trước khi produce.
 
-you most likely will have to do at some point
+## 4. Mô Tả Topic: `--describe` — Đọc Vị Leader, Replicas, ISR
 
-in your Kafka journey, so why not start now?
+```bash
+kafka-topics.sh --command-config playground.config \
+  --bootstrap-server <playground-bootstrap-url> \
+  --describe --topic first_topic
+```
 
-So the first thing we have to do is to create
+* `--describe` — xem chi tiết cấu hình và vị trí từng partition.
+* `--topic first_topic` — topic cần soi (bắt buộc đi kèm `--describe`).
 
-a configuration file with these configuration right here.
+Output mẫu (số broker sẽ khác máy bạn):
 
-So I will copy this properties,
+```
+Topic: first_topic  TopicId: abc123  PartitionCount: 3  ReplicationFactor: 3
+Topic: first_topic  Partition: 0  Leader: 31  Replicas: 31,15,5  Isr: 31,15,5
+Topic: first_topic  Partition: 1  Leader: 14  Replicas: 14,1,9   Isr: 14,1,9
+Topic: first_topic  Partition: 2  Leader: 7   Replicas: 7,22,11  Isr: 7,22,11
+```
 
-and what I have to do is to create a playground config file,
+Cách đọc từng cột:
 
-so that file needs to reside
+* `Partition: 0` — id của partition trong topic (0, 1, 2).
+* `Leader: 31` — broker 31 đang là leader, mọi ghi/đọc của partition 0 đi qua nó.
+* `Replicas: 31,15,5` — 3 bản sao nằm trên broker 31, 15, 5. Đếm số lượng là ra replication factor.
+* `Isr: 31,15,5` — In-Sync Replicas, các bản sao đang đồng bộ kịp leader. Nếu `Isr` ít hơn `Replicas` nghĩa là có broker chép chậm hoặc chết — dấu hiệu cần điều tra.
 
-exactly where you're going to run your CLI command.
+So sánh với localhost 1 broker để khỏi nhầm lẫn hai loại số:
 
-So for me, it resides in this directory,
+```
+Topic: first_topic  Partition: 0  Leader: 0  Replicas: 0  Isr: 0
+```
 
-so I'm going to just do code to open my code editor,
+Ở đây `Partition: 0` là id partition, còn `Leader: 0`, `Replicas: 0` là broker id 0. Trùng số 0 nhưng ý nghĩa hoàn toàn khác nhau.
 
-and then I'm going to create a file
+### Tăng số partition: `--alter`
 
-called playground.config.
+Partition chỉ tăng, không giảm. Khi topic bị nghẽn (consumer lag kéo dài, throughput ghi tăng), bạn nới rộng bằng:
 
-You can do this any way you want, but as you can see,
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 \
+  --alter --topic first_topic --partitions 6
+```
 
-this just opened this playground config file,
+* `--alter` — sửa cấu hình topic đã tồn tại.
+* `--partitions 6` — số partition mới, bắt buộc lớn hơn số hiện tại.
 
-and I'm just going to paste what I have before and save it.
+Lưu ý: tăng partition phá vỡ thứ tự key cũ (key trước đây về partition 0–2 giờ có thể về 3–5) và làm loãng dữ liệu. Hãy tăng khi topic còn ít dữ liệu hoặc đã chấp nhận đánh đổi thứ tự.
 
-So make sure it is three lines only, so one, two, and three,
+## 5. Xóa Topic: `--delete`
 
-and then you'll have your username
+```bash
+kafka-topics.sh --command-config playground.config \
+  --bootstrap-server <playground-bootstrap-url> \
+  --delete --topic second_topic
+```
 
-and your password in there.
+Output mẫu:
 
-So that's the first step,
+```
+# Không in gì đặc biệt, kiểm tra lại bằng --list
+kafka-topics.sh --command-config playground.config \
+  --bootstrap-server <playground-bootstrap-url> --list
+```
 
-and then now you can go ahead and run some commands.
+> Cảnh báo Windows: nếu bạn dùng Windows thuần (không WSL2), **đừng chạy `--delete`** trong bài lab này. Có lỗi đã biết khiến cluster local crash nặng sau khi xóa topic. Bỏ qua bước delete trên Windows, xem kết quả trên Playground là đủ.
 
-So the first thing is that we're going to look
+Trên Playground bạn cũng có thể xóa bằng UI cho nhanh. CLI sinh ra là để dùng khi không có UI hoặc cần script hàng loạt.
 
-at the Kafka topics command.
+## Cạm Bẫy Thường Gặp
 
-So it can be .sh, and then you'll get this blurb
+* **Quên `--bootstrap-server` hoặc `--command-config`.** Lệnh in help thay vì chạy. Luôn kiểm tra 3 mảnh: công cụ + kết nối + action.
+* **Đặt replication factor lớn hơn số broker.** Lỗi `larger than available brokers` là chắc chắn. Localhost 1 broker thì replication factor luôn là 1.
+* **Nhầm partition id với broker id trong output `--describe`.** `Partition: 0` khác `Leader: 0`. Đọc theo tên cột, đừng đoán theo số.
+* **Xóa topic trên Windows non-WSL2.** Treo cluster như đã cảnh báo ở trên.
+* **Phó mặc số partition cho default.** Sau này muốn giảm không được, tăng thì ảnh hưởng key. Hãy chọn explicit ngay lúc `--create`.
 
-of documentation, which means everything is working,
+## Kết Luận
 
-or this could be Kafka topics without .sh,
+Tóm một câu: **`kafka-topics.sh` xoay quanh 5 action `--create --list --describe --alter --delete`, luôn đi kèm `--bootstrap-server`, thêm `--command-config` khi cluster có bảo mật, và output `--describe` cho bạn biết chính xác mỗi partition đang sống ở broker nào.**
 
-based on your operating system,
-
-and again, you'll get the blurb of text.
-
-So one of these two should work.
-
-If not, please use the full path,
-
-and I described this in the previous video.
-
-So the first thing I'm going to do is to show you
-
-the anatomy of a command.
-
-So if I paste this in, the first part is Kafka topic.sh,
-
-which represents the command itself.
-
-Then we have command config playground.config,
-
-which is the file I just created in this directory,
-
-and this is to pass on additional connection property
-
-to Kafka, which is necessary
-
-when you connect to a secure Kafka cluster.
-
-And then you have the bootstrap server option
-
-with the actual bootstrap server you're trying
-
-to connect to, which represents the URL of where Kafka is.
-
-So if you try to do this command right here,
-
-you will have an issue.
-
-This when you have an issue,
-
-it just shows the documentation just right now,
-
-and you will know why there is a problem.
-
-So if I scroll back up, if I scroll back up in here
-
-and I look at it, it says that the command is wrong
-
-because it must include at least one action,
-
-which is list, describe, create, alter, or delete.
-
-And these options are pretty much shown
-
-in the documentation of the CLI,
-
-so of course, you're going to learn these options
-
-with me today, but in case you see the documentation
-
-as an output of your command,
-
-that means that you're missing some options.
-
-So let's remove this.
-
-So now let's actually create our first topic.
-
-So I'm going to copy the entire command right here
-
-and do the minus, minus create, and then minus, minus topic,
-
-and then name first topic.
-
-So this will create my first topic.
-
-I press enter, and it works.
-
-And just to show you just once on local host
-
-you can do the exact same thing,
-
-so let's create our first topic on local host.
-
-And this time there is no command config.
-
-You can just go ahead with bootstrap server,
-
-local host 9092, because it is an unsecure connection.
-
-We can do the same,
-
-create our topic, and the topic is created.
-
-But the thing is, when you use local host,
-
-you cannot view what's happening,
-
-so again, for you to get the best learning,
-
-I recommend you use the playground, because
-
-in the playground you can go under the console home,
-
-make sure you choose my playground on the top right,
-
-and then you have first topic,
-
-and as you can see, I just created it and it appears.
-
-So it's a really nice way to get visual feedback
-
-of your actions, which can help you a lot
-
-during your learning.
-
-Okay, so we know now how to create a topic,
-
-but there is a new option,
-
-so as you can see, this topic get created
-
-with three partitions, as you can see in the UI.
-
-And if I paste this command here now, actually,
-
-now we can also specify the number of partitions.
-
-And it's always good to be very explicit
-
-about what you're trying to create.
-
-So in this example, I create a topic called second topic,
-
-and it has five partitions.
-
-So let's press enter, and the topic is created.
-
-And of course, if I go in the console and refresh this,
-
-now I see three partitions and five partitions.
-
-So we have visual feedback again
-
-that things worked as expected.
-
-Now there's something called the replication factor.
-
-So replication factor is a way to replicate topics
-
-onto multiple servers for disaster recovery purposes
-
-and high availability.
-
-And what you have learned is that you cannot have
-
-a replication factor higher than the number
-
-of brokers you have.
-
-So it turns out that if you try to create a topic
-
-with a replication factor on of two, for example,
-
-on local hosts, this is going to fail, why?
-
-Well, because on local hosts, as you can see,
-
-there's an error saying that
-
-the replication two is larger than the number
-
-of available brokers, one, and so therefore,
-
-you cannot create a topic with an RF,
-
-a replication factor higher than the number of brokers.
-
-And so therefore, the only way to make it work
-
-on local host with the setup we have is to use
-
-a replication factor of one, and that's fine.
-
-But in the cluster we have online on Conduktor,
-
-it turns out that if you're a bit curious and go
-
-to the brokers here, as we can see, we have 39 brokers.
-
-Now, that may be different for you,
-
-but we'll have more than one.
-
-So you have 39 brokers,
-
-and that means that we can use a replication factor
-
-that allows our topic to be fully distributed.
-
-So back into our topic now on Conduktor,
-
-you can actually run this command.
-
-And what happens if you try to do replication factor of two?
-
-Well, this is going to work,
-
-but actually, it's not gonna be two.
-
-It's still going to be three,
-
-and the reason is on Conduktor platform,
-
-we've decided to just make it constant
-
-so that all the topics created have a replication factor
-
-of three, which is optimal.
-
-So even if you try to create one
-
-with a replication factor of one, it will say no.
-
-It will have to be a replication factor of three.
-
-So if you go onto the third topic,
-
-as you can see, there's a replication factor
-
-of three right now that is shown.
-
-Now, in case you have a UI,
-
-it's actually very simple to list topics.
-
-You just go and you can see them all,
-
-but how do you do this when you don't have a UI?
-
-Well, for this we can use the Kafka topics
-
-and then minus minus list command,
-
-which is going to simply list your topics
-
-one by one in this UI.
-
-As you can see, I have my first,
-
-my second, and my third topic.
-
-Now, how do you get details into your topics?
-
-Well, you can use the describe option,
-
-and the describe option goes alongside the topic argument.
-
-So I have my minus, minus, topic, first topic, and then
-
-minus, minus, describe, and it's going to describe
-
-my topic itself, which means that
-
-every single partition is going to give me
-
-a bit more information.
-
-So here what I see is that my topic is named first topic.
-
-We have three partitions and a replication factor of three.
-
-You get some additional information
-
-about potential configurations,
-
-and then here we have a topic with three partitions,
-
-so each line represents one partition, and as you can see,
-
-there's leader 31 and then replicas 31, 15, 5,
-
-and then ISR 31, 15, 5, and you may have
-
-some different numbers here, but what does it mean?
-
-Well, if you remember, I told you that when you have a topic
-
-and it is distributed, it is on different broker IDs.
-
-So this means that my partition zero in here has
-
-the broker number 31 as the leader,
-
-and the replicas represent 31, number 15, and number five,
-
-which makes it a replication factor of three.
-
-And because all my replicas are in sync,
-
-it says ISR in sync replicas of also 31, 15, and five.
-
-And my partition one right here has the leader of 14,
-
-and the replicas of 14, one, and nine, which is really cool,
-
-because thanks to this,
-
-we really see the distribution of our topic
-
-onto different brokers, in this example, nine brokers
-
-to be exact, which is really, really nice.
-
-And if you try to run the same describe topic command,
-
-but on your local host,
-
-so I don't know if I've created this topic, I forgot.
-
-Yes, there it is, so my first topic is created.
-
-As you can see, you see something
-
-a little bit less interesting,
-
-because we have first topic partition zero,
-
-leader zero, replica zero, ISR zero,
-
-so don't mix up the numbers.
-
-Partition zero is the idea of the partition,
-
-whereas leader zero, replica zero,
-
-and ISR zero represents the broker ID zero
-
-that holds this topic partition.
-
-But again, you won't see any replication with one broker.
-
-So that's good,
-
-and then finally, how do we delete a topic?
-
-Well, very simply, you go and run the Kafka topics command
-
-and you have the topic name
-
-and the option minus, minus, delete,
-
-which is going to delete a topic.
-
-So in this example, I can delete my second topic,
-
-and if I refresh this, as you can see, it is gone.
-
-But also I can quickly go back into here.
-
-I can choose to delete my topic
-
-by just using the UI one more way
-
-so you don't have to remember all the commands,
-
-and I can even delete my first topic.
-
-So we have seen a lot.
-
-We've seen how to use the CLI on a local host.
-
-We've seen how to use the CLI on the Conduktor platform.
-
-And Kafka topics CLI is something you'll use a lot
-
-if you don't have a UI,
-
-or any kind of UI can help you speed up your processes.
-
-All right, that's it for this lecture.
-
-I hope you liked it, and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ gửi message đầu tiên vào topic vừa tạo bằng `kafka-console-producer.sh` — và xem chuyện gì xảy ra khi produce vào topic chưa tồn tại, khi gửi không key và khi gửi có key.

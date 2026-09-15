@@ -1,187 +1,89 @@
-Hi, this Stephane from Condukter
+# Khởi Động Kafka: Đọc Bản Đồ Toàn Section Trước Khi Chạy Một Lệnh Nào
 
-and in this lecture we're going to see how to start Kafka.
+Bài này không cài gì cả. Bài này giúp bạn **chọn đúng đường đi** trong cả section "Starting Kafka" — dùng Mac, Linux hay Windows — dùng Docker hay chạy tay bằng binaries — để không bị lạc giữa hàng chục video setup.
 
-Now starting Kafka is one of the most complicated thing
+Dành cho: tất cả học viên, mọi OS. Đọc bài này trước, rồi mới nhảy tới bài đúng với máy của bạn.
 
-to do, but I try to make it simple for you.
+---
 
-So there are different kinds of lectures in a section,
+## 1. Mục Tiêu Của Cả Section
 
-and I give you the order in which to watch them in this PDF.
+Hết section này bạn phải có 2 thứ chạy được trên máy:
 
-I'll just open it for you in a few seconds,
+1. **Một Kafka broker đang chạy** để thực hành — hoặc qua Docker, hoặc chạy trực tiếp bằng binaries.
+2. **Kafka CLI tools** (`kafka-topics.sh`, `kafka-console-producer.sh`, `kafka-console-consumer.sh`...) gọi được từ bất kỳ thư mục nào, để tương tác với cluster qua `localhost:9092`.
 
-but it gives you instructions for Mac, for Linux,
+Mô hình chuẩn mà khóa học hướng tới:
 
-for Windows, if you have Docker or not.
+- **Broker**: 1 broker duy nhất, chạy ở `127.0.0.1:9092`, đủ cho mục đích học.
+- **UI**: Conduktor Console ở `localhost:8080` (chỉ có nếu bạn dùng cách Docker).
+- **CLI**: cài từ Apache Kafka binaries trên đúng OS của bạn.
 
-But I'll give you as well my most recommended way
+> Bạn không cần dựng multi-broker cluster. Muốn dựng production cluster on-premise hay cloud là một khóa riêng.
 
-to start Apache Kafka.
+## 2. Hai Con Đường: Docker (Khuyên Dùng) vs Binaries Thuần
 
-So it's a big challenge, but I've created a Docker file
+### Con đường A — Docker + Conduktor (khuyên dùng nhất)
 
-that will start Kafka for you
+Ưu điểm: một lệnh là có cả Kafka + UI quản lý Topic, cluster. Không phải vật lộn với Java, PATH, file properties.
 
-as well as Conduktor the platform.
+Lộ trình:
 
-This is our UI to help you use Kafka a lot easier.
+1. Cài và khởi động **Docker Desktop** (bài `020`).
+2. Chạy stack `conduktor-kafka-single` bằng `docker compose` (bài `020`).
+3. Vẫn phải cài **Kafka binaries + PATH** trên đúng OS để có CLI:
+   - Mac thủ công: bài `021`.
+   - Mac bằng brew: bài `023`.
+   - Linux: bài `024`.
+   - Windows WSL2: bài `026` + `027`.
 
-So yeah, I will show you how
+### Con đường B — Binaries thuần, không Docker, không UI
 
-to install Docker if you don't have it,
+Dành cho máy yếu không chạy nổi Docker, hoặc bạn muốn hiểu sâu cách Kafka khởi động.
 
-and how to use one command
+Lộ trình:
 
-to just start Kafka and Conduktor at the same time.
+1. Cài binaries + PATH (Mac: `021` hoặc `023`, Linux: `024`, Windows WSL2: `026` + `027`).
+2. Tự start Kafka ở chế độ **KRaft** (mặc định từ Kafka 4.0, không cần ZooKeeper):
+   - Mac: bài `022`.
+   - Linux: bài `025`.
+   - Windows WSL2: bài `028`.
 
-If you don't want to use Docker,
+Nhược điểm của con đường B: không có UI. Trong khóa học giảng viên thao tác nhiều trên UI Conduktor, bạn sẽ phải tự đối chiếu bằng CLI.
 
-I will still provide you alternatives for MacOSX.
+## 3. Thứ Tự Học Theo OS Của Bạn
 
-So how to start Kafka without ZooKeeper,
+**Nếu dùng Mac:**
 
-which is now the default way in Kafka 4.0 and over.
+- `020` (Docker, tùy chọn nhưng khuyên dùng) → `021` (cài Java + Kafka + PATH thủ công) → `022` (start Kafka KRaft) → `023` (cách thay thế bằng brew — đọc để biết, không bắt buộc).
 
-Also, how to install Kafka using Brew.
+**Nếu dùng Linux (Ubuntu/Debian):**
 
-I'll show you alternative for Linux,
+- `020` (Docker) → `024` (cài Java Corretto 21 + Kafka + PATH) → `025` (start Kafka KRaft).
 
-again using Kafka without ZooKeeper and for Windows as well.
+**Nếu dùng Windows 10 (bản 2004+) / Windows 11:**
 
-How to use Windows WSL2 to start Kafka without ZooKeeper.
+- Chỉ dùng **WSL2**. Đừng chạy Kafka native trên Windows.
+- `020` (Docker Desktop với backend WSL2) → `026` (cài WSL2 + Ubuntu) → `027` (cài Java + Kafka trong Ubuntu) → `028` (start Kafka KRaft) → `029` (đọc khi gặp lỗi mạng WSL2).
 
-On plain windows,
+**Nếu dùng Windows cũ (không có WSL2):**
 
-it's not recommended, there's lots of issues.
+- Cách duy nhất ổn định là Docker (bài `020`). Phần `06. Archive` có bài Windows non-WSL2 nhưng chỉ để tham khảo — chạy native trên Windows sẽ gặp lỗi `KAFKA-8811` (không xóa được Topic) và `KAFKA-1194` (segment bị xóa sau ~1 tuần), phải xóa sạch data mới chạy lại được.
 
-So I only recommend to use Windows WSL2,
+## 4. KRaft vs ZooKeeper: Vì Sao Có Section Archive?
 
-but I'll show you how to install it.
+- Từ **Kafka 4.0 trở đi, KRaft là chế độ mặc định**. Bạn chỉ cần format storage + start 1 tiến trình `kafka-server-start`.
+- Chế độ cũ **Kafka + ZooKeeper** (2 tiến trình riêng) đã bị loại bỏ. Toàn bộ section `06. Archive Starting Kafka with Zookeeper` chỉ còn giá trị lịch sử / tham khảo khi bạn phải维护 cluster cũ.
+- Nếu bạn đang học mới hoàn toàn: **bỏ qua section 06**, chỉ học section `05`.
 
-And if you wanted to have a old setup of Kafka
+## Lỗi Thường Gặp & Cách Fix
 
-with Kafka and ZooKeeper,
+- **Nhảy thẳng vào bài theo OS mà bỏ qua bài Docker:** vẫn chạy được broker nhưng không có UI, về sau xem video demo trên UI sẽ khó theo. Fix: quay lại làm bài `020`.
+- **Cài CLI nhưng quên setup PATH:** gõ `kafka-topics.sh` báo `command not found`. Fix: làm đúng bài PATH của OS mình, mở terminal mới rồi thử lại.
+- **Windows không bật WSL2 backend cho Docker:** Kafka trong container vẫn chạy nhưng CLI từ PowerShell và Conduktor ngoài host không kết nối được. Fix: bật WSL2 backend trong Docker Desktop, xem lại bài `020` và `029`.
 
-I will also have these videos for you
+## Kết Luận
 
-on how to start Kafka and ZooKeeper for Mac and Linux.
+Tóm lại: **máy nào cũng nên đi qua Docker trước (bài 020), rồi cài CLI đúng OS, rồi mới start Kafka KRaft**. Windows thì bắt buộc WSL2.
 
-But if you do any of these alternatives, Mac, Linux,
-
-or Windows, you will not have a UI.
-
-Okay, to have a UI and I will be using a UI in the course.
-
-It's very great for learning.
-
-I do recommend to use the Docker method
-
-that I will show you in the next lecture.
-
-So how to start Kafka?
-
-Well, we'll start Kafka with Docker
-
-and you'll have a UI like this
-
-to manage your topics, your cluster, and so on.
-
-Everything will be accessible locally
-
-on 127. 0. 0.1:9092.
-
-But don't worry, I will show you the commands.
-
-We will also nonetheless install the Kafka binaries
-
-from the Apache Kafka website on your computer.
-
-This way you can interact
-
-with the cluster using the command line interface.
-
-And this setup with Docker comes with one Kafka broker only,
-
-which is perfect for development purposes.
-
-If you wanted to set up a whole cafe cluster,
-
-this is a big setup nowadays.
-
-You have online cloud solutions which do this
-
-for you on the cloud.
-
-But also if you want to do this on premises,
-
-there is a dedicated course for this on how to configure it.
-
-Okay, so here are the Kafka installation steps.
-
-So for Docker, we'll first install
-
-and launch Docker on your computer.
-
-It could be Windows, MacOSX, or Linux,
-
-and it's to work If you wanna Kafka UI
-
-we'll start Kafka in Conduktor with one command.
-
-And then we still need to install the Kafka CLI tools
-
-using the binary.
-
-So you still need to watch a video on how
-
-to install the CLI tools using the binaries for Mac,
-
-for Linux, or for Windows.
-
-But once you've done this, you're good to go.
-
-If you don't wanna use Docker
-
-and don't want a UI,
-
-then you're going to be using the binaries.
-
-So we'll still install the Kafka CLI tool
-
-using the batteries or using Brew.
-
-And then we'll start Kafka using the batteries for Mac.
-
-Same for Linux, we'll just install the binaries
-
-and then start Kafka using these binaries.
-
-And for Windows,
-
-so Windows 10 version 2004 or higher,
-
-or Windows 11, we'll install WSL2.
-
-Then we'll install Kafka using the binaries.
-
-And finally, we'll start Kafka using the binaries.
-
-If you have an old version of Windows,
-
-I really hope you don't because this is a pain.
-
-You will have issues
-
-because non-WSL Kafka is not supported.
-
-And so I recommend for you to use the Docker method,
-
-install Docker and you'll be good to go.
-
-Otherwise, you will have issues.
-
-All right, that's it for this lecture.
-
-I hope you liked it and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ làm con đường khuyên dùng nhất: dựng Kafka + Conduktor UI bằng một lệnh Docker Compose duy nhất.

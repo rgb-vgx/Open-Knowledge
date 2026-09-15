@@ -1,251 +1,141 @@
-Hi, this Stephane from Conduktor
+# Kafka Consumer Groups CLI: Soi Lag, Chia Việc Và Dọn Group Rác
 
-and in this lecture we're going to have a look
+Bài trước ta đứng ở góc nhìn consumer: chạy nhiều tiến trình cùng `--group` và quan sát message tự chia. Bài này đổi góc nhìn sang người vận hành: dùng `kafka-consumer-groups.sh` để trả lời 3 câu hỏi sống còn trong production — có bao nhiêu group đang đọc topic của tôi, mỗi group còn nợ bao nhiêu message (lag), và consumer nào đang ôm partition nào.
 
-at the Kafka consumer groups CLI because
+---
 
-in this lecture we're going to see how we can reset, delete
+## 1. Bài Toán: Consumer Chạy Ngầm Thì Biết Nó Đang Ở Đâu?
 
-and so on, manage these consumer groups.
+Console consumer tắt đi là hết dấu vết, nhưng consumer group thì sống dai trên broker cùng với offset đã commit. Khi dashboard báo "dữ liệu trễ 10 phút", việc đầu tiên của on-call engineer là `--describe` group đó: lag bao nhiêu, kẹt ở partition nào, consumer nào còn sống. Bài này luyện đúng phản xạ đó.
 
-So we've seen in a previous lecture that we had
+Ba action chính:
 
-multiple consumer groups reading from the same topic.
+| Action | Câu hỏi nó trả lời |
+|---|---|
+| `--list` | Có những group nào? |
+| `--describe --group <tên>` | Group đó đọc tới đâu, nợ bao nhiêu? |
+| `--delete --group <tên>` | Xóa group không dùng nữa |
 
-It was possible.
+## 2. Liệt Kê Group: `--list`
 
-And we've also shown
+```bash
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
+```
 
-that consumer groups can within spread the reads.
+Output mẫu:
 
-So this makes sense.
+```
+my-first-application
+my-second-application
+```
 
-So in this lecture we're going
+* `--bootstrap-server` — giống mọi lệnh CLI khác, trỏ tới cluster. Với Playground có bảo mật thì thêm `--command-config playground.config` như bài Topics CLI.
 
-to list the existing consumer groups.
+Hai group này chính là hai `--group` ta đã chạy ở bài trước. Trên UI Conduktor (mục Consumer Groups) bạn cũng thấy đúng 2 cái tên đó — CLI và UI đọc cùng một nguồn trên broker.
 
-We're going to describe one consumer group
+## 3. Mô Tả Group: `--describe` — Đọc Bảng Lag Như Dân Vận Hành
 
-and then we're going to delete a consumer group.
+```bash
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+  --describe --group my-second-application
+```
 
-So let's get started.
+* `--describe` — xem chi tiết offset từng partition.
+* `--group my-second-application` — group cần soi.
 
-So let's open this file named "4 consumer groups"
+Output mẫu khi group đã đọc kịp (lag 0):
 
-and we'll have a look at the Kafka consumer groups CLI.
+```
+GROUP                 TOPIC        PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG  CONSUMER-ID       HOST
+my-second-application third_topic  0          14              14              0    -                 -
+my-second-application third_topic  1          14              14              0    -                 -
+my-second-application third_topic  2          14              14              0    -                 -
+```
 
-So again, as usual, the documentation can be done
+Cách đọc từng cột:
 
-by entering the command itself.
+* `PARTITION` — partition nào của topic.
+* `CURRENT-OFFSET` — offset group đã commit (đã xử lý xong tới đây).
+* `LOG-END-OFFSET` — offset mới nhất hiện có trong partition (producer đã ghi tới đây).
+* `LAG = LOG-END-OFFSET − CURRENT-OFFSET` — số message còn nợ. **LAG là metric quan trọng nhất khi vận hành Kafka.** LAG = 0 là khỏe, LAG tăng dần là consumer đuối hoặc chết.
+* `CONSUMER-ID` — id consumer đang ôm partition. Dấu `-` nghĩa là hiện không có consumer nào chạy (group đang dừng).
 
-And so the first thing we're going to do
+### 3.1. Demo tạo lag: produce thêm, chưa consume
 
-is list all our consumer groups.
+Giữ group dừng (không consumer nào chạy), mở producer gửi 5 message vào `third_topic`:
 
-So as you can see in here, we have two consumer groups,
+```
+>A
+>B
+>C
+>D
+>E
+```
 
-my first application and my second application.
+Chạy lại `--describe`:
 
-But this is something you can do visually as well.
+```
+GROUP                 TOPIC        PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG  CONSUMER-ID  HOST
+my-second-application third_topic  0          14              16              2    -            -
+my-second-application third_topic  1          13              14              1    -            -
+my-second-application third_topic  2          25              27              2    -            -
+```
 
-Here you can see I have my first application
+`CURRENT-OFFSET` đứng yên (không ai đọc), `LOG-END-OFFSET` tăng (producer vẫn ghi) → LAG = 2, 1, 2. Tổng nợ 5 message — khớp đúng 5 dòng vừa gửi. Đây chính là cách on-call xác định "hệ thống trễ bao nhiêu message và kẹt ở partition nào".
 
-and my second application in the Conduktor platform.
+### 3.2. Xả lag: chạy consumer, quan sát CONSUMER-ID
 
-So this is the whole purpose
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic third_topic --group my-second-application
+```
 
-of having a UI is to save a bit of commands.
+Consumer in ra đúng 5 message còn nợ. Trong lúc consumer còn chạy, mở terminal khác `--describe` lại — cột `CONSUMER-ID` giờ có giá trị (dài, ngẫu nhiên, ví dụ `console-consumer-b46f...`), cột `HOST` hiện địa chỉ máy chạy. LAG về 0 ở cả 3 dòng. Tắt consumer đi, `--describe` lại: `CONSUMER-ID` về `-` nhưng LAG vẫn 0 — offset đã commit nên group nhớ vị trí, không đọc lại.
 
-So what happens if we describe one specific group?
+### 3.3. Hai consumer cùng group: thấy tận mắt partition chia thế nào
 
-So let's go ahead
+Chạy thêm một console consumer nữa cùng `--group my-second-application`. `--describe` lúc cả hai đang chạy:
 
-and describe the group called "my second application".
+```
+GROUP                 TOPIC        PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG  CONSUMER-ID
+my-second-application third_topic  0          16              16              0    console-consumer-B46...
+my-second-application third_topic  1          14              14              0    console-consumer-B46...
+my-second-application third_topic  2          27              27              0    console-consumer-FA1...
+```
 
-And I'm going to fold this a little bit.
+Partition 0 và 1 cùng một CONSUMER-ID (B46...), partition 2 thuộc CONSUMER-ID khác (FA1...). Đây là bằng chứng dạng bảng cho hiện tượng đã thấy ở bài trước: một consumer ôm 2 partitions, consumer mới ôm 1. Trên UI Conduktor, mở group này bạn cũng thấy 2 consumer với tập partition được gán tương ứng.
 
-And as we can see here, we see
+## 4. Consumer Không Khai `--group`: Group Tạm Sinh Ra Rồi Tự Mất
 
-that my second application is reading from the topic.
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic third_topic --from-beginning
+```
 
-Third topic, partition zero, and
+Lệnh này không có `--group`, nhưng Kafka vẫn cần group để commit offset nên nó tự sinh một group tên kiểu `console-consumer-12345`. Chạy `--list` ngay lúc đó bạn sẽ thấy group lạ xuất hiện. Vài phút sau khi tắt consumer, group này tự biến mất (broker dọn group rỗng, không commit mới).
 
-that the current-offset is 14
+Kết luận thực hành: **luôn khai `--group` explicit ở production.** Group tạm vừa khó giám sát (tên ngẫu nhiên), vừa không tái sử dụng được offset — mỗi lần chạy là đọc lại từ đầu hoặc mất vị trí.
 
-and the log-end-offset is also 14
+## 5. Xóa Group: `--delete`
 
-and therefore the lag is 0.
+```bash
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+  --delete --group my-second-application
+```
 
-So that means that my consumer group has fully caught
+* `--delete` — xóa metadata group (offset đã commit) khỏi broker.
 
-up with my topic, but we can see these numbers changing
+Chỉ xóa khi chắc chắn: không còn consumer nào trong group đang chạy, và bạn chấp nhận lần chạy sau với tên group này sẽ như group mới (kết hợp `--from-beginning` thì đọc lại từ đầu). Group đang có member active sẽ báo lỗi, phải dừng hết consumer trước.
 
-and you can get the same kind of information by clicking
+## Cạm Bẫy Thường Gặp
 
-on my second application and get some details here.
+* **Nhìn LAG = 0 rồi kết luận hệ thống khỏe.** LAG 0 trong khi `CONSUMER-ID` toàn `-` chỉ nghĩa là "không nợ vì không ai giao việc mới" — producer dừng thì LAG cũng 0. Phải đối chiếu với tốc độ producer.
+* **LAG tăng đều ở một partition duy nhất.** Dấu hiệu partition đó nóng (key phân bố lệch) hoặc consumer ôm nó bị chậm. Đừng scale cả group vội — xem phân bố key trước.
+* **Dùng group tạm để chạy job định kỳ.** Mỗi lần tên khác nhau, offset không kế thừa, monitoring không theo dõi được. Đặt tên group cố định, có ý nghĩa (`billing-retry-v2`, `search-indexer`).
+* **Xóa nhầm group production.** Offset mất là phải đọc lại hoặc bỏ qua message — cả hai đều đau. Backup offset (ghi lại CURRENT-OFFSET trước khi xóa) hoặc dùng reset offset có `--dry-run` ở bài sau thay vì xóa.
 
-Okay, but so if we want to create a console producer
+## Kết Luận
 
-so let's go and recreate our producer
+Tóm một câu: **`kafka-consumer-groups.sh --list` để điểm danh, `--describe --group <tên>` để đọc LAG (`LOG-END-OFFSET − CURRENT-OFFSET`) và xem ai ôm partition nào, luôn đặt tên group explicit thay vì để Kafka sinh group tạm.**
 
-so "Kafka console producer",
-
-and we produce to the third topic.
-
-And then just send A, B, C, D, E.
-
-Okay, so this has sent more messages into my topic
-
-and this will have created some lag
-
-for my existing customer consumer group.
-
-So if I run this command right now and look at the output
-
-as we can see now, the log end offset is 16 and 14 and 27.
-
-So on three different partitions.
-
-And we have a current offset committed of 14, 13, and 25
-
-and therefore the lag is 2, 1 and 2.
-
-So there has been some lag for my consumer group now
-
-because messages haven't produced
-
-but not yet consumed and committed.
-
-So now if I stop this console producer and I start a console
-
-consumer again on my second application, what we expect is
-
-that we will be reading five messages
-
-because that's what the lag was.
-
-So we see these five messages right here,
-
-and if I leave the consumer running and do a describe again
-
-of my consumer group, as we can see the lag is now zero
-
-but there's been some data.
-
-So the consumer ID has been now filled
-
-and this is very, very long.
-
-But as you can see, this console consumer right here
-
-is consuming these three partitions.
-
-And it's something you can also see in UI settings.
-
-So if you refresh this page and look at this one.
-
-So as we can see, we can see
-
-that this console consumer right here has been assigned
-
-from this host, these three partitions.
-
-So this helps, this makes sense.
-
-And what happens if you start another console consumer?
-
-So let's start another one on the same group.
-
-Ah, this is a consumer group command.
-
-So no, let's start a console consumer.
-
-Here we go.
-
-So now we have two consumers as part of the same group.
-
-And if I do a consumer group CLI
-
-as we can see in here, you will see it.
-
-So partition 0 has ID B46, partition 1 has ID B46
-
-and partition 2 has ID FA1.
-
-So that means that this consumer FA1,
-
-this new one is consuming partition 2
-
-whereas this consumer right here, B46
-
-has partition 0 and partition 1 assigned to it.
-
-And this is why we see messages being spread out
-
-between different consumers when we read.
-
-And this is again a behavior you will see
-
-by going into the UI.
-
-Now we can see two different consumers,
-
-with two different IDs
-
-are consuming different sets of partitions.
-
-So that's a pretty cool thing to demonstrate.
-
-And now we understand why things are happening
-
-and how we can describe what is happening.
-
-So one last behavior I want to show you is
-
-that when you start a console consumer
-
-but you don't describe a group.
-
-So in this example I'm going to have a console consumer
-
-but in this command right here, I use the topic, third topic
-
-from the beginning, but I don't specify a group ID.
-
-So my console consumer is actually going
-
-to read all of my topic.
-
-This is expected.
-
-And now if we do a consumer groups command,
-
-but we are going to do a list,
-
-to list all the existing consumer groups
-
-as we'll see, we'll find console consumers in there.
-
-So these groups are here for a little bit of time
-
-but after a while they're going to be removed
-
-because there are temporary consumer groups.
-
-But just so you know, this is the kind
-
-of output you would expect when you're using consumer groups
-
-on the console without group IDs, but they're temporary ones
-
-and after a while they will be gone.
-
-So do not leverage these consumer group IDs always
-
-when you want a consumer topic,
-
-leverage the consumer groups you have predefined.
-
-Okay? So that's it for this lecture.
-
-I hope you liked it and I will see you in the next lecture.
+Bài tiếp theo là bài nguy hiểm nhất section: reset offset — tua lại con trỏ đã commit để đọc lại dữ liệu cũ, với đầy đủ cảnh báo khi nào dùng `--to-earliest`, `--shift-by`, `--to-datetime` và khi nào tuyệt đối không được động vào.

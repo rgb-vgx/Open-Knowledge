@@ -1,143 +1,127 @@
-So let's review what is an idempotent producer?
+# Idempotent Producer: Retry Bao Nhiêu Lần Cũng Không Trùng, Không Lộn Thứ Tự
 
-So when a producer is sending data into Apache Kafka
+Bài trước cho producer retry thoải mái. Nhưng retry sinh ra hai con quái: duplicate (gửi lại thì broker commit hai lần) và reorder (batch sau về đích trước batch đang retry). Bài này diệt cả hai bằng một config duy nhất: `enable.idempotence=true`. Đây là mảnh ghép cuối cùng của durability.
 
-they can be duplicate messages due to network errors.
+---
 
-So let's have an example.
+## 1. Vấn đề: Vì Sao Retry Lại Đẻ Ra Duplicate?
 
-Here's what a good request looks like.
+Kịch bản kinh điển với network chập chờn:
 
-We produce data into Apache Kafka,
+```mermaid
+sequenceDiagram
+    participant P as Producer
+    participant K as Kafka Broker
+    P->>K: Gửi record A (lần 1)
+    K->>K: Commit A vào log
+    K--xP: Ack bị rớt do lỗi mạng
+    P->>P: Không thấy ack -> retry
+    P->>K: Gửi record A (lần 2, broker tưởng mới)
+    K->>K: Commit A lần nữa (DUPLICATE)
+    K->>P: Ack lần 2 thành công
+```
 
-Apache Kafka commits the data into the log
+Từ góc nhìn producer: chỉ một request thành công. Từ góc nhìn Kafka: hai message giống hệt nhau nằm trong log. Consumer đọc lên thấy hai event Wikimedia trùng nhau — phân tích sai, đếm sai, tiền sai nếu là đơn hàng.
 
-and Apache Kafka sends back an acknowledgement
+Trước Kafka 0.11, đây là bài toán không có lời giải ở tầng producer. Developer phải tự chống trùng ở consumer (dedup bằng ID) — tốn kém và dễ sót.
 
-to our producer.
+## 2. Cơ Chế: Producer ID + Sequence Number
 
-From that point on words, all good, right?
+Idempotent producer giải quyết bằng cách đánh số từng record, để broker nhận diện request gửi lại.
 
-But what if you have a bad request
+Khi bật `enable.idempotence=true`, broker cấp cho mỗi producer một **Producer ID (PID)** duy nhất, và producer đánh **sequence number** tăng dần cho từng record trên từng partition (0, 1, 2...).
 
-or duplicate requests, what happens?
+```mermaid
+sequenceDiagram
+    participant P as Producer PID=123
+    participant K as Kafka Broker
+    P->>K: Gửi A (PID=123, seq=0)
+    K->>K: Commit A, nhớ seq=0
+    K--xP: Ack rớt mạng
+    P->>K: Retry A (PID=123, seq=0)
+    K->>K: Thấy seq=0 đã có -> bỏ qua, KHÔNG commit
+    K->>P: Gửi lại ack thành công
+```
 
-We produce it out to Kafka.
+Ba hệ quả:
 
-Kafka commits the messages on the log and sends back an ack.
+1. **Hết duplicate:** cùng PID + cùng sequence mà tới lần hai thì broker biết là retry, chỉ trả ack chứ không ghi thêm.
+2. **Giữ ordering ngay cả khi retry + `max.in.flight=5`:** broker từ chối sequence tới sai thứ tự, buộc producer gửi lại đúng thứ tự. Đây là đề tài KIP-5494 — từ Kafka 1.0, giữ `max.in.flight=5` vẫn đúng thứ tự khi đã idempotent.
+3. **Phạm vi đảm bảo:** exactly-once *trên một partition, trong một session producer*. Restart producer (PID mới) hoặc gửi cross-partition thì không đảm bảo. Muốn exactly-once end-to-end (Kafka → Kafka) phải dùng transactions — ra ngoài phạm vi section này.
 
-But this ack never reaches our producer
+## 3. Config Chi Tiết: Một Config Bật, Ba Config Ăn Theo
 
-maybe because of a network error.
+### 3.1. `enable.idempotence`
 
-Therefore the producer never receives an ack
+- **Ý nghĩa:** bật chế độ producer幂等 — mỗi record có PID + sequence, broker dedup request retry.
+- **Giá trị mẫu:** `true` (khuyến nghị mọi pipeline quan trọng). Default: `false` ở client < 3.0, `true` từ client 3.0.
+- **Khi nào dùng:** luôn bật, trừ khi bạn đo được overhead không chấp nhận được (hiếm) hoặc broker quá cũ (< 0.11, không hỗ trợ).
 
-and say this is weird.
+### 3.2. Ba config bị ép khi bật idempotence
 
-I'm going to retry my produce
+Kafka tự ép (override cả giá trị bạn set sai) để idempotence có ý nghĩa:
 
-because we have a retry setting, right?
+| Config | Bị ép về | Vì sao |
+|---|---|---|
+| `acks` | `all` | Không chờ đủ ISR thì dedup vô nghĩa khi leader đổi |
+| `retries` | `Integer.MAX_VALUE` | Idempotence sinh ra để retry an toàn — tắt retry là phản chủ |
+| `max.in.flight.requests.per.connection` | `5` (Kafka ≥ 1.0) hoặc `1` (Kafka 0.11) | 5 là mức tối đa vẫn giữ ordering được nhờ sequence |
 
-So the produce is retried, Kafka sees it as a new request.
+Thực tế trong log khởi động client 3.x bạn sẽ thấy cả ba giá trị này xuất hiện cùng nhau — đó là dấu hiệu idempotence đang hoạt động.
 
-So it will commit a duplicates message
+### 3.3. Điều kiện tiên quyết
 
-and then sends back the ack.
+- Broker ≥ 0.11 (idempotence mới tồn tại). Production hiện nay toàn 2.x–3.x nên coi như luôn đủ.
+- `max.in.flight ≤ 5`. Set 6 trở lên producer sẽ ném `ConfigException` khi idempotence bật — đây là guardrail có chủ ý.
 
-So from a producer perspective,
+## 4. Code Ví Dụ: Bật Idempotence Cho Wikimedia Producer
 
-only one request made it to Kafka and was acked,
+```java
+import org.apache.kafka.clients.producer.ProducerConfig;
+import java.util.Properties;
 
-but Kafka actually committed two messages.
+Properties props = new Properties();
+props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+        "org.apache.kafka.common.serialization.StringSerializer");
+props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+        "org.apache.kafka.common.serialization.StringSerializer");
 
-For this we can use an idempotent producer.
+// Mảnh ghép durability cuối cùng: bật là tự có acks=all + retries=MAX + ordering
+props.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+```
 
-So starting from an old version of Kafka,
+Trên client ≥ 3.0 dòng này là tùy chọn (đã default `true`), nhưng **hãy viết tường minh**. Lý do: người đọc code biết ngay pipeline này yêu cầu no-duplicate; người chạy client cũ được bảo vệ; diff config giữa các môi trường rõ ràng.
 
-this idempotent producer does not introduce duplicates
+Kiểm chứng nhanh: bật idempotence, kill broker vài giây giữa lúc producer chạy, đếm record + check trùng bằng consumer. Không idempotence: có duplicate sau mỗi lần retry qua network lỗi. Có idempotence: số lượng khớp, không trùng.
 
-on network errors, right?
+## 5. Safe / High-Throughput Preset Liên Quan
 
-Well, because on a good request, everything is the same,
+Bài này hoàn thiện preset Safe (full ở bài 070, áp code ở bài 071):
 
-but for a duplicate request, even though you have an ack
+```java
+// SAFE preset - đã đủ 5 dòng sau bài này:
+props.setProperty(ProducerConfig.ACKS_CONFIG, "all");                                    // 067
+props.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE)); // 068
+props.setProperty(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "120000");                // 068
+props.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");         // 068
+props.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");                   // bài này
+// Phía broker/topic (production): replication.factor=3, min.insync.replicas=2
+```
 
-that never reaches your producer
+Từ đây, mọi tuning throughput (072–074) đều phải giữ nguyên 5 dòng này — tăng tốc mà phá idempotence là quay về thời duplicate.
 
-and the same produced request is retried,
+## 6. Cạm Bẫy Thường Gặp
 
-Kafka is smart enough to say,
+- **Tưởng idempotence là exactly-once toàn pipeline.** Không phải. Nó chỉ chống duplicate do *retry* trong một session producer, một partition. Consumer crash rồi đọc lại từ offset cũ vẫn thấy lại message — đó là at-least-once ở tầng consumer, phải xử lý bằng commit offset + dedup nghiệp vụ.
+- **Restart producer rồi tưởng sequence còn tiếp tục.** PID mới = sequence đếm lại từ 0. Record đang bay lúc crash có thể duplicate sau restart. Muốn qua restart vẫn exactly-once phải dùng `transactional.id` + transactions.
+- **Set `max.in.flight > 5` kèm idempotence.** Producer từ chối khởi động. Muốn tăng parallel thì tăng số partition + số producer instance, không vặn con số này.
+- **Bật idempotence trên broker < 0.11.** Client báo lỗi unsupported. Nâng broker trước, hoặc chấp nhận hạ `max.in.flight=1` + dedup tay ở consumer như thời cổ.
+- **Dùng key ordering mà không bật idempotence.** Mọi đảm bảo "cùng key về cùng partition theo thứ tự" tan vỡ ngay lần retry đầu tiên có `max.in.flight > 1`. Cứ key ordering là phải idempotence — không ngoại lệ.
+- **Quên rằng idempotence không bảo vệ khỏi bug code.** Gọi `send()` hai lần trong code (không phải retry) thì là hai record khác sequence — broker commit cả hai đúng luật. Chống duplicate nghiệp vụ (user double-click) vẫn cần key + dedup ở consumer/service.
 
-hey this looks like a duplicates produce request,
+## Kết Luận
 
-therefore I'm not going to commit twice
+Tóm lại một câu: **`enable.idempotence=true` gắn PID + sequence number vào từng record để broker loại bỏ request retry trùng lặp và giữ đúng thứ tự với `max.in.flight=5` — mảnh ghép cuối biến retry từ con dao hai lưỡi thành bảo hiểm an toàn.**
 
-but I'm still going to send you back the ack
-
-for you to think that the request was successful.
-
-So this is the whole power of idempotent producer
-
-and they're quite powerful.
-
-So there a must to guarantee a stable and safe pipeline.
-
-And since Kafka 3.0, so it took a little bit
-
-of time between 0.11 and 3.0,
-
-they are becoming the default.
-
-Okay, and I definitely recommend to use them,
-
-even before 3.0, but they're not the default
-
-for Kafka list and 3.0.
-
-So when you set up an idempotent producer,
-
-automatically the retries are going to be set
-
-to the max value.
-
-The max in flight request are going to be one
-
-for Kafka 0.11, or five for Kafka 1.0.
-
-And also, even if you set max in flight request to five,
-
-then the ordering is going to be kept.
-
-And if you're curious about the implementation detail
-
-just Google Kafka 5494, okay.
-
-And also acts are going to be equal to all.
-
-So these settings are going to be automatically applied
-
-after your producer has started
-
-if you don't set those manually.
-
-So in your producer code, you can just set producer
-
-props dot enable, idempotence, true, and you're good to go.
-
-So this is super important for you to understand
-
-because while defaults are sharing in Kafka all the time,
-
-but you need to improve the behavior.
-
-And in case you're not using Kafka 3.0,
-
-then you can set those manually to force your Kafka producer
-
-to use the good values that we know,
-
-that have the good behavior.
-
-So I will see you in the next lecture
-
-just to summarize everything we learned.
+Bài tiếp theo chúng ta gom cả bốn bài durability (067–069) thành một preset Safe duy nhất, dạng bảng tra cứu: Kafka 3.0 default đã safe ra sao, Kafka ≤ 2.8 phải set tay những gì.

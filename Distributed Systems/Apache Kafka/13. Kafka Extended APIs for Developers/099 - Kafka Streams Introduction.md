@@ -1,99 +1,149 @@
-Hi, this is Stephane from Conduktor.
+# Kafka Streams: Biến Topic Này Thành Topic Khác Mà Không Cần Cluster Riêng
 
-And in this lecture,
+Bạn đã có topic `wikimedia.recentchange` chảy liên tục. Bây giờ sếp hỏi: "Mỗi 10 giây có bao nhiêu edits? Bot chiếm bao nhiêu phần trăm? Wiki tiếng Việt, tiếng Anh, tiếng Nga mỗi thứ bao nhiêu?" Bạn có thể viết một Consumer đọc topic, đếm bằng HashMap trong RAM, rồi dùng Producer ghi kết quả ra topic mới. Chạy thử thì được, nhưng crash một cái là mất hết số đếm, scale lên 2 instances thì đếm trùng, muốn exactly-once thì tự lo transaction.
 
-we're going to do a small and quick introduction
+**Kafka Streams** sinh ra để bạn khỏi vật lộn với những thứ đó. Nó là thư viện biến đổi Kafka-to-Kafka: đọc một hoặc nhiều topic, tính toán, ghi ra topic mới — với state, fault-tolerance và exactly-once được lo sẵn.
 
-into Kafka Streams.
+---
 
-So we know that our Kafka Cluster
+## 1. Khi Nào Dùng Kafka Streams?
 
-currently has a topic called wikimedia recentchange.
+Dùng Streams khi **cả đầu vào và đầu ra đều là Kafka**, và bạn cần tính toán ở giữa:
 
-And we want to perform some computation on it in real time.
+* Đếm, lọc, map, enrich dữ liệu (ví dụ: phân loại bot vs human).
+* Aggregate theo cửa sổ thời gian — windowing (ví dụ: số events mỗi 10 giây).
+* Join hai streams (ví dụ: join `user_position` với `taxi_position` để tính surge pricing).
+* Phát hiện gian lận, monitoring, alerting real-time.
 
-For example, we want to count the number of times
+Đừng dùng Streams khi:
 
-a change was created by a bot versus a human,
+* Đầu vào ở ngoài Kafka (database, API) — đó là việc của **Kafka Connect Source**.
+* Đầu ra cần đổ ra hệ ngoài (S3, Elasticsearch) — đó là việc của **Kafka Connect Sink**.
+* Dữ liệu do chính app bạn sinh ra lần đầu — đó là việc của **Kafka Producer**.
+* Chỉ cần gửi thông báo một lần rồi quên — **Kafka Consumer** là đủ, không cần Streams.
 
-or analyze the number of changes per website.
+Quy tắc một câu: **ngoài vào Kafka thì Connect Source, Kafka ra ngoài thì Connect Sink, Kafka thành Kafka có tính toán thì Streams.**
 
-For example, if it's ru.wikipedia.org, or en.wikipedia.org.
+## 2. Kafka Streams Là Gì? Vì Sao Nó Khác Spark/Flink?
 
-Also we want to know the number of edits
+Định nghĩa ngắn gọn: **Kafka Streams là thư viện xử lý stream (stream processing library) chạy ngay trong ứng dụng Java của bạn.**
 
-on the 10-seconds slice as a time series.
+Khác biệt cốt lõi với Spark Streaming hay Flink:
 
-So we could use for this, a Producer and a Consumer,
+| Tiêu chí | Kafka Streams | Spark / Flink |
+|---|---|---|
+| Mô hình triển khai | Thư viện nhúng trong app Java, không cần cluster riêng | Framework cần cluster riêng để chạy job |
+| Đơn vị xử lý | **Từng record một (one record at a time)**, không batch | Micro-batch hoặc batch |
+| State | Lưu trong Kafka (changelog topics + RocksDB local) | Lưu trong hệ state riêng của framework |
+| Exactly-once | Có, cho pipeline Kafka-to-Kafka qua Transactional API | Phải cấu hình phức tạp hơn, phụ thuộc connector |
+| Độ khó vận hành | Thấp: deploy như app Java bình thường | Cao: phải nuôi thêm cluster |
 
-and you can achieve it but it's gonna be very low level,
+Nói cách khác: nếu hệ thống của bạn đã "Kafka ở giữa", Streams là con đường ít vận hành nhất để có tính toán real-time.
 
-not developer friendly, and very not easy to do.
+### 2.1. Ba tính chất phải nhớ
 
-Instead we can use a Kafka Streams Application.
+1. **Highly scalable, elastic, fault-tolerant.** Chạy 1 instance hay 10 instances đều được, Streams tự chia partitions cho các instances. Instance chết thì task rebalance, state khôi phục từ changelog topic trong Kafka.
+2. **Exactly-once cho Kafka-to-Kafka.** Vì cả đọc và ghi đều trên Kafka, Streams tận dụng Transactional API để đảm bảo mỗi record input chỉ tạo ra đúng một lần output, kể cả khi crash giữa chừng.
+3. **Không batching.** Mỗi event đến là xử lý ngay. Độ trễ tính bằng mili-giây, phù hợp alerting, fraud detection, dashboard real-time.
 
-So your Kafka Streams Application
+## 3. Kiến Trúc: Topology Đọc Topic Này, Ghi Topic Khác
 
-is going to be reading from this topic.
+```mermaid
+graph LR
+    K1[(wikimedia.recentchange)] --> APP[Kafka Streams App<br/>Topology: filter + count + window]
+    APP --> BOTS[(wikipedia.stats.bots<br/>bot vs non-bot)]
+    APP --> WEBS[(wikipedia.stats.websites<br/>count theo domain)]
+    APP --> TS[(wikipedia.stats.timeseries<br/>count mỗi 10s)]
+    APP -. state backup .-> CH[(internal changelog<br/>+ repartition topics)]
+```
 
-You can write your DSL.
+Giải thích sơ đồ:
 
-So we'll write some code for Kafka Streams Application,
+* **Input:** một topic `wikimedia.recentchange`.
+* **Topology:** đồ thị các bước xử lý bạn định nghĩa bằng DSL hoặc Processor API. Ví dụ: nhánh 1 filter field `bot==true` rồi count, nhánh 2 group by `wiki` rồi count, nhánh 3 window 10 giây rồi count.
+* **Output:** ba topic kết quả, mỗi topic phục vụ một dashboard khác nhau.
+* **Internal topics:** Streams tự tạo các topic hậu tố `-changelog`, `-repartition` để lưu state và shuffle dữ liệu. Bạn không cần động vào, chỉ cần biết chúng tồn tại để đừng xóa nhầm.
 
-and then it will be outputting the stats for the bots,
+### 3.1. Topology trong code trông như thế nào?
 
-the stats for the websites,
+Về mặt khái niệm, code Streams luôn có 3 phần (chi tiết chạy thật ở bài 100):
 
-and the stats for your timeseries.
+```java
+// 1. Cấu hình: app id, bootstrap servers, serde mặc định
+Properties props = new Properties();
+props.put(StreamsConfig.APPLICATION_ID_CONFIG, "wikimedia-stats-app");
+props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
-So it looks magical, right?
+// 2. Định nghĩa topology: đọc topic, tính toán, ghi topic mới
+StreamsBuilder builder = new StreamsBuilder();
+KStream<String, String> input = builder.stream("wikimedia.recentchange");
+// ... filter / groupBy / windowedBy / count / to ...
+// input.filter(...).groupBy(...).windowedBy(...).count().toStream().to("wikipedia.stats.timeseries");
 
-But what is Kafka Streams?
+// 3. Start và shutdown hook
+KafkaStreams streams = new KafkaStreams(builder.build(), props);
+streams.start();
+Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+```
 
-It's an easy data processing and transformation library
+Giải thích:
 
-that exists within Kafka.
+* `APPLICATION_ID_CONFIG` vừa là tên app, vừa là `consumer group.id` và tiền tố internal topics — đổi id là mất state cũ, coi như app mới.
+* `Serdes` (serializer/deserializer) phải khớp format dữ liệu trong topic, sai serde là lỗi phổ biến nhất khi app không chạy.
+* `Topology` là bất biến sau khi `start()`. Muốn đổi logic thì restart app với version mới.
 
-So you can do Data Transformations.
+## 4. Ba Bài Toán Demo Trên Dữ Liệu Wikimedia
 
-You can do Data Enrichment.
+| Bài toán | Input | Phép tính Streams | Output topic |
+|---|---|---|---|
+| Bot vs human | `wikimedia.recentchange` | Filter theo field `bot`, count cộng dồn | `wikipedia.stats.bots` (ví dụ: bots 9000, non-bots 20000) |
+| Thống kê theo website | cùng input | Group by field `wiki` (`en.wikipedia.org`, `vi.wikipedia.org`...), count | `wikipedia.stats.websites` (ví dụ: `commons 75, en 27, eo 1`) |
+| Time-series 10 giây | cùng input | Window tumbling 10s, count events mỗi window kèm `window_start/window_end` | `wikipedia.stats.timeseries` (ví dụ: `38 events trong 10s`) |
 
-You can do Fraud Detection.
+Ví dụ record output time-series (minh họa):
 
-You can do Monitoring and Alerting.
+```json
+{
+  "window_start": "2026-09-16T07:00:00Z",
+  "window_end": "2026-09-16T07:00:10Z",
+  "event_count": 38
+}
+```
 
-Pretty much anything you want.
+Điểm đáng chú ý: cả ba kết quả đều **cập nhật liên tục theo thời gian thực**. Refresh topic output vài giây là thấy số nhảy — đó là bản chất streaming, khác hẳn batch job chạy theo giờ.
 
-You write it as a standard Java application.
+## 5. So Sánh: Consumer + Producer Thủ Công vs Kafka Streams
 
-You don't need to create a separate cluster
+| Tiêu chí | Consumer + Producer tự nối | Kafka Streams |
+|---|---|---|
+| Code | Tự viết vòng poll, HashMap đếm, producer ghi ra | DSL `filter/groupBy/count/windowedBy` có sẵn |
+| State khi crash | Mất hết nếu chỉ lưu RAM, tự lo persist nếu muốn bền | State lưu RocksDB local + backup vào changelog topic, crash khôi phục tự động |
+| Scale | Tự chia partition, tự lo rebalance | Thêm instance là tự rebalance tasks |
+| Exactly-once | Tự lo transaction producer + offset commit, rất dễ sai | Bật config, Streams lo qua Transactional API |
+| Windowing, join | Tự cài đặt cửa sổ thời gian, join nhiều topic | Có sẵn tumbling/hopping/session windows, KStream-KTable join |
 
-to deploy the Standard Java Application.
+Kết luận: bài toán đếm đơn giản thì tự viết cũng chạy, nhưng càng cần state, window, join, exactly-once thì Streams càng thắng áp đảo.
 
-It's highly scalable, elastic and fault tolerant.
+## 6. Cạm Bẫy Thường Gặp (Pitfalls)
 
-Provides you Exactly-Once transformation capability
+* **Coi Streams như batch: chờ đủ N records mới xử lý.** Streams xử lý từng record ngay khi đến. Muốn "gom 10 giây rồi tính" phải dùng **window**, không phải `Thread.sleep` hay buffer tay.
+* **Đổi `application.id` bừa bãi.** Mỗi id là một app logic riêng với state riêng. Đổi id là mất state, internal topics cũ thành rác. Đặt id có ý nghĩa (`wikimedia-stats-v1`) và giữ ổn định.
+* **Quên rằng output cũng là topic Kafka bình thường.** Output topics vẫn cần chọn partitions, replication factor, retention như mọi topic khác. Topic time-series low-volume không cần nhiều partitions như topic input high-volume.
+* **Xóa nhầm internal topics (`-changelog`, `-repartition`).** Đó là bộ nhớ của app. Xóa là mất state, app phải tính lại từ đầu (hoặc sai kết quả nếu dùng window).
+* **Kỳ vọng học Streams trong một bài.** Một bài chỉ đủ để chạy demo. Aggregation nâng cao, joins, Interactive Queries, testing topology cần cả một khóa riêng — hãy coi bài 100 là điểm khởi đầu, không phải đích đến.
 
-because it's a Kafka to Kafka workflow
+## 7. Best Practices
 
-and it will leverage the transactional API.
+1. **Đặt `application.id` ổn định, có version.** Ví dụ `fraud-detector-v1`. Khi đổi logic không tương thích, lên `v2` và reset state có chủ đích thay vì ghi đè lặng lẽ.
+2. **Chọn key đúng từ đầu vào.** Bài toán đếm theo website thì key nên là `wiki`, đếm theo user thì key là `user_id`. Key sai thì `groupBy` phải repartition, tốn thêm internal topic và độ trễ.
+3. **Giám sát consumer lag của app id.** Streams bản chất vẫn là consumer group. Lag tăng nghĩa là topology chậm hơn tốc độ input — cần scale instances hoặc tối ưu logic.
+4. **Cấu hình `num.stream.threads` trước khi thêm instances.** Một instance có thể chạy nhiều stream threads tận dụng multi-core, rẻ hơn là spin thêm container.
+5. **Luôn có shutdown hook (`streams.close()`).** Đóng sạch để commit offset và flush state, tránh rebalance bẩn khi deploy.
 
-And it's one record at a time processing.
+## Kết Luận
 
-There is no batching.
+Hãy nhớ một câu: **Kafka Streams biến bài toán "đọc topic, tính toán, ghi topic" từ project nhiều tuần thành ứng dụng Java vài chục dòng, kèm sẵn scale, state bền và exactly-once.**
 
-It works for any application size,
-
-and it's super easy to write.
-
-Now it takes a whole course to learn Kafka Streams,
-
-but in the next lecture
-
-I will already wrote a Kafka Streams Application
-
-that we're just going to run and observe its behavior.
-
-So I hope you liked it
-
-and I will see you in the next lecture.
+Bài tiếp theo chúng ta chạy thật: **khởi động Wikimedia Streams app có sẵn, vừa chạy Producer song song để có dữ liệu real-time, vừa kiểm chứng ba topic output `bots`, `websites`, `timeseries` trong Conduktor.**

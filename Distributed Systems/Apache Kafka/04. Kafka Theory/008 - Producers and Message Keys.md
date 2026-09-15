@@ -1,373 +1,128 @@
-Hi, this is Stephane from Conduktor,
+# Producer Và Message Key: Ai Quyết Định Message Rơi Vào Partition Nào?
 
-and in this lecture, we're going to learn about producers.
+Bài trước bạn đã hiểu Topic được chia thành Partitions, mỗi message mang một Offset. Câu hỏi còn bỏ ngỏ là: ai là người chia message vào từng partition, và làm sao để giữ đúng thứ tự cho những message cần đi cùng nhau? Câu trả lời nằm ở nhân vật **Producer** và vũ khí lợi hại nhất của nó: **Key**.
 
-So we've seen that topics, whole data,
+---
 
-but for topics to have data written to it,
+## 1. Producer Là Gì Và Vì Sao Chính Nó Chọn Partition?
 
-well, we need to write a Kafka producer.
+**Producer** là chương trình ghi dữ liệu vào Topic. Nếu Topic là dòng sông thì Producer là người mở van cho nước chảy vào.
 
-And so the producers are going to write
+Điểm nhiều người hiểu sai: họ tưởng Kafka server (Broker) nhận message rồi mới quyết định cất vào partition nào. **Sai.** Chính **Producer quyết định trước** message sẽ vào partition nào, rồi mới gửi thẳng tới Broker đang giữ partition đó.
 
-to the topic, partitions.
+Luồng chuẩn như sau:
 
-So remember, we have partition zero
+```mermaid
+graph LR
+    PROD[Producer] -->|chọn partition trước| P0[Partition 0 - Broker 101]
+    PROD -->|chọn partition trước| P1[Partition 1 - Broker 102]
+    PROD -->|chọn partition trước| P2[Partition 2 - Broker 103]
+```
 
-for my topic named topic A,
+Hệ quả của thiết kế này rất lớn:
 
-then partition 1, partition 2,
+* Producer biết trước cần nói chuyện với Broker nào, không cần hỏi vòng vo.
+* Nhiều Producer cùng ghi vào nhiều Partition khác nhau tạo ra **load balancing** — đây chính là lý do Kafka scale được: càng nhiều partition, càng nhiều Producer ghi song song.
+* Nếu Broker giữ partition đó chết, Producer tự biết đường **recover** — chi tiết cơ chế recover sẽ học ở phần lập trình, ở đây bạn chỉ cần nhớ Producer đủ thông minh để tự tìm đường khác.
 
-and the writes happen sequentially with data Offsets.
+Analogy kiểu Việt Nam: Producer giống như nhân viên bưu điện phân loại thư. Không phải xe tải (Broker) tự quyết thư nào lên xe nào, mà nhân viên phân loại (Producer) đã dán nhãn tỉnh nào đi xe nào từ trước, xe chỉ việc chở.
 
-And then your producer is right before that
+## 2. Trường Hợp 1: Key Bằng Null — Chia Đều Round-Robin
 
-is going to send data into your Kafka topic, partitions.
+Mỗi message Kafka đều có thể gắn một **Key** — và Key là **optional**. Key có thể là string, number, binary, bất cứ gì bạn muốn.
 
-So the producers know in advance
+Lấy ví dụ Producer ghi vào Topic A có 2 partitions:
 
-to which partition they write to,
+* Nếu **key = null** (tức bạn không gửi key), message sẽ được rải **round-robin**: cái vào partition 0, cái vào partition 1, cái lại về partition 0, cứ thế xoay vòng.
+* Kết quả là tải được chia đều — đúng nghĩa load balancing.
 
-and then which Kafka broker, which is a Kafka server has it.
+Cách này hợp khi bạn không quan tâm thứ tự giữa các message, chỉ cần chúng vào Topic nhanh và đều. Ví dụ log hệ thống, metrics — message nào cũng như nhau, rơi đâu cũng được.
 
-We'll learn about Kafka brokers very, very soon.
+## 3. Trường Hợp 2: Có Key — Cùng Key Thì Chung Partition
 
-So that means that the producers know in advance
+Đây là tính chất quan trọng nhất của cả bài, phải nhớ kỹ:
 
-in which partition the message is going to be written.
+> **Mọi message có cùng Key sẽ luôn rơi vào cùng một Partition, nhờ chiến lược hashing.**
 
-Some people think that Kafka decides at the end,
+Vì sao tính chất này tồn tại? Vì Kafka chỉ đảm bảo thứ tự **trong** một partition (bài trước đã học). Nên khi bạn cần thứ tự cho một thực thể cụ thể, bạn phải dồn mọi message của thực thể đó về chung một partition — và Key chính là công cụ để làm việc đó.
 
-the server which partition data get written to,
+Ví dụ kinh điển trong khóa học: đội xe tải.
 
-this is wrong.
+* Bạn muốn vị trí của **từng xe** phải theo đúng thứ tự thời gian. Xe 123 lúc 7h ở đâu, 7h20 ở đâu — đảo lộn là dashboard vẽ sai đường.
+* Giải pháp: lấy **`truck_id` làm Key**. `truck_id = 123` luôn vào partition 0, `truck_id = 234` cũng có thể vào partition 0, còn `truck_id = 345` hay `456` luôn vào partition 1.
+* Key nào rơi vào partition nào là do hàm hash quyết định (mục 5), nhưng một khi đã rơi thì **mãi mãi ở đó** chừng nào số partition không đổi. Đọc lại partition đó là bạn có toàn bộ lịch sử của chiếc xe theo đúng thứ tự.
 
-The producer decides in advance
+```mermaid
+graph LR
+    K123[Key: truck_123] --> P0[Partition 0]
+    K234[Key: truck_234] --> P0
+    K345[Key: truck_345] --> P1
+    K456[Key: truck_456] --> P1
+    P0 -->|đọc theo offset| C[Consumer đọc đúng thứ tự từng xe]
+    P1 -->|đọc theo offset| C
+```
 
-which partition to write to and we'll see how.
+## 4. Giải Phẫu Một Kafka Message: Không Chỉ Có Value
 
-And then in case A, Kafka server
+Khi Producer tạo message, nó không chỉ có nội dung. Một Kafka message đầy đủ gồm:
 
-that has a partition as a failure,
+| Thành phần | Mô tả |
+|---|---|
+| **Key** | Có thể null, lưu ở dạng binary. Dùng để định tuyến partition. |
+| **Value** | Nội dung message, cũng có thể null nhưng thường thì có. Cũng lưu dạng binary. |
+| **Compression** | Có muốn nén cho nhẹ không? Tùy chọn `gzip`, `snappy`, `lz4`, `zstd`. |
+| **Headers** | Danh sách key-value pairs optional đi kèm message. |
+| **Partition + Offset** | Partition đích và Offset sau khi ghi thành công. |
+| **Timestamp** | Do hệ thống hoặc do user tự set. |
 
-the producers know how to automatically recover.
+Nhớ bảng này vì sang bài Consumer bạn sẽ thấy phía đọc phải bóc tách đúng từng phần này ra.
 
-So there's a lot of behind the scenes magic
+## 5. Serializer: Biến Object Thành Bytes Vì Kafka Chỉ Ăn Bytes
 
-that we'll explain over time that happens within Kafka.
+Đây là điểm làm nên sự "khó tính mà hay" của Kafka: **Kafka chỉ nhận dãy bytes từ Producer và chỉ trả dãy bytes cho Consumer**. Nó không biết Java object là gì, String là gì.
 
-So we have load balancing in this case
+Nên trước khi gửi, Producer phải làm **serialization** — biến object trong ngôn ngữ lập trình thành bytes.
 
-because your producers, they're going to send data
+Ví dụ cụ thể:
 
-across all partitions based on some mechanism,
+* Key object là số `123`, value object là chuỗi `"hello world"` — cả hai đều chưa phải bytes.
+* Bạn khai báo `key.serializer` là **IntegerSerializer**, `value.serializer` là **StringSerializer** — hai serializer này hoàn toàn có thể khác nhau.
+* Producer dùng đúng serializer đó biến `123` thành biểu diễn binary của số, biến `"hello world"` thành dãy bytes của chuỗi. Lúc này message mới đủ điều kiện bay vào Kafka.
 
-and this is why Kafka scales,
+```java
+// Minh họa ý tưởng, không phải code chạy ngay
+props.put("key.serializer", "IntegerSerializer");   // key 123 -> bytes
+props.put("value.serializer", "StringSerializer");  // "hello world" -> bytes
+```
 
-it's because we have many partitions within a topic
+Kafka đính kèm sẵn nhiều serializer thông dụng: **String** (kể cả JSON dưới dạng String), **Integer, Float, Avro, Protobuf**... Bạn chỉ việc chọn, không cần tự viết trừ khi có format đặc biệt.
 
-and each partition is going to receive messages
+## 6. Deep Dive Cho Người Tò Mò: Partitioner Và Thuật Toán Murmur2
 
-from one or more producers.
+Đoạn này hơi nâng cao, không hiểu cũng không sao — nhưng ai thích đào sâu thì đây là đáp án cho câu hỏi "hash bằng gì?".
 
-So now producers have message keys in the message.
+Trong Producer có một đoạn logic gọi là **Kafka Partitioner**: nhận một record, trả về partition đích. Luồng là `send(record) -> partitioner chọn partition -> gửi vào Kafka`.
 
-So the message itself contain data,
+Với default partitioner, Key được hash bằng thuật toán **murmur2**. Công thức tư tưởng (không cần thuộc lòng):
 
-but then we can add a key and it's optional,
+```text
+targetPartition = murmur2(keyBytes) % số_partition
+```
 
-and the key can be anything you want,
+Nghĩa là: lấy dãy bytes của Key, chạy murmur2 ra một con số, chia lấy dư cho số partition. Cùng Key thì cùng bytes, cùng hash, cùng số dư — nên cùng partition. Đó là toàn bộ "phép màu" đằng sau tính chất ở mục 3.
 
-could be a string, a number, a binary, et cetera, et cetera.
+Điều cần khắc cốt ghi tâm sau deep dive này chỉ có một câu: **Producer là kẻ chọn partition bằng cách hash Key, không phải Broker.**
 
-So you have two cases.
+## Cạm Bẫy Thường Gặp
 
-In this example, I've taken a producer
+* **Tưởng Broker chia partition, Producer chỉ việc ném.** Ngược lại hoàn toàn. Debug sai partition mà đi soi Broker là lạc đường — phải soi Key và Partitioner ở Producer.
+* **Cần thứ tự mà để Key null.** Key null là round-robin, message của cùng một user/đơn hàng/xe sẽ tung tóe khắp partitions, mất thứ tự. Cần ordering theo thực thể nào thì lấy ID của thực thể đó làm Key.
+* **Đổi số partition của Topic đang chạy mà tưởng Key mapping giữ nguyên.** Số partition đổi thì phép chia lấy dư đổi, Key cũ có thể rơi sang partition mới. Đừng tăng partition của Topic đang cần ordering mà không tính trước.
+* **Key serializer và value serializer lẫn lộn.** Key là Integer mà khai String serializer (hoặc ngược lại) thì Consumer bên kia dùng deserializer đúng cũng không giải mã nổi.
+* **Nhồi mọi thứ vào Key vì tưởng Key càng chi tiết càng tốt.** Key chỉ nên là định danh của thực thể cần ordering (truck_id, user_id, order_id). Nhồi cả payload vào Key vừa tốn hash vừa khó quản.
 
-that is writing to a topic with two partitions.
+## Kết Luận
 
-So if the key is null,
+Tóm lại một câu: **Producer là người quyết định message vào partition nào — không Key thì rải đều round-robin để cân tải, có Key thì cùng Key về chung partition nhờ hash murmur2 để giữ thứ tự, và mọi object trước khi gửi đều phải serialize thành bytes.**
 
-then the data is going to be sent round robin.
-
-So that means that it's going to be sent to partition zero
-
-then partition one, then partition two and so on,
-
-and this is how we get load balancing, okay?
-
-Key equals null means that the key was not provided
-
-in the producer message,
-
-but if the key is not null,
-
-that means that the key has some value.
-
-It could be again, a string, a number, a binary,
-
-whatever you want.
-
-And the Kafka producers have a very important property,
-
-that is that all the messages that share the same key
-
-will always end up being written to the same partition,
-
-thanks to a hashing strategy,
-
-and that property is very important in Apache Kafka.
-
-So when we specify a key,
-
-this is when we need message ordering for a specific field.
-
-So remember your example with trucks beforehand.
-
-We had trucks and it would be good for us
-
-to get the position of each individual truck in order.
-
-So in that case,
-
-I'm going to provide truck ID as my key of my messages.
-
-Why?
-
-Well, then for example, truck ID 123,
-
-which is an ID of one of my trucks
-
-is going to be always sent to partition zero,
-
-and I can read data in order for that one truck.
-
-And truck ID 234 is always also to be sent
-
-to partition zero,
-
-and which key ends up in which partition is made,
-
-thanks to the hashing technique
-
-that I will tell you right after.
-
-And then for example, another truck ID,
-
-for example 345 or 456
-
-will always end up in partition one of your topic A.
-
-So the key is part of a Kafka message.
-
-And here is what a Kafka message looks like
-
-when it's created by the producer.
-
-So we have the key and it can be null as we've seen,
-
-and it's in binary format.
-
-Then we have the value,
-
-which is your message content.
-
-It can be null as well,
-
-but usually is not,
-
-and it contains the value of your message.
-
-Then we can add compression onto our messages.
-
-So do we want them to be smaller?
-
-If so, we can specify a compression mechanism,
-
-for example, gzip, snappy, lz4 or zstd.
-
-Then we can also add headers to our message,
-
-which are optional list of key value pairs.
-
-Then we have the partition
-
-that the message is going to be sent to
-
-as well as its Offsets.
-
-And then finally, a timestamp
-
-that is either set by the system or by the user.
-
-And this is what a Kafka message is,
-
-and then it gets sent into Apache Kafka for storage.
-
-So how do these messages get created?
-
-So we have what's called a Kafka Message Serializer.
-
-Because Kafka is a very good technology,
-
-and what makes it good
-
-is that it only accepts series of bytes
-
-as an input from producers,
-
-and it will send bytes as an output to consumers.
-
-But when we construct messages, they're not bytes.
-
-So we are going to perform message serialization.
-
-And doing serialization
-
-means that we are going to transform your data,
-
-your objects into bytes,
-
-and it's not that complicated,
-
-I will show you right now.
-
-And then these Serializers
-
-are going to be used only on the value and the key.
-
-So say for example, we have a key object, okay?
-
-So it's going to be the truck ID, so 123,
-
-and then the value is just going to be a string,
-
-hello world.
-
-So these are not bytes just yet,
-
-they are objects within our programming language,
-
-but then we're going to specify the key Serializer
-
-to be an integer Serializer.
-
-And what's going to happen
-
-is that Kafka producer is smart enough
-
-to transform that key objects, 123
-
-through the Serializer into a series of bytes,
-
-which is going to give us a binary representation
-
-of that key.
-
-And then for the value object,
-
-we're going to specify a string Serializer,
-
-as you see the value
-
-and the key Serializer in this instance are different.
-
-And so that means that it's going to be smart enough
-
-to transform the string, hello world
-
-into a series of bytes for our value.
-
-And now that we have the key
-
-and the value as binary representations,
-
-that message is now ready to be sent into Apache Kafka.
-
-So Kafka producers come with common Serializers
-
-that help you do this transformation.
-
-So we have string,
-
-including the JSON representation of the String,
-
-Integer, Floats, Avro, Protobuf and so on.
-
-We can find a lot of message Serializers out there.
-
-So just for the curious about those who want to understand
-
-how the message keys are hashed,
-
-and this is more advanced, okay?
-
-Just for those who are curious,
-
-if you're not, you can skip this,
-
-but there is something called a Kafka partitioner,
-
-which is a code logic that will take a record, a message
-
-and determine to which partition to send it to.
-
-So when we do a send,
-
-the producer partitioner logic
-
-is going to look at the record
-
-and then assign it to a partition,
-
-for example, partition one,
-
-and then it gets sent by the producer into Apache Kafka.
-
-And the process of key hashing
-
-is used to determine the mapping of a key to a partition,
-
-and in the default Kafka partitioner,
-
-then the keys are going to be hashed
-
-using the murmur2 algorithm,
-
-and there is a formula right here
-
-that you're going to know, of course, okay?
-
-But it means that it's going to look at the bytes
-
-of the key, apply the murmur2 algorithm,
-
-and then figure out, thanks to it,
-
-what is going to be the target partition.
-
-This is just to stress the fact that
-
-producers are the one who choose
-
-where the message is going to end up,
-
-thanks to the key bytes, okay?
-
-By hashing the key.
-
-That's it.
-
-It's just for those that I know
-
-want some advanced content sometimes,
-
-but if you don't understand this,
-
-this is completely fine as well,
-
-just remember everything that was said before.
-
-All right, that's it for this lecture.
-
-I will see you in the next lecture.
+Bài tiếp theo chúng ta đổi phe: message đã nằm yên trong partition, giờ **Consumer** đọc nó ra sao, và quá trình **deserialization** đảo ngược lại những gì Producer đã làm như thế nào.

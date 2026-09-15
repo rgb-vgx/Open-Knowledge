@@ -1,155 +1,155 @@
-Hi, this is Stephane from Conduktor,
+# Producer Retries: Thất Bại Tạm Thời Thì Thử Lại Ra Sao Mà Không Mất Dữ Liệu?
 
-and welcome to this section on producer retries.
+Bài trước chốt `acks=all` để không mất dữ liệu khi broker trả ack. Nhưng nếu broker trả *lỗi* thì sao? Leader đang chuyển, replica chưa đủ (`NotEnoughReplicasException`), network chập chờn — rất nhiều lỗi chỉ tồn tại vài trăm mili-giây. Không retry là mất dữ liệu oan. Retry bừa thì treo hoặc lộn thứ tự. Bài này giải quyết đúng bài toán đó.
 
-So when you have failures to send data
+---
 
-from the producer to Apache Kafka
+## 1. Vấn đề: Lỗi Nào Đáng Retry, Lỗi Nào Nên Thất Bại Luôn?
 
-then developers are expected to have a little bit of codes
+Khi `producer.send()` thất bại, Kafka chia lỗi làm hai loại:
 
-to handle these exceptions,
+| Loại | Ví dụ | Ứng xử đúng |
+|---|---|---|
+| **Retriable (tạm thời)** | `NotEnoughReplicasException`, `LeaderNotAvailable`, `NetworkException` | Tự thử lại sau một khoảng nghỉ — lần sau có thể thành công |
+| **Non-retriable (vĩnh viễn)** | `SerializationException`, `RecordTooLargeException`, `AuthorizationException` | Thất bại luôn, gọi callback lỗi — retry 100 lần cũng vậy |
 
-otherwise the data will be lost.
+Nếu developer phải tự `try/catch` + `while retry` cho mọi `send()` như code thô dưới đây, pipeline nào cũng đầy bug:
 
-And example of failures could be for example
+```java
+// ĐỪNG làm thế này - code retry tay vừa rối vừa sai ordering
+try {
+    producer.send(record).get();
+} catch (Exception e) {
+    Thread.sleep(100);
+    producer.send(record).get(); // retry tay: block, mất async, dễ duplicate
+}
+```
 
-not enough replicas,
+Producer của Kafka đã tích hợp sẵn cơ chế retry async. Việc của bạn chỉ là hiểu ba núm vặn: thử lại bao nhiêu lần, nghỉ bao lâu giữa các lần, và giới hạn tổng thời gian là bao nhiêu.
 
-when there's not enough replicas due
+## 2. Cơ Chế: Vòng Đời Của Một Record Khi Gặp Lỗi Retriable
 
-to the mini in-sync replicas setting
+```mermaid
+graph TB
+    SEND["send() lần 1"] --> ERR{"Broker trả lỗi?"}
+    ERR -->|Thành công| ACK["Nhận ack - xong"]
+    ERR -->|Lỗi fatal| FAIL["Thất bại luôn<br/>callback onError"]
+    ERR -->|Lỗi retriable| WAIT["Nghỉ retry.backoff.ms=100ms"]
+    WAIT --> CHECK{"Quá delivery.timeout.ms=120s<br/>từ lúc send() đầu?"}
+    CHECK -->|Chưa quá| SEND2["send() lại lần 2...n"]
+    SEND2 --> ERR
+    CHECK -->|Đã quá| FAIL
+```
 
-alongside acts equals all.
+Điểm mấu chốt:
 
-But if you don't want to handle these failures
+1. **Retry là async và trong suốt.** Thread gọi `send()` không block. Record lỗi nằm lại trong buffer, tới lượt sẽ gửi lại.
+2. **Từ Kafka 2.1, trần retry không còn là số lần mà là thời gian.** `delivery.timeout.ms=120000` (2 phút) bao trùm toàn bộ: gửi lần đầu, mọi lần retry, mọi khoảng nghỉ. Hết 2 phút chưa ack thì record thất bại, dù `retries` còn dư.
+3. **Trước Kafka 2.0, `retries` default = 0.** Nghĩa là lỗi retriable cũng mất luôn nếu bạn không set tay. Từ client 2.1+, `retries` default là `Integer.MAX_VALUE` (gần như vô hạn) và `delivery.timeout.ms` làm người gác cổng. Đây là lý do version client quan trọng tới vậy.
 
-at least on the retries side
+### 2.1. Sơ đồ timeout bao trùm (rất hay bị hiểu sai)
 
-there is a retries setting.
+Nhiều người tưởng có nhiều timeout độc lập: `request.timeout.ms`, `retry.backoff.ms`, `linger.ms`... Thực tế từ Kafka 2.1:
 
-And it's zero for Kafka less than two zero
+```text
+|---- send() ---- retry 1 ---- backoff ---- retry 2 ---- backoff ---- ... ----|
+|<---------------------- delivery.timeout.ms = 120s ------------------------->|
+    Tất cả phải xong trong 120s, nếu không record bị đánh fail.
+```
 
-version two, zero
+Đừng cố nhớ từng timeout con. Chỉ nhớ một câu: **`delivery.timeout.ms` là deadline tối thượng từ lúc `send()` tới lúc nhận ack.**
 
-or it's a very very high number for Kafka over 2.1.
+## 3. Config Chi Tiết: Bốn Cái Tên Phải Thuộc
 
-And so we are using a recent Kafka,
+### 3.1. `retries`
 
-but you still should know that
+- **Ý nghĩa:** số lần thử lại tối đa cho lỗi retriable.
+- **Giá trị mẫu:** `0` ở client ≤ 2.0 (nguy hiểm); `2147483647` (`Integer.MAX_VALUE`) ở client ≥ 2.1 và khi bật idempotence.
+- **Khi nào dùng:** luôn để `MAX_VALUE` cho dữ liệu quan trọng. Trần thực tế do `delivery.timeout.ms` quyết định, nên số lớn không có nghĩa là treo vô hạn.
 
-if you're using an older version of the clients
+```java
+props.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
+```
 
-then retries could be zero.
+### 3.2. `retry.backoff.ms`
 
-And then there is also a retry backoff which is saying
+- **Ý nghĩa:** thời gian nghỉ giữa hai lần retry liên tiếp.
+- **Giá trị mẫu:** `100` (ms) — default hợp lý cho hầu hết workload.
+- **Khi nào dùng:** giữ default. Tăng lên (ví dụ 300–1000ms) nếu broker đang quá tải và bạn muốn giảm áp lực retry dồn dập; giảm xuống chỉ khi đã đo latency retry là bottleneck — hiếm.
 
-how much time to wait before the next retry.
+### 3.3. `delivery.timeout.ms`
 
-And by default, this setting is 100 milliseconds.
+- **Ý nghĩa:** deadline tổng từ lúc `send()` tới lúc phải nhận ack, bao gồm mọi retry và backoff. Hết deadline → record fail, callback nhận `TimeoutException`.
+- **Giá trị mẫu:** `120000` (2 phút).
+- **Khi nào dùng:** giữ 120s cho pipeline chuẩn. Giảm (ví dụ 30s) nếu bạn muốn fail fast để chuyển sang dead-letter queue sớm; tăng nếu network xuyên region chậm và retry cần nhiều thời gian hơn.
 
-So the producer is going to retry infinitely
+### 3.4. `max.in.flight.requests.per.connection`
 
-quote and quote infinitely until something happens.
+- **Ý nghĩa:** số batch được phép "đang bay" (đã gửi chưa ack) trên mỗi connection tới broker. Giá trị càng cao, throughput càng tốt vì pipeline không phải chờ.
+- **Giá trị mẫu:** `5` (default hiện đại).
+- **Khi nào dùng — và cái bẫy ordering:** ở client cũ (chưa có idempotence), retry + `max.in.flight > 1` gây **lộn thứ tự**. Ví dụ batch 1 lỗi đang retry, batch 2 thành công trước → message sau lại commit trước message trước. Fix thời đó là hạ về `1` (đánh đổi throughput). Từ Kafka 1.0+ với `enable.idempotence=true`, giữ `5` vẫn đảm bảo ordering — chi tiết ở bài 069.
 
-And this thing that happens is a producer timeout.
+```text
+Client cũ, retries + max.in.flight=5, chưa idempotence:
+Batch1 (msg 1,2) lỗi -> đang retry ... Batch2 (msg 3,4) thành công trước
+=> Kafka commit 3,4 trước 1,2 => LỘN THỨ TỰ nếu dùng key ordering.
 
-So if you set retries to very high number
+Fix cũ: max.in.flight=1 (chậm). Fix mới: enable.idempotence=true (nhanh + đúng).
+```
 
-then the retries are not infinite
+## 4. Code Ví Dụ: Retry Đúng Chuẩn Cho Wikimedia Producer
 
-they're bounded by a timeout
+```java
+import org.apache.kafka.clients.producer.ProducerConfig;
+import java.util.Properties;
 
-and since Kafka 2.1,
+Properties props = new Properties();
+props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+        "org.apache.kafka.common.serialization.StringSerializer");
+props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+        "org.apache.kafka.common.serialization.StringSerializer");
 
-there is an intuitive timeout you can use
+// Durability từ bài 067
+props.setProperty(ProducerConfig.ACKS_CONFIG, "all");
 
-which is called delivery timeout millisecond
+// Retry: cho thử lại tới khi hết deadline 2 phút
+props.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
+props.setProperty(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, "100");
+props.setProperty(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "120000");
 
-and it's 120,000 as a default value
+// Giữ pipeline đầy mà vẫn đúng thứ tự (nhờ idempotence ở bài sau)
+props.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
+```
 
-which is equals to two minutes.
+Test nhanh trên local: dựng 1 broker, set topic `min.insync.replicas=1`, kill broker vài giây rồi bật lại trong lúc producer chạy. Với config trên, producer tự retry và không mất record nào (kiểm chứng bằng đếm record trước/sau). Với `retries=0`, số record hụt đúng bằng số gửi trong lúc broker chết.
 
-And this delivery timeout millisecond takes over
+## 5. Safe / High-Throughput Preset Liên Quan
 
-a lot of time out that happened from before.
+Bài này chốt dòng 2–4 của preset Safe:
 
-So this is a very simple timeout saying that
+```java
+// SAFE preset (điền tiếp sau bài 067):
+props.setProperty(ProducerConfig.ACKS_CONFIG, "all");                                    // bài 067
+props.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE)); // bài này
+props.setProperty(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "120000");                // bài này
+props.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");         // bài này
+// Còn thiếu: enable.idempotence=true -> bài 069
+```
 
-from the moment you do send
+Chưa đụng throughput. Retry nhiều hơn không làm nhanh hơn — nó chỉ làm *bền* hơn. Phần tăng tốc ở bài 072–074.
 
-up until it is received by Kafka,
+## 6. Cạm Bẫy Thường Gặp
 
-all of this is bounded
+- **Dùng client cũ mà tưởng retry default đã lớn.** Client ≤ 2.0: `retries=0`. Lỗi retriable nhỏ cũng mất dữ liệu. Luôn check version client trước khi tin default.
+- **Set `retries` lớn mà không hiểu `delivery.timeout.ms`.** Tưởng retry vô hạn là treo vô hạn. Thực tế deadline 120s sẽ fail record — hãy xử lý fail trong callback (log, DLQ), đừng tưởng retry là bảo hiểm tuyệt đối.
+- **Hạ `max.in.flight` về 1 "cho chắc" trên client mới.** Lỗi thời. Với idempotence, `5` vừa nhanh vừa giữ ordering. Hạ về 1 là tự bóp throughput 5 lần không cần thiết.
+- **Retry lỗi non-retriable.** `RecordTooLargeException` retry 1000 lần vẫn fail, chỉ tốn tài nguyên và che lấp bug config. Hãy phân biệt hai loại lỗi trong callback và alert riêng.
+- **Để `delivery.timeout.ms` quá ngắn trên network chậm.** Xuyên region latency cao + `acks=all` + retry → 30s có thể không đủ, record fail oan hàng loạt. Đo p99 latency trước khi hạ deadline.
+- **Quên callback lỗi nên retry fail trong im lặng.** `send(record)` không callback thì record hết deadline rớt đi mà log không có gì. Production luôn dùng `send(record, callback)` để đếm và xử lý fail.
 
-by a delivery timeout of 120,000 milliseconds.
+## Kết Luận
 
-So in this graph don't look at the, in between timeouts,
+Tóm lại một câu: **lỗi tạm thời thì producer tự retry theo `retries` + `retry.backoff.ms`, nhưng tất cả bị chặn bởi deadline `delivery.timeout.ms=120s`, và muốn retry nhiều mà không lộn thứ tự thì phải có idempotence.**
 
-just remember that this delivery timeout
-
-takes over everything else.
-
-And if they are not acknowledged
-
-within this delivery, timeout, millisecond
-
-then the records will be failed.
-
-So it's important for you to understand
-
-for the old version of Kafka,
-
-that if you're not using an idempotent,
-
-which is a producer, I will show you in the next slide.
-
-Then in case of retries you have the chance
-
-that messages will be sent out of order
-
-because when you retry
-
-well messages are kept on being retried,
-
-but this is solved by idempotent producer
-
-that I'm going to show you in the next lecture.
-
-So if you rely on key-based ordering
-
-then that could be an old issue
-
-especially for the old versions of Kafka.
-
-And as I said, I like to warn you about
-
-all the versions of Kafka
-
-because sometimes people don't update their Kafka version
-
-and they see behaviors that are not taught in this course.
-
-For this, there is another setting called
-
-the max.in.flight.requests.per.connection
-
-and this default value is five.
-
-But in case you have an older version of Kafka
-
-and you have retries you need to set it to one
-
-to ensure key based ordering
-
-although that may impact your throughput.
-
-But when you have Kafka higher version, for example,
-
-higher than 1.0 then you can use idempotent producers
-
-and you will be good to go.
-
-So I will see you in the next lecture
-
-to discuss what these producers are and how they work.
+Bài tiếp theo chúng ta giải quyết hệ quả của retry: gửi lại thì broker commit trùng thì sao — qua `enable.idempotence`, cơ chế producer ID + sequence number giúp Kafka nhận diện và loại bỏ duplicate.

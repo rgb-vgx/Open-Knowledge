@@ -1,195 +1,141 @@
-Okay, so now that WSL2 is installed,
+# Windows WSL2: Cài Java + Kafka Binaries Và Đưa Vào PATH (Trong Ubuntu)
 
-we're going to install Java JDK version 21 on our Ubuntu.
+Bài này dành riêng cho **Windows đã cài WSL2 + Ubuntu ở bài `026`**. Toàn bộ thao tác dưới đây chạy **trong terminal Ubuntu**, không phải PowerShell. Mục tiêu: gõ được `kafka-topics.sh` từ bất kỳ đâu trong Ubuntu.
 
-Then we're going to download Apache Kafka
+Các bước giống hệt bài Linux `024` (vì WSL2 bản chất là Ubuntu), chỉ khác cách tải file Kafka: dùng `wget` + `tar` thay vì click trình duyệt.
 
-under Binary Downloads, extract the content on WSL2,
+---
 
-and set up the path for easy access to the Kafka binaries.
+## 1. Chuẩn Bị
 
-Okay, so, the first thing we're going to do
+Checklist:
 
-is to install Java,
+- App Ubuntu mở được từ Start Menu, đăng nhập được (bài `026`).
+- Có quyền sudo trong Ubuntu (nhập đúng password khi được hỏi, nếu không lệnh sẽ treo).
+- Kafka từ 4.0 trở lên (bản KRaft).
 
-so for this, I'm gonna install Java Correto.
+Mở terminal Ubuntu và làm lần lượt 3 việc: cài JDK 21 → tải + giải nén Kafka → thêm vào PATH.
 
-We are going to click on this link.
+## 2. Bước 1 — Cài Java JDK 21 (Amazon Corretto) Trong Ubuntu
 
-Production-ready version of Correto.
+Kafka bắt buộc chạy trên JDK 21. Vì Ubuntu là Debian-based nên làm theo tab Debian trên trang Corretto.
 
-And then we're going to download Correto 21.
+1. Google `Amazon Corretto 21`, mở trang download, sang tab **Linux → Debian-based**.
+2. Copy bộ lệnh thêm repo + cài đặt mới nhất trên trang (lệnh dưới đây là ví dụ, luôn ưu tiên lệnh trên trang chủ):
 
-And then on the left-hand side, you go on Linux
+```bash
+wget -O - https://apt.corretto.aws/corretto.key | sudo gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | sudo tee /etc/apt/sources.list.d/corretto.list
+sudo apt update
+sudo apt install -y java-21-amazon-corretto-jdk
+```
 
-and you click on install on Debian-based, RPM-based Linux.
+Lưu ý khi nhập password sudo: gõ không hiện ký tự nào là bình thường, cứ gõ xong nhấn `Enter`. Nếu lệnh treo sau khi hỏi password thì 99% là bạn chưa nhập password.
 
-So, we're using actually Debian-based
+Kiểm tra:
 
-because we have Ubuntu.
+```bash
+java --version
+```
 
-So, what I can do is I can just click
+Thấy `openjdk 21 ... Corretto` là đạt. Nếu ra version khác do máy có nhiều JDK:
 
-on this command right here
+```bash
+sudo update-alternatives --config java
+```
 
-and paste it here and press Enter.
+Chọn số tương ứng Corretto 21.
 
-And it's asking for my password,
+## 3. Bước 2 — Tải Kafka Bằng `wget` Và Giải Nén Bằng `tar`
 
-so I need to enter my password.
+Trong Ubuntu không có trình duyệt click-tải như Windows, nên copy link rồi tải bằng lệnh.
 
-So, make sure you enter your password.
+1. Trên trình duyệt Windows, mở trang Downloads của kafka.apache.org, chọn version **4.0+**, mục **Binary downloads**, **chuột phải → Copy link** file `.tgz`.
+2. Sang terminal Ubuntu, tải về (dán link vừa copy):
 
-Otherwise, this gets stuck.
+```bash
+cd ~/
+wget https://downloads.apache.org/kafka/4.0.0/kafka_2.13-4.0.0.tgz
+```
 
-All right, so we can do, next, this command
+3. Giải nén:
 
-to install Java 21.
+```bash
+tar -xvzf kafka_2.13-4.0.0.tgz
+ls | grep kafka
+```
 
-So, you paste it, press Enter.
+(Tên file/version thay theo link bạn copy — làm đúng version đã tải, đừng gõ y nguyên ví dụ.)
 
-And now, this installs all the required packages for us
+Thấy thư mục `kafka_2.13-4.0.0` hiện ra là xong. Kiểm tra thư mục quan trọng nhất:
 
-to have Java installed on WSL2 on our Ubuntu.
+```bash
+ls ~/kafka_2.13-4.0.0/bin | head
+```
 
-So, now, if we do java --version,
+Phải thấy `kafka-topics.sh`, `kafka-server-start.sh`, `kafka-storage.sh`...
 
-as we can see, we get a version 21 from Correto,
+## 4. Bước 3 — Thêm Kafka Vào PATH (`~/.bashrc`)
 
-so we have Java installed.
+Thử gọi gọn thì thất bại là đúng ở bước này:
 
-So, the next thing is to install Apache Kafka,
+```bash
+kafka-topics.sh
+# command not found
+```
 
-so I'm going to type install apache kafka,
+Gọi bằng đường dẫn đầy đủ thì được:
 
-and then go to the Download Kafka section.
+```bash
+~/kafka_2.13-4.0.0/bin/kafka-topics.sh
+```
 
-I will choose a release for example, 4.0.0 or above.
+Để gọi gọn được từ mọi nơi, thêm thư mục `bin` vào PATH. Lấy đường dẫn tuyệt đối trước:
 
-And then I will right-click on Binary download,
+```bash
+cd ~/kafka_2.13-4.0.0/bin
+pwd
+```
 
-copy the link, and then I will do wget
+Copy kết quả, ví dụ `/home/thuyet/kafka_2.13-4.0.0/bin`. Rồi về home sửa file cấu hình bash:
 
-and then paste the link.
+```bash
+cd ~/
+nano ~/.bashrc
+```
 
-So, this is going to download this file
+Cuộn xuống cuối file, thêm một dòng (thay đường dẫn bằng `pwd` của bạn):
 
-and then we have to unzip it.
+```bash
+export PATH="$PATH:/home/thuyet/kafka_2.13-4.0.0/bin"
+```
 
-And then one last command is tar, T-A-R, -xvzf,
+Lưu: `Ctrl + X`, `Y`, `Enter`. Nạp lại cấu hình (Ubuntu mới mở cũng tự nạp, nhưng làm ngay cho chắc):
 
-and then just the path of this archive.
+```bash
+source ~/.bashrc
+```
 
-Press Enter.
+Kiểm tra từ thư mục bất kỳ:
 
-It's going to unzip everything.
+```bash
+cd ~/
+kafka-topics.sh
+```
 
-And after I do ls to get my files.
+Hết `command not found`, in ra hướng dẫn sử dụng là thành công.
 
-As we can see, we have this Kafka right here
+## Lỗi Thường Gặp & Cách Fix
 
-that's available to us.
+- **Lệnh `sudo ...` treo không chạy tiếp:** bạn chưa nhập password sudo. Fix: gõ password Ubuntu rồi `Enter` (gõ mù, không hiện sao).
+- **`wget: command not found`:** Ubuntu minimal chưa có wget. Fix: `sudo apt update && sudo apt install -y wget`.
+- **Copy link Kafka bản cũ (3.x) thay vì 4.x:** vẫn chạy nhưng các lệnh KRaft ở bài sau khác nhau. Fix: quay lại trang Downloads chọn bản **4.0+**, mục Binary downloads.
+- **Giải nén sai tên file:** `tar` báo `No such file`. Fix: `ls *.tgz` để xem tên file thực tế vừa tải rồi gõ lại cho khớp.
+- **Sửa PATH trong PowerShell thay vì Ubuntu:** không có tác dụng. Fix: mọi thao tác PATH làm trong Ubuntu với `~/.bashrc`, rồi `source ~/.bashrc` hoặc mở lại terminal Ubuntu.
+- **Mở terminal Ubuntu mới mà lệnh lại `not found`:** dòng export chưa được lưu hoặc lưu nhầm file. Fix: `tail -3 ~/.bashrc` xem dòng export có ở cuối file không.
 
-So, this is excellent.
+## Kết Luận
 
-Now, in this directory, the Kafka directory, we have bin.
+Vậy là Ubuntu trong Windows của bạn đã có JDK 21 + full Kafka CLI — hoặc dùng với broker Docker ở bài `020`, hoặc start broker tay ngay trong WSL2.
 
-And in bin, what we have
-
-is all the binaries of Kafka,
-
-so this is what we're going to run through in our command.
-
-So, right now, what we can do
-
-is that we can type the Kafka directory,
-
-bin, and then for example, kafka-topics.sh.
-
-And this is going to start the kafka-topics CLI utility.
-
-As you can see, it gave me this output.
-
-But what we want to do is to have
-
-the kafka-topics.sh command available from anywhere.
-
-And right now, it says command not found.
-
-So, we have to do is to edit our path.
-
-So, how to do, though?
-
-So, first of all, we're gonna go
-
-into the bin directory of Kafka and type pwd.
-
-So, this is where it is stored
-
-and this is what I'm going to copy.
-
-And then I'm going to open a new...
-
-Actually, I will just stay within Ubuntu.
-
-I will go two levels up,
-
-so I'm back in my home directory
-
-and I'm going to do a nano
-
-on the file named .bashrc.
-
-And this file is the file we're going to edit
-
-and we're going to add a path modification,
-
-so scroll all the way down in that file.
-
-And then at the bottom, you say path = "$PATH:,
-
-and then you paste the full directory
-
-to your binary of Kafka.
-
-So, once you have this line of code right here, you exit.
-
-Yes.
-
-And we're going to source,
-
-so reload bashrc.
-
-This is something you just do once.
-
-And now, this will be automatically done
-
-by the way when you restart an Ubuntu window.
-
-But now, if I type kafka-topics.sh,
-
-as you can see, from any directory,
-
-now I have access to my Kafka command.
-
-So, that's it. We have installed Kafka on WSL2 on Windows,
-
-we have access to the CLI command
-
-from anywhere, thanks to the path.
-
-And so, we're good to go for this course.
-
-So, either you have launched Kafka using Docker Compose
-
-and you're good to go
-
-and you can now use the CI commands,
-
-or if you want to launch Kafka directly on WSL2,
-
-I will show you how to do this in the next video.
-
-So, that's it. I hope you liked it,
-
-and I will see you in the next lecture.
+Bài tiếp theo (`028`) chúng ta sẽ start một broker Kafka thật ở chế độ KRaft ngay trong Ubuntu này.

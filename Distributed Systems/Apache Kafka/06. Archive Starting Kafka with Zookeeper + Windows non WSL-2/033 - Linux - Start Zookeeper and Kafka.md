@@ -1,189 +1,74 @@
-Hi, this is Stephane from Conduktor.
+# [Archive] Linux: Start Kafka Kèm ZooKeeper (Chế Độ Cũ, Chỉ Để Tham Khảo)
 
-And in this lecture
+> Bài thuộc section **Archive**: chế độ Kafka + ZooKeeper đã bị loại bỏ từ Kafka 4.0. Nếu bạn học mới hoàn toàn, hãy dùng chế độ **KRaft** ở bài `025` và bỏ qua bài này. Chỉ đọc tiếp khi bạn phải维护 cluster cũ vẫn chạy ZooKeeper.
 
-I'm going to show you how to start Kafka with Zookeeper.
+Bài này dành riêng cho **Linux (Ubuntu/Debian)**, dựng 1 broker + 1 ZooKeeper bằng binaries. Nội dung giống hệt bài Mac `032`, chỉ khác môi trường chạy.
 
-So we'll have a Kafka cluster of one broker
+---
 
-and one Zookeeper,
+## 1. Mục Tiêu Và Chuẩn Bị
 
-for this we'll first start Zookeeper
+Hết bài này bạn có: 2 tiến trình song song — ZooKeeper ở terminal trái, Kafka ở terminal phải — broker nghe ở `localhost:9092`.
 
-using the Kafka binaries,
+Điều kiện:
 
-and then we will start Kafka using the Kafka binaries,
+- Đã cài binaries + PATH theo bài `024` (bản Kafka 3.x còn ZooKeeper).
+- Chuẩn bị **2 terminal** cạnh nhau, cả hai **để mở suốt buổi thực hành**.
 
-but in another process.
+## 2. Bước 1 — Start ZooKeeper (Terminal Trái)
 
-So let's have a go at it.
+ZooKeeper cần file cấu hình có sẵn `config/zookeeper.properties`, không cần sửa gì khi học.
 
-Okay, so back here, we're going to start Kafka,
+Trong terminal trái:
 
-so to do this, I'm going to have two terminal windows
+```bash
+cd ~/kafka_2.13-3.1.0
+bin/zookeeper-server-start.sh config/zookeeper.properties
+```
 
-that I'm going to place on the right of my screen
+Gõ thiếu tham số config là lệnh báo lỗi ngay — đó là hành vi đúng. Đợi log đứng yên ở trạng thái bind port 2181, không ERROR, là thành công. Giữ nguyên cửa sổ này.
 
-and the left of my screen.
+Ngó nhanh cấu hình cho biết:
 
-I will clear them both, okay?
+```bash
+cat config/zookeeper.properties
+```
 
-And so on the left hand side, I will start Zookeeper,
+Dòng quan trọng: `dataDir=/tmp/zookeeper` — nơi ZooKeeper lưu data (mặc định `/tmp`, reboot là mất).
 
-and on the right hand side I will start Kafka.
+## 3. Bước 2 — Start Kafka (Terminal Phải)
 
-So we need to first start Zookeeper,
+Trong terminal phải:
 
-so for this will use
+```bash
+cd ~/kafka_2.13-3.1.0
+bin/kafka-server-start.sh config/server.properties
+```
 
-the Zookeeper server start.sh command, okay?
+Đợi tới dòng `Kafka Server started` là xong. Cluster mini của bạn: Kafka (phải) đã đăng ký vào ZooKeeper (trái).
 
-And if a press Enter, it says, okay, it doesn't work
+Verify ở terminal thứ ba:
 
-because it needs to have a Zookeeper.properties filed to it.
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --list
+```
 
-Now, thankfully this Zookeeper.properties file
+Không lỗi kết nối là đạt.
 
-is available from within the Kafka binaries,
+## 4. Bước 3 (Tùy Chọn) — Đổi Nơi Lưu Data
 
-so in Kafka we have the bin but also within config,
+Mặc định: `dataDir=/tmp/zookeeper` (ZooKeeper) và `log.dirs=/tmp/kafka-logs` (Kafka). Muốn giữ data lâu thì sửa hai dòng này sang thư mục ổn định rồi restart cả hai theo thứ tự ZooKeeper trước, Kafka sau. Học thì cứ để mặc định.
 
-we have zookeeper.properties.
+## Lỗi Thường Gặp & Cách Fix
 
-And if we at the content of this file,
+- **Quên truyền file `.properties`:** báo lỗi thiếu config. Fix: luôn kèm đúng file config cho từng lệnh.
+- **Start Kafka trước ZooKeeper:** Kafka không tìm thấy ZooKeeper, thoát ngay. Fix: ZooKeeper trước, Kafka sau.
+- **Đóng nhầm một cửa sổ:** cluster chết theo. Fix: start lại tiến trình đã tắt.
+- **Dùng Kafka 4.x:** không còn `zookeeper-server-start.sh`. Fix: quay về bài `025` dùng KRaft, hoặc tải Kafka 3.x nếu bắt buộc.
+- **Port 2181/9092 bị chiếm:** tiến trình cũ hoặc Docker vẫn chạy. Fix: tắt bớt, chỉ giữ một bộ.
 
-and I'll zoom in a little bit,
+## Kết Luận
 
-this is what's called a properties file
+Vậy là bạn đã dựng được cluster Kafka + ZooKeeper kiểu cũ trên Linux.
 
-and it tells Zookeeper how to get started.
-
-So we won't modify anything right now,
-
-we'll just keep it as is, okay?
-
-But what I'm going to do
-
-is just go and type Zookeeper server starts, okay?
-
-Start.sh and then I will have the full path to Zookeeper,
-
-so tilt Kafka and then config
-
-and then Zookeeper.properties, okay?
-
-So this full command right here
-
-is what I'm going to do to start Zookeeper.
-
-And you can find the reference of this command
-
-on the write up on Kafkademy, okay?
-
-And you'll find this command actually right here,
-
-so if I scroll down,
-
-here is the start Zookeeper command, okay?
-
-So you'll find it here.
-
-So once this is started,
-
-you have this lines of logs
-
-and that means you're good to go. So now what you have to do
-
-is to keep this terminal window open, okay?
-
-And then on the right hand side terminal,
-
-we're going to start Kafka.
-
-So again, there is a Kafka server start.sh command
-
-available to you.
-
-And in here we have to pass in a server.property file.
-
-And so to pass in this server.property file,
-
-what I'm going to do is just again
-
-path in passing the full path to it,
-
-so Kafka server start.sh,
-
-and then tilled Kafka then config
-
-and then server.properties.
-
-So this command right here is going to start Kafka,
-
-and again, you commend you can find
-
-on the Kafkademy websites.
-
-So as soon as you have this,
-
-well, you have a Kafka started,
-
-okay, the server has started
-
-and then Zookeeper started as well,
-
-and then congratulations
-
-you have Kafka started on your computer, on your Mac.
-
-Now you need to make sure
-
-that you are going to keep both these terminals open
-
-because if you stop one of these,
-
-then Kafka is going to stop.
-
-So these terminals have to remain open
-
-for the rest of your course,
-
-and this is why sometimes it's nice to use Conduktor
-
-to start Kafka because at least
-
-you don't need to manage two terminal windows, okay?
-
-So once we've done that, we're good to go,
-
-we have started Kafka with Zookeeper and that's awesome.
-
-And then one last optional thing you can do,
-
-and then I will leave it to you.
-
-Is that if you go, you can change the Kafka
-
-and Zookeeper data storage directory.
-
-So you could edit the Zookeeper.properties file
-
-and the server.properties file,
-
-and then within it, there is a line called data dir,
-
-and you can have whatever path you want
-
-for your Zookeeper data.
-
-And in Kafka, you have a logs dir file,
-
-and you can set whatever you want for your Kafka data, okay?
-
-But right now I'll use the defaults
-
-which is temporary files, but that's good enough for me.
-
-All right, let's it for this lecture,
-
-I hope you liked it, and I will see you in the next lecture.
+Bài tiếp theo (`034`) là phiên bản tương tự trên **Windows WSL2** — các lệnh y hệt vì WSL2 bản chất cũng là Ubuntu.

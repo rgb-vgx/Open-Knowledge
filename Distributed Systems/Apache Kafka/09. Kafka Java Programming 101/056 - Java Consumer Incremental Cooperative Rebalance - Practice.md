@@ -1,169 +1,150 @@
-So let's demonstrate the cooperative part.
+# Thực Hành Cooperative Rebalance: Chỉ Revoke Đúng Partition Cần Chuyển
 
-So we are going to com copy this
+Lý thuyết bài trước nói cooperative chỉ chuyển đúng partition cần thiết. Bài này chứng minh bằng log thật: copy thành `ConsumerDemoCooperative`, set `partition.assignment.strategy` về `CooperativeStickyAssignor`, chạy 1-2-3 instance và đọc dòng `revoked/assigned` để thấy sự khác biệt với eager.
 
-and it's called Consumer Demo Cooperative.
+---
 
-Okay. So we are going to just run this code once
+## 1. Concept: Một dòng config, hai thế giới khác nhau
 
-and see one line of code that is of interest to us.
+Mặc định Kafka 3.0 consumer khởi động với strategy list `[RangeAssignor, CooperativeStickyAssignor]` — nhưng `RangeAssignor` đứng trước nên có quyền ưu tiên, group vẫn rebalance theo kiểu **eager** khi các member chưa đồng nhất protocol.
 
-So let's run this.
+Muốn ép cooperative hoàn toàn, thêm đúng một dòng vào properties:
 
-And if we scroll back up,
+```java
+properties.setProperty(
+    "partition.assignment.strategy",
+    CooperativeStickyAssignor.class.getName());
+```
 
-we look at the partition assignment strategy.
+Từ đây consumer chỉ nói protocol cooperative. Lần rolling bounce đầu group có thể vẫn eager (trộn protocol cũ/mới), từ lần restart thứ hai trở đi cả group cùng protocol và rebalance incremental có hiệu lực.
 
-We have the range assignor
+Dấu hiệu nhận biết trên log (quan trọng hơn code):
 
-and then we have the cooperative sticky assignor.
+* **Eager:** khi member mới join, member cũ log revoke **toàn bộ** partitions đang giữ, ngừng poll một lúc, rồi nhận assignment mới.
+* **Cooperative:** member cũ chỉ log revoke **đúng partition cần nhường** (ví dụ chỉ `demo_java-2`), các partition còn lại (`demo_java-0`, `demo_java-1`) vẫn poll ra dữ liệu bình thường trong lúc rebalance. Member mới log `assigned demo_java-2`.
 
-But this will have precedence
+## 2. Code hoàn chỉnh
 
-because it is first and this supported by all my consumers.
+Duplicate `ConsumerDemoWithShutdown` thành `ConsumerDemoCooperative`, giữ nguyên toàn bộ shutdown hook + poll loop, chỉ thêm 1 dòng config:
 
-Therefore
+```java
+package io.conduktor.demos.kafka;
 
-we want to use this cooperative sticky assignor type
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.CooperativeStickyAssignor;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-of partition assignment strategy.
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Properties;
 
-So super easy, we go in the code and we add one
+public class ConsumerDemoCooperative {
 
-more consumer config and we set the property
+    private static final Logger log = LoggerFactory.getLogger(ConsumerDemoCooperative.class.getSimpleName());
 
-called partition assignment strategy
+    public static void main(String[] args) {
+        log.info("I am a Kafka consumer with cooperative rebalance!");
 
-to be equal
+        String groupId = "my-cooperative-app";
+        String topic = "demo_java";
 
-to this
+        Properties properties = new Properties();
+        properties.setProperty("bootstrap.servers", "127.0.0.1:9092");
 
-cooperativestickyassignor.class.getName.
+        // Nếu dùng Conduktor Playground: comment dòng trên, mở 4 dòng dưới
+        // properties.setProperty("bootstrap.servers", "cluster.playground.cdkt.io:9092");
+        // properties.setProperty("security.protocol", "SASL_SSL");
+        // properties.setProperty("sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"...\" password=\"...\";");
+        // properties.setProperty("sasl.mechanism", "PLAIN");
 
-And this will just set this now to be only equal to that.
+        properties.setProperty("key.deserializer", StringDeserializer.class.getName());
+        properties.setProperty("value.deserializer", StringDeserializer.class.getName());
+        properties.setProperty("group.id", groupId);
+        properties.setProperty("auto.offset.reset", "earliest");
 
-So let's, let's verify this.
+        // Ép cooperative: chỉ dùng CooperativeStickyAssignor
+        properties.setProperty(
+                "partition.assignment.strategy",
+                CooperativeStickyAssignor.class.getName());
 
-So, we are going to stop and rerun.
+        // Static membership (optional): mỗi instance một id cố định, duy nhất.
+        // Mở khi muốn restart không rebalance; demo này cứ để comment.
+        // properties.setProperty("group.instance.id", "consumer-1"); // instance 2 -> consumer-2, ...
 
-So, we're going to run a new time our program
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 
-and here we can verify at the top,
+        final Thread mainThread = Thread.currentThread();
 
-that the partition assignment strategy gets set
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                log.info("Detected a shutdown, let's exit by calling consumer.wakeup()...");
+                consumer.wakeup();
+                try {
+                    mainThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
-to cooperative sticky assignor.
+        try {
+            consumer.subscribe(Arrays.asList(topic));
 
-All right, so if you scroll down now,
+            while (true) {
+                ConsumerRecords<String, String> records =
+                        consumer.poll(Duration.ofMillis(1000));
 
-we see that the log is a little bit different
+                for (ConsumerRecord<String, String> record : records) {
+                    log.info("Key: " + record.key() + ", Value: " + record.value());
+                    log.info("Partition: " + record.partition() + ", Offset: " + record.offset());
+                }
+            }
 
-because now we have the assigned partition to
+        } catch (WakeupException e) {
+            log.info("Consumer is starting to shut down...");
+        } catch (Exception e) {
+            log.error("Unexpected exception in the consumer", e);
+        } finally {
+            consumer.close();
+            log.info("The consumer is now gracefully shut down.");
+        }
+    }
+}
+```
 
-be the three partitions and added partitions were three.
+### Giải thích từng đoạn
 
-And so we have a different log lines
+**`groupId` mới (`my-cooperative-app`).** Dùng group mới để tách khỏi các demo eager trước — log `assigned partitions` lần đầu sẽ sạch (3 partitions cùng lúc, kèm dòng `added partitions` đặc trưng của cooperative thay vì log eager cũ). Nếu tái dùng group cũ, offset đã commit từ bài trước khiến demo khó đọc.
 
-because we're using a different kind
+**Import `CooperativeStickyAssignor`.** Class nằm trong `org.apache.kafka.clients.consumer`. Dùng `CooperativeStickyAssignor.class.getName()` thay vì gõ chuỗi tay để refactor an toàn — gõ sai một chữ là consumer fallback strategy khác mà không báo lỗi rõ.
 
-of partition assignment strategy
+**`group.instance.id` để comment.** Transcript nhắc config này (`null` mặc định) nhưng không demo vì khó diễn bằng tay: mỗi instance phải hardcode id khác nhau trước khi run. Giữ comment + ghi chú để khi chạy Kubernetes/static deploy bạn biết phải mở ở đâu. Mở sai (trùng id) còn tệ hơn không mở.
 
-with a different class of assignor.
+**Phần còn lại giữ nguyên.** Shutdown hook, `WakeupException`, `finally close()` copy y từ bài graceful shutdown — cooperative không thay đổi cách tắt, chỉ thay đổi cách chia partition.
 
-So this will make a lot
+## 3. Chạy và kiểm tra
 
-of sense when we run this program multiple times.
+1. Bật `Allow multiple instances` cho Run Configuration của `ConsumerDemoCooperative` (thao tác như bài consumer group).
+2. Run instance 1. Kiểm tra đầu log: `partition.assignment.strategy = CooperativeStickyAssignor` (chỉ 1 assignor, không còn Range). Cuối log join: `assigned partitions: demo_java-0, 1, 2` (kèm chữ `added`).
+3. Run instance 2. Đọc log instance 1: chỉ thấy `revoked demo_java-2` (incremental), `demo_java-0` và `demo_java-1` vẫn poll bình thường — không có cảnh revoke toàn bộ. Log instance 2: `assigned demo_java-2`.
+4. Run instance 3. Instance 1 log `revoked demo_java-1` rồi còn `demo_java-0`; instance 2 giữ nguyên `demo_java-2` (log assignment không đổi — bằng chứng "ai không liên quan thì không bị động"); instance 3 nhận `demo_java-1`.
+5. Đối chiếu: mỗi instance chạy producer test (`ProducerDemoKeys`) → message partition nào chỉ hiện ở instance giữ partition đó.
 
-So again, let me just exit presentation mode.
+## 4. Pitfalls
 
-I'm going to edit this
+* **Set cooperative cho 1 instance mà quên 2 instance còn lại.** Group trộn protocol → fallback eager. Triệu chứng: log vẫn revoke toàn bộ dù đã set assignor mới. Fix: mọi instance cùng code, cùng strategy.
+* **Đọc log cũ (eager) để kết luận cooperative không hiệu quả.** Lần bounce đầu sau khi đổi strategy vẫn có thể eager ( rolling). Restart thêm một vòng nữa rồi hãy đánh giá.
+* **Tái dùng `group.id` cũ rồi thắc mắc sao assignment lạ.** Offset và generation cũ còn đó. Demo sạch thì dùng group mới như mẫu (`my-cooperative-app`).
+* **`group.instance.id` trùng nhau.** Member sau join sẽ fence (đá) member trước có cùng static id → rebalance liên tục, log toàn `member fenced`. Mỗi instance một id duy nhất, hoặc đừng set.
+* **Tưởng cooperative là hết rebalance.** Không — rebalance vẫn xảy ra khi join/leave, chỉ là nhẹ và incremental hơn. Muốn restart không rebalance hẳn thì phải thêm static membership.
 
-and allow multiple instances of this program.
+## Kết Luận
 
-Okay, so let's run this one one more time.
+Một câu: **thêm một dòng `CooperativeStickyAssignor`, log revoke từ "tất cả" thành "đúng một partition" — đó là cooperative.** Nhẹ, ít gián đoạn, và xứng đáng thành default tương lai.
 
-So this is the second time I run it.
-
-And if we have a look at the log,
-
-now we can see
-
-that this one
-
-had three partitions and then
-
-as a new one get added, we had a new assignment where
-
-only demo_java-2 get removed, but this was incremental
-
-and demo_java-2 get removed, but we were still consuming
-
-from partition zero and partition one.
-
-And if you go right here, nothing was assigned but
-
-upon having a rebalance that was sticky, then
-
-we are being assigned demo_java-2.
-
-And so again, if I recreate another instance of this,
-
-as we can see we currently have zero partitions
-
-but then very soon we're going to get demo_java-1.
-
-And if we have a look at the first program,
-
-well, it was having a demo_java-1 right here
-
-and then it scrolled down and it got removed.
-
-So now we only have demo_java-2
-
-but if we have a look at this one right here,
-
-well nothing happened
-
-to it because the assigned partitions
-
-and are currently owned partitions did not change.
-
-And so this was going to keep
-
-on reading from this partition.
-
-So, I really like this cooperative sticky assignor
-
-because it really shows that you can be a bit nicer
-
-in your rebalance of consumers
-
-and I think this will become the default
-
-at some point for consumers in the future.
-
-And so if you wanted to have a look at static assignments,
-
-you would need to have a look
-
-at the group instance ID config
-
-which is null for everything.
-
-So you would need to set the group instance
-
-ID config and set a different value
-
-for every single every single consumer.
-
-So this is something complicated to demo right now,
-
-so I'll comment it and we don't need it
-
-but this is the strategy for static assignments.
-
-Okay, that's it for this lecture.
-
-We've seen the cooperative practitioner strategy.
-
-I hope you liked it and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ bóc cơ chế commit offset tự động: `enable.auto.commit=true` + `auto.commit.interval.ms=5000` phối hợp với `poll()` ra sao, khi nào ta được đảm bảo at-least-once và khi nào lỡ commit trước khi xử lý xong thì mất message.

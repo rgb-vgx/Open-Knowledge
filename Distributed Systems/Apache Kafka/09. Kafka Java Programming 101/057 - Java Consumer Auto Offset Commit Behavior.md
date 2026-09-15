@@ -1,145 +1,94 @@
-So one thing that we've been getting
+# Auto Offset Commit: Vì Sao Mặc Định Là At-Least-Once (Và Khi Nào Mất Bảo Đảm Đó)?
 
-for granted is around the consumer offsets
+Suốt các bài consumer ta chưa từng gọi `commit()` mà restart vẫn đọc tiếp đúng chỗ. Ai đã commit offset hộ ta? Bài này bóc cơ chế **auto commit**: `enable.auto.commit=true` + `auto.commit.interval.ms=5000` phối hợp với `poll()` ra sao, điều kiện nào cho at-least-once, và khi nào lỡ commit trước khi xử lý xong.
 
-and in the Java Consumer API,
+---
 
-whenever you poll regularly
+## 1. Concept: Commit tự động chạy theo nhịp `poll()`
 
-then offsets are going to be regularly committed as well.
+Hai config quyết định (cả hai đều là default nên log consumer nào cũng thấy):
 
-And this enables at least once reading scenarios
+* `enable.auto.commit = true` — cho phép consumer tự commit nền.
+* `auto.commit.interval.ms = 5000` — chu kỳ tối thiểu giữa hai lần commit: 5 giây.
 
-by default under certain conditions.
+Cơ chế chính xác (hiểu sai chỗ này là mất at-least-once):
 
-So when are the offsets going to be committed?
+1. Bạn gọi `poll()`. Timer 5 giây bắt đầu chạy từ lần commit trước.
+2. Broker trả message. Bạn xử lý (log, ghi DB, gọi API...).
+3. Bạn gọi `poll()` tiếp. Lúc này consumer kiểm tra: từ lần commit trước đã quá 5 giây chưa?
+   * Chưa → thôi, poll tiếp như thường.
+   * Rồi → **commit bất đồng bộ (commit async)** offset của batch vừa xử lý xong, rồi mới thực hiện poll mới. Timer reset.
 
-Well, whenever you call poll in the consumer
+Điểm mấu chốt: commit xảy ra **trong lần `poll()` tiếp theo sau khi đủ 5 giây**, và commit offset của **batch đã poll về và (giả định là) đã xử lý xong**. Toàn bộ suy luận at-least-once / at-most-once đều từ đây mà ra.
 
-and then the setting auto commit interval
+### Khi nào là at-least-once?
 
-millisecond has elapsed.
+Điều kiện duy nhất: **mọi message poll về đều được xử lý thành công TRƯỚC khi gọi `poll()` tiếp theo.**
 
-For example, if you have by default
+Vì commit luôn đi sau xử lý, nếu app crash giữa chừng (đang xử lý batch, chưa kịp poll tiếp → chưa commit), lần restart sau consumer đọc lại từ committed offset cũ → batch đang dở được đọc lại. Đọc lại còn hơn mất — đó là at-least-once.
 
-auto commit interval millisecond equals 5,000
+### Khi nào vỡ bảo đảm?
 
-and enable auto commit equals true
+* **Xử lý bất đồng bộ sau poll.** Poll về quăng sang thread khác xử lý rồi poll tiếp ngay. Commit 5 giây tick trong khi thread xử lý còn chạy → commit offset của message **chưa xử lý xong**. Crash lúc này là mất message (at-most-once ngoài ý muốn).
+* **Poll tiếp khi batch cũ chưa xong.** Cùng bản chất: commit vượt mặt xử lý.
+* Muốn kiểm soát chặt (commit đúng sau khi DB ghi xong, retry khi lỗi...) phải tắt auto (`enable.auto.commit=false`) và tự gọi `commitSync()`/`commitAsync()` — đó là chủ đề advanced, khóa này chỉ chỉ mặt đặt tên.
 
-then it will commit every five seconds.
+## 2. Code: Không cần code mới — đọc log consumer cũ
 
-So, for example, if you want to be in at least one setting,
+Bài này không thêm class. Mở lại `ConsumerDemoWithShutdown` (hoặc bản cooperative) và nhìn hai dòng trong log khởi động:
 
-you need to make sure that all the messages you receive
+```
+auto.commit.interval.ms = 5000
+enable.auto.commit = true
+```
 
-from Kafka are successfully processed
+Đối chiếu với poll loop đã có:
 
-before you call poll again.
+```java
+while (true) {
+    // Mỗi lần poll: nếu từ commit trước đã quá 5s
+    // -> commit async offset batch cũ, rồi mới poll batch mới
+    ConsumerRecords<String, String> records =
+            consumer.poll(Duration.ofMillis(1000));
 
-If you don't, then you're not in an at least one scenario
+    // Điều kiện at-least-once: xử lý HẾT records ở đây...
+    for (ConsumerRecord<String, String> record : records) {
+        log.info("Key: " + record.key() + ", Value: " + record.value());
+        log.info("Partition: " + record.partition() + ", Offset: " + record.offset());
+    }
+    // ...TRƯỚC khi vòng lặp gọi poll() tiếp theo
+}
+```
 
-because you can go into a scenario where you commit
+Minh họa timeline (interval 5s):
 
-before you actually successfully process the message.
+```
+t=0s   poll() -> batch A (xử lý A xong)
+t=1s   poll() -> batch B (xử lý B xong)      [chưa đủ 5s, chưa commit]
+t=3s   poll() -> batch C (xử lý C xong)      [chưa đủ 5s, chưa commit]
+t=6s   poll() -> VÌ đã quá 5s: commit async offset A+B+C, rồi mới poll batch D
+       timer reset, chu kỳ mới bắt đầu
+```
 
-And in the rare case
+Vì vòng lặp mẫu xử lý đồng bộ (log xong mới poll tiếp) nên ta đang ở at-least-once đúng chuẩn. Crash ở bất kỳ đâu trước commit → đọc lại, không mất.
 
-you actually disable enable auto commit
+## 3. Chạy và kiểm tra
 
-then you're going to have a separate thread to commit
+1. Run consumer bất kỳ từ bài trước, restart giữa chừng khi đang có dữ liệu mới: consumer đọc tiếp từ committed offset, không đọc lại hàng loạt cũ, không bỏ sót mới. Đó là auto commit đang làm việc.
+2. Muốn thấy commit thưa: để consumer poll topic rỗng 10 giây — không có batch mới thì không có gì để commit, log im lặng là bình thường.
+3. Muốn thấy commit dày: produce liên tục + xử lý nhanh — mỗi ~5 giây một commit async nền. Bật log DEBUG `org.apache.kafka.clients.consumer` sẽ thấy dòng commit (mặc định INFO không hiện).
+4. Kiểm chứng at-least-once: produce 10 message, kill -9 consumer ngay khi nó đang log batch (chưa tới kỳ commit), restart → vài message cuối batch được đọc lại. Đọc lại = đúng thiết kế, không phải bug.
 
-once in a while and you can call commit sync
+## 4. Pitfalls
 
-or commit async but this is advanced
+* **Tưởng commit theo đồng hồ đúng 5 giây một lần.** Sai. Commit chỉ xảy ra **khi gọi `poll()`** và đã quá 5 giây. App ngừng poll (treo ở xử lý nặng 1 phút) thì suốt 1 phút đó không commit gì cả — và broker còn có thể đá consumer khỏi group vì không poll.
+* **Xử lý chậm hơn poll timeout rồi đổ lỗi commit.** Vấn đề thật là `max.poll.interval.ms` (mặc định 5 phút): quá thời gian này không poll lại thì bị coi là chết, rebalance đá ra. Auto commit không cứu được thiết kế xử lý quá lâu trong poll loop — phải tăng `max.poll.interval.ms` hoặc chuyển xử lý nặng ra thread riêng + commit tay.
+* **Tắt `enable.auto.commit` mà không viết commit tay.** Hậu quả: offset không bao giờ commit, restart là đọc lại từ `auto.offset.reset` — topic lớn thì đọc lại hàng triệu message. Tắt auto thì phải có `commitSync/commitAsync` tương ứng.
+* **Nhầm commit async nền với commit đồng bộ.** Auto commit là async: lỗi commit (rebalance xen vào) chỉ log, không ném exception cho bạn xử lý. Cần chắc chắn commit thành công (ví dụ trước khi ghi checkpoint) thì phải `commitSync()`.
+* **`consumer.close()` trong `finally` cũng commit.** Nên lần tắt graceful cuối cùng offset được đẩy lên mới nhất — đừng ngạc nhiên khi restart sau tắt sạch không đọc lại gì.
 
-and this is why I don't show this
+## Kết Luận
 
-in this course or in this part of the course.
+Một câu: **auto commit = poll đều + xử lý xong trước poll tiếp + commit async mỗi 5 giây = at-least-once miễn phí; poll tiếp khi chưa xử lý xong = tự phá bảo đảm.** Nhớ timeline này trước khi đụng tới commit tay.
 
-Okay. But I wanna show you
-
-that behind the scenes the offsets are being committed.
-
-So let me just explain the behavior very quickly.
-
-So you have consumer and enable auto commit
-
-equals true as well as auto commit
-
-interval millisecond equals 5,000
-
-in the Kafka broker, so the consumer is going to call poll
-
-and then the timer is going to start.
-
-So the Kafka broker may return some messages.
-
-Then we do poll again.
-
-We get more messages from the broker
-
-and so on, maybe three seconds of elapsed in total.
-
-Then we call poll again
-
-and then three more seconds have elapsed.
-
-So six seconds total from when the timer has started
-
-and we still get some data from Kafka.
-
-We process it.
-
-And then behind the scene there's going
-
-to be a commit async because, well, it's been more
-
-than five seconds then we have called the last poll.
-
-And, therefore, offsets are automatically
-
-going to be committed behind the scene
-
-from the last successfully processed batch.
-
-Okay. And then the timer starts again
-
-and then it goes again into the same loop and so on.
-
-So this is what happens behind the scene for your consumer.
-
-And this is what I wanted to show you.
-
-So let's take the example of the consumer demo
-
-with shut down and we'll have a look
-
-at a few properties of this consumer.
-
-So the first one is the auto commit interval millisecond
-
-of five second, and then the enable auto commit equals true
-
-which means that in my consumer loop
-
-upon calling dot poll every five seconds, we're going to
-
-I mean, after five seconds and the next time
-
-we call that poll,
-
-we're going to asynchronously commit offsets.
-
-And we know we are in an at least one setting
-
-because we are actually consuming records
-
-and then processing them before we call poll again.
-
-So we are doing the things correctly
-
-and this is at least once.
-
-Okay. So that's it for this lecture.
-
-I hope you liked it and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ nhìn bản đồ advanced (assign/seek đọc offset tay, rebalance listener, consumer đa thread) để biết khi nào cần rời khỏi poll loop cơ bản — và vì sao người mới + Java trung bình nên bỏ qua chúng lúc này.

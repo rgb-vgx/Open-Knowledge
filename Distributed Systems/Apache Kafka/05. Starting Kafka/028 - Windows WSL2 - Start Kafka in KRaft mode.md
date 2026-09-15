@@ -1,101 +1,96 @@
-Okay, so let's go ahead
+# Windows WSL2: Start Kafka Ở Chế Độ KRaft (Trong Ubuntu)
 
-and start Kafka.
+Bài này dành riêng cho **Windows đã xong bài `026` + `027`** (có Ubuntu + Java + Kafka binaries + PATH). Toàn bộ thao tác chạy **trong terminal Ubuntu**. Chúng ta sẽ start một broker Kafka thật ở chế độ **KRaft**, không cần ZooKeeper.
 
-For this on the Kafka website,
+Nếu broker Docker ở bài `020` vẫn chạy tốt thì bài này là tùy chọn — nhưng nên làm một lần để hiểu quy trình khởi động chuẩn của Kafka 4.x.
 
-under quick start, I'm going to click here.
+---
 
-We did the step one of getting Kafka
+## 1. Mục Tiêu Và Chuẩn Bị
 
-and now we're going to start the Kafka environment.
+Hết bài này bạn có: 1 broker Kafka chạy foreground trong terminal Ubuntu, version 4.x, nghe ở `localhost:9092` (từ góc nhìn của Ubuntu), dữ liệu ở `/tmp/kraft-combined-logs`.
 
-So first thing we have to do
+Điều kiện:
 
-is to do a CD into the Kafka directory
+- `kafka-topics.sh` gõ từ mọi nơi trong Ubuntu đều được (bài `027`).
+- Chỉ chạy **một broker tại một thời điểm**: Docker đang chiếm 9092 thì `docker compose down` trước.
+- Cửa sổ Ubuntu chạy Kafka phải **để mở suốt buổi thực hành**; muốn gõ lệnh khác thì mở thêm một cửa sổ Ubuntu thứ hai.
 
-to run these commands properly.
+Tài liệu gốc: trang **Get Started → Quickstart** trên kafka.apache.org.
 
-And we're going to first create a cluster UUID.
+## 2. Bước 1 — Vào Đúng Thư Mục Kafka
 
-So you copy this command and you paste it, press enter,
+Các lệnh format/start dùng đường dẫn tương đối nên phải đứng trong thư mục Kafka:
 
-and then that's good.
+```bash
+cd ~/kafka_2.13-4.0.0
+pwd
+ls bin/kafka-storage.sh config/server.properties
+```
 
-It's been run.
+Cả hai file đều phải tồn tại (tên version có thể khác máy bạn — thay cho đúng).
 
-And now we need to format the log directories.
+## 3. Bước 2 — Sinh Cluster ID
 
-So this is where your Kafka data is going to be stored.
+```bash
+KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+echo $KAFKA_CLUSTER_ID
+```
 
-And there is a servers.properties file
+Thấy in ra chuỗi UUID là đạt. Biến này chỉ sống trong terminal hiện tại — đừng đóng terminal giữa chừng, mất là phải sinh lại.
 
-that you need to look at.
+## 4. Bước 3 — Xem File Cấu Hình Rồi Format Storage
 
-So I'll do cat service.properties file.
+Ngó nhanh file cấu hình broker để biết data sẽ đi đâu:
 
-And this file contains all your configuration
+```bash
+cat config/server.properties | grep "^log.dirs"
+```
 
-of your Kafka broker.
+Mặc định:
 
-So it's a lot of things of course,
+```bash
+log.dirs=/tmp/kraft-combined-logs
+```
 
-but the one important thing to look at is logs.deer.
+> `/tmp` trong WSL2 đủ dùng để học, nhưng reboot hoặc WSL shutdown có thể mất data — hành vi mặc định, không phải bug. Muốn giữ data lâu thì sửa `log.dirs` sang chỗ khác.
 
-And this is where your Kafka data is going to be stored.
+Format thư mục log theo cluster ID vừa sinh:
 
-So right now it's going to be stored
+```bash
+bin/kafka-storage.sh format --standalone -t $KAFKA_CLUSTER_ID -c config/server.properties
+```
 
-in temp craft combined logs.
+Thấy `Formatting ... with metadata ...`, không ERROR là xong.
 
-So something to know, right now it's a temporary location,
+## 5. Bước 4 — Start Broker Và Verify
 
-but that's enough for this course.
+Chạy broker ở foreground:
 
-But if you need to change this,
+```bash
+bin/kafka-server-start.sh config/server.properties
+```
 
-this will be the line to change.
+Đợi log tới dòng `Kafka Server started` (kèm `Kafka version 4.x`) là thành công. Giữ nguyên cửa sổ này.
 
-So when, I'm going to click the screen.
+Mở **cửa sổ Ubuntu thứ hai** để verify (mở app Ubuntu thêm lần nữa, không phải PowerShell):
 
-So when we run this command,
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --list
+```
 
-the bin Kafka storage at SH command
+Trả về rỗng mà không lỗi kết nối là broker đã sống. Dừng broker: `Ctrl + C` ở cửa sổ chạy Kafka.
 
-and format the storage, this is what is going to format,
+## Lỗi Thường Gặp & Cách Fix
 
-this directory in specific.
+- **`KAFKA_CLUSTER_ID: parameter null or not set`:** mở terminal mới sau Bước 2 nên biến môi trường mất. Fix: làm lại từ Bước 2 trong cùng một terminal.
+- **Port 9092 đã dùng:** broker Docker hoặc broker cũ vẫn chạy. Fix: tắt bớt, chỉ giữ một broker.
+- **`UnsupportedClassVersionError`:** Java trong Ubuntu không phải 21. Fix: `java --version`, cài lại Corretto 21 theo bài `027`.
+- **Gõ lệnh Kafka trong PowerShell thay vì Ubuntu:** báo không tìm thấy lệnh hoặc sai đường dẫn. Fix: mọi lệnh `bin/...`, `kafka-topics.sh` chỉ chạy trong Ubuntu.
+- **Lỗi kết nối lạ khi chọc vào broker từ PowerShell / Java / Conduktor ngoài Ubuntu:** đây là bug mạng IPv6 của WSL2, không phải bạn làm sai. Fix: xem ngay bài `029` để fix `listeners` + IPv6.
 
-So now this has been run, the storage has been formatted,
+## Kết Luận
 
-and now we can just go ahead and start the Kafka server.
+Vậy là bạn đã start được broker KRaft ngay trong WSL2 — đúng quy trình chuẩn sẽ dùng xuyên suốt khóa học.
 
-So we can run this command,
-
-press enter, and as we can see,
-
-Kafka is starting, so you get a lot of log output,
-
-but at the end you'll get the Kafka version 4.0,
-
-as well as the fact that the Kafka server is now started.
-
-And that's it, Kafka is now started.
-
-So if you need to run some C like command,
-
-you need to keep this window open
-
-and then you need to just restart Ubuntu
-
-from a second window to run more commands.
-
-But that's it, you have Kafka running
-
-on this terminal window
-
-and whatever command you need on this other one.
-
-So I hope you like this lecture
-
-and I will see you in the next lecture.
+Bài tiếp theo (`029`) là bài "cứu hộ": fix lỗi mạng WSL2 khiến CLI ngoài Ubuntu không kết nối được vào broker — đọc ngay khi gặp lỗi `node not available` hoặc timeout dù broker vẫn chạy.

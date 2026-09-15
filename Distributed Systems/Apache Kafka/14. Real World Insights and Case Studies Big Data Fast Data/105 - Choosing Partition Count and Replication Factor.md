@@ -1,281 +1,104 @@
-Hi, this is Stephane from Conduktor.
+# Chọn Partition Count Và Replication Factor: Hai Con Số Quyết Định Số Phận Topic
 
-And in this section,
+Bạn có thể chọn sai serializer rồi sửa, chọn sai API rồi migrate. Nhưng hai con số **partition count** và **replication factor** khi tạo topic thì khác: đổi giữa chừng vừa tốn kém vừa phá vỡ cam kết (mất ordering theo key, tăng tải replication, tốn disk). Bài này cho bạn cách chọn đúng ngay từ đầu.
 
-we're going to have a look at real-world architectures
+---
 
-and ask ourselves real-world questions.
+## 1. Vì Sao Hai Tham Số Này Quan Trọng Nhất?
 
-So the first one is around choosing
+Hãy hình dung topic có 2 partitions, replication factor 2. Mỗi partition có 1 leader + 1 follower nằm trên 2 brokers.
 
-the partitions count and the replication factor.
+Chuyện gì xảy ra nếu đổi giữa vòng đời topic?
 
-So to me, they're the two most important parameters
+| Thay đổi giữa chừng | Hậu quả |
+|---|---|
+| **Tăng partition count** (2 -> 3) | Key từng về partition cũ giờ hash sang partition mới — **vỡ ordering theo key**. Consumer dùng key để giữ thứ tự (user_id, taxi_id, post_id) sẽ thấy dữ liệu cùng key xuất hiện ở 2 partitions khác nhau |
+| **Tăng replication factor** (2 -> 3) | Mỗi partition thêm 1 replica: thêm network replication, thêm disk, thêm latency nếu `acks=all` (phải chờ thêm 1 replica acknowledge) |
 
-when you create a topic
+Cả hai đều "làm được" về mặt kỹ thuật (Kafka cho tăng partitions, và tăng replication bằng reassignment), nhưng cái giá là H performance đảo lộn và cam kết cũ vỡ. Vì vậy phải tính toán trước khi `create topic`.
 
-because changing them over time or changing them
+## 2. Partition Count: Cân Giữa Song Song Và Chi Phí
 
-has an impact on performance and durability.
+### 2.1. Nguyên lý: mỗi partition là một đơn vị song song
 
-So let's take an example.
+Thông lượng (throughput) của một partition đơn lẻ bị giới hạn bởi tốc độ ghi/đọc của một broker — thực tế đo được khoảng **vài MB/s** (tùy phần cứng, phải benchmark trên cluster của chính bạn).
 
-Here is a topic with two partitions
+Thêm partitions nghĩa là:
 
-and a replication factor of two.
+* **Tốt:** dàn tải ra nhiều brokers, chạy được nhiều consumers trong một group hơn (số consumer active tối đa = số partitions), chịu được peak throughput cao hơn.
+* **Xấu:** nhiều leader elections hơn khi broker chết (với ZooKeeper; KRaft/KIP-500 cải thiện điểm này), nhiều file handles mở trên broker, nhiều memory cho replication, nhiều internal bookkeeping.
 
-What happens if you don't get
+### 2.2. Công thức khởi đầu (rule of thumb)
 
-the parameters right the first time?
+> **Cluster nhỏ (< 6 brokers): partitions = 3 x số brokers. Cluster lớn (> 12 brokers): partitions = 2 x số brokers.**
 
-For example, if you have a partition count
+Ví dụ: cluster 3 brokers -> bắt đầu với ~9 partitions cho topic throughput trung bình. Cluster 15 brokers -> ~30 partitions.
 
-increased during a topic life cycle,
+Sau đó **điều chỉnh lên** nếu:
 
-you will break your keys ordering guarantee,
+* Bạn biết sẽ có nhiều consumers trong group cần chạy song song để đuổi kịp peak (flash sale, giao thừa với GetTaxi, trending với MySocialMedia).
+* Producer throughput dự kiến tăng mạnh trong 1-2 năm tới. Rẻ hơn nhiều nếu provision dư từ đầu thay vì tăng sau và vỡ ordering key.
 
-which is bad if you're using keys
+Và luôn **test thực tế**: benchmark producer throughput/partition trên phần cứng của bạn, rồi chia tổng throughput mục tiêu cho con số đó.
 
-to send data into Apache Kafka.
+### 2.3. Giới hạn toàn cluster (đừng tạo 1000 partitions "cho chắc")
 
-Also, if you increase the replication factor
+| Giới hạn | Con số (thời ZooKeeper) |
+|---|---|
+| Tổng partitions toàn cluster | Tối đa ~**200.000** (giới hạn scaling ZooKeeper) |
+| Partitions mỗi broker | Soft limit ~**4.000** |
+| Vượt quá thì sao? | Thêm brokers. Vượt 200.000 thì theo mô hình Netflix: tách thêm Kafka cluster độc lập |
+| Tương lai KRaft | Không còn ZooKeeper, mục tiêu scale tới **hàng triệu partitions** |
 
-during a a topic life cycle,
+Sai lầm kinh điển của người mới: topic nào cũng 1000 partitions "cho chắc ăn throughput". Kết quả là cluster vài chục topics đã chạm trần file handles và elections chậm chạp. **Bắt đầu hợp lý, đo, rồi mới tăng.**
 
-you're going to put more pressure on the system
+## 3. Replication Factor: Cân Giữa Bền Vững Và Tốc Độ
 
-because you get to have more network communication
+### 3.1. Nguyên lý: N replicas chịu được N-1 brokers chết
 
-and more disk space use.
+| Replication factor | Chịu lỗi | Cái giá |
+|---|---|---|
+| 1 | Broker chết là mất dữ liệu (leader duy nhất) — **cấm ở production** | Nhanh nhất, rẻ nhất, và nguy hiểm nhất |
+| 2 | Chịu được 1 broker chết | Tối thiểu cho production, availability vừa phải |
+| **3 (khuyến nghị mặc định)** | Chịu được 2 brokers chết, availability tốt với `min.insync.replicas=2` + `acks=all` (mặc định từ Kafka 3.0) | Tốn thêm 50% disk so với factor 2, latency cao hơn vì chờ nhiều replica acknowledge |
+| 4 | Khi dữ liệu cực kỳ quan trọng | Replication nặng, chỉ dùng có lý do rõ ràng |
 
-Have a look, I'm adding one partition
+### 3.2. Khuyến nghị thực hành
 
-and one partition here
+1. **Mặc định production: replication factor = 3** (đòi hỏi ít nhất 3 brokers). Đừng bao giờ để 1 ở production — đó là lỗi phổ biến nhất giảng viên thấy ngoài thực tế.
+2. **Nếu replication làm chậm producer:** nâng cấp broker (disk nhanh hơn, network tốt hơn) thay vì hạ replication factor. Đánh đổi durability lấy latency là giao dịch lỗ về dài hạn.
+3. **Kết hợp với `acks=all` + `min.insync.replicas=2`:** bộ ba này cho durability + availability cân bằng. `acks=all` chờ đủ replicas, `min.insync.replicas` đảm bảo vẫn ghi được khi 1 broker chết.
 
-because we just augmented the replication factor to three.
+## 4. Checklist Trước Khi Tạo Topic Production
 
-And as you can see well, more data space use
+```bash
+# Ví dụ: topic orders, cluster 3 brokers, throughput trung bình
+bin/kafka-topics.sh --create \
+  --bootstrap-server localhost:9092 \
+  --topic orders \
+  --partitions 9 \
+  --replication-factor 3 \
+  --config min.insync.replicas=2 \
+  --config retention.ms=604800000
+```
 
-and of course I didn't represent it here,
+Giải thích từng lựa chọn:
 
-but more replication happening.
+* `--partitions 9`: 3 brokers x 3 theo công thức cluster nhỏ.
+* `--replication-factor 3`: mặc định production.
+* `min.insync.replicas=2`: chịu được 1 broker chết mà vẫn ghi được với `acks=all`.
+* `retention.ms=604800000` (7 ngày): mặc định Kafka. Topic log/metrics ephemeral có thể ngắn hơn, topic transactions/bank cần đổ sang lưu trữ dài hạn qua Connect Sink thay vì giữ mãi trong Kafka.
 
-So, how do we get these numbers right
+## Cạm Bẫy Thường Gặp
 
-from the get go?
+* **Tăng partitions sau khi đã dùng key, rồi ngạc nhiên vì mất thứ tự.** Key hash modulo số partitions — đổi mẫu số là đổi mapping. Nếu nghiệp vụ bắt buộc ordering theo key (lịch sử giao dịch một tài khoản), hãy chốt partition count từ đầu.
+* **Replication factor 1 ở production "vì mới demo".** Demo sống 3 tháng thành hệ thống thật, broker chết một lần là mất dữ liệu không cứu được.
+* **Mỗi topic 1000 partitions cho "chắc".** Vài chục topic kiểu này là cluster chạm trần 200.000 partitions, ZooKeeper elections chậm, brokers ngốn file handles.
+* **Không benchmark mà đoán throughput/partition.** "Vài MB/s" là ước lượng, con số thật phụ thuộc disk, network, message size, compression, acks. Đo trên cluster của bạn.
+* **Quên rằng partitions cũng giới hạn số consumer.** Group 20 consumers mà topic 6 partitions thì 14 consumers ngồi chơi. Muốn scale consumer thì phải có đủ partitions từ đầu.
 
-So to choose the partition counts,
+## Kết Luận
 
-you have to figure out that each partition
+Nhớ hai câu thần chú: **partitions chốt theo throughput + số consumer song song cần thiết (khởi đầu 2-3x số brokers, rồi benchmark), replication factor chốt 3 cho production và không bao giờ 1.** Đắt hơn một chút disk hôm nay rẻ hơn nhiều so với vỡ ordering hay mất dữ liệu ngày mai.
 
-can handle with throughputs of a few megabytes per second
-
-and need to measure it for your setup.
-
-So if you have more partitions
-
-that means you have better parallelism, better throughputs,
-
-you can also run more consumers in a group to scale.
-
-Remember, you can only have a maximum number
-
-equal in the consumer group that are active,
-
-equal to the number of partition in your topics.
-
-So high number of partitions means
-
-possibly a high number of consumers.
-
-You can also leverage more brokers
-
-if you have a very large cluster.
-
-But if you have more partitions,
-
-you are going to have more elections to perform
-
-in case of broker who goes down using Zookeeper,
-
-if using Zookeeper and that problem is going to be solved
-
-by using a Kafka on its own with craft mode.
-
-But also more files opened on Apache Kafka.
-
-So guidelines to choose the partition counts
-
-is to me, the million dollar question
-
-and intuitively, I would say
-
-if you have a small cluster of less than six brokers
-
-then choose three times the number of brokers.
-
-If you have a big cluster, for example, over 12 brokers,
-
-then choose two times the number of broker.
-
-Overall, you need to adjust that number up,
-
-if you need to know, if you know you need to have
-
-a lot of consumers within a group
-
-to be able to accommodate peak throughput in parallel.
-
-So of course, test it out, test it out
-
-and also adjust for producer throughput.
-
-So if your producer is very high throughput
-
-or is going to increase a lot in the next two years,
-
-then have more partitions from the get go.
-
-Overall, test, over time, test.
-
-So each Kafka cell was going to have different performance,
-
-based on the machine you have,
-
-So test, test, test, test, and test,
-
-and overall don't do the beginner's mistake
-
-of being like, okay, I'll just create topics
-
-with 1000 partitions every time and I'm good, right?
-
-Don't do that.
-
-Find the right partition's number for your topic.
-
-Now for replication factor,
-
-it should be at least two in production,
-
-usually three in production
-
-and maximum, sometimes four.
-
-So the higher the replication factor,
-
-the better durability of your system,
-
-because N-1 brokers can fail,
-
-and your data will still be out there.
-
-Better availability for your system as well
-
-because you have N-min.insync.replicas as availability,
-
-if producer acks equals all, which is now the default
-
-with Kafka 3.0 and over.
-
-but the higher replication factor
-
-the more replication you have,
-
-and so higher latency
-
-if acks equals all, because you wait for all the replicas
-
-to acknowledge your rights.
-
-Also, if you add a replication factor,
-
-you going to use more disc space on your system.
-
-So 50% more,
-
-if you use a replication factor of three instead of two,
-
-but overall, it's easy to ask this base
-
-to add disk space overall today.
-
-So guidelines is, I would set it to three to get started.
-
-And for this, you must at least have three brokers
-
-for that in production, but that is the baseline.
-
-And if replication performance is an issue,
-
-I would suggest to get a better broker
-
-instead of less replication factor.
-
-Never ever set it to one in production.
-
-That is one of the biggest mistake I see.
-
-Now from a Kafka cluster, overall perspective,
-
-what is the guideline?
-
-The total number of partitions in your cluster,
-
-should be a maximum of 200,000 partitions, okay?
-
-Which then hits the Zookeeper scaling limits.
-
-It's still recommended, to have
-
-up to 4,000 partitions per broker that's a soft limit.
-
-That means that,
-
-if you have 200,000 partitions in your cluster,
-
-you may have 50 brokers overall in your cluster.
-
-Now, when you use Kafka with craft
-
-which is not yet production ready when I record this video,
-
-but may come later on, the idea is that with craft
-
-we can potentially scale to millions of partitions in Kafka.
-
-And this is why craft mode was invented,
-
-to go over the Zookeeper limits.
-
-So if you need more partitions in cluster, you add brokers.
-
-And if you need more than 200,000 partitions
-
-in your cluster, and honestly,
-
-it's rare for you to get there,
-
-it will take you some time,
-
-then you can follow the Netflix model
-
-in which they just create more Kafka clusters
-
-that are going to be independent.
-
-Overall, as I said, don't do the beginner mistake
-
-of creating every topic with 1000 partitions
-
-just to achieve quote, unquote, high throughputs.
-
-Start at a reasonable number,
-
-test the performance, and go from there.
-
-All right?
-
-So hopefully that was helpful,
-
-and I will see you in the next lecture.
+Bài tiếp theo chúng ta lo chuyện tưởng nhỏ mà gây đau đầu lớn khi cluster có hàng trăm topics: **đặt tên topic sao cho có quy ước, tìm kiếm và phân quyền được.**

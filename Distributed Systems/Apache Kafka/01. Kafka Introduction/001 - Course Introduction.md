@@ -1,129 +1,68 @@
-Hi, this Stephane Maarek from Conduktor,
+# Lộ Trình Kafka for Beginners: Học Gì, Học Với Ai, Bằng Công Cụ Nào?
 
-and welcome to this course in the Apache Kafka series,
+Chào mừng bạn đến với **Kafka for Beginners** — cửa ngõ vào thế giới streaming dữ liệu. Trước khi chạm vào Topic hay Broker, hãy dành vài phút hiểu rõ khóa học này được xây dựng ra sao, ai dạy bạn, và vì sao cái tên Conduktor sẽ đi cùng bạn suốt khóa.
 
-Kafka for Beginners.
+---
 
-And this is the third edition of this course.
+## 1. Vì Sao Đây Là Bản Thứ Ba Mà Vẫn Đáng Học Từ Đầu?
 
-So by this time, this course should be really good for you.
+Khóa học này không phải bản quay một lần rồi để đó. Đây là **third edition** — bản ghi hình lại hoàn toàn lần thứ ba.
 
-So here's a course introduction. Please don't skip it.
+Con số đứng sau nó mới quan trọng:
 
-I'm gonna go over some important information.
+* Hơn **130.000 học viên** đã học qua các bản trước.
+* Hơn **30.000 review** gửi về, và giảng viên đã đọc để lặp lại khóa học.
 
-So first of all, welcome to the course.
+Từ feedback đó, bản mới này thay đổi ba thứ:
 
-I'm really excited to have you here.
+1. **Sắp xếp lại thứ tự lecture** cho mạch lạc hơn — lý thuyết đi trước, thực hành nối ngay sau.
+2. **Thêm section, thêm lecture mới** và nhiều bài tập gắn với tình huống thực tế, thay vì ví dụ đồ chơi.
+3. **Cập nhật lên Apache Kafka 3+**, và định hướng tương thích tiếp với Kafka 4 khi nó ra mắt.
 
-And by now over 130,000 students have done this course.
+Nói theo ngôn ngữ engineer: khóa học này được refactor qua ba vòng dựa trên dữ liệu người dùng thật, không phải viết lại cho vui.
 
-I've received more than 30,000 reviews,
+## 2. Giảng Viên Của Bạn Là Ai?
 
-and I've iterated upon these reviews
+Thầy của bạn là **Stephane Maarek**, co-founder của **Conduktor**.
 
-to really over time keep on improving this course.
+Vài dòng để bạn biết mình đang học từ ai:
 
-And this is a all-new fresh recording.
+* Online instructor chuyên sâu về **Apache Kafka** và **AWS**.
+* Từng nằm trong **Program Committee của Kafka Summit 2019 và 2020** — hội nghị Kafka lớn nhất thế giới, nơi quyết định ai được lên sân khấu nói.
+* Tác giả của cả **Apache Kafka Series**, không chỉ một khóa lẻ — từ beginner tới Connect, Streams, ksqlDB, Security, Monitoring, Admin.
+* Viết blog cho **Confluent**, **Medium** và nhiều kênh khác trong hệ sinh thái Kafka.
 
-So after all the feedback I received,
+Bạn có thể tìm thầy trên GitHub, LinkedIn, Medium, Twitter, Instagram nếu muốn follow thêm. Nhưng trong phạm vi khóa này, chỉ cần nhớ một điều: người dạy bạn là người vừa dạy, vừa làm sản phẩm Kafka enterprise mỗi ngày.
 
-I wanted to reorganize some lectures.
+## 3. Conduktor Là Gì Và Vì Sao Nó Xuất Hiện Suốt Khóa Học?
 
-I'm going to give you more real-life exercises,
+**Conduktor** là công ty do Stephane đồng sáng lập, với một mục tiêu duy nhất: làm cho Apache Kafka dễ tiếp cận với tất cả mọi người, kể cả bạn.
 
-so you going to have some really cool example
+Sản phẩm cốt lõi là một **giao diện đồ họa (GUI) cho Kafka và toàn bộ hệ sinh thái xung quanh nó**, cộng thêm nhiều lớp tính năng để đưa Kafka lên mức enterprise-ready.
 
-on this course.
+Trong khóa học này, Conduktor đóng hai vai cụ thể:
 
-I added some sections, some lectures,
+1. **Kính hiển vi để học.** Thay vì chỉ gõ lệnh mù mờ, bạn nhìn thấy Topic nào có bao nhiêu Partition, message chảy ra sao, Consumer Group nào đang kẹt ở đâu.
+2. **Sân chơi miễn phí để thực hành.** Bạn được cấp một **free personal Kafka cluster** để vọc tùy ý, và nếu muốn làm cùng đồng nghiệp thì có thêm **free Organization cluster**.
 
-and I've updated to version 3+ of Apache Kafka,
+Một điểm quan trọng để bạn yên tâm: Conduktor hỗ trợ **bất kỳ Kafka cluster nào**, mọi cơ chế security, và kết nối tới gần như mọi thứ trong hệ sinh thái. Kỹ năng bạn học với Conduktor không bị khóa vào một vendor — học xong bạn vẫn làm việc nhanh hơn trên cluster của công ty mình.
 
-which I think should be compatible
+## 4. Cách Học Để Không Bỏ Dở Giữa Chừng
 
-even with version 4 of Apache Kafka,
+Khóa này là **Volume 1: Kafka for Beginners** trong Apache Kafka Series. Nó cho bạn nền móng rất chắc: hiểu lý thuyết end-to-end, tự dựng Kafka, dùng CLI, viết Producer và Consumer đầu tiên.
 
-but let's see when it comes out.
+Nhưng đừng nhầm nó là tất cả. Những khóa chuyên sâu hơn (Connect, Streams, ksqlDB, Confluent Components, Security, Monitoring, Cluster Setup & Administration) nằm ở các volume sau.
 
-So happy learning, I hope you're excited.
+Analogy vui của người Việt: bản này giống như học lái xe số sàn cho vững — chưa phải đua F1, nhưng không vững số sàn thì đừng mơ tới F1.
 
-Now, just two intros, please stay here.
+## Cạm Bẫy Thường Gặp
 
-So just about me so you know who I am.
+* **Skip bài giới thiệu vì tưởng không có kiến thức.** Sai. Bỏ qua bài này là bạn mất bản đồ, học tới bài Streams sẽ không hiểu nó nằm ở đâu trong toàn cảnh.
+* **Ảo tưởng học chay không cần cluster.** Kafka là hệ phân tán — đọc slide mà không nhìn cluster chạy thật thì kiến thức bay hết sau một tuần. Hãy nhận free cluster của Conduktor ngay từ đầu.
+* **Đuổi theo version mới nhất mà quên nền tảng.** Khóa này dạy trên Kafka 3+, định hướng Kafka 4. Đừng mất thời gian cãi nhau 3.3 hay 3.7 — nắm chắc Topic, Partition, Broker, Replication thì version nào cũng sống được.
 
-So I am Stephane Maarek,
+## Kết Luận
 
-and I will be your teacher for this course.
+Tóm lại một câu: **đây là bản thứ ba của Kafka for Beginners, được mài qua 30.000+ review của 130.000+ học viên, dạy bởi Stephane Maarek trên nền Kafka 3+, với Conduktor vừa là kính hiển vi vừa là sân chơi miễn phí.**
 
-I am the co-founder of a company called Conduktor
-
-that I will tell you about in the next slide.
-
-I'm an online instructor on Apache Kafka and AWS.
-
-I used to be on the Program Committee
-
-of the Kafka Summit in 2019 and 2020,
-
-which is the big Kafka conference across the world.
-
-I've made a lot of courses on Apache Kafka,
-
-and I call them the Apache Kafka Series.
-
-I wrote blogs for Confluent, for Medium, and so on.
-
-You can find me on various channels,
-
-GitHub, LinkedIn, Medium, Twitter, and Instagram
-
-if you wanna follow me based on where you like.
-
-So just a short intro about Conduktor as well.
-
-So what is Conduktor?
-
-Well, it's a company that I co-founded
-
-to make Apache Kafka accessible to everyone, including you.
-
-So we've built a graphical user interface
-
-with tons of features for Kafka,
-
-but also its entire ecosystem.
-
-The goal was to make an entire system
-
-that allows you to make Apache Kafka enterprise-ready,
-
-so we added a lot of features on top of it.
-
-But in the context of this course,
-
-we're going to use the UI.
-
-We're also going to get a free Kafka personal cluster
-
-that you can use as you like.
-
-You can also get a free Organization cluster
-
-to collaborate with your colleagues if you wanted to.
-
-Conduktor supports any Kafka cluster
-
-and all security mechanism,
-
-and we connect to pretty much everything in the ecosystem.
-
-So this will help you learn Apache Kafka,
-
-but it will also help you after this learning
-
-to work faster and better.
-
-So that's it for this lecture.
-
-I hope you liked it, and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ trả lời câu hỏi lớn nhất: Kafka sinh ra để giải bài toán gì mà database và API thông thường bó tay — qua câu chuyện tích hợp dữ liệu N×M trong 5 phút.

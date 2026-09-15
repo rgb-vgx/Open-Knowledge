@@ -1,183 +1,106 @@
-Hi, this is Stephane from Conduktor.
+# Delivery Semantics: Vì Sao Đọc Lại Hay Mất Dữ Liệu Đều Do Điểm Commit Offsets
 
-And so, now let's have a look
+Part 2 (084) đã cho dữ liệu chảy: `poll()` → `IndexRequest` từng record → `_id` random. Nhưng code đó an toàn không? Crash giữa chừng thì mất hay trùng dữ liệu? Bài này dừng code một nhịp để trả lời câu hỏi nền cho cả Part 3, 4, 5: **delivery semantics** — và vì sao pipeline Kafka → OpenSearch chỉ nên nhắm at-least-once + idempotent.
 
-at Delivery Semantics in Apache Kafka.
+---
 
-So we have first At most once.
+## 1. Vấn đề: Commit Trước Hay Sau Khi Xử Lý Quyết Định Tất Cả
 
-And at most ones is when offsets are committed
+Consumer Kafka không tự biết "đã xử lý xong". Nó chỉ biết một con số: **committed offset** — vị trí lần cuối báo với broker "tôi đọc tới đây rồi". Khi consumer restart, nó đọc tiếp từ committed offset.
 
-as soon as the message batch is received.
+Vậy thứ tự giữa hai hành động — (A) xử lý dữ liệu (gửi email, ghi OpenSearch) và (B) commit offsets — sinh ra 3 số phận khác nhau:
 
-And if the processing goes wrong,
+```mermaid
+graph TB
+    subgraph "At-most-once: commit TRƯỚC, xử lý SAU"
+        A1["poll batch"] --> A2["commit ngay"] --> A3["xử lý từng message"] --> A4["crash giữa chừng<br/>=> messages chưa xử lý bị bỏ qua"]
+    end
+    subgraph "At-least-once: xử lý TRƯỚC, commit SAU"
+        B1["poll batch"] --> B2["xử lý từng message"] --> B3["commit"] --> B4["crash trước commit<br/>=> đọc lại, trùng"]
+    end
+```
 
-then the messages will be lost
+Không có lựa chọn nào miễn phí. Chỉ có lựa chọn phù hợp với nghiệp vụ.
 
-because they won't be read again.
+## 2. Cơ Chế: Ba Mức Đảm Bảo
 
-So let's have an example.
+### 2.1. At-most-once: mỗi message xử lý tối đa một lần (có thể mất)
 
-So we are reading a batch from our consumer
+Luồng: `poll(batch)` → `commit offsets` ngay → mới xử lý từng message (gửi email, ghi DB).
 
-from our consumer group.
+Kịch bản lỗi: xử lý được 3/5 messages thì consumer crash. Khi restart, broker bảo "offsets đã commit hết batch rồi, đọc batch mới đi". Hai messages chưa xử lý **mất vĩnh viễn**.
 
-And then right after reading this batch,
+Đặc điểm:
 
-we commit the offsets.
+* Không bao giờ trùng, nhưng có thể mất.
+* Phù hợp: metrics, log giám sát, đếm view — nơi mất vài events chấp nhận được, còn trùng thì hại (trừ tiền 2 lần thì không).
+* Cách tạo ra (vô tình): bật `enable.auto.commit=true` nhưng xử lý **bất đồng bộ** — gọi `poll()` tiếp khi batch cũ chưa xong, offsets tự commit đè lên.
 
-Then we start to process data,
+### 2.2. At-least-once: mỗi message xử lý ít nhất một lần (có thể trùng)
 
-for example, sending an email.
+Luồng: `poll(batch)` → xử lý hết batch → mới `commit offsets`.
 
-So we send it for this one,
+Kịch bản lỗi: xử lý xong 5/5 nhưng crash **trước khi commit**. Restart đọc lại đúng batch đó, xử lý lại 5 messages. Trùng.
 
-this one, this one.
+Đặc điểm:
 
-And then all of a sudden,
+* Không bao giờ mất, nhưng có thể trùng.
+* Bắt buộc: xử lý phải **idempotent** (xử lý 2 lần cũng như 1 lần). Ghi đè cùng `_id` vào OpenSearch là idempotent; gửi email thì không.
+* Đây là mode mặc định của code Part 2 khi xử lý **đồng bộ** + `enable.auto.commit=true`: vì `poll()` tiếp theo mới trigger commit ngầm, mà lúc đó batch cũ đã xử lý xong.
 
-this consumer from the consumer group goes away.
+### 2.3. Exactly-once: mỗi message hiệu lực đúng một lần (giấc mơ có điều kiện)
 
-What happens is that this message and this message
+Có hai loại, đừng lẫn:
 
-are not being processed.
+* **Kafka → Kafka exactly-once**: khả thi và dễ, dùng Transactional API / Kafka Streams (producer transactions + `isolation.level=read_committed`). Broker phối hợp commit offsets và ghi topic đích trong một transaction.
+* **Kafka → hệ ngoài (OpenSearch, DB, email) exactly-once**: không có transaction chung giữa Kafka và hệ ngoài. Muốn "đúng một lần thật" phải dùng chiêu **offsets lưu cùng data trong một transaction của DB đích** + `ConsumerRebalanceListener` + `seek()` tay — rất phức tạp, bài 087 sẽ nói vì sao không nên.
 
-Because the consumer crushed before processing them. .
+Thực tế ngành: pipeline Kafka → OpenSearch chuẩn là **at-least-once + idempotent consumer = effectively-once** (hiệu lực như đúng một lần). Người dùng search không thấy duplicate, dù bên dưới có đọc lại.
 
-So the consumer restarts.
+## 3. Code: Liên Hệ Trực Tiếp Với Part 2 Vừa Viết
 
-And when it restarts it's going to read
+Nhìn lại vòng lặp Part 2:
 
-from where the data was last committed.
+```java
+while (true) {
+    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(3000)); // (1)
+    for (ConsumerRecord<String, String> record : records) {
+        openSearchClient.index(new IndexRequest("wikimedia")  // (2) xử lý đồng bộ
+            .source(record.value(), XContentType.JSON), RequestOptions.DEFAULT);
+    }
+    // (3) không commit tay — auto-commit ngầm khi poll() lần sau
+}
+```
 
-That means that the data is going to be read
+* Vì (2) là đồng bộ (blocking, xong record này mới tới record khác) và (3) commit ngầm ở lần `poll()` sau, nên khi commit diễn ra thì batch cũ **đã xử lý xong** → đang ở at-least-once. Tốt.
+* Nhưng `_id` đang random → xử lý lại là sinh document mới → **at-least-once mà không idempotent = duplicate thật**. Đây là lỗ hổng Part 3 (086) sẽ vá bằng `meta.id`.
+* Nếu ai "tối ưu" bằng cách đẩy `index()` sang thread pool rồi `poll()` ngay (bất đồng bộ) mà vẫn auto-commit → rơi về at-most-once và mất dữ liệu khi crash. Bài 087 sẽ cấm pattern này.
 
-from here here and so on.
+## 4. Bảng So Sánh: Ba Semantics Trong Một Nhìn
 
-So that means that indeed in this case,
+| Tiêu chí | At-most-once | At-least-once (khuyên dùng) | Exactly-once (Kafka→Kafka) |
+|---|---|---|---|
+| Thứ tự | Commit → xử lý | Xử lý → commit | Transaction bao cả hai |
+| Khi crash | Mất messages | Trùng messages | Không mất, không trùng |
+| Cần idempotence? | Không | **Bắt buộc** | Broker lo |
+| Cấu hình điển hình | Auto-commit + xử lý async (vô tình) | Auto-commit + xử lý sync, hoặc manual `commitSync()` sau batch | `enable.idempotence=true` + transactions + Streams |
+| Dùng cho OpenSearch? | Không — mất log Wikimedia | **Có — kết hợp `_id` cố định** | Không áp dụng (đích không phải Kafka) |
+| Độ phức tạp | Thấp | Trung bình | Cao |
 
-we have not processed two messages
+Quy tắc ngón tay cái cho mọi pipeline bạn viết sau này:
 
-because we crushed and we committed offsets too early.
+> **Mặc định chọn at-least-once + idempotent. Chỉ chọn at-most-once khi nghiệp vụ chịu mất. Chỉ mơ exactly-once khi cả nguồn lẫn đích đều là Kafka.**
 
-So this is why this message mechanism to read
+## 5. Pitfalls
 
-is called at most once.
+* **Tưởng "commit rồi là xong".** Commit chỉ là báo vị trí đọc, không đảm bảo xử lý thành công. Commit sớm = mất, commit muộn = trùng. Phải chọn chủ động.
+* **Tưởng at-least-once là đủ, quên idempotence.** At-least-once không idempotent thì chỉ là "trùng có đảm bảo". Pipeline Part 2 đang ở đúng trạng thái nguy hiểm này.
+* **Tưởng exactly-once là bật một config.** Không có `delivery.semantics=exactly_once` cho Kafka → DB ngoài. Ai hứa thế là nhầm với Kafka Streams.
+* **Trộn hai khái niệm idempotence.** `enable.idempotence=true` của **Producer** (chống trùng khi retry gửi) khác hoàn toàn idempotent **Consumer** (ghi đè cùng `_id` khi đọc lại). Section này cần cái thứ hai.
+* **Test bằng cách kill -9 rồi kết luận "Kafka mất dữ liệu".** Kill giữa batch chưa commit thì đọc lại là đúng thiết kế at-least-once, không phải bug. Muốn không trùng thì vá consumer, đừng đổ cho broker.
 
-Because each message is going to be seen
+## Kết Luận
 
-or processed at most once.
+Tóm một câu: **at-most-once commit trước xử lý sau nên mất; at-least-once xử lý trước commit sau nên trùng; pipeline Kafka → OpenSearch phải chọn at-least-once và tự làm idempotent để trùng mà như không.**
 
-Never twice, but sometimes zero.
-
-Then we have at least once.
-
-And at least once is when messages are committed
-
-after the messages are processed.
-
-And in case the processing goes wrong
-
-then the messages are going to be read again.
-
-And therefore,
-
-because we have a chance of reading messages twice,
-
-then we need to make sure the processing is idempotent.
-
-That means that when you process the same message twice,
-
-you don't impact your systems.
-
-So let's have a look again
-
-we have a topic and a consumer from a consumer group.
-
-We're going read a batch
-
-and then we're going to process the data.
-
-So we read this batch and so on.
-
-And then we commit the offsets.
-
-So this is the normal use case.
-
-Then we keep on reading and processing the offsets,
-
-everything goes good.
-
-And then the consumer crushes.
-
-When it crushes, is going to restart.
-
-And then we're going to read again
-
-from where the offsets were last committed.
-
-Therefore, we're going to see
-
-and process again these messages and so on.
-
-So as you can see in this instance,
-
-three messages are read and processed twice.
-
-Therefore we are in an at least one setting
-
-and this is why we need to make sure
-
-our processing is idempotent.
-
-Okay, so if we have a look at the summary
-
-of delivery semantics,
-
-we've at most once,
-
-where we see messages at most once.
-
-We have at least once, which is preferred,
-
-where we see messages at least once, maybe twice.
-
-And we need to make sure the processing is idempotent.
-
-And we'll see how to do this in the next lecture.
-
-And obviously, the dream goal is to be in exactly once.
-
-And this is achieved only when you take data from Kafka
-
-and put it back into Kafka,
-
-using the Transactional API.
-
-And this is quite easy to do using the Kafka streams API.
-
-If you're doing Kafka to a sync,
-
-for example to open search,
-
-then you need to use an idempotent consumer
-
-and I will show you how.
-
-So the bottom line is,
-
-I think for most processing applications that you have,
-
-you should use at least once processing.
-
-We'll see how to do it.
-
-And we need to ensure that our operations
-
-or transformations are idempotent .
-
-So that's it for this lecture.
-
-Now I will see you in the next lecture
-
-for some implementation.
+Bài tiếp theo (086 — Part 3) chúng ta vá đúng lỗ hổng đã chỉ ra: gắn `_id` cố định vào `IndexRequest` — trước bằng tọa độ Kafka `topic-partition-offset`, sau bằng `meta.id` trích từ JSON Wikimedia — để consumer thành idempotent và đạt effectively-once.

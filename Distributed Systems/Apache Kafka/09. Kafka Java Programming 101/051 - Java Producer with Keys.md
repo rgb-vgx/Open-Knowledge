@@ -1,233 +1,137 @@
-Hi, this is Stephane from Conduktor,
+# Producer With Keys: Cùng Key, Cùng Partition — Nền Móng Của Thứ Tự
 
-and in this lecture, we're going to look
+Bài trước ta thấy message không key rơi vào partition nào là do StickyPartitioner "dính" theo batch. Vậy nếu nghiệp vụ bắt buộc mọi event của cùng một thực thể (một xe tải, một user, một đơn hàng) phải giữ đúng thứ tự thì sao? Câu trả lời là **key**. Bài này gửi 10 key `id_0`...`id_9` lặp lại 2 lần và chứng minh: cùng key luôn về cùng partition, chạy lại vẫn vậy.
 
-at how to send okay messages in Kafka with keys.
+---
 
-So we're going to send non-null keys
+## 1. Concept: Key quyết định partition như thế nào?
 
-to the Kafka topic and then we'll observe the behavior.
+Khi `ProducerRecord` có key khác null, `DefaultPartitioner` bỏ qua sticky và tính toán xác định (deterministic):
 
-That same key goes to the same partition, you remember?
+```
+partition = murmur2(keyBytes) % partitionCount
+```
 
-And so what happens?
+Hệ quả:
 
-Well, the key is going to be an ID we define
+* Cùng key `id_2` gửi bao nhiêu lần cũng ra cùng một số partition (ví dụ partition 2), chừng nào số partition của topic không đổi.
+* Khác key có thể trùng partition (hash collision modulo) — ví dụ `id_1`, `id_3`, `id_6` cùng về partition 0. Key đảm bảo "cùng key cùng chỗ", không đảm bảo "khác key khác chỗ".
+* Thứ tự chỉ được đảm bảo **trong một partition**. Nên muốn giữ thứ tự cho một thực thể, bắt buộc pin nó bằng key. Không key thì không có đảm bảo thứ tự nào cả.
+* Đổi số partition của topic (tăng từ 3 lên 6) sẽ làm công thức modulo đổi kết quả — key cũ có thể nhảy partition mới. Vì vậy số partition nên chốt sớm, tránh tăng bừa trên topic cần thứ tự.
 
-and then the data
+Trong bài này key và value đều là `String`, nên `key.serializer` và `value.serializer` vẫn là `StringSerializer`. Callback được thu gọn chỉ còn log `key` và `partition` để mắt dễ đối chiếu.
 
-with the same key will always go to the same partition.
+## 2. Code hoàn chỉnh
 
-Okay?
+Duplicate class `ProducerDemoWithCallback` thành `ProducerDemoKeys`, xóa `batch.size`, `partitioner.class`, vòng lặp 30 message và sleep cũ, thay bằng code này:
 
-So this is the same when we had this truck_id
+```java
+package io.conduktor.demos.kafka;
 
-and the truck_id_123 was always going to be
+import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-in partition zero
+import java.util.Properties;
 
-and truck_id_345 always going to be in partition one.
+public class ProducerDemoKeys {
 
-So let's observe this behavior
+    private static final Logger log = LoggerFactory.getLogger(ProducerDemoKeys.class.getSimpleName());
 
-by adding a little bit of programming.
+    public static void main(String[] args) throws InterruptedException {
+        log.info("I am a Kafka producer with keys!");
 
-Okay, so let's duplicate the ProducerDemoWithCallback
+        Properties properties = new Properties();
+        properties.setProperty("bootstrap.servers", "127.0.0.1:9092");
+        properties.setProperty("key.serializer", StringSerializer.class.getName());
+        properties.setProperty("value.serializer", StringSerializer.class.getName());
 
-and I'm going to call it ProducerDemoKeys.
+        KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
-Next, I'm going to scroll down.
+        String topic = "demo_java";
 
-I will remove this batch size.
+        // Gửi 2 batch giống hệt nhau để chứng minh tính ổn định
+        for (int j = 0; j < 2; j++) {
+            for (int i = 0; i < 10; i++) {
+                String key = "id_" + i;
+                String value = "hello world " + i;
 
-I will remove the partitioner class
+                ProducerRecord<String, String> producerRecord =
+                        new ProducerRecord<>(topic, key, value);
 
-because we don't need it.
+                producer.send(producerRecord, new Callback() {
+                    @Override
+                    public void onCompletion(RecordMetadata metadata, Exception e) {
+                        if (e == null) {
+                            log.info("Key: " + key + " | Partition: " + metadata.partition());
+                        } else {
+                            log.error("Error while producing", e);
+                        }
+                    }
+                });
+            }
+            // Nghỉ giữa 2 batch để log tách rõ, dễ đọc
+            Thread.sleep(500);
+        }
 
-I don't need this for loop.
+        producer.flush();
+        producer.close();
+    }
+}
+```
 
-I will just loop on 10 messages back with my i
+### Giải thích từng đoạn
 
-and I will also remove anything related to sleeping.
+**Tách biến `topic`, `key`, `value`.** Transcript externalize 3 biến này để constructor `new ProducerRecord<>(topic, key, value)` đọc rõ ràng. Overload 3 tham số này khác hẳn bài đầu (`topic, value`): tham số thứ hai giờ là key, không phải value. Đảo lộn là bug kinh điển — log ra sẽ thấy key null hết.
 
-So now my code looks good, I believe,
+**Vòng lặp ngoài `j < 2`.** Đây là điểm mấu chốt của demo: gửi cùng 10 key hai lần. Nếu key hoạt động đúng, ánh xạ batch 2 phải photocopy batch 1. Không có vòng ngoài thì bạn chỉ thấy "mỗi key một partition" mà không chứng minh được tính lặp lại.
 
-and I go back one level of tabs and we're good.
+**Callback thu gọn.** Bài callback trước log đủ topic/partition/offset/timestamp. Bài này chỉ giữ `key` và `metadata.partition()` (trong code transcript ghi `metadata.partition()`, bản nói nhầm `metadata.key` — key nằm ở biến `key` ngoài, không nằm trong metadata). Log gọn giúp đối chiếu 20 dòng trong nháy mắt.
 
-Okay, so now we're going to be sending some keys.
+**`Thread.sleep(500)` giữa batch.** Không phải để sticky chuyển partition (có key thì sticky không còn tác dụng), mà chỉ để tách log batch 1 và batch 2 cho dễ nhìn. Muốn gọn thì khai báo `main throws InterruptedException` như trên; nếu không, bọc try/catch quanh sleep.
 
-So to do so, first, let's go
+**Xóa `batch.size` và `partitioner.class` demo.** Bài trước hạ batch xuống 400 và ép RoundRobin chỉ để demo. Bài này phải xóa cả hai để về default — có key thì `DefaultPartitioner` tự hash, ép partitioner khác sẽ phá demo.
 
-and create, externalize some things.
+## 3. Chạy và kiểm tra
 
-So the string topic equals demo_java.
-
-And then we're going to say
-
-that the key is going to be id_, and then i.
-
-So id_1, id_2, id_3, id_4, and so on.
-
-And then the value is a string as well.
-
-And the value, we have it right here.
-
-It's hello world plus i.
-
-So let's have it here.
-
-Okay.
-
-And what we want to see
-
-is that the same keys goes to the same partition.
-
-So how do we do this?
-
-Well, first of all, in this ProducerRecord,
-
-I'm going to edit it and I'm going to add the key.
-
-So I'm going to replace the arguments
-
-by topic, key, and value.
-
-So now we have three arguments
-
-and that's why I externalize them.
-
-So we have topic, key, and value.
-
-And in the callback itself now, I'm just going to strip it
-
-to the most important information.
-
-So we have this most important thing
-
-is going to be the key and the partition.
-
-So I'm going to have key is metadata.key.
-
-The key itself, sorry.
-
-So I'm going to just say key.
-
-And then the other thing that's important is the partition.
-
-So key is there
-
-and then I'm going to remove this new line as well.
-
-I don't need it.
-
-And I'm going to have partition as a space
-
-and a level.
-
-Okay, partition being equals to metadata, the partition.
-
-Just to really isolate as much
-
-as possible the information we need.
-
-And we're going to run this twice.
-
-So I can actually have a external for loop,
-
-of for int j equals zero, and then j less than two.
-
-J++.
-
-We run the same command.
-
-So that means that we're going to produce multiple message
-
-with the same key and we'll see whether
-
-or not they end up in the same partition.
-
-So let's run this code right now.
-
-And we start seeing some outputs.
-
-So my first batch is my first 10 messages.
-
-So we see that id_0 goes to partition one,
-
-id_8 goes to partition one.
-
-And then again, things get sent very quickly.
-
-Actually, I should probably add a sleep in there
-
-just to send the batch away.
-
-So I will have Thread.sleep
-
-for 500 milliseconds just to separate my two batches.
-
-And I will surround this too with try catch
-
-and I will also have a little bit.
-
-Okay, we're good.
-
-That should be good.
-
-So now we actually going to produce this again.
-
-And observe the behavior we want.
-
-Okay, so it's better.
-
-So we have id_1, id_3, and id_6.
-
-They go to partition zero.
-
-We have id_2, id_4, and id_5, 7 and 9.
-
-They go to partition two.
-
-And we have id_0, 8 that go to partition one.
-
-And then we send the second batch.
-
-So we send again, id_ 2, we send again, id_4, id_5.
-
-And as you can see, these IDs two, four, and five that go
-
-to partition two are the exact same two, four
-
-and five that went to partition two before and so on.
-
-So id_7, goed to partition two,
-
-id_9 go to partition two, and so on.
-
-So we can see here,
-
-and we've demonstrated
-
-that the same key goes to the same partition.
-
-And we've also seen as part
-
-of this lecture how to send a key in a producer record.
-
-And that's something you can verify in here
-
-in the Conduktor console.
-
-If we have a look at some messages,
-
-we can see now that the key gets sent.
-
-So id_0, hello world 0, id_8, hello world 8.
-
-And then if you go to the metadata,
-
-you can have a look at the partition as well.
-
-All right, so that's it for this lecture.
-
-I hope you liked it, and I will see you in the next lecture.
+1. Đảm bảo topic `demo_java` có 3 partitions (tạo từ bài Producer đầu).
+2. Run `ProducerDemoKeys.main()`. Output kỳ vọng dạng này (số partition cụ thể có thể khác tùy hash, nhưng cấu trúc phải giống):
+
+```
+Key: id_1 | Partition: 0
+Key: id_3 | Partition: 0
+Key: id_6 | Partition: 0
+Key: id_2 | Partition: 2
+Key: id_4 | Partition: 2
+Key: id_5 | Partition: 2
+Key: id_7 | Partition: 2
+Key: id_9 | Partition: 2
+Key: id_0 | Partition: 1
+Key: id_8 | Partition: 1
+--- batch 2 lặp lại y hệt ---
+Key: id_1 | Partition: 0
+Key: id_2 | Partition: 2
+...
+```
+
+3. Check Batch 2: `id_2` batch 1 ở partition nào thì batch 2 phải ở đúng partition đó. Đây là assert quan trọng nhất bài này.
+4. Verify bằng Conduktor UI: mở topic `demo_java`, xem message giờ có cột key (`id_0 | hello world 0`), mở metadata thấy partition khớp log.
+5. Chạy lại chương trình lần nữa: ánh xạ vẫn y hệt (deterministic), khác hẳn bài không key mỗi lần run nhảy lung tung.
+
+## 4. Pitfalls
+
+* **Tưởng khác key thì khác partition.** Sai. Hash modulo có va chạm — 10 key trên 3 partition chắc chắn có key phải ở chung. Muốn mỗi key một partition riêng thì số key phải ít hơn hoặc bằng số partition và may mắn không collision — đừng thiết kế dựa vào may mắn.
+* **Tăng partition sau khi đã dùng key.** Thêm partition làm modulo đổi, key cũ nhảy chỗ mới, thứ tự liên partition vỡ. Chốt partition count từ đầu cho topic cần thứ tự; nếu bắt buộc tăng, chấp nhận consumer phải chịu giai đoạn chuyển tiếp.
+* **Key null lẫn key có giá trị trong cùng topic.** Message null key đi theo sticky (nhảy batch), message có key đi theo hash — hai luồng trộn vào nhau khiến debug partition rối. Một topic nên thống nhất hoặc toàn có key, hoặc toàn không.
+* **Dùng key là object phức tạp rồi serializer không ổn định.** Hash tính trên bytes sau serialize. Đổi serializer (ví dụ JSON field order đổi) là bytes đổi, partition đổi dù "key logic" giống nhau. Key nên là string/number ổn định như `truck_id`, `user_id`, `order_id`.
+* **Nhầm thứ tự tham số `ProducerRecord`.** `(topic, value)` 2 tham số vs `(topic, key, value)` 3 tham số. Truyền nhầm là key thành value, partition tính sai hết mà code vẫn compile.
+
+## Kết Luận
+
+Một câu: **không key thì partition theo batch (sticky), có key thì partition theo hash của key — cùng key, cùng partition, mãi mãi.** Đó là viên gạch đầu tiên của mọi đảm bảo thứ tự trong Kafka.
+
+Bài tiếp theo chúng ta đổi vai: viết `ConsumerDemo` đầu tiên với `key.deserializer`/`value.deserializer`, `group.id`, `auto.offset.reset=earliest`, vòng lặp `poll(Duration.ofMillis(1000))` và đọc log join group + reset offset để thấy consumer nhận lại đúng dữ liệu producer vừa gửi.

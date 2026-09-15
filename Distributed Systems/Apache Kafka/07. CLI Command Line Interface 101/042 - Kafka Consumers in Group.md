@@ -1,289 +1,114 @@
-Okay, so now that we've seen
+# Consumer Group: Chia Partitions Cho Nhiều Consumer Cùng Đọc Song Song
 
-how the Kafka Console Consumer works
+Một console consumer đọc gộp 3 partitions thì throughput bị giới hạn ở một tiến trình. Bài này chúng ta giải bài toán scale chiều đọc: chạy nhiều consumer cùng một `--group` để mỗi người ôm một tập partition riêng, đọc song song mà không message nào bị đọc trùng.
 
-we're going to be able to start them in a consumer group
+---
 
-and we'll learn about the group parameter.
+## 1. Bài Toán: 3 Partitions Thì Cần Mấy Consumer?
 
-And it's going to show us how partitions are divided
+Hình dung `third_topic` có 3 partitions. Nếu chỉ có 1 consumer, nó phải đọc cả 3 — vừa chậm vừa là điểm chết duy nhất. Nếu có đúng 3 consumer cùng group, mỗi người một partition là đẹp nhất. Nếu có tới 4 consumer mà chỉ có 3 partitions thì sao? Consumer thừa sẽ ngồi chơi — và đó chính là demo của bài này.
 
-amongst multiple CLI consumers.
+Chuẩn bị topic sạch:
 
-It is actually a really cool demo.
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 \
+  --create --topic third_topic --partitions 3 --replication-factor 1
+```
 
-So here is a reminder of what we're trying to expose.
+## 2. Consumer Đầu Tiên Với `--group`
 
-So we have, for example, five partitions
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic third_topic --group my-first-application
+```
 
-and then three consumers,
+* `--group my-first-application` — khai báo consumer thuộc group nào. Đây là flag biến consumer đơn lẻ thành thành viên của consumer group, kích hoạt cơ chế chia partition và commit offset.
 
-and each consumer is consuming from a different partition,
+Terminal đứng im vì topic đang rỗng. Mở terminal thứ hai chạy producer rải đều (chỉ dùng để học, không dùng production):
 
-they're all distinct.
+```bash
+kafka-console-producer.sh --bootstrap-server localhost:9092 \
+  --topic third_topic \
+  --producer-property partitioner.class=org.apache.kafka.clients.producer.RoundRobinPartitioner
+```
 
-So that's the behavior we're going to try to explore
+Gõ `test` ở producer — chữ `test` hiện ngay ở consumer. Một mình nó đang ôm cả 3 partitions nên message nào cũng về tay nó.
 
-by creating multiple consumers within the same group.
+## 3. Thêm Consumer Thứ Hai, Thứ Ba: Message Tự Chia
 
-So let's get started.
+Giữ nguyên consumer 1, mở terminal thứ ba chạy **đúng lệnh consumer y hệt** (cùng topic, cùng `--group my-first-application`).
 
-Okay, so now let's have a look
+Gõ tiếp ở producer:
 
-at file number 3 called kafka-consumer-in-group,
+```
+>hello
+>world
+>last
+```
 
-and we are going to first create a topic named Third Topic
+Kết quả mẫu:
 
-with three partitions.
+* Consumer 1 nhận `hello` và `last`.
+* Consumer 2 nhận `world`.
 
-This way we can start afresh.
+Không có message nào bị trùng — group đã chia 3 partitions thành 2 + 1. Consumer 1 ôm 2 partitions nên nhận 2 message, consumer 2 ôm 1 partition nên nhận 1.
 
-Okay, so my topic has now been created
+Thêm consumer thứ ba (terminal thứ tư, cùng lệnh). Gõ tiếp:
 
-and what we're going to do is that we're going to consume
+```
+>one
+>two
+>three
+```
 
-from this topic, so I copy this part,
+Mỗi consumer nhận đúng 1 message. Rebalance vừa xảy ra: group chia lại 3 partitions cho 3 consumer, mỗi người một cái — trạng thái cân bằng lý tưởng.
 
-but we add one last argument, which is the group parameter
+## 4. Khi Consumer Thừa: 4 Consumer Cho 3 Partitions
 
-which specifies a group ID for our console consumer.
+Mở consumer thứ tư cùng group. Gõ thêm message — consumer 4 không nhận gì cả.
 
-So by doing minus minus group my-first-application
+Nguyên tắc sắt cần khắc ghi:
 
-we tell Kafka
+> **Số consumer đang chạy trong một group vượt quá số partition thì consumer thừa sẽ idle, không được gán partition nào.**
 
-and the console consumer that we are using a consumer group.
+Không có lỗi, không có cảnh báo — chỉ đơn giản là không có việc để làm. Muốn tận dụng consumer 4 thì phải tăng partition của topic (xem `--alter` ở bài Topics CLI).
 
-And this is the first time we're actually doing it.
+Thử tắt bớt một consumer (Ctrl+C ở consumer 3), gõ tiếp `a`, `b`, `c` — mỗi consumer còn lại nhận 1 message. Tắt tiếp consumer 2, chỉ còn consumer 1, gõ `d`, `e`, `f` — một mình nó nhận cả 3 (chia 2 + 1 kiểu cũ: ví dụ `d`, `e` về consumer 1a, `f` về consumer còn lại — phân bổ chính xác tùy đợt rebalance). Mỗi lần thêm/bớt consumer, group **rebalance**: dừng chia việc cũ, chia lại từ đầu trong vài giây.
 
-So we press enter
+## 5. Offset Đã Commit: Consumer Restart Chỉ Đọc Phần Còn Thiếu
 
-and nothing happens because well,
+Tiếp tục demo với group đang chạy. Giữ producer mở, gõ thêm `j`, `k` rồi tắt hết consumer đi (không consumer nào trong group còn chạy). Khởi động lại một consumer cùng group:
 
-we need to start producing into our topic.
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic third_topic --group my-first-application
+```
 
-So again, we start a console producer
+Nó nhận ngay `j` và `k` — phần message gửi trong lúc không ai đọc (lag). Nó **không** đọc lại từ đầu, vì offset đã commit cho group được lưu trên broker. Thứ tự `j` trước hay `k` trước có thể đảo do nằm khác partition — bình thường.
 
-and we use the RoundRobinPartitioner
+## 6. Group Mới + `--from-beginning`: Đọc Lại Từ Đầu
 
-to make sure we send messages across different partitions.
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic third_topic --group my-second-application --from-beginning
+```
 
-This is the only way to observe this behavior
+* `--group my-second-application` — group hoàn toàn mới, chưa có offset nào được commit.
+* `--from-beginning` — vì là group mới nên flag này có tác dụng: đọc từ offset 0 mọi partition.
 
-from a learning perspective.
+Output: toàn bộ message từ `test` tới `k` hiện ra. Chạy lại **đúng lệnh đó lần nữa** — lần này terminal đứng im. Vì sao? `my-second-application` giờ đã có offset committed, `--from-beginning` chỉ có ý nghĩa **lần đầu tiên group đọc topic**. Từ lần thứ hai, consumer luôn tiếp tục từ offset đã commit, flag này bị lờ đi.
 
-But remember, no production here.
+Hai group `my-first-application` và `my-second-application` cùng đọc một topic mà không ảnh hưởng nhau — mỗi group có con trỏ offset riêng. Đây chính là mô hình "một dòng dữ liệu, nhiều hệ thống độc lập" (dashboard + notification cùng đọc `trucks_gps`) đã học ở bài lý thuyết.
 
-So we have launched this producer
+## Cạm Bẫy Thường Gặp
 
-and if I do a test, as you can see
+* **Hai consumer cùng đọc mà message bị trùng.** Kiểm tra ngay `--group`: khác tên group là hai luồng đọc độc lập, trùng message là đúng. Muốn chia việc thì phải cùng tên group.
+* **Thêm consumer mà throughput không tăng.** Đếm lại: consumer đã vượt partition chưa? Thừa thì idle, muốn nhanh hơn phải tăng partition trước.
+* **Tưởng `--from-beginning` lúc nào cũng đọc từ đầu.** Chỉ đúng với group mới chưa commit offset. Group cũ muốn đọc lại phải reset offset (bài 044) — không có đường tắt.
+* **Rebalance liên tục khi consumer chập chờn.** Consumer join/leave liên tục khiến group rebalance không ngừng, throughput sụt. Production cần tune `session.timeout.ms`, `max.poll.interval.ms` — consumer chết thật hay chỉ xử lý chậm phải phân biệt rõ.
 
-the message test is appearing in my console consumer.
+## Kết Luận
 
-So this is great.
+Tóm một câu: **cùng `--group` thì Kafka chia mỗi partition cho đúng một consumer (thừa consumer thì ngồi chơi, thiếu thì một consumer ôm nhiều), offset commit theo group nên restart chỉ đọc phần thiếu, và `--from-beginning` chỉ linh nghiệm với group mới.**
 
-And what we're going to do now
-
-is that we're going to launch another consumer
-
-as part of the first group because right now,
-
-if I obviously send messages,
-
-these messages are going to be received
-
-by that one console consumer.
-
-But what I'm going to do now is to fold this a little bit
-
-and start a console consumer.
-
-But on the right hand side, so with the same command, okay,
-
-we consume from the third_topic
-
-but the group is my-first-application.
-
-So we have now two consumers in the same group.
-
-And if we have a look here, I say hello
-
-and then world, and then last.
-
-As we can see, the hello
-
-and the last went to my first consumer
-
-and the world went to my second consumer.
-
-This is because we have a consumer group,
-
-and it turns out that this consumer
-
-gets two partitions assigned
-
-and this one get one partition assigned
-
-and we can push this behavior to having a third consumer.
-
-So we are doing a third consumer as part of the group
-
-(keyboard keys clicking)
-
-and now it has joined the group.
-
-So again, if I start to send messages, so one, two
-
-and then three, as we can see, the one got here
-
-the two got here, and the three got here.
-
-So the messages get spread all across my consumers.
-
-And that really shows the power of Kafka
-
-because now we have a producer producing
-
-to different partitions
-
-and consumer consuming from different partitions.
-
-And so as I keep on sending messages into Kafka over time
-
-and depends how fast I do it, of course,
-
-but they will be spread across all my consumers.
-
-And just for the experiment, if I do one more consumer
-
-on this consumer group on the same topic,
-
-now we have four consumers for three partitions.
-
-And it turns out that, well,
-
-it's what we call not impossible case
-
-but the one consumer will never be reading data
-
-and the other ones may.
-
-So this one right here is not assigned any partition
-
-so it's not receiving any messages
-
-which is why you're not seeing it read right now.
-
-So just stop a consumer and then things will rebalance.
-
-So if I just send a, b
-
-and c, as you can see,
-
-each of these consumer received one message.
-
-If I shut down now, this consumer right here,
-
-a rebalance happens again.
-
-So d, e and f,
-
-and as we can see, d,
-
-and e got here and f got here.
-
-And if I of course stop this consumer altogether
-
-and just keep one consumer,
-
-g, h, i,
-
-these messages all go to the same consumer.
-
-So we've seen really how that works with consumer groups.
-
-On top of it, if I keep on producing,
-
-as you can see, there's no more consumer, okay in my group,
-
-but I keep on producing.
-
-I produce, for example, j, k, okay, so more messages,
-
-if I restart my consumer as part of this group,
-
-because it is part of the group
-
-and there has been some messages we need to catch up on
-
-these messages are going to be right.
-
-So j and k, not necessarily in this order for you
-
-because we consume across multiple partitions
-
-but these messages get sent to my consumer
-
-because it was catching on,
-
-catching up on the lag it had from before.
-
-And to finish, if we start a consumer from-beginning
-
-as part of a different group,
-
-so this time, the group name is my-second-application
-
-which is different from my-first-application
-
-and I read this from the beginning,
-
-I'm going to be reading all the messages in my topic
-
-since the beginning and we're done.
-
-And what if you run the same command again?
-
-So we read from a group that already existed, but we specify
-
-from-beginning, let's see, press enter.
-
-And as you can see, nothing happens
-
-because from-beginning is an argument
-
-that is only helpful
-
-when there has never been a consumer offset
-
-that has been committed as part of the group.
-
-So you're saying, "hey, for this new group,
-
-start from the beginning."
-
-But now that we've actually used
-
-the my-second-application as a group
-
-and that we've read data in Kafka, as you can see,
-
-we don't use the from-beginning argument, it doesn't work.
-
-And so this will not be taken into account
-
-and we'll just be reading
-
-from where consumer offsets were last committed.
-
-So hopefully you've seen all the core behaviors
-
-of Apache Kafka in this lecture
-
-and you really understand consumers
-
-and consumer groups because that's the core of it.
-
-And I hope you like this lecture,
-
-I will see you in the next lecture.
+Bài tiếp theo chúng ta soi sâu hơn bằng `kafka-consumer-groups.sh`: liệt kê group, `--describe` để thấy current-offset, log-end-offset và lag từng partition, và hiểu consumer không khai `--group` sẽ sinh ra group tạm thế nào.

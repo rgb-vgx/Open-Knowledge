@@ -1,157 +1,204 @@
-Hi, this is Stephane from Conduktor
+# Dựng OpenSearch Bằng Docker: Single-Node Chuẩn Dev Với 2 Lệnh
+
+Bài trước đã có khung Gradle và class rỗng. Bài này dựng "database đích": OpenSearch + Dashboards chạy local bằng Docker Compose — con đường nhanh, rẻ và reset thoải mái nhất để học cả section.
+
+---
+
+## 1. Vấn đề: Vì Sao Cần Docker Mà Không Cài Tay?
+
+OpenSearch là một search engine phân tán (Java + Lucene), cần JVM tuning, certificates, discovery config. Cài tay trên Windows rất cực: xung đột Java version, quyền file, security plugin bắt HTTPS + login.
+
+Docker giải quyết gọn:
+
+* Một file `docker-compose.yml` mô tả cả cluster: image nào, port nào, biến môi trường nào.
+* Một lệnh `docker compose up -d` là có OpenSearch `:9200` + Dashboards `:5601`.
+* Hỏng thì `docker compose down -v` là sạch, dựng lại 2 phút.
+
+Nếu máy bạn không chạy được Docker (RAM yếu, policy công ty), bỏ qua bài này, sang bài 081 dùng Bonsai cloud. Đừng cố cả hai.
+
+## 2. Cơ Chế: Hai Container Nói Chuyện Với Nhau Ra Sao?
 
-and welcome to this lecture where I'm going to
+```mermaid
+graph LR
+    subgraph "Docker network (compose default)"
+        OS["opensearch:1.x<br/>:9200<br/>single-node<br/>security disabled"]
+        DASH["opensearch-dashboards<br/>:5601<br/>OPENSEARCH_HOSTS=https://...:9200"]
+    end
+    JAVA["OpenSearchConsumer.java<br/>RestHighLevelClient"] -->|HTTP :9200| OS
+    YOU["Browser"] -->|Dev Tools| DASH
+    DASH -->|REST| OS
+```
 
-show you how to start open search project with Docker.
+* `opensearch` là database thật: nhận `IndexRequest`, `BulkRequest`, lưu vào index `wikimedia`.
+* `opensearch-dashboards` chỉ là console web: giúp bạn gõ `GET /`, `PUT /my-first-index` bằng mắt thay vì `curl`.
+* Java code **không bao giờ** nói chuyện với Dashboards — chỉ nói với `:9200`. Nhiều bạn mới nhầm, code trỏ vào `:5601` nên báo connection reset.
 
-So I've created this Docker to compose yml file
+Chế độ `single-node` (`discovery.type=single-node`) tắt bầu cử cluster manager. Dev một node thì bật cho nhẹ; production multi-node thì tuyệt đối không dùng.
 
-and you may have already these signs
+## 3. Code: Mổ File `docker-compose.yml` Từng Dòng
 
-in your IntelliJ Community IDEA.
+File chuẩn của khóa học (rút gọn, giữ đúng keys quan trọng):
 
-If not, you need to go and install a plugin.
+```yaml
+version: '3'
+services:
+  opensearch:
+    image: opensearchproject/opensearch:1.2.4
+    container_name: opensearch
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - plugins.security.disabled=true
+      - override.main.response.version=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - opensearch-net
 
-So to do this,
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:1.2.4
+    container_name: opensearch-dashboards
+    ports:
+      - "5601:5601"
+    environment:
+      OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
+    networks:
+      - opensearch-net
+    depends_on:
+      - opensearch
 
-you need to go to preferences
+volumes:
+  opensearch-data:
 
-and then you go to plugins.
+networks:
+  opensearch-net:
+```
 
-And in this plugin,
+Giải thích từng khối:
 
-you will type in Docker
+### 3.1. `image: opensearchproject/opensearch:1.2.4`
 
-and you will find the Docker plugin
+* Chốt major `1.x` để khớp với `opensearch-rest-high-level-client:1.2.4` trong `build.gradle` (bài 079).
+* Đừng lấy `latest` (hiện đã 2.x/3.x) — client 1.x gọi server 2.x sẽ lỗi version check.
+* Dashboards cũng phải cùng `1.2.4`. Lệch version dashboards/server gây lỗi "incompatible version".
 
-and click on install.
+### 3.2. `discovery.type=single-node`
 
-This is just to enable you to use Docker that are clear
+* Bảo OpenSearch "mày chỉ có một mình, đừng đi tìm node khác".
+* Không có dòng này, node chờ cluster formation, log treo ở `master not discovered`, `:9200` không bao giờ lên.
+* Production: thay bằng `cluster.initial_master_nodes` + danh sách seeds. Dev: cứ `single-node`.
 
-from IntelliJ which is quite nice.
+### 3.3. `plugins.security.disabled=true`
 
-And then make sure you have Docker started.
+* Tắt HTTPS + basic auth. Dev mode mới dám tắt.
+* Khi tắt, Java code connect `http://localhost:9200` không cần username/password, không cần SSLContext phức tạp (Part 1 — bài 083 — sẽ có 2 nhánh code: no-auth vs có-auth, bạn sẽ dùng nhánh đơn giản).
+* Production: **không bao giờ** tắt. Phải bật security, dùng HTTPS + internal users.
 
-And then the next thing you have to do
+### 3.4. `override.main.response.version=true`
 
-is just click on these two arrows,
+* Dòng "lạ" nhất file, nhưng bắt buộc nếu sau này bạn học Kafka Connect Elasticsearch sink.
+* OpenSearch 1.x mặc định trả `version.number: 1.2.4` ở `GET /`. Một số connector cũ chỉ chấp nhận `7.10.2` (Elasticsearch OSS). Flag này bảo OpenSearch "giả vờ" trả `7.10.2` để tương thích.
+* Với code Java thuần trong section này, có hay không cũng chạy. Nhưng cứ để nguyên để khỏi vỡ ở phần Connect sau.
 
-and then you can start your Kafka
+### 3.5. `OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m` + `memlock`
 
-consumer elastic search,
+* Giới hạn heap 512MB cho máy dev. Mặc định OpenSearch đòi heap lớn, máy 8GB RAM sẽ ì.
+* `bootstrap.memory_lock=true` + `ulimits.memlock` khóa RAM, tránh swap làm chậm search. Trên Docker Desktop Windows, nếu báo `memory locking requested but not supported`, vẫn chạy được — chỉ warning.
 
-and start your containers.
+### 3.6. Ports và volumes
 
-And the goal of this
+* `9200:9200` — REST API. Java + `curl` + browser đều đi cổng này.
+* `5601:5601` — Dashboards web.
+* `opensearch-data` volume giữ data khi restart container. Muốn reset sạch (xóa index `wikimedia` làm lại Part 5/6): `docker compose down -v` — flag `-v` xóa luôn volume.
 
-is just to have two things started
+## 4. Chạy Và Kiểm Chứng: 3 Cửa Sổ Phải Sáng
 
-on your computer.
+### 4.1. Start từ IntelliJ hoặc CLI
 
-The number one thing to be starting is open search
+Cách 1 — IntelliJ Community + Docker plugin: mở `docker-compose.yml`, bấm nút play (hai mũi tên) cạnh `services`. Cách này trực quan, log hiện ngay trong IDE.
 
-which is going to be your database.
+Cách 2 — CLI (khuyên dùng để hiểu DevOps thật):
 
-And the other one is open search dashboards
+```bash
+# đứng đúng thư mục chứa docker-compose.yml
+docker compose up -d
 
-which is gonna be able to give us a console access
+# xem trạng thái
+docker compose ps
 
-to the database.
+# xem log nếu không lên
+docker compose logs -f opensearch
+```
 
-So let's test that everything is working.
+Chờ 30–60 giây cho OpenSearch bootstrap. Lần đầu pull image ~500MB nên lâu.
 
-So number one,
+### 4.2. Kiểm tra `:9200` — database sống chưa?
 
-I can go to my web browser
+Mở browser `http://localhost:9200` hoặc:
 
-and I can type local host 9200.
+```bash
+curl http://localhost:9200
+```
 
-And this is gonna give me this JSON output
+Kết quả mong đợi (rút gọn):
 
-saying that, yes,
+```json
+{
+  "name" : "opensearch",
+  "cluster_name" : "opensearch-cluster",
+  "cluster_uuid" : "xxxx",
+  "version" : {
+    "number" : "7.10.2",
+    "distribution" : "opensearch"
+  },
+  "tagline" : "The OpenSearch Project: https://opensearch.org/"
+}
+```
 
-my open search version is correct.
+Thấy `tagline: The OpenSearch Project` là sống. Lưu ý `number: 7.10.2` chính là hiệu ứng của `override.main.response.version=true` — đừng hoảng "sao không phải 1.2.4".
 
-And so everything looks good.
+Nếu browser xoay mãi / `connection refused`: 90% là container chưa ready hoặc port 9200 bị app khác chiếm. Chạy `docker compose logs opensearch | tail -50` xem có dòng `Node started` chưa.
 
-I did set up a few properties in here
+### 4.3. Kiểm tra `:5601` — Dashboards vào được không?
 
-to have a single node.
+Mở `http://localhost:5601`. Lần đầu load 20–30 giây (Dashboards chờ OpenSearch). Thấy màn hình Welcome → menu trái → **Dev Tools**. Gõ:
 
-So, this is, of course, good.
+```
+GET /
+```
 
-Plugin security disabled: true.
+Bấm nút play (send request). Kết quả JSON tương tự `:9200` là đạt. Bookmark URL Dev Tools này — bài 082 sẽ dùng nó để luyện `PUT/GET/DELETE` index bằng tay trước khi code Java.
 
-So to disable any sort of https
+## 5. Bảng So Sánh: Khi Nào Dùng Docker, Khi Nào Bỏ?
 
-and logins because this will give us some problems,
+| Tình huống | Docker local | Sang Bonsai (bài 081) |
+|---|---|---|
+| Máy 16GB RAM, có Docker Desktop | Dùng — nhanh, reset thoải mái | Không cần |
+| Máy yếu / không cài được Docker | Bỏ | Dùng |
+| Cần test reset offsets, rewind (Part 6) | Lý tưởng — `down -v` là sạch | Tốn quota, xóa index chậm |
+| Mạng công ty chặn Docker Hub | Khó pull image | Dùng cloud |
+| Production thật | Không — cần multi-node + security on | Không — cần VPC, monitoring riêng |
 
-otherwise in our code.
+## 6. Pitfalls
 
-We are in development mode anyway.
+* **Lấy image `latest` / `opensearch:2.x`.** Client 1.2.4 trong code mẫu sẽ lỗi. Chốt `1.2.4` cho cả server, dashboards, client.
+* **Xóa dòng `plugins.security.disabled=true` vì "thấy không an toàn".** Dev mà bật security thì Java code phải thêm SSL + auth — Part 1 có nhánh đó nhưng phức tạp gấp 3 lần. Cứ tắt ở local, bật ở prod.
+* **Trỏ Java code vào `:5601`.** Dashboards là web UI, không phải REST data plane. Java luôn đi `:9200`.
+* **Quên `depends_on` / start dashboards trước opensearch.** Dashboards báo `OpenSearch Dashboards server is not ready yet`. Fix: `docker compose restart opensearch-dashboards` sau khi opensearch đã `green`.
+* **Disk đầy vì volume phình.** Mỗi lần test Part 5 bulk hàng chục nghìn docs, volume `opensearch-data` phình nhanh. Định kỳ `docker compose down -v` khi muốn làm lại từ đầu.
+* **Docker Desktop trên Windows ngốn RAM.** Vào Settings → Resources → giới hạn Memory 4GB, Swap 1GB nếu máy yếu. OpenSearch heap 512MB đã set ở trên là đủ học.
 
-And finally this,
+## Kết Luận
 
-override main response version: true
+Tóm một câu: **xong bài này bạn có OpenSearch sống ở `:9200`, Dashboards ở `:5601`, hiểu từng biến môi trường trong compose và biết cách verify + reset.**
 
-is necessary when we get to the Kafka connect version.
-
-This is so that the version number is 7.10.2
-
-available here and not the 1.2.4.
-
-So leave it as is,
-
-but everything like here is expected.
-
-Next we have open search dashboards.
-
-So, it's available at local hosts
-
-and then 5601.
-
-And then it's going to say,
-
-loading open search dashboards,
-
-going to give you a welcome
-
-and then you can just explore on my own.
-
-And the one thing we're going to use for this,
-
-is going to go to the Dev tools
-
-and then on the Dev tools,
-
-we get this console.
-
-Okay?
-
-So, this is the URL that I copied right here.
-
-You can copy this URL
-
-and base it as well if you wanna get to it quickly.
-
-But this is going to allow us
-
-to run REST API queries against Elasticsearch.
-
-All right?
-
-So once you have this running,
-
-you're good to go
-
-and you can go straight into the programming section.
-
-If you don't want to use Docker
-
-or Docker is too complicated for you,
-
-I will show you
-
-in the next lecture,
-
-how to use Bonsai to get started.
+Bài tiếp theo (081) dành cho ai không dùng Docker: dựng OpenSearch managed trên Bonsai cloud trong 10 phút — nếu bạn đã chạy Docker thành công, có thể đọc lướt để biết rồi nhảy thẳng sang bài 082 luyện OpenSearch 101.

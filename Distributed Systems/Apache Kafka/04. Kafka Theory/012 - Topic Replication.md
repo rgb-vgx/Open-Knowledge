@@ -1,265 +1,105 @@
-Hi, this is Stephane from Conduktor,
+# Topic Replication: Broker Chết Thì Dữ Liệu Đi Đâu?
 
-and in this lecture,
+Bài trước bạn đã thấy partitions rải đều khắp brokers để scale ngang. Nhưng rải không mà không sao lưu thì Broker chết là mất dữ liệu. Bài này vá đúng lỗ hổng đó: **replication factor**, **leader**, **ISR**, và câu hỏi Producer/Consumer thực sự nói chuyện với ai.
 
-we're going to learn about
+---
 
-the Kafka Topic Replication Factor,
+## 1. Vấn Đề: Không Replica Thì Mất Một Broker Là Mất Dữ Liệu
 
-and what it implies for your consumers and your producers.
+Khi tự vọc trên máy cá nhân, Topic với **replication factor = 1** (mỗi partition một bản duy nhất) là đủ. Nhưng production thì khác: server nào cũng có ngày bảo trì hoặc lăn ra chết vì lý do trời ơi. Không có bản sao, Broker chết là partition trên nó biến mất theo.
 
-So topics in Kafka,
+Giải pháp của Kafka: mỗi partition có thêm **bản sao (replica)** nằm trên Broker khác. Chuẩn production là replication factor **2 hoặc 3, phổ biến nhất là 3**: chết 1–2 Brokers vẫn còn bản sao phục vụ.
 
-when you're doing stuff on your own machine,
+## 2. Ví Dụ Cầm Tay: Topic-A, 2 Partitions, Replication Factor 2
 
-they can have a replication factor of one,
+Lấy cluster 3 brokers 101, 102, 103. Tạo **Topic-A: 2 partitions, replication factor = 2**.
 
-but usually when you are in production
+Bước 1 — đặt bản chính:
 
-that means you're having a real Kafka cluster,
+* Partition 0 của Topic-A nằm trên **Broker 101**.
+* Partition 1 của Topic-A nằm trên **Broker 102**.
 
-you need to set a replication factor greater than one,
+Bước 2 — nhân bản bằng cơ chế replication:
 
-usually between two and three and most commonly at three.
+* Bản sao của partition 0 được copy sang **Broker 102**.
+* Bản sao của partition 1 được copy sang **Broker 103**.
 
-So that way, if a broker is down,
+Tổng cộng 2 partitions × replication 2 = **4 đơn vị dữ liệu** rải trên 3 brokers, và các Broker đang **replicate dữ liệu cho nhau**.
 
-that means a Kafka server is stopped
+```mermaid
+graph TB
+    subgraph Broker 101
+        A0L[Topic-A P0 - LEADER ★]
+    end
+    subgraph Broker 102
+        A1L[Topic-A P1 - LEADER ★]
+        A0R[Topic-A P0 - replica]
+    end
+    subgraph Broker 103
+        A1R[Topic-A P1 - replica]
+    end
+    A0L -.->|replicate| A0R
+    A1L -.->|replicate| A1R
+```
 
-for maintenance or for a technical issue.
+Giờ giả sử **Broker 102 chết**: Broker 101 vẫn còn partition 0, Broker 103 vẫn còn partition 1. **Cả hai partitions đều còn bản sống trong cluster.** Đó chính là ý nghĩa của replication factor 2: **chịu được 1 Broker chết mà không mất dữ liệu**.
 
-Then another Kafka broker still has a copy
+Analogy kiểu Việt Nam: giống như photo sổ đỏ làm 2 bản, gửi mỗi bản cho một người họ hàng khác nhau giữ. Cháy nhà một người thì vẫn còn bản kia. Replication factor 3 tức là photo 3 bản, cháy 2 nhà vẫn còn 1 bản.
 
-of the data to serve and receive.
+## 3. Leader Và Replica: Chỉ Một Người Được Nhận Khách
 
-So let's take an example to understand this better.
+Có bản sao thì phải có quy định ai là chính, ai là phụ. Kafka gọi đó là **Leader**:
 
-We have Topic-A,
+* Tại một thời điểm, mỗi partition chỉ có **đúng một Leader**, nằm trên một Broker duy nhất.
+* Trong ví dụ trên: Broker 101 là **Leader của partition 0** ★, Broker 102 là **Leader của partition 1** ★. Các bản còn lại chỉ là replica đứng chờ.
 
-it has two partitions and a replication factor of two.
+Luật sắt thứ nhất — phía ghi: **Producer chỉ được gửi dữ liệu tới Broker đang là Leader của partition đó.** Muốn ghi partition 0 thì phải nói chuyện với Broker 101, không được ném sang Broker 102 dù nó cũng có bản sao.
 
-So we have three Kafka brokers,
+Luật sắt thứ hai — phía đọc (mặc định): **Consumer mặc định cũng chỉ đọc từ Leader.** Consumer muốn đọc partition 0 thì hỏi Broker 101. Bản replica trên Broker 102 tồn tại chỉ để **dự phòng**: Broker 101 chết thì nó lên thay làm Leader mới, Producer và Consumer chuyển sang nói chuyện với nó.
 
-and we're going to place partition zero of Topic-A
+```mermaid
+sequenceDiagram
+    participant P as Producer
+    participant L as Broker 101<br/>Leader P0
+    participant R as Broker 102<br/>Replica P0
+    participant C as Consumer
+    P->>L: Ghi message vào P0
+    L-.->>R: Replicate sang replica
+    C->>L: Đọc từ Leader (mặc định)
+    Note over R: Chỉ lên thay khi Leader chết
+```
 
-onto broker 101,
+## 4. ISR: Replica Nào Đủ Tư Cách Lên Thay?
 
-partition one of Topic-A onto broker 102.
+Không phải bản sao nào cũng ngang nhau. Nếu replica chép chậm, tụt hậu xa so với Leader thì lúc Leader chết mà đôn nó lên sẽ mất dữ liệu mới nhất.
 
-So this is the initial.
+Kafka phân loại bằng khái niệm **ISR — In-Sync Replica**: replica nào **replicate kịp thời, đồng bộ với Leader** thì được phong ISR; con nào tụt lại thì thành **out-of-sync replica**, không đủ tư cách lên thay (và cũng không được tính vào các đảm bảo durability ở bài acks sau).
 
-And then because we have a replication factor of two
+Nhớ gọn: **Leader + ISR = đội hình chính thức**. Mất Leader thì chỉ ISR mới được bầu lên thay.
 
-then we're going to have a copy of partition zero
+## 5. Tính Năng Mới Từ Kafka 2.4: Đọc Từ Replica Gần Nhất
 
-onto broker 102 with a replication mechanism,
+Mặc định "chỉ đọc từ Leader" tồn tại từ đầu và vẫn là default tới nay. Nhưng từ **Kafka 2.4**, có thêm tính năng **Consumer Replica Fetching (fetch from follower)**: Consumer được phép đọc từ **replica gần nhất** thay vì bắt buộc đọc Leader.
 
-and a copy of partition one onto broker 103
+Vì sao cần? Hai lý do thực tế:
 
-with again, a replication mechanism.
+1. **Giảm latency**: Consumer đứng cạnh Broker 102 mà Leader ở Broker 101 xa tít thì đọc ngay bản sao bên cạnh cho nhanh.
+2. **Giảm chi phí network trên cloud**: đọc trong cùng datacenter/zone thì rẻ, kéo xuyên zone thì tốn tiền. Đọc replica cùng zone tiết kiệm thấy rõ.
 
-So as we can see here, we have four,
+Luồng khi bật tính năng này: Producer vẫn ghi vào Leader (Broker 101) → Leader replicate sang ISR (Broker 102) → Consumer đọc thẳng từ replica trên Broker 102. Chi tiết cấu hình sẽ học ở phần lập trình, ở đây bạn chỉ cần biết tính năng này tồn tại từ 2.4 và vì sao nó ra đời.
 
-obviously, units of data because we have two partitions,
+Lưu ý của thầy cho người học version mới: nhiều công ty vẫn chạy Kafka cũ, nên thầy luôn ghi chú tính năng xuất hiện từ version nào. Bạn dùng Kafka 3.x thì cứ yên tâm là có Replica Fetching, nhưng đi phỏng vấn hay đọc tài liệu cũ thì phải biết default gốc là "chỉ đọc Leader".
 
-and replication factor of two.
+## Cạm Bẫy Thường Gặp
 
-We can see that brokers are replicating data
+* **Chạy production với replication factor = 1.** Học trên laptop thì được, production thì đó là vé một chiều tới mất dữ liệu. Chuẩn là 3.
+* **Tưởng Producer ghi vào replica nào cũng được.** Sai. Chỉ Leader mới nhận ghi. Ghi nhầm chỗ là lỗi, không phải "rồi nó tự đồng bộ".
+* **Tưởng Consumer đọc gộp từ mọi replica cho nhanh.** Mặc định chỉ đọc Leader. Muốn đọc replica gần nhất phải chủ động bật fetch-from-follower từ 2.4 trở lên.
+* **Nhầm mọi replica đều là ISR.** Replica tụt hậu thì out-of-sync, không được bầu làm Leader, không được tính vào đảm bảo acks=all. Giám sát ISR tụt là việc của admin.
+* **Đặt bản chính và bản sao cùng một rack/máy vật lý.** Cháy rack là mất cả chính lẫn sao. Production tử tế phải rải replica khác rack/zone — chủ đề của phần vận hành.
 
-from other brokers.
+## Kết Luận
 
-So what does that mean?
+Tóm lại một câu: **replication factor tạo bản sao partitions trên Broker khác để chịu được Broker chết, mỗi partition chỉ có một Leader nhận ghi (và mặc định nhận đọc), replica đồng bộ kịp thời gọi là ISR mới đủ tư cách lên thay, còn từ Kafka 2.4 Consumer có thể đọc từ replica gần nhất để giảm latency và chi phí.**
 
-We go back to this.
-
-What if we lose broker 102?
-
-Okay, well, as we can see, we have broker 101,
-
-and 103 still up and they can still serve the data.
-
-So partition zero and partition one are still available
-
-within our cluster and this is why we have
-
-a replication factor.
-
-So in case of replication factor of two,
-
-to make it very simple,
-
-you can lose one broker and be fine.
-
-So next we have replicas, okay.
-
-And so therefore we have a leader for a partition,
-
-and at any time only one broker can be a leader
-
-for a given partition.
-
-And the rule is that producers can only send data
-
-to the broker that is the leader of a partition.
-
-So if we go back to this diagram we had from before,
-
-I added a little star on the leader of each partition.
-
-And we can see that broker 101
-
-is the leader of partition zero,
-
-and broker 102 is the leader of partition one,
-
-but broker 102 is a replica of partition zero,
-
-and broker 103 is a replica of partition one.
-
-So the others brokers replicate the data.
-
-And if the data is replicated fast enough
-
-then each replica is going to be called an ISR.
-
-An ISR means in-sync replica,
-
-as opposed to out of sync replica.
-
-So if the data is replicated well
-
-then they are synchronized in terms of the data replication.
-
-Okay, so this is very important,
-
-because there is a very important aspect of leaders.
-
-So by default,
-
-and this is default behavior with leaders,
-
-your producers are going to only write
-
-into the leader broker for a partition.
-
-So if the producer knows it wants to send data
-
-into partition zero,
-
-as we've seen from the previous mechanism,
-
-and we have a leader and a ISR then the producer knows
-
-that it should only send the data into the broker
-
-that is the leader of that partition.
-
-And that is a very important Kafka feature.
-
-And the Kafka consumers,
-
-they're going to read that default only
-
-from the leader of a partition.
-
-So that means that the consumer will only request data
-
-from the leader broker 101.
-
-That means that broker 102 in the previous example
-
-is a replica just for the sake of replicating data,
-
-and in case the broker 101 goes down
-
-then it can become the new leader,
-
-and serve the data for the producer and the consumer.
-
-That is the default behavior.
-
-But as we'll notice in Kafka,
-
-and Kafka has evolved a lot since I've been teaching it,
-
-over five years of teaching Kafka,
-
-and has evolved a lot.
-
-And there's been new features added over time.
-
-And because actually many companies use older versions
-
-of Kafka and sometimes way older versions of Kafka,
-
-I'm going to specify what has changed across time
-
-for newer Kafka versions.
-
-And even if I know you're only used
-
-the latest Kafka version,
-
-for example, 3.0,
-
-whatever is happened before or after.
-
-I still have to tell people what is the new features,
-
-and when they did appear, okay.
-
-So there is a new feature called
-
-the Kafka Consumer Replica Fetching,
-
-which happened as part of Kafka 2.4,
-
-which allows consumer to read from the closest replica.
-
-So we have the broker 101,
-
-which is leader of partition zero
-
-receiving the data from the producer is going
-
-to replicate data into the ISR partition zero
-
-of broker 102.
-
-And then it's possible for our consumer
-
-to read from the replica itself, okay.
-
-Why?
-
-Well, this may help to improve latency,
-
-because maybe the consumer is really close to broker 102.
-
-And also maybe it's going to help decrease network cost,
-
-if using the cloud,
-
-because if things are in the same data center
-
-then you have little to no cost.
-
-We'll see this in details when we get
-
-to the programming section,
-
-but I just wanted to introduce that concept to you
-
-that is now possible.
-
-So that's it for this sector.
-
-We've learned about brokers and replication factors,
-
-and now leaders and what it means
-
-for producers and consumers.
-
-So I hope you liked this lecture,
-
-and I will see you in the next lecture.
+Bài tiếp theo chúng ta khép lại bộ ba Producer–Broker–độ bền: Producer xác nhận ghi thành công kiểu gì qua ba mức **acks = 0, 1, all**, và công thức tính Topic chịu được bao nhiêu Broker chết từ replication factor N.

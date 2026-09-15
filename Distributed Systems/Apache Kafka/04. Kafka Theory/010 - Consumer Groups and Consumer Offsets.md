@@ -1,345 +1,195 @@
-Hi, this is Stephane from Conduktor,
+# Consumer Group Và Consumer Offset: Chia Việc Để Đọc Song Song, Ghi Nhớ Để Không Mất Dấu
 
-and in this lecture we're going to learn
+Bài trước bạn đã biết một Consumer đơn lẻ pull dữ liệu và deserialize ra sao. Nhưng một mình nó đọc 5 partitions thì sớm muộn cũng đuối. Bài này trả lời hai câu hỏi sống còn khi scale: chia việc đọc cho nhiều Consumer thế nào cho đúng, và crash giữa chừng thì đọc lại từ đâu?
 
-about Kafka, Consumer Groups.
+---
 
-So when we have Kafka and we want to scale
+## 1. Vấn Đề: Một Consumer Không Nuốt Nổi Cả Topic
 
-we're going to have many consumers in an application
+Hãy tưởng tượng Topic `trucks_gps` có 5 partitions, message đổ về mỗi giây hàng nghìn cái. Một Consumer đơn đọc cả 5 partitions thì:
+
+* Poll chậm, xử lý không kịp, **lag** phình to.
+* Muốn nhanh hơn thì chỉ còn cách tăng sức một máy — scale dọc, sớm chạm trần.
 
-and they're going to read data
+Cách của dân distributed system: đừng nuôi một người khổng lồ, hãy chia việc cho cả nhóm cùng đọc. Nhóm đó gọi là **Consumer Group**.
 
-as a group and it's called a consumer group.
+## 2. Consumer Group Là Gì? Luật Chia Partition
 
-So let's take an example
+**Consumer Group** là tập hợp nhiều Consumer cùng nhau đọc một Topic như một khối thống nhất. Mỗi Consumer trong group có ID riêng, nhưng chúng khai chung một `group.id`.
 
-of a Kafka topic with five partitions,
+Luật chia việc rất nghiêm, phải thuộc lòng:
 
-and then we have a consumer group
+> **Trong một group, mỗi Partition tại một thời điểm chỉ được gán cho đúng một Consumer.**
 
-that is called Consumer Group Application,
+Ví dụ: Topic 5 partitions, group `application` có 3 consumers:
 
-it's just a name I give it.
+* Consumer 1 đọc partition 0 và 1.
+* Consumer 2 đọc partition 2 và 3.
+* Consumer 3 đọc partition 4.
 
-And then that consumer group has three consumers,
+```mermaid
+graph LR
+    subgraph Topic - 5 partitions
+        P0[P0]
+        P1[P1]
+        P2[P2]
+        P3[P3]
+        P4[P4]
+    end
+    subgraph Consumer Group - application
+        C1[Consumer 1]
+        C2[Consumer 2]
+        C3[Consumer 3]
+    end
+    P0 --> C1
+    P1 --> C1
+    P2 --> C2
+    P3 --> C2
+    P4 --> C3
+```
 
-one, two and three.
+Cả group cộng lại đọc **toàn bộ Topic**, không partition nào bị bỏ sót, không partition nào bị hai Consumer cùng group giành nhau.
 
-Then each consumer within the group
+Analogy kiểu Việt Nam: Topic là mâm cỗ 5 món, group là bàn 3 người. Mỗi món chỉ một người gắp tại một thời điểm cho khỏi đánh nhau, nhưng cả bàn cộng lại thì vét sạch mâm. Muốn ăn nhanh hơn thì thêm người, thêm đũa.
 
-if they belong to the same group
+## 3. Thừa Consumer Thì Sao? Kẻ Ngồi Chơi Là Chuyện Bình Thường
 
-are going to be reading from exclusive partitions.
+Câu hỏi phỏng vấn kinh điển: Topic 3 partitions mà group có 4 consumers thì sao?
 
-That means that my Consumer 1
+* Consumer 1 đọc partition 0.
+* Consumer 2 đọc partition 1.
+* Consumer 3 đọc partition 2.
+* Consumer 4 **inactive** — ngồi standby, không đọc partition nào.
 
-is going to read from partition zero
+```mermaid
+graph LR
+    P0[Partition 0] --> C1[Consumer 1 - active]
+    P1[Partition 1] --> C2[Consumer 2 - active]
+    P2[Partition 2] --> C3[Consumer 3 - active]
+    C4[Consumer 4 - inactive<br/>standby] -.->|không được gán| P0
+```
 
-and maybe partition one.
+Đây là hành vi **bình thường**, không phải bug. Consumer 4 không hề "phụ" Consumer 1 đọc partition 0 cho nhanh. Nó chỉ ngồi chờ: khi một trong ba Consumer kia chết, nó mới được giao việc (rebalance — chi tiết ở phần nâng cao).
 
-My Consumer 2 is going to read
+Hệ quả thiết kế rút ra ngay:
 
-from partition two and partition three,
+* Số Consumer active tối đa trong một group **bằng số Partition** của Topic.
+* Muốn tăng song song thì phải tăng Partition trước, thêm Consumer sau. Thêm Consumer mà không thêm Partition là nuôi người ngồi chơi.
 
-and finally my Consumer 3
+## 4. Nhiều Groups Trên Một Topic: Một Dòng Dữ Liệu, Nhiều Kẻ Đọc Độc Lập
 
-is going to read from Partition 4.
+Luật exclusive ở mục 2 chỉ áp dụng **trong** một group. **Giữa** các groups thì thoải mái: bao nhiêu group cùng đọc một Topic cũng được, mỗi group nhận đủ toàn bộ dữ liệu.
 
-So as we can see consumer one, two and three
+Ví dụ Topic 3 partitions:
 
-are sharing the reads from all the partitions
+* Group `application-1` có 2 consumers: consumer 1 đọc 2 partitions, consumer 2 đọc 1 partition.
+* Group `application-2` có 3 consumers: mỗi consumer đọc đúng 1 partition.
+* Group 3 chỉ có 1 consumer: một mình ôm cả 3 partitions.
 
-and they read all from a distinct partition,
+```mermaid
+graph TB
+    subgraph Topic - 3 partitions
+        P0[P0]
+        P1[P1]
+        P2[P2]
+    end
+    subgraph Group application-1 - 2 consumers
+        G1C1[C1]
+        G1C2[C2]
+    end
+    subgraph Group application-2 - 3 consumers
+        G2C1[C1]
+        G2C2[C2]
+        G2C3[C3]
+    end
+    subgraph Group 3 - 1 consumer
+        G3C1[C1]
+    end
+    P0 --> G1C1 & G2C1 & G3C1
+    P1 --> G1C1 & G2C2 & G3C1
+    P2 --> G1C2 & G2C3 & G3C1
+```
 
-this way, a group is reading the Kafka topic as a whole.
+Quay lại ví dụ đội xe tải ở bài Topic: `location service` cần stream GPS để vẽ dashboard, `notification service` cần cùng stream đó để gửi SMS. Mỗi service là **một Consumer Group riêng** (`group.id` khác nhau). Hai service đọc độc lập, service này lag hay crash không ảnh hưởng service kia.
 
-So what if you have too many consumers
+Trong code Java, khai báo group chỉ bằng một property duy nhất:
 
-in your consumer group, more than partitions?
+```java
+// Minh họa ý tưởng, chi tiết code ở phần lập trình
+props.put("group.id", "location-service");      // group 1
+props.put("group.id", "notification-service");  // group 2
+```
 
-So let's take an example of a topic A,
+Cùng Topic, khác `group.id` là hai thế giới đọc độc lập.
 
-with partition 0, one and two,
+## 5. Consumer Offset: Dấu Trang Sách Để Crash Rồi Đọc Tiếp
 
-and then my consumer group application
+Chia việc xong thì câu hỏi tiếp theo là: Consumer đọc tới đâu rồi, crash thì nhớ thế nào để đọc tiếp?
 
-has consumer one, two and three.
+Kafka lưu câu trả lời trong một **internal Topic** tên `__consumer_offsets` (có hai dấu gạch dưới ở đầu — dấu hiệu của Topic nội bộ). Mỗi group, mỗi partition có một offset đã commit: "group này đã đọc tới offset X của partition Y".
 
-So in this case, we know that the mapping is simple
+Luồng chuẩn:
 
-we have each consumer reading from one partition
+1. Consumer poll message về, xử lý.
+2. Thỉnh thoảng Consumer **commit offset** — báo cho Broker: "tôi đã xử lý xong tới đây, ghi hộ vào `__consumer_offsets`".
+3. Consumer tiếp tục poll từ offset tiếp theo trở đi.
 
-and then if we add another consumer
+Ví dụ Topic đã ghi tới offset 4258, Consumer commit dần lên 4262. Nếu Consumer chết rồi sống lại, Broker tra `__consumer_offsets` và bảo: "partition 2 này lần trước đọc tới 4262 rồi, giờ chỉ gửi từ 4262 trở đi". Nhờ vậy mà có khả năng **replay từ chỗ crash**, không phải đọc lại từ đầu cũng không bị mất đoạn giữa.
 
-into this consumer group and we can, it's possible
+```mermaid
+graph LR
+    C[Consumer] -->|poll message| B[Broker - Topic partitions]
+    C -->|xử lý xong| C
+    C -->|commit offset thỉnh thoảng| O[__consumer_offsets<br/>group X - P2 = 4262]
+    O -.->|restart thì đọc tiếp từ 4262| C
+```
 
-then that Consumer 4 is going to be inactive.
+Analogy gần gũi: đọc truyện dài 4000 chương mà không kẹp bookmark thì cúp điện là mất dấu. Commit offset chính là kẹp bookmark mỗi vài chục chương. Cúp điện (crash) thì mở đúng chỗ bookmark đọc tiếp.
 
-And that means that it's just going to be stand by consumer,
+## 6. Deep Dive: Ba Ngữ Nghĩa Giao Hàng — At Least Once, At Most Once, Exactly Once
 
-and it's not going to read from any topic partitions
+Tùy **khi nào** bạn commit offset mà rơi vào một trong ba delivery semantics. Đây mới là giới thiệu, phần lập trình sẽ mổ xẻ kỹ, nhưng phải nắm khung từ bây giờ:
 
-and that's okay, but you need to know that it's normal.
+### 6.1. At least once: thà trùng còn hơn mất
 
-That Consumer 4 is not going to help Consumer 1
+* Commit offset **sau khi xử lý xong** message.
+* Nếu xử lý xong nhưng chưa kịp commit đã crash, restart sẽ đọc lại message đó.
+* Hệ quả: message có thể bị xử lý **trùng**. Code xử lý của bạn phải **idempotent** — xử lý lại cũng không gây hại (cộng tiền 2 lần là toang, nhưng ghi đè trạng thái thì không sao).
 
-to read from Partition 0, no, it's going to stay inactive.
+Đây là **mặc định của Java Consumer** (auto-commit theo chế độ at-least-once). Đa số hệ thống chọn chế độ này rồi tự lo idempotency.
 
-And also you can have multiple consumer groups on one topic
+### 6.2. At most once: thà mất còn hơn trùng
 
-so it is completely acceptable
+* Commit offset **ngay khi vừa nhận** message, chưa xử lý.
+* Nếu xử lý lỗi sau đó, message đã bị đánh dấu "đọc rồi" nên **không bao giờ được đọc lại** — mất luôn.
+* Dùng khi mất vài message không sao (metrics, log sampling) nhưng trùng thì chết.
 
-to have multiple consumer groups on the same topic,
+### 6.3. Exactly once: chỉ một lần duy nhất — khó nhất
 
-and let's take an example.
+* Muốn mỗi message được xử lý **đúng một lần**.
+* Có hai đường:
+  * **Kafka -> Kafka**: đọc từ Topic này, ghi ra Topic khác thì dùng **Transactional API** (rất dễ nếu dùng Kafka Streams API).
+  * **Kafka -> hệ thống ngoài**: bắt buộc phải viết **idempotent consumer** phía nhận.
+* Đừng mơ exactly-once "miễn phí" chỉ bằng cách chỉnh commit. Nó là cả thiết kế end-to-end.
 
-So we go back to our topic with three partitions
+Tóm gọn để nhớ:
 
-and then we have our first consumer group
+| Chế độ | Commit khi nào? | Rủi ro | Khi nào dùng? |
+|---|---|---|---|
+| At least once | Sau khi xử lý | Trùng message | Mặc định, xử lý idempotent được |
+| At most once | Ngay khi nhận | Mất message | Mất ít không sao, sợ trùng |
+| Exactly once | Transactional / idempotent end-to-end | Phức tạp | Cần đúng một lần thật sự |
 
-that I've named Consumer Group Application 1,
+## Cạm Bẫy Thường Gặp
 
-and it has two consumers.
+* **Thêm Consumer vô tội vạ mà không tăng Partition.** Consumer thừa ngồi inactive, tốn tài nguyên mà throughput không nhích. Muốn song song hơn thì tăng partition trước.
+* **Hai service khác nhau mà dùng chung `group.id`.** Chúng sẽ giành partition của nhau thay vì mỗi service nhận đủ dữ liệu. Mỗi service độc lập phải có `group.id` riêng.
+* **Không commit offset bao giờ.** Restart là đọc lại từ đầu (hoặc từ latest tùy config), hoặc tệ hơn là không biết mình đang ở đâu. Commit thưa quá thì replay lại nhiều, commit dày quá thì tốn overhead — phải cân.
+* **Chọn at-least-once mà code không idempotent.** Trùng message là chắc chắn sẽ xảy ra trong đời thực (crash, rebalance). Không lo idempotency từ đầu thì tới lúc trùng là trừ tiền khách hai lần.
+* **Tưởng exactly-once chỉ là một flag config.** Không có flag thần kỳ nào cả. Exactly-once là kiến trúc: transactional + idempotent consumer + hệ downstream hợp tác.
 
-Now they're going to share their reads
+## Kết Luận
 
-from our topic partitions,
+Tóm lại một câu: **Consumer Group chia partitions cho các Consumer đọc song song theo luật mỗi partition một chủ, nhiều groups đọc độc lập trên cùng Topic nhờ `group.id` khác nhau, và cơ chế commit offset vào `__consumer_offsets` cho phép đọc tiếp sau crash với ba ngữ nghĩa at-least-once, at-most-once, exactly-once tùy thời điểm commit.**
 
-so Consumer 1 is going to read from two partitions,
-
-and Consumer 2, just from one and that's fine.
-
-And then we have a second consumer group application
-
-and this one will have three consumers,
-
-and each of them are going to be reading
-
-from a distinct partition.
-
-And then finally, if we have a consumer group three
-
-with just one consumer, that consumer is going to be reading
-
-from all topic partitions.
-
-So as we can see,
-
-it's fine to have multiple consumer groups on the topic,
-
-then each partition will have multiple readers, right?
-
-But within a consumer group,
-
-only one consumer is going to be assigned to one partition.
-
-And so why would you have multiple consumer groups?
-
-Well, if you go back to the trucks example that I gave you,
-
-we had a location service and a notification service
-
-reading from the same data streams of trucks GPS,
-
-well, that means
-
-that we're going to have one consumer group per service.
-
-So one consumer group will be for the location service,
-
-and another consumer group
-
-will be for the notification service.
-
-Now to create distinct consumer groups
-
-as we'll see, when we go to the programming section,
-
-we're going to use the consumer property named group.id
-
-to give a name to a consumer group,
-
-and then consumers will know in which group they belong.
-
-And these groups they're even more powerful
-
-than what we think.
-
-So in this group we can define consumer offsets,
-
-what are they?
-
-Well, Kafka is going to store the offsets
-
-at which a consumer group has been reading.
-
-And these offsets are going to be in a Kafka topic
-
-named consumers offsets with underscores in the beginning
-
-because it's an internal Kafka topic.
-
-So let's take an example and we will understand
-
-why consumer offsets are so important.
-
-So we have this topic,
-
-and what I represented right here vertically is an offset,
-
-so we've been writing a lot in this topic
-
-and now we have number 4258, all the way up.
-
-So we have a consumer from within the consumer group
-
-and is going to commit offsets once in a while.
-
-And when the offsets are committed,
-
-this is going to allow the consumer to keep on reading
-
-from the offsets onwards.
-
-And so the idea is that when a consumer is done
-
-processing the data that is received from Apache Kafka,
-
-it should once in a while commit the offsets
-
-and tell the Kafka brokers to write
-
-to the consumer offset topic,
-
-and by committing the offsets
-
-we're going to be able to tell the Kafka broker
-
-how far we've been successfully reading
-
-into the Kafka topic
-
-and so this is why you do it once in a while.
-
-While you do this well, because if your consumer dies
-
-then comes back and then is going to be able to read back
-
-from where it left it off,
-
-thanks to the committed consumer offsets,
-
-because Kafka is going to say,
-
-hey in this partition two,
-
-it seems you have been reading up to these offsets for 4262
-
-then when you restart,
-
-please will only send you data from this offsets onwards.
-
-And this is thanks to consumer groups offsets
-
-that we're going to be able to have some mechanism
-
-to replay data form where we have crashed or failed.
-
-So that means that we have different delivery semantics
-
-for consumers, and we'll explore the those in detail
-
-later on in this course.
-
-But by default, the Java Consumers
-
-will automatically commit offsets in an at least once mode.
-
-But if you choose to commit manually,
-
-you have three delivery semantics,
-
-and I will explain those in details
-
-later on this course again.
-
-So we have at least once
-
-which means that the offsets are going to be committed
-
-right after the message is processed
-
-and in case the processing goes wrong,
-
-then there's a chance we are going to read
-
-that message again.
-
-So that means that we can have duplicate
-
-processing of messages in this setting,
-
-and so we need to make sure
-
-that our processing is it idempotent,
-
-that means that when you process again the messages
-
-it will not impact your system.
-
-The second option is to go to at most once
-
-and the effect of this is that we commit offsets
-
-as soon as the consumers receive messages
-
-but then if the processing goes wrong
-
-then some messages are going to be lost
-
-because there won't be read again
-
-because we have committed offsets sooner
-
-than actually processing the message,
-
-so that means that we see messages at most once.
-
-And then exactly once
-
-where we want to process messages just once.
-
-So when we do Kafka to Kafka workflow
-
-that means when we read from topic
-
-and then we write back to topic as a result
-
-we can use the transactional API, which is very easy to use
-
-if you use the Kafka streams API as well, for example,
-
-or if go from Kafka to an external system
-
-then you need to use an idempotent consumer.
-
-So this is just to introduce these concepts
-
-we will explore them in depth
-
-when we go into the programming section of this course
-
-but just so you know,
-
-based on how, and when you commit offsets
-
-you're going to be either in at least once mode,
-
-at most once, or exactly once mode.
-
-All right, that's it for this lecture
-
-on consumers and consumer groups, I hope you liked it,
-
-and I will see you in the next lecture.
+Bài tiếp theo chúng ta xuống tầng hạ tầng: những partitions này thực sự nằm trên máy nào — qua nhân vật **Broker**, khái niệm **bootstrap server** và cơ chế client tự khám phá cả cluster chỉ từ một địa chỉ duy nhất.

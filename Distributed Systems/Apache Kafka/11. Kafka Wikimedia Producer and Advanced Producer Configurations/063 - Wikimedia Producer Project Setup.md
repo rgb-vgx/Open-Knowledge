@@ -1,301 +1,160 @@
-Hi, this is Stephane from Conduktor
+# Wikimedia Stream + Dựng Project Producer: Lấy Dữ Liệu Thật Từ Wikipedia Real-Time
 
-and welcome to this section on the Wikimedia Producer
+Producer demo kiểu `send("hello")` thì học config nào cũng trừu tượng. Muốn cảm nhận `acks`, `retries`, `batch.size`, `linger.ms` thì cần một nguồn dữ liệu thật: throughput cao, chảy liên tục, JSON text. Stream `recentchange` của Wikimedia chính là nguyên liệu đó — và bài này dựng toàn bộ project Java để đọc nó.
 
-and producer configurations.
+---
 
-So we're going to first set up the project
+## 1. Vấn đề: Producer Cần Gì Để Học Config Nghiêm Túc?
 
-to be able to take data from Wikimedia in a Kafka producer
+Ba yêu cầu cho một project demo Producer đạt chuẩn:
 
-into Kafka.
+1. **Dữ liệu thật, vô hạn, tốc độ cao.** Có như vậy mới thấy khác biệt giữa `linger.ms=0` và `linger.ms=20`, giữa `compression.type=none` và `snappy`.
+2. **Không phải tự bịa message.** Dữ liệu bịa thường đều nhau, ngắn, không nén được — đo throughput sẽ sai lệch.
+3. **Chuẩn SSE (Server-Sent Events) dễ đọc từ Java.** Chỉ cần một HTTP client giữ connection mở, mỗi event là một JSON.
 
-And we'll have a look at the recent change stream.
+Wikimedia cung cấp đúng thứ đó: endpoint public stream mọi sửa đổi trên mọi wiki (Wikipedia, Wikidata...) theo thời gian thực, trung bình khoảng ~20-30 event/giây, cao điểm hơn nhiều. Không cần API key, mở trình duyệt cũng xem được.
 
-We'll have a look at a few demos as well available to us
+## 2. Cơ Chế: Wikimedia RecentChange Stream Hoạt Động Ra Sao?
 
-to see the kind of transformations we're going to do.
+### 2.1. Bản chất là SSE trên HTTP
 
-We will set up Java libraries
+Endpoint:
 
-for our project in this lecture
+```text
+https://stream.wikimedia.org/v2/stream/recentchange
+```
 
-just to get started.
+Khác với REST thông thường (request → response rồi đóng), SSE giữ một HTTP connection mở rất lâu. Server cứ có thay đổi mới là đẩy một event dạng:
 
-So we'll set up OKhttp3
+```text
+event: message
+data: {"$schema":"/mediawiki/recentchange/1.0.0","type":"edit","title":"...","user":"...","bot":false,"server_name":"en.wikipedia.org", ...}
+```
 
-as well as Okhttp-eventsource
+Mỗi `data:` là một JSON hoàn chỉnh: loại thay đổi (`edit`, `new`, `categorize`, `log`), tên bài, user, bot hay không, wiki nào, độ lớn edit, timestamp. Bạn có thể hình dung nó như một topic Kafka public mà Wikimedia đã host sẵn cho cả thế giới đọc.
 
-and all these things should be enough
+### 2.2. Vì sao stream này lý tưởng cho Kafka Producer?
 
-for us to start writing our code.
+- **Throughput cao và biến động:** lúc yên ắng vài msg/s, lúc cao điểm hàng chục msg/s — đủ để batching và compression phát huy.
+- **Message dạng JSON text lặp cấu trúc:** field lặp lại nhiều (`server_name`, `type`, `user`...) nên nén rất tốt, demo `compression.type` sẽ thấy khác biệt rõ.
+- **Vô hạn:** chạy 10 phút hay 10 tiếng đều có dữ liệu, phù hợp để đo throughput, test `retries`, `buffer.memory`.
+- **Có thể phân tích tiếp:** ở phần Kafka Streams sau này, chính stream này sẽ dùng để tính thống kê (bao nhiêu edit/giây, wiki nào sôi động nhất, bot vs người...). Học một nguồn, dùng cho nhiều phần.
 
-Okay, so the first thing we're going to do
+### 2.3. Kiến trúc project sẽ dựng
 
-is go to this URL to see the recent changes of Wikimedia.
+```mermaid
+graph LR
+    WIKI["Wikimedia SSE<br/>stream.wikimedia.org"] -->|HTTP SSE| JAVA["WikimediaChangesProducer<br/>(EventSource + KafkaProducer)"]
+    JAVA -->|send ProducerRecord| KAFKA["Topic wikimedia.recentchange<br/>3 partitions, RF=1"]
+    KAFKA --> CONS["Consumer / Conduktor UI<br/>kiểm chứng"]
+```
 
-And actually you see this page
+Hai thư viện Java đảm nhận hai nửa:
 
-keeps on being updated and it goes really, really fast.
+| Thư viện | Vai trò |
+|---|---|
+| `kafka-clients` + `slf4j` | Gửi record vào Kafka (nửa Producer) |
+| `okhttp3` + `okhttp-eventsource` | Đọc SSE stream từ Wikimedia (nửa Source) |
 
-And this is a stream,
+## 3. Config Và Dependency Chi Tiết
 
-a real-time stream accessible from your web browser
+Bài này chưa tuning Producer, nhưng dependency phải đúng ngay từ đầu. Dưới đây là từng dependency trong `build.gradle` và vì sao cần nó.
 
-of all the changes happening in Wikimedia in real time.
+### 3.1. `org.apache.kafka:kafka-clients`
 
-So as you can see
+Ý nghĩa: client chính thức của Kafka, chứa `KafkaProducer`, `ProducerRecord`, `ProducerConfig`.
+Giá trị mẫu: dùng version khớp broker local. Ví dụ broker 3.1.x thì client `3.1.0`; broker 2.8 thì client `2.8.0` (version client quyết định default safe hay không — chi tiết ở bài 070).
+Khi nào dùng: bắt buộc, mọi Producer đều cần.
 
-it's quite a fairly high throughput type of data stream.
+### 3.2. `org.slf4j:slf4j-api` + `slf4j-simple`
 
-And this is the one we're going to use
+Ý nghĩa: logging facade + implementation đơn giản để thấy log config Producer khi khởi động và log message đang gửi.
+Khi nào dùng: luôn thêm trong project học tập. Production có thể thay `slf4j-simple` bằng Logback/Log4j2.
 
-to send data into Apache Kafka.
+### 3.3. `com.squareup.okhttp3:okhttp`
 
-So I'm quite excited about showing this one to you.
+Ý nghĩa: HTTP client giữ connection SSE mở lâu dài.
+Giá trị mẫu: `4.9.3` — version đã kiểm chứng tương thích với `okhttp-eventsource`.
+Khi nào dùng: bắt buộc để `okhttp-eventsource` chạy được.
 
-And then in the second page, I'm going to go
+### 3.4. `com.launchdarkly:okhttp-eventsource`
 
-and I'm gonna close this one.
+Ý nghĩa: wrapper SSE trên OkHttp, cung cấp interface `EventHandler` (`onOpen`, `onMessage`, `onError`...) và class `EventSource.Builder`. Bạn chỉ cần implement `onMessage` để `producer.send()`.
+Giá trị mẫu: `2.5.0`.
+Khi nào dùng: bắt buộc cho nguồn Wikimedia SSE. Nếu nguồn của bạn là file/DB/API REST thì không cần.
 
-This is a CodePen.
+### 3.5. File `build.gradle` hoàn chỉnh để tra cứu
 
-So this is a simple of a code that can be running
+```groovy
+dependencies {
+    implementation 'org.apache.kafka:kafka-clients:3.1.0'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.launchdarkly:okhttp-eventsource:2.5.0'
+}
+```
 
-in the web browser in JavaScript.
+> Giữ nguyên version mẫu nếu bạn muốn chạy đúng như demo. Nâng client lên 3.x mới hơn cũng được, nhưng đừng hạ client xuống 2.8 mà không đọc bài Safe Producer (070) trước — default `acks` và `enable.idempotence` sẽ đổi.
 
-And I'm going to zoom out a little bit for you.
+## 4. Code Ví Dụ: Tạo Module Và Class Khung
 
-So this is the code in JavaScripts and HTML.
+### 4.1. Tạo module Gradle mới
 
-And then in here we get some around some stats.
+Trong IntelliJ: chuột phải vào project gốc → New → Module → Gradle, SDK 11, tên gợi ý `kafka-producer-wikimedia`. Sau khi tạo sẽ có sẵn `build.gradle` và cây `src/main/java`.
 
-So this is the same stream we show you from before
+### 4.2. Thêm dependencies và sync
 
-but we have information
+Paste khối dependencies ở mục 3.5 vào `build.gradle` của module, rồi nhấn con voi Gradle (Reload) để pull thư viện. Nếu không sync, import `KafkaProducer` và `EventSource` ở bước sau sẽ đỏ.
 
-around how many wikis we get per second.
+### 4.3. Tạo class khung để kiểm tra setup
 
-So this is an average of 29 per second.
+Package và class theo chuẩn demo:
 
-We get also a distribution
+```java
+package io.conduktor.demos.kafka.wikimedia;
 
-of which pages are affected by these changes.
+public class WikimediaChangesProducer {
+    public static void main(String[] args) throws InterruptedException {
+        System.out.println("Wikimedia producer setup OK");
+    }
+}
+```
 
-So en.wikipedia.org is the highest change.
+Bấm Run. Nếu in ra dòng trên không lỗi `ClassNotFoundException` là dependencies đã về đủ. Bài sau sẽ thay thân `main` bằng `KafkaProducer` + `EventSource` thật.
 
-Okay. But we have, for example
+```bash
+# Kiểm tra nhanh stream có sống không (không cần Java)
+curl -N https://stream.wikimedia.org/v2/stream/recentchange | head -n 20
+```
 
-wiki.data.org as well changing, we have, for example
+Nếu `curl` thấy event `data:` chảy liên tục là nguồn ổn. Nếu mạng công ty chặn SSE, hãy xử lý proxy/VPN trước khi đổ lỗi cho code.
 
-fr.wikipedia.org, that's changing and so on.
+## 5. Safe / High-Throughput Preset Liên Quan
 
-So these are some very interesting stats.
+Bài này chưa áp preset nào — Producer còn chưa tồn tại. Nhưng hãy chốt trước quy ước dùng xuyên suốt section:
 
-And at some point we will be playing
+```java
+// Bài 064-065: chạy mặc định trước để thấy baseline
+// props chỉ có BOOTSTRAP_SERVERS_CONFIG + KEY/VALUE_SERIALIZER_CLASS_CONFIG
 
-in Kafka Streams to get some of these stats available to us.
+// Bài 070-071 (Safe): thêm acks=all + enable.idempotence=true + retries=Integer.MAX_VALUE
+// Bài 072-074 (Throughput): thêm compression.type=snappy + linger.ms=20 + batch.size=32*1024
+```
 
-So I just wanted to show you that this stream
+Đừng trộn cả hai preset ngay từ đầu. Mạch học đúng là: chạy trần → đo → safe hóa → tăng tốc. Mỗi preset thêm vào phải thấy log config đổi tương ứng.
 
-of data could be also analyzed in real time,
+## 6. Cạm Bẫy Thường Gặp
 
-for example like this.
+- **Nhầm source directory khi tạo class.** Project nhiều module dễ tạo class nhầm vào module `kafka-basics` thay vì `kafka-producer-wikimedia`. Triệu chứng: chạy vẫn bản cũ. Cách tránh: kiểm tra đường dẫn file chứa đúng tên module trước khi code.
+- **Quên sync Gradle sau khi thêm dependency.** Import `okhttp3` hay `EventSource` đỏ lòe dù đã paste đúng. Nhấn Reload Gradle rồi mới sửa code.
+- **Lệch version OkHttp vs EventSource.** `okhttp-eventsource` 2.5.0 đi với OkHttp 4.x. Nâng OkHttp lên 5.x đơn lẻ dễ vỡ API. Giữ đúng cặp `4.9.3` + `2.5.0` cho chắc.
+- **Dùng JDK quá mới/cũ.** Module demo dùng SDK 11. JDK 8 thiếu API, JDK 21 có thể cảnh báo module. Thống nhất JDK 11 hoặc 17 cho cả project.
+- **Mạng chặn SSE.** Chạy ở mạng công ty có firewall chặn stream dài, `EventSource` cứ `onError` rồi reconnect. Test bằng `curl -N` trước để loại trừ nguyên nhân mạng.
+- **Tạo topic muộn.** Bài này chưa cần topic, nhưng từ bài 065 bắt buộc có topic `wikimedia.recentchange`. Tạo trước từ Conduktor UI (3 partitions, RF=1) để bài sau không gián đoạn.
 
-And a last way to analyze this stream
+## Kết Luận
 
-in real time, just to, again
+Tóm lại một câu: **Wikimedia `recentchange` là một SSE stream JSON real-time lý tưởng cho demo Producer, và project Java cần đúng năm dependency (`kafka-clients`, `slf4j`, `okhttp`, `okhttp-eventsource`) sync sạch trước khi viết một dòng Producer nào.**
 
-visualize this stream of data is to go to this websites.
-
-And this is going to show you over time
-
-a chart of the type of events that are going to happen.
-
-So is it a categorization event, an edit
-
-edit log or new, okay.
-
-Was it posted by a bot or not by a bot?
-
-So, about 50/50 right now.
-
-Is it a major edit or a minor edit of these pages?
-
-And it's mostly major as we can see.
-
-And we can look at the number of edits over time.
-
-So I like this stream because it's quite high throughputs.
-
-It's also real time.
-
-It's on data that you may have already seen.
-
-Okay. And it gives you some information around the website
-
-the size of edits.
-
-Is it a small edit, or is it a large edit,
-
-and the invent arrival delay in seconds versus, you know
-
-when it was posted on Wikipedia
-
-and when it ended up in the stream.
-
-So this is just to show you the fact
-
-that this stream of data can be analyzed in websites
-
-and we're going to actually write a Kafka Producer for it.
-
-And I wanted to give you a taster of how things worked.
-
-Okay. So the next thing we're going to do is to set
-
-up our project.
-
-Okay. So we are going to set up our project.
-
-And so for this, I go back to Kafka beginner's course,
-
-I right click, and then I will do 'New' and then 'Module'
-
-and we will create a new module for project.
-
-So it's a grade of project of 11.
-
-SDK correlate to 11.
-
-So, this is good.
-
-And the name of the project is Kafka Producer, Wikimedia.
-
-Okay. For the artifact coordinates, I am good with these.
-
-I will click on finish.
-
-So as we can see, a new module was created
-
-and within it a builder grade of file was created as well.
-
-Okay. So we're good to go.
-
-Now we need to add some dependencies in our grade of file.
-
-So the first thing we need to set
-
-up for dependencies are going to be the ones we had
-
-from before.
-
-So you have to actually take the one from Kafka basics.
-
-I can copy this dependency block right here
-
-and paste it because, well,
-
-we need only to have Kafka clients SLF4J-API
-
-and SLF4J simple,
-
-but we need two more event source dependencies, okay.
-
-To actually read this stream from a Java code.
-
-So how do we do this?
-
-Well, what I'm going to do is first get the okhttp3.
-
-So I will type in this and we get this library,
-
-so okhttp, okay,
-
-I'm going to click on it and get one of the latest versions.
-
-So 4.9.3 that I know works well,
-
-so I'll copy it,
-
-and then I will paste it in here.
-
-Great.
-
-And the last one I need to, to get is also the
-
-okhttp eventsource,
-
-which is going to allow me to grab this stream.
-
-So let's go back to okhttp3.
-
-Maybe it's not here, so I'll just type it.
-
-So, okhttp eventsource.
-
-Here we go.
-
-So I like this one and I will take the latest version.
-
-So, 2.5.0, copy this
-
-and paste it.
-
-Okay. So we're good to go.
-
-Now, finally, we're just going to create one file.
-
-Okay. Just to make sure that things are set up.
-
-So let me close these files that I don't need,
-
-and I will go into main Java.
-
-And here you need to be quite careful.
-
-So this source directory is not the one we want.
-
-We want the source from within
-
-the Kafka Producer Wikimedia.
-
-I made the mistake in a recording.
-
-So I'm doing it again.
-
-Excuse me.
-
-So you're going to 'Java New' and then 'Java Class.'
-
-And the name is io.Conduktor.demos.kafka.wikimedia.
-
-And then I will name one WikimediaChangesProducer
-
-In the class. Okay. We got it.
-
-Then we add the main method and we run our code.
-
-So our code is being run properly.
-
-This is great.
-
-And then the last thing I need to check is to
-
-go to build a Gradle.
-
-And right now I don't see the little Gradle elephants
-
-to refresh it, but if you have the elephant,
-
-you click on it to refresh it
-
-and this will pull in your dependencies.
-
-Okay? Okay.
-
-So now that we have everything good
-
-we are to just get started with the implementation
-
-of the producer and I will do this in the next lecture.
+Bài tiếp theo chúng ta sẽ viết hai class cốt lõi: `WikimediaChangesProducer` (giữ `KafkaProducer` + `EventSource`) và `WikimediaChangeHandler` (mỗi `onMessage` là một `producer.send()`), nối stream Wikimedia vào topic `wikimedia.recentchange`.

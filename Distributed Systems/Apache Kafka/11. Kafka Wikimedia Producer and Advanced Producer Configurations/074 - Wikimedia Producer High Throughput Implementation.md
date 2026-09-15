@@ -1,165 +1,169 @@
-Hi, this is Stephane from Conduktor
+# High-Throughput Producer: Áp Snappy + Linger + Batch Vào Wikimedia Và Đo Thật
 
-and in this lecture we're going to implement
+Ba bài lý thuyết vừa rồi cho ba mảnh: `compression.type` (072), `linger.ms` + `batch.size` (073). Bài này là bài thợ: dán cả ba vào Wikimedia producer, chạy thật, đọc log xác nhận, và chứng minh consumer không cần đổi gì. Đây cũng là preset throughput chuẩn để bạn copy cho mọi stream JSON text sau này.
 
-a high throughput producer.
+---
 
-So we'll add snappy message compression in our producer,
+## 1. Vấn đề: Lý Thuyết Đúng Nhưng Chưa Vào Code Thì Chưa Tính
 
-and snappy is going to be very helpful
+Trước khi tuning, log baseline của Wikimedia producer hiện:
 
-if your messages are text-based
+```text
+batch.size = 16384
+linger.ms = 0
+compression.type = none
+partitioner.class = org.apache.kafka.clients.producer.internals.DefaultPartitioner
+```
 
-and they are for our use case.
+Dịch ra: mỗi batch tối đa 16KB, không chờ gom (gửi ngay), không nén. Với JSON Wikimedia vài trăm byte/message, mỗi request mang được ít message, request/s cao, nén không có, disk và network gánh đủ. Producer vẫn chạy được (bài 065 đã chứng minh), nhưng đắt đỏ.
 
-For example, if you have log lines or JSON documents
+Mục tiêu bài này: với tối đa 20ms latency thêm vào, biến hàng nghìn request nhỏ thành hàng chục request lớn, nhỏ đi vài lần nhờ nén — mà phía consumer không hề biết.
 
-and we have JSON documents.
+## 2. Cơ Chế: Ba Dòng Này Cộng Hưởng Ra Sao?
 
-Snappy, I like it because it has a good balance
+Ba config không cộng tuyến tính mà khuếch đại lẫn nhau:
 
-of CPU to compression ratio,
+```mermaid
+graph LR
+    L["linger.ms=20<br/>chờ gom 20ms"] --> B["batch.size=32KB<br/>batch to gấp đôi"]
+    B --> C["compression.type=snappy<br/>batch to -> nén tốt hơn"]
+    C --> R["Ít request hơn<br/>mỗi request nhỏ hơn<br/>=> throughput tăng"]
+```
 
-but test whether the algorithm is good for you
+1. `linger.ms=20` cho producer 20ms để gom thêm message vào batch đang mở của từng partition.
+2. `batch.size=32KB` nới trần để batch có chỗ chứa số message gom thêm đó (trần cũ 16KB sẽ đầy sớm, phí mất thời gian chờ).
+3. `compression.type=snappy` nén cả batch to đó — batch càng to, tỉ lệ nén càng cao vì JSON lặp cấu trúc.
 
-and make your own decisions.
+Bỏ một trong ba là mất cộng hưởng: có linger mà không nới batch thì batch đầy sớm; có batch to mà không linger thì batch gửi non; có cả hai mà không nén thì request to nhưng vẫn nặng.
 
-We'll also increase the batch size to 32 kilobytes
+### 2.1. Vì sao chọn đúng số này?
 
-and we'll introduce a small delay
+| Config | Baseline | Tuning | Vì sao số này |
+|---|---|---|---|
+| `compression.type` | `none` | `snappy` | JSON text: cân bằng CPU/nén tốt nhất, an toàn làm default |
+| `linger.ms` | `0` | `20` | Đủ gom ở ~30 msg/s mà latency thêm không đáng kể cho streaming |
+| `batch.size` | `16384` (16KB) | `32768` (32KB) | Gấp đôi default: batch to hơn rõ rệt mà RAM thêm không đáng kể |
 
-with linger.ms to 20 millisecond,
+Đây là điểm bắt đầu, không phải đáp án cuối. Production phải benchmark `linger.ms` 5/20/50 và `batch.size` 32/64KB trên data thật rồi chốt. Nhưng nếu chưa biết bắt đầu từ đâu, bắt đầu từ ba số này.
 
-and we'll also check which partitioner
+## 3. Config Chi Tiết: Nhắc Lại Một Dòng Mỗi Cái Để Tra Cứu
 
-is being used for our code.
+### 3.1. `compression.type`
 
-At the end, our code is going to look like this,
+- **Ý nghĩa:** thuật toán nén batch trước khi gửi. Đã mổ ở bài 072.
+- **Giá trị mẫu:** `snappy` cho Wikimedia và mọi JSON/log text.
+- **Khi nào dùng:** luôn bật cho stream text throughput cao; bỏ qua cho dữ liệu đã nén sẵn.
 
-so let's get started.
+### 3.2. `linger.ms`
 
-Okay, so let's launch our producer while it is this,
+- **Ý nghĩa:** chờ tối đa bao lâu để gom thêm message. Đã mổ ở bài 073.
+- **Giá trị mẫu:** `20` cho lab này; production streaming thường `5`–`100`.
+- **Khi nào dùng:** tăng khi chịu được thêm vài chục ms latency; giữ `0` cho real-time nghiêm ngặt.
 
-and we are going to have a look at
+### 3.3. `batch.size`
 
-the default value set for these settings.
+- **Ý nghĩa:** trần byte mỗi batch theo partition. Đã mổ ở bài 073.
+- **Giá trị mẫu:** `32 * 1024` (32KB) cho lab này.
+- **Khi nào dùng:** tăng cùng `linger.ms` khi message nhỏ và nhiều; kiểm tra `batch.size × số partition ≤ 1/3 buffer.memory`.
 
-So I'm going to stop this.
+### 3.4. `partitioner.class` (chỉ quan sát, chưa đổi)
 
-Okay, stop, stop, stop.
+- **Ý nghĩa:** class quyết định record vào partition nào.
+- **Giá trị mẫu:** `org.apache.kafka.clients.producer.internals.DefaultPartitioner` — bản 2.4+ đã là sticky partitioner cho key null.
+- **Khi nào dùng:** để default. Bài 075 sẽ mổ vì sao default này đã tối ưu cho Wikimedia (key null).
 
-Okay, so if we have a look at it,
+## 4. Code Ví Dụ: Dán Preset Vào WikimediaChangesProducer
 
-the batch size is 16 kilobytes.
+### 4.1. Khối code hoàn chỉnh
 
-Then we have the compression.type, it is none,
+```java
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
+import java.util.Properties;
 
-and linger.ms is zero.
+Properties props = new Properties();
+props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-And if you have a look at the partitioner.class,
+// ===== SAFE preset - giữ nguyên từ bài 070-071, không được xóa =====
+props.setProperty(ProducerConfig.ACKS_CONFIG, "all");
+props.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+props.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
+// ===================================================================
 
-it is called the DefaultPartitioner,
+// ===== HIGH-THROUGHPUT preset - thêm mới ở bài này =====
+props.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
+props.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20");
+props.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32 * 1024));
+// =======================================================
 
-and if we have a look and just type DefaultPartitioner,
+KafkaProducer<String, String> producer = new KafkaProducer<>(props);
+```
 
-we're going to import it and then go in this class.
+Lưu ý code: `32 * 1024` phải bọc `Integer.toString(...)` vì `setProperty` nhận String. Trong transcript gốc có chỗ đọc nhầm `32 * 124` — giá trị đúng là `32 * 1024 = 32768`.
 
-You see it implements the sticky partitioning
+### 4.2. Quy trình chạy và đối chiếu (làm đúng thứ tự)
 
-because there is a sticky partition cache and so on.
+1. Start một console consumer trước để hứng data mới:
 
-So this is the newer type of partitioner
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic wikimedia.recentchange
+```
 
-I just told you about.
+2. Run producer, để chạy 1–2 phút, rồi Stop.
+3. Mở log khởi động, xác nhận ba dòng:
 
-Okay, so back here, I'm going to remove this
+```text
+batch.size = 32768
+compression.type = snappy
+linger.ms = 20
+```
 
-cause we don't need it.
+4. Nhìn sang consumer: JSON vẫn hiện nguyên vẹn, không lỗi, không cần config gì thêm. Đây là bằng chứng nén + batch trong suốt với consumer.
+5. (Tùy chọn) Mở class `DefaultPartitioner` trong IDE, tìm `StickyPartitionCache` — bằng chứng producer đang dùng sticky partitioner cho key null (chi tiết bài 075).
 
-And next we're going to set
+## 5. Safe / High-Throughput Preset Tóm Tắt (Bảng Tra Cứu Nhanh)
 
-some high throughput
+Đây là một trong hai bài phải trình bày preset rõ ràng. Dưới đây là toàn bộ config Wikimedia sau bài này:
 
-producer configs.
+```java
+// ===== WIKIMEDIA PRODUCER - FULL PRESET sau bài 074 =====
+// --- SAFE (bài 070-071) ---
+// acks=all, enable.idempotence=true, retries=Integer.MAX_VALUE,
+// delivery.timeout.ms=120000 (default), max.in.flight.requests.per.connection=5 (default)
+// --- HIGH-THROUGHPUT (bài này) ---
+// compression.type=snappy, linger.ms=20, batch.size=32768 (32KB)
+// --- CHƯA ĐỔI ---
+// partitioner.class=DefaultPartitioner (sticky, default tốt),
+// buffer.memory=33554432 (32MB default), max.block.ms=60000 (default)
+// --- BROKER LOCAL ---
+// replication.factor=1, min.insync.replicas=1 (prod: 3 và 2)
+```
 
-So we're going to do
+| Nhóm | Config | Giá trị |
+|---|---|---|
+| Safe | `acks` | `all` |
+| Safe | `enable.idempotence` | `true` |
+| Safe | `retries` | `2147483647` |
+| Throughput | `compression.type` | `snappy` |
+| Throughput | `linger.ms` | `20` |
+| Throughput | `batch.size` | `32768` |
 
-properties.setProperty
+Từ đây tới hết section, mọi bài sau (075–076) chỉ giải thích thêm hành vi, không đổi số trong bảng này.
 
-producerConfig.linger_ms to be 20.
+## 6. Cạm Bẫy Thường Gặp
 
-This is to add a little bit of delay.
+- **Copy nhầm `32 * 124`.** Lỗi đọc trong video gốc. `32 * 124 = 3968` byte còn nhỏ hơn default 16KB — tuning ngược. Luôn là `32 * 1024`.
+- **Quên `Integer.toString` cho `batch.size`.** `setProperty` nhận String; truyền int là lỗi compile. `linger.ms` viết `"20"` trực tiếp được vì đã là String.
+- **Đo throughput bằng mắt nhìn log INFO.** Log mỗi message làm producer chậm hàng chục lần, che hết hiệu quả batching. Benchmark thật: hạ log xuống WARN hoặc log sampling (1/1000), đo bằng metric producer hoặc tốc độ tăng của topic.
+- **Đổi config mà không restart producer.** Producer đọc props một lần lúc `new KafkaProducer`. Sửa code mà bấm Run lại bản cũ (nhầm module như bài 063) thì log vẫn số cũ — luôn đối chiếu log sau mỗi lần đổi.
+- **Hết hồn vì latency tăng 20ms.** Đúng thiết kế: mỗi record gánh thêm tối đa `linger.ms`. Với dashboard phân tích Wikimedia thì 20ms vô hình; với alert real-time thì cân nhắc lại. Tuning nào cũng có giá — quan trọng là trả đúng chỗ.
+- **Bật throughput rồi quên safe.** Thứ tự đúng: safe trước (070–071), nhanh sau (072–074). Ai đó "dọn code" xóa ba dòng safe vì "default đã đúng" là quay về rủi ro version. Hai khối phải sống cùng nhau.
 
-Then we're going to add the batch_size_config.
+## Kết Luận
 
-We said is going to be 32 kilobytes,
+Tóm lại một câu: **dán `compression.type=snappy` + `linger.ms=20` + `batch.size=32KB` lên trên preset Safe, chạy lại thấy log đổi đúng ba dòng và consumer đọc bình thường — bạn đã có một Wikimedia producer vừa bền vừa nhanh, giá chỉ là 20ms latency.**
 
-so 32 times 124,
-
-and this must be a string.
-
-So we're going to do integer.toString
-
-and parse in this number,
-
-so here we go and parse in this number.
-
-And lastly, we need to enable compression.
-
-So the compression_type is going to be
-
-equal to snappy because I like it.
-
-So what I want to show you is that
-
-even though we enable these settings,
-
-the consumer is going to work equally well.
-
-So let's start a consumer
-
-on the wikimedia.recentchange topic,
-
-and now we're going to relaunch this producer
-
-and let it produce a little bit of data.
-
-So it's launching, it's producing some data.
-
-Cool, I can stop it.
-
-So if we look at the settings,
-
-batch size is now 32 kilobytes, that is the case.
-
-Compression.type is snappy,
-
-and linger.ms is 20 milliseconds,
-
-so we're trying to be a bit more efficient.
-
-Now, if I go here,
-
-I look at the fact that's indeed
-
-the data was received by my console consumer
-
-without any changes, we didn't modify any setting.
-
-We didn't specify the fact that our data was compressed,
-
-that it was in a batch and so on.
-
-So the consumer does all the magic behind the scene, okay?
-
-So fairly simple by adding these settings
-
-at the expense of 20 millisecond of delay at most,
-
-we're going to get a lot more efficient producer, okay?
-
-Well, that's it for this lecture,
-
-I hope you liked it,
-
-and I will see you in the next lecture.
+Bài tiếp theo chúng ta trả lời câu hỏi còn bỏ ngỏ từ bài 064: message key null dàn đều 3 partitions bằng cơ chế nào — qua `DefaultPartitioner`, round-robin cũ và sticky partitioner mới nhanh hơn ra sao.

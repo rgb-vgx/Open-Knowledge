@@ -1,563 +1,131 @@
-Okay, so now we are going to code
+# Consumer Đầu Tiên: Vòng Lặp poll() Và Lần Join Group Đáng Nhớ
 
-our first Kafka consumer.
+Producer gửi đi, ai nhận về? Bài này viết class `ConsumerDemo` hoàn chỉnh: cấu hình `key.deserializer`/`value.deserializer`, `group.id`, `auto.offset.reset=earliest`, `subscribe()` topic `demo_java`, rồi vòng lặp `poll()` vô hạn để đọc lại đúng dữ liệu producer đã gửi — kèm cách đọc log join group mà người mới nào cũng bỡ ngỡ lần đầu.
 
-We'll use the Java API, the basics.
+---
 
-So we're going to write a basic consumer
+## 1. Concept: Consumer pull, không phải push
 
-to receive data from Kafka.
+Khác với nhiều hệ message queue push tin tới consumer, Kafka consumer **chủ động pull**:
 
-We'll view some basic configuration parameters,
+* `consumer.subscribe(topics)` — đăng ký "tôi muốn đọc topic này". Có thể subscribe nhiều topic, nhưng bài này chỉ một: `demo_java`.
+* `consumer.poll(Duration)` — hỏi broker "có gì mới cho tôi không?". Có thì trả về ngay, không có thì chờ tối đa `timeout` (ở đây 1000ms) rồi trả về rỗng. Timeout này để khỏi spam broker liên tục.
+* Trả về là `ConsumerRecords<String, String>` — một tập records. Duyệt từng `ConsumerRecord` để lấy `key()`, `value()`, `partition()`, `offset()`.
 
-and we'll confirm that we receive data
+Ba config quyết định số phận consumer:
 
-from the Kafka producer written in Java.
+* **Deserializer ngược với serializer.** Producer dùng `StringSerializer` thì consumer phải dùng `StringDeserializer` cho cả key và value. Topic chứa Avro thì phải dùng Avro deserializer — sai là lỗi runtime.
+* **`group.id`.** Định danh consumer group, ở đây `my-java-application`. Cùng `group.id` thì chia nhau partitions; khác `group.id` thì mỗi group nhận đủ bản copy. Bài này đặt biến `groupId` riêng ở đầu để đổi nhanh.
+* **`auto.offset.reset`.** Chỉ có tác dụng khi **chưa có committed offset** (group mới tinh hoặc partition mới). Ba giá trị: `none` (chưa có offset thì fail luôn — phải seed offset trước, không dùng cho demo), `earliest` (đọc từ đầu topic, tương đương `--from-beginning` của CLI), `latest` (chỉ đọc message mới từ giờ trở đi). Vì muốn đọc toàn bộ lịch sử `demo_java`, ta chọn `earliest`.
 
-So we'll look at the poll method
+Hiểu vậy rồi hãy nhìn log join group lần đầu: consumer tìm thấy 3 partitions (`demo_java-0/1/2`), không thấy committed offset nào, nên `auto.offset.reset=earliest` kích hoạt — reset cả 3 về offset 0 rồi bắt đầu kéo dữ liệu theo từng batch lớn (mỗi poll có thể trả về tới ~1MB từ một partition, nên log sẽ thấy cả chùm partition 2, rồi 1, rồi 0).
 
-to get messages from the Kafka broker,
+## 2. Code hoàn chỉnh
 
-and we'll see that the poll method
+Tạo class `ConsumerDemo` (copy phần kết nối từ `ProducerDemo`, xóa phần producer, thay bằng code này):
 
-will return data immediately if possible,
+```java
+package io.conduktor.demos.kafka;
 
-else will return empty and wait for a timeout
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-until it responds.
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Properties;
 
-So let's have a look at it.
+public class ConsumerDemo {
 
-So let's go ahead and create our consumer.
+    private static final Logger log = LoggerFactory.getLogger(ConsumerDemo.class.getSimpleName());
 
-So I'm gonna take my producer demo,
+    public static void main(String[] args) {
+        log.info("I am a Kafka consumer!");
 
-and then I will create a new file.
+        String groupId = "my-java-application";
+        String topic = "demo_java";
 
-Call it ConsumerDemo, perfect.
+        // 1. Consumer properties: kết nối + deserializer + group + offset reset
+        Properties properties = new Properties();
 
-And I am a Kafka consumer,
+        // Kết nối localhost (không bảo mật)
+        properties.setProperty("bootstrap.servers", "127.0.0.1:9092");
 
-and I'm going to delete some stuff.
+        // Nếu dùng Conduktor Playground: comment dòng trên, mở 4 dòng dưới
+        // properties.setProperty("bootstrap.servers", "cluster.playground.cdkt.io:9092");
+        // properties.setProperty("security.protocol", "SASL_SSL");
+        // properties.setProperty("sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"...\" password=\"...\";");
+        // properties.setProperty("sasl.mechanism", "PLAIN");
 
-So I keep this, this is the connection to Kafka.
+        // Deserialize key/value String (ngược với StringSerializer bên producer)
+        properties.setProperty("key.deserializer", StringDeserializer.class.getName());
+        properties.setProperty("value.deserializer", StringDeserializer.class.getName());
 
-And then anything after this I will delete.
+        // Consumer group
+        properties.setProperty("group.id", groupId);
 
-So we still have properties,
+        // Đọc từ đâu khi chưa có offset: none / earliest / latest
+        properties.setProperty("auto.offset.reset", "earliest");
 
-and if you want to connect your local host,
+        // 2. Tạo consumer
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 
-we just keep that line only,
+        // 3. Subscribe topic (nhận Collection — có thể nhiều topic)
+        consumer.subscribe(Arrays.asList(topic));
 
-if you want to connect to the Conduktor playground,
+        // 4. Poll loop vô hạn
+        while (true) {
+            log.info("Polling...");
 
-we add all these lines.
+            ConsumerRecords<String, String> records =
+                    consumer.poll(Duration.ofMillis(1000));
 
-Okay, next we're going to add some consumer config.
+            for (ConsumerRecord<String, String> record : records) {
+                log.info("Key: " + record.key() + ", Value: " + record.value());
+                log.info("Partition: " + record.partition() + ", Offset: " + record.offset());
+            }
+        }
+    }
+}
+```
 
-So creates consumer configs,
+### Giải thích từng đoạn
 
-and we first add what's called a key.deserializer,
+**`groupId` externalize ở đầu.** Transcript cố tình tách `String groupId = "my-java-application"` ra biến để đổi nhanh khi demo nhiều group. `group.id` trong properties trỏ tới biến này. Đừng hardcode chuỗi group trực tiếp vào `setProperty` nếu bạn định chạy nhiều consumer song song sau này.
 
-and then we'll add a key value.deserializer.
+**`subscribe(Arrays.asList(topic))`.** `subscribe()` nhận `Collection<String>`, nên dù một topic cũng phải bọc trong list. IntelliJ sẽ gợi ý `Collections.singletonList()` vì list một phần tử — giữ `Arrays.asList()` cũng được, để sau thêm `topic2` cho tiện. Đây là subscribe **dynamic** (broker tự assign partition + rebalance); khác với `assign()` gán tay partition (học ở bài advanced).
 
-So the producer was serializing,
+**`poll(Duration.ofMillis(1000))`.** Tham số Duration là "chờ tối đa bao lâu nếu chưa có dữ liệu". Có dữ liệu là trả ngay, không bắt chờ đủ 1 giây. Đặt 1000ms là cân bằng: đủ nhanh để demo thấy log chạy, đủ thưa để không nện broker. Poll quá nhanh (vài ms) trong loop vô hạn là anti-pattern ở production khi topic rỗng.
 
-and the consumer deserializes, that means
+**Vòng `for (record : records)`.** `records` có thể rỗng (không log gì thêm ngoài "Polling..."), có thể chứa hàng nghìn record từ nhiều partitions. Consumer kéo rất hiệu quả: một poll có thể mang về cả batch partition 2, rồi poll sau mang batch partition 1, 0 — nên log sẽ thấy từng chùm cùng partition đi liền nhau, đừng ngạc nhiên.
 
-text divides and transform them into an actual object.
+**Chưa có `close()`, chưa shutdown hook.** Bài này cố tình để `while (true)` thô để bạn thấy vấn đề: tắt bằng nút Stop là kill abrupt, rebalance lần sau chậm (~30s mới join lại được). Bài tiếp theo sẽ fix bằng `wakeup()` + shutdown hook.
 
-So therefore we need a stringDeserializer
+## 3. Chạy và kiểm tra
 
-at this time, .class.getName,
+1. Đảm bảo topic `demo_java` đã có dữ liệu (chạy `ProducerDemoKeys` trước đó).
+2. Run `ConsumerDemo.main()`. Lần đầu sẽ thấy theo thứ tự:
+   * Log config: `auto.offset.reset=earliest`, `group.id=my-java-application`, `key.deserializer=StringDeserializer`.
+   * `Polling...` vài lần trong lúc consumer join group.
+   * Dòng join group: `found 3 partitions (demo_java-2, demo_java-1, demo_java-0)`, `no committed offset found` → `resetting offset to 0` cho cả 3 partitions.
+   * Bùng nổ log `Key: id_X, Value: hello world X` theo chùm partition.
+3. Trong lúc consumer đang chạy, mở terminal chạy `ProducerDemoKeys` một lần nữa — quay lại log consumer sẽ thấy ngay batch mới (`partition 2, 1, 0...`) mà không cần restart. Đó là poll loop đang sống.
+4. Stop consumer (kill), chạy lại ngay: lần này log hiện `setting offset for partition demo_java-0 to ...527, ...14, ...535` (số cụ thể tùy dữ liệu bạn có) rồi chỉ `Polling...` mà không đọc lại dữ liệu cũ. Vì sao? Offset đã được auto-commit ở lần chạy trước (chi tiết ở bài offset commit), group quay lại đúng vị trí đã đọc.
+5. Produce thêm message mới rồi run consumer lại: sau một lúc (có thể ~30s vì lần stop trước không graceful) consumer join lại và đọc đúng batch mới.
 
-and this is the exact same thing
+## 4. Pitfalls
 
-we're going to add to our value.deserializer.
+* **`auto.offset.reset=latest` rồi thắc mắc "sao không đọc được dữ liệu cũ".** `latest` chỉ đọc từ thời điểm subscribe trở đi. Muốn đọc lịch sử phải `earliest`. Và nhớ: setting này **chỉ có tác dụng lần đầu** (chưa có committed offset). Đổi từ `latest` sang `earliest` sau khi group đã commit thì không có tác dụng gì — phải đổi `group.id` mới hoặc reset offset.
+* **`group.id` đặt trùng với người khác / lần chạy cũ khi muốn đọc lại từ đầu.** Muốn đọc lại toàn bộ mà lười reset offset: đổi sang group mới + `earliest` là xong. Ngược lại, muốn tiếp tục thì giữ nguyên group.
+* **Deserializer không khớp serializer.** Producer gửi String mà consumer dùng `IntegerDeserializer` là exception ngay khi poll. Luôn đối chiếu cặp serializer/deserializer theo kiểu dữ liệu topic.
+* **Poll timeout quá nhỏ + xử lý nặng trong loop.** Bài offset commit sau sẽ nói kỹ: nếu xử lý mỗi batch quá lâu mới poll lại, broker tưởng consumer chết và đá khỏi group (rebalance). Demo `poll(1000)` + log nhẹ thì an toàn.
+* **Tắt consumer bằng Stop và tưởng là xong.** Lần join sau chậm hẳn vì group phải chờ `session.timeout.ms` mới phát hiện member cũ mất. Đừng đánh giá performance join group qua lần kill abrupt này — bài graceful shutdown sẽ cho thấy join/leave sạch nhanh thế nào.
 
-So this is important because we need to set it to the values
+## Kết Luận
 
-based on the type of data that is being sent to our topic.
+Một câu: **`subscribe()` một lần, `poll()` mãi mãi — lần đầu đọc từ `auto.offset.reset`, lần sau đọc tiếp từ committed offset.** Nắm được vòng đời này là bạn đã hiểu 80% consumer.
 
-So if we have Avro data, then we need an Avro Deserializer.
-
-If it's a string, it's a string deserializer and so on.
-
-Another setting we need is to set the group id.
-
-So the group ID context is called group.id,
-
-and then we'll set it to groupId,
-
-and we'll define a group ID variable in the beginning.
-
-So I will have string groupId equals my Java application
-
-because we're using Java right now,
-
-and we want to create a new consumer group.
-
-And by externalizing this at the top,
-
-we can quickly change it.
-
-Okay, and one last setting we need to know about
-
-is called properties.setProperty,
-
-auto.offset.reset, auto offset resets.
-
-And this is important because it has three possible values,
-
-none, earliest and latest.
-
-So let me discuss them,
-
-and then we'll choose the appropriate one.
-
-None means that if we don't have
-
-any existing consumer group, then we fail.
-
-That means that we must set the consumer group
-
-before starting the application,
-
-so we don't want that.
-
-Earliest means read from the beginning of my topic.
-
-This corresponds to the minus minus from beginning option
-
-when we looked at the Kafka CLI,
-
-and latest corresponds to, "Hey, I want to read it
-
-from just now and only read the new messages sent from now."
-
-So because we wanna read the entire history of our topic,
-
-we'll choose earliest.
-
-So let's go ahead and create our consumer.
-
-So I'm going to create a consumer right here.
-
-And this is very similar to the producers.
-
-So KafkaConsumer string, string
-
-because we consume strings as part of our topics
-
-for the key and the value.
-
-I call this one consumer equals new Kafka consumer.
-
-And then we need to pass in,
-
-of course the properties we just created.
-
-So we don't need these because they're optional.
-
-So let me remove them, okay, perfect.
-
-So next we need to pull for data.
-
-And just before pulling to data,
-
-we need to subscribe to a topic.
-
-So the topic we're going to consume from
-
-is the demo Java topic.
-
-So I will do string topic equals demo_java, that's perfect.
-
-And then underneath, I'm going to consume,
-
-to subscribe the consumer to this topic
-
-so that you can consume from it, so subscribe.
-
-And then we need to pass in
-
-a pattern or a collection of topics.
-
-So we'll pass in a collection of topics.
-
-So I have arrays as list
-
-and then you can pass in as many topics as you want.
-
-So you can say topic one and then topic two and so on.
-
-But we only have one topic right now,
-
-it's called the variable topic.
-
-So we'll do it like this and you'll get a small warning here
-
-because this is a topic of one.
-
-So you can use as lists as singleton,
-
-but you can add topics over time,
-
-so we'll keep it as arrays, as lists.
-
-Okay, so we are subscribed to the topic.
-
-Now we need to retrieve data from the topic
-
-because the consumers pull data from Kafka.
-
-So we'll have a while true loop,
-
-and this is an infinite loop.
-
-We'll see how to be a little bit better
-
-with infinite stuff in the in the future,
-
-but right now we keep on polling for data infinitely,
-
-and we're going to display a nice message saying
-
-"Polling" to tell that our consumer is polling.
-
-Next, we need to extract the consumer.poll,
-
-and we need to pass in a duration
-
-which is how long we're willing to wait to receive data.
-
-So I will do duration of milliseconds 1000,
-
-and this means that if there's data
-
-to be returned right away,
-
-this will complete in no time,
-
-as soon as the data is received, we move on with the code.
-
-But if Kafka does not have any data for us,
-
-we are waiting to wait one second
-
-to receive data from Kafka.
-
-So this is not, this is in order not to overload Kafka.
-
-So this returns actually a collection of records.
-
-So it's called consumer records of type string, string,
-
-and I'll call these one records,
-
-which is a goal to this consumer.poll of millisecond 1000.
-
-So now we receive records.
-
-This could be an empty list, this could be many list,
-
-but we can iterate over it.
-
-So we'll do for consumer record this time
-
-with only one with no S, of type string string,
-
-and I call this one record.
-
-And then call in record.
-
-So this is for every record in my collection of records.
-
-Then we're going to do something with this record.
-
-And what we wanna do right now is just show it on the log.
-
-So we'll do log.info and we'll extract the key.
-
-So the key is the record.key and we'll extract the value.
-
-So value is and then record.value, perfect.
-
-And I'm going to duplicate this line
-
-because we can also extract the partition.
-
-So record.partition and then the offsets.
-
-So for the offset right here, I could do record.offsets.
-
-So now we have this infinite loop
-
-where we are going to be pulling,
-
-waiting up to one second to reset from data,
-
-and then set, showing the data on our console.
-
-And we are reading from the beginning of our topic.
-
-So now let's start our consumer and see what happens.
-
-So we're going to run the consumerDemo.main
-
-so it compiles, and then we'll get some log outputs.
-
-So we'll see a lot of things happening.
-
-So a lot of lag, but let's take it
-
-one by one and decompose it.
-
-So first the Kafka consumer starts, and as you can see,
-
-any kind of settings we've set such as
-
-auto, offset, reset is put to earliest
-
-as the bootstrap servers is put to my Conduktor playground.
-
-And then if you look at the group id,
-
-it's called my Java application.
-
-And the key deserializer is the string deserializer.
-
-So all the configurations are correct.
-
-And then let's scroll down and have a look
-
-at what's happening,
-
-so we are starting the consumer group,
-
-and the first thing you see is polling.
-
-So we are already here in the code and nothing is happening.
-
-So we get the polling and the polling again,
-
-and then we'll have polling, polling,
-
-and that's after four pollings, we'll get some values.
-
-So in the meantime,
-
-the reason we don't receive values is messages
-
-is because the consumer is doing its thing.
-
-So if we look at the log of the consumer,
-
-this is very interesting.
-
-So the consumer is joining a group,
-
-and it turns out that the group is joined.
-
-This is called my Java application,
-
-and it says that I found three partitions
-
-for my topic called demo Java one,
-
-demo Java two, and demo Java zero,
-
-and no committed offsets have been found
-
-for these partitions.
-
-So therefore, because there is no committed offsets,
-
-the setting auto.offset.reset kicks in,
-
-and the strategy is earliest,
-
-so because it's earliest it says
-
-it's going to reset the offsets for partition demo_java-2
-
-to a specific position,
-
-and the position is offset zero, offset zero,
-
-and so it's going to reset the offset as well here, offset 0
-
-to the very beginning of my topic,
-
-and as soon as it's done, well, as you can see,
-
-we can start to consume data.
-
-So we receive one big battery here for partition zero.
-
-Then we receive a batch right here for partition two.
-
-So you can see this lot of messages from partition two.
-
-And this is because the consumer is extremely efficient.
-
-So I'm scrolling down
-
-until I probably will find something else.
-
-So let me scroll down, we'll see
-
-all the messages for partition two.
-
-Then after a bit we have partition one.
-
-And then after a bit, we have partition zero
-
-because the consumer was doing one API call to partition 0,
-
-get everything back one partition,
-
-one API call to partition one,
-
-get everything back and then partition zero,
-
-get everything back because Kafka is very efficient.
-
-And if things can be batched,
-
-then the consumer can receive up to one megabyte of data
-
-at a time from a broker.
-
-So it's quite a lot of of data.
-
-And then after all the data was pulled,
-
-then we are in this infinite polling loop,
-
-and it will keep on going until we receive new data.
-
-So let me go into this polling loop,
-
-and of course if I actually run
-
-my producer demo with keys, for example right now,
-
-and start sending some data with my producer demo with keys.
-
-As we can see now,
-
-the data has been received by the consumer.
-
-So we can see the hello worlds, we can see the key,
-
-the values if it's not null and so on.
-
-And we can see the fact that
-
-we've read from partition 2, 1, 0 ,
-
-and then again before partition,
-
-and again after partition 2, 1, 2 again, zero and one.
-
-So it was reading and being efficient.
-
-So we see how the consumer works at the moment.
-
-And another thing we can notice is that
-
-if I decide to exit my program,
-
-it's exiting it to abruptly.
-
-So we have, we'll create a way,
-
-and this is the consumer demo that I wanna show you.
-
-We'll create a way to get out of this while loop
-
-in the clean way in the next lecture, okay?
-
-So we are out of our consumer.
-
-We haven't done a clean shutdown, but we're out of it.
-
-But what I wanna show you is that let's produce,
-
-let's restart first our consumer.
-
-So I restart my consumer,
-
-it's going to be using the same group id.
-
-And now if I restart it, as we can see,
-
-we are polling, polling, polling, polling, polling.
-
-That's because we rejoin the group, okay?
-
-And then by rejoining the group,
-
-we have actually caught up on the previous offsets,
-
-and we are not going to consume again
-
-because we have committed offsets from before.
-
-So this is actually the bit of code that's happening.
-
-So it says here, setting offsets for partition zero
-
-to offsets three set 27, to 14 and 535.
-
-So this is the important part in here is that
-
-"Yeah, we are rejoining the previous offsets,
-
-so therefore we don't see any new data.
-
-But of course if you stop this, okay,
-
-and you have the producer demo key run in the background,
-
-so just once to send some data, perfect.
-
-And then we run the consumer demo again.
-
-What's going to happen is that upon rejoining the group
-
-which can take a little bit of time
-
-because we don't have a clean shutdown yet.
-
-This is why it's taking some time
-
-to find the the offsets back.
-
-But we'll see how to address this in the very next lecture.
-
-So don't worry.
-
-But upon retrieving and rejoining the group,
-
-and having specific offsets,
-
-then we're going to start to see the data
-
-from the producer demo keys.
-
-So it'll be any seconds now.
-
-And yes, now it has found the data I wanted to,
-
-so it took about 30 seconds,
-
-but we'll see how to address this in the next lecture.
-
-Okay, so that's it.
-
-We have done our consumer.
-
-I hope you liked it, and I will see you in the next lecture.
+Bài tiếp theo chúng ta sẽ bọc vòng loop này trong `try/catch WakeupException` + `finally consumer.close()`, thêm shutdown hook với `consumer.wakeup()` và `mainThread.join()` để tắt consumer gracefully — tiền đề bắt buộc trước khi demo consumer group rebalance.

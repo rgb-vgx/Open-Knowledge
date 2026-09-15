@@ -1,179 +1,105 @@
-Hi, this is Stephane from Conduktor,
+# Dựng Khung Project OpenSearch Consumer: Gradle, Dependencies Và Class Rỗng Chạy Được
 
-and we are going to set up our
+Bài trước đã chốt bức tranh toàn section: Wikimedia → Kafka → OpenSearch. Bài này dựng móng: một module Gradle biên dịch được, đủ 3 dependencies, một class `OpenSearchConsumer` chạy thử — để từ Part 1 trở đi chỉ tập trung vào logic Consumer, không vật lộn với classpath nữa.
 
-Kafka consumer Opensearch projects in this lecture.
+---
 
-So I create a new module.
+## 1. Vấn đề: Sai Một Dependency Là Mất Cả Buổi
 
-I go with Gradle, Java, and then I will name it
+Project Kafka basics trước đây chỉ cần `kafka-clients`. Project này cần thêm 2 thứ lạ:
 
-Kafka
+* Client HTTP nói chuyện với OpenSearch (không phải Kafka protocol).
+* Thư viện JSON để moi `id` từ payload Wikimedia.
 
-consumer
+Lỗi kinh điển của người mới:
 
-Opensearch,
+* Lấy `opensearch-rest-high-level-client` bản 2.x/3.x mới nhất → API đổi, code mẫu không compile.
+* Quên `gson` → đến Part 3 mới tá hỏa không parse được JSON.
+* Copy `docker-compose.yml` sai chỗ → Part 1 chạy client báo `Connection refused` mà tưởng code sai.
 
-and this is necessary
+Bài này khóa 3 rủi ro đó ngay từ đầu.
 
-because we're going to have our files in this project.
+## 2. Cơ chế: Ba Khối Dependencies
 
-Okay so we're good to go.
+```mermaid
+graph LR
+    APP["OpenSearchConsumer.java"] --> K["kafka-clients<br/>poll() records"]
+    APP --> OS["opensearch-rest-high-level-client:1.2.4<br/>IndexRequest / BulkRequest"]
+    APP --> G["gson<br/>extract meta.id"]
+```
 
-Next, I'm going to have two ways
+* `kafka-clients` — giữ nguyên version bạn đã dùng ở phần Producer/Consumer basics (ví dụ `3.3.2`). Không cần đổi.
+* `org.opensearch.client:opensearch-rest-high-level-client:1.2.4` — dòng 1.x tương thích với OpenSearch Docker `1.x` và flag `override main response version: true`. Đây là client đồng bộ, blocking, dễ học. Production hiện nay chuộng `opensearch-java` client mới, nhưng section này bám `RestHighLevelClient` vì explicit, dễ đọc từng `IndexRequest`.
+* `com.google.code.gson:gson` — nhẹ, chỉ để `JsonParser.parseString(...).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString()`. Không cần Jackson nặng.
 
-to start Opensearch on my-
+Vì sao chốt `1.2.4` mà không lấy mới nhất? OpenSearch server trong `docker-compose.yml` của khóa học là `1.x`. Client 2.x nói chuyện với server 1.x sẽ gặp lỗi version check. Nguyên tắc: **client và server cùng major version**.
 
-on this project.
+## 3. Code: Từng Bước Dựng Project
 
-Okay, on this course.
+### 3.1. Tạo module mới
 
-We can either use Docker
+Trong IntelliJ: File → New → Module → Gradle + Java → tên `kafka-consumer-opensearch`. Package chuẩn của khóa học:
 
-or we can use a managed Opensearch.
+```
+io.conduktor.demos.kafka.opensearch
+```
 
-So to do the Docker way
+### 3.2. Khai báo dependencies trong `build.gradle`
 
-what I'm going to do is I'm going to leave right here
+```gradle
+dependencies {
+    implementation 'org.apache.kafka:kafka-clients:3.3.2'
+    implementation 'org.opensearch.client:opensearch-rest-high-level-client:1.2.4'
+    implementation 'com.google.code.gson:gson:2.10.1'
+}
+```
 
-a Docker composed file.
+Giải thích từng dòng:
 
-So Docker-compose dot yml.
+* Dòng 1: Consumer API — `KafkaConsumer`, `ConsumerRecords`, `ConsumerConfig`.
+* Dòng 2: `RestHighLevelClient`, `CreateIndexRequest`, `IndexRequest`, `BulkRequest`. Kéo theo `httpclient`, `httpcore` transitively — không cần khai thêm.
+* Dòng 3: `gson` cho Part 3. Khai ngay từ đầu để khỏi sửa build giữa chừng.
 
-Now, if you don't know Docker, that's fine,
+Xong bấm **Load Gradle Changes** (icon Gradle nhỏ). Chờ download xong mới qua bước tiếp — lỗi `Cannot resolve symbol RestHighLevelClient` 90% là do chưa load.
 
-you can just skip that and go
+> Link Maven tham khảo (dán comment trong `build.gradle` để sau này tra):
+> * `https://mvnrepository.com/artifact/org.opensearch.client/opensearch-rest-high-level-client/1.2.4`
+> * `https://mvnrepository.com/artifact/com.google.code.gson/gson`
 
-to using Bonsai to create your elastic search
+### 3.3. Đặt `docker-compose.yml` cạnh project
 
-your open search, excuse me, cluster.
+Copy file `docker-compose.yml` từ GitHub của khóa học vào thư mục module (ngang `build.gradle`). File này dựng 2 containers: `opensearch` (`:9200`) và `opensearch-dashboards` (`:5601`). Chi tiết từng biến môi trường sẽ mổ ở bài 080 — ở đây chỉ cần biết **file phải nằm đúng chỗ để IntelliJ Docker plugin nhận ra**.
 
-Okay, but if you like Docker
+### 3.4. Tạo class rỗng chạy thử
 
-then you will for sure appreciate this file.
+```java
+package io.conduktor.demos.kafka.opensearch;
 
-So this file can find directly
+public class OpenSearchConsumer {
+    public static void main(String[] args) throws java.io.IOException {
+        System.out.println("OpenSearchConsumer skeleton OK");
+    }
+}
+```
 
-on the GitHub project of this course.
+Bấm Run. Thấy `OpenSearchConsumer skeleton OK` là móng đã chắc. Đừng viết thêm code vội — Part 1 (bài 083) sẽ thêm `createOpenSearchClient()` vào đúng class này.
 
-So we have created this file
+## 4. So sánh: Hai cách lấy dependencies
 
-and I will show you how to use it in the next lectures.
+| Cách | Thao tác | Khi nào dùng |
+|---|---|---|
+| Copy từ `kafka-basics/build.gradle` + thêm 2 dòng OpenSearch/gson | Nhanh, đúng version đã test | Khuyên dùng cho bài này |
+| Search Maven Central tay, lấy bản mới nhất | Dễ vỡ API | Chỉ khi bạn đã hiểu ma trận tương thích client/server |
 
-Okay, in the meantime
+## 5. Pitfalls
 
-we need to set up our dependencies for our project.
+* **Lấy OpenSearch client 2.x/3.x.** Lỗi compile `RestHighLevelClient` không tồn tại / constructor đổi. Chốt `1.2.4`.
+* **Quên Load Gradle Changes.** IDE báo đỏ cả file dù `build.gradle` đúng. Luôn load sau khi sửa dependencies.
+* **Tạo class sai package.** Các Part sau import `io.conduktor.demos.kafka.opensearch.OpenSearchConsumer` trong log (`LoggerFactory.getLogger(OpenSearchConsumer.class.getSimpleName())`). Sai package không chết nhưng gây rối khi đối chiếu code mẫu.
+* **Chưa cài Docker plugin đã nhảy sang bài Docker.** Bài 080 cần plugin Docker của IntelliJ Community để bấm nút chạy compose. Nếu không dùng Docker thì bỏ qua, sang bài 081 (Bonsai).
 
-So this is a Kafka project.
+## Kết Luận
 
-So let's go into Kafka basics
+Tóm một câu: **xong bài này bạn có module Gradle biên dịch được, đủ 3 dependencies đúng version, class rỗng chạy được và file compose nằm đúng chỗ.**
 
-and then copy my dependencies from here
-
-into my build dot Gradle file.
-
-Okay, so this is good.
-
-Now other dependencies I need to set up
-
-are going to be around the Opensearch rest clients.
-
-So what I'm going to do is just go over here
-
-and type Opensearch high level rest clients
-
-and then I will type it Maven as well.
-
-So we have this Maven repository,
-
-Opensearch-rest-high-level-client, this is perfect.
-
-We're going to choose the latest version
-
-in the one dot X type of realm.
-
-So I know that 1 dot 2 dot 4 is working.
-
-So this is the one I'm going to use,
-
-and we're going to use the Gradle Groovy DSL.
-
-I'll go copy this, going back into my code
-
-and I will paste this in, okay.
-
-So this is the Opensearch dependency,
-
-and I can just copy this page actually,
-
-just to have a link to it.
-
-Okay.
-
-Next we need the JSON
-
-with a G GSON from Google.
-
-And this is to deal with
-
-JSON manipulations of objects in our codes.
-
-So I will copy this one,
-
-use the Gradle Groovy DSL
-
-and paste this in
-
-as well as copy the URL so we can get back
-
-to it if we need to.
-
-Okay, so once I have this, I will click
-
-on the little load Gradle changes icon,
-
-which is going to build a model,
-
-download my dependencies, and then
-
-we're good to go.
-
-Finally, we're going to create
-
-our main Java class, okay, for this.
-
-And then we're going to click on the right click
-
-new Java class.
-
-It's going to be an Opensearch consumer
-
-and the package is
-
-io.Conduktor.demos.kafka.opensearch dot this
-
-Okay, perfect.
-
-So we have this class ready.
-
-I'm going to have the main, press tab
-
-and run this code just to see if everything is good
-
-And the code is running.
-
-Perfect.
-
-So now we have set up our projects for
-
-the Kafka consumer Opensearch implementation.
-
-We have set up our dependencies.
-
-We have the Docker composed file if we ever need to.
-
-So we're good to go.
-
-And I will see you in the next lecture to start setting
-
-up Opensearch on Docker or using Bonsai.
+Bài tiếp theo (080) chúng ta sẽ mổ `docker-compose.yml` và dựng OpenSearch + Dashboards trên local — con đường được khuyên dùng nếu máy bạn chạy được Docker.

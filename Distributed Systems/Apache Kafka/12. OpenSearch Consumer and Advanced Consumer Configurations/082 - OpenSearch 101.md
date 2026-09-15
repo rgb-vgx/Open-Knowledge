@@ -1,243 +1,184 @@
-Hi, this Difen from Conduktor.
+# OpenSearch 101: Học CRUD Bằng Tay Trước Khi Đổ Kafka Vào
 
-And in this lecture
+Bài trước bạn đã có OpenSearch sống — hoặc ở `localhost:9200` (Docker) hoặc trên Bonsai cloud. Bài này khoan code Java vội. Chúng ta luyện CRUD bằng tay trên Dev Tools để khi Part 1 gọi `CreateIndexRequest`, Part 2 gọi `IndexRequest`, bạn biết chính xác nó tương đương lệnh REST nào.
 
-we're going to practice using open search,
+---
 
-which is the same as elastic search.
+## 1. Vấn đề: Vì Sao Phải Gõ Tay Trước Khi Code?
 
-Okay. We'll use the rest API using open search dashboards
+Nhiều bạn nhảy thẳng vào Java, thấy `RestHighLevelClient`, `CreateIndexRequest`, `RequestOptions.DEFAULT` là ngợp. Thực ra Java client chỉ là lớp bọc mỏng quanh REST API:
 
-or the online console at bonsai.io to send some commands
+| Thao tác tay (Dev Tools) | Đối tượng Java tương đương | Dùng ở Part nào |
+|---|---|---|
+| `PUT /my-first-index` | `CreateIndexRequest("my-first-index")` | Part 1 (083) |
+| `PUT /my-first-index/_doc/1 { ... }` | `new IndexRequest("wikimedia").id(id).source(json, XContentType.JSON)` | Part 2–3 (084, 086) |
+| `GET /my-first-index/_doc/1` | Verify bằng mắt sau khi consumer chạy | Part 2 (084) |
+| `DELETE /my-first-index/_doc/1` | Không dùng trong code, chỉ để dọn tay | Bài này |
+| `DELETE /my-first-index` | Reset sạch khi test lại Part 5/6 | Bài này |
+| `POST /_bulk` | `BulkRequest.add(indexRequest)` + `client.bulk(...)` | Part 5 (089) |
 
-and see how elastic search or open search works.
+Học tay 15 phút bây giờ tiết kiệm 2 giờ debug "sao consumer chạy mà search không thấy" sau này.
 
-We're going to follow this tutorial right here.
+## 2. Cơ Chế: Index, Document, `_id` Hiểu Trong 3 Phút
 
-So let's go to the URL.
+```mermaid
+graph TB
+    subgraph "OpenSearch"
+        IDX["Index: my-first-index<br/>(như Table)"]
+        IDX --> D1["Document _id=1<br/>{ description: 'To be...' }"]
+        IDX --> D2["Document _id=2<br/>{ ... }"]
+    end
+```
 
-So I have opened the quick start instruction
+* **Index** là nơi chứa documents. Tên viết thường, không dấu, không space. Trong dự án thật chúng ta dùng index `wikimedia`.
+* **Document** là một JSON bất kỳ. OpenSearch không bắt khai schema trước (dynamic mapping) — gửi gì nhận nấy, rất hợp với JSON Wikimedia thất thường.
+* **`_id`** là chìa khóa của toàn section: nếu bạn `PUT` cùng `_id` hai lần, lần hai **ghi đè** lần một (update), không sinh duplicate. Đây chính là nền tảng của idempotence ở bài 086. Nếu không truyền `_id`, OpenSearch tự sinh random — mỗi lần ghi là một document mới, đọc lại là duplicate.
 
-on the right hand side, and we're going to
+Hai endpoint phải phân biệt:
 
-customize them a little bit just to make sure they work both
+* `:9200` — REST API của OpenSearch (Java code + `curl` đi đường này).
+* `:5601` — OpenSearch Dashboards, menu **Dev Tools** là console để gõ lệnh REST cho tiện. Bonsai thì Console web thay Dashboards, cú pháp y hệt.
 
-on this console right here and this console right here.
+## 3. Code: Chuỗi 5 Lệnh REST Phải Tự Tay Chạy Được
 
-Okay.
+Mở Dev Tools (Dashboards `:5601` → Dev Tools) hoặc Bonsai Console. Gõ từng lệnh, bấm send, đọc kết quả.
 
-So
+### 3.1. Kiểm tra cluster sống: `GET /`
 
-we're going to first run a session
+```
+GET /
+```
 
-to get information about opensource.
+Kết quả mong đợi:
 
-So you get on slash and then empty content.
+```json
+{
+  "name" : "opensearch",
+  "cluster_name" : "opensearch-cluster",
+  "version" : {
+    "number" : "7.10.2",
+    "distribution" : "opensearch"
+  },
+  "tagline" : "The OpenSearch Project: https://opensearch.org/"
+}
+```
 
-You click on play and then you have access
+Giải thích: `tagline: The OpenSearch Project` chứng tỏ bạn đang nói chuyện với OpenSearch thật, không phải Elasticsearch. `number: 7.10.2` là do flag `override.main.response.version=true` trong compose (bài 080) — đừng hoảng.
 
-to some information around open search.
+Trên Dashboards tương đương lệnh là `GET /` trong khung trái (trong video ghi `GET *` nhưng chuẩn REST là `GET /`).
 
-Same for here
+### 3.2. Tạo index: `PUT /my-first-index`
 
-for the dev tools what you can do is
+```
+PUT /my-first-index
+```
 
-you can do just get star
+Kết quả:
 
-and then click to send request.
+```json
+{
+  "acknowledged" : true,
+  "index" : "my-first-index"
+}
+```
 
-And it's again
+Giải thích: `acknowledged: true` nghĩa là cluster đã tạo index. Lệnh này chính là việc `CreateIndexRequest("wikimedia")` làm ở Part 1 — chỉ khác tên index. Nếu chạy lại lần nữa sẽ báo `resource_already_exists_exception` — đó là lý do Part 1 phải check `indices().exists()` trước khi create.
 
-getting to give you some information around open search.
+### 3.3. Thêm document: `PUT /my-first-index/_doc/1`
 
-So far so good.
+```
+PUT /my-first-index/_doc/1
+{
+  "description": "To be or not to be, that is the question."
+}
+```
 
-Alright.
+Kết quả:
 
-Next, we can create our first index.
+```json
+{
+  "_index" : "my-first-index",
+  "_id" : "1",
+  "result" : "created",
+  "_version" : 1
+}
+```
 
-So indexes are where data is going to be stored
+Giải thích từng trường:
 
-in open search.
+* `_id: 1` là id bạn chỉ định. Trong Part 2 lúc đầu code **không** truyền id → OpenSearch tự sinh chuỗi random dài. Đến Part 3 chúng ta truyền `meta.id` của Wikimedia vào đây để idempotent.
+* `result: created` — lần đầu tạo mới. Ghi đè cùng `_id` lần nữa sẽ trả `result: updated` và `_version` tăng lên 2, 3... Đây là bằng chứng ghi đè không sinh duplicate.
+* Body JSON gửi kèm phải khai `Content-Type: JSON` — trong Java tương ứng `XContentType.JSON`.
 
-And so for this, we need to look at this command
+Thử ghi đè ngay để khắc sâu: chạy lại lệnh trên với description khác, quan sát `result: updated`, `_version: 2`.
 
-and we go to
+### 3.4. Đọc lại: `GET /my-first-index/_doc/1`
 
-slash my first index
+```
+GET /my-first-index/_doc/1
+```
 
-and it has to be a put.
+Kết quả:
 
-So let's do
+```json
+{
+  "_index" : "my-first-index",
+  "_id" : "1",
+  "found" : true,
+  "_source" : {
+    "description": "To be or not to be, that is the question."
+  }
+}
+```
 
-put
+Giải thích: `_source` chính là JSON gốc bạn gửi. Khi Part 2 chạy xong, bạn sẽ lấy một `_id` random trong log Java, `GET /wikimedia/_doc/<id-đó>` và phải thấy `_source` là JSON Wikimedia đầy đủ `meta`, `user`, `title`... Nếu `found: false` nghĩa là consumer chưa ghi tới hoặc sai index name.
 
-slash my first index
+Lưu ý cú pháp chuẩn là `/_doc/1` (underscore doc). Trong transcript video đọc nhanh thành "core doc" hay "doc" — luôn gõ `/_doc/`.
 
-and press click to send request.
+### 3.5. Xóa document và xóa index
 
-And as you can see it's going to create my first index.
+```
+DELETE /my-first-index/_doc/1
+```
 
-It was acknowledged and it was created.
+```json
+{ "result" : "deleted" }
+```
 
-So this worked on open search dashboards.
+```
+DELETE /my-first-index
+```
 
-And if you do a put
+```json
+{ "acknowledged" : true }
+```
 
-here of my first index and then click
+Giải thích: xóa document để test lẻ; xóa index để reset sạch trước khi chạy lại Part 5 (bulk) hoặc Part 6 (replay). Trên Docker còn có cách mạnh hơn: `docker compose down -v` xóa cả volume. Trên Bonsai free tier thì `DELETE /wikimedia` là cách duy nhất để dọn.
 
-on the play button again, the index is also created. Okay.
+## 4. Bảng So Sánh: REST Tay vs Java Client
 
-So both these things worked.
+| Ý định | Gõ tay (bài này) | Java (các Part sau) |
+|---|---|---|
+| Tạo index nếu chưa có | `PUT /wikimedia` | `client.indices().create(new CreateIndexRequest("wikimedia"), DEFAULT)` |
+| Check tồn tại | `GET /wikimedia` (200 vs 404) | `client.indices().exists(new GetIndexRequest("wikimedia"), DEFAULT)` |
+| Ghi 1 doc có id | `PUT /wikimedia/_doc/<id> {json}` | `new IndexRequest("wikimedia").id(id).source(json, XContentType.JSON)` + `client.index(req, DEFAULT)` |
+| Ghi 1 doc không id | `POST /wikimedia/_doc {json}` | `new IndexRequest("wikimedia").source(...)` (không `.id(...)`) |
+| Ghi hàng loạt | `POST /_bulk {...}` | `BulkRequest.add(...)` + `client.bulk(bulk, DEFAULT)` |
+| Đọc verify | `GET /wikimedia/_doc/<id>` | Không đọc trong consumer — verify bằng Dev Tools |
 
-Now we can add some data to the newly created index.
+Ghi nhớ cột trái, cột phải tự khắc dễ.
 
-So we can send some JSON documents
+## 5. Pitfalls
 
-into the index to be indexed.
+* **Nhầm `/_doc` thành `/doc`, `/_docs`, `/core doc`.** API chuẩn chỉ có `/_doc`. Sai một ký tự là `404 invalid path`.
+* **Tạo index tên viết hoa / có dấu.** OpenSearch bắt tên thường, không ký tự đặc biệt. Cứ `my-first-index`, `wikimedia` là an toàn.
+* **Quên body JSON khi `PUT _doc`.** Lệnh chạy nhưng báo `request body required`. Trong Java tương đương quên `.source(...)` — compile được nhưng runtime lỗi.
+* **Verify sai index.** Consumer ghi vào `wikimedia` nhưng lại `GET /my-first-index/_doc/...` rồi kết luận "consumer lỗi". Luôn đối chiếu tên index trong code và lệnh GET.
+* **Để data test `my-first-index` tồn tại mãi.** Không hại nhưng gây rối khi `GET /_cat/indices`. Học xong bài này thì `DELETE /my-first-index` cho sạch.
+* **Trên Bonsai gõ `PUT` nhưng Console mặc định `GET`.** Phải đổi method trước khi send, nếu không báo `incorrect HTTP method`.
 
-Of course.
+## Kết Luận
 
-So
+Tóm một câu: **bạn đã tự tay tạo index, ghi document có `_id`, đọc lại, ghi đè (thấy `updated`), xóa — tức là đã hiểu mọi thao tác mà Java client sẽ làm thay bạn từ Part 1 tới Part 5.**
 
-we'll go to
-
-slash my first index slash
-
-underscore doc slash one to create a doc with Id one.
-
-So slash my first index slash core doc slash one.
-
-It's going to create
-
-a document with Id one in my first index.
-
-And then for the content type, it's JSON.
-
-We're going to specify it.
-
-And here we can copy all of this, which is the JSON.
-
-So I'll copy it, paste it here.
-
-So there's a description to be or not to be.
-
-That is the question.
-
-Cool. We press on play.
-
-And then here we go.
-
-The result was that it was created it, and then in it,
-
-we have access to some information.
-
-Alright.
-
-So this is good.
-
-This worked here.
-
-So we can just copy and paste that here.
-
-And then we need to do a put and then add
-
-in the JSON document right under.
-
-Click on play.
-
-And yes, again, it was created. Cool
-
-Now we can retrieve the data to make sure
-
-that it was added properly. And to do so,
-
-we need to do a get.
-
-We don't need any Jason, so I can remove this.
-
-We press click on send and here
-
-send
-
-and now we have some information.
-
-So this belongs to the index.
-
-my first index. The ID is one.
-
-And then we have the source
-
-with the source of the document, which contains the JSON
-
-we just sent.
-
-So description to be or not to be.
-
-That is the question.
-
-And this request right here is also valid here.
-
-So get, and were now going to remove the content
-
-and then play.
-
-And as well
-
-we get some source information with the description.
-
-So we're about to add some data to retrieve some data
-
-and then we can delete the documents.
-
-So we just do a delete right here,
-
-play and it has been deleted. Results
-
-deleted. Good and here as well.
-
-I do a delete
-
-play and then it has been deleted as well.
-
-Very good.
-
-And finally, we can also, if you wanted to delete the index
-
-so you remove this,
-
-you delete the index
-
-and then you remove this
-
-and the index has been deleted.
-
-So it looks like a very simple database operation.
-
-So we create an index, we add some data
-
-we retrieve the data, we delete the data
-
-and finally we delete the index.
-
-Okay. So fairly easy, but this is a good introduction
-
-to elastic search or open search, because then
-
-in the next lecture, I'm going to show you how to do this
-
-from a
-
-Java code.
-
-And this is where we'll start writing some code to take data
-
-from Kafka and send it to open search.
-
-Alright.
-
-So that's it for this lecture.
-
-I hope you liked it.
-
-And I will see you in the next lecture.
+Bài tiếp theo (083 — Part 1) chúng ta bắt đầu code thật: viết `createOpenSearchClient()` (2 nhánh local/cloud) và tạo index `wikimedia` bằng `CreateIndexRequest` — chính là phiên bản Java của `PUT /wikimedia` vừa học.

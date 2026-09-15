@@ -1,177 +1,93 @@
-Hi, this is Stephane from Conduktor
+# Consumer Và Deserialization: Người Đọc Thầm Lặng Của Dòng Dữ Liệu
 
-and welcome to this lecture on Kafka consumers.
+Bài trước bạn đã thấy Producer quyết định message rơi vào partition nào và serialize object thành bytes ra sao. Bài này chúng ta đổi phe: message đã nằm yên trong partition, giờ **Consumer** lôi nó ra thế nào, và làm sao biến bytes vô hồn trở lại thành object có nghĩa?
 
-So we've seen how to produce data into your topic
+---
 
-but now we need to read data from that topic.
+## 1. Consumer Không Được Đút Tận Miệng: Mô Hình Pull
 
-And for this we're going to use consumers.
+Điểm đầu tiên phải găm vào đầu: Consumer Kafka dùng **pull model (poll model)**, không phải push.
 
-Consumers implement the pool model,
+* Consumer **chủ động request** dữ liệu từ Broker: "cho tôi message từ offset X trở đi".
+* Broker trả response về. Broker **không bao giờ tự đẩy** dữ liệu xuống Consumer.
 
-that means that consumers are going to request data
+Vì sao thiết kế vậy? Vì chỉ Consumer mới biết mình xử lý nhanh hay chậm. Mô hình pull cho phép Consumer mệt thì poll thưa ra, khỏe thì poll dồn dập — Broker không cần lo Consumer có bị ngộp hay không. Đây là khác biệt căn bản với nhiều hệ messaging push kiểu cũ.
 
-from the Kafka brokers, the servers,
+Luồng chuẩn với Topic A có 3 partitions:
 
-and then they will get a response back.
+```mermaid
+graph LR
+    subgraph Topic A
+        P0[Partition 0<br/>offset 0 → 11]
+        P1[Partition 1]
+        P2[Partition 2]
+    end
+    C1[Consumer 1<br/>đọc P0] -->|poll| P0
+    C2[Consumer 2<br/>đọc P1 + P2] -->|poll| P1
+    C2 -->|poll| P2
+```
 
-It's not the Kafka broker pushing data
+Một Consumer có thể đọc một partition (Consumer 1 đọc P0), cũng có thể đọc nhiều partitions (Consumer 2 đọc cả P1 lẫn P2). Và giống Producer, Consumer **tự biết phải hỏi Broker nào** để lấy đúng partition mình cần. Broker chết thì Consumer tự biết đường recover — chi tiết cơ chế sẽ học ở phần lập trình.
 
-to the consumers, okay?
+Analogy kiểu Việt Nam: Broker giống như quán cơm treo bảng "tự phục vụ". Quán không bưng cơm tới tận bàn (push), mà bạn phải tự cầm khay ra quầy múc (pull). Ăn nhanh thì ra múc liên tục, ăn chậm thì ngồi nghỉ — quán không quan tâm.
 
-It's a pool model.
+## 2. Thứ Tự Đọc: Trong Partition Thì Chuẩn, Khác Partition Thì Hên Xui
 
-So we have an example
+Dữ liệu đọc ra luôn đi từ **offset thấp tới offset cao trong từng partition**: 0, 1, 2, 3...
 
-with three topic partitions that contain data,
+* Consumer 1 đọc P0 từ offset 0 tới offset 11 theo đúng thứ tự ghi.
+* Consumer 2 đọc P1 theo thứ tự của P1, đọc P2 theo thứ tự của P2.
 
-and then one consumer may want to read
+Nhưng — nhắc lại lần thứ ba vì quá quan trọng — **không có đảm bảo thứ tự giữa các partitions khác nhau**. Message ở P1 offset 5 và message ở P2 offset 5 không có quan hệ trước-sau gì cả. Nếu nghiệp vụ cần thứ tự, quay lại bài Producer: dồn chúng về cùng partition bằng Key.
 
-from topic A partition zero,
+## 3. Deserialization: Hành Trình Ngược Của Serialization
 
-and is going to read the data just like this.
+Nhớ ở bài Producer: Kafka chỉ lưu **bytes**. Producer serialize object thành bytes trước khi gửi. Giờ Consumer nhận về cũng chỉ là bytes — key dạng binary, value dạng binary — phải **deserialize** ngược lại thành object thì code của bạn mới dùng được.
 
-And another consumer may choose to read
+Ví dụ đối xứng hoàn hảo với bài trước:
 
-for more than one topic partition,
+* Key nhận về là bytes, nhưng Consumer **biết trước** key gốc là Integer nên dùng **IntegerDeserializer** để biến bytes thành số `123`.
+* Value nhận về là bytes, Consumer biết trước value là String nên dùng **StringDeserializer** để biến bytes thành chuỗi `"hello world"`.
 
-so he may choose to read data again,
+```java
+// Minh họa ý tưởng đối xứng với phía Producer
+props.put("key.deserializer", "IntegerDeserializer");   // bytes -> 123
+props.put("value.deserializer", "StringDeserializer");  // bytes -> "hello world"
+```
 
-from partition 1 and partition 2.
+Kafka đính kèm sẵn cả bộ deserializer thông dụng, mirror với serializer: **String (kể cả JSON), Integer, Float, Avro, Protobuf**... Producer dùng serializer nào thì Consumer phải dùng deserializer đó — đây là một "hợp đồng ngầm" giữa hai phe.
 
-So the consumers when they need to read data
+```mermaid
+graph LR
+    KO[Key object: 123<br/>Value object: hello world] -->|Serializer - Producer| B[Bytes trong Kafka]
+    B -->|Deserializer - Consumer| KO2[Key object: 123<br/>Value object: hello world]
+```
 
-from a partition, they will automatically
+## 4. Luật Sắt: Đừng Đổi Kiểu Dữ Liệu Giữa Chừng
 
-know which broker, which Kafka server to read from.
+Đây là chỗ nhiều team trả giá đắt. Trong suốt **vòng đời của một Topic** (từ lúc tạo tới lúc xóa), bạn **tuyệt đối không được đổi kiểu dữ liệu** mà Producer gửi vào.
 
-And in case a broker has a failure,
+Vì sao? Vì Consumer đã code cứng theo format cũ: key là Integer, value là String. Ngày đẹp trời Producer đổi sang gửi Float và Avro, Consumer vẫn dùng deserializer cũ sẽ giải mã sai, crash, hoặc tệ hơn là ra dữ liệu rác mà không báo lỗi.
 
-the consumers are again very, very smart,
+Muốn đổi format thì con đường đúng là:
 
-and they will know how to recover for this.
+1. **Tạo Topic mới** với format mới tùy ý.
+2. **Sửa Consumer** để đọc từ Topic mới bằng deserializer mới.
 
-Now the data of the read data being read
+Nghe tốn công nhưng đó là cái giá của hợp đồng lỏng lẻo kiểu bytes. Muốn quản chặt hơn thì phải dùng thêm **Schema Registry** — sẽ học ở phần API mở rộng.
 
-for all these partitions is going to be read in order,
+Analogy gần gũi: Topic giống như đường ống nước mía. Hôm nay bạn cho nước mía chảy qua, máy ép (Consumer) chỉnh để ép mía. Mai bạn đổi sang cho nước phở chảy qua cùng đường ống mà không báo, máy vẫn ép kiểu mía thì chỉ có toang. Muốn bán phở thì lắp đường ống mới.
 
-from low to high offset,
+## Cạm Bẫy Thường Gặp
 
-so zero, one, two, three and so on within each partition.
+* **Tưởng Broker push dữ liệu xuống.** Sai. Consumer phải poll. Viết code mà ngồi chờ "sao Broker chưa gửi gì" là hiểu sai bản chất — phải kiểm tra vòng poll của mình.
+* **Đòi thứ tự cross-partition.** Consumer 2 đọc P1 và P2 thì thứ tự giữa hai luồng đó không có ý nghĩa. Cần ordering thì fix từ phía Producer bằng Key, Consumer không cứu được.
+* **Serializer một đằng, deserializer một nẻo.** Producer gửi Avro mà Consumer dùng StringDeserializer thì chỉ có rác. Hai phe phải khớp nhau như chìa và ổ.
+* **Đổi schema giữa chừng trên Topic đang chạy.** Kiểu "thêm một field chắc không sao đâu" — với JSON String thì có thể thoát, với Avro/Protobuf chặt chẽ thì Consumer cũ vỡ ngay. Muốn đổi thì tạo Topic mới.
+* **Một Consumer ôm quá nhiều partition nặng.** Đọc được nhiều partition không có nghĩa nên ôm hết. Ôm nhiều thì poll chậm, lag tăng — đó chính là lý do bài sau sinh ra Consumer Group để chia việc.
 
-So the consumer, the first consumer is going to read data
+## Kết Luận
 
-in order for topic A partition 0,
+Tóm lại một câu: **Consumer dùng mô hình pull để chủ động xin dữ liệu từ Broker theo đúng thứ tự offset trong từng partition, rồi dùng deserializer khớp với serializer của Producer để biến bytes trở lại thành object — và đừng bao giờ đổi kiểu dữ liệu giữa vòng đời Topic.**
 
-from the offset 0 all the way to offset 11.
-
-Same for consumer 2,
-
-that is going to be reading data in order for partition 1,
-
-and in order for partition 2
-
-but remember, there is no ordering guarantees
-
-across partition 1 and partition 2
-
-because they are different partitions, okay?
-
-The only ordering we have is within each partition.
-
-So now that consumers read messages,
-
-they need to transform these bytes that they receive
-
-from Kafka into objects or data.
-
-So we have the key that is a binary format
-
-and a value that is a binary format,
-
-which corresponds to the data in your Kafka message.
-
-And then we need to transform them to read them and put them
-
-into an object that our programming language can use.
-
-So the consumer has to know in advance
-
-what is the format of your messages?
-
-And this consumer in instance,
-
-knows that my key is an integer and therefore is going
-
-to use an integer Deserializer to transform my key
-
-that is bytes into an integer.
-
-And then the key object is going to be back
-
-to one, two, three.
-
-Same for the value,
-
-we know that we need a Deserializer of type string
-
-because this is what we expect to be in this Kafka topic,
-
-and therefore, this Deserializer is going to take bytes
-
-as an input and then create a string out of it.
-
-So we're going to get back our value object, hello world.
-
-So obviously, Deserializers are being bundled
-
-with Apache Kafka and they can be used by your consumers.
-
-So it could be for string including Jason, Integer, Floats
-
-Avro, Protobuf and so on.
-
-And as we see, we have a process of Serializer
-
-at the producer side and Deserializer at the consumer side,
-
-and the consumer needs to know in advance
-
-what is the expected format for your key and your value?
-
-That means that within your topic life cycle,
-
-so as long as your topic is created,
-
-you must absolutely not change the type of data
-
-that is being sent by the producers,
-
-because otherwise you're going to break your consumers
-
-because they're going to expect for example,
-
-integers and string, but you're going to change them
-
-into Floats and Avro who knows, right?
-
-And that will be a big problem.
-
-So if you want to change the data type of your topic,
-
-what you have to do is to create a new topic instead,
-
-and in this new topic you can have whatever format you want,
-
-and then your consumers will have to be reprogrammed
-
-a little bit to read from these new topics
-
-with this new format.
-
-Okay, so that's it for consumers and consumer Deserializers,
-
-I hope you like this lecture
-
-and I will see in the next lecture.
+Bài tiếp theo chúng ta scale Consumer lên: một mình đọc không kịp thì chia việc cho cả nhóm ra sao — qua nhân vật **Consumer Group** và cơ chế **Consumer Offset** giúp đọc lại đúng chỗ sau khi crash.
