@@ -63,7 +63,7 @@ Container là **phiên bản đang chạy (runnable instance)** của một Imag
 │  ├───────────────────────┤  │
 │  │ Layer 2: COPY . /app  │  │  ← Image Layers (Read-Only)
 │  ├───────────────────────┤  │
-│  │ Layer 1: FROM node:14 │  │
+│  │ Layer 1: FROM node:22-alpine │  │
 │  └───────────────────────┘  │
 └─────────────────────────────┘
 ```
@@ -104,13 +104,13 @@ docker run -d --name local_redis -p 6379:6379 redis:7.0-alpine
 ### Tại sao container vừa chạy đã tắt?
 
 ```bash
-docker run node
+docker run node:22-alpine
 # Container tự tắt ngay lập tức!
 ```
 
 **Nguyên nhân:**
-1. Lệnh mặc định trong image `node` là khởi chạy Node REPL.
-2. Khi chạy `docker run node` ở chế độ detached, không gắn STDIN/STDOUT.
+1. Lệnh mặc định trong image `node:22-alpine` là khởi chạy Node REPL.
+2. Khi chạy `docker run node:22-alpine` ở chế độ detached, không gắn STDIN/STDOUT.
 3. Node REPL nhận EOF → kết thúc → PID 1 chết → Container tắt.
 
 ### Bằng chứng về tính cô lập
@@ -121,8 +121,8 @@ node -v
 # Output: v14.7.0 hoặc "command not found"
 
 # Bên trong container (dùng environment trong image)
-docker run -it node node -v
-# Output: v20.x.x (phiên bản trong image)
+docker run -it node:22-alpine node -v
+# Output: v22.x.x (phiên bản trong image)
 ```
 
 → Container sử dụng **100% môi trường** được đóng gói sẵn trong Image, không can thiệp vào Host OS.
@@ -134,7 +134,7 @@ docker run -it node node -v
 Để giữ container "sống" và tương tác trực tiếp:
 
 ```bash
-docker run -it node
+docker run -it node:22-alpine
 ```
 
 **Giải thích cờ:**
@@ -149,7 +149,7 @@ docker run -it node
 ## 5. Xây Custom Image với Dockerfile
 
 ### Mục tiêu
-Từ một Base Image chính thức (ví dụ: `node:14`), "đắp" code của mình lên trên để tạo Custom Image mới.
+Từ một Base Image chính thức (ví dụ: `node:22-alpine`), "đắp" code của mình lên trên để tạo Custom Image mới.
 
 ### Cấu trúc dự án mẫu
 
@@ -172,7 +172,7 @@ project/
 
 ```dockerfile
 # 1. Chọn Base Image nền tảng
-FROM node:14
+FROM node:22-alpine
 
 # 2. Thiết lập thư mục làm việc nội bộ
 WORKDIR /app
@@ -280,7 +280,7 @@ Mỗi câu lệnh trong Dockerfile tạo ra một **layer** riêng biệt:
 ├─────────────────────────────┤
 │ Layer 2: WORKDIR /app       │
 ├─────────────────────────────┤
-│ Layer 1: FROM node:14       │
+│ Layer 1: FROM node:22-alpine       │
 └─────────────────────────────┘
 ```
 
@@ -316,7 +316,7 @@ RUN go build -o main .  ← BỊ HỦY CACHE → phải chạy lại!
 ### Best Practice: Tách Dependency và Source Code
 
 ```dockerfile
-FROM golang:1.22-alpine
+FROM golang:1.24-alpine
 WORKDIR /app
 
 # BƯỚC 1: Copy file dependency TRƯỚC
@@ -406,7 +406,7 @@ docker ps --help
 - Bạn thấy output/log trực tiếp trên terminal.
 
 ```bash
-docker run node   # Attached mode - terminal bị chặn
+docker run node:22-alpine   # Attached mode - terminal bị chặn
 ```
 
 ### Detached Mode (Cờ `-d`)
@@ -416,7 +416,7 @@ docker run node   # Attached mode - terminal bị chặn
 - Không thấy output trực tiếp.
 
 ```bash
-docker run -d node   # Detached mode - terminal tự do
+docker run -d node:22-alpine   # Detached mode - terminal tự do
 ```
 
 ### Chuyển đổi giữa hai chế độ
@@ -446,7 +446,7 @@ docker logs -f <container_name_or_id>   # Theo dõi real-time
 Ví dụ: App Python đọc min/max từ terminal, tính số ngẫu nhiên.
 
 ```dockerfile
-FROM python:3
+FROM python:3.13-alpine
 WORKDIR /app
 COPY . .
 CMD ["python", "rng.py"]
@@ -586,7 +586,7 @@ docker build -t my-app:v1 .
 docker build -t my-app:v2 .
 ```
 
-**Cấu trúc tag:** `repository:tag` (ví dụ: `node:14`, `my-app:v1`)
+**Cấu trúc tag:** `repository:tag` (ví dụ: `node:22-alpine`, `my-app:v1`)
 
 **Lợi ích:**
 - Versioning rõ ràng.
@@ -596,7 +596,7 @@ docker build -t my-app:v2 .
 ### Docker Hub Tags
 
 ```bash
-docker pull node:14
+docker pull node:22-alpine
 docker pull node:20-alpine
 docker pull node:lts
 docker pull node:slim
@@ -652,7 +652,7 @@ docker pull node
 
 # ĐÚNG: Luôn chỉ định version cụ thể
 docker pull node:20-alpine
-docker pull golang:1.21-alpine
+docker pull golang:1.24-alpine
 ```
 
 **Lý do:** `:latest` thay đổi liên tục → có thể phá vỡ application trên production.

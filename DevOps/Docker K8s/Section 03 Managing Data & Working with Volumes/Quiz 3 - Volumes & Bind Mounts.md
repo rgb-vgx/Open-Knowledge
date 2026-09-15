@@ -27,7 +27,7 @@ Anonymous volume sẽ xảy ra điều gì khi container bị xóa với `--rm`?
 - C. Chỉ tồn tại trong 24h
 - D. Được gắn vào container khác
 
-**Đáp án: A** — Named volume tồn tại vĩnh viễn直到 bạn xóa thủ công.
+**Đáp án: A** — Named volume tồn tại vĩnh viễn cho đến khi bạn xóa thủ công.
 
 ### Câu 4: Bind Mount
 Để mount thư mục hiện tại vào `/app` trong container, lệnh nào đúng?

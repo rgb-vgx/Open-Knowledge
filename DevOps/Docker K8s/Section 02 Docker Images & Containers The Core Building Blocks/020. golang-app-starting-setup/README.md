@@ -32,8 +32,8 @@ Khác với Node.js cần `npm install` để tải dependencies, Go biên dịc
 
 * **Ưu điểm**: Binary tĩnh, không phụ thuộc môi trường runtime
 * **Cách tiếp cận Dockerfile**: Sử dụng multi-stage build
-  * Stage 1: Dùng `golang:alpine` để build binary
-  * Stage 2: Copy binary vào `scratch` hoặc `alpine` để chạy
+  * Stage 1: Dùng `golang:1.24-alpine` để build binary
+  * Stage 2: Copy binary vào `scratch` hoặc `alpine:3.21` để chạy
 
 ---
 
@@ -41,14 +41,14 @@ Khác với Node.js cần `npm install` để tải dependencies, Go biên dịc
 
 ```dockerfile
 # Build stage
-FROM golang:alpine AS builder
+FROM golang:1.24-alpine AS builder
 WORKDIR /app
 COPY go.mod ./
 COPY server.go ./
 RUN CGO_ENABLED=0 GOOS=linux go build -o /main
 
 # Run stage
-FROM alpine:latest
+FROM alpine:3.21
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=builder /main .
