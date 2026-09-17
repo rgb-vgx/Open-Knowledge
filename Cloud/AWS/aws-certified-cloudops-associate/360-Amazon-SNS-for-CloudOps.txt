@@ -1,0 +1,39 @@
+# 360. Amazon SNS for CloudOps
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53217667
+# Caption: en_US (manual)
+
+Here are other things you need to know
+about Amazon SNS.
+So the first one is the filtering messages capability.
+So by default, any SNS topic subscriber
+will receive every message published to your SNS topic,
+so every message, but you can filter these messages
+to the subscribers using a filter policy.
+And it looks like this,
+it's a JSON document that defines what you want to accept
+or what you want to deny in terms of messages.
+And this policy will then define
+which messages will be accepted and received
+by the subscriber.
+So this is attached for every subscriber.
+So every subscriber with, for example, an SQS Queue,
+a Lambda function, et cetera, et cetera,
+can have different filtering policies.
+So you can have as many as you want, but one per subscriber.
+Next, you can also have a cross-region subscriber in SNS.
+For example, in different regions,
+you can send it to SQS Queues and Lambda functions.
+And so here is the idea.
+A notification will go from us-east-1 SNS topic
+to a queue in eu-west-2.
+Just to do so, please make sure that the subscribers
+have the required permissions
+to get the notifications from SNS.
+And so for an SQS Queue or Lambda function,
+you can change the resource-based policy.
+And in that resource-based policy, you're going to make sure
+that you allow the queue from another region
+to send data into your SQS Queue.
+And that's it, I hope you liked it,
+and I will see you in the next lecture.

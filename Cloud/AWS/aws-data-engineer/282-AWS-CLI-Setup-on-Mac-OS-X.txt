@@ -1,0 +1,40 @@
+# 282. AWS CLI Setup on Mac OS X
+# Section: Developer Tools
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40308530
+# Caption: en_US (auto)
+
+Instructor: So let's install the AWS CLI on mac,
+and for this we're just going to go on Google
+and make sure to choose the link, "Installing the AWS CLI
+version 2 on macOS",
+and then we're just going to follow the process,
+so we'll scroll down and see what they say,
+and here is how to install it.
+So we can just download a PKG file
+and this will be a graphical installer.
+So you download the PKG file,
+then you click on "continue", "continue", "continue",
+and you agree, then you say, okay,
+"install for all the users on this computer",
+click on "continue", and then click on "install",
+and this goes ahead and installs the CLI on mac.
+So we wait for everything to be done.
+The files are being written.
+Okay, the installation is now successful
+and we'll move the installer to trash,
+and now to fill this out, you open a terminal on mac,
+so you just go ahead and type for example, "terminal",
+and this will give you a terminal app.
+Mine is called "iterm" on mac,
+which is also a free terminal that you can use,
+and then you just type "AWS--version",
+and if everything is going well,
+then it should give you back the version
+of the AWS executable, so let's wait for a little bit,
+and we get the answer, "aws-cli/2.0.10",
+so that means that everything has been installed correctly.
+So that's it for this lecture.
+In case of issues, please have a look at this guide.
+It will have the answer for you,
+and that's it for me.
+I will see you in the next lecture.

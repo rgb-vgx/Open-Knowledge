@@ -1,0 +1,124 @@
+# 1. Course Introduction
+# Section: Introduction
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/19891628
+# Caption: en_US (manual)
+
+Hello and welcome to
+the AWS Certified Cloud Practitioner Course.
+My name is Stephane Maarek and I will be your instructor.
+So we are starting in five minutes,
+but please try to pay attention to this lecture.
+So we are going to prepare for the Cloud Practitioner exam.
+The exam code is CLF-C02.
+It is a challenging certification.
+So this course is going to be long and interesting
+and it is good if you have some basic IT knowledge,
+but don't worry if you don't come from an IT background.
+I will explain everything for you as well.
+In this course, we're going to learn a lot.
+We will cover over 40 AWS services out of the 200 plus
+that exists in AWS.
+If you are a beginner in IT and AWS, do not worry.
+You are welcome to this course
+and you will learn a lot.
+But take your time, it's not a race.
+You'll learn a lot every day by doing little by little.
+Then this course is a bit special
+because I want you to learn also by doing.
+It's a key learning technique in this course.
+So this course will mix both theory lectures
+and, where necessary, hands-on where you can follow along
+with me in the course by creating your own AWS accounts
+and reproducing what I do on screen.
+So now we're preparing for a certification.
+I want to show you the type of questions
+you're going to get.
+So this is a sample question from the exam,
+which says which AWS service would simplify
+the migration of a database to AWS.
+And we'll have four answers:
+storage gateway, database migration service,
+EC2 and Amazon AppStream 2.0.
+Now this course is going to cover most of the services.
+For example, the first service we will learn in this course.
+The second service, the name is obvious, it is the answer
+to the question that is the correct answer,
+and we will cover this service as well.
+For EC2, we will learn as well,
+and it is possible in the course you have services
+that will be called distractors.
+So they will not be covered in the course
+because there are over 200 services in AWS.
+But they will appear at the exam as a wrong answer.
+So in this course I want to focus on the service
+that I know are core to AWS
+and that will come up in the exam,
+but it will not focus on explaining you the distractors
+because that would make too much information into your head.
+If you're interested into checking out the sample questions
+for the exam, you can use this link.
+So now a little bit about me.
+So my name is Stephane Maarek
+and I will be your instructor for this course.
+I have 11 AWS certifications, so all of them,
+and I've worked with AWS for many years.
+I've built websites, applications,
+streaming platforms and so on.
+I've been teaching for almost seven years on Udemy
+about AWS certifications or services such as
+CloudFormation, Lambda and EC2.
+As you can see, I have over 2 million students
+that went through my courses
+and everyone has been very successful with this course.
+So I'm very happy that you're here following along with me.
+So you can connect with me on social media.
+You can follow me on LinkedIn, on Instagram, on Medium,
+Twitter and GitHub, and the links are here.
+So welcome to your AWS Certification journey
+and I'm super excited that you're here.
+So you have four different kind of certifications
+in the AWS.
+You have foundational, associates,
+professional and specialty.
+And this course, of course is going to teach you
+the most foundational certification,
+which is called the AWS Cloud Practitioner Foundational.
+But over time, if you want to deepen your understanding
+and mastery of AWS, you can learn with me
+around all the certifications you have on the AWS,
+for example, the associate level such as
+AWS Solutions Architecture Associate,
+which is a very popular certification,
+but you can see many, many others.
+And I'll be here along the way.
+So the question I always get is
+how much is this course going to cost me?
+Well, here is how much it costs me,
+but there is a reason why.
+So AWS is going to give you about $100 of free credit
+when you create your account, as we'll see very soon.
+And this can go up to $200 if you complete specific actions.
+But when you create resources in the cloud,
+nothing is free or almost nothing is free.
+That means that you're going to spend some money
+and this money you're going to spend is going to go against
+the free credits that AWS is giving you.
+And in case you use all the credits, then AWS is just going
+to close your accounts.
+And if there are resources such as the registrar,
+for example, the $12 you see on my slide,
+I will let you know and you'll have to go what's called
+into the AWS paid plan.
+And again, this is when you put your credit card down
+and you accept that you'll have charges.
+But bottom line is everything should be free for you
+and pretty safe because you can never go over the limit.
+Otherwise your account will just be closed.
+So you can learn more about the feature at this URL,
+but bottom is if you just do this course with me,
+you should be all good to go.
+And rest assured, even if you do a mistake,
+it should not cost you any money.
+So that's it for this lecture. I hope you liked it.
+I'm super excited to teach you AWS.
+Let's get started and let's learn the cloud together.

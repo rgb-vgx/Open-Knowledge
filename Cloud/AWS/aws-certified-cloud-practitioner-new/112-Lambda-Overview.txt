@@ -1,0 +1,149 @@
+# 112. Lambda Overview
+# Section: Other Compute Services: ECS, Lambda, Batch, Lightsail
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056024
+# Caption: en_US (manual)
+
+Okay, so now let's talk about AWS Lambda.
+So if we use an EC2 instance,
+we have a virtual server in the Cloud,
+but we are bounded by the amount of memory
+and CPU power we give it.
+It is continuously running,
+even though sometimes we don't use it.
+And if we want to scale, we can use an Auto Scaling group,
+but that means that we need to add or remove servers
+over time.
+That may be a little slow,
+or they may be sometimes very complicated to implement.
+With Lambda, this is a new way to think about it.
+In this case, we don't have servers,
+we just have virtual functions.
+And these functions are limited by time.
+So they're intended for shorter type of executions.
+They will run on demand.
+So that means that whenever we run a function,
+it will be there to be run.
+But whenever we don't need a function, it will not be run
+and we will not be billed for it.
+And in case we need scaling,
+it's already automated as part of the Lambda service,
+and this is why Lambda is a very popular service from AWS.
+So the benefits of using AWS Lambda
+is that the pricing is, first of all, super easy.
+You're going to pay per request and per compute time.
+And the free tier is also very generous.
+So you get every month, 1 million Lambda invocations,
+and 400,000 gigabyte seconds of compute time.
+What this means is that you can run on Lambda
+some pretty good services for free.
+Now it is integrated with the whole AWS suite of services.
+So we have integration with so many of the services
+we've seen so far, and it is, very important, event-driven.
+So the functions will only get invoked by AWS
+when something happens, when an event happens
+or when needed.
+So that makes Lambda a reactive type of service,
+which is important going into the exam.
+It is fully integrated with many programming languages.
+You get easy monitoring through CloudWatch.
+We haven't seen what CloudWatch is,
+but it will be the monitoring solution in AWS.
+And finally, it's easy to get more resources per function.
+We can get up to 10 gigabytes of RAM per function,
+and if you do increase the RAM, it will also improve the CPU
+and the network quality.
+So all in all, very good.
+AWS Lambda can run many languages
+such as Node.js or JavaScript, Python, Java, C#,
+so either .NET Core or PowerShell, Ruby,
+and it supports many other languages
+through something called the Custom Runtime API,
+for example, it supports the Rust or the Golang languages
+through that.
+You also have the option to use containers on Lambda.
+So this is a container image,
+and you must implement what's called the Lambda Runtime API.
+Now, that may be too advanced from an exam perspective,
+but what I want you to remember
+is that there is a service named ECS or Fargate,
+and so to run container images, especially Docker images,
+it is always going to be preferred from an exam perspective
+to run them on ECS or Fargate versus Lambda,
+even though Lambda supports running
+some level of customized Docker images.
+So you don't need to remember all the languages, of course,
+for Lambda, but just remember that it has
+some level of support.
+The most important ones is going to be for sure Node.js
+and Python.
+Here is a very common use case of Lambda,
+which is to create a serverless thumbnail creation service.
+So say we have an S3 bucket and we add images in it,
+so our users are uploading a beach image into an S3 bucket.
+The S3 bucket will trigger a Lambda function
+once the image is uploaded,
+and that Lambda function will take that image
+and will change it to create a thumbnail.
+It will push the thumbnail back into Amazon S3.
+So a thumbnail is a smaller version of the image,
+or it will also push some metadata about the thumbnail
+into DynamoDB.
+That includes the image size, the image name,
+the creation dates, et cetera, et cetera.
+And all of this is fully event-driven and fully serverless.
+With S3, we don't provision servers.
+With Lambda, we don't provision servers,
+and with DynamoDB, as well, we don't provision any servers.
+So that is a great pattern
+because this serverless thumbnail creation
+will scale really, really well,
+and we will be able to not worry about provisioning servers
+to make it scale.
+Now, there's another very common use case for Lambda,
+which is to create a serverless CRON job.
+So CRON allows you to define a schedule, for example,
+every hour, every day, or every Monday,
+and based on that schedule to run a script.
+And by default, a CRON job is run on a Linux AMI,
+so on a Linux machine.
+But we are serverless,
+so we cannot provision an EC2 instance.
+So instead, we'll be using something
+called CloudWatch Events or EventBridge,
+and this service, that we'll see later on in this course,
+will be triggering every one hour our Lambda function
+to perform a task.
+And effectively, we have no servers in this
+because CloudWatch Events is serverless
+and Lambda is serverless,
+and so effectively we're launching a script every hour
+through a Lambda function.
+So I hope you can see now the trigger of it,
+the Lambda functions is really for serverless functions
+in the Cloud.
+Now, let's just talk about the pricing.
+So you can find the Lambda pricing at this URL,
+but it's very simple.
+You pay per call, so that means the first 1 million
+Lambda invocations are free,
+and then it's also very, very cheap.
+You're going to pay 20 cents
+per 1 million requests thereafter.
+You also going to pay for the duration.
+So the free tier, as I said, is 400,000 gigabyte seconds
+of compute time for free.
+And that means it's 400,000 seconds
+if the function has one gigabyte of RAM
+or 3.2 million seconds
+if the function has 128 megabyte of RAM.
+After that, you're going to pay $1
+for 600,000 gigabyte seconds.
+So all in all, the bottom line
+is that it's going to be very cheap to run Lambda on AWS,
+and so it's a very popular service
+to run your serverless applications and websites.
+And going into the CCP exam,
+you need to remember that Lambda pricing
+is based on calls and duration.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

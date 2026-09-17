@@ -1,0 +1,69 @@
+# 333. VPC Traffic Mirroring
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/28874610
+# Caption: en_US (manual)
+
+So here is a very cool security feature
+called the VPC, Traffic Mirroring.
+The idea is that we want to capture
+and inspect network traffic in our VPC,
+but to do it in a non-intrusive manner.
+So to do so, we want to route the traffic
+to security appliances that we manage.
+And to do so, we're going to capture the traffic,
+so we're going to define
+which are the source ENIs
+we want to capture the traffic from.
+And then the targets,
+so where do we want to send that traffic to,
+our own ENIs or maybe a Network Load Balancer.
+So to do an example.
+So we have an EC2 instance
+and we have an Elastic Network Interface,
+so an ENI attached to it
+and works really well.
+Our EC2 instance is accessing the internet
+and is being accessed.
+And so we get a lot of inbound and outbound traffic
+on the ENI to the EC2 instance.
+But we wanted to analyze our traffic.
+So to do so we're going to set up a Load Balancer
+and behind this Network Load Balancer,
+we're going to have an auto scaling group of EC2 instances
+that will have some security software on it.
+Now we want to be able to capture
+all the traffic from Source A
+without disrupting the functioning of Source A.
+So to do so, we're going to set up a VPC traffic mirroring,
+and optionally, we can have a filter,
+if you want you to get just some information,
+not everything.
+And with this traffic mirroring feature,
+all the traffic sent to the ENI or Source A
+is also going to be sent to our Network Load Balancer.
+So our Source A,
+our EC2 instance is still working fine.
+It still doesn't know what's happening,
+but on top of it,
+the traffic is being mirrored.
+So hence the name, Traffic Mirroring,
+into our Network Load Balancer.
+And from there, we can analyze the traffic itself.
+And this applies not just to one source,
+but to multiple sources.
+So if you had a second EC2 instance with another ENI,
+yet again, we can mirror the traffic
+into our Network Load Balancer.
+So how does that work?
+We need to have the source
+and the targets to be in the same VPC,
+or it could be across different VPC,
+and if we have enabled VPC Peering.
+So the use cases for VPC traffic mirroring
+is going to be around content inspection,
+threat monitoring, or troubleshooting
+from a networking perspective, okay.
+It's very hard to demonstrate this in a demo,
+but this diagram should be enough.
+So hope you liked it.
+And I will see you in the next lecture.

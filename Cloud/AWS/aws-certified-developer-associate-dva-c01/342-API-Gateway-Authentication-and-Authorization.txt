@@ -1,0 +1,223 @@
+# 342. API Gateway Authentication and Authorization
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731690
+# Caption: en_US (manual)
+
+Now here is a pretty heavy lecture
+around API gateway security, but one you should master,
+so I've tried to include as many diagrams as possible.
+So the first one is to use IAM permissions
+to access your API gateway.
+That makes sense, this is what we've been doing so far,
+we use an IAM policy
+and we attach it to user enroll
+and we're able to invoke our API gateway.
+So in this case the authentication is done through IAM
+and the authorization is done through an IAM policy.
+So this is the optimal way to protect your API gateway
+if it's being accessed within your
+AWS accounts,
+so that includes if you're using EC2 instances,
+Lambda functions,
+or IAM users, et cetera et cetera.
+In order to pass your IAM credentials to the API gateway,
+there is a leverage of the signature before capability
+where the eight credentials
+are going to be signed and then placed into headers.
+So let's take an example,
+the API gateway is deployed into a stage
+and secured with IAM permissions,
+and there's a backend of Lambda functions.
+So first our clients is going to do a rest API call
+and we'll pass the Sig v4 headers,
+then API gateway knows how to decrypt those,
+so it will check with IAM if the user is authorized
+and so there will be an IAM policy check,
+and so as soon as this is done
+the API gateway will, if it's authorized,
+talk to the Lambda function in the backend
+and returned a result to the clients.
+So there's is a first permission mode and it is very simple.
+Now this can be combined with resource policies.
+So,
+resource policies sound a lot like Lambda resource policies
+because they are for the exact same purpose,
+they allow you to set adjacent policy on your API gateway
+to define who and what can access your API gateway.
+So the main use case of resource policies
+is to use cross account access,
+so we would define adjacent policy just like this
+and combined it with IAM security,
+we are able to give access
+of users
+or roles in other accounts
+directly into our API gateway.
+So this is for cross account access,
+but you could also
+use resource policy to filter for specific IP addresses,
+or to allow only for a VPC Endpoint.
+So there is the first category of security.
+The second category is around Cognito user pool,
+so we'll see Cognito in its own section,
+but Cognito at a high level It's a database of users.
+So Cognito will manage fully the user lifecycle
+and the token of
+connection to Cognito will expire automatically,
+and so the API Gateway will verify the identity
+of the people connecting to API with Cognito.
+There's no custom implementation required,
+so in this case the users have to authenticate
+with the Cognito User Pools,
+and then the authorization is set at the API gateway methods
+level.
+So,
+if we have a look
+here our API gateway
+is talking to Lambda function in our backend,
+and then,
+our client first authenticates with the Cognito User Pool
+to
+retrieve a connection token.
+So the users are already restarting user pool,
+then our client is authenticated they received a token
+and it will pass the token in the API call
+to our API gateway.
+Now what will happen is that the API gateway
+has a direct integration with Cognito User Pools,
+and it will evaluate the Cognito token
+with the Cognito User Pool
+and if the token is correct,
+it's going to allow access to your backend.
+So this is a very easy kind of security
+one will be exploring.
+And then the last one is Lambda Authorizer,
+formerly called Custom Authorizer,
+and this one is the most flexible
+but requires the most involvement on your end.
+So it is a Token-based authorizer
+with a bearer token,
+and this looks like a JWT so JSON Web token
+or Oauth.
+And so the idea is that,
+we can pass a request based parameters with headers
+or query strings into a Lambda authorizer,
+and the Lambda function
+will have to evaluate what we passed to it,
+and if it's happy,
+return an IAM policy for the clients that made the request
+and the policy will be cached.
+So I will be explaining this in diagram
+it will be much clearer.
+So the authentication in this time is external
+so it's up to you to authenticate users any where you want,
+and
+the authorization has to be done in your Lambda function.
+So, here's a diagram it should make a lot more sense.
+So the API gateway has a backend to get on the function,
+and our clients first authenticates
+with a third party authentication system.
+For example, it could be off zero.
+So we retrieve a token
+from our third party authentication system,
+and then we pass this token to the API gateway,
+either through a header or through request biometrics.
+Then the API gateway
+is integrated with the Lambda Authorizer,
+so this is a Lambda function
+they will retrieve some information
+around the context as well as this token
+that we authenticated from.
+Then the Lambda function is something we have to program
+so it's up to us to verify that token,
+maybe talk to the third party authentication system
+to verify the validity of the token,
+and if it is valid,
+then the Lambda function will return
+and have to create an IAM principal and IAM policy,
+and this is done once then it will get cached
+into a Policy Cache
+and then the API gateway will talk to our Lambda backend.
+So,
+the Lambda Authorizer is lot more involved as you can see,
+and it is used the mainly
+when you're using a third party authentication system.
+So,
+what do we need to remember going into the examiner?
+Well, just a high level thankfully,
+So with IAM security this is great when you have users
+and roles already created in your accounts,
+and if you look at doing cross account access,
+then you need to use resource policy on top of things.
+It's great for handling authentication and authorization
+the way we already know,
+and this leverages Signature v4 as a technology.
+The Custom Authorizer is great when you're a third party
+databases of users
+and it's very flexible because,
+we choose what IAM policy will return
+and we need to enable and handle ourselves
+the authentication,
+and the authorization in the Lambda function.
+And even though the results are cached
+we still pay for the Lambda invocation
+and that can take awhile.
+And finally,
+the Cognito User Pool in which we manage our own user pool
+We'll see this how we can do it in the Cognito section.
+We don't need to write any custom code so this is preferred
+and we must implement authorization ourselves,
+in the backend Lambda function.
+So let's say for security now let's go into the console
+to see these options very quickly.
+So let's see the security options,
+so the first one is that if we click on any method
+in our resources
+and click on method request,
+here we can set the authorization
+and the only option we have accessible right now
+is either is IAM ,
+so this is check the IAM user policy and roles
+and this is helpful
+when we have everything within our accounts,
+and this is Sig v4.
+So this can be used in combination
+and I'm not going to do it,
+but this can be used in combination
+with the Resource Policy
+so they can be defined on the left hand side,
+and here we have
+free templates.
+The first one is the cross accounts resource policy,
+so here we can replace by the name of another account IG
+and we will have a resource policy that would allow
+cross account access,
+or we could have an IP range blacklists
+so to disable some IPs to access or not our API gateway.
+And finally Source VPC Whitelist
+if you want to authorize
+another VPC into our API gateway.
+So this resource policy for example,
+this cross account access
+plus the ERIS IAM type of security
+allows us to fully control who accesses our API gateway,
+with IAM.
+Now we can set up other authorizers,
+so on the left hand side we can create a new authorizer,
+and currently there are two new,
+so it could be a Lambda type of authorizer
+which is the custom one,
+and we need to set up a lot of settings
+and as you can see for Lambda
+the most important that we should set up a Lambda function,
+that will be our authorizer
+as well as how if we want to cache the authorization
+which is definitely recommended.
+Or, we can use a Cognito User Pool
+in which case it's much simpler to setup,
+We should just send
+identify the ARN of our Cognito User Pool,
+then click on create and we're good to go.
+Now security is a lot advanced,
+I just wanted to show you the options in the console,
+in case you want to have it play with it.
+But that's just for me. I will see you in the next lecture.

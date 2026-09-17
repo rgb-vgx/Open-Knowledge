@@ -1,0 +1,71 @@
+# 37. Amazon Nova
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/54471251
+# Caption: en_US (manual)
+
+So, now let's talk about Amazon Nova.
+So it's a family of AI Foundation Models, FMs, built by AWS.
+The idea is that you're going to use those in bedrock,
+like you would use any model.
+So this is the alternative by AWS
+to other models from ChatGPT or Claude.
+It's designed to be fast, cost-effective,
+and enterprise-ready.
+And as I said, you can access it through Amazon Bedrock.
+So the exam may ask you what model is used for what.
+So you have Nova Premier, which is the most capable
+of Amazon's multimodal models for complex reasoning tasks
+and for use as the best teacher
+for distilling custom models.
+You have Nova Pro, which is a bit lower.
+So it's a highly capable multimodal model
+with the best combination of accuracy, speed, and cost
+for a wide range of tasks.
+You have Nova Lite, which is a low-cost model
+that is lightning fast for processing image,
+video, and text inputs.
+And Nova Micro, which is the text-only model
+that delivers the lowest latency responses at very low cost.
+Now, this is to get understanding of, you know,
+text and/or video and/or images.
+But if you wanted to generate images, you have Nova Canvas,
+which is a state-of-the-art image generation model.
+You have Nova Reel, which is a state-of-the-art
+video generation model.
+And for speech you have Nova Sonic,
+which is a conversational speech understanding
+and generation model in multiple languages.
+So, you need to just remember that Canvas is for images,
+Reel for videos,
+then you have Premier down to Micro for dealing with text.
+And the first three are multimodal,
+the last one is text only.
+And finally, for speech, Nova Sonic.
+This should be quite obvious at the exam
+when the question is asked which model is used for what.
+Now you also have Amazon Nova 2, which are new models
+with enhanced capabilities.
+And this is used for building interactive chatbots,
+analyzing documents and videos, and create AI agents.
+You have up to one million tokens of context
+and advanced reasoning capabilities.
+So again, you have Nova 2 Lite,
+which is fast, cost-effective reasoning model
+for everyday workloads,
+so text, images, videos, and documents.
+Sonic, again, which gives you the speech capability.
+Then you have Nova 2 Multimodal Embeddings,
+which gives you an embedding model for RAG
+if you needed to do it.
+And Nova 2 Omni, which is an all-in-one model
+for multimodal reasoning and image generation.
+So, the idea is that Omni is going to be the best model,
+Lite is going to be little fast,
+a little bit more cost-effective,
+Sonic for speech, and then you have an Embeddings model.
+Now as you can see, more capabilities
+have been regrouped in one model.
+So now Omni and Lite both deal with text, images,
+videos, and documents.
+All right, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

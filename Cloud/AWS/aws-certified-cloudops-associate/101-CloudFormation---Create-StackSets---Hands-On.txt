@@ -1,0 +1,295 @@
+# 101. CloudFormation - Create StackSets - Hands On
+# Section: CloudFormation for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/42314448
+# Caption: en_US (manual)
+
+Okay, so let's get into the hands-on.
+So, in this hands-on, we're going to deploy StackSets
+across multiple regions to enable AWS Config
+within each region.
+And the idea is that you are going to be able
+to track the resource configuration over time
+of all your resources within all regions
+within the same account, which is a great use case.
+So let's see how we can do this in a hands-on.
+We'll have to create IAM roles,
+add the trust relationships,
+and then we'll deal with StackSets.
+Okay, so let's deal with StackSets.
+So the first thing you need to do
+is to create a StackSet administration role,
+and this is going to be a role to be deployed
+in your admin account.
+And this IAM role is going to be assumed
+by a CloudFormation.
+So this is the assumed role policy document.
+And then the policy itself is saying
+that this role has the right to assume roles
+named AWS CloudFormation StackSet execution role.
+So we're giving the administrator the right
+to basically assume roles in the target account
+from which you will be able to deploy StackSets.
+So to create this role, very easy, we'll use CloudFormation.
+We'll upload this template file under a 13 StackSets,
+and let's choose the first template right here.
+So Next, StackSet admin role.
+Next, Next, and Create,
+and you need to acknowledge the fact
+that this is going to create IAM resources.
+And so the outcome of this will be an IAM role.
+Now, the second step we have to do
+is to create the execution role.
+So this CloudFormation templates must be applied
+in all the target accounts that you want to use
+the StackSet feature in.
+Now we are in a single account type of setting,
+so we have to deploy this template as well
+in the same account.
+But imagine that if you had different target accounts
+in AWS, then you would deploy these template
+in all the target accounts.
+This is an initial setup that you cannot avoid
+unless you are using AWS organizations.
+So, this template has a parameter,
+which is the administrator account ID
+that we'll have to specify.
+This is necessary to allow this role
+to be trusting in assuming the parent role, admin role.
+So this is going to create an IAM role,
+and this is going to have the right name, and the idea's
+that we're going to have an assume role policy document
+to say who can assume this role,
+and we'll have a reference to the administrator account ID,
+so fairly easy.
+And now let's go ahead and apply this template.
+So, in Stacks, I'm going to create a stack
+with new resources, upload a template, and choose this one,
+the StackSet execution role.
+It connects.
+So StackSet execution role.
+Now for the administrator account ID,
+I need to just retrieve my account ID from here.
+So I will just copy this and paste it, Next,
+Next, and then this is going to create an IAM role.
+So I'm going to acknowledge this capability,
+create the stack, and we're good to go.
+So if we have a look at the resources
+created by the first stack, a confirmation stack,
+we have this admin role in IAM,
+and you can have a look at the permissions,
+which are defined right here.
+And you can have a look at the trust relationship,
+which is going to be assumed by CloudFormation.
+And then if we have a look at
+the second template right here,
+this execution role also has been created.
+And you can have a look at everything, so the permissions.
+It has administrator access, so you can do everything
+on the account.
+And in terms of trust relationship,
+it allows this local accounts to assume it.
+So this is perfect.
+We have done the initial setup,
+and now we can go ahead and use StackSets.
+So on the left-hand side,
+there is this menu where we can see Stacks, Stack Details,
+Drifts as well, so all the drifts you had from before
+can be seen here, and, obviously, well StackSets.
+So a StackSet is going to be created.
+So first let's have a look.
+We're going to enable the AWS config.yaml.
+And here we see some interesting parts.
+So first of all, the CloudFormation interface
+within metadata, so we have parameter grouping
+within our template, which is a cool application
+to what we saw before.
+So I'm going to scroll down and skip that.
+Then parameters has a string right here,
+which is true or false in terms of allowed values,
+include global resources, true or false.
+So we can really customize how config work.
+Resource types, so we can say all by default,
+but we have options as well.
+Delivery channel names, so name of the channel,
+which is by default generated.
+Frequency, which is how often the config service
+will deliver the configuration snapshots.
+So we have specified some allowed values.
+A topic ARN if you want to have notifications
+delivered to it, and we can create a new topic out of this.
+Notification email, default, none.
+And then some conditions.
+So a lot of conditions are defined in this template,
+which is a good reference to go back to the conditions.
+And as we can see, this create subscription right here
+is a little bit more complicated.
+So we have and, and we reference a produced condition,
+create topic and not,
+and then we have nested conditions as well.
+So, I like it, 'cause this is really showing you
+the whole power of conditions right here
+in the more advanced way.
+We have mapping.
+So, based on the frequency map, we map it
+to actual values that will be accepted by CloudFormation,
+so a really, really good use case
+of making it user-friendly here
+and mapping to actual CloudFormation values,
+so a good use case for mappings.
+And now we go into the resources.
+So we have a config bucket named S3 bucket,
+and the deletion policy is retained.
+So whenever we delete our template,
+the bucket is going to remain.
+Then we have a bucket policy,
+which is referencing the bucket.
+And then we have the policy document in here,
+a good usage of the sub function right here
+to create a resource that is going to have
+the right AWS partition, so a good use case as well
+to use the partition pseudo variables,
+as well as the config bucket,
+and that's going to be a substituted in here
+to have a really good end tightened policy.
+And, finally, again, the sub function is being used
+for the config bucket delivery to allow you
+to put objects on the target bucket, so very handy.
+Next we have a config topic, which is a condition.
+So is create topic on, yes or not?
+So this is a condition with defined before.
+And if yes, then create this SNS topic
+where we have a topic name, as well as the display name.
+Config topic policy, so again, the condition of it
+is managed by this create topic condition.
+And you can have a look at the policy document itself.
+Email notification, so again, the condition of it
+is create subscription, and then a new role.
+So I'll scroll down.
+So we have this config recorder now,
+and this is a really interesting one.
+So we are using depends on
+to depend on the config bucket policy,
+so it will be created after this config bucket policy.
+And for the properties, it gets really cool.
+So, this recording group right now
+has a really interesting property,
+so this one, resource types, which has an if condition.
+So you can use conditions within properties as well.
+So if is all supported,
+then there is a reference saying, hey,
+use the pseudo variable no value.
+So this is effectively going to disregard this property.
+So this is a really, really good use case
+of the pseudo variable no value.
+And if this is not our resources supported,
+then there's going to be resource types parameter
+and just you have a reference to that.
+So this is a really, really good powerful
+confirmation block right here.
+I like this template, because it really shows you
+all the things we've seen together so far
+and how they come along together.
+Same for the delivery channel.
+So, again, there's an if here,
+and if is generated delivery channel name,
+then no value else, please use this delivery channel name.
+So that is super, super nice.
+Find in map functions, we have a good use case of it.
+And then we are good to go.
+So, again, if function on the SNS topic.
+So we can really show how the CloudFormation templates
+can get complicated, can have conditions,
+can have if statements.
+We've seen the no value.
+We've seen a lot.
+So, anyways, we will use this template
+and deploy it now as part of our StackSet.
+So now I'm going to create a StackSet and upload it,
+and we're going to upload this enable AWS config.yaml file.
+Click on Next.
+Here, I'll call this one demo StackSet.
+And then for the parameters,
+let's just leave everything as is.
+So, yes, please support all resource types.
+Include global resource types, yes.
+I'll keep this as all.
+As you can see, the metadata really shows a nice way of us
+to configure these parameters, so I like it.
+And then everything looks good here.
+I'll just click on Next.
+And also pretty cool,
+we can see that whenever we had an optional parameter,
+we specify optional in here,
+and this is where the if configs
+or the labels of the parameters were being used,
+as well as where the conditions came in.
+So I'll click on Next.
+Then we're going to specify the StackSet options.
+So the StackSet option I have is the IAM role,
+and I'm going to use the one that we have created,
+so the StackSet administration role for the admin role ARN,
+as well as the IAM execution role name to execute it
+within each and every target stack.
+So I'll click on Next.
+And then we can deploy stacks in specific accounts.
+So we can specify the account number
+that we have right here.
+So I'll just paste this and remove this,
+or we could use it if we're using AWS organizations.
+Then we need to specify regions.
+So let's specify EU Frankfurt,
+and then I will specify EU Ireland.
+And that's good.
+I have two regions specified already.
+Deployment options, so this is where it gets interesting.
+So, how many concurrent accounts at max?
+So one at a time,
+but you can set this to a really, really high number,
+and, obviously, the highest number,
+the faster the operation.
+Fail tolerance, so how many stacks can fail
+before making the entire deployment fail,
+which is nice if you have a tricky deployment,
+and you (indistinct) a very, very large number
+of target accounts.
+Maybe you want to allow some failures,
+as well as the region concurrency.
+So do you want to deploy one region at a time or parallel?
+And because we wanna speed things up, we'll use parallel.
+That means that it will be deployed to Frankfurt and Ireland
+at the same time.
+Click on Next.
+Everything looks good.
+And then I will go ahead and say, yes,
+this might create IAM resources.
+Let's submit this.
+And now my StackSet is in details in action.
+So there's one operation right now that is running.
+So this is a StackSet operation,
+and we can look at the stack instances.
+So as we can see, we have two stack instances,
+so in the target account and the AWS region.
+So one is EU central one and one is EU West one.
+So the cool thing is that you can go to the info.
+It shows you like the status of your StackSet itself
+and the operations going on.
+We can click on these operations.
+We could stop it if we wanted to,
+but we don't need to right now.
+And so what I'm going to do is then I can go directly
+into my stacks.
+And as you can see, this success is currently
+creating a stack in my region of Frankfurt.
+And if I go to my other region, if I go to Ireland,
+I had another stack before, which was for Lambda functions.
+Don't worry about this one,
+but, as you can see, this Stackset, demo Stackset,
+also has been created.
+So, the config has been deployed through a StackSet
+into all my target regions.
+So back in Frankfurt, the create is complete.
+So if I go back into my StackSet now and I refresh this,
+the create of my StackSet has succeeded,
+which is quite awesome.
+So that's it for the introduction to StackSets.
+I hope you liked it, and I will see you in the next lecture.

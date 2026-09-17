@@ -1,0 +1,112 @@
+# 182. Vector Stores for Bedrock: OpenSearch, S3 Vectors, Aurora pgvector
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865597
+# Caption: en_US (auto)
+
+So, let's talk about some of the choices you have for a backend for your vector stores.
+One is OpenSearch, and historically this was kind of the go-to implementation for AWS.
+OpenSearch is fundamentally a serverless vector store.
+It can act as one, so there is a vector index type you can use.
+However, serverless does not necessarily mean scales to zero.
+This is an important point in the real world.
+Just because your OpenSearch instance isn't taking any traffic doesn't mean you're not
+going to get billed for it. You are.
+Remember to shut down your OpenSearch instances and your OpenSearch domains under the hood
+if you're not using them or else you're going to keep on getting billed and they can get
+pretty expensive pretty quickly.
+So a word to the wise, if you're experimenting with OpenSearch as a vector store, be sure
+not to just shut down OpenSearch itself, but also the underlying domains.
+Now the exam historically treated OpenSearch as sort of the primary implementation for
+bedrock knowledge bases.
+I don't know, that could change.
+Over time, there is a new S3 vectors feature we're going to talk about next, and I think
+that might be sort of the new default.
+Actually the new default is that it's managed for you.
+So if you go to create a bedrock knowledge base today, the first option you're going
+to see is a managed vector store where they kind of abstract away with the actual implementation
+from you entirely.
+So another choice now is that you just don't even have to think about it.
+It's managed by AWS for you and it will choose.
+However, you can still specify your own backend if you want to, and OpenSearch is still an option.
+And OpenSearch is not limited to bedrock knowledge bases, of course, it's much more broad in what it can do.
+You can also integrate OpenSearch with SageMaker AI and Hugging Face, or for custom models
+that you might be using for retrieval augmented generation.
+One important dial you have at your disposal here is using semantic versus hybrid search in OpenSearch.
+So just straight up vector search where you're going to be comparing similarity distances
+or vector distances between two different embedding vectors, that's what we call semantic.
+That refers to vector search and that can be tricky because it can often be elusive
+to get the relevancy that you want because it depends a lot on your chunking strategy,
+the dimensions of your embedding vectors, there's a lot of ways to get that wrong.
+So it can often be better to have a hybrid approach and that's going to combine both
+vector and keyword search.
+So that way I can get results that are similar to each other semantically, but I'm also enforcing
+the presence of those keywords as well.
+And that's going to require that you have filterable keyword fields indexed into your
+data for that metadata to work, of course, but this is an important distinction.
+So if semantic search alone based on embeddings is not enough and not giving you good enough
+results, hybrid might be an answer where you get the best of both worlds of vector and keyword search.
+You know, you see this on Amazon product search on the retail site, for example, if I search
+for something that, you know, like a specific speaker, I might just get back a whole bunch
+of speakers that have nothing to do with that actual keyword.
+If you had a hybrid approach instead, I would get both those keyword matches at the top
+as well as those semantic searches too.
+And a newer feature is Amazon S3 vectors.
+It is cheaper, a lot cheaper, up to 90% cheaper, but as we'll see, there's a trade-off.
+It's also a lot simpler to use.
+So all you have to do is create an S3 vector bucket, and then you can create a vector index
+based on that vector bucket.
+And when you create that vector index, that's when you can specify the number of dimensions
+for your embedding vectors and the distance metric that you want to use for that semantic search.
+And then you can just store vector embeddings using put vectors in S3, include whatever
+metadata you want attached to that.
+And then querying that is just a matter of calling query vectors on S3.
+It's all very easy.
+So as you can see in this diagram here, you have your data that you want to store in your
+vector store that goes into a vector bucket.
+Your vector bucket has a vector index attached to it.
+And then that can talk to your knowledge bases used by Bedrock or SageMaker, or even indirectly
+through open search.
+And let's talk about that a little bit more.
+So S3 vectors are strongly consistent.
+So any data that you add will become immediately available to it.
+The catch though, is that it's going to be optimized for price performance over time.
+And that performance is the rub.
+So S3 vectors only advertises 100 millisecond to one full second of retrieval performance.
+And that's not going to be good enough for a lot of applications, right?
+So what AWS recommends is a hybrid approach where you use open search for performance
+critical queries, but you can fall back to S3 vectors for things that are not performance critical.
+They call that a tiered search strategy.
+So if you have infrequently queried vectors, maybe you put that in S3 vectors to save money,
+but for things that are frequently queried, you put those in open search for better performance.
+And there is connectivity between the two for that purpose.
+So there's a way to copy data between S3 vectors and open search.
+And well, the trick, the rub there is that you end up paying for both if you're not careful.
+So that could actually end up costing you more money if you're not careful.
+You can also use open search backed by S3 vectors as the engine behind it.
+This works if you have an open search managed cluster in place, and that gives you the best
+of both worlds open search functionality with S3 vectors as the backend.
+By the way, one limit, there is a limit of 10,000 indices per bucket and 2 billion vectors
+per index in S3 vectors.
+Another option is Amazon Aurora, which historically was just a very simple relational database
+store, but there is a PG vector extension to it that you can use to store vectors within Amazon Aurora.
+This creates a new vector column type, and it can compute distances in a variety of ways
+and do similarity search in a variety of ways.
+And it also adds vector operations into SQL.
+So even though this is a relational database kind of style thing, you can use SQL commands
+to do straight up vector search.
+And this can give you an advantage over open search if you need to do complex SQL style
+filtering logic on top of it at all.
+So that might be a little bit simpler than open search for you.
+And this also has the benefit of letting you store your structured data and your vector
+data in the same place.
+So that same database can hold the underlying data as well as the vector embeddings for it all at once.
+And this can also be appropriate for smaller medium sized RAG systems with mostly structured data.
+So a single relational database, the main limitation there is that it doesn't scale
+so well, but for a lot of applications, it's fine.
+And the simplicity that this gives you might be preferable.
+Quick side note, DynamoDB is also an option now.
+So DynamoDB also has vector store and vector search capabilities.
+However, I think that capability emerged too soon to the release of this exam.
+So I wouldn't necessarily expect to see that on there.
+However, if you do happen to see a question that rotates around DynamoDB being a valid
+vector store, that actually is a choice as well.

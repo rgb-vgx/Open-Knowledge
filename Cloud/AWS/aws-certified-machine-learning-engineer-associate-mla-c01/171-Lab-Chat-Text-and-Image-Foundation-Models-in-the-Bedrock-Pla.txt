@@ -1,0 +1,229 @@
+# 171. Lab: Chat, Text, and Image Foundation Models in the Bedrock Playground
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45286275
+# Caption: en_US (auto)
+
+All right, Amazon Bedrock is called Bedrock for a reason.
+It is basically the foundation of Amazon's generative AI offerings.
+And one way to get familiar with it is to play around with it.
+So we're going to go into the Bedrock Playground here.
+Bedrock again is a common API, a common interface, a common UI that sits on top of many different
+foundation models.
+And the Playground allows you to play around with them and get a feel as to what their
+strengths and weaknesses are by just experimenting and see how they respond to different prompts.
+Under the Bedrock console in your AWS console, under test, you can go to Playground here.
+And the first thing you need to do is select a model.
+Now it's important to note that different models have different capabilities.
+So you know, you might want to click through to the model cards here to get a feel as to
+what they can do.
+You can also choose what sorts of output a model supports and filter by that and also
+by what sorts of inputs they support as well.
+Now if you are using this on Udemy and have access to their subscription offerings that
+include lab access for AWS, there are only a few models that are supported in that environment.
+One of them right now is Anthropics Cloud Haiku 4.5.
+You can see here that it supports both text and image input and text output and a max
+input limit of 200k tokens.
+So let's go with that because I know that one works.
+However, something to be aware of is that currently if you select a cloud or an Anthropic
+model in general, it will actually prompt you for a use case submission before it lets you use it. So don't worry.
+You don't have to like wait for someone to review your submission and get back to you
+a week from now.
+It'll be approved right away.
+They're just collecting data.
+But if you do hit the apply button and get a pop-up window that wants a use case, just
+throw in a URL to, you know, a website that's associated with you somehow.
+And for the use case, you can just say educational use.
+That's all they need to know.
+All right, so Haiku does support the chat mode default.
+So this is what you would be used to in your typical AI application, right?
+So it's a chat where you can have this conversation with the AI model and it refers back to that
+previous conversation entries as part of the underlying context.
+So you can have this ongoing evolving conversation that can refer back to earlier points in that
+conversation because it's all part of the same context.
+So just like you would do with any other, you know, AI model, you can ask it random
+questions like what is the meaning of life and it will give you a deep answer.
+That's probably not the glib 42 when you usually get from people.
+And yeah, it is what you expect.
+We can also include context in the form of files.
+So if we go to upload a file here, we can go to wherever you downloaded the course materials.
+Again, go back to the earlier lectures in this course if you need to know where to get those.
+And there is a Word document in there that reflects the bylaws of an astronomy club that
+I used to be the president of.
+And by including that document, I can now have it analyze that document and I can ask
+questions about it.
+So I can say, according to the attached bylaws, what are the quorum requirements for an annual election?
+And that very quickly came back and it says, yes, I need at least 15 members and two board
+members to have a quorum.
+So that was easier than reading the whole thing myself. Yeah.
+Let's also explore some of the configuration options that you can play with for these models.
+So if I open up this little configuration icon, I can play around with different things.
+So system prompt, let's walk through these because these are important, right?
+These are basically overarching directions and guidance that you want to give to the
+model as a whole throughout the chat, throughout your entire usage of it.
+So I could say things like always talk like a pirate.
+So now if I clear this chat and start over, hopefully that will take effect.
+And I can say, what is the meaning of life?
+And now it will tell me an answer in pirate speak.
+So you can see that it just doesn't get old.
+I mean, talk like a pirate is an old joke, but it's still funny. All right.
+Well, let's go through the other options here.
+So model reasoning, this kind of controls just how deeply it thinks, right?
+And you can have a little slider here of just how much reasoning you want to apply, a little
+bit different from different APIs.
+So under the hood, I know that Anthropic has kind of like a low, medium, and maximum setting
+for reasoning, but this allows it to actually put an additional layer on top of the LLM
+that's used for the foundation model, break down your complex requests into a series of
+sort of smaller requests that get chained together, basically.
+So if you are doing a more complex query like plan my retirement or something like that,
+model reasoning would be a good thing.
+The trade-off of course, is that you're going to be using more tokens, more expensive tokens,
+and you will pay for that.
+Length, if you want to enforce a maximum output token length, again, this might be a good
+thing for enforcing costs.
+You can put that down to make it more terse, basically.
+So if I go down to 4,000 tokens or so, then it's not going to give me more than 4,000
+or so words in a response, and that can be a good way to keep it from being too verbose.
+So if you're actually accessing these models through the Bedrock API, you're probably paying
+by the token, and this is a good way to control those costs.
+You can also have manual stop sequences.
+So by default, it's just going to be like a line feed or something, but if you are in
+a special case where your output has specific stop sequences, specific formatting, that
+might be useful.
+Randomness and diversity, this is important.
+So temperature is basically a measure of how random the responses are.
+So by default, it's one, which is a little bit surprising, but if I wanted it to be more
+deterministic, I could lower that.
+This is actually grayed out for this model because I don't think it's actually supported
+by the Haiku model.
+However, we do have a top P setting as well.
+Also grayed out for this model. Interesting.
+Other models will probably behave differently.
+At a high level, though, again, temperature is the randomness and when it chooses the
+next token as it's generating text.
+So higher temperatures will give you more variance in the responses that you get.
+A lower temperature will give you more deterministic results where it's having less of a random
+chance at what it actually says in the end.
+So if you want more, quote unquote, creativity, you might want a higher temperature.
+Top P works in a similar way in top K. These actually control how it selects those candidate
+tokens that come out the end of the actual transformer model.
+So top P is basically what is the probability level that I want to use as the threshold
+for those output tokens.
+And top K is basically how many of those tokens do I want to have to choose from randomly
+when I'm generating the next token.
+I might be getting a little bit ahead of myself.
+Tokens are basically equivalent to words with LLMs.
+So a top K says how many candidates for the next word do I want to generate.
+Top P says what is the probability threshold of that being the quote unquote correct word
+that I want to be choosing from at random.
+So again, these are all just ways to control how random, how diverse, how creative, if
+you will, the responses are.
+We can also add guardrails here.
+We'll talk about that later, but we can set this up through the guardrail API here in
+Amazon Bedrock visually.
+And that's just a way of filtering out people saying naughty words or talking about things
+you don't want to talk about, protecting personal information, PII, things like that.
+Another option here is prompt caching.
+This is actually very important for saving costs as well.
+If you have a situation where your prompts are going to be reusing the same text over
+and over and over again, maybe a set of instructions, maybe it's a system prompt, prompt caching
+can save you a lot of money.
+So instead of feeding that through every time and paying the token cost for that every time,
+you can just cache those tokens for a much lower cost.
+You still have to pay for them, but it's a cheaper rate usually.
+All right, so that's chat mode.
+There's also single prompt mode.
+So if you don't want that chat history to be part of it, you could select single prompt.
+That doesn't actually work with Cloud Haiku, unfortunately, so I can't show you that using
+the Haiku model.
+If you want to use like Amazon Nova or something like that, that might be a better choice.
+Another quick note here is compare mode.
+That's kind of cool.
+So if you actually want to compare two models against each other, you can do that here.
+So you might have access to Jambo 1.5 large, which is another inexpensive model.
+And we could actually write the same prompt and put them through to both and see what
+the difference in responses are.
+It also gives you the separate set of configurations here.
+So you can make sure that you're comparing apples to apples.
+For example, 200 output tokens.
+Well, you know, let's actually leave that short just to kind of show you that it works.
+And this does say that it doesn't support images, whereas Haiku does.
+So don't upload images. Good to know.
+And now we can say what is the meaning of life and compare the two.
+Oh, and like I said, Haiku does not support single prompt.
+Let's put that back to chat mode.
+And now let's try that again.
+What is the meaning of life?
+And we can put Jambo head to head against Claude and see who gives us the better answer.
+And Claude, again, is in pirate mode.
+So you can see that the answers are quite different.
+So again, keep in mind that the configuration is managed separately for each of these models.
+And if you want a fair comparison, you need to make sure that those settings are comparable as well.
+Actually, Jambo gave a pretty decent answer there, especially given the token limit. Right.
+So I'm like, give this back to me within like 400 words or so.
+And it understood the assignment.
+So that's pretty cool. All right.
+Let's try different modalities as well.
+So we don't have to just do chat.
+We can also experiment with images and whatnot.
+Now if we go back to the playground, in theory, we could try out other models that have different
+modalities like image and video and audio.
+As of this recording, there aren't a lot to choose from in Bedrock, though.
+So let's go back to the playground, select a new model, and you can see we can filter
+that by the output.
+So if I want an image model, currently, the only choices are legacy models.
+So these don't actually work right now.
+But you know, that might be different for you.
+So go ahead and experiment there.
+If you want to play around some more, you can also look into audio and video modalities as well.
+Again, not a lot to choose from except for Nova 2 Sonic right now, but feel free to experiment with that.
+It kind of works the way you would expect.
+The only difference is that if you go to an image model, the configuration settings are
+going to be a little bit different.
+So let's use like a Nova Canvas, for example, here.
+And you can see here that the options are going to be a little bit different.
+So for an image model, the configuration options are going to be different than from a text
+model, of course.
+So there are different things you can do here, like generate an image, generate variations
+of the given image that you upload.
+You can also remove objects from an image, replace objects, replace the background, remove
+the background, virtual try on.
+That's kind of cool.
+So all sorts of different things you can do.
+And with that one, you can say, I just want to like put new clothes on this person that's in my
+picture. Right. Pretty cool.
+You can also give a negative prompt that says what not to do.
+So if you want to like generate a picture of a chicken and you don't want the chicken
+to be blue, you can say, you know, don't make blue chickens.
+You can also control the size of the image, which is very handy.
+That's kind of a hard thing to control in chat APIs.
+If you have a specific color palette for branding purposes, you can do that as well.
+A conditioning image that gives you an example of the style that you want and the prompt
+strength, basically another creativity lever, if you will, how strictly you wanted to adhere
+to your prompt guidance.
+And the seed is a random seed.
+So if you want deterministic results, give it the same seed and it should do something
+similar every time.
+Again, this doesn't actually work right now.
+So feel free to experiment if you have another model to play with here in Breadrock.
+But right now that is how image would work.
+Also I want to point out different router models as well.
+So you can see that we have these serverless model providers, which are the foundation
+models that you're used to.
+You can also select routers.
+So we can have a Nova prompt router or an anthropic prop writer and you see what's going on here.
+So basically it's going to take a look at your prompt and automatically figure out how
+complicated of a model do I actually need to fulfill this request.
+If you're asking for something really simple, it might send it to light or haiku, which
+is a cheaper model.
+If you're asking for something more complex, like plan my retirement, it might send it
+to Nova pro or Claude sonnet instead, right?
+So the router sits in front of these models.
+Its job is to figure out how beefy of a model do I need to actually fulfill this request
+and then route it to one that's appropriate for that particular prompt.
+And that can save you a lot of money, obviously.
+The downside though is that if it gets it wrong, your results will not be as good.
+So if you do in fact have a prompt that requires more complex reasoning and a deeper, larger
+model and it accidentally routes it to the lighter model, your results will not be as good.
+So there is a trade off there.
+All right, that is the playground and I encourage you to play with it.
+And with that, let's go into more depth here and actually start building stuff with bedrock.

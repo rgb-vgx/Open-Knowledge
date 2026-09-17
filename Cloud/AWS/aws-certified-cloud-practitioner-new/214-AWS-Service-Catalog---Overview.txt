@@ -1,0 +1,48 @@
+# 214. AWS Service Catalog - Overview
+# Section: Account Management, Billing & Support
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/36566038
+# Caption: en_US (manual)
+
+So now let's talk about
+the AWS Service Catalog.
+So the users that are new to AWS, they have too many options
+and they don't follow this course, for example
+when they get started.
+And so if you leave them the option
+to do anything they want in AWS,
+whatever they create may not be in line
+with what the rest of your organization is doing.
+And some users that just want to have access
+to quick self-service portal
+that allows them to launch a set of authorized products,
+and these have to be predefined by admins.
+So as you can see,
+these could include virtual machines, databases,
+storage options, and so on.
+So to do so, to have this self-service portal,
+you use the AWS Service Catalog.
+So very simply, as an admin in AWS and Service Catalog,
+you're going to create products.
+And products are just CloudFormation templates
+with the proper parameters.
+And you can include them in a portfolio,
+and a portfolio is a collection of products.
+And then you define who has access
+to launching what products within my portfolio.
+And then as a user,
+you log in to your portal on Service Catalog
+and you have a quick list of all the products
+that you can use because of your permissions.
+And then the users can launch these products
+and automatically they get provisioned by CloudFormation.
+But we know
+that they've been properly configured, properly tagged,
+and that they respect the way
+our organization is supposed to work.
+So say for example,
+that a user wants to have access to a quick RDS database
+but doesn't know how to create one properly.
+Then you could offer this as a service
+from within the Service Catalog.
+So hopefully that makes sense. I hope you liked it.
+And I will see you in the next lecture.

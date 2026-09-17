@@ -1,0 +1,98 @@
+# 75. AWS DataSync
+# Section: Storage
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30991292
+# Caption: en_US (manual)
+
+So now let's talk about AWS DataSync.
+And DataSync is a service that is appearing
+now quite a lot at the exam.
+It's a very simple one,
+but you need to know what it does at its core.
+So the idea, as the name indicates, is to synchronize data.
+Therefore, move large amount of data to and from places.
+And these places can be, for example,
+on-premises or other cloud locations into AWS.
+So you would connect to your server using the NFS,
+the SMB, the HDFS, or other protocols.
+And it needs an agent to run on-premises
+or on the other cloud to do that connection.
+And you can, for example, do other types of migrations.
+For example, you can move data from one
+AWS service to another AWS service.
+And this requires no agent.
+I will show you what it means.
+So the idea is that you can synchronize data to Amazon S3,
+including any storage classes,
+even Glacier, Amazon EFS to store
+into your network file system,
+or Amazon FSx, and it supports all of them.
+Now, the replication tasks are not continuous.
+They are scheduled.
+So you can make DataSync run hourly, daily, or weekly.
+So there's a lag, okay,
+but the data is going to be synchronized on a schedule.
+On top of it,
+DataSync has the ability to keep
+the file permissions and the metadata.
+That means the security and so on.
+So that means that it's compliant with the NFS
+POSIX file system and the SMB permissions.
+This is very important because at the exam,
+this will be the unique option that will
+preserve the metadata of your file
+when moving them from one location to another.
+One DataSync agent can be quite powerful.
+It can run one task,
+can use up to 10 gigabits of data per second.
+Although if you don't want to max out your network,
+you can set up a bandwidth limit.
+So let's have a look at what it means in a diagram.
+So here is the use case of synchronizing
+your on-premises files using the SMB
+or NFS protocol into AWS,
+and that could be S3, EFS, or FSx.
+So you have your on-premises and then
+your AWS region where DataSync is running.
+So here is your NFS or SMB server.
+And what you have to do is to
+install on-premises the AWS DataSync agent.
+And you will tell it to connect to your NFS or SMB server.
+And then the DataSync agent will establish a connection
+and also connect in an encrypted
+fashion into the DataSync service.
+From there, you can tell it to go wherever you want.
+That could be any storage class for your Amazon S3 buckets,
+or it could be AWS EFS, or it could be Amazon FSx.
+And the synchronization can happen one way
+from on-premises to AWS,
+but you can also synchronize from
+AWS back into on-premises.
+This is why it's called DataSync.
+It can work any way.
+So that is to show the architecture
+of synchronization from on-premises to AWS,
+or it could be, for example,
+another cloud to AWS using the DataSync agent.
+But you can also use DataSync to just
+synchronize between different AWS storage services.
+For example, you wanna synchronize between Amazon S3
+or Amazon EFS or Amazon FSx
+back into Amazon S3, Amazon EFS, or Amazon FSx.
+And for this, again, we will use the AWS DataSync service.
+And it will copy the data, of course,
+but also the metadata will be kept
+between the different AWS storage services,
+which is very important.
+And again, something that can come up in the exam.
+So to remind you,
+DataSync can pretty much synchronize between anything,
+but it is not continuous.
+It is scheduled tasks that can be happening hourly,
+daily, weekly.
+And also, it will preserve metadata
+and your file permissions.
+And finally, you need to run the DataSync agent
+if you are connecting to an NFS or SMB server.
+Okay, that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

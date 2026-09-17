@@ -1,0 +1,15 @@
+# 46. SSM Cleanup
+# Section: Managing EC2 at Scale - Systems Manager (SSM)
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512834
+# Caption: en_US (manual)
+
+Okay, so to clean up this section,
+if we go into Fleet Manager,
+as we can see under Fleet Manager,
+we have three managed instances.
+And so that means that we need to terminate them,
+so to make sure we don't have any running cost,
+take your three instances and terminate them
+and you should be good to go.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

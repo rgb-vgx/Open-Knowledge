@@ -1,0 +1,29 @@
+# 233. Amazon QuickSight
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37936082
+# Caption: en_US (manual)
+
+Now let's talk about Amazon QuickSight.
+So it's a serverless, machine learning-powered
+business intelligence service
+to create interactive dashboards.
+So behind this very complicated tagline,
+all you have to remember is that Amazon QuickSight
+allows you to create dashboards on your databases
+so we can visually represent your data
+and show your business users
+the insights they're looking for, okay.
+So QuickSight allows you to create
+all these kind of cool graphs, charts, and so on.
+So it's fast, it's automatically scalable.
+It's embeddable and there's per-session pricing,
+so you don't have to provision any servers.
+The use cases are business analytics,
+building visualizations, performing ad-hoc analysis,
+get business insights using data.
+And in terms of integrations, there are so many,
+but, for example, QuickSight can run on top
+of your RDS database, it can run on top of Aurora,
+Athena, Redshift, Amazon S3, and so on.
+So QuickSight is your go-to tool for DI in AWS.
+That's it. I will see you in the next lecture.

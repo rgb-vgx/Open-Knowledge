@@ -1,0 +1,13 @@
+# 168. Intro: Building Generative AI Applications with Bedrock
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45286251
+# Caption: en_US (auto)
+
+Now we're getting to the fun part.
+Building generative AI applications using Amazon Bedrock.
+There's a lot of hands on fun.
+In this section, we'll learn how to use the suite of foundation models bedrock offers for text and
+image generation, and also learn how to extend those models using knowledge bases, vector stores,
+and retrieval, augmented generation, or Rag for short.
+We'll also build a full blown LLM agent that can use custom tools to extend its capabilities.
+This is my favorite part of the course and I hope you enjoy it too.

@@ -1,0 +1,85 @@
+# 348. [SAA] IPv6 for VPC
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/28875502
+# Caption: en_US (manual)
+
+So we've talked a lot
+about IPv4 in this course,
+but now let's talk about IPv6.
+So why?
+Well, because IPv4 was designed
+to provide 4.3 billion addresses at the time of creation.
+And engineers who invented this protocol never thought
+that they would be all used,
+but it turns out that very, very soon,
+they will all be exhausted.
+And so therefore, there needs to be a new scheme of IPs,
+and this is IPv6, which is a successor of IPv4.
+So IPv6 is designed to provide, and wait for it,
+3.4 times 10 at the power of 38 unique IP addresses.
+So this is a lot of IP addresses.
+And every IPv6 address in AWS is going to be public
+and internet-routable.
+So the format is x.x.x.x, eight times,
+where x is hexadecimal,
+where the range can be from 0000 to ffff.
+So you don't need to know exactly how an IPv6 is formed,
+okay, but these are some examples of IPv6.
+I'm not going to linger on it.
+Okay, you can have a look,
+but what's important for you is to just see one
+and say, "Oh, okay, this looks like an IPv6."
+And IPv6 can take multiple forms.
+Okay, so why am I talking about IPv6?
+Well, because we can enable IPv6 support in our VPC.
+So IPv4 can never be disabled
+for your VPC and subnets, okay?
+But you can enable IPv6 that are public IP addresses
+to operate in dual-stack mode.
+That means that your EC2 instances
+when launched in your VPC will get
+at least a private internal IPv4 and a public IPv6,
+and they can communicate using either IPv4 or IPv6
+to the internet through an internet gateway.
+So let's take an example.
+Our EC2 instance has a private IP as an IPv6,
+which is by default public.
+And then if he wants to access the internet,
+it can do so through internet gateway.
+So internet gateway do provide connectivities
+for IPv4 and IPv6.
+And then my EC2 instance will be publicly accessible
+in this case because it has a public IPv6 address,
+and the internet gateway
+would provide internet connectivity.
+So here is an exam scenario for you,
+so around IPv6 troubleshooting.
+So as you know, IPv4 cannot be disabled
+for your VPC and subnets.
+And so if you have an IPv6-enabled VPC,
+and you cannot launch an EC2 instance in your subnets,
+then it's not because the instance cannot acquire an IPv6
+because the space is actually very, very large,
+and there will be enough IPv6s for your EC2 instances.
+It's because there are no available IPv4 left
+in your subnets.
+And the solution for this is to create an IPv4 CIDR
+in your subnet.
+So let's take collect this VPC,
+It has an IPv4 space and so also an IPv6 space.
+So we keep on launching EC2 instances
+that will get private IPv4 and public IPv6.
+So we launch them, we launch them, we launch them,
+and then once we have exhausted the space of IPv4,
+if a user tries to create a new EC2 instance,
+it will get an error, not because the IPv6 ran out,
+but because the IPv4 space within our subnets
+or our VPC ran out,
+in which case, well, what we do is that we add a new CIDR
+within our VPC and our subnets,
+and therefore, we can start launching new EC2 instances
+that will get a different IPv4 address range for the IP.
+But we'll keep to work around this issue like this, okay?
+So that's it for the theory on IPv6 in AWS.
+I will see you in the next lecture
+for just a little practice.

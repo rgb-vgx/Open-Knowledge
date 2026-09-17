@@ -1,0 +1,72 @@
+# 222. RDS
+# Section: Databases in AWS
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528402
+# Caption: en_US (manual)
+
+Let's do a summary of
+what we learned in the Amazon RDS section.
+And if you need to go back into any of these points,
+I suggest you go back to the old lectures.
+This is a summary to summarize what you should know
+out of Amazon RDS.
+So this is a managed PostgreSQL, MySQL
+or Oracle, SQL Server, DB2, MariaDB,
+or you have the custom version of RDS.
+In Amazon RDS,
+you need to provision an RDS instance size,
+as well as an EBS volume type and size.
+So everything is provisioned,
+although you have auto-scaling capability
+for the storage layer.
+Amazon RDS supports read replicas
+to scale read capabilities.
+So if you have applications that need to run analytics
+against a production database, it is much better
+to create a read replica.
+And for high availability purposes,
+you can use the Multi-AZ to have a standby database,
+although that database is just here for
+in case a disaster strikes.
+You cannot use it
+to perform queries against it.
+Security for your RDS database is done through IAM,
+so you can use, for example,
+username and password to connect to your database,
+but also you can use IAM authentication,
+for some of them.
+You have security groups
+for network security on your Amazon RDS database,
+KMS for at risk encryption,
+and you can have intrinsic encryption using SSL and TLS.
+Now, if you wanted to do backups,
+you have the automated backup option,
+which is up to 35 days, and if you use that,
+you can do point in time restore to any point
+of time in these 35 days,
+and this will create a new database out of it,
+or if you want to retain backups for longer term recovery,
+then you would use a manual database snapshots.
+There is a managed
+and schedule maintenance,
+which will bring downtime into your database.
+So this is due to the fact that you have to provision it
+and that you have to update.
+I mean, AWS has to update at some point database engine
+or the underlying EC2 instance
+for patches of security and so on.
+There is support for IAM authentication on RDS,
+and you can enforce it through the RDS proxy,
+and it has integration with Secrets Manager
+to manage the database credentials.
+If you wanted to have access to the underlying instance
+and customize it, then you can reuse the RDS custom option
+and this is available for the Oracle
+and SQL Server type of databases.
+So the use cases of Amazon RDS is
+to store relational databases.
+For example, using the RDBMS
+or have an online transaction processing database, so OLTP.
+If you wanted to perform SQL queries on top of it
+and transactions.
+Okay, so hopefully nothing is new for you here.
+I hope you liked it and I will see you in the next lecture.

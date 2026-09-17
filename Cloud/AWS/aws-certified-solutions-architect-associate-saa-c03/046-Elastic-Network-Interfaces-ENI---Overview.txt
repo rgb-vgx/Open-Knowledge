@@ -1,0 +1,59 @@
+# 46. Elastic Network Interfaces (ENI) - Overview
+# Section: EC2 - Solutions Architect Associate Level
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18077955
+# Caption: en_US (manual)
+
+Okay now lets talk about
+Elastic Network Interfaces or ENI.
+So if you hear me say ENI I mean
+Elastic Network Interfaces.
+They're a logical component in a VPC
+and they represent a virtual network card.
+So they're what gives EC2 Instances access to the network,
+but they're used outside EC2 Instances as well
+as we'll see later in this course.
+So for example we have an availability zone
+and we have one EC2 Instance
+and to it is attached on eth0, your primary ENI
+and this will provide your EC2 Instance network connectivity
+and for example, a private IP.
+So each ENI can have the following attributes.
+Number one it can have a Primary private IPv4
+and one or more secondary IPv4. Okay.
+So in this example, I have one of zero but
+you are more than welcomed to add a secondary ENI to EC2
+and that will be eth1
+and this will give you another private IPv4 as well, okay. `
+Each ENI can also have an elastic IPv4 per private IPv4
+or one or more public IPv4,
+so it gives you a private and a public IP
+as will see in the hands-on.
+You can have one or more security groups attached
+to your ENI.
+You can have a Mac address attached to it
+and other things but I've just give you
+the most important bits right now in this lecture.
+And you can create ENI's independently from
+your EC2 instances
+and attach them on the fly
+or move them from EC2 instances for failover.
+So, let's have a look at what it looks like.
+And by the way, they're bounded
+to a specific availability zone or AZ.
+So that means that if you create a ENI in the specific AZ,
+you can only have it bound to that specific AZ.
+So here's another issue to instance
+and it has another ENI attached to it.
+And for example, we can do is we can move eth1
+from the first EC2 instance into the second EC2 Instance
+to move that private IP.
+And what it means is that that private IP will change
+from the first issue to instance
+and will be attached to the second EC2 Instance.
+And it's very very helpful for failovers.
+For example, if you're easy to instance is accessed
+by a private static IP,
+then you can move the IP around between
+these two instances for failover purposes, okay.
+So let's have a look in the hands-on
+to see what it looks like.

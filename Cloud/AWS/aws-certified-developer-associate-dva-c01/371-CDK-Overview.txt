@@ -1,0 +1,125 @@
+# 371. CDK Overview
+# Section: Cloud Development Kit (CDK)
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26101880
+# Caption: en_US (manual)
+
+Now let's talk about
+the AWS Cloud Development Kit, or CDK,
+which allows you to define your cloud infrastructure
+in a familiar programming language,
+such as JavaScript or TypeScript, Python, Java, and .NET.
+So you may be saying,
+"Hey, it looks like this is overlapping with CloudFormation,
+because CloudFormation we can define
+the cloud infrastructure using YAML.
+But now we can do it using a programming language.
+So what is this?"
+Well, this is something that supersedes CloudFormation,
+as we'll see in a second.
+So let's say we want
+to define our infrastructure using TypeScript,
+and so we have this code right here
+in which we are defining three different things.
+We are defining constructs,
+and so there are high level components
+that we can use thanks to the CDK.
+So the first construct we're using is a VPC.
+So we create a new VPC, we give it a name,
+and we give it three AZs.
+And this creates a VPC for us
+which is going to contain some pre-made configuration.
+Then we define an ECS cluster.
+And the ECS cluster is named MyCluster
+and has a link to the VPC we just defined.
+And then we define
+an application load-balanced Fargate service,
+so this is a Fargate service with an ALB
+which is linked to the cluster we just defined.
+We define how much CPU,
+how many tasks we want, so six,
+the task image options, the memory limits,
+and that we want a public ALB.
+So all of this is defined using a programming language,
+which means that if we don't have functioning code
+if the code doesn't compile,
+then it's going to give us an error,
+and that means that our template cannot be generated.
+But if the code can be compiled
+because it is sound and typesafe,
+then it is going to be compiled
+into a CloudFormation template.
+It could be either JSON and YAML.
+And so therefore, we are using the CDK
+to define CloudFormation templates in the backend.
+But this is allowing us to be a lot more flexible about it
+and use a programming language.
+So that also means that we can deploy infrastructure
+and application runtime code together.
+So this is great for Lambda functions,
+great for Docker containers in ECS or EKS.
+So this is a revolution
+because CloudFormation template is YAML,
+it's not typesafe, you can make errors,
+and you only know at the very end if it worked or not.
+But with the CDK, you can define those
+using constructs and a programming language.
+So if you want a diagram,
+then we have our application constructs.
+It could be Lambda functions, DynamoDB, Amazon S3,
+ECS, some step functions, and so on.
+And we can use programming languages,
+such as Python, TypeScript, Java, .NET.
+We write our CDK file, I guess,
+and then we synthesize this using the CDK CLI
+into a CloudFormation template
+that we will apply into CloudFormation
+to define our infrastructure.
+So it is a step above CloudFormation
+and makes it way easier to work with CloudFormation.
+So you may ask me,
+what is the difference between CDK and SAM?
+Well, SAM is going to be serverless focused,
+and we are going to write our templates declaratively
+in JSON or YAML,
+and this is great for quickly getting started with Lambda.
+It also leverages CloudFormation in the backend, okay?
+But the focus of SAM is Lambda function
+and serverless applications.
+For the CDK, well, it is a super set of CloudFormation,
+so this supports every AWS services out there.
+And you're going to write your infrastructure
+with a programming language you know,
+for example, TypeScript, Python, Java, and .NET
+And it also leverages CloudFormation
+because it generates CloudFormation.
+So hopefully the difference is clear
+between these two services.
+There's also a way where you can combine the CDK
+and the SAM framework.
+So you can use the SAM CLI
+to locally test your CDK applications.
+How?
+Well, first we must run cdk synth,
+and when we do that,
+we have a Lambda function say, in the CDK application,
+we run the cdk synth command
+and this is going to generate a CloudFormation template
+that has been synthesized from the CDK.
+But then, thanks to this CloudFormation template,
+we can use the same framework and do SAM local invoke
+reference the CloudFormation template and call the function.
+And these two frameworks work really well together.
+So in the next lecture,
+we're going to do a hands-on on CDK.
+And with this hands-on, we're going to deploy an application
+that allows us to deploy an S3 bucket
+on which the users can put an image.
+This S3 bucket is going to trigger a Lambda function
+which is going to send an API call
+to Rekognition to analyze the image
+and get the results back from Rekognition,
+and then the Lambda function is going to save the results
+to Amazon DynamoDB.
+And all of this is going to define all
+from within a CDK script.
+So let's go and do this in the next lecture.

@@ -1,0 +1,120 @@
+# 96. CloudFormation - cfn-signal & Wait Condition
+# Section: CloudFormation for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/42314236
+# Caption: en_US (manual)
+
+So now let's talk about a way
+for CloudFormation to know whether or not
+your EC2 instance got properly configured
+after running a cfn-init.
+So for this, we'll use the cfn-signal script.
+So the common convention is to run the cfn-signal script
+right after the cfn-init script.
+And it will tell CloudFormation if the resource creation
+was a success or a failure.
+For this, we also need to define what's called
+a WaitCondition in CloudFormation.
+And the WaitCondition is going to make the template wait
+as the name indicates, until it receives a signal
+from cfn-signal.
+For this, we attach a creation policy,
+and this also works on EC2 and ASG,
+but right now will show you on WaitCondition,
+and this is a creation policy
+that has a resource signal including a timeout and a count.
+If we define a count greater than one,
+that means that we're expecting more than one resources
+to signal their success to CloudFormation.
+Otherwise you can keep it as one.
+So the process is as such,
+CloudFormation will launch an EC2 instance
+and then it will have a WaitCondition.
+The EC2 instance is going to run cfn-init on it.
+Therefore we will retrieve the init data just like before,
+but now on the init data right after,
+we're going to do a signal from cfn-signal
+to send data back to CloudFormation to the WaitCondition.
+So let's have a look at the script
+for us to better understand.
+Okay, so here I am in my
+CloudFormation signal template number two.
+And we create an EC2 instance just like before
+and we have user data.
+And as you can see now the script is a little bit different.
+So we still get the CloudFormation script for Bootstrap,
+then we still run the cfn-init just like before.
+But now we store the result
+of the last command into this verbal named init_status.
+So if cfn-init was successful,
+then init status will be equal to zero.
+And if cfn-init was not successful,
+it would be an error code that would be different than zero
+and init status would be equal to that error code.
+And then we send the result back
+to CloudFormation using cfn-signal.
+So we're saying, hey, using the cfn-signal script,
+send back the value of this variable init status
+to my stack being my stack name.
+And the resource is sample WaitCondition.
+So let's confirm this.
+So let's scroll down and have a look at the fact
+that yes indeed we created a sample WaitCondition resource
+in our templates.
+So this is of type CloudFormation WaitCondition.
+It's nothing physical,
+it's just something that's going to wait
+until the creation policy receives a signal.
+So one signal and we have a timeout of two minutes
+to receive that signal.
+So if we don't receive anything within two minutes,
+it's failed and otherwise we have two minutes to receive
+either a success or a failure.
+The rest is the same.
+So we still have a security group
+and we still have the very same CloudFormation init data.
+So let's run this and see what happens.
+So we're going to create a stack
+and I'm going to upload a template file
+choose it to cfn-signal.yaml.
+Next, and I'll call this one demo cfn-signal.
+Next, next, and then submit.
+And now the create is in progress.
+So now we can see that the SSH security group was created,
+the instance in create is in progress.
+And then we have a sample WaitCondition
+that's also in create in progress.
+Now if a refresh, even though the instance
+is in create complete, as you can see,
+the sample WaitCondition,
+it's still in create in progress.
+So before this would've been done
+and this would've been a success,
+but now we're actually waiting
+to get a signal back from the EC2 instance
+to know whether or not we have succeeded or failed.
+So it's going to take a little bit more time
+and as you can see now only my WaitCondition
+is in create in progress state.
+So for this, we need to wait
+for the EC2 instance to actually finish its bootstrap
+and to start the HTTP server
+and then to signal the result back to CloudFormation.
+So it usually doesn't take very long.
+So as you can see now, I just refreshed and it's done.
+And if you look into the events, as you can see,
+the sample WaitCondition received the success signal
+from our EC2 instance
+and therefore our CloudFormation stack was complete.
+And so therefore it's without any surprise
+that if I open this public IPv4 address,
+I see my hello world from my EC2 instance
+because we know that for sure it was successful
+because my CloudFormation stack received
+a positive success signal from my EC2 instance
+using this cfn-signal script.
+So that's it.
+This is the demo I want to show you.
+Now go ahead and please delete the stack.
+As usual, we clean up.
+Alright, that's it.
+I will see you in the next lecture.

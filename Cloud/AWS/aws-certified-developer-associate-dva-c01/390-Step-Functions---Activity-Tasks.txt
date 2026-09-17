@@ -1,0 +1,77 @@
+# 390. Step Functions - Activity Tasks
+# Section: Other Serverless: Step Functions & AppSync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527762
+# Caption: en_US (manual)
+
+Now let's look at Activity Tasks
+in step function.
+And the intent may be very similar
+to what we have with the wait for task token pattern
+that we saw just before,
+but the way of achieving it is slightly different.
+So here we have what's called activity workers
+and they want to perform tasks from your step functions.
+So these activity workers, they may be running
+on EC2 instances, Lambda functions, mobile devices,
+whatever you want,
+and these activity workers are going to regularly pull
+for your step function's workflow to find a task.
+And they will use the GetActivityTask API.
+And then if they get work back from step functions,
+they will do the work, complete the work,
+and then send a response with SendTaskSuccess
+or SendTaskFailure, which is the same API call as before.
+So here, the EC2 instance, for example,
+which is my activity worker, is going to be pulling
+for a task with a GetActivityTask,
+then step function says yes,
+there is something for you to do, actually.
+So here is the input and here is the task token.
+And then when the task is completed, we send back the output
+and the task token with SendTaskSuccess.
+So this may look very similar to what we have shown before,
+but there is a difference in the activity.
+In the Activity Task mechanism are EC2 instances
+or applications, whatever, are pulling
+from step functions for some work.
+And the network is quite easy because, well,
+the EC2 instance just needs to be able
+to connect to step functions.
+So here we have a pull mechanism
+and most likely a simple network diagram.
+When we were looking at the previous one ,
+where we sent the task with a callback externally,
+what was going to happen is that step functions
+was pushing an event out, for example, to an SQS queue,
+and so there's a push mechanism.
+And then again we need to have something that pulls
+that work from outside and gets it back into step functions.
+So this is quite a different way of working
+because we have a pull-based mechanism for Activity Task
+and a push-based mechanism for the callback pattern
+with a wait for task token.
+So now we understand the differences,
+and in the case of an EC2 instance pulling from work
+from step functions, it looks very similar
+to what we have with queues
+and so we have a few parameters.
+First of all, there is the TimeoutSeconds,
+which is how long a task that is in progress can wait
+until it is considered a failure.
+And that's the TimeoutSeconds.
+And then there is also the heartbeat mechanism,
+which is to say that as long as the EC2 instance,
+the activity worker, is going to use the Send HeartBeat
+API call, then we consider the task to be alive.
+And there is a HeartBeatSeconds configuration that you set
+on your step functions which defines
+how long is the maximum time to wait for a heartbeat.
+And so of course, if you set 10 seconds
+for HeartBeatSeconds, it may be a good idea
+to send a task heartbeat every five seconds
+so that the task is alive often enough.
+Now, if you configure a very long TimeoutSeconds
+and you keep on sending a heartbeat,
+then the actual Activity Task can wait up to one year.
+Okay, so that's it for Activity Tasks.
+I hope you liked it and I will see you in the next lecture.

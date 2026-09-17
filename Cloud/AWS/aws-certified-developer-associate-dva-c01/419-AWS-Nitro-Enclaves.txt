@@ -1,0 +1,73 @@
+# 419. AWS Nitro Enclaves
+# Section: AWS Security & Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM & STS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527862
+# Caption: en_US (manual)
+
+So now let's talk about Nitro Enclaves.
+So the idea is that sometimes in the cloud
+you wanna process highly sensitive data,
+and you wanna process it in an isolated compute environment.
+So the sensitive data may be, for example, PII data,
+so personally identifiable information, or healthcare data,
+financial data, credit card data, whatever you want.
+And historically, if you wanted to create
+this very isolated compute environment,
+you would create a new VPC, you would restrict access to it,
+you would restrict the networking, and so on,
+and that would be cumbersome.
+So instead, what you can use is Nitro Enclaves.
+Nitro Enclaves are virtual machines
+that are super isolated.
+They're hardened and they're highly constrained.
+So it's not a container, it doesn't have persistent storage,
+it doesn't have interactive access, you cannot SSH into it.
+There's no external networking.
+So it's really, really contained.
+And the idea is that this is where you want
+to do your data processing.
+So by creating a Nitro Enclave
+you're going to reduce the attack surface
+for very sensitive data processing apps.
+On top of it, you can make sure that,
+thanks to Cryptographic Attestation,
+only authorized code can be running in your Enclave,
+and you would sign the code
+and then only the sign code can be running in your Enclave.
+And on top of it, you can guarantee,
+thanks to KMS encryption,
+that only the Enclaves can access your sensitive data.
+So the use cases for Nitro Enclaves is
+whenever you want to do private key processing,
+processing credit cards,
+or secure multi-party computation, and so on.
+So this gives you a highest level amount of security on EC2.
+So how does that work?
+Well, you're going to launch
+a compatible Nitro-based EC2 instance,
+and you're going to set the 'EnclaveOptions' to 'true'
+which will allow you to launch
+from within the EC2 instance, a Nitro Enclave.
+Then you use a Nitro CLI to convert your app
+into an Enclave image file, EIF.
+And then you use this as an input with the Nitro CLI
+to create an Enclave on your EC2 instance
+and it will share the VP, the memory, the CPU,
+and the kernel with the host
+but it will be very, very isolated within.
+So if you consider EC2 Hosts on AWS
+that is running on the Nitro Hypervisor.
+This is why it's called Nitro Enclave,
+is because it leverages the Nitro Hypervisor.
+Then EC2 instance has separation from your Enclave.
+They can just communicate over a secure local channel,
+but that's it.
+And then there will be of course separation
+from any other instance running on the same host,
+but you have the guarantee
+that the Enclave is going to be
+as secure as I told you before,
+with a lot of restrictions on it.
+That's it.
+You just need to know this concept at a high level.
+But I hope you liked it,
+and I will see you in the next lecture.

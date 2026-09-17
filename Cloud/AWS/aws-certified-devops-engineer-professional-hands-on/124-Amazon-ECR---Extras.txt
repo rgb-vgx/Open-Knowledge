@@ -1,0 +1,56 @@
+# 124. Amazon ECR - Extras
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37903978
+# Caption: en_US (manual)
+
+So a few extra lectures on Amazon ECR.
+So the first round is around lifecycle policy.
+So it's possible for you to automatically remove
+old or unused images based on age
+or count of them in a repository.
+So here is an example of a lifecycle policy
+where we expire untagged images older than 14 days.
+So anything older than 14 days is going to be removed.
+Also, we can, for example, have a rule to only keep
+only one untagged image and expire all others.
+So each lifecycle policy may contain one or more rules.
+And in each of the right hand side, they only have one rule,
+but it's possible for you to combine them,
+and all the rules are going to be evaluated
+at the same time and then applied based on priority.
+So there's a rule priority for the set of rules you have.
+Now, once an image is flagged as being in the rule,
+meaning that is going to be expired,
+then the image will be expired within 24 hours
+of them meeting the criteria.
+The reason why you would use lifecycle policies
+is of course to help you reduce unnecessary storage costs.
+For example, if you keep on updating your images
+in Amazon ECR, then it's a good idea to expire old ones.
+ECR also has another advantage,
+which is to create uniform pipeline for your deployments.
+So say for example, that your code is in CodeCommit,
+and it could be in Python, Ruby, Node.js,
+or whatever language you want.
+And because we have different languages,
+we may have different deployment concerns.
+But it turns out that if you try
+to streamline your pipeline, your build pipeline,
+so that you have Codebuild build Docker images,
+of course with specific instructions
+for the original language, but at the end of it,
+the Docker images are standard
+from a deployment perspective.
+And so these images can be pushed into Amazon ECR,
+and in Amazon ECR, we don't care if this image
+was built using Python, Ruby or not,
+or whatever, what's inside.
+All we know is that there are containers,
+and the containers should be deployed,
+and so they can be deployed on ECS or Fargate the same way.
+And so that's the idea.
+Thanks to Amazon ECR, we have from that point forward
+a way to uniformly deploy all our containers
+onto ECS and Fargate.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,145 @@
+# 387. Step Functions - Error Handling
+# Section: Other Serverless: Step Functions & AppSync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26101910
+# Caption: en_US (manual)
+
+So now let's talk about
+error handling in step functions
+and really define the whole power of step functions.
+So a step function will execute many small tasks
+and these tasks will do very little amount of work.
+For example, talk to an API and so on.
+But all the error handling should happen outside
+of these tasks by step functions themselves.
+And so when can we have errors for example?
+Well, if the state machine has a definition issue,
+for example, there is no matching rule in the choice states,
+or if a task fails, for example,
+a Lambda function throws an exception,
+we should not catch it in the Lambda function itself,
+we should catch it in the step function
+error handling mechanism.
+Or a transient failure.
+For example, there's a network partition events.
+So we can have two types of error handling
+in step functions, a Retry to retry a task,
+or a Catch, to transition into a failure path.
+And you should do this in the state machine
+instead of the application code.
+Because you make the application way simpler
+and you have all very nice mechanisms
+as well as execution history of these retries
+and these catch directly in the step function history.
+So we have predefined error codes.
+So States.All, too much any error name or State.Timeout,
+if the task ran longer than the timeout seconds
+or there's no heartbeat received from an activity.
+Or TaskFailed in case of an execution failure
+of the task itself.
+For example, as I said, an exception in a Lambda function.
+Or States.Permissions, because there is not
+enough permissions to execute some code.
+So the state itself also may report its own errors
+and you can catch them in the step functions.
+So let's talk about the Retry for tasks or parallel states.
+So the Retry allows you to define what happens
+and how many times to retry based on some errors.
+So this gets evaluated from top to bottom.
+And so we have here in this example
+a Lambda function being run, and we have one, two and three
+retry that are happening.
+So the ErrorEquals match a specific kind of error.
+So here ErrorEquals Customerror,
+in case the Lambda function throws a customer error,
+or ErrorEquals TaskFailed,
+in case the Lambda function just fails
+but without throwing the custom error,
+or All to try to catch all kinds of errors
+that can happen within that Lambda function.
+So interval seconds say, how long to wait before retrying?
+So in this example, one, so wait one second and retry it
+or this one 30 seconds, so wait 30 seconds and then retry it
+or this one, five seconds.
+Then we have the BackoffRate, which is
+how many times you want to multiply the delay after retry.
+So to implement exponential backoff, so two, two, and two,
+in this example, they're all the same.
+Then we have MaxAttempts, so how many times we should retry.
+So by default, it's three and zero,
+if you should never retry it,
+but in this example, we have MaxAttempts two,
+MaxAttempts two and MaxAttempts five.
+And then whenever all the attempts are fulfilled and reach,
+then the Catch block will kick in.
+So in this example, as you can see,
+if you were to define all the Retry logic
+from within the Lambda function,
+we would make the Lambda function
+run for a very, very long time, obviously,
+and maybe would timeout.
+But also if you wanted to change your error handling logic
+you would have to redeploy Lambda function.
+But in this example, we are defining the retries
+from outside the Lambda function, into our step functions.
+And so therefore, we could change the Retry
+and the error handling logic directly
+from within our JSON documents
+and we have a lot more flexibility.
+And the Lambda function itself
+executes with a small amount of time and very quickly.
+So next, if we exhaust all the retries
+then we go into a Catch.
+And the Catch has a similar logic ,
+it's evaluated to top to bottom
+and you have ErrorEquals and Next, so let's have a look.
+So in this example, we have this Lambda function
+and we're saying, okay, in case you find
+the ErrorEquals CustomError,
+then Next go to this state called CustomERrorFallback,
+which corresponds to the block right here.
+So we're saying, "Hey, if you encounter a custom error,
+please now go into the states," and the state is pass
+and maybe there is an exception and the end is true.
+So really the idea is here you can say retry, retry, retry,
+and in case of too many retries, then catch this error
+and go into the next state and do something about it.
+And the ResultPath is a path that determines
+what input is sent to the state specified
+in the next field.
+And we'll have a deep dive on it in the very next slide.
+So the idea here really is to say,
+in case there are too many execution failures
+or some specific kind of errors, then we want to catch them
+and move on with our state machine.
+And again, if this is something we define within our code
+our code may become very, very complicated.
+But if this is something that we define
+within our step functions, we have a lot of flexibilities
+into how we want to handle these errors.
+So let's do an analysis of how this ResultPath works
+because it is important to understand
+that going into the exam.
+So let's say we have this task and there's one catch,
+and the catch is saying, go to the next task
+for any kind of errors and the ResultPath, $.error.
+So the $.error allows you to include the error
+in the inputs.
+So let's say for example that we have this input
+being foo bar, thanks to the ResultPath
+with define, which is $.error,
+the output is going to contain the foo bar as before,
+but also an error block
+which contains the error message itself
+and some information about the error.
+That means that when this output is passed
+on to the next task into the next state,
+we can, for example, analyze send some emails and so on
+and debug based on it.
+So the ResultPath is how you pass the errors
+from the inputs into the output, into the next task.
+And this is something the exam can ask you on.
+So that's it for step functions.
+I hope you liked it.
+And again, let's go into a hands-on to really understand
+how to retries and catches work in step functions.
+So I will see you in the next lecture.

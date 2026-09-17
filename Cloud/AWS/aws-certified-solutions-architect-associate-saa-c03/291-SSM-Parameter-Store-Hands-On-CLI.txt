@@ -1,0 +1,167 @@
+# 291. SSM Parameter Store Hands On (CLI)
+# Section: AWS Security & Encryption: KMS, SSM Parameter Store, Shield, WAF
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528520
+# Caption: en_US (manual)
+
+Okay, so let's go ahead and practice
+using the Parameter Store.
+So the best way to do it is
+to type Parameter Store in the search bar,
+and you can click here.
+It's a Systems Manager feature.
+So if you click on Parameter Store, on the left hand side,
+you will see that under Systems Manager,
+you have, under Application Tools, the Parameter Store,
+and what we can do here is create a new parameter.
+We specify types and values,
+and then we can reference the parameters
+in the comments or the code.
+So let's go ahead and practice using this service.
+So I first create a parameter
+and I need to enter a name for it.
+So the name is whatever you want.
+You don't have to follow my direction,
+but I like to name it like this
+so /my-app/dev/db-url,
+and this is going to allow me, with these four slashes
+to organize them into a hierarchy.
+So this is my app, this is the Dev Environment,
+and this is the name of my parameter
+within the Dev Environment.
+So here, I say DB Url for the Dev Environment.
+That's perfect, and then Tier, we have two options.
+We have Standard and Advanced.
+So we are going to use a Standard tier.
+We can store up to 10,000 standard parameters.
+They are four kilobytes in value maximum,
+and we can't share that with other accounts,
+but the Advanced parameters, you can have 100,000 of them,
+they can be eight kilobytes
+and you can share them with your other accounts.
+So next we're going to choose the type,
+and the type could be String, StringList, or SecureString.
+So here we're going to use String,
+but later we'll be using SecureString,
+and if you need to list of string,
+you can have a StringList, but String here has Data Type.
+It's either text or AWS EC2 image
+because you can also reference image ARNs here,
+and here you just have to specify the
+text in a specific format.
+But we'll use Text, and for the string, I will have
+for example, dev.database.stephantheteacher.com.
+This is just an example.
+You don't have to put anything that's a URL.
+You can put whatever you want in it,
+but that's going to be the value of my parameter, this one.
+So let's create this parameter,
+and as you can see now it's been created.
+I can click on it and have a look at it.
+So this is Version One of this parameter.
+We can view the version history here.
+So if I were to change it, then I can of course update it,
+but I will have access to my version history, which is nice,
+and then we're going to do the same but add more parameters,
+so we're going to go under Parameter Store
+and I'm going to copy this,
+and here I'm going to have it as db-password,
+so we're going to create it.
+So DB Password for Dev,
+and as you guessed it,
+we're going to have a SecureString this time,
+and because it's a password, we're going to encrypt it
+with a KMS key,
+so it could belong in my account or another account.
+We'll use my account.
+You could use the default KMS Key ID
+managed by AWS for the SSM service,
+which is this one, alias/aws/ssm,
+or you can select one that you have created before.
+For example, you may have created, for example, KMS,
+a key called Tutorial or whatever you want to create it.
+You don't have to, and so if you had created it,
+then you can use it here and leverage it.
+It's really as you want,
+but let's choose Tutorial for this example,
+it doesn't really matter,
+and we need to put a password,
+so I'll have it as devpassword,
+and now this is going to be automatically encrypted by KMS.
+So let's create this parameter.
+As you can see now, the type is a SecureString,
+and if I click on it, as you can see,
+the value is encrypted and hidden,
+and if I click on show decrypted value,
+it will check that I have the KMS permission to use the key
+and then therefore decrypt the value for me,
+so that's great.
+What we can do now is just really quickly
+create the other parameters for Prod.
+So instead of here, I have Prod and I'll call it
+prod.stephantheteacher.com3306,
+and then for the password, same.
+I'm going to copy this real quick and have it as prod.
+We'll use a SecureString, we'll use the Tutorial one,
+and then we'll have it as prodpassword.
+Okay, so now we have four parameters
+and they're all available within the Parameter Store
+and they're ordered by a hierarchy.
+So now let's try to access these parameters using the CLI.
+So I'm going to open a CloudShell on the top
+because it has the CLI installed of AWS
+and it's already configured.
+And so what we're going to use is a command
+called the SSM Get Parameters.
+So we'll do aws ssm get-parameters,
+and then you have to provide names,
+and the names correspond to the names of your parameters.
+So I can have, for example, my dev/db-url
+as well as my dev password, db-password.
+So we'll press Enter, and as you can see, now I get a result
+with my two parameters.
+So we have this one and that one,
+and you can see that for the db-url, it's a String,
+the value has been returned as is,
+but for the db-password, it's a SecureString
+and it has been returned as an encrypted value.
+So to decrypt this value, I'll press Enter, Enter, Enter,
+and quit, q.
+I have to specify a flag,
+and the flag is called with-decryption,
+and so it's going to check additionally if I have the KMS
+security policy allowed on my account
+to decrypt that parameter.
+So as you can see now, the db-password
+is still a SecureString, but now we have devpassword
+as a decrypted value thanks to this flag with decryption.
+So the CLA is very powerful
+and something you can definitely use in your scripts.
+Another command I would like to show you
+is going to be the Get Parameters by Path.
+So you do aws ssm get-parameters-by-path,
+and then you have to specify a path,
+and the path is whatever you want,
+so because we have a hierarchy, we have my-app/dev,
+it's going to give me all the parameters in this namespace,
+and as you can see, we got again, the dev db-password
+and the dev db-url.
+But you can do something more now, you can do, for example,
+my-app as a whole,
+and as you can see, I get nothing,
+but if I use the flag
+and it's a flag called Recursion,
+so it's going to be recursive,
+then you have access to all the parameters recursively
+under that namespace.
+So we have access to the dev as well as the prod
+type of parameters, which is brilliant,
+so now we have our four parameters.
+And finally, if you want it, of course,
+you can also use with-decryption to decrypt all of them.
+And that's it.
+So we've seen how the Parameter Store was working,
+we've seen about the hierarchy, we've seen the CLI,
+and it starts to show you the power
+of using the Parameter Store.
+So I hope you liked it,
+and I will see you in the next lecture.

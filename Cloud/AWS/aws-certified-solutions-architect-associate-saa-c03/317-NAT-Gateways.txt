@@ -1,0 +1,115 @@
+# 317. NAT Gateways
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528550
+# Caption: en_US (manual)
+
+So now that we've talked about NAT instances,
+let's look at NAT Gateways.
+So NAT Gateways are much better.
+There either is managed in that instances of asleep and they
+have a higher bandwidth.
+There is high availability you can do into it,
+and there is no administration.
+So you're going to pay per hour of usage and bandwidth for
+the night gateway and the nugget weight.
+It will be created in a specific AZ and it will inherit
+an Elastic IP.
+Now it cannot be used with an Institute instance within the
+same sub-net okay.
+So the nugget weight can only be helpful if accessed from
+another sub-net.
+So we're going to create a nugget way in a public subnets
+and connect it to instances in the private subnets.
+Now, the routes,
+how it works is that it goes from the private subnets to the
+nugget way to the internet gateway. Okay.
+So net gateway can not work without an internet gateway.
+Now the bandwidth is five gigabits per second,
+automatically scaling up to 100 gigabits per second,
+and you don't need to manage any security groups
+it's not required.
+So that means that we don't need to think about which
+ports you enable to make the connectivity work.
+So the way it works that right now we have this setup, okay.
+We have a private instance and a private subnets,
+and it can not access the internet.
+So we're going to create the next gateway in the public
+subnets and the nugget weight, because it is,
+will be deployed into public subnets.
+And the public center is already connected to the internet
+gateway. Then,
+then that gateway will have internet connectivity.
+And then we can,
+we're going to edit the roots of the private subnets.
+And by editing them,
+we are going to be able to connect our
+Institute instance into our nuts gateway.
+So now let's talk about high availability
+and not gateways.
+So the nugget weight is resilience only
+within a single availability zone.
+So it's going to be redundant within a single AZ,
+but in case an AZ go down,
+you need to have multiple net gateways
+in multiple AZ to have fault tolerance.
+So the way it works is like this.
+So currently we have one gateway
+and it's in one specific AZ,
+we're going to create a second
+net gateway in the second AZ so this was,
+you can see each network traffic is confined into an AZ.
+And so that if there is an AZ that goes down, okay,
+this whole AZ happens to be going down.
+Then we'll still have the ACB working
+because a NAT gateway in ACB or X as well exists.
+And there's no need to connect the atheist together through
+the route tables, because well,
+if an AZ goes down, then all the Eastern instances
+in that are also currently unassailable.
+So now let's just talk about the difference
+between net gateway and other instances,
+but there should be quite obvious.
+So the net gateway is highly available within a specific AZ.
+And if you want to get high voltage across AZ,
+you need to create another one in another AZ resonant
+instance, You wouldn't,
+have a script to manage fail-over between that instances
+and manage them overall.
+The bandwidth is up to 100 gigabits per second,
+per not gateway.
+And that for in that instance, well,
+it depends on the instance type that you have,
+but the higher instance type,
+the more throughput you're going to have,
+the maintenance is obviously a managed
+service when they get way.
+Whereas it's measured by you.
+For instance,
+we need to make sure you have the software
+or the U S patches and so on.
+The cost is a per hour cost plus amount of data transfer for
+the night gateway. Whereas for instance,
+it's per hour for these two incidents,
+which is going to be a dependent,
+obviously on the easy two instance type and size.
+And also you're going to pay for network dollar that goes
+through the ECC instance out to the internet.
+Okay.
+Now the negative way has a public IP
+for enterprise IP for us so this is good.
+The same, for instance,
+now security groups are not used for net gateway,
+which seriously a good thing because, well, you don't,
+you manage one more thing. Whereas from that instance,
+you need to set up your secrets, your groups,
+and make sure they're tight and working for the right ports.
+And the nugget way can not be used as a bastion host.
+Whereas in that instance could be used as a bastion host if
+we want it to,
+there's a lot more differences between these two things.
+And there's a link right here,
+but from an exempt perspective,
+there should be enough to insert any questions into choosing
+a NAT gateway versus in that instance.
+So that's it for this lecture I hope you liked it.
+And I will see you in the next lecture.

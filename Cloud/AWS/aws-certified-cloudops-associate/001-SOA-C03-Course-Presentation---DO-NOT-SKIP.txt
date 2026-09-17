@@ -1,0 +1,59 @@
+# 1. SOA-C03 Course Presentation - DO NOT SKIP
+# Section: Introduction & Requirements - AWS Certified CloudOps Engineer Associate
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512496
+# Caption: en_US (manual)
+
+Hi, and welcome to the AWS Certified
+CloudOps Engineer Associate Course.
+The name is SOA-C03.
+My name is Stephane Merrick,
+and I will be the instructor for this course.
+So we're going to prepare for the CloudOps exam,
+and it's quite a challenging certification.
+This course is going to be long, but I hope interesting.
+So this is for me the most difficult
+associate level certification
+and it builds upon the other two
+associate level certifications.
+So I really recommend that you at least pass one of them
+before doing this course.
+So that would be the Solutions Architecture
+associate level certification,
+or the Developer Associate Certification.
+Once you've passed one of these two,
+you could be ready for the CloudOps exam
+because the CloudOps is going to test you
+on real-world knowledge
+and how to actually use the cloud.
+So here, because you need some base knowledge,
+I've still imported videos from other courses
+that you may have done from me,
+such as the Certified Cloud Practitioner course,
+the Certified Solutions Architect Associate course,
+the Certified Developer course,
+and they will be marked with brackets.
+So feel free to revisit these videos if you have seen them
+or to skip them if you think you've mastered them.
+Finally, the videos specific for this course
+are not marked with any brackets.
+So now a little bit about me.
+So my name is Stephane Merrick,
+and I will be your instructor for this course.
+I have 11 AWS certifications, so all of them,
+and I've worked with AWS for many years.
+I've built websites, applications,
+streaming platforms, and so on.
+I've been teaching for almost seven years on Udemy
+about AWS certifications
+or services such as CloudFormation, Lambda, and EC2.
+As you can see, I have over two million students
+that have went through my courses,
+and everyone has been very successful with this course,
+so I'm very happy that you're here following along with me.
+So you can connect with me on social media.
+You can follow me on LinkedIn, on Instagram, on Medium,
+Twitter, and GitHub, and the links are here.
+I thank you very much for choosing this course
+and choosing to learn with me.
+I hope you're as excited as I am
+and I wish you a very happy learning.

@@ -1,0 +1,131 @@
+# 73. Elastic Load Balancer - Cross Zone Load Balancing
+# Section: High Availability and Scalability: ELB & ASG
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078093
+# Caption: en_US (manual)
+
+Now let's talk about cross zone balancing.
+So let's take an example of a very imbalanced situation
+but it will illustrate the point.
+So we two availability zones
+and the first one has a load balancer
+with two EC2 instances.
+And the second one also has a load balancer.
+So a load balancer instance obviously,
+with eight EC2 instances.
+The Load balance serves instances are part
+of the same more general load balancer.
+So the client is accessing these load balancers.
+And so with cross zone load balancing
+each load balancer instance will distribute evenly
+across all registered instances in all availability zones.
+So the client itself is sending 50%
+of the traffic to the first ALB instance
+and 50% of traffic to the other ALB instance.
+But each ALB is going to redirect the traffic
+across all 10 EC2 instances
+regardless of which availability zones they're in.
+This is why it's called cross zone load balancing.
+So if you take a look at the first
+at the second ALB, sorry instance
+it's going to send 10% of the traffic it receives, okay?
+To all these instances because we have 10 instances.
+So each of them gets 10% of the traffic.
+And same story with the first ALB instance.
+It's going to send also 10%
+of traffic to all these instances.
+So in this example with cross zone balancing
+we are distributing the traffic evenly
+across all EC2 instances.
+And then maybe something you want to have or not, who knows
+but at least this behavior is available to you.
+The second behavior that's available
+to you is to not have cross zone balancing.
+So we take the same example
+but without cross zone balancing.
+The requests, the requests, sorry, are distributed
+in the instances of the node of the elastic load balancer.
+So in this example, what we have is that the client
+sends 50% of the traffic to the first AZ and the 50%
+of traffic to the second AZ, okay?
+But the first ALB instance is going to send the traffic
+to only the EC2 instances in its region.
+So that means that each EC2 instance in this sorry ability
+zone is going to get 25% of the traffic overall, okay?
+So half and half.
+And the one on the right hand side will again divide
+up the traffic it receives into the EC2 instances
+that are registered within its AZ.
+So AZ2.
+So we can see here without cross balancing
+the traffic is contained within each AZ.
+But if there are an imbalanced number of EC2 instances
+in each AZ, then some EC2 instances of a specific AZ we'll
+receive more traffic than others.
+It's just an option to know about.
+There's no right or wrong answer.
+It depends on the use case, obviously.
+So for the application balancer, by default
+cross zone load balancing is going to be enabled
+but you can disable it at the target group level and
+there's going to be no charges
+if your data goes across availability zones
+because usually in AWS, if data goes
+from one AZ to another one, you're going to pay some money.
+But for the application balancer
+because cross zone lowdown is enabled by default
+you won't have any charges for inter AZ data.
+Now, if you consider the network load balancer
+and the gateway load balancer,
+then cross zone load balancing is disabled by default.
+And if you enable it
+then you're going to pay some amount of money
+because the data is going to go from one AZ to the next.
+Finally, for the classic load balancer
+it is disabled by default, and in case you enable it
+you're not going to be charged for inter AZ data transfers.
+Okay, so just for the sake of doing a hands on
+I've created a workload balancer, an application balancer
+and a gateway load balancer.
+So let's first have a look at the network load balancer.
+So if I scroll down and click on attributes, as you can see
+cross zone low balancing is off
+but I can edit this and turn this on.
+And as you can see, I will enable cross zone balancing
+and this may include some regional charges for your NLB.
+So this is a similar setting for the gateway low balancer
+because they have a similar behavior in that regard.
+So for the attributes, again, cross zone
+load balancing is off
+but I can edit it and turn it on.
+And this will imply data charges.
+Now if you have a look at the application load balancer
+it is a little bit different.
+So if you go to attributes
+you can see that cross zone load balancing is on by default.
+And if I edit this and and scroll down, as you can see
+I will show you in a second.
+As you can see, the cross zone balancing is always on,
+okay?
+And this message
+you can discard it because I think it's wrong.
+But anyway, so cross zone load balancing
+is always on for your ALB.
+But if you go to your actual target group, so if I go
+to my target group that has been created for this and I go
+to attributes of the target group, we can actually do edit.
+And for the cross zone load balancing here, we can
+either inherit settings from the low balancer attributes
+which is on by default or force on or off
+and turn it off for that one specific target group.
+And when it comes
+to doing the demo for the classic load balancer,
+I will not include it this time
+because the classic load balancer is going away.
+It is previous generation
+and is going to be retired very soon.
+So I don't think you will need to know
+about it for the exam.
+Okay, so let's see.
+For this lecture, just make sure
+if you wanted to follow along to delete the load balancers.
+I hope you liked it and I will see you in the next lecture.

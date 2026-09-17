@@ -1,0 +1,74 @@
+# 143. Global Applications Architecture
+# Section: Leveraging the AWS Global Infrastructure
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/29102360
+# Caption: en_US (manual)
+
+Okay, so we've seen the global services,
+but how do we have a global application?
+Well, let's discuss architecture a little bit.
+So if we have a single region, single AZ, it's very simple.
+We have an EC2 instance in one easy in one region
+that does not give us high availability, for sure.
+This does not give us good global agency,
+because if we access this institution
+from a user that's very, very far away
+from a region is going to get bad at latency.
+And it's very, very simple to set up.
+So very, very low difficulty.
+Next, we have a single region, multi AZ.
+So here we have two AZs within one region.
+So we do have high availability,
+but we do not have improvements for a global agency.
+So again, the AZs are close to each other.
+And so if we take a point in the well
+that's far away from my AZs
+then we're going to have high latency.
+And the difficulty is a little bit increased,
+but not that much.
+Next we have a multi-region called active passive.
+And remember that term so active passive,
+it means that we have two regions.
+Each region has one or multiple AZ
+and in one region our EC2 instances are going to be active,
+or our application is going to be active.
+That means that our users,
+wherever they are in the world can do reads
+and writes to our EC2 instance in the active region.
+And the other one EC2 is passive.
+That means that there is data replication
+between the active region and the passive region.
+And possibly the users can do reads from the passive region,
+but they can not do writes to the passive region.
+That's why it's called passive, active passive.
+And so with active passive,
+well, if we have many regions around the world
+and they're all passive, that means
+that we are going to have improved read latency
+because now we have our data replicated
+across the world and with low latency,
+but for writes well, all the writes still need to go
+to the same central region.
+So that means that the writes at a global level
+still have the high latency.
+And finally, well, it's definitely increased difficulty
+because now we have multiple regions,
+so that's active passive,
+and finally we have active active.
+And so this is where each EC2 instance
+is able to take writes and reads,
+and there is replication still happening
+within these two instances.
+So this improves the read latency,
+the write latency at a global level, obviously.
+And it's higher difficulty because now your application
+has to do a lot of things in every single region
+and is more difficult to set up.
+But for example, a database
+that is having an active active demo setup
+is dynamoDB global tables as we've seen before.
+Okay, so if you remember just what these means,
+active active, active passive, multi-region, single region,
+you should be good to go for the exam
+to answer one question.
+All right, that's it.
+I will see you in the next lecture.

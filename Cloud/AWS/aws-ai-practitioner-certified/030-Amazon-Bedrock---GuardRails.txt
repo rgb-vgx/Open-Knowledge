@@ -1,0 +1,38 @@
+# 30. Amazon Bedrock - GuardRails
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886425
+# Caption: en_US (manual)
+
+Now let's talk about Guardrails
+in Amazon Bedrock.
+Guardrails allow you to control the interaction
+between your users and your Foundation Models.
+You can set up Guardrails to filter
+undesirable and harmful content.
+For example, say we have Amazon Bedrock
+and we set up a Guardrail to block any kind of food recipes,
+and the user is using your model
+and saying," Hey, suggest me something to cook tonight."
+Then Amazon Bedrock will respond,
+"Sorry, this is a restricted topic."
+This is because we have set up a Guardrail
+to block this topic.
+Of course, maybe you don't wanna block food recipes,
+but something a bit more relevant to your business.
+You can al use Guardrails
+to remove any personally identifiable information
+or PII, to make sure that your users are safe.
+You can also enhance privacy,
+and you can reduce hallucinations.
+We'll see what hallucinations are later on this course.
+But the idea is that you wanna make sure
+that the answers are safe and sound
+and that they're not just invented off the block.
+Guardrails can help you with that.
+You can also create multiple Guardrails
+and multiple level of Guardrails.
+And you can also monitor and analyze all the user inputs
+that will violate the Guardrails to make sure
+that you have set the Guardrails up properly.
+That's it, just a short intro to the Guardrail.
+I hope you liked it and I will see you in the next lecture.

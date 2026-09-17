@@ -1,0 +1,130 @@
+# 47. Spot Instances & Spot Fleet
+# Section: Compute & Load Balancing
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376444
+# Caption: en_US (manual)
+
+So now let's talk about EC2 spot instances
+and they allow you to get discounts
+up to 90% compared to on-demands.
+How does it work?
+Well, you define a max spot price
+and you're going to get the EC2 instance
+as long as the current spot price,
+and it always determines that spot price
+based on offer and demand.
+So as long as the current spot price is less than your max,
+then you're going to get the instance.
+But then if the offer and the demand vary
+and the capacity varies, then the spot price may go up.
+And if the spot price goes over your max price,
+then you can choose to either stop
+or terminate your spot instance
+and you have a two minutes grace period.
+So this is where you can clearly shut down your application,
+save your files, and so on.
+So spot instances are great for batch jobs, data analysis
+or any kind of workload that is resilient to failure,
+but you should not use them for critical jobs
+or databases while because they can be reclaimed
+by AWS very quickly and you can lose them.
+So in terms of the spot price, what does it look like?
+So this is an example for M4 large
+for a duration of three months in US East 1.
+And as we can see it's the price varies based on the AZ.
+So if you have one A, one B, one C, et cetera,
+you have a different price and the price can vary over time.
+So if you define your user max price at here,
+this dotted black line that's horizontal,
+then as long as the price is underneath that black line,
+we get an instance,
+and then as long as it's above it, we lose, we terminate
+or stop that instance.
+And so as we can see, the spot price is quite lower
+than the on-demand price.
+So if your user defined max price, it's very high,
+then you will never lose your spot instance
+based on this graph.
+But if it's quite low, for example, where it is right now,
+there's a chance for example for the red line
+that sometimes the price is gonna be higher
+than what you want and sometimes it's gonna be lower
+than what you need.
+So it depends how you want to bid.
+But the idea is that with the spot instances,
+you want to define a max price that you're comfortable with
+for your economics, but at the same time
+that we'll make sure that if you lose your spot instance
+then you haven't lost your data and so on.
+Okay, next spot fleets.
+So this is the ultimate way to save money.
+So spot fleets is going to be a way to define
+for you to get a set of spot instances
+and optionally on-demand instances,
+that's what it's called a fleet.
+And the spot fleet will try its best
+to meet the target capacity
+with the price constraints you're defined.
+So it will launch from possible launch pools.
+So it can have different instance types, different OS
+and availability zones.
+And so you're going to define multiple launch pools.
+So multiple instance types, multiple everything.
+And then the fleet will choose the best
+and most appropriate launch pool for you.
+And when your spot fleet either reaches your budget
+or reaches the capacity you wanted,
+then it will stop launching instances.
+And so you define a strategy
+to allocate spot instances in your spot fleet,
+and that's something to remember.
+The first one is lowest price,
+and that's gonna be the most popular one
+going into the exam,
+which is that the spot fleet will launch instances
+from the pool that has the lowest price
+and that gives you a lot of cost optimization.
+And this is a great option
+if you have a very short workload.
+You can also have a diversified way
+to launch your spot instances,
+in which case the launch in the spot instances
+will be distributed across all the pools
+that you have defined from before,
+which is great for availability and long workloads
+because if one pool goes away,
+then your other pools are still active.
+Then you have capacity optimized.
+So you have a pool with the optimal capacity
+for the number of instances you want.
+And then you have price capacity optimized,
+which is first choosing the pool
+with the highest capacity available
+and then select within that
+the one that has the lowest price,
+which is the best choice for most workloads.
+So the idea is that spot fleets can be complicated,
+but what you have to remember is that using the spot fleet,
+you're able to define multiple launch pools,
+multiple instance types,
+and so you're just interesting in raw power.
+And then if you use the lowest price discounts
+at the lowest price strategy strategy for spot fleets,
+then the spot fleets will automatically request
+the spot instances with the lowest price for us.
+And so spot fleets gives us an extra saving
+based on spot instances
+because it's smart enough to choose
+the right spot instance pool to allow us
+to get the maximum amount of savings.
+And this is the benefits of spot fleets.
+And again, you need to understand the difference here
+of doing a very simple spot instance request
+where you know exactly the type of instance you want
+and the AZ you want to using a spot fleet
+and saying, okay, you can choose all these instance types
+and all these AZ, and what I need from you
+is to give me the lowest price, for example, okay?
+So that's hopefully is giving you a lot of insights
+into how spot fleets and spot instances are different.
+I hope you like this lecture
+and I will see you in the next lecture.

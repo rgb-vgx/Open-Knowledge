@@ -1,0 +1,59 @@
+# 155. CloudWatch Logs Overview
+# Section: Cloud Monitoring
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056188
+# Caption: en_US (manual)
+
+Now let's talk about Amazon CloudWatch Logs,
+so CloudWatch Logs, as the name indicates,
+is to collect log files.
+So what is a log file?
+Well, when you have an application running
+on any server, usually you want the application
+to write some text about how it is doing.
+For example, when it is doing some actions for a user
+when it is performing some clean ups, et cetera, et cetera,
+and so all these logs can be collected
+and when a user needs to troubleshoot something,
+then they will go through the log file
+and see what the application did or said,
+and so these logs can exist in different forms,
+but you can collect the logs from Elastic Beanstalk.
+You can collect the logs from ECS, Lambda, CloudTrail,
+CloudWatch logs agents,
+which is when you install a log agent
+on an EC2 machine or an on-premise server
+to get your log directly from that server onto AWS,
+or Route53 for logging DNS queries,
+and CloudWatch logs overall,
+when they collect all these logs
+it allows for real-time monitoring of your logs
+and then with it you can react to whatever is happening
+within your logs.
+Also, your logs can be readjustable for the retention.
+That means that you can have your logs,
+for example, for just one week
+or 30 days or a year or infinitely.
+So how does CloudWatch Logs work for EC2 instances?
+By default, your EC2 instances will not send any log files
+to CloudWatch Logs.
+For this you need to create a CloudWatch Log agent
+on your EC2 instances,
+and they will push the log files that you want
+onto the CloudWatch Log service,
+so to summarize, the CloudWatch Logs service is running.
+Here's your EC2 instance.
+We will install the CloudWatch Logs agent
+and this agent will send the log files
+directly into CloudWatch Logs.
+For this to work we need to make sure that our EC2 instance
+has a proper instance role with the correct IAM permissions
+to send the log data into CloudWatch Logs.
+Then, the log agent can also be setup on on-premises servers
+as well, so this is a hybrid agent.
+It works both on-premises or on AWS
+and it allows you to collect logs
+from both your EC2 instances and your on-premises servers
+directly into the CloudWatch Log service,
+so that's it.
+Let's go in the next lecture
+to see how CloudWatch Logs works.

@@ -1,0 +1,71 @@
+# 235. EMR
+# Section: Data & Analytics
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528596
+# Caption: en_US (manual)
+
+Now let's talk about Amazon EMR.
+So EMR stands for Elastic MapReduce
+and EMR helps you create Hadoop clusters
+for doing big data on AWS.
+This allows you to analyze
+and process vast amount of data.
+Anytime you would see anything related
+to big data clusters with Hadoop clusters,
+then think Amazon EMR.
+These clusters have to be provisioned
+and they can be made of hundreds of EC2 instances.
+Why would you use EMR?
+EMR comes bundled with a lot of tools
+that big data specialist use.
+For example, Apache Spark, or HBase,
+or Presto, or Apache Flink.
+They're very difficult to set up,
+so Amazon EMR will take care of all the provisioning
+and the configuration of these services for you.
+You can also auto-scale your entire cluster
+and it's integrated with spot instances
+for you to benefit from price reductions.
+So the use cases of Amazon EMR
+from an exam perspective are going to be
+around data processing,
+doing machine learning, web indexing and big data
+but all of them using big data related technologies
+such as Hadoop, Spark, HBase Preso Flink, and so on.
+Amazon EMR is made of clusters of EC2 instances
+and you have different kind of nodes.
+You have the Master Node.
+The Master Node manages the cluster,
+it will coordinate and manage the health
+of all your other nodes, and it must be long running.
+Then you have the Core Node, they're here to run tasks
+and also store data, and they must be long running as well.
+Then you have this Task Node
+which is there just to run tasks.
+Usually you can take spot instances for it
+and using task node is optional.
+The purchasing options really depends.
+If you have the on-demand EC2 instance type
+then you're going to get reliable
+predictable type of workloads
+and then will never be terminated.
+If you use reserved instances,
+and remember it's minimum one year of usage,
+then you're going to get big cost savings
+and EMR will automatically
+use your reserved instances if possible.
+Therefore, good candidates for reserved instances
+are going to be the Master Node
+because it must be long running, and also the Core Nodes.
+Regarding spot instances, because they can be terminated
+they're less reliable but they're cheaper.
+A good way for you to leverage spot instances
+would be on Task Nodes.
+Finally, for EMR, in terms of deployment
+you can have either long running clusters
+which would make sense than using reserved instances,
+or you can use transient temporary clusters to
+just do something and then tear it down
+once the analysis is done.
+Okay, you know all you need to know
+for Amazon EMR, the exam.
+I hope you liked it, and I will see you in the next lecture.

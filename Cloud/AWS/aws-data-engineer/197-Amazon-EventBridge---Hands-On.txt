@@ -1,0 +1,157 @@
+# 197. Amazon EventBridge - Hands On
+# Section: Application Integration
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305868
+# Caption: en_US (manual)
+
+So let's have a look at Amazon EventBridge.
+So you have several options.
+You can create a rule with an event pattern.
+We're gonna do this right now.
+Then you can have a schedule rule,
+which is the old way of doing schedule.
+So there is now something called EventBridge schedule.
+We're also going to have a look at it.
+Pipe is to send data from an event source to target
+with optional filtering and enrichment.
+And schema registry is to look
+at the schemas of all these events.
+So just to get started, we're going to do the first option,
+EventBridge rule with event pattern.
+So we need to create a rule,
+and what we want to do is to react to any event
+where an instance is going to be terminated or shut down.
+So you click here on Service Events,
+and here you have a list at all the events
+that can happen within your accounts by service.
+So it's a lot.
+For example, if you take any of these,
+for example, if you take Lambda,
+you can have a look at all these things.
+Console actions or EC2,
+you can have a look at all these things.
+So it's a lot more type
+of things you can choose from for events.
+So the one we're going to look
+at is one of the most popular.
+It's called EC2 instance State-change Notification.
+So that means that anytime
+an EC2 instance state will change,
+we're going to get a notification.
+So if we look at it at this event,
+we can have a look at the schema of the event
+and then a sample event.
+Like what it can look like.
+So the schema defines how the sample event will look like.
+And now we want to be able to filter this event
+and on the state value.
+So the state is a string and we have to exit the value.
+So we can say Equal, for example,
+and we are going to have several values.
+So the first one is shutting down
+and the second one is going to be terminated.
+How do I know this? Well, it's from the schema itself.
+If you have a look at the event pattern on the bottom line,
+on the bottom page, sorry,
+you can have a look at Sample events 1, 2, 3.
+And if you look at number 5,
+it says "state": "shutting-down".
+And number 6, it says "state": "terminated".
+So these are the events we want to be catching.
+So now our event pattern filter is defined right here
+on the right-hand side.
+So now we have all the events.
+And now for the target, again, we have several options.
+So we can have a look at all the options right here,
+such as API gateway, batch jobs.
+We can also reboot an EC2 instance, terminate one.
+We have SNS topic, SQS queues, I mean so many.
+But what we want to do right now is to receive an alert,
+so we choose SNS Topic
+and then we want it to be our demo topic.
+So create it if you don't have a topic.
+You can just create an SNS topic very easily.
+Then we'll need to have an exception role to be able
+to send a message into this topic.
+So a role is going to be automatically created for us.
+and then we get some more information
+around the retry policy and the dead-letter queue.
+So we're good to go. Let's click on Create.
+I'll call this one
+NotifyEC2InstanceShutdownOrTerminated,
+and we'll click on Create.
+And so now that this role has been created,
+anytime we shut down
+or terminate an EC2 instance,
+we will receive a notification.
+The other option is to use Schedule.
+So on the left-hand side you have schedules,
+and then you can create a schedule.
+And this one is going called InvokeLambdaEveryHour.
+And several options.
+Either it's a one-time schedule,
+so we do something once and then done, or recurring.
+And we have either a Cron-based schedule or a rate schedule.
+We'll use 1 hour
+and no flexible time window.
+And Next.
+And here we have the option to invoke several things.
+So what do we wanna do every hour?
+Well, we have all these options such as, for example,
+running a task on Amazon ECS
+or putting a records in Kinesis Data Firehose
+or invoking a Lambda function.
+So you can say, for example,
+in the Invoke Lambda function,
+and if you have a Lambda function,
+you can select it from here.
+So you get the idea.
+Once you've done this,
+you have a schedule in Amazon EventBridge.
+Other things that you need to be looking at is event buses.
+So right now we have the default event bus.
+And the default events bus is anything
+that will be AWS-generated type of events.
+But you can create your own event bus,
+and this is going to be a custom event bus.
+And here you have the ability yourself
+to send your own events into this event bus
+and so therefore you can develop custom applications
+that are based on Amazon EventBridge,
+which can be very helpful.
+You have the option to archive your events.
+When they happen on the event bus,
+then you have an archive you can look into.
+And you can also replay events if you wanted
+to replay a past event from an archive.
+Okay, other things need you look at
+is partner event sources.
+So it's possible for you
+to actually get data from third-party partners directly
+into your AWS accounts.
+So if you use, for example, Auth0,
+then the events of Auth0 will be put
+and inserted into Amazon EventBridge.
+And then you can, for example, use a Lambda function
+or do something after someone has done the login in of zero.
+But you can see you have so many different kinds
+of partners right here.
+And API destinations.
+That means that, for example, if you wanted
+to have an event within EventBridge,
+but then to connect to an external HTP destination,
+you can also define one here.
+And this allows you to connect EventBridge
+to an outside source, for example,
+to have integration with your own infrastructure.
+So it's quite a lot of different things.
+And finally, for schemas, this is all the schemas
+of all the AWS events that you have.
+Or you can have your own custom registry
+for your own events.
+But this allows you to understand the shape
+and form the events will have in Amazon EventBridge.
+And that's it. So I hope you liked it.
+You can go here in the rules
+and also disable them if you wanted to.
+But I hope you liked this lecture
+and I will see you in the next lecture.

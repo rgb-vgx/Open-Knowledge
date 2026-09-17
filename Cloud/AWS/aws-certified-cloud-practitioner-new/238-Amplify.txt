@@ -1,0 +1,38 @@
+# 238. Amplify
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/33532798
+# Caption: en_US (manual)
+
+So now let's talk about AWS Amplify.
+It's a set of tools and services that helps you develop
+and deploy scalable full stack web and mobile applications.
+So the idea is that thanks to Amplify,
+you're going to get a comprehensive suite
+to manage all you need to do
+to have your web and mobile applications.
+So this means that through Amplify,
+you can manage authentication, storage,
+API, whether it be a REST API or a GraphQL API,
+CI/CD, PubSub, analytics,
+even machine learning, monitoring,
+and you can get your source code from AWS,
+from GitHub, or other places.
+So see it as like the Elastic Beanstalk
+for web and mobile applications.
+So the idea is that when you go to Amplify,
+you can go into the Amplify Studio,
+and within the Studio you can set up everything you need,
+for example, your data, your authentication, your storage,
+your functions, your graphical API, and so on.
+And then Amplify behind the scenes
+is going to configure an Amplify backend.
+And that backend will be leveraging existing services of AWS
+that you know, for example, Amazon S3, Amazon Cognito,
+AWS AppSync for your GraphQL backend, for example,
+API Gateway for your REST backend,
+SageMaker, Lex, Lambda, DynamoDB,
+and of course more services.
+So Amplify is a really good wrapper
+around all these services, again, the target of which
+is to help you build mobile applications backend.
+I hope you liked it, and I will see you in the next lecture.

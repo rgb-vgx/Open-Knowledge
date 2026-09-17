@@ -1,0 +1,85 @@
+# 127. AWS Signature v4 Signing (Sigv4)
+# Section: AWS CLI, SDK, IAM Roles & Policies
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19729360
+# Caption: en_US (manual)
+
+So now let's do a deeper dive
+into understanding how we are actually able
+to do API request to AWS.
+So when you call an AWS HTTP API,
+which is the API for all the services,
+what's going to happen
+is that you're going to sign the request
+so that AWS can know who you are
+and that you are authorized to do your request.
+And to sign your request,
+what's going to happen
+is that you're going to use your AWS credentials,
+for example, your access key and your secret key.
+And by signing it, AWS knows who you are
+and then you're good to go.
+Now the process is very complicated,
+and for some requests to Amazon S3
+you don't need to be signed.
+For example, if you're reading a public object.
+But for most API calls, you must sign your HTTP request.
+Now, we haven't seen the process of signing an HTTP request
+because while we've been using the SDK
+or the AWS CLI, and so therefore by default,
+of course, all the requests
+are going to be signed automatically
+by the CLI or the SDK.
+And so what's going to happen and what you need to remember
+is that what you need to do
+when you have an API request is to sign it.
+And when you sign it
+you sign it using SigV4 for a Signature v4.
+Now the process is complicated.
+There are four steps and you don't need to know
+about how to actually sign something with SigV4
+because that would be complicated.
+But what you need to know is the two ways
+that you can transmit your signature once computed to AWS.
+So the first one is to send the signature
+in the authorization header for any HTTP request.
+So you compute it and then it's sent.
+So this is what the CLI does,
+is going to be included by default like this.
+The second option is to use a query string.
+So the query string
+is that you're going to include the signature
+in the URL directly, as you can see right here.
+And the signature is going to be in a specified key
+for your query string called the X-Amz-Signature.
+So these are two ways to transmit SigV4,
+and I'm gonna go into the console now
+to show you the second way
+so you can really have a look at a signature.
+So here, I am in Amazon S3 and there is my coffee.jpg file.
+And I'm going to do, I'm going to click on here to open it.
+And as you can see, it displays in my browser.
+And the reason why this file is correctly displayed
+in my browser is because of the signatures.
+So let me copy the URL into a text editor and show you.
+And so as you can see, I have my URL and I've decomposed it
+into several steps for you to see.
+Here we have the security token.
+Here we have the algorithm
+that says AWS S4, so SigV4.
+We have the date, we have the expires.
+So when this URL is going to expire, and this is fine,
+by the time you see this video, it's going to be expired.
+You also have the AMZ credentials.
+So what is my account ID and so on.
+And then we have the AMZ signature
+which represents the signature part of my SigV4.
+So as you can see, this is a URL that got constructed
+by my web browser to be able to access my file in Amazon S3.
+So that's it for this lecture.
+Want you to remember in short is that SigV4
+is used to sign request into AWS
+and the signature can be either sent
+using an HTTP header in Authorization
+or a query string option with the X-Amz-Signature key.
+All right, that's it.
+I will see you in the next lecture.

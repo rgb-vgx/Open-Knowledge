@@ -1,0 +1,212 @@
+# 113. CloudWatch Logs
+# Section: Monitoring
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34786598
+# Caption: en_US (manual)
+
+Now let's talk about
+the more important topic for you to remember,
+which is CloudWatch Logs.
+CloudWatch Logs is going to be very important
+going into the SA Pro exam.
+And so first you need to know how to get data
+into CloudWatch Logs.
+So the first way to get data
+is through the SDK, or the CloudWatch Logs Agent,
+or the CloudWatch Unified Agent.
+I will show you the difference between the Logs Agent
+and the Unified Agent in a slide in this lecture.
+Now we can also get data in CloudWatch Logs
+through some integration with AWS services.
+So for example, Elastic Beanstalk can help you
+collect all the logs from your application
+and send that to CloudWatch Logs directly.
+ECS also has a log driver to collect log
+from the containers and send that into CloudWatch Logs.
+Lambda has a direct integration with CloudWatch Logs
+and will give you all the function logs.
+The VPC Flow Logs can be sent to CloudWatch.
+API Gateway Access Logs,
+and CloudTrail based on the filter you wanna set.
+So good to know the CloudWatch Logs Agent
+can be installed on EC2 machines,
+but not only it can be installed on your on-premise Vms
+or on any server you want
+as long as it has logs and you wanna send them
+into CloudWatch Logs.
+Finally, you can also get DNS queries logged
+from Route53 into CloudWatch Logs.
+Okay, so next, how does CloudWatch Logs work in details?
+So we have log groups, and you can give any name you want
+that usually represents an application.
+And within your log groups
+you're going to have log streams
+which are going to be instances within your application
+of the log files or your containers.
+So it's up to you to organize this the way you want,
+and usually it doesn't really matter.
+What matters is what inside log stream is,
+which is your log itself.
+You can define log expiration policies,
+so your log can be chosen to never expire,
+or expire after 30 days, et cetera, et cetera.
+And if you do expire your logs,
+obviously, you need to make sure
+that they're going to be persisted somewhere
+in case you need to analyze them in the future.
+So it is possible
+for you to encrypt your CloudWatch Logs with KMS.
+And CloudWatch Logs has the possibility to send these logs
+to other destinations.
+So we'll see this in a second
+where we have Amazon S3 where we can create exports.
+We have Kinesis Data Stream
+if you wanted to stream the CloudWatch Logs into something
+that gives you more ability to analyze them in real time.
+Kinesis Data Firehose,
+again, if you want to export these logs into S3,
+ElasticSearch, Redshift, or Splunk.
+And Lambda and ElasticSearch through a Lambda integration.
+We'll go over those in a second.
+But now let's talk about CloudWatch Logs
+Metric Filters and Insights.
+So CloudWatch Logs can use a filter expression,
+and these filter expression can result in creating a metric,
+hence the name Logs Metric Filter.
+So for example, say you are looking
+for a specific IP inside of a log
+and you want to have an alarm or a metric at least
+based on how many times that IP has been found,
+then you would create a metric filter.
+Or if you wanted to count the number of occurrences
+of the word error in your logs, for example,
+if you wanted to get alerted
+in case your application goes crazy and has too many errors,
+then that could be a very good use case
+for CloudWatch Logs Metric Filter as well.
+And these metric filters can be used
+to trigger CloudWatch alarms,
+and from this you have all your automations you need.
+And if you wanted to analyze your logs
+within CloudWatch Logs,
+you could use something called CloudWatch Logs Insights
+to query logs directly, and even keep these queries
+and add them to a CloudWatch Dashboard.
+So the cool thing about CloudWatch Logs Insights
+is that it has also simple queries
+of what you can do directly from within CloudWatch.
+For example, you can have the number of exceptions
+logged every five minutes,
+or the list of log events that are not exceptions.
+Or something specific to Lambda or Route53
+or VPC Flow Logs, et cetera, et cetera.
+Okay, so say you wanted to not analyze your logs
+within CloudWatch Logs,
+but you wanted to analyze them with your own tools.
+And so for this
+you need to export the data of CloudWatch Logs.
+So the first thing we have to know is the S3 export.
+Very simple, we take the CloudWatch Logs
+and we send it into Amazon S3.
+There is a feature directly made for that.
+And to send these logs to Amazon S3 you must encrypt them.
+And so this feature supports SSE-S3
+and SSE-KMS as encryption mechanisms.
+On top of it, log data can take up to 12 hours
+to become available for an export.
+So this is definitely not real time,
+and this is not automated.
+You have to use the API call named CreateExportTask
+to get the data from CloudWatch Logs into Amazon S3.
+So it's not near-real time,
+it's not real time.
+For this, we can use CloudWatch Logs Subscriptions instead.
+So let's talk about CloudWatch Logs Subscription now.
+So your CloudWatch Logs can get a subscription filter
+and you can filter the type of logs you want
+out of CloudWatch Logs.
+And this subscription filter can send data
+to many different outputs.
+So the first one is a managed Lambda function by AWS,
+and that Lambda function is meant to send data
+to Amazon ElasticSearch in real time.
+But it's very possible for you
+to define your own Lambda function
+and do whatever you want in real time
+on top of the subscription filter.
+Then you have the option to also use a subscription filter
+with Kinesis Data Firehose.
+And we know Kinesis Data Firehose now,
+so we can send data near-real time into Amazon S3,
+or into Amazon ElasticSearch.
+So the question is, should we use Kinesis Data Firehose
+or Lambda to send data to Amazon ES or Amazon S3?
+Well, it really depends on your requirements.
+If you have the real time requirements,
+you have to use a Lambda function.
+But if you're willing to have one minute of lag,
+for example, and you are okay with near-real time,
+then Kinesis Data Firehose
+is going to be a better choice probably,
+a bit less expensive, and more scalable.
+Finally, it is possible for you to take these logs
+from the subscription filter into Kinesis Data Streams,
+and from it we can use whatever tool we would need.
+So Kinesis Data Firehose, Kinesis Data Analytics,
+EC2 instances that are running the KCL,
+or a Lambda function.
+Another good architecture to know with CloudWatch Logs
+is that you can do it for multi-account
+and multi-region Log Aggregation.
+So say you have an Account A, Region 1,
+you create the CloudWAtch Logs
+and a subscription filter.
+And then this sends it into a Kinesis Data Stream
+in a central logging account.
+Same for another account.
+So Account B, Region 2.
+We have the CloudWatch Logs, subscription filter,
+and send this into a Kinesis Data stream
+in the central logging account.
+And for account B I just showed that it has another region,
+so it could be multi-account and multi-region.
+And from this it has to be into Kinesis Data Stream.
+You can define your own Kinesis Data Firehose
+and sync that data near-real time into Amazon S3,
+and this will be into your central security
+or logging account.
+So this could be very good,
+and this is a very, very common architecture.
+Now you can use the CloudWatch Agent
+to actually get logs from your EC2 instances.
+And there is tight integration using the CloudWatch Agent
+and Systems Manager.
+So you can install the CloudWatch Agent, for example,
+using the SSM Run Command.
+So say we have an EC2 instance,
+it has the SSM agent running
+and it's set up with Systems Manager.
+Then using a Run Command called ConfigureAWSPackage,
+and the package is AmazonCloudWatchAgent,
+then the CloudWatch Agent will be automatically set up
+on your EC2 instance.
+And the alternative is, again,
+to use an EC2 instance with the SSM agent installed on it.
+But this time instead of Run Command
+you use the Systems Manager State Manager feature
+to make sure that, again, the CloudWatch Agent
+is installed on your EC2 instance,
+and it's two ways of doing it.
+And finally, if you don't have the SSM agent installed
+but you still want to use SSM,
+the EC2 instance can actually be installed
+with the CloudWatch agent itself.
+So you can install it with some commands.
+And then when you configure and start the CloudWatch agent
+you can instruct it to actually download
+the agent configuration directly
+from the SSM Parameter Store,
+therefore making the CloudWatch Agent very complete
+and configured out of the box.
+Okay, so that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

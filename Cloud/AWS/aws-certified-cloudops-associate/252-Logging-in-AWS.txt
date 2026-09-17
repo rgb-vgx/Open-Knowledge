@@ -1,0 +1,79 @@
+# 252. Logging in AWS
+# Section: Security and Compliance for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/13136342
+# Caption: en_US (manual)
+
+So just to help you for the exam
+and to make you understand
+what kind of logging is available in AWS.
+Here's a short lecture.
+So basically, if you want to have compliance requirements,
+there's many services that AWS provides logs for.
+It could be security logs or audit logs.
+So service logs will include CloudTrial
+and here we can trace all the API calls
+and we've done this as a hands on so we know how that works.
+Config rules, where we can track the config
+and the compliance over time
+and we've seen this as well in the past section.
+CloudWatch logs if you want to have full data retention,
+so for example, want to log application logs or whatever,
+we can do it there.
+VPC Flow logs which is to
+review the IP traffic within your VPC.
+Now we haven't seen VPC for logs in detail just yet
+but we'll do it a future section
+and we'll see how they work.
+There will be ELB Access logs for your load balancers
+and they will give you the metadata
+of request made to your load balancer
+and we've had the chance to look at it.
+CloudFront Logs which is to look at the logs
+coming straight from CloudFront your web distribution
+against some metadata of access
+and it's going to give you the access logs.
+Web Application Firewall Logs, so if you enable WAF,
+then you get full logging of all the request analyzed
+by the service, which is really really nice.
+And the cool things is that all these logs,
+you can put them in S3 and then
+you can analyze them using AWS Athena.
+And so that is a very common exam question.
+They will say we have this log,
+how can we analyze it?
+How can we quickly know or explore what happen
+to our ELB even though maybe your EC2 instance
+were terminated and we lost logs on their machines.
+Where we can use Athena plus ELB Access Logs plus S3,
+and that's the combination.
+So just remember that a lot of services,
+and we've seen them in this course,
+do provide logs, they are able to put these logs into S3,
+and then we've seen how to analyze these log into S3
+using Athena, so this is the idea.
+If you google Athena analyze CloudFront Logs,
+you'll get the query right away.
+Same for ELB, same for CloudTrail, etc.
+Now also, you should know that if you do put all these
+audit and security logs and compliance logs
+and you put them in S3, it is great to
+encrypt these logs and then for the bucket
+where you put all these logs,
+you can control the access using IAM and bucket policies,
+and even multi-factor authentication.
+Finally, if you need to retain these logs
+for a very long time, remember
+you need to move these logs to Glacier for cost saving,
+or if you need all Glacier vault log then as we've seen,
+then we get compliance and saying no one can touch these
+logs for maybe seven years, or whatever.
+If you're more interested into, basically,
+logging and security in AWS, there's a whitepaper
+you can read, which is quite interesting.
+But this is enough for you to understand
+basically the scope of all this logging that exists
+in AWS, how we can analyze it, how we should store it,
+and how we should have cost saying
+and compliance on top of it.
+Okay, that's it for this theory lecture,
+I will see you in the next one.

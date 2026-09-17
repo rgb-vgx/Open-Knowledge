@@ -1,0 +1,130 @@
+# 94. Route 53 - Health Checks Hands On
+# Section: Route 53
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/28386594
+# Caption: en_US (manual)
+
+So let's go ahead and
+create some health checks.
+So on the left hand side,
+I'm going to go into the health checks, and we're going to
+create health checks for all our EC2 instances.
+So we're going to check three health checks.
+So the first one is going to be from an
+instance in US east one, and is going to be an end point.
+And then you'd just specify either an IP address or a
+domain name.
+So we'll keep it as an IP address.
+And my instance in US east one is right here.
+So we'll paste that in. We have to specify a port,
+so we'll keep it as 80, because this is the HTTP port.
+And for path,
+we're just going to be keeping the path as slash because
+while this is the same as the IP slash,
+which is the root of our website,
+if we had a real application,
+sometimes it is very common to have a path slash health,
+for example,
+which responds with the health of the endpoint itself.
+Okay, so we have this ready,
+so I'll just remove the slash health.
+And then we can look at some advanced configuration.
+So we can have either have a standard
+every thirty seconds or a
+fast every ten seconds health check.
+We'll keep it as standard because this is
+otherwise more expensive.
+How many times does it need to fail
+before being considered as a failure?
+Do you want to do string matching so do you want to look for
+a string in the first 5,120 bytes? Yes or no?
+Do we want a latency graph,
+to see how latency evolves over time?
+Do we want to invert the health check status.
+Do we want to be healthy and vise-versa.
+Or disable it.
+And then do you want to customize the regions of
+the health checkers?
+Or do you want to use the recommended and we'll just keep it
+as is with using recommended?
+So every option is pretty much as default.
+And do we want to be notified whenever this health check
+fails? Yes or no by creating alarm?
+I will just say no for now.
+So we have created our first health check.
+Now let's create our second health check and it's going to
+be for AP Southeast one. So AP Southeast one,
+and then IP address right here,
+not host name. And then next and create.
+And the last health check is for EU central one.
+So let's create this health check and I will name it
+EU central one.
+And then here is the IP address and click on next and
+create health check.
+Okay. So our health checks are created.
+And what I'm going to do is I'm going to go to one of my
+instances, for example,
+the one in Singapore and for the security group,
+I'm going to start blocking the port 80, removing this rule.
+And the idea is that I want to get a failing health check.
+So I'm going to go into the security group right here.
+I will do action and end it's the inbound rules,
+and it will delete my HTTP based rules.
+And what this will do is that's the one health check
+for AP Southeast one should give me a unhealthy status.
+So let me wait a little bit for the health checkers to do
+their thing, and then we'll get back to you.
+Okay. So as we can see, we have three health checkers,
+and one of them is unhealthy,
+obviously because I locked at the security group and the
+other two healthy because I don't see any
+security group event.
+So we can have a look at the health checkers and to give you
+some information around when it was last checked and so on.
+And for the unhealthy one, we can view the error status.
+So if we look at view last failed check,
+we can see that there was a connection timeout,
+and maybe the requests are being blocked by my firewall and
+firewall is your security group. So that makes sense.
+So at least it gives us some information and they are
+working just as expected.
+And one last thing and you can create is a calculated
+health check.
+And this one is going to be a calculated health check,
+Cal-cu-lated. Here we go.
+And this going to check for the status of
+other health checks.
+And now we can specify which health checks
+we want to monitor.
+And okay,
+we're saying maybe you want to report healthy when one of
+the three health checks are healthy or when 2,
+or when all of them are healthy.
+So this is an AND or one or more health checks are healthy.
+So this is,
+so we can definitely create as complicated rule.
+So I would just keep it as this should be healthy when all
+of my health checks are healthy and then
+click on next, next.
+And we have created a calculated health check and the last
+kind of a health check we can create is to monitor the
+state of a CloudWatch alarm.
+In which case we need to specify the region
+the alarm is going to be in,
+and then this alarm could be monitoring.
+Obviously the state have a private EC2 instance
+for example.
+And this is how we would link the health check,
+the health of a private resource
+into a route 53 health check. Okay.
+But I can't create it right now because I don't have
+an alarm available for us. Okay.
+Okay.
+So my calculated health check is now reported unhealthy
+because well, one of the health checks,
+I'm trying to monitor is unhealthy,
+and this is how we define it.
+So that really shows you the power of health checks.
+And in the next lecture, we'll be using them of course,
+alongside records in route 53.
+So I hope you liked this lecture and I will see you in the
+next lecture.

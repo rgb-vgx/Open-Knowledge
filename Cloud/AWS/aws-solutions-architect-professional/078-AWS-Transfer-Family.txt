@@ -1,0 +1,123 @@
+# 78. AWS Transfer Family
+# Section: Storage
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30990990
+# Caption: en_US (manual)
+
+Now let's talk about the AWS Transfer Family.
+So the idea is that you want to send data
+in and out of Amazon S3 or EFS,
+but you don't wanna use the S3 APIs,
+you don't want to use the EFS network file system.
+You just wanna use the FTP protocol.
+In this case,
+you need to use the Transfer Family service from AWS.
+So it supports three kinds of protocols.
+It supports AWS Transfer for FTP.
+So the File Transfer Protocol, FTP.
+FTPS, which is the File Transfer Protocol over SSL,
+so encrypted form.
+Or SFTP, which is a Secure File Transfer Protocol.
+Now you don't need to be an expert on those.
+Just know that FTP is unencrypted,
+whereas FTPS and a SFTP are encrypted in flight.
+Now the idea is that using the FTP protocol,
+you can upload to S3 or EFS.
+The Transfer Family has a fully managed infrastructure.
+It's scalable, reliable, and highly available.
+So you'd want to manage at all that capability.
+And in terms of pricing,
+you're going to pay per provisioned endpoints per hour,
+plus a fee per gigabytes of data transferred
+in and out of the Transfer Family.
+You can store and manage the users' credentials
+for that service within the service.
+Or you can also integrate
+with existing authentication system,
+such as Microsoft Active Directory,
+LDAP, Okta,
+Amazon Cognito, or any custom source.
+The usage of this is you have an FTP interface
+into Amazon S3 or EFS.
+So it's to share files,
+to share public datasets,
+to do CRM, ERP, et cetera, et cetera.
+So just a diagram for you to understand.
+The Transfer Family has three flavors,
+and the users can access directly
+using the endpoints of the FTP.
+Or optionally, you can use a DNS called Route 53
+to provide your own host name
+into the FTP service.
+And then the FTP service,
+so the transfer for FTP service
+will have an IAM Role that will be assumed
+to send or receive the files
+from Amazon S3 or Amazon EFS.
+And this is done transparently.
+You don't have to set many things up.
+And finally, if you wanted
+to secure the Transfer Family services,
+then you could authenticate your users
+using an external authentication system,
+such as Active Directory
+LDAP or all the things that I just said
+in the previous slide, okay?
+Finally, you need to learn about the Endpoint Types
+for the Transfer Family as, and their associated security.
+So the Public Endpoint looks like this.
+So with the endpoint in our Cloud.
+And then the internet is going to be able
+to access this point.
+Now, what is going to happen is that the public IP
+of this endpoint is going to be managed by AWS.
+And that is something that can be changing over time.
+So the IP can change over time.
+And so the recommendation is for you to use the DNS name,
+the public DNS name of your endpoint.
+And that means also that with this setup,
+you cannot set up allow lists to filter
+by source IP addresses from the network security.
+You still get security from within the endpoint,
+but you cannot have a firewall
+that will only allow specific IPs.
+The other option is to use
+a VPC Endpoint with Internal Access.
+So in this case, your SFTP, for example
+is going to be deployed within your VPC
+and your EC2 instances within your VPC
+are able to access privately your endpoint
+and your Corporate Data Center,
+if connected via VPN or direct connect,
+can also access your internal endpoint.
+So here you get static private IPs
+to access your endpoints,
+and you can set up allow list
+because you can leverage now the security group feature
+or Network ACLs to get access
+and manage access into your endpoint.
+So these two make sense
+but you can get a hybrid version,
+called the VPC Endpoint with Internet-Facing Access.
+So in this case,
+while we get the same VPC deploying
+and we can have the EC2 instances within our VPC,
+or any server in our Corporate Data Center
+to access privately our endpoints.
+But also we can set up public IPs
+for our endpoints using an elastic IP.
+So in this case,
+we have full control over the elastic IP
+because we attach it ourselves
+and therefore the internet can access
+again our Endpoint using the elastic IP.
+But because we manage everything,
+then we can set up security groups to actually control
+who from the internet can access our SFTP, for example.
+So it's very important for you to understand
+the different endpoint types.
+The exam will ask you to choose the correct one.
+And hopefully that makes sense
+from an architectural decision, okay?
+So that's it for this lecture,
+I hope you liked it
+and I will see you in the next lecture.

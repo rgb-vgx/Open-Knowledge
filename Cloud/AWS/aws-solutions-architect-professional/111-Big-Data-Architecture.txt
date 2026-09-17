@@ -1,0 +1,96 @@
+# 111. Big Data Architecture
+# Section: Data Engineering
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376614
+# Caption: en_US (manual)
+
+Okay, let's conclude this section
+with some discussion around different ways
+to do a dating engineering pipeline on AWS.
+So for the analytics layer you can have Amazon S3
+and the data can be read by your EMR cluster
+that could be running Hadoop, Spark or Hive
+and that gives you access to open source Big Data tools
+that might be great when you're doing a migration
+from on-premise into AWS.
+If you're using more AWS native tools such as Redshift
+you could Redshift and Redshift Spectrum
+to do data warehousing and query the data either directly
+on the S3 through Redshift Spectrum or load it first
+into your Redshift warehouse and perform queries there
+using SQL.
+And then you have Athena which is going to be serverless
+for more sporadic queries and to query data
+directly into S3.
+As we've seen QuickSight is for visualization
+and you can integrate easily with Redshift
+or Athena to perform some dashboards and create them
+and then use the Redshift or Athena as your internal
+query layer to get your data in the right form.
+Okay, now in terms of Big Data ingestion.
+What can they look like?
+Say you have IoT devices and they produce data in real-time
+into Kinesis Data Stream then we could use Kinesis Data
+Firehose to ingest the data and send it near real-time
+maybe one minute between the ingestion bucket
+such as Amazon S3 and remember we can use Lambda functions
+to transform the data before it gets into S3
+in case we need to.
+Then we could have S3 events, for example,
+to go through an SQS queue as an optional service
+or directly into Lambda to notify that a new file
+has been inserted into S3.
+Many all in the function can trigger an Amazon Athena job
+which is going to directly query the data
+into our S3 buckets and insert that
+into our reporting buckets.
+And then finally, from that reporting bucket
+we could create a QuickSight dashboard
+or use Amazon Redshift to create or ingest that data
+and query it.
+So we have different tools it's really mix and match
+in this case, it really depends on the type of job
+you're running and the type of architecture
+you want to have.
+As you can see it's very easy to go from a real-time layer
+all the way through a reporting layer
+using the different tools available to you in AWS.
+Okay, now if we have to compare the warehousing technologies
+I think it's pretty clear but one last time it doesn't hurt
+so EMR is going to be be when we need to use Big Data tools
+such as Apache Hive or Spark or other things
+and migrate that to AWS.
+We have the architraval discussion to use
+either one long-running cluster and we'll submit
+many jobs to that cluster and can even enable Hadoop scaling
+for that cluster to be scaling based on how many jobs
+we have pending or we can choose a more clustered
+type of architecture when we have one cluster per job
+and we can size each job and each cluster independently.
+Then you have different purchasing options
+to take into account with EMR to do some cost saving.
+So Spot Instances, On Demand Instances, Reserved Instances
+all of these are possible based on the node you're using.
+And so it really depends on are you willing to lose nodes,
+are you willing to run a cluster for a year,
+these kinds of questions.
+An EMR can access data in DynamoDB through Hive
+or S3 through EMR FS.
+You can use Scratch data on EBS disks and this is HDFS
+or use long term storage in S3 through EMR FS
+as I just said.
+Athena is going to be for simple queries and aggregations
+and the data must live in Amazon S3.
+It is going to be serverless for simple queries SQL
+and you're going to have out of the box queries
+for many services including custom billing reports,
+et cetera, et cetera.
+Athena is very well integrated with AWS so you can audit
+all the queries being made through CloudTrail.
+And finally, your Redshift is going to be for Advanced
+SQL queries you must provision servers, you can leverage
+as well a Redshift Spectrum for serverless queries on S3
+and Redshift's going to be really a full data warehouse
+and you're expected some kind of sustained usage
+of Redshift to make your return on investment.
+Okay, so that's all for Big Data on AWS.
+I hope you liked it and I will see you in the next lecture.

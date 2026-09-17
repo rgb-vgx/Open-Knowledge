@@ -1,0 +1,37 @@
+# 116. [DVA] API Gateway - Canary Deployments
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37903914
+# Caption: en_US (manual)
+
+So now let's talk about a way
+to perform canary deployments on your API gateway.
+So the idea is that you want to enable
+a way to test a small amount of traffic
+on the change you have done on your API gateway.
+So usually it's done in production.
+So you would choose the amount of percent of traffic
+that the canary channel will receive
+and this would allow you to test your new version,
+for example of your API gateway,
+over the backend Lambda function or something like this.
+So say our prod stage currently points to version one
+and our client wants to be able to test a new version.
+So we're going to create a prod stage canary for version two
+and what this will do is that we will be allowing our client
+to have for example 95% of the traffic
+that goes to the existing prod stage which we know works
+and behind the scenes automatically
+5% of the traffic will go to the canary stage.
+From this, we can test all the changes,
+look at metrics, look at logs, look at everything,
+maybe debug see if everything is working,
+and when we're confident,
+we can just move over 100% of the traffic
+into your canary stage.
+So in this example,
+the metrics and the logs will be separate,
+so this is for better monitoring.
+And you can override any stage variables you wanted
+for your canary stage and this is equivalent of performing
+blue/green deployment with Lambda and API gateway.
+So let's go into hands-on to see how that works.

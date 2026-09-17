@@ -1,0 +1,55 @@
+# 62. Advanced Text Pre-Processing for AI
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57863319
+# Caption: en_US (auto)
+
+Let's talk about some pre-processing steps that are specific to AI engineering.
+One of them is tokenization, and this is the process of converting text into numbers, if you will.
+So under the hood, these are machine learning models that deal with numbers and not words, right?
+So at some level, we need to convert those words in a sentence in your natural language
+to numbers that our models can process.
+And that is what tokenization is.
+So the idea here is that we take an input sentence like this one on the right here,
+that shows signs of aphib, and we can break that up into individual words.
+Those might not correspond to individual tokens.
+So a token can actually be parts of words or maybe even phrases that are put together.
+It really boils down to the meaning that's embodied by a given word or subword.
+So tokens ultimately get converted to embedding vectors that embed the meaning of that token.
+So there is a disconnect between tokens and words.
+In this particular example, we can see that most of it was a one-to-one relationship,
+but for some reason, it broke up aphib into a and fib, two different words.
+That might actually not be the thing you want to do because a and fib have their own meanings, right?
+So that might actually be an example of an error in tokenization that you would need
+to go back and fix.
+Aphib really should have been its own token in that case.
+However, like I said, they can be words, subwords, or model-specific units.
+They can even be their own concepts.
+The tokenizer you use can change the behavior of your model.
+So there are different tokenization models you can use, and choosing the right one can
+actually make a difference.
+It also changes the token count.
+And remember that you're often charged by the token when you're using AI, so that too
+can be a big deal.
+Beyond that, you want to normalize your text and do the other good text processing stuff
+that you would do with machine learning, of course.
+Make sure you normalize everything to lowercase, remove or handle any unwanted characters,
+and more particularly for AI applications, filtering out irrelevant text as well.
+So it's very important that you're not cluttering up your context with things that aren't relevant
+to the task at hand.
+That's just going to confuse the AI and throw it off.
+So if there's something that's not relevant to what you're trying to do, get rid of it.
+And then there might be some domain-specific stuff you need to do, like adding training
+examples to cover some quirks about your domain, the specific technology, specific ways of
+phrasing things, specific scenarios, and as with any other kind of bias, making sure
+that underrepresented cases are properly represented in your text data.
+The goal is to make your training data representative and useful without changing its intended meaning.
+So make sure you're normalizing it, cutting it down to what it needs to be, and tokenizing
+it correctly without changing the meaning in the process.
+How do you do this?
+Well, a lot of AI models will do this for you under the hood when it comes to tokenization,
+but SageMaker Data Wrangler does have a tokenization feature of its own.
+If you need to do it yourself, and it can also apply all these different custom transforms
+we've talked about as well.
+The exam is only going to care about the concepts, not the actual console steps or how that works.
+Quite frankly, the SageMaker UI changes pretty darn often, so getting into the weeds of how
+to do it is neither helpful nor useful for the exam.

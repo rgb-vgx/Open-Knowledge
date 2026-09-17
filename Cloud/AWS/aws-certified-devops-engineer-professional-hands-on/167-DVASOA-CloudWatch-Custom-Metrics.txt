@@ -1,0 +1,107 @@
+# 167. [DVA/SOA] CloudWatch Custom Metrics
+# Section: Domain 4: Monitoring and Logging
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37908782
+# Caption: en_US (manual)
+
+So all the metrics we've seen
+so far in this course are metrics
+taken directly from the inner services that we have
+enabled by default,
+but there is a way for you to get custom metrics for
+CloudWatch, and this is choose,
+you can define your own custom metrics.
+For example, you wanted to push the memory usage for the RAM
+to CloudWatch or the disk base.
+So the number of login user for your application for this,
+you would use an API call named PutMetricData.
+You can add dimensions or attributes
+to your segment metrics.
+For example, instance.id, environment.name,
+whatever you want really.
+It's up to you to name it however you want.
+And then you can specify a metric resolution with a storage
+resolution, API parameter with two possible values.
+So either it's a standard custom metric and you can push a
+metric every one minute.
+So 60 seconds.
+Or it can enable very high resolution.
+In which case you can enable to push metrics
+every one, five, 10, or 30 seconds, okay.
+Something good to know is that with custom metrics,
+when you push a metric in the past or in the future,
+this works as well.
+So this is a very important exam point.
+So if you are pushing a metric up to two weeks in the past
+or two hours in the future,
+you're not going to get an error from CloudWatch, okay.
+This is going to accept your metric as is.
+And so that means you need to make sure that your
+EC2 instance time is currently configured.
+If you want the metrics to be synchronized with the actual
+time from AWS.
+So let's push a custom metric.
+And for this, I went to the documentation into CloudWatch,
+put metric data.
+This is a CLI documentation,
+and this shows you how to push a metric into CloudWatch.
+So I'm not going to read the documentation.
+You can have a look at all the parameters in here, okay.
+But very important timestamp can be specified.
+And so you can specify a timestamp up to two weeks in the
+past and two hours in the future.
+So very, very important.
+Then you can specify the data,
+the name of the value of the units, the value,
+and so on dimensions, as well as the storage resolution,
+if you want it to get a high resolution metric
+or a standard resolution, okay.
+So what I'm going to do is just push a very custom example.
+So at the end there's examples,
+and you can use a metrics of JS file to push a metric like
+this, if you want it to, and then use this API call,
+or if you want it to go even quicker,
+you can just use one API command to specify the value of
+your metric, the unit, the bytes,
+as well as instance ID instance type and so on.
+And so let me take this command right here,
+and we're going to open the CloudShell utility
+to push that metric,
+Okay, so CloudShell is launched
+and I'm going to paste the command in and then press enter.
+So this is going to push a custom metric into CloudWatch.
+Now you have to imagine that if this is done from an
+institute instance with a script, for example,
+you can push any metric regularly.
+Right now I'm just pushing one data point using the CLI into
+CloudWatch, which is quite empty already, okay.
+And if you know, the unified agent for CloudWatch,
+what it does is that it does use this put metric data API
+call to push metrics into CloudWatch regularly.
+So when this is pushed,
+we have pushed a new namespace named MyNameSpace.
+And so that means that if I go back to my CloudWatch metrics
+and refresh this,
+I need to clear my graph.
+And then I'm just going to go out of the service.
+And going back to the service is going to be easier,
+then go to all metrics.
+And as you can see, we have a custom namespace
+that has been created right here.
+So all of those before where namespaces credited by AWS,
+but now we have a namespace created by us.
+And so in it we have two dimensions instance ID and
+instance type,
+and these represents the same instance ID and instance type
+dimensions that were specified in the command.
+So this is up to you to define these dimensions,
+obviously, then you click on it and you can see the instance
+ID, the instance type and the metric name buffers.
+And if I click on it now, we don't see much because, well,
+we don't have much,
+but there's one data point in here that has been created,
+okay, and this is part of my custom metric.
+So that's, it, it's quite easy.
+You can see how to create custom metrics,
+very easily using an API call.
+So I hope you liked it.
+And I will see you in the next lecture.

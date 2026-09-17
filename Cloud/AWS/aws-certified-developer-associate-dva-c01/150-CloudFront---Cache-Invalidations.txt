@@ -1,0 +1,64 @@
+# 150. CloudFront - Cache Invalidations
+# Section: CloudFront
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527658
+# Caption: en_US (manual)
+
+So now, let's talk about cache invalidations
+in CloudFront.
+So, CloudFront has a backend origin,
+of course.
+And if you do happen to update the backend origin,
+CloudFront edge locations will not know about it
+and will only get the refreshed content
+from your backend origin, the update you want,
+once the TTL of the cache has expired.
+But that is maybe an undesirable behavior for you
+because you want the new content to be served
+as soon as possible.
+And therefore, what you can do is you can force an entire
+or a partial cache refresh.
+And therefore, you eliminate all the TTL happened,
+present in your cache.
+And to this, you too,
+perform what's called a CloudFront invalidation.
+So, you need to pass in some file path.
+So, you can either invalidate all the files with a star
+or invalidate a special path,
+for example, /images/*.
+Okay, so how does that work?
+Well, say we have a CloudFront distribution,
+two edge locations.
+Each edge location has its own cache,
+which contains the index.html and the images directly
+from your origin, which is an S3 bucket.
+And it does happen that, for example,
+the TTL for these files are set to one day.
+So, that means that in one day,
+the edge locations will re-fetch these files for the cache.
+Now, you as a user,
+you're an admin, you're going to update the files
+in the S3 bucket.
+You're going to add or change some images.
+And also, change the index.html file.
+And you want these updates to be reflected
+as soon as possible to your users in CloudFront.
+Therefore, what you can do is
+that you're going to invalidate two path.
+First is going to be the /index.html
+to invalidate a specific file.
+And then you're going to invalidate /images/*
+to remove all the images from the cache
+in your edge locations.
+So, then CloudFront is going to tell the edge locations
+to invalidate these files from the cache
+and they're going to be simply removed from the cache.
+Now, next time a user is going to ask for,
+for example, the index.html,
+CloudFront is going to forward the request
+to a specific edge location, which will realize
+that the file is not in its cache anymore.
+Therefore, the edge location will do a request
+on your origin and get the updated and newer index.html.
+Hence, you've seen the value of cache invalidations.
+So, that's it.
+I hope you liked it and I will see you in the next lecture.

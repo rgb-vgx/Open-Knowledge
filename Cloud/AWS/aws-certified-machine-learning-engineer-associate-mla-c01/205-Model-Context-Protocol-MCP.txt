@@ -1,0 +1,60 @@
+# 205. Model Context Protocol (MCP)
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865843
+# Caption: en_US (auto)
+
+An important thing in the world of agentic AI is Model Context Protocol, or MCP for short,
+something Anthropic came up with a while ago, but it's really caught on. It's a standardized
+interface for interactions between agents and tools, and the cool thing is that this enables
+you to use external tools that are offered by third parties. So Anthropic described it originally
+as a USB-C port for AI applications, so it's a standardized interface for getting context or
+additional information or capabilities from external third-party systems potentially.
+It doesn't have to be third-party, it could be your own as well, but it's just a standard
+protocol for extending your AI agents with other stuff, you know, and what could that other stuff
+be? So in this diagram on the right here, you can see that you have your AI application at the top,
+it goes through the MCP layer, and that MCP protocol can front a bunch of other stuff.
+Maybe it's access to data or file systems or databases locally, maybe it's development tools
+locally, maybe it's productivity tools, there's tons of examples out there, but they could be
+local, they could be external, I don't care, it all looks the same to MCP. Now technically the
+data layer is JSON RPC 2.0, I don't think you'll have to know that, but just so you know, and the
+transport layer is either standard IO for local stuff or HTTP streaming for external stuff.
+So it just gives you access to external tools from your agentic AI system with a consistent
+interaction pattern. So it's a standard on how apps provide context back to your foundation
+model, to your LLM agentic system, and pretty much any agent SDK has model context protocol
+support. MCP support is kind of a table stakes these days for these SDKs, and that
+includes the strands SDK, so strands also has support for MCP baked into it. Okay, what do these servers
+do? Well the way it works is that they can expose tools, resources, and prompts. So they might give
+you back prompts on how to use them, and they might expose tools that you can use to extend
+the capabilities of your system, or resources to provide additional context back to your system.
+Okay, and just to make it real and kind of wrap your head around some examples here,
+a popular one is GitHub. So GitHub has an MCP interface that will allow you to interact with
+your code repository on GitHub, and do stuff as stuff's being checked in or whatever, or
+getting information about repositories. So there's a common interface for that. Atlassian, if you want
+a system that can automatically read your JIRA tickets, there's an MCP server for that. Postgres
+QL, if you want to interact with a local database or a database within your enterprise or even
+outside of your enterprise, there's an MCP server for that. There's an MCP server for Slack if you
+want to integrate with Slack messages as part of your system. Google Maps, even Udemy has an MCP
+server for allowing their Udemy business partners to get information about relevant Udemy courses
+for a given learning path. How do you deploy your own? So this is something that definitely comes up
+on the exam guide. So you got a couple of choices here, and the way they frame it is that if you're
+doing something that's stateless and lightweight, something simple where there's no state you need
+to maintain across different requests, they would recommend using AWS Lambda to host that MCP server
+because, well, that's what Lambda's for, stateless, lightweight stuff, right? If you do need to do
+something more complicated, Amazon ECS is an option, just like Bedrock Asian Core deploys
+stuff to ECS, maybe your MCP server could go to ECS as well. Speaking of Asian Core, you can also
+deploy MCP servers through Asian Core as well, and that's the last point on this slide, and Fargate
+could be on top of that as well. It also recommends using API Gateway potentially as a way to expose
+MCP endpoints, and it also encourages using MCP client libraries whenever possible to abstract
+away all the complexities of the protocol. So don't reinvent the wheel if you don't need to,
+obviously, right? Use client libraries. So that's the stuff that the exam guide calls out of things
+you want to know about MCP. AWS also has some official MCP architecture guidance on their blog.
+It's more complicated than what the exam guide and skill builder talked about, but you can see that
+the guts of it are the same. So if you look over on the right there, that little dotted box that
+says MCP server, you can see that we have the Fargate ECS option there, as well as Lambda's two
+different options. So again, the ECS Fargate stuff for more complicated stuff, if you just have
+stateless lightweight stuff, Lambda is going to be your better choice. But we've wrapped that with
+authentication, Cognito, storing authentication credentials in DynamoDB, CloudWatch, potentially
+ECR for managing your containers, WAF for protecting your front end, CloudFront for extending it.
+So you can see you can build this whole thing around it, but the exam is really more focused
+on the inner guts of it. Am I choosing ECS or Lambda for a given problem? Again, Lambda for
+stateless lightweight access, ECS for more complicated stuff.

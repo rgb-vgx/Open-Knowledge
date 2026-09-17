@@ -1,0 +1,53 @@
+# 202. Comprehend Overview
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20587268
+# Caption: en_US (manual)
+
+Now, Amazon Comprehend
+is a very simple service from an exam perspective.
+All you need to know is that Comprehend is
+to comprehend stuff,
+so it is for Natural Language Processing, or NLP.
+So anytime you will see NLP on the exam,
+you would think Amazon Comprehend.
+Now what it is, it is a fully managed and serverless service
+and it will use machine learning to find insights
+and relationships in your text.
+For example, it can understand what is the language
+of the text, it can extract key phrases,
+places, people, brands, or events from that text.
+It can understand, do a sentiment analysis to understand
+how positive or negative the text you're analyzing is.
+It can also analyze a text using tokenization
+and parts of speech.
+It also has audio.
+And finally, it can organize a collection
+of text files by topic, and find topics itself.
+So, Comprehend is really about getting a lot of data in
+and then Comprehend will do the rest
+to try to understand the meaning of that data.
+So it's about taking text or unstructured data
+and structuring it around these features.
+So some sample use cases of Natural Language Processing,
+or NLP, are for example, to analyze customer interaction.
+So say you have a bunch of customers sending you emails
+and you want to understand overall based
+on your support service what leads to a positive
+or negative experience from your customers.
+So we use Comprehend to extract these features
+and then you will have the business insight
+and then you can improve your business,
+thanks to that analysis.
+You can also, for example, create
+and group articles by topics that Comprehend will uncover.
+So imagine you have a lot of articles
+and you want to group them together instead
+of going to them one by one, you would feed them
+into Comprehend and then it would output you
+the topics you need to group them by.
+So that's it.
+So again, a bit more information than what you need,
+but Comprehend from an exam perspective is
+for Natural Language Processing.
+So hope you liked it,
+and I will see you in the next lecture.

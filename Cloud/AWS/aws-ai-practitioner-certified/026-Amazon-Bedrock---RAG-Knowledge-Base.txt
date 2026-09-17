@@ -1,0 +1,178 @@
+# 26. Amazon Bedrock - RAG & Knowledge Base
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886389
+# Caption: en_US (manual)
+
+So now let's talk about
+RAG and Knowledge Bases.
+So what is RAG?
+RAG is Retrieval-Augmented Generation.
+Behind this very fancy name,
+there is a very simple concept.
+This allows your foundation model
+to reference a data source from outside
+of its training data
+without being fine tuned.
+So how does that work?
+So we have a knowledge base
+and it's being built and managed by Amazon Bedrock.
+For this, it must rely on a data source.
+For example, Amazon S3.
+So your data is going to be an Amazon S3,
+and then automatically Bedrock is going to do some magic.
+We'll see how that works exactly,
+but it's going to build a knowledge base.
+And then a user is going to ask a question
+to your foundation model saying,
+who is the product manager for John?
+So that's probably something related to his company.
+And of course the foundation model
+does not know anything about John
+because John is a very specific query
+for my company and my own data.
+So there's going to be something called a search,
+and this information is going to be searched
+in the knowledge base, automatically.
+Of course, this is all happening behind the scene.
+But this knowledge base is backed by something called
+a vector database
+and to create the data in the vector database,
+again, bedrock takes care of everything,
+it's called creating vector Embeddings.
+And I will show you how that works later on.
+But basically thanks to this vector database,
+then we're able to retrieve the relevant information
+out of this knowledge base.
+And for example, we get some text back from this
+saying that we have some information about John,
+such as we have some support contacts.
+We have a product manager, which is Jessie Smith.
+We have an engineer, which is Sara Ronald.
+And so all this is going to go as an augmented prompt.
+And so it's going to be the original query
+as well as the text that has been retrieved
+that are going to be passed together
+into the actual foundation model.
+And the foundation model
+is going to look at this augmented prompt
+and generate a response saying,
+hey, it looks like Jessie Smith
+is the product manager for John.
+And it's what it's called retrieval-augmented generation.
+Retrieval, because we retrieve the data
+outside of the foundation model
+and it's augmented generation
+because we augment the prompt
+with that external data that has been retrieved.
+So hence the name RAG.
+And so RAG in AWS Amazon Bedrock
+is going to be a knowledge base.
+So this is very helpful
+when you need to have data that needs to be fed,
+and that is very up to date, that is in real time,
+and that needs to be fed into the foundation model.
+So how does that work?
+Well, here we have an example.
+Give me talking points for benefits of air travel.
+As you can see,
+one of these talking points has a little one on it
+and a link to air travel.pdf
+and that PDF may be an Amazon S3.
+So this is an example where the RAG
+and the knowledge base has been used
+to give an answer to a specific prompt.
+So for the RAG Vector Databases, what options do we have?
+Well, to store our index,
+we have a vector database,
+and we can have different kinds.
+We can have OpenSearch Service, Aurora,
+Neptune Analytics, and S3 Vectors.
+Those are AWS specific options.
+And then we can have external options such as MongoDB,
+as well as Redis and Pinecone.
+And these are options if you want to integrate
+with external services.
+Next, your data is going to be in Amazon S3
+and it's going to be chunked into different parts.
+And these parts are going to be passed through
+what's called an embeddings model.
+And this model is going to be powered by
+either Amazon Titan or Cohere or other options.
+And these embeddings are going to be generated
+and stored onto your vector database.
+And this is why choosing a vector database
+is a matter of what type of queries and documents you have
+and how you want to optimize your queries.
+But this is a bit too advanced.
+You just need to know the existence
+of these embeddings model
+to create these embeddings
+and the existence of a database.
+Still the exam may ask you to choose
+what type of database to choose for your vector database.
+It's just a high level.
+But if you want to use OpenSearch Service,
+then you must use the Amazon OpenSearch Service on AWS.
+You have options for serverless and managed clusters.
+It gives you search and analytics database in real time
+for similar queries.
+You can store millions of vector embeddings.
+It's a very scalable index management,
+and you get very fast nearest neighbor,
+KNN search capability.
+This makes it a great production way to run a RAG on AWS.
+If you wanted original database,
+you can use Amazon or a PostgreSQL.
+If you wanted to have a graph analytics
+and graph based RAG called GraphRAG solution,
+then you must use Amazon Neptune Analytics.
+And finally, if you wanted a very cost effective
+and durable storage
+with sub-second query performance,
+then you would use Amazon S3 vectors.
+And as you can see,
+these sources are different based on their capabilities.
+Just remember them at a high level for the exam
+and you'll be good to go.
+So what kind of data sources can we use in Amazon Bedrock?
+Well, we have Amazon S3,
+which is a place where you can put a lot of files
+in the cloud directory.
+Confluence, Microsoft SharePoint, Salesforce,
+as well as webpages.
+So it could be your website,
+it could be your social media feed, et cetera, et cetera,
+so anything in the web.
+And I'm pretty sure that Amazon Bedrock
+will add more sources over time.
+But from an exam perspective,
+I think remembering Amazon is free
+and maybe these ones should be enough.
+And of course, if from an exam perspective,
+you need to know about more data sources,
+I will of course include it in this slide.
+So what are the use cases now for Amazon Bedrock
+where you can build a customer service chatbot
+where the knowledge base is going to be your products,
+your features, your specifications, troubleshooting guides,
+and frequently asked questions.
+And so therefore, your RAG application can be the chatbot
+that will answer customer queries
+and look up in this knowledge base.
+It could be for legal research and analysis
+where the knowledge base is going to be
+laws and regulations, case precedents, legal opinions
+and expert analysis
+and this time we can have a chatbot
+that is going to have relevant information
+anytime we have a specific legal query.
+And we can have also a healthcare question answering.
+So again, the knowledge base can be diseases, treatments,
+clinical guidelines, research papers,
+and previous patient data.
+And the application could be a chatbot
+that will answer complex medical queries.
+So RAG opens up a lot of possibilities
+for doing gen AI on AWS.
+So I hope you liked it
+and I will see you in the next lecture.

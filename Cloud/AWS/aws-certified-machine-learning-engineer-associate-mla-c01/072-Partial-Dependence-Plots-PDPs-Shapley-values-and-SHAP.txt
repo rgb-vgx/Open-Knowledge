@@ -1,0 +1,60 @@
+# 72. Partial Dependence Plots (PDPs), Shapley values, and SHAP
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285211
+# Caption: en_US (auto)
+
+The exam expects you to have a fair amount of depth on how Clarifai works.
+So let's go into a little bit more information here on what it gives you.
+One thing you can produce with SageMaker clarify is something called a partial dependence plot, or
+PDP for short.
+And the idea of a PDP is to show the dependence of predicted target response on the set of input features.
+What does that mean?
+Let's look at this example on the right here.
+So we have a set of feature values on the bottom here.
+So what we've done is bucketed these values up.
+So each one of these dots represents some range of values just like you would do in a histogram.
+Right.
+And on the y axis we're seeing model prediction values.
+So we're seeing the effect that a given feature in this case age has on the model predictions.
+And that will tell you just how much of an influence that particular feature might have on the model
+and what it's predicting and, and how that might change across different values of that feature.
+So in this particular example, you can state that for the age, once you get above the age of 50,
+for whatever reason, the model predictions remain the same, which is kind of interesting.
+That might imply that age is somehow very important to the predictions.
+This model makes.
+And somehow there's a tipping point at age 50.
+Very interesting.
+That might alert you to some sort of issue with your data.
+Actually, maybe you just don't have enough data points above the age of 50 and your training data,
+and that might point you to a imbalance in your training data, which is the whole point of clarifai.
+Right now, you can also get back data distributions for each bucket of values.
+So if you want the raw data there as to how that data is distributed for those values, and you want
+to see if you do in fact have some sort of a class imbalance, you can get that back from Clarifai as
+well.
+So in addition to these graphical plots, you can also get back the raw data from the API as well.
+We should also talk about Shapley values because this is how Clarifai works under the hood.
+It's the technique it uses for determining the impact that each one of your features has on the model's
+output.
+And this is actually an idea that came out of game theory that's been applied to machine learning.
+The idea is pretty simple.
+Basically, you just drop individual features one at a time and see what impact that has on your model
+and measure that effect over each feature.
+And well, that actually gets kind of complicated when you have a lot of features because there's a
+lot of combinations to test there.
+Right.
+So under the hood, SageMaker clarify uses something called Shapley additive explanations or Shap for
+short as an approximation technique.
+So instead of doing this brute force calculation across every possible combination of features.
+Shap is a way of approximating that and doing that more efficiently, but still giving you useful information.
+So again, clarify is all about telling you the impact that individual features have on your model and
+pointing you toward potential unintended properties there that might point to problems in your data.
+If you're dealing with time series data, there is something specifically called asymmetric Shapley
+values.
+So for time series data instead of Shapley or Shap, you're going to be using asymmetric Shapley values.
+That's just the algorithm used to determine the combination of input features at each time step toward
+forecasts or predictions.
+So in addition to measuring the impact of each feature individually, we're also measuring the impact
+across time.
+So even more complicated.
+But these are the terms you need to know for Amazon SageMaker.
+Clarify.

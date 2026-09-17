@@ -1,0 +1,141 @@
+# 388. Step Functions - Error Handling Hands On
+# Section: Other Serverless: Step Functions & AppSync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26101912
+# Caption: en_US (manual)
+
+So in this new demo we're going
+to create a workflow where we are going
+to handle some errors.
+And first we're going to create a function
+in Lambda that is going to throw an error.
+So let's create a function.
+We'll use a blueprint and in it,
+I'm going to type step function.
+Step, so let's clear the filter,
+step-functions.
+Okay, so we have step-functions-error as a blueprint
+to throw an error and then we can configure Step functions
+to handle the catch or retry from this error.
+So let's configure this blueprint
+and I'll call it MyLambdaFunctionThatFails.
+We're going to create a new role
+and here is the code itself.
+So it's going to look at it and create a CustomError.
+And then to say, "This is a custom error!"
+So this is a function that just only fails.
+Let's create this function.
+And the function is created now as we can see,
+if we test this function and pass in
+whatever test events and create it.
+So let's just call it Foobar
+and create this and test this function.
+It gives us an error.
+This is a CustomError.
+Here's the error message
+and here is the stack trace of the error.
+And we're going to handle this error directly
+from our Step functions.
+So let's create a new state machine
+and we're going to author it from scratch.
+And for the definition, again, let's go into our code.
+So we're going to 1-error-handling, state-machine.json.
+Copy this and paste it here.
+Refresh the graph and we have the ideas.
+So we're going to invoke our function
+and if it goes fine, it goes into the end states.
+And there are some different kinds of error.
+So CustomErrorFallback, ReservedTypeFallback,
+and CatchAllFallback, okay?
+So if we look at the code itself,
+it's going to say how to handle each error.
+So let's fix the error in right here first.
+We copied the ARN and paste it here.
+Great.
+So it's going to invoke our function.
+And then if the error is of type CustomError
+which is the case here.
+So as we can see here, we are throwing a CustomError.
+Then it's going to wait one second
+and do two attempts and have a BackofRate of two.
+So there's going to be some retry.
+If the task is failed, there's gonna be more
+interval seconds, more attempts, and more back of
+and all the other types of error is going to go into
+the catch all or the States.ALL
+and try some more time, okay?
+Then there's a catch.
+So once the retries are exhausted
+then it's going to go into the Catch phase.
+And if it's the CustomError
+then you go into the CustomErrorFallback.
+If it's a test failure, it goes into
+the ReservedTypeFallback and States.ALL
+it goes into the CatchAllFallback.
+And each fallback is going to be difference in here, okay?
+So let's click on next, MyStateMachineError.
+We're going to create a new role
+and create this state machine.
+So it is successfully created, let's start the execution
+and we'll open this into a new browser tab
+and we're going into our workflow.
+So we are invoking our function and this is in progress
+and we are gonna get some errors.
+So let's wait a little bit, but if we look
+at the event history, so the Lambda function was started,
+and then it failed, okay?
+It failed with this CustomError.
+And then it went into being scheduled
+because it was being retried, okay?
+So there's retry because the error message was captured.
+So it was started again, then failed, then scheduled again,
+then started again, then failed.
+And then the task executed
+because we have exhausted all our retries.
+So the task exited and then it got cut
+by the CustomErrorFallback, okay?
+And then the execution was finished.
+So if we go in here, as we can see this failed twice
+and three times, then it gets an error being caught
+and it went into the CustomErrorFallback and succeeded.
+Now, if we change our Lambda function a little bit
+and say we're going to do a NotCustomError
+which is an error that wasn't being cut by our code.
+This is a different custom error, which is uncut.
+So we're going to deploy this, excuse me,
+and then click on test.
+So this is not the same kind of error, okay?
+And we start our step-function again.
+So we're going to start a new execution
+and open this in a new tab and start the execution.
+As we can see it's running, but now the error we get
+is that we have a difference error.
+And so we expect it to go into a different route now.
+So let's wait a little bit
+for all the execution to go through.
+And so the execution has succeeded.
+And if we look at it now
+we went into the ReservedTypeFallback.
+And if you look at the event history, as we can see
+in terms of elapsed time, this first one failed.
+And then we waited 30 seconds to have
+the second one to be started.
+And then we waited 60 seconds, so it doubled the wait time
+to go and to try it a third time.
+And then it failed twice, so if we have three times,
+so it went into the TaskStateExited
+and then the execution finished.
+So it's really, really cool to see here
+that's based on the type of error, we have different
+retry logic and we have different catch logic.
+This retry logic was very, very quick,
+whereas the retry logic here was much longer,
+it was every 30 seconds and it went into a different branch.
+So hopefully that helps for you
+to understand error handling in Step functions.
+I hope you liked it.
+And to clean up everything, you should go
+into the Step Functions and delete your State machines
+but it won't cost you anything to have them around
+if you want to.
+All right, that's it.
+I will see you in the next lecture.

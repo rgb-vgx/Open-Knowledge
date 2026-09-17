@@ -1,0 +1,161 @@
+# 271. Exam Tips - AWS Certified Cloud Practitioner
+# Section: Preparing for the Exam + Practice Exam - AWS Certified Cloud Practitioner
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20053362
+# Caption: en_US (manual)
+
+So now let's talk about a few exam tips
+that I can give you before you go into the exam.
+So this is AWS, so practice makes perfect.
+I would recommend, if you can,
+to follow this hands-on in this course
+if you are new to AWS,
+and don't rush before getting to the exam,
+make sure you really understand what services do
+and how they work.
+Overall, the more you can practice the better,
+and the more confident you will feel for the exam.
+The exam does recommend you have six month or more
+of hands-on experience,
+but hopefully, in this course,
+by following the hands-on, if you did them,
+you will have gained a lot of experience already.
+And finally, remember, practice makes perfect.
+If you feel overwhelmed
+by the amount of knowledge we learned,
+so more than 40 services in 10 hours,
+maybe you will go through it one more time,
+just to solidify these concepts into your head.
+It could be a lot to take at once.
+So let's talk about the exam content and question types.
+So there are two types of question on the exam.
+The first one is a multiple choice,
+that means that you have one correct answer
+and three incorrect responses.
+So it will look like this, for example,
+"Which AWS service does rock,"
+and you have option one, option two,
+option three, and option four.
+And you can see it's a circle,
+so you can only choose one of these four options.
+Then you have multiple responses,
+where you have two or more correct responses,
+out of five or more options.
+And the exam software, you have to be very careful,
+does not check if you have selected
+the right number of answers.
+So for example, if the question is "Blabla questions,
+and then select two,"
+then it will give you option one,
+two, three, four, and five,
+and you should absolutely select two.
+But if you select one or if you select three,
+the exam software will not complain about it.
+So be very careful in these type of questions
+to really tic the number of boxes
+that correspond to how many answers you should select,
+based on the question,
+and the question will tell you how many questions,
+responses, should select.
+Always try to answer the question.
+That means that if you don't answer a question,
+it will be considered as incorrect.
+And if you have a wrong answer, you're not penalized.
+So no matter what, try to guess the answer.
+And finally, if you need to review a question for later,
+because maybe you don't know the answer right now,
+maybe it'll come back to you later,
+or maybe you're unsure
+about a question answer that you've done,
+you can flag it so you can answer it or not,
+and then flag it.
+And then when you're done answering all questions,
+you will have a flag screen.
+And on that screen,
+you can go back to all the questions that you've flagged
+or any other question for that matter.
+But with this,
+you can go back quickly to the question
+that you've flagged for maybe answering them
+or double checking your answer, these kinds of things.
+Now, for the question themselves,
+you should proceed by elimination.
+So most questions,
+as we've seen in the sample questions,
+are going to be high-level pick-a-service questions.
+So rule out the answers that you know for sure are wrong,
+and for the remaining answers,
+understand the one which makes the most sense.
+There are very few trick questions
+at the Cloud Practitioner level and the Associate level,
+so don't overthink it.
+If a solution seems feasible, but highly complicated,
+it's probably going to be wrong, okay?
+Think simple, follow your intuition,
+and you should be all right.
+Now, it is good for you,
+if you want to learn a bit more about AWS,
+to read each service's overview.
+So we've seen about 40 services in this course,
+so for example,
+if you wanted to look at the overview of S3,
+you will go to this URL and see what S3 can do.
+This could be really helpful because, again,
+these overviews will represent
+a lot of the questions asked at the exam,
+and by seeing the overview,
+you will confirm your understanding of a service.
+Finally, if you wanna go one step further,
+get into the AWS Community,
+that means helping and discussing with other people,
+especially in the course Q&A,
+review people's questions in the Q&A
+and try to answer them to confirm
+that you understand things correctly.
+And finally, do the practice exam in this section.
+And if you're looking for even more practice,
+then you can buy more practice exams from me
+from my dedicated practice exam course.
+You can read forums online,
+you can read online blogs,
+and if you want to really get into the community,
+you can attend local meetups
+and discuss with other AWS engineers.
+Finally, if you're really, really interested into AWS,
+watch the reinvent videos on YouTube.
+The reinvent is the conference of AWS.
+One question I get all the time is,
+"How will the exam work?"
+So you will have to register online at this URL,
+and the fee for this exam is going to be 100 U.S dollars.
+You need to provide two identity documents,
+so your ID, your credit card,
+and all of this will be in the details
+of an email sent to you once you register for the exam.
+And you're not allowed to take any notes,
+you're not allowed to use any pen,
+and you're not allowed to speak.
+You will have 65 questions
+that will be asked of you in 90 minutes.
+And at the end,
+you can optionally review all the questions and answers.
+And as you go along,
+you can flag the questions
+that you think are difficult for you
+to review them at the end, as well.
+So when you submit the exam,
+you will know right away if you've passed or failed,
+if you passed it says congratulation pass.
+If you fail, it will say fail.
+You will not know which answers are right or wrong,
+this is intended,
+and you will know your overall score only a few days later,
+you will have received an email notification.
+It can take sometimes up to five days,
+but normally two days.
+And then to pass this exam,
+as I said, you need a score of 700 out of 1,000.
+And if you happen to fail, which I don't wish you do,
+then you can retake the exam again after 14 days.
+So that's it, thank you so much for learning with me.
+I wish you the best for your certification.
+Happy learning and good luck.

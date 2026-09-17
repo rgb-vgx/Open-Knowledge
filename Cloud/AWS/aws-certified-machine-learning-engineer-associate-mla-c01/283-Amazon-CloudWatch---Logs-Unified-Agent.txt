@@ -1,0 +1,88 @@
+# 283. Amazon CloudWatch - Logs Unified Agent
+# Section: Management and Governance
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45357129
+# Caption: en_US (manual)
+
+Now let's talk about how we can use something
+called the CloudWatch Agents to take logs
+from EC2 instances, as well as metrics
+and have them onto CloudWatch.
+So by default, no logs are going
+from your EC2 instance from CloudWatch.
+For this, you need to create and start an agent
+which is a small program on your EC2 instances
+that will push the log files that you want.
+So the idea, is that your easy EC2 instances
+will have the CloudWatch Log Agents,
+for example running sending the logs into
+CloudWatch Logs for it to work.
+Your EC2 instance must have an IAM role
+that allows it to send the log
+to CloudWatch Logs, that make sense?
+And good to notice that this CloudWatch
+log agents can also be setup
+on-premises servers.
+So it's possible for you to have your services,
+virtual servers like VM-ware on premises
+and you install the exact same agent,
+which is a small Linux Program
+and your logs will end up in CloudWatch Logs as well.
+Now, there are two different agents
+you can find in CloudWatch.
+You have the CloudWatch Logs Agent,
+which is the older one
+and the CloudWatch Unified Agent,
+which is the newer one.
+So they're both for virtual servers
+EC2 instances on premises servers, et cetera.
+The CloudWatch Logs Agents is the old version
+and can only send logs to CloudWatch Logs.
+Whereas the Unified Agents,
+will collect additional system level metrics
+which has RAM, processes.
+I'll show you this in the very next slide,
+and also send the logs into CloudWatch Logs.
+Now it's unified.
+It's better because it can do both metrics and logs.
+Hence, the name Unified Agent.
+But also you can configure that agents very easily
+using the SSM Parameter Store,
+which is a feature that the previous agent did not have.
+So you can do centralized configuration,
+for all your Unified Agents.
+So the CloudWatch Unified Agent can send,
+logs to CloudWatch Logs.
+But let's have a look at the metrics.
+So if you install it,
+on your Institute instances or your Linux servers
+you can collect metrics, and what are they?
+Well, we can collect the CPU metrics
+but at a way more granular levels,
+for example: active, guest, idle, system, user, steal.
+You don't need to know them at all.
+I'm just giving you the granularity of all these metrics.
+Disc metrics of free use total.
+Disc IO in terms of number of writes, reads, bytes, iops.
+RAM so free, inactive, used, total, cached.
+Netstats with number of TCP and UDP connections,
+net packets, bytes to get some information
+around the processes.
+So in total number of process,
+I mean your dead, bloqued, idle,
+running, sleep.
+And Swap Space, which is a memory spilling on disc.
+So how much is free use and use percentage?
+So why don't you remember is just take a
+a mental screenshot of these things.
+The bottom line is the CloudWatch Unified Agent allows it.
+You get a lot more metrics at a lot more granular details
+than the normal monitoring for EC2 instances.
+As a reminder out of the box for EC2,
+you get some information on disk, CPU,
+and network not memory
+not swap, but all of this at a high level, okay?
+If you want more granularity
+think CloudWatch Unified Agents, okay?
+So that's it for me.
+I hope you liked it.
+And I will see you in the next lecture.

@@ -1,0 +1,65 @@
+# 131. SSM Parameter Store
+# Section: Deployments & Managing Infrastructure at Scale
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/40515858
+# Caption: en_US (manual)
+
+So let's talk about the systems manager
+parameter store.
+So it's a way for you to store configuration
+and secrets securely on AWS.
+You can store anything you want, such as API keys,
+passwords, configurations, and it's serverless.
+That means you have nothing to provide.
+It's scalable.
+It can respond to many API calls all the time.
+It's durable and it's very easy to use.
+On top of it, it's secure
+because you control access to each parameter
+in the parameter store using IAM.
+On top of it, your configurations can evolve,
+your parameters can evolve
+and so therefore you have version tracking
+and optional encryption.
+So we'll see in a second.
+But in the parameter store, our applications
+or our users can enter plain text configurations
+or encrypted configurations
+in which case it is encrypted with KMS.
+And so therefore you can manage
+and centrally store the configurations
+of many of your applications in one place.
+So I am in systems manager, and on the left hand side
+there is the parameter store.
+And as you'll see, it's extremely easy to use.
+So going to create a parameter
+and the name is going to be demo parameter.
+Then you can have a different tier, so standard or advanced.
+So the free one is standard.
+We'll use standard and then the type of parameter.
+So is it a string
+meaning it's a value that is, for example, a configuration
+or a list of values if you wanted to, or a secure string.
+And secure string is when you want to encrypt something
+in the parameter store because you're, for example
+going to add in API keys or passwords and so on.
+So in this case, using a secure string is much better.
+But for simplicity's sake, let's use a string.
+And so you can choose the data type, so it could be a text
+or an image of type EC2, but we'll use text and say, hey
+the string is my configuration parameter.
+And then that's it.
+You just create this parameter and there you go.
+In your parameter store
+you have this parameter named demo parameter
+that you can just click on
+and then retrieve the value of value.
+My configuration parameter on top of it.
+If you were to edit it, there would be different versions
+which is very helpful for tracking them over time.
+And that's it.
+The parameter store is a very simple service
+but a very helpful one in AWS.
+When you're done, you can just delete this parameter
+and you're back where you started.
+Okay, so that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

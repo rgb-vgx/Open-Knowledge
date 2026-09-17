@@ -1,0 +1,37 @@
+# 141. Handling PII in DataBrew Transformations
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40394344
+# Caption: en_US (auto)
+
+Something the exam guide calls out is handling personally identifiable information in your Databrew
+transformation.
+So let's have a little bit of a diversion into that world.
+We talked about some of these techniques earlier in the course, but just to reinforce it and how it
+relates to Databrew one way of dealing with PII is with substitution.
+So I could just replace that with some sort of random numbers.
+Right.
+And substitute that information with something that is not personally identifiable.
+I could shuffle it.
+I could take all of the PII values in my rows and shuffle them all together so that Person A's credit
+card number might be associated with person B instead with credit card numbers, though probably not
+a good idea to have raw credit card numbers floating around at all.
+Deterministic encryption is one way of encrypting that personally identifiable information in such a
+way that a given value always results in the same encrypted value.
+It's deterministic.
+That way you can also have probabilistic encryption, and that's a system where there might be more
+than one result from an encryption of a given field.
+You can also decrypt something that was encrypted using a decrypt command, and there's probably no
+better way of dealing with PII than not having it in the first place.
+If you want to null it out or just delete it.
+The delete transformation can be used to just drop that information entirely.
+You can also mask out personally identifiable information.
+So a lot of times you'll see only the last four digits of a credit card or a social security number
+being displayed where the rest of it is masked out or scrambled in some way.
+Masking is a way to do that.
+And finally, there's hashing, where you apply some sort of a hash function to the value in a cryptographic
+fashion.
+Hashing is a little bit different, though, in that multiple values can hash to the same result.
+So sometimes that's okay, you know, but it does provide some anonymity to what you're doing as well.
+So some techniques for handling personally identifiable information in databrew.
+Transformations.
+And these are the specific names of those transformations that are associated with each technique.

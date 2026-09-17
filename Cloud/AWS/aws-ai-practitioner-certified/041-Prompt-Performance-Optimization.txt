@@ -1,0 +1,114 @@
+# 41. Prompt Performance Optimization
+# Section: Prompt Engineering
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886483
+# Caption: en_US (manual)
+
+So now let's talk about
+how we can improve the performance of our prompts
+in our model.
+So first, let's step back
+and remember how text is being generated from an LLM.
+So for example, we have the sentence:
+After the rain, the streets were...
+and then we have the next word that will be computed
+by the Gen-AI Model.
+So we can have wet, flooded, slippery, empty, muddy,
+clean, blocked, and all of these words
+have associated probabilities into
+how likely this is going to be the next picked word.
+And so the Gen-AI Model will do some probability
+and will select a word randomly, for example, flooded.
+So this is something we've seen and I hope you remember it
+because now we're going to do a deep dive into
+that specific process
+and see how we can slightly influence it.
+So let's go into the prompt performance optimization.
+So this is a screenshot from Amazon Bedrock,
+and as you can see, we have a few knobs that we can change.
+The first one is the system prompts.
+So we can specify how the model should behave and reply.
+And in my example, I say reply
+as if you are a teacher in the AWS Cloud Space.
+And of course, we set the tone for the answer,
+and this will really help the LLM
+to respond the way we want to.
+Next we have the Temperature.
+So it's a value you set from zero to one
+that defines the creativity of the model's outputs.
+So if we set it to a very low value, for example, 0.2,
+then the outputs are going to be more conservative,
+repetitive, and it's going to be focused
+on the most likely response,
+so the words with the highest probability.
+But if you set it to a high value, for example, 1.0,
+then the outputs are going to be more diverse,
+more creative, less predictable,
+and also maybe less coherent
+because it's going to select more words
+that would be less likely over time.
+So it's for you to try
+and see what temperature works for you,
+but think at least, like if you have a high temperature,
+everything moves and so therefore you have more creativity.
+Next, we have Top P.
+So Top P is a value again, from zero to one.
+And if you have a Low P, for example, 0.25, that means
+that in the list that we saw before
+about the next word that can be selected,
+we will only consider the 25% most likely words.
+And so therefore, we'll have a more coherent response
+because we only select the words that really make sense.
+If we have a high P value, for example, 0.99,
+then we're going to consider a very broad range
+of possible words, and therefore we have a long list
+to choose from, and so possibly we're going to get
+a more creative and more diverse output.
+And as you can see, Temperature Top P,
+and then of course, Top K
+and all the rest of these parameters can be used together.
+So Top K is the limit of the number probable words.
+So while Top P is considering the most likely words
+as a distribution, Top K is a number.
+So if you have a low K, for example, 10, you're going
+to get the top 10 most probable words.
+So you're going to get probably a more coherent response.
+But if you have a very high K, for example, 500,
+you're going to consider the top 500 words.
+And so therefore there's a chance if one
+of them is selected, that you get a more diverse
+and more creative answer.
+And then we have length.
+So we define what is the maximum length of the answer.
+So we tell the model to stop at some point.
+And finally, stop sequences.
+What are some of the tokens that will signal the model
+to stop generating outputs?
+So if the model has that token, then it stops.
+And so from an exam perspective, you need
+to remember the definition of all of these,
+what they mean for low and high value.
+So remember, Temperature, Top P, Top K,
+length, system prompts, and stop sequences.
+So what about prompt latency?
+Well, latency means how fast the model is going
+to respond to your inputs.
+And so it's impacted by few parameters.
+For example, the model size.
+So how big or how small the model is.
+And you have different sizes we've seen before,
+the model type itself.
+For example, Llama is going
+to show a difference performance than Claude, for example,
+and also the number of tokens in the input.
+So the more context you give in the context window,
+the slower it's going to be.
+And of course, the bigger the output, the slower
+as well it's going to be.
+So, important for you to know.
+These are very important factors,
+but you should know as well that latency is not impacted
+by Top P, Top K, or the Temperature parameters.
+And it's good for you to know because the exam may ask you
+some questions about it.
+So let's say for this lecture, I hope you liked it
+and I will see you in the next lecture.

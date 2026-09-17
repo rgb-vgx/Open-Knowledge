@@ -1,0 +1,45 @@
+# 59. Section Cleanup
+# Section: EC2 Instance Storage
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20207862
+# Caption: en_US (manual)
+
+So let's do a quick cleanup just to make sure
+we have a clean slate and that we don't overpay anything
+even though we are in the free tier.
+So if you go to the EC2 Dashboard, you will see all
+the resources running in your region.
+So I have two running instances.
+I'm going to open this in new tab.
+Four volumes and then four key pairs.
+You can leave it as is.
+It doesn't cost you any money, no matter what.
+Snapshots, I have two so I will open this in new tab.
+And then finally, security group.
+As well, it don't cost you any money so I'm going
+to leave them as is.
+So for our EC2 instances, you can take them all,
+right-click, and then terminate them.
+See, this is very easy.
+This is the cloud.
+Then for the volumes, we have some root EBS volumes
+that are going to be deleted as we terminate our instances.
+But for these two EBS volumes, I'm going to delete them
+as well manually, okay.
+And finally, for the snapshots, I can delete
+the snapshot right away.
+So I can take these two things, do action,
+delete the snapshots, yes.
+And then it says this one is not being able to be deleted
+because it is in use by an AMI.
+So I will say okay, go to AMI on the left-hand side.
+I'm going to delete the AMI so I can just deregister it.
+I say yes, I want to be deregistering this AMI.
+And back into our snapshots, now I'm able to get this one,
+delete it, and say yes. And now we should be good to go.
+So if I look at instances, all terminated.
+If I look at EBS volumes, none of them.
+And snapshots, empty, and AMI, empty.
+Okay, that's it for the cleanup.
+I'm going to refresh this and as we can see,
+we are good to go.
+And I will see you in the next lecture.

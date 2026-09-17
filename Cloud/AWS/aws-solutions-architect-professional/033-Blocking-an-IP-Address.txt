@@ -1,0 +1,129 @@
+# 33. Blocking an IP Address
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18287526
+# Caption: en_US (manual)
+
+Okay, so let's talk about
+a little bit of networking
+because I want you to understand how it works
+to block an IP address if you want it to in AWS.
+So say for example, we have the architecture
+of an EC2 instance in a public subnet
+and a client wants to access it.
+So the first line of defense in your public subnet
+is going to be your Network ACL, or NACL.
+And with it you can very cheaply and very simply
+explicitly write, deny, or allow rules
+which will allow or block the client if you need to.
+But say you have a default Network ACL, for example,
+and everything is allowed through,
+your second line of defense
+is going to be your Security Group.
+And here you have no deny rules,
+but you can only have allow rules,
+so if you know in advance the IP of your clients,
+you can specifically only allow
+your clients to get to your EC2 instance.
+If the traffic gets all the way through
+to your EC2 instance,
+it is possible for you to optionally run a firewall software
+on your EC2 instance,
+which is going to inspect all the packets getting to it.
+And here you have a lot more control
+over everything, of course,
+because this is customized solutions, not AWS dependent,
+but because you have firewall software running
+on your EC2 instance,
+there will be a CPU cost on your instance.
+It can slow it down, for example.
+So hopefully that makes sense
+for this first line of defense.
+Okay, so now let's consider this situation
+in which we have a Network ACL, a Application Load Balancer,
+and an EC2 instance.
+So here what's happening is that we have the ability
+to have the client connect directly
+into an Application Load Balancer
+that will be sitting in the public subnet.
+And that Application Load Balancer
+will be diverting traffic to the EC2 instance.
+That means your EC2 instance can live in a private subnet
+and it's going to be better for your security
+of your application, of course.
+And so your EC2 instance has a private IP,
+and so you need to have a security group
+around the EC2 instance that will allow only connections
+from your Application Load Balancer.
+We've seen this before.
+So what's happening is that the Application Load Balancer
+that sits in the public subnet
+is doing a connection termination.
+That means that the client connects to the ALB
+and the ALB will connect to the EC2 instance.
+That also means that you now have the ability
+to manage security at the Application Load Balancer level
+with the security group, or with some extra features
+within the Application Load Balancer.
+And if you need to, you can always, as well,
+leverage the Network ACL to do allow or deny rules
+at the public subnet level.
+So all of this shouldn't be new
+and should be mastered by now.
+And the situation is very similar
+if you are to use a Network Load Balancer
+that will have a security group
+that's connected to EC2 instances, okay?
+So same for ALB and NLB in terms of security.
+Now we can explore security features
+around the application balancer.
+So you can pair it with WAF,
+the Web Application Firewall from AWS.
+And this allows you, for example,
+to set IP address filtering from within WAF.
+So obviously, now this has a cost
+because you have a firewall set up
+at the Application Load Balancer level,
+but WAF has more than just the IP address filtering feature.
+It has a lot more and you will get a lot of control
+and defenses for your infrastructure
+if you expose directly your Application Load Balancer.
+Another place where you can apply AWS WAF
+is around CloudFronts.
+So CloudFronts can be set up, for example,
+on a public infrastructure, for example,
+using an Application Load Balancer in public mode.
+And so what's happening is that CloudFront
+will send traffic directly from all the edge locations
+with the public IPs of them
+directly into your Application Load Balancer.
+Here your Network ACL is not helpful
+to filter traffic from the clients
+because, well, the client
+does not reach the traffic of AWS, okay?
+CloudFront does.
+And so therefore you must set up security at the ALB level
+with your Security Group
+so that you allow all the CloudFront public IPs
+into your infrastructure only.
+Also, you have the ability, for example,
+if a client was coming from a specific country
+and was attacking your infrastructure,
+you could use the Geo Restriction feature
+to block that specific country
+and that's one line of defense.
+Another line of defense, is again to use WAF
+and all its features
+to have a firewall at the CloudFront level
+and, for example, implement IP address filtering.
+So now hopefully that makes sense into
+how network security is working.
+This kind of diagrams hopefully show you the path
+that the network traffic is taking
+and so why it makes sense to apply some rules at some level.
+And if you have any issue
+understanding what are the specific rules,
+it's always very helpful to draw what the network is doing.
+And then it will make a lot of sense into
+how to define the rules along the way.
+So that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

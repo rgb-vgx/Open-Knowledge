@@ -1,0 +1,120 @@
+# 13. Data Skew Mechanisms
+# Section: Data Engineering Fundamentals
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40393970
+# Caption: en_US (auto)
+
+Instructor: Alright, I know
+you're itching to get into the AWS services.
+I'm trying to get you there as quickly
+as I can, but the exam guide does talk about data skew.
+You gotta know what that is too, and
+that's not an AWS specific thing.
+What do we mean by data skew?
+Well, it can mean a few
+things, but usually it refers to unequal
+distribution across partitions.
+So we talked about partitioning as a database
+optimization earlier, where we're
+storing different segments of our data in different physical storage
+or different tables right under the hood to make
+sure that we can process them more
+efficiently and process them in parallel.
+So skew is what happens when that partitioning
+is imbalanced.
+So we have an imbalance of data across the
+nodes or partitions in a computing system that's
+distributed somehow.
+Sometimes we call this the celebrity problem.
+So partitioning doesn't work if your traffic is uneven.
+You can't just evenly partition
+stuff if your incoming traffic is not even itself.
+Let's take an example, right?
+So imagine that I'm IMDb,
+I'm a database that's all about actors and movies, right?
+Maybe I just take the actor ID when I'm trying
+to store information about each
+actor and I hash it and I use that to distribute this across
+different partitions under
+the hood.
+Well, that sounds well and good,
+but some actors get a lot more traffic than others, right?
+So imagine that we have Brad Pitt.
+Whatever partition that he maps
+to is probably gonna get a lot more traffic
+than some obscure actor from
+a film from 30 years ago, right?
+So in this example, the celebrity problem, a celebrity like
+Brad Pitt is going to overload
+the partition that he's in because he's
+gonna get a lot more traffic than
+other partitions might because of that popularity.
+Again, the fundamental problem
+here is that the traffic is uneven
+compared to the data coming in.
+This can be caused by non-uniform distribution of data.
+So again, if we're just evenly partitioning
+based on a hash of some ID, that might not be consistent with
+how that data is actually distributed when
+it's being read.
+Our partitioning strategy might be inadequate
+or there might be temporal skew, right?
+So another problem is what if
+your data's really growing quickly over
+time and you're partitioning just by month or by year or
+something, right?
+So maybe your data from five years ago is
+going to be much smaller than your data today, and this
+is going to result in what we call temporal skew,
+where more recent partitions are
+going to be much larger than older partitions.
+That happens all the time.
+So it's important to monitor your data's
+distribution and have some sort of alerts when this skew arises.
+So if your skew starts to become a problem,
+you wanna make sure you're monitoring that, you're
+aware of it, you're getting alarms, you know, CloudWatch,
+all that stuff, right?
+So we'll get into that later on in the course.
+But the fundamental problem of data skew is that
+it's just that your data's
+being accessed in an uneven
+manner and it doesn't match the assumptions
+that you made when you partitioned that data.
+How do you fix it? There's a few ways.
+Now I wouldn't worry about memorizing these
+different solutions for the exam because you know,
+they're not really coming from
+AWS documentation, but just so you know some potential
+solutions.
+One is called adaptive partitioning, where
+you dynamically adjust your partitions
+based on the observed distribution over time.
+So it is possible to repartition things in real time based on what you're
+actually observing.
+Load balancers work that way a lot, right?
+Salting, the idea there is that you have some random value that's introduced
+before your partition key, and that can
+be useful for distributing things
+more uniformly.
+Maybe you want to go back and
+repartition things periodically, that's a solution, but it's a
+very disruptive one.
+You know, if you're gonna
+go back and shuffle all of your data around
+while you're still trying to read
+that data, that can get ugly.
+So that's one I would try to avoid if you can.
+Sampling is another solution.
+So maybe you just sample the data
+to try to just determine what the actual distribution
+is and adjust your processing accordingly.
+Maybe that's just part of
+your adaptive partitioning approach, right?
+And custom partitioning.
+Maybe you define custom rules or functions
+for the partitioning data based on domain knowledge.
+So maybe you know upfront, you know, Brad Pitt's
+gonna get a lot of traffic.
+So if it's Brad Pitt, maybe he gets his own partition.
+Kind of a hack-y solution, but it's a solution.
+So that's data skew and some ways of dealing with it.

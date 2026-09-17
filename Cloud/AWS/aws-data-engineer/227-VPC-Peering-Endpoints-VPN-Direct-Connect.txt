@@ -1,0 +1,133 @@
+# 227. VPC Peering, Endpoints, VPN, Direct Connect
+# Section: Networking and Content Delivery
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40306874
+# Caption: en_US (manual)
+
+Okay, so now let's talk about
+how we can establish connectivity
+between VPC and other structures.
+So, the first thing is called VPC peering.
+So say you have two virtual private clouds,
+they're either in two different accounts
+or in two different regions,
+and you want to connect together
+as if they're part of the same network.
+So we want to connect to VPC privately
+using the network from AWS.
+And it's going to make them behave
+as if they were in the same network,
+so we have VPC A and VPC B,
+and if we want to have them talk to one another,
+we need to establish a VPC peering connection from A to B.
+Very simple.
+To make sure that these VPC can be connected,
+you need to make sure that the IP ranges
+that is defined for each VPC are not overlapping.
+Because to be able to address network to another VPC,
+you need to talk to an IP address.
+And so, if obviously, the network ranges overlap,
+then the network doesn't know where to go.
+So to connect to VPC, you need to make sure
+that the IP addresses range it operates on
+are different and not overlapping.
+And a VPC peering connection is not transitive.
+So it must be established for each VPC
+that needs to communicate with one another.
+What I mean is that if we connect VPC C
+through a VPC peering connection between A and C,
+B and C cannot talk to each other.
+There is no transitivity in the VPC peering.
+That means that if I want to establish connectivity
+between VPC B and VPC C,
+then I need to create its own
+VPC peering connection between B and C.
+That's what it means with VPC peering.
+So as you add more and more VPC,
+you need to add more and more peering connections.
+Okay, that's number one.
+Number two, VPC endpoints,
+which is going to be very important going into this exam.
+So, endpoints allow you to connect
+to AWS services using a private network
+instead of using the public internet network.
+So something you maybe didn't know
+is that all the AWS services are public, okay?
+And so anytime your EC2 instances, for example,
+use the AWS services, they talk publicly to AWS,
+but sometimes your EC2 instances
+are not connected to the public subnets,
+and therefore you want to have them access,
+privately, your AWS services.
+So this is the VPC endpoint.
+So this just gives you security
+and lower latency to access AWS services.
+So let's take an example.
+We have a private subnet and an EC2 instance in it,
+and it wants to access Amazon S3 and DynamoDB,
+which are outside of the VPC into the public realm.
+Then we can create a VPC endpoint gateway,
+and this is only for S3 and DynamoDB,
+so endpoint gateway, and we'll see what S3 and DynamoDB are
+in this course, obviously.
+But so, your EC2 instance talks to that VPC endpoint
+and has access to S3 and DynamoDB privately.
+As you can see,
+the traffic does not go through the internet.
+And then, for VPC endpoint interface,
+that's the rest of the service,
+and that's only used within your VPC,
+so that means that we can create, for example,
+a VPC endpoint interface in your private subnet,
+and through that endpoints interface, through that ENI,
+we have private access to CloudWatch.
+So, VPC endpoints are really, really helpful
+anytime you need private access from within your VPC
+to an AWS service, okay?
+That's what you need to remember.
+The other exams need to know the difference
+between gateway and interface.
+I don't believe you need to know it
+for the certified developer exam,
+but know that anytime the exam is asking you
+to privately connect to an AWS service,
+then a VPC endpoint is going to be the way.
+Okay, so now how do we establish connectivity
+between your on-premises data center,
+So that could be your office building, for example,
+and your cloud VPC?
+So, the first way is called site to site VPN,
+to connect an on-premises VPN appliance to AWS.
+The connection will be automatically encrypted
+and will go over the public internet.
+So in this example, we establish a VPN,
+virtual private network
+between your on-premises data center and your VPC,
+and that goes over the public internet.
+That's very easy to set up very quick.
+You can set up in matter of minutes.
+And there you go, you have a private connection,
+or an encrypted connection, sorry,
+over the public internet to your VPC.
+The other option is direct connect.
+It achieves the same purpose,
+it's to establish a connection between
+your on-premises data center and your VPC,
+but this time it is a physical connection.
+So that means that the connection is going to be private,
+it will not go over the public internet,
+it's going to be secure and fast,
+and it goes over the private network.
+And because it is a private line to your VPC,
+it takes at least a month to establish,
+because there is some work that needs to happen
+to have a private connectivity to AWS.
+So, this is called direct connect,
+and this is the private route.
+As we can see, both the VPN and direct connect
+achieve the same purpose,
+but with different matters and different timeline.
+Okay, so that's it for connectivity of your VPC
+in terms of external VPC peering, VPC endpoints,
+site to site VPN and direct connect.
+I hope that was helpful,
+and I will see you in the next lecture.

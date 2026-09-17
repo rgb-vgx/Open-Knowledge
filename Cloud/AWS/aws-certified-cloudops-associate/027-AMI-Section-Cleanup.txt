@@ -1,0 +1,17 @@
+# 27. AMI Section Cleanup
+# Section: AMI - Amazon Machine Image
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512792
+# Caption: en_US (manual)
+
+In order to clean up that section,
+take your instance and terminate it, okay?
+And also if you wanted to terminate, delete your AMI,
+so you can take that demo image and you would deregister it,
+which should remove that AMI, okay?
+And in the backend there has been a snapshots been created.
+So, if you go to the snapshots,
+which is the snapshot that was backing my AMI,
+you can delete the snapshots and you'll be good to go.
+So, that's it for the cleanup of the AMI section.
+I hope you liked it.
+And I will see you in the next section.

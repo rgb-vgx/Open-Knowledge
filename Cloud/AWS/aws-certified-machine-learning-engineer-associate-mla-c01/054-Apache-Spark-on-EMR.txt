@@ -1,0 +1,157 @@
+# 54. Apache Spark on EMR
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45284871
+# Caption: en_US (auto)
+
+So what is Hadoop anyway?
+Well, it consists of a few different modules here that we'll talk about.
+And the rest of the stuff on your EMR cluster often builds on top of these modules as well.
+So when we talk about Hadoop itself, we're usually talking about the HDFS file system Yarn and MapReduce.
+And underlying all of these is something called Hadoop core or Hadoop common.
+That would be the libraries and utilities required for all of these modules to run on top of.
+So it provides the file system and operating level system stuff that it needs to extract itself from
+the OS, and all the Java archive files and scripts that are needed to start up Hadoop itself.
+At the lowest level above that would be HDFS.
+That is the Hadoop Distributed File System, a distributed, scalable file system for Hadoop.
+Again, it distributes the data it stores across the instances in the cluster.
+Multiple copies of the data are stored on different instances to ensure that no data is lost.
+If an individual instance fails, it is lost upon the termination of the cluster, however, but it's
+useful for caching intermediate results during MapReduce processing or for workloads that have significant
+random IO.
+On top of HDFS, we have Hadoop Yarn.
+Yarn stands for yet another resource Negotiator.
+It's a component introduced in Hadoop 2.0 to centrally manage cluster resources from multiple data processing
+frameworks.
+That enables us to use things other than MapReduce, as we'll see shortly.
+So what is MapReduce?
+Well, MapReduce is a software framework for easily writing applications that process vast amounts of
+data in parallel on large clusters of commodity hardware in a reliable, fault tolerant manner.
+It dates back to some ideas from Google in its early days of big data processing.
+MapReduce consists of mapper functions and reduce functions that you write in code.
+A map function maps data to sets of key value pairs, called the intermediate results, and map functions
+generally do things like transform your data or reformat it, or extract the data that you need.
+That's why it's relevant to the world of exploratory data analysis.
+Then we have reduced functions that combine those intermediate results and applies additional algorithms
+and produces the final output.
+So generally, the mappers are the things that are transforming your data and preparing it.
+The reducers are aggregating that data and distilling it down to a final answer that you want.
+However, these days, Apache Spark has largely taken the place of MapReduce and thanks to the existence
+of yarn, spark can actually sit on top of your Hadoop cluster and use the underlying resource negotiator
+and file system that Hadoop offers, but just offer a faster alternative to MapReduce.
+So spark, which can be optionally installed on your EMR cluster, is an open source distributed processing
+system commonly used for big data workloads.
+It's really the hotness right now instead of MapReduce.
+It utilizes in-memory caching, optimized query execution for fast analytic queries against data of
+any size.
+So it uses something called a directed acyclic graph.
+That's kind of its main trick for its speed.
+Compared to MapReduce, it can be more smart about the dependencies and processing and how to schedule
+those more effectively.
+Spark has APIs for Java, Scala, Python, and R, and it supports code reuse across multiple workloads
+like batch processing and interactive queries, and real time analytics and machine learning and graph
+processing.
+It has a bunch of different use cases that we'll talk about stream processing, machine learning, interactive
+SQL.
+However, spark is generally not used for OLTP or batch processing jobs.
+It's a more for transforming data as it comes in.
+How spark works under the hood.
+Well, spark applications are run as an independent set of processes on a cluster.
+They're all coordinated by the spark context object of the main program.
+This is known as the driver program.
+That's the actual code that you write to make your spark job run.
+The spark context connects to different cluster managers which allocate the resources across the applications.
+So for example, Yarn or spark has its own built in one.
+You can use as well if you're not on a Hadoop cluster.
+Upon connecting, spark will acquire executors on nodes in the cluster.
+The executors are processes that run computations and store data for your applications.
+The application code is sent to the executors, and in the final step, the spark context will send
+tasks to the executors to run.
+Ether spark itself has many different components, just like Hadoop does.
+So underlying everything is spark core.
+It acts as the foundation for the platform.
+It's responsible for things like memory management and fault recovery, and scheduling and distributing
+and monitoring your jobs and interacting with storage systems.
+It has APIs for Java, Scala, Python, and R, and at the lowest level it uses something called a resilient
+distributed data set, or an RDD that represents a logical collection of data partitioned across different
+compute nodes.
+Now, as we'll see, there's a layer above that with spark SQL that is a distributed query engine that
+provides low latency, interactive queries up to 100 times faster than MapReduce.
+It includes a cost based optimizer.
+Columnar storage and code generation for fast queries, and it supports various data sources coming
+from JDBC, ODBC, JSON, HDFS, hive, ORC, or parquet files.
+It also supports querying hive tables using hive QL if you want.
+But the really important thing about spark SQL is that it exposes something called a data frame in Python
+or a data set in Scala.
+And this is sort of taking the place of the lower level resilient distributed data sets.
+In spark these days.
+So modern spark code tends to interact with data in much the same way as you would with a data frame
+in pandas or a database table in a relational database, you can actually issue SQL commands to your
+spark cluster, and under the hood it will figure out how to actually transform that into a distributed
+query that executes across your entire cluster.
+So very useful stuff.
+Also, we have Spark Streaming.
+That's a real time solution that leverages Spark Core's fast scheduling capabilities to do streaming
+Analytics.
+So data gets ingested in mini batches and analytics on that data within the same application.
+Code written for batch analytics can be applied to those mini batches.
+So it's pretty cool because you can use the same code that you wrote for batch processing and apply
+that to your real time streaming.
+With Spark Streaming, it supports ingestion from Twitter, Kafka, flume, HDFS, and Zeromq.
+As as we'll see, it can also integrate with AWS Kinesis.
+We also have Mllib, the machine learning library for spark.
+Obviously that's relevant to the machine learning exam.
+We'll talk about that in more depth of course, and what it can do.
+And finally we have graphics, which is a distributed graph processing framework built on top of spark.
+We're not talking about charts and graphs like QuickSight here.
+We're talking about computer science graphs here.
+So, you know, for example, a graph of people in a social network.
+It's more of a data structures thing.
+It provides ETL and exploratory analysis and iterative graph computation to enable users to interactively
+build and transform a graph data structure at scale.
+So let's talk about Mllib a little bit more.
+It offers several different machine learning algorithms, but what's special is that they're all implemented
+in a way that is distributed and scalable.
+So not all machine learning algorithms really lend themselves well to parallel processing.
+A lot of them sort of need to be reimagined in order to spread that load out across an entire cluster
+of computers.
+So with spark Mllib, it has a specific set of things that it can do for classification tasks.
+It offers logistic regression, which is, you know, still a great alternative, and Naive Bayes.
+It can also do regression across a cluster, a decision trees.
+It has a recommender engine built in built on alternating least squares.
+It has a clustering K-means implementation built in for topic modeling.
+It has LDA.
+If you want to extract topics from a text information from documents in an unsupervised manner, and
+it has various workflow utilities that are useful for machine learning in general, such as pipelines
+and feature transformation and persistence.
+It also has distributed implementations of the SVD.
+PCA and statistics functions as well.
+We'll talk about more about what those mean later in the course, if those are new to you in the modeling
+section.
+But again, the special thing here is that this can run on a cluster.
+A lot of these algorithms will not run on a cluster in their default state.
+If you were to run them on, say, scikit learn, for example.
+So with spark Mllib that allows you to process massive data sets and actually train machine learning
+models on them across an entire cluster.
+And as we'll see later in the course, you can even include spark within SageMaker as well.
+Spark streaming deserves a little bit more discussion as well.
+Generally, spark applications use a data set in their code that refer to your data, which is treated
+a lot like a database table.
+With spark streaming, that table just keeps on growing as new chunks of data are received in real time.
+And you can query that data using windows of time.
+So, for example, you could look at the past hour of data in your data stream coming in and just query
+that like a database basically.
+So that's at a high level how structured streaming works in spark.
+IT models inbound streaming data as basically an unbounded database table that you can query whenever
+you want to.
+And Spark Streaming does integrate with Kinesis.
+You could have a Kinesis producer publishing data to a Kinesis data stream, and there is a way in the
+kql to actually implement a spark data set built on top of that data stream that you can just query
+like any other spark data set.
+Another key point in Spark is Zeppelin.
+That's basically a notebook for Zeppelin.
+It allows you to run spark code interactively within a notebook environment in a browser, so you can
+execute SQL queries against your spark data using spark SQL.
+You can also query your results and visualize them as well, and charts and graphs using things like
+matplotlib and seaborn.
+So it makes spark feel a lot more like a data science tool, and allows you to actually pre-process
+your data in a familiar format that data scientists are used to.

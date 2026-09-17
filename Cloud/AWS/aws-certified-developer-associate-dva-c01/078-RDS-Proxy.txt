@@ -1,0 +1,113 @@
+# 78. RDS Proxy
+# Section: AWS Fundamentals: RDS + Aurora + ElastiCache
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527788
+# Caption: en_US (manual)
+
+So now, let's talk Amazon RDS Proxy.
+So we know we can deploy our RDS database within our VPC,
+but now we can also deploy
+a fully managed database proxy for RDS.
+So you may say,
+"Okay, we can access our RDS database directly.
+Why do we need a proxy to access our database?"
+Well, if you use an As an RDS Proxy,
+this will allow you, your application,
+to pool and share the database connections
+established with the database.
+So instead of having every single application
+connect to your RDS database instance,
+they will be instead connecting to the proxy,
+and the proxy will pool these connections together
+into less connections to the RDS database instance.
+So why may you do this?
+Well, this makes a lot of sense
+if you have a lot of connections
+into your RDS database instance,
+and it's going to improve your database efficiency
+by reducing the stress on database resources,
+for example, CPU and RAM,
+and also minimize the open connections
+and the timeouts into your database.
+So that's one thing you need to look out for
+from the exam perspective.
+Now, as I said, the RDS Proxy is fully serverless.
+It's auto scaling, so you don't need to manage its capacity.
+And it's highly available.
+It's across multiple AZ.
+And therefore, in case, for example,
+there is a failover that happens
+on your RDS database instance.
+For example, it goes from the primary instance
+to the standby instance,
+then it will, thanks to the RDS Proxy,
+reduce the failover time by up to 66%.
+So this is true for RDS and Aurora.
+So again, instead of having all your applications
+connect to the main RDS database instance
+and then handle the feller themselves,
+they will just connect to the RDS Proxy,
+which does not know any failover.
+And the RDS Proxy will, itself,
+handle the failover of the RDS database instance,
+therefore improving your failover time.
+So something else you need to look for
+from an exam perspective.
+So the RDS Proxy supports MySQL, PostgreSQL, MariaDB,
+Microsoft SQL Server,
+as well as Aurora for MySQL and PostgreSQL.
+It doesn't require you
+to do any code change in your application.
+Just instead of connecting to your RDS database instance
+or your Aurora database,
+you'd now just connect to your RDS Proxy and you are done.
+On top of it,
+there's a third advantage to using an RDS Proxy.
+It is to enforce IAM authentication for your database.
+So to make sure that people
+can only connect to your RDS database instance using IAM.
+And then these credentials
+can be securely stored in another service
+called the AWS Secrets Manager.
+So again, if you need to see a way
+to enforce IAM authentication for your database,
+think RDS Proxy.
+And finally, the RDS Proxy is never publicly accessible.
+So it's only accessible from within your VPC.
+So you cannot connect over the internet to your RDS Proxy,
+which is enhanced security.
+And so one service we haven't seen
+that is going for sure to be very helped by the RDS Proxy
+is called the Lambda functions.
+And the Lambda functions, they will execute pieces of code.
+We'll see them later on in this course.
+Okay, you don't need to know them right now,
+but we have to tackle them right now
+because of the RDS Proxy feature.
+And so the Lambda functions, they can multiply,
+multiply many, many times.
+And they will appear and disappear very, very fast.
+And therefore, imagine you have 100
+or 1,000 Lambda functions appearing and disappearing
+just like that, and opening up connections
+into your RDS database instance, they will be a big problem
+because it will leave open connections and timeouts,
+and it will be a mess.
+And therefore what you do is that you use the RDS Proxy
+to pool connections for your Lambda functions,
+and then the Lambda functions will overload the RDS Proxy,
+but it's meant to be overload.
+And the RDS Proxy will pool these connections
+into less connections to the RDS database instance,
+thus, solving your problems, okay?
+So that's it for this lecture. I hope you liked it.
+And don't worry, we'll review the proxy once again
+once we go into the Lambda lectures.
+But again, RDS Proxy is used to minimize
+and pool connections on your RDS database instance.
+It's also used to minimize failover time
+and reduce it by up to 66%.
+And also, it's used to enforce IAM authentication
+for your database and to securely store its credentials
+in the Secrets Manager service.
+All right, that's it. I hope you liked it.
+And I will see you in the next lecture.

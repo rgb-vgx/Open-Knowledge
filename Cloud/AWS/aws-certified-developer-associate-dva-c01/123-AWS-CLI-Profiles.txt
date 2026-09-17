@@ -1,0 +1,57 @@
+# 123. AWS CLI Profiles
+# Section: AWS CLI, SDK, IAM Roles & Policies
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/12203024
+# Caption: en_US (manual)
+
+So a common question I get is how do you manage having multiple AWS accounts?
+So for example right now we are in my AWS directory.
+And so if we go to config we see there's the default section and then if we go to credentials there's
+also the default section which contains an AWS access key id and a secret access.
+So how do we do.
+Because this links to my one AWS account that I have from before.
+But how do we do this if I have multiple AWS accounts? For this
+We use something called a profile and so profiles are quite special to use.
+Basically what we have to do is define a name for a new profile configure it and then we'll be able
+to use it into any command line.
+So the way we do it is we type AWS configure.
+And this was from before as you can see it prompts me for the access key id that we have right here.
+And if I do enter it's going to prompt me for this secret access key that we have right here so fine I'll just
+press enter to show you.
+So it will change that will do aws configure --profile
+And what this does is that we're saying OK we're going to select the profile we want to do.
+And so for this we have to name the profile.
+I'll call it my other AWS accounts but you can name it whatever you want.
+And usually something a little bit short.
+Now as you can see the AWS access key id is now None
+It used to be something now it's None
+So that means that this is an entirely new different account.
+So how about I just generate something very quickly.
+So I'll just copy random things so for my access key id I'll
+Copy this and my secret access key.
+Again this is something you would basically obtain on a real AWS account the way we've done it
+before.
+But right now I'm just pasting some dummy data.
+Here we go.
+I press enter and for the region name.
+I want to do stuff in U.S. West 2
+Who knows. The default output format I'll press enter
+Here we go.
+We have configured an other profile.
+So what did change now?
+Well if we go to the credentials file now we can see that there is a new brackets.
+So before there was just default but now there is my other accounts which contains a new set of credentials.
+Similarly if we go to config we now see that for the profile.
+My other aws accounts here is the region we're going to use.
+And so this is something that's quite cool because now we can switch between different accounts.
+Now if you do it AWS s3 ls this is going to execute against the default profile.
+OK.
+Because this is how we configured it.
+But if you want to execute this function against another profile say my other aws account that we just configured
+we have to add --profile and the name of the profile we have.
+So it's just a little trick you should know about.
+But basically for any commands you can use --profile  as well as the profile name you want
+as long as you can configure that profile beforehand using the aws configure command line.
+So that's it, it's not something you should know for the exam but it's something you should know as a
+developer and I'd like to give you real world tips.
+So if you start having multiple AWS accounts make sure to use profiles and to set your command line to use
+the --profile command line arguments to target the right AWS accounts.

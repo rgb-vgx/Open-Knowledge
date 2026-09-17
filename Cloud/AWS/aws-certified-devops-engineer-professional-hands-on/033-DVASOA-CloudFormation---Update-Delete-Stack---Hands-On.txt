@@ -1,0 +1,170 @@
+# 33. [DVA/SOA] CloudFormation - Update & Delete Stack - Hands On
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858768
+# Caption: en_US (manual)
+
+So now that we have created the stack,
+we want to update it.
+And the only way
+to update a CloudFormation stack if we click on update is
+to replace the current template.
+Or if you wanna say use the current template, is going
+to just use the same as it was, but you cannot modify it.
+So we want to replace the current template with a new one.
+And so for this, let's go into our code
+and let's go to one EC2 with SG-EIP-YAML.
+And this one is actually an update over the previous one.
+So we have created a new template
+and we've added a lot of things
+that we're going to learn about in this course.
+But we have a parameter.
+We have the resources of the EC2 instance, which has
+more parameters, so it has security groups attached to it.
+And so we are referencing security groups
+that are being created later on.
+So before that, we also have an elastic IP,
+which is attached to my EC2 instance,
+and then one security group here
+and a second security group here.
+So we will have a look at these in greater detail later on.
+So don't need to look at it too much,
+but you can start to have a look
+and see if you can read these transformation templates.
+The idea is that things are changing,
+so let's upload a template file
+and we're going to choose one with SG-EIP.YAML.
+So we click on next
+and we are prompted with a parameter being called
+security group description.
+This is coming straight from this, so we are going to have
+to enter, "This is a cool security group"
+and you can enter whatever you want here.
+I just wanna show you the effect of this in a second.
+Let's click on next.
+And we scroll down next
+and we have a look at the summary.
+So we're going to specify now stack details
+with a new security group description.
+And at the bottom we have access to a change set preview.
+So a change set represents a list of things that is going
+to change as part of your CloudFormation updates.
+And as we can see here, four things are going to happen.
+The first one is that it will be added, a elastic IP.
+It will be added an SSH security group
+of type security group, a server security group
+of type security group.
+And finally, my instance, which was my EC2 instance from
+before is going to be replaced, replacement true.
+That means that the previous one is going to be terminated
+and the new one will be created to replace it.
+Sometimes you will have replacement false, which means
+that the resource can have a change in place.
+And that is for CloudFormation to define
+and to say based on the changes you've operated.
+And of course if you're not happy with it, you can try
+to understand why there is a replacement
+and change your code and hopefully get the outcome you want.
+But here now we have replacement true.
+So let's submit this.
+And as you can see now in the same stack,
+we now have an update in progress.
+So we refresh and the first two things that are happening
+is that we have a server security group
+and an SSH security group being created.
+And then after this we have my EC2 instance that is going
+to be updated
+and it says the requested update requires the creation
+of a new physical resource, hence creating one.
+This is due to replacement true.
+And so what we can observe is that if you go
+to EC2 instances and refresh, so let's remove this filter.
+Now we have access to the previous instance
+and then this new instance that is being created.
+That's why it's in the standing state, which is going
+to replace the previous one.
+So now it is in the running states.
+So back into CloudFormation, I'm going to refresh this.
+As you can see the new resource has been created.
+Now we have the elastic IP being created.
+So create in progress.
+And if we have a look at on the left hand side,
+the elastic IP, we're going to find
+that this elastic IP that has been created.
+And if we have a look at the tags of this elastic IP,
+as you can see it has again been tagged.
+So it has a logical ID, a stack ID
+and a stack name in its stack.
+So all of this is done automatically by CloudFormation.
+And so if you refresh,
+and as you can see, this elastic IP is going to be attached
+to my EC2 instance,
+and the previous one is going to be deleted
+because it is a replacement.
+So back in here, let's refresh.
+As you can see, this one is shutting down
+and being terminated and the one that was created,
+if we have a look at the public IP, it is right here
+and it corresponds to this elastic IP address.
+As you can see, if we look at the summary of this,
+this elastic IP has an associated instance ID,
+which is the one that was created by CloudFormation.
+So this is extremely powerful.
+Of course, we can go to security
+and have a look that yes, indeed two security groups
+have been attached to my EC2 instance,
+and we can have a look at them both.
+So one and two in here.
+So this first one is the SSH security group
+and has an inbound rule on port 22.
+And if you have a look at the tags, well again,
+it has been tagged by CloudFormation as expected.
+And if we have a look at the second one, this server
+security group, then we have more rules, SSH, and HTP.
+And on top of it, if we look at the description
+of this group, it says "This is a cool security group."
+So the parameter that we put
+actually helped us write at runtime the description
+of this security group.
+And that's the whole power of parameters.
+So back into my CloudFormation stack, I can refresh,
+I'm at update complete.
+And if I have a look at my resources,
+we now have four resources
+that we just looked at under my CloudFormation stack.
+The parameter we set from
+before, which was "This is a cool security group,"
+got inserted as the security group description
+for this one security group.
+And we've seen the whole power
+of doing updates through CloudFormation.
+Again, nothing was done manually.
+The template was updated and uploaded.
+And then here we go.
+CloudFormation figured out how to get to the final states.
+Now to clean up CloudFormation, you could right click here
+and terminate your instance,
+but then it's going to be a problem
+because your security groups are still going to be here.
+Your elastic IP is still going to be here and so on.
+So how do we clean up?
+Well, actually from CloudFormation you can click on delete
+and to delete a stack.
+This will delete all the stack resources
+and this will clean up everything
+that was created by CloudFormation.
+So I'm going to do it right now.
+Now we have a delete in progress,
+and if you have a look at your events, again,
+my elastic IP is being deleted.
+Then the next thing being deleted is my EC2 instance.
+So if I refresh this now, it's shutting down.
+And then finally we will have our security groups.
+And the cool thing about it is that CloudFormation was able
+to determine on its own the order
+of which it should delete things, which is very handy.
+So from CloudFormation you'll see how to create, how
+to update, and how to delete all resources within a stack.
+And hopefully that is a good intro
+to the power of CloudFormation.
+So I hope you liked it,
+and I will see you in the next lecture.

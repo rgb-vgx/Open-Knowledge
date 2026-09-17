@@ -1,0 +1,19 @@
+# 232. AWS Tag Editor
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37936078
+# Caption: en_US (manual)
+
+So here is a very quick lecture
+on the AWS Tag Editor.
+So it looks like this.
+You can find resources to tag and then tag them.
+So it allows you to manage tags
+of multiple resources at once.
+You can add updates and delete tags,
+and finally you can search for tagged
+or untagged resources across all AWS regions.
+That's all you know need to know,
+very, very quick lecture,
+but it can appear in one question in the exam.
+All right, I hope you liked it
+and I will see you in the next lecture.

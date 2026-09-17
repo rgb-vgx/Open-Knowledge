@@ -1,0 +1,66 @@
+# 65. SageMaker AI Overview
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285053
+# Caption: en_US (auto)
+
+Let's talk about Amazon SageMaker for a while here.
+SageMaker is basically Amazon's service for machine learning, and while it can do generative AI, there
+are other services that are more specifically built for generative AI that we'll get into as well.
+But SageMaker goes back to before generative AI was really a thing.
+And it's more generally for machine learning algorithms that might include deep learning or generative
+AI.
+But it's it's more broad than that.
+It can do traditional deep learning as well, and it's built to handle the entire workflow surrounding
+machine learning.
+It's not just about the algorithms and the training.
+It's also about fetching, cleaning and preparing your data and then training and evaluating the model
+as well.
+And once you have a model that's trained and evaluated, you can deploy that model and evaluate its
+results in production.
+So it covers the entire machine learning lifecycle that we talked about through various features of
+SageMaker.
+Diving into the training and deployment stage here.
+So this is what it would look like to actually train and deploy a model under SageMaker conceptually.
+So outside you have a client application that wants to get predictions from some machine learning model
+that you've built using SageMaker that will talk to an endpoint, which could be many endpoints.
+Right?
+If you're going to be distributing this thing and scaling it out, those endpoints will then communicate
+with your model, which has been deployed and hosted somewhere.
+That model will make use of artifacts that hosted in S3, and also the actual model code for doing inference
+that is stored possibly in ECR in Elastic Container Registry.
+Now, before you have that model, I'm kind of working backwards here.
+Um, you have to train that model first to that tool will consume an image of code for training and
+also consume training data from S3 that's been prepared beforehand.
+The output of that model training is then the model artifact that goes to the model deployment and hosting
+stage.
+So we've kind of gone from the top down.
+Let's go from the bottom up here to if you're training a model, then you need training code somewhere
+that's hosted in ECR that needs to consume training data from S3.
+Once that model is trained, it will produce model artifacts that are again stored in S3.
+That model gets deployed using inference code that is hosted from ECR, that is fronted by endpoints
+for inference that your client app ultimately talks to Arthur.
+Now, there's a few ways of setting all this up.
+One way is by using code, and if you want to write Python code, then you can do so to orchestrate
+all of this and control all of the data processing and training and deployment right from a SageMaker
+notebook.
+This is just a old school Jupyter notebook here, but with SageMaker those are spun up on EC2 instances
+for you from the console.
+It comes with built in access to S3 for you, and it also includes some handy dandy libraries like scikit
+learn, spark or TensorFlow or PySpark, whatever you want to use.
+It also comes with a wide variety of built in models that will will dive into very shortly.
+And from this notebook you can write code pretty easily.
+That will spin up training instances using whatever instance types you need.
+Kick off that training, and once that model is trained and evaluated and tuned, you can deploy that
+model to actually make predictions at scale.
+So you can orchestrate the entire life cycle here from within a little SageMaker notebook using Python
+code and a Python notebook that includes processing your data, training your model, tuning your model,
+and deploying your model.
+You can also do that from the console, so if you don't like writing code, much of this can be done
+just from the UI in the SageMaker console.
+So it's possible to set up training jobs where you're just saying, hey, I want to use one of these
+many built in algorithms for my training.
+I'm going to point it to this source of training data and do pretty much all of it from the console
+itself.
+So you don't have to write Python code to use SageMaker and build machine learning models that can then
+predictions in production.
+It's also possible to do this through the console as well.

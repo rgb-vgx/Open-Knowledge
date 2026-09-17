@@ -1,0 +1,78 @@
+# 296. Lambda and CodeDeploy
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730690
+# Caption: en_US (manual)
+
+Has an integration with CodeDeploy.
+And CodeDeploy can help you automate
+the traffic shift for your Lambda aliases.
+So it builds onto the versions and aliases.
+Now, we won't do in the hands-on in this lecture,
+but the CodeDeploy feature is integrated
+within the SAM framework.
+And when we go and see
+the Serverless Application Model frameworks, or SAM,
+we will practice the CodeDeploy deployment
+for your Lambda functions.
+But I will still give you the idea right now.
+So we have a PROD Alias, and say we want to upgrade it
+from the Lambda function Version 1
+to the lambda function Version 2.
+So we want to shift the traffic from 100% of V1 to V2.
+CodeDeploy will be making the X, in this example,
+vary over time until X equals 100.
+So that means that X will be first equal to 10%.
+And so we'll have 90% on V1 and 10% on V2.
+Then maybe 50%.
+So we'll have 50% on V1 and 50% on V2.
+And we finally, all the way up to 100% on V2 and 0% on V1.
+So what strategies that CodeDeploy have?
+Well, there is Linear,
+to grow traffic every N minutes until 100%.
+So we have the strategy
+called Linear10PercentEvery3Minutes.
+Linear10PercentEvery10Minutes, so this is pretty explicit.
+And then we have Canary, where We try X%
+and then we switch to 100%.
+So we have Canary10Percent5Minutes.
+So five minutes, there will be 10% of the traffic on V2.
+And right after, oof,
+you will switch to 100% of traffic on V2.
+Or we can have Canary10PercentEvery30Minutes.
+And then finally,
+we have AllAtOnce for immediate traffic shift
+between V1 and V2.
+This is the quickest and most dangerous
+because if we haven't tested our V2 function,
+then things can fail.
+So what about a rollback?
+We can create pre and post traffic hooks
+to check the health of our land function.
+And the idea is that if anything goes wrong,
+then the traffic hooks can be failing
+or a CloudWatch alarm can be failing,
+and your CodeDeploy can know that something is going wrong.
+And therefore, it will do a rollback
+and put the traffic back all onto V1.
+And if you're using AppSpec.yml
+to deploy Lambda with CodeDeploy,
+you have a few important parameters to know about.
+There is the Name,
+which is the name of the function to deploy.
+The Alias, that's required,
+which is the name of the alias of the Lambda function.
+We have the CurrentVersion,
+which is the version of the Lambda function
+that the traffic currently points to.
+And the TargetVersion,
+which is the version of the Lambda function
+that the traffic is going to be shifted to.
+And then CodeDeploy is going to update the alias
+from Version 1 to Version 2,
+from the CurrentVersion to the TargetVersion over time.
+So that is the whole integration
+between Lambda and CodeDeploy.
+We won't be practicing this in this lecture.
+But when we get to the SAM framework section, then we will.
+Okay, that's it.
+I will see you in the next lecture.

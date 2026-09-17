@@ -1,0 +1,148 @@
+# 253. AWS Lake Formation
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/46730185
+# Caption: en_US (auto)
+
+Let's talk about AWS Lake Formation, a relatively new feature.
+It was announced back in 2018 and really saw a lot of refinement over 2020, and we're just now starting
+to see it show up in the exam.
+Lake formation is built on top of glue, and it's really meant as a system for making it easier to set
+up a secure data lake.
+Their tagline is it makes it easy to set up a secure data lake in days, which I guess is pretty quick.
+The things that it manages for you is loading your data from an external source and monitoring those
+data flows, so it allows you to connect to your existing data sources, whether they're already in
+S3 or in some on premises database.
+It can set up partitions for you.
+It can help you manage encryption and manage the keys surrounding that.
+And it can let you set up the transformations associated with that data from the get go.
+Again, it's built on top of glue, so pretty much anything glue, ETL, or any of the glue features
+can do is available to you.
+If spark can do it, then Lake Formation can do it too.
+It's just using glue under the hood to apply those transformations, and that includes transforming
+it into a new format, like a columnar format like parquet or Orc.
+That's on the table cleaning your data, you know, getting rid of missing rows, whatever you want
+to do.
+Anything that we've talked about with glue you can do with lake formation.
+It can also help you manage the access control to the data in your data lake.
+It can help with auditing, and really it's purpose in life is to kind of guide you through the process
+of building your data lake in a secure fashion.
+So let's talk about it from a more conceptual standpoint here.
+Basically, you have a big S3 data lake sitting there when you're done, right.
+So lake formation is going to sit alongside that S3 data lake, help you create it, help you maintain
+it going forward so it can take as a data source anything in S3 from some relational database that you
+might have sitting around, or even NoSQL data sources.
+And those can be on premises as well.
+It doesn't have to be in AWS yet.
+So again, the purpose of lake formation is to help you set up that data lake, and that data might
+be coming from someplace else within lake formation.
+You can set up all the crawlers and ETL jobs and data catalogs and security and access control.
+Any data cleaning or transformations, including to parquet or ORC.
+Again, basically anything glue can do, you can set up as part of lake formation, and once you have
+a lake formation set up, it can then integrate with Athena or Redshift easily or redshift spectrum.
+So Athena and Redshift can then query that data automatically if you have it all registered in lake
+formation.
+And a relatively new feature in 2020 is EMR can also talk to lake formation directly as well.
+Pricing Lake formation itself doesn't cost anything, but the underlying services do.
+Of course, that includes glue, S3, EMR, Athena, and Redshift.
+Normal charges will apply for whatever you build using it.
+The process for building a data lake using lake formation.
+It's a little more complicated than you might think.
+It doesn't really do it all for you.
+This is why they say it takes days.
+And not just minutes.
+Basically, you have to start by creating an IAM user for a data analyst role.
+You know the person that's going to be using this data lake and building it.
+You then need to create a glue connection to the incoming data source or sources.
+Create an S3 bucket for the lake itself.
+And then once you've done that, you can register that S3 path in lake formation and start granting
+permissions to it.
+So this is where lake formation starts to be useful.
+You then create a database within lake formation for the underlying data catalog and grant any necessary
+permissions to it.
+And at that point you can start using blueprints to build up workflows, for example, making database
+snapshots, whatever you want to do to transform that data and get it into your data lake.
+You then run the workflow and grant select permissions to whoever needs to access the resulting data
+Lake Athena or Redshift Spectrum or now it could be EMR as well.
+That's it conceptually, which is pretty much all you need to know for the exam.
+Sometimes they like to dig in on these little troubleshooting things and scenarios of things that can
+go wrong with it.
+One finer point with AWS Lake formation is the issue of cross-account permissions.
+So if you do need to have people across different accounts accessing your data lake and accessing lake
+formation, you need to make sure that the recipient is set up as a data lake administrator.
+And also take note that AWS Resource Access Manager Ram can be a useful tool for managing accounts external
+to your organization and what resources they can access within your account.
+Also, there are IAM permissions for cross-account access that would be relevant here as well.
+Keep in mind lake formation does not support manifests in queries from Athena or Redshift.
+So that is one thing that can cause errors if you're using a manifest in a query.
+One thing to keep in mind.
+Also remember IAM permissions on the KMS encryption keys are needed for encrypted data catalogs in lake
+formation, and IAM permissions are needed to create blueprints and workflows within lake formation.
+So these are all potential, uh, troubleshooting things.
+You might want to know if you're encountering an error about being able to create a blueprint or a workflow,
+it's probably an IAM issue.
+If you're having a cross account permission issue, you probably need to do something with Ram.
+So things to keep in the back of your head.
+Some newer features that are worth talking about with lake formation is governed tables and also some
+new security features.
+Governance tables is a new thing that supports Acid transactions across multiple tables, so we now
+can safely, concurrently do row level accesses and updates and deletions without worrying about those
+multiple users stomping on each other.
+So acid means that we have strict transactional guarantees there in place.
+This uses a new type of S3 table under the hood, so it's still on S3.
+And once you create that choice of being governed or not, you can't change your mind later on.
+But it does give you acid support with your data lake, which is kind of neat, right?
+I mean, kind of the whole point of using a relational database management system instead of a data
+lake was that Acid support?
+And now you don't have to make that trade off anymore.
+It also works with streaming data.
+It doesn't have to be with streaming data, but you can pipe data in from something like Kinesis into
+AWS Lake formation into a governance table, and actually query that streaming data with Acid guarantees
+as well.
+Pretty cool stuff.
+You can even query it with Athena automatically, and just automatically get that acid support through
+Athena by using the new governed table feature in AWS Lake formation.
+Now, one downside of acid support on something like a data lake is that there's sort of an overhead
+that piles up over time for supporting that.
+I won't get into the details, but it is important to periodically compact and compress that data back
+down to avoid the overhead of accessing that storage, increasing over time.
+And AWS Lake formation with governed tables has an automatic compaction feature that will optimize your
+storage automatically over time.
+So you don't have to think about that, even though there is sort of an increasing overhead that piles
+up as you go.
+It will take care of that for you automatically with automatic compaction.
+Also new in AWS lake formation is granular access control with row and cell level security.
+So whether you're on a governed table or an old school S3 table, you now can control access on both
+the row and the cell level to specific users.
+So that's an important feature for some applications currently supported.
+Now.
+Now all of the above features we've talked about do incur additional charges, but they're just based
+on usage.
+So you're only being charged for what you're using.
+Seems fair to me.
+But those are some of the latest and greatest developments in AWS Lake formation.
+Acid support using governed tables that are automatically compacted and optimized for you.
+And also we now have row and cell level security for access control.
+I do want to spend a little bit more time on data permissions in lake formation, because reportedly
+this does crop up in the exam in a couple of places.
+So let's go into a little bit of depth.
+Lake formation does make it easier to set permissions on your underlying data in S3.
+So this is often a way to enforce really fine grained control.
+We talked about the new fine grained access control features in the previous slide, but even without
+that, we have the ability to restrict permissions all the way down to the column level.
+Just using this UI that you see on the right here, it's pretty easy to use.
+So just by studying this UI screen, you can understand a lot of what the capabilities are.
+Starting at the top, you can see that you can tie your permissions to IAM users or roles to Saml users
+and groups, or to external AWS accounts.
+Even those are all possible, and you can just build up a list of the different principles that you
+want to tie a specific set of permissions to.
+It allows you to use policy tags if you want to, and that can be tied to databases, tables or columns.
+And you can base your security based on those tags.
+That's always a good practice.
+Or you can just explicitly set permissions based on either a table or a specific columns within the
+table below.
+And you can see there's a very handy UI there for saying, do you want to let them do selects or inserts
+or deletes or anything else that you can dream up there for a specific table, or even for specific
+columns on a table?
+So if you see questions about implementing column based security on your data, Lake, Lake formation
+might be the way to do it.
+Ethan.

@@ -1,0 +1,186 @@
+# 108. Governance for AI
+# Section: AI Challenges and Responsibilities
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887839
+# Caption: en_US (manual)
+
+So, why is governance
+and compliance important?
+Well, first of all, governance is about managing,
+optimizing, and scaling the organizational AI initiative.
+So, governance is going to be instrumental
+in order to build trust.
+And in the end of the day,
+trust is very important on the AI systems.
+You need to ensure responsible and trustworthy AI practices,
+and you need to mitigate risks
+that include bias, privacy violation,
+or unintended consequences.
+You need to establish clear policies,
+guidelines, and oversight mechanisms
+to ensure AI systems align
+with legal and regulatory requirements.
+Need to protect yourself
+from potential legal or reputational risks
+in case of an issue.
+And you need to foster public trust
+and confidence in the responsible deployment of AI.
+So, all of this we've already said,
+but it's good to remind you of them.
+So, let's talk about a governance framework.
+How do you have this?
+So, here's an example approach.
+You could establish an AI governance board or a committee,
+and this is a team
+that should include representative from various departments,
+such as legal, compliance, data privacy,
+and SMEs, or subject matter experts, for AI development.
+Then you define the roles
+and the responsibilities of the governance board.
+So, who is in charge of oversight,
+policy making, risk assessment, and decision-making process?
+And then you implement these policies and procedures
+by developing comprehensive policies and procedures
+that will address the entire AI lifecycle
+from data management to model deployment and monitoring.
+So, there are some tools on AWS
+that can help you with governance.
+And if they appear at the exam in greater detail,
+I will tell you about them,
+but this is just for those who know about AWS.
+So, you have AWS Config,
+you have Amazon Inspector,
+you have AWS Audit Manager, AWS Artifacts, AWS CloudTrail,
+and finally, AWS Trusted Advisor.
+Again, if they appear on the exam,
+you can rest assured that I will explain to you
+in greater detail how these work.
+So, what can be some governance strategies?
+Well, first of all, you have your policies,
+so your principles, your guidelines,
+and your responsible AI considerations.
+So, you need to consider data management,
+model training, output validation,
+safety, and human oversight,
+so have policies on all of those.
+And also look at intellectual property,
+bias mitigation, and privacy protection.
+You need to define a review cadence.
+So, this is going to be a combination of technical,
+legal, and responsible AI review,
+and you need to have a clear timeline.
+Is it monthly, quarterly, annually, and so on?
+And who is included?
+So, you can have your subject matter experts,
+you can have your legal and compliance teams,
+and end users.
+Then, what is your review strategy?
+So, you can have technical reviews on model performance,
+data quality, and algorithm robustness,
+or you can have non-technical reviews on policies,
+responsible AI principles, and regulatory requirements.
+And you need to make sure to test and validate
+the procedure for the outputs before deploying a new model.
+So, what are your safety checks in place?
+And finally, based on the review results,
+you need to have a clear decision-making framework
+in order to make the right decisions
+based on your assessment.
+You need to have transparency standards.
+So, you need to publish information about the AI models,
+about the training data,
+as well as the key decisions that were made
+to create your AI.
+And document the limitations,
+capability, and use cases of your AI solutions.
+And you should create channels
+for your end users and your stakeholders
+to provide you direct feedback and raise concerns.
+Then you need to train your team.
+So, train them on relevant policies,
+on guidelines and best practices,
+and to train them on bias mitigation
+and responsible AI practices.
+You need to be able to encourage
+cross-functional collaboration and knowledge sharing
+and to implement a training and certification program
+within your company.
+So, this is for overall governance strategies,
+but then you have data governance strategies.
+So, for responsible AI,
+making sure you have a responsible framework and guidelines
+on bias, fairness, transparency, and accountability.
+And to monitor AI and gen AI for your potential bias,
+fairness issues, and unintended consequences.
+You need to also to educate and train your teams
+on responsible AI practices.
+Then, for your data governance strategy,
+you need to, again, to have structures and roles,
+so a data governance council or committee,
+and you need to define the clear roles
+and the responsibility for your data stewards,
+your data owners, and your data custodians,
+and to provide training and support
+to your AI and machine learning practitioner.
+Then you need to have strategies
+on data sharing and collaboration.
+For example, how to securely share data within the company
+by having agreements,
+and also how to make sure you can share data
+to give access to data without compromising ownership,
+so this could be data virtualization or federation.
+And also, how to foster a culture
+of data-driven decision-making
+and collaborative data governance.
+Next, you need to have a few data management concepts,
+so around your data lifecycle,
+around collection, processing of your data,
+storage, consumption, and archival,
+but need to have also governance around data logging,
+so tracking the inputs and the outputs of your system,
+the performance metrics, and the system events,
+and understand where your data is,
+so data residency,
+because where it's processed and stored
+can have impacts on regulations, privacy requirements,
+and you need sometimes to ensure that there is proximity
+of your compute layer and your data layer.
+For data monitoring,
+you need to look at data quality,
+identify anomalies and data drift.
+For data analysis,
+you need to do statistical analysis,
+data visualization, and exploration.
+For data retention,
+you need to look at what are your regulatory requirements,
+what is the historical data for training,
+and the cost associated with retaining data?
+Finally, for data lineage,
+so in the governance space,
+so once you have your data,
+you need to document the source citation.
+So, what are the sources of the data?
+You do attribution and then you acknowledge them.
+What are the datasets, databases,
+and other sources you're using?
+What are the relevant licenses,
+terms of use, or permissions
+associated with that data?
+You need to also document the data origin,
+so how was the collection process?
+For example, you took data from various sources,
+you combine it and then you transform it,
+you clean it, you curate it, you pre-process it,
+and in the end it gives you the final data.
+Also, once you have all your datasets,
+you need to do data cataloging,
+so that means organizing and documenting your datasets.
+It's going to be very helpful to have data lineage
+to enhance transparency, traceability, and accountability.
+So, let's say for governance, as you can see,
+those are a lot of pointers into different directions
+that your organization can go into to implement it.
+But from an exam perspective,
+you understand now the importance of governance
+and a few concepts behind it.
+So, I hope you liked this lecture,
+and I will see you in the next lecture.

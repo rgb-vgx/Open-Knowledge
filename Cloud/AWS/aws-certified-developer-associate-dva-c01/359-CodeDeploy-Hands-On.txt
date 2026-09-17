@@ -1,0 +1,312 @@
+# 359. CodeDeploy Hands On
+# Section: AWS CICD: CodeCommit, CodePipeline, CodeBuild, CodeDeploy
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851340
+# Caption: en_US (manual)
+
+So let's get started with CodeDeploy,
+but first we need to go into IAM to create some roles.
+So, in the IAM console go underneath roles
+and create a role.
+This role's going to be for an AWS service
+and the service we're going to be looking for is CodeDeploy.
+As you can see, I have three options.
+I can create CodeDeploy,
+or for Lambda,
+or for ECS.
+But because we're doing a CodeDeploy use case right now,
+we'll just create a CodeDeploy EC2 service role.
+So let's go ahead,
+create this,
+click on next
+and we'll call this one, CodeDeployServiceRoleForEC2.
+Okay, so now we are good with this role
+and the second role we need to create
+is a role for the EC2 instance that we'll deploy to.
+So let's create a role,
+and this one is for an EC2 instance.
+So it's a role for it,
+and we're going to have a permission
+that allows S3 read access.
+So if I just type S3, I should be good to go.
+The idea is that if you remember the EC2 instance
+will be the one pulling the code from your S3 bucket.
+And so, therefore it means AmazonS3ReadOnlyAccess.
+And that policy is a very simple JSON,
+which allows Get* and List* on any objects.
+So let's click on next, and I call this one,
+EC2RoleForCodeDeploy.
+And let's create this role.
+Okay, so now that the roles are created,
+we need to go back into CodeDeploy and get started.
+So first we need to create an application.
+So I call this one, DemoApplication.
+And for compute platform we have three options.
+We have EC2, we have Lambda, and we have Amazon ECS.
+So we'll choose EC2/on-premises
+and let's create our application.
+Now, to create application
+we need to create a deployment group.
+And to have a deployment group
+it should be better to start an EC2 instance.
+So let's open the EC2 console,
+and I'm going to go to my instances.
+I'm going to launch an instance
+and I'll call this one, DemoWebServer.
+And I scroll down.
+We have Amazon Linux,
+we have a t2 micro,
+we don't need a key pair.
+And then for networking settings,
+we're going to create a security group
+that allows SSH traffic
+and also allows HTTP traffic.
+This is where our web server is going to be started.
+Storage is good and we don't need any EC2 user data.
+So let's go ahead and launch this instance.
+And as you can see, I have not tagged my instance yet.
+I've just launched it
+so that I will show you why tags are helpful later on.
+Now the next steps is to SSH into our instance.
+So now that it is running,
+I'm going to click on connect and then EC2 instance,
+EC2 user and click on connect.
+So now I am SSH'ed into my instance.
+And if it doesn't work for you
+maybe it's because the port 22 wasn't open.
+And now, the next step is to actually
+install the CodeDeploy agents.
+So for this, let's go into our code under CodeDeploy,
+under cicd, we have the commands and we do updates.
+So we update the operating system.
+So we're gonna say, okay, no updates to do.
+Then we install ruby,
+which is necessary for the CodeDeploy agents.
+So we'll say yes and we're good.
+Next we're going to download the agent.
+And in case this doesn't work,
+please replace the region by what you have.
+But this link should work regardless of the region.
+So the install script has now been downloaded.
+And I'm going to make it executable with a chmod command.
+Okay, so let's clear the screen.
+We have the install in green,
+so that means that it's executable.
+And we're just going to execute the install in sudo mode.
+So let's do this.
+Now my agent is being installed.
+And finally, to make sure that the agent has indeed started
+we can just run a sudo service CodeDeploy agent status.
+And as you can see,
+the CodeDeploy agent is running and it has a process ID.
+So now that our EC2 instance is ready,
+let's go into CodeDeploy
+and create our first deployment group.
+So, create a deployment group,
+and this one is going to be called, Developmentinstances.
+And this will be comprised of all my development instances.
+So how do I tell CodeDeploy that one instance is development
+and the other one is production?
+Well, it's using tags.
+So if I go into my instance itself,
+what I can do is that I can click on tags
+and I can manage the tags, add a new tag.
+And I can create a new tag called, Environment.
+And this one is going to be, Development.
+And we will pass that value also to CodeDeploy,
+so that it knows that my EC2 instance
+is a development instance.
+So back into CodeDeploy,
+we need to enter a service role,
+which is created from before.
+So that's perfect.
+Now for deployment type, we have In-place or Blue/green.
+And it turns out that we've seen both
+in the previous lecture.
+But for this demo we're going to use In-place.
+And for the environment configuration
+we have multiple options.
+Are we using Auto Scaling groups?
+No, we're not in this case, but we could.
+Are we using Amazon EC2 instances?
+Yes, we are.
+And are we using on-premises instances?
+No, we are not.
+But the process is similar.
+We would need to install the CodeDeploy agent
+onto these on-premises instances
+and then tag them correctly.
+But for now, let's just choose Amazon EC2 instances,
+and we need to specify a tag group.
+So, the tag group is going to be Environment
+and the value is going to be Development.
+And right now there is no hint at this.
+So, let's just refresh this page
+and I'm going to rename this my DevelopmentGroup
+and Amazon EC2 instances.
+And this time I will pick up the Environment, yes.
+and I will pick up the value, Development.
+And as you can see it says 1 unique matched instances
+have appeared.
+So that means that my EC2 instance from here
+has been picked up in this deployment group.
+So we are good.
+Do we want to install the agent with Systems Manager?
+No, we don't need to.
+Well, because we already have installed the agent ourselves,
+so never, is good enough.
+But of course,
+if we wanted to automate the installation of it,
+we could use this automation right here,
+using Systems Manager.
+But for now, never.
+Now for deployment settings,
+we have CodeDeployDefault.AllAtOnce.
+So this is going to update all my instances at once
+but we have different strategies.
+We have one at a time, we have half at a time,
+or we can create our own deployment configuration.
+If we wanted to have more fine grain control.
+If we were using a load balancer, for example,
+with an Auto Scaling group, we could enable this integration
+but right now we don't.
+So let's disable it and let's create our deployment group.
+So we are now ready to deploy something
+to our EC2 instances.
+So let's create a deployment
+and this is going to apply to my development group.
+And my application is stored in Amazon S3.
+So that is not true yet,
+but we need to go into Amazon S3
+and actually put our application there.
+So I'm gonna go into my S3 console,
+I'm going to create a bucket
+and make sure you choose the same region
+as the region of CodeDeploy.
+So from it's EU-west-1 Ireland.
+So I'm going to say the bucket name is
+Stephane-code-deploy-demo,
+scroll all the way down
+and then create this bucket.
+And now we need to upload some data into our buckets.
+So what data?
+Well, the application itself.
+So I've created a zip file called SampleApp_linux.zip
+and this one we'll upload.
+But I've also unzipped it,
+so we can have a look at what is going on.
+So let's have a look first at the index.html file.
+And this is a simple HTML document that contains
+what we will display on our website
+after doing the CodeDeploy deployment.
+But in CodeDeploy the most important file
+is the appspec.yml file,
+which contains the instructions of CodeDeploy should do
+to actually deploy our distribution or application.
+So as we can see there's a files handle here
+saying that this index,
+that HTML file should be copied into var/www/html,
+which is where the html files are displayed
+for Apache web servers.
+Then we have different hooks,
+and as we can see in here we have a BeforeInstall
+to install dependencies.
+Then we have a start server.
+So after the independencies are installed
+let's start server.
+And finally, before we want to do any update
+we need to stop the application.
+So we have a stop server script
+and each script is actually very simple,
+the script right here,
+so install dependencies
+just installs htpd.
+Start server starts the htpd server
+and stop server will stop the htpd server if it exists.
+Okay, so we are good to go.
+So now let's go ahead and back into Amazon S3.
+I'm going to upload my zip file.
+So here I found my SampleApp_Linux.zip.
+I'm good to go.
+Let's upload it.
+And this was successful.
+So now this file has been uploaded
+and that's the one I'm going to be using
+in my CodeDeploy deployments.
+So here what I need is the full S3 URL to it.
+So let's copy the S3 URI right here and paste it.
+Okay?
+So it's a zip file as we can see,
+but we have other types
+of compression mechanism if you want.
+Okay, so now we're good to go.
+We are not going to touch the deployment description
+we're not going to talk about failures,
+we're not going to be talking about content options
+or overrides.
+We're just going to go and create this deployment.
+So now the deployment has been successfully created
+and my progress of the lifecycle events
+is going to appear right here.
+So let's click on view events.
+And it's going to show you
+all the events that are going to happen
+for my ES2 instance,
+as you can see we're going to have ApplicationStop,
+DownloadBundle, BeforeInstall, Install,
+AfterInstall,
+ApplicationStart and ValidateService.
+So for this, the CodeDeploy agent must pick up the fact that
+there is a new deployment.
+And my deployment just failed, and I know why.
+It's because I forgot to attach the instance role
+to my EC2 instance.
+So you may have noticed this while I was doing the video.
+Anyway, just go to action
+and then security, and then modify IAM role,
+and we'll choose the IAM role
+called EC2RoleForCodeDeploy.
+And this of course allows my EC2 instance
+to actually get the files from Amazon S3.
+So let's try again to run a deployment.
+So for this, let's go into this one.
+I'm going to do retry deployments,
+and now it's started
+and hopefully now my EC2 instance
+should be able to get the file from S3,
+and therefore the deployment should happen.
+So let's view the events now.
+And as we can see now, my deployment has worked.
+So we have ApplicationStops, then DownloadBundle,
+BeforeInstall, Install, AfterInstall, ApplicationStart
+and ValidateService.
+And to verify that everything has been working,
+Let's go to ESC2 instance.
+I'm going to copy the public IP and type http:
+and the IP address.
+And we have a congratulations.
+This application was deployed using AWS CodeDeploy.
+So that's it.
+We've performed our first deployment on CodeDeploy.
+Of course, you could update the application,
+update the S3 bundle zip,
+and then redeploy it.
+And it will be again, redeployed to your EC2 instances
+based on your configurations.
+So to summarize, we've looked at deployments,
+we've looked at the applications.
+We can look at deployment configurations where you can see
+that you can deploy on EC2, on Lambda, on ECS, as well.
+And you can create a deployment configuration
+for the platform you want.
+So if you wanted to customize, for example,
+the number of healthy hosts as a percentage with a number
+for controlling how CodeDeploy
+deploys your application.
+And also, you can register on-premises instances here,
+so that CodeDeploy can deploy the application
+on-premises as well.
+Also, please do not forget to terminate the EC2 instance
+you've created.
+All right, that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

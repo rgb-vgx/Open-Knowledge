@@ -1,0 +1,114 @@
+# 305. DynamoDB WCU & RCU - Hands On
+# Section: AWS Serverless: DynamoDB
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/28646574
+# Caption: en_US (manual)
+
+So let's have a look at
+how we can define the RCU and WCU of our tables.
+So if we take our User's table, for example,
+and you go on the right hand side
+and you do Additional settings,
+you have the Read/Write capacity
+and you can edit it.
+So this is what we had defined at table creation time.
+But the cool thing about DynamoDB
+is that we can switch between the capacity modes
+if we needed to
+and then we can also change them over time.
+So let's take the most simple capacity mode right now,
+which is On-demand.
+And this is simplified billing for paying
+for the actual reads and writes of your application.
+But this is twice
+or three times as more as expensive as provisioned.
+And so obviously this is when you have
+a very unusual, unpredictable type of workload,
+or maybe this is like in your development environments,
+and let's consider that you're not using the table at all
+for like 24 hours a day,
+but maybe one day for one hour,
+you'll be using the table a lot.
+And so therefore this is a great capacity mode
+because it actually builds you for what you've been using,
+which is quite amazing.
+Now there's Provisioned capacity mode,
+and this is the one we spent most of the time on
+to understand and to compute the Reads and Writes.
+And so let's go into the capacity calculator.
+So as we can see here,
+you can specify the average item size, for example,
+six kilobytes, how many reads per second you want,
+so maybe three reads per second and two writes per second.
+The type of reads you want to have
+so eventually consistent and strongly consistent,
+there is transactional,
+but I will define this a bit later on.
+I didn't want to overwhelm you right now.
+So eventually or strongly consistent,
+and then for the write consistency
+same standard or transactional,
+but again, traditional, we'll see it a little bit later.
+And as we can see, based on what I choose,
+it gives me the RCU and the WCU
+as well as the estimated cost I will have for my table.
+So this is quite a handy calculator,
+and I would suggest that you practice a little bit
+with these settings and you try to guess correctly
+what's the RCU and WCU for this table,
+because this is something that the exam will ask you.
+Cool.
+Now, let's take a look at the table capacity.
+So we can obviously have Off Auto scaling
+and Off Auto scaling for read and write
+and so therefore you need to Provision capacity units
+and they won't change over time
+unless you manually change them.
+But you can also set up Auto scaling.
+And Auto scaling is really cool
+because we're just saying
+what's my min and my maximum limit to consider?
+And what's my target utilization as a percentage?
+And DynamoDB will try,
+for example, if we have a maximum capacity of 100,
+it will set it to 100 the WCU
+if you're actually consuming on average 70 WCUs and so on.
+But if you're consuming, say seven WCUs,
+then automatically the Auto scaling will kick in
+and the desired capacity units will be 10 for that table.
+So Auto scaling is nice
+because you don't have to think too hard
+about setting the WCU and RCU.
+You just need you to think about what's my min,
+what's my max,
+and what's my target utilization and your application
+and then DynamoDB will do the rest,
+which is nice to have a better pricing and a better scaling.
+Okay, so this is applying to both Auto scaling
+for Reads and for Writes.
+So this is good.
+And then you would get the estimated cost and so on.
+So if I set it to Auto scaling max three and min one,
+and then again, max three and min one,
+and click on save changes.
+Now, what I'm going to do
+is just to wait a little bit of time
+for Auto scaling to kick in
+and to see the auto scaling activities.
+And as we can see,
+the Provisioned was two and two for WCUs and RCUs.
+But we had 1, 2, 3 in terms of range for Auto scaling
+and I refresh Auto scaling activities.
+And as we can see for this table,
+the Setting Read capacity and was set to one
+and Write capacity was set to one
+because I'm not using a table.
+And so auto is getting kicked in and it worked.
+And so therefore, if I refresh this page
+and remove this here,
+as we can see now, the RCU and WCUs are one and one.
+So I'll just going, it's quite cool.
+It works just like EC2,
+but for DynamoDB.
+So that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

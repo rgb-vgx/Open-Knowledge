@@ -1,0 +1,51 @@
+# 206. Humans in the Loop
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865867
+# Caption: en_US (auto)
+
+A way to extend agentic AI systems or AI systems in general is by injecting humans in the loop.
+Sometimes you need a little bit of human judgment when you can't trust the API if you're doing
+something more complicated.
+And this can refer to any number of things, really.
+So it could be as simple as just how humans consume AI generated content.
+So if you are having chat GPT prepare a document for you, and then you refine the draft of
+that document yourself, well, you're a human in the loop.
+But usually we're talking more about workflows, right?
+So you could envision a system that has an escalation criteria set into it.
+So if it has a complex or uncertain thing and it detects that it's kind of going off
+the rails, it might say, ah, have a human take care of this for me and route that to
+a human operator somehow.
+So an example would be customer service, right?
+You know, if you're dealing with a customer and you're just not getting anywhere with
+resolving that through the AI agent, maybe the AI agent can somehow recognize that it's
+not getting somewhere and automatically escalate that to a human being for attention by filing
+a ticket that goes to a human or something like that, right?
+So internally it might have confidence scores or risk assessments that it's using to evaluate
+that where it says, okay, the confidence of my response is not above this threshold.
+So maybe I should get a human involved and actually route this to a human being to look at.
+And that's where MCP integrations might come into play, right?
+So that might be used to fire off a JIRA ticket or something with some external ticketing
+system to get human attention on the matter.
+It can also be referencing human feedback.
+So just, you know, in the training and improving of models, something you've probably seen
+where you're using chat GPT is sometimes it will give you two responses to choose between.
+And that's an example of a human in the loop to fine tune and refine that system by injecting
+your human preferences into it.
+And sometimes that's a good thing.
+Sometimes it's a bad thing.
+You know, you might remember a period where chat GPT was really a sycophantic and really
+was overly fawning over the user.
+That's the result of that going sideways, by the way.
+But you know, it is a valid approach.
+So if you do want to collect that explicit feedback on the results and, you know, modify
+your model based on that feedback and choose between different models that way, one way
+of doing that is this architecture on the right here.
+You could have an API gateway fronting a Lambda function that in turn goes down to DynamoDB
+that stores that preference information.
+So that feedback collection could be stored in DynamoDB in that situation.
+And you would also need to obviously to index that in such a way that I can analyze it later on.
+So this might be a good way to measure which foundation model is performing best from a
+human standpoint, which variant of that model, which fine tune model is doing the best job
+of making your human users happy.
+So you need some way of collecting that feedback and analyzing it later.
+Maybe using DynamoDB fronted by Lambda fronted by API gateway would be one way of doing that.

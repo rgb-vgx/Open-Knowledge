@@ -1,0 +1,116 @@
+# 30. AWS Tags & SSM Resource Groups
+# Section: Managing EC2 at Scale - Systems Manager (SSM)
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512806
+# Caption: en_US (manual)
+
+So now let's have a look
+at tags and resource groups.
+So first tags, we know them.
+They're key-value pairs that we can have
+on many AWS resources.
+And they're commonly used in EC2,
+but many other sources as well.
+And they have a free naming convention.
+But common tags are going to be named
+Environment, Team, and so on.
+So we use tags for doing resource grouping,
+as we'll see in this lecture,
+but for automation as well,
+for security, and cost allocation.
+And the general rule of thumb is that it's better
+to have too many tags then too few.
+So with these tags now what we can do,
+is that we can leverage them to create resource groups
+and to do so while we make sure
+that we can group two resources together,
+if they share the same tags.
+So they will allow us, for example,
+to group applications together,
+to group different layers of the same application stack,
+or to differentiate between a production environment
+versus a development environments.
+So in this example, I have three EC2 instances.
+Two of them have the environments dev as their tag, okay?
+And one of them has the environment prod as their tag.
+So what I can do is I can create a resource group
+for the filter environment equals dev.
+And this will create a logical group
+of my first two instances.
+So this is something you can do on a regional level, okay?
+It's a regional service.
+And it works not just with EC2 instances, of course.
+But it works with Amazon EC2, S3,
+DynamoDB, Lambda, and so on.
+Okay, so let's get going with tagging our resources.
+So the first instance, right now, I'm going to manage tags.
+I'm going to add a tag.
+First of all, the name is MyDevInstance.
+And then I'm going to add a tag.
+The environment is going to be dev,
+and the team is going to be finance.
+So I'm going to tag my first instance.
+And now the name is showing here as well.
+The second instance will also be tagged.
+So I will manage the tags,
+and the name is going to be MyProdInstance.
+Now for the environment,
+as you may have guessed is going to be prod.
+And then for the team, it's still going to be finance.
+And finally, I'm going for the last instance
+to tag it as well.
+So the name is going to be MyOtherDevInstance.
+The tag is going to be environment dev,
+and finally for the team, I'll use operations.
+Okay, we're good to go.
+So now we have our three instances and from there,
+I'm going to be able to create resource groups.
+So back into systems manager,
+I'm going to go here,
+and I'm going to find the resource groups, okay?
+So, and then in the search bar, I'm going to go
+to resource groups and find the window
+for the resource groups.
+I'm going to create a resource group,
+and it's going to be tagged based, okay?
+And then we need to select the resources
+so we can use all resource types
+to look across our accounts.
+Or we can just look for EC2 instances.
+And for example, we want you to have the environments.
+Oops, environments.
+Here we go.
+To be equals to dev.
+And add this.
+If we do this, we can preview the resource group resources.
+And we can find that two EC2 instances
+are in my resource group.
+We have my dev instance and my other dev instance.
+It's just perfect.
+So we'll call this one dev group.
+And create this group.
+So similarly, we can here create a new resource group.
+And this one is going to be again for our EC2 instance,
+and the environment is going to be of type prod.
+We can preview the resource groups,
+and then there's one resource within it.
+And this one I can call ProdGroup.
+Great.
+And next I can create one last group.
+So again, my EC2 instances, and for this time,
+the team is going to be finance.
+And here, I will call this group my finance group.
+And again, we can look at the resources
+and we can find two EC2 instances.
+My prod instance and my dev instance
+belong to this finance group.
+So this is good.
+We create a group.
+And here we go, we have three resource groups.
+Now, the reason why we do these resource groups
+is that we wanna be able to operate SSM
+directly at the group level.
+So we can, for example, patch the operating system
+and perform some actions and so on.
+So this is why it's a prerequisite.
+So once you have done your resource groups,
+we're good to go for the next lectures.

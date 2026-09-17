@@ -1,0 +1,72 @@
+# 298. Lambda Function URL - Hands On
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527780
+# Caption: en_US (manual)
+
+So let's create a function
+and I will call this one lambda-demo-url.
+And then we can choose Python 3.9
+and then we can create this function.
+So now the function is created, I can just click on Test
+and then we have a new Test Event.
+We save this, we add a name, test, and Save.
+And as you can see, if we test this function right now,
+the response is status code 200,
+body, Hello from Lambda.
+So this is good.
+This is exactly what we want.
+This returns on HTTP-like response.
+And what we want to do, is to now publish this.
+So we're going to publish this new version.
+I'll call this one version 1, so we have version 1.
+And now what we should do is that we create an alias
+and we create this alias,
+and I'll call this one, dev and let's save this.
+So dev points to version 1.
+And now I'm going to scroll down.
+And as you can see here, Function URL is empty.
+And on the left-hand side,
+there is Function URL that you can select
+and you click on Create Function URL.
+Here, we specify the authentication type.
+So we have IAM or NONE.
+So we'll use NONE and we'll need to make sure
+that we have the proper resource policy.
+And as you can see,
+there is this, that gets automatically created,
+which allows anyone to access our Lambda Function URL
+of AuthType, NONE, which is good.
+And then also, if you wanted to,
+we could configure CORS, Cross-Origin Resource Sharing,
+right here, to say which origins we want to allow,
+which headers we want to expose, and so on.
+And this is CORS specific configuration,
+but we won't need it right now.
+So we're good to go.
+We have this new Resource Policy
+that gets attached to our function,
+and now we have a Function URL
+and this will remain the exact same URL forever,
+for this alias, dev.
+So if I open a new tab and then paste this in,
+as you can see, I get the response, Hello from Lambda.
+And the fancy thing you see right here
+is just my web browser displaying some extra stuff.
+But as you can see, it says Hello from Lambda.
+And so that worked.
+And so we were able to access our Lambda Function publicly,
+through a URL.
+Other things to note is that if I, for example,
+go back to my Lambda function,
+so I go back to my Lambda Function
+and I'm going to look at Aliases right here.
+So I am on version 1 and if I click on version 1
+and I try to go to Function URL, as you can see,
+it says you can only add a Function URL
+to unpublished function versions or an alias.
+So we can go to the unpublished version, which is latest.
+And in latest, I can also, if I wanted to,
+create a Function URL,
+which would allow people to access my latest Lambda version.
+Okay, so we've seen how Functions URL work.
+I hope you liked it and I will see you in the next lecture.

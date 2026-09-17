@@ -1,0 +1,141 @@
+# 140. [SAA/DVA] S3 Event Notifications - Hands On
+# Section: Advanced Amazon S3 & Athena
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/23743924
+# Caption: en_US (manual)
+
+Okay, so let's go ahead
+and demonstrate S3 Event Notifications.
+For this, I'm going to create a bucket.
+I call it "stephane-v3-events-notifications"
+and then when Ireland's...
+and I will just go ahead and create my bucket altogether.
+Okay. So now bucket is created.
+I'm going to go into it.
+And what I'm going to do now
+is make sure that event notifications are set up.
+So I go to properties,
+scroll down and then, here we have event notifications.
+And as you can see, we have two options.
+Number one is to create an event notification,
+and I will show you this in a second,
+or number two is to enable
+the Amazon EventBridge integration
+to send all the events
+from this S3 bucket into EventBridge.
+And for this, you just you set it on
+and you'll be good to go.
+So it is something that now if I wanted to,
+I could use Amazon EventBridge
+to catch the events happening in my S3 buckets.
+But I will show you the simpler way
+because it's a bit more complicated,
+is to just create an event notification
+and send it for example to SQS.
+So I'll call this one "DemoEventNotification"
+and then we can set up a prefix, a suffix,
+but I won't do it.
+And next, we to choose event types.
+So we want to react to all object create events.
+So that means that any time an object is created,
+then an event is going to be created.
+But if you wanted to, you could get more granular
+and select which type of events you wanted.
+But to keep it simple, I'll take it here.
+And you can also include for example,
+object removals, object restores,
+and it shows you all the events you can catch
+on the right hand side.
+So I'll keep it simple.
+I'm just going to scroll down,
+but as you can see,
+there are a lot of different events
+you can react to in Amazon S3.
+And then, you want to publish to a destination.
+And so we have three options.
+We have Lambda functions, SNS topic, and SQS queue.
+And I'm going to choose SQS queue
+but we first need to create a queue,
+and then authorize Amazon S3
+to publish messages into that destination.
+So what I'm going to do now
+is just go into Amazon SQS and then create a queue.
+And I call this one "DemoS3Notification."
+I will go ahead and create this queue.
+And it's created.
+So now wanting to do is to enhance the access policy
+to allow my S3 bucket to write into my SQS queue.
+So to do so, let me first demonstrate the problem.
+So if I go back here
+and I am going to refresh this page to see my queue appear.
+So I refresh it and I say DemoS3Events.
+All object created, and then scroll down
+and then choose the SQS queue.
+I can choose the queue ARN.
+Sorry. I could choose queue here in the dropdown,
+DemoS3Notification.
+And if I try to save my changes,
+I get an unknown error, which is saying that,
+"Hey, you are not able to validate
+the destination configuration
+because this SQS queue does not accept yet messages
+from my S3 buckets."
+And so I need to change the access policy
+by clicking on edits,
+scroll down, here's my access policy.
+And I need to go ahead and generate a new policy.
+So I go to Policy Generator.
+It's going to be an SQS queue policy.
+And the effect is allow anyone, just to be very permissive,
+to do a send message.
+And my Amazon resource name is right here.
+I need to copy it and paste it.
+I add a statement, and then generate this policy.
+And now, this is the policy I wanna use
+which allows anyone to write to my SQS queue.
+So it's very, very permissive, but it will work.
+Let's save this.
+And now my access policy has been updated.
+So now, if I go back here and try to save my changes,
+as you can see, the operation was successfully completed.
+And what happened is that if I go into my SQS queue
+and click on send and receive messages,
+and then click on poll for messages,
+as you can see, a message was being sent by Amazon S3
+which is to test event, to test the connectivity.
+So what I can do is I can take this message and delete it.
+So now we want to test whether or not
+the S3 Event Notification is working with SQS.
+So therefore we're going to upload an object,
+click on add files and choose our coffee, the JPEG.
+I will upload this file.
+Now the file has been uploaded.
+And if I go into my bucket,
+I can indeed see that my coffee, the JPEG, has been created.
+And imagine we wanted to automate this
+and create a thumbnail from it.
+Then, we will need to have a message into our SQS queue
+to then process it and create a thumbnail.
+Therefore, I'm going to pull for messages.
+And as you can see, a message was created here.
+And if you look at the message itself,
+and I'm going to try to increase this window size,
+we can see the fact that the "eventName"
+was "ObjectCreatedPut"
+So an object was indeed created.
+And if we look deeper,
+we're going to see that the key of that message
+is coffee, the JPEG.
+So the coffee, the JPEG, was created
+and it generated a whole event into my SQS queue.
+And therefore, that shows the power
+of S3 Event Notifications.
+What I can do here is I can delete the message
+and we're done.
+Okay. So that's it.
+We've seen S3 Event Notifications.
+What you need to remember again
+is that you can send to SQS, SNS and Lambda,
+as well as send all events to Amazon EventBridge
+for further processing and sending it to more destinations.
+Okay. That's it.
+I will see you in the next lecture.

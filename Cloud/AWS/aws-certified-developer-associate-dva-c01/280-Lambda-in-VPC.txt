@@ -1,0 +1,114 @@
+# 280. Lambda in VPC
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730594
+# Caption: en_US (manual)
+
+Okay, so now let's talk about networking
+and Lambda functions.
+So by default, your Lambda functions are launched
+outside of your own VPC,
+so it is in another VPC that AWS owns, okay?
+And therefore, it cannot access resources
+that belong in your VPC.
+So what is the point in your VPC?
+It could be your issue to instances,
+RDS database, ElastiCache,
+or an internal elastic load balancer, these kinds of things.
+So by default, you will learn
+that Lambda deployments look like this.
+You have the cloud, your Lambda function,
+it can access any public websites, okay?
+We can access external APIs.
+And also we can access other services such as DynamoDB.
+But if we have our own VPC and our own private subnet
+and we have a private RDS within it,
+then Lambda cannot access RDS.
+So you may ask me the question, what can I do to solve it?
+Can I deploy my Lynda in a VPC?
+And of course you can.
+So for this, you must define your VPC ID, the subnets
+and you need to assign a security group
+to your Lambda function.
+And behind the scenes,
+the Lambda function will create an ENI.
+So Elastic Network Interface
+in the subnets that you have selected
+and to create this ENI, your Lambda function needs
+a Lambda VPC Access Execution Role.
+So back into our private subnet,
+we have our RDS security group
+around our Amazon RDS database in our VPC.
+And this Lambda function,
+we want to give it VPC access.
+Therefore once we've set it up correctly
+it will create an ENI, an elastic network interface,
+alongside the Lambda security group
+and to access your RDS database,
+Your Lambda is going to go through your ENI.
+You know, it's invisible, we don't see it,
+but this is how it happens behind the scenes.
+So it will go through the ENI
+into your Amazon RDS database.
+And so for this to work, we need to make sure
+that the RDS security group does allow network access
+from the Lambda security group, just like
+for EC2 instances and load down search, for example.
+Okay.
+So here is a caveat.
+What if we deploy a Lambda function in a VBC,
+can we access the public internet?
+And by default, Lambda function inside
+of your VPC does not have access to the internet.
+So you may ask me, okay.
+I don't want you to deploy my Lambda function
+inside of a private subnet.
+I want to deploy it in a public subnet
+and you told me Stefan,
+that public subnets have access to the internet.
+So that is true for EC2 instances
+but it is not true for Lambda functions.
+So deploying a Lambda function
+in a public subnet does not give it internet access
+or a public IP.
+And it's good to know.
+So the exam will definitely test you on this.
+So what can we do then?
+Well, you can deploy your Lambda function
+in a private subnet and to give it internet access,
+you would use a NAT gateway, or a NAT instance,
+just like we saw in the VPC primer.
+So we have our Lambda function in our VBC,
+we're in the cloud, and it is deployed
+in a private subnet, not a public subnet.
+So it's in a private subnet and we have access to RDS
+but to access an external API,
+we need to go through a public subnet with a NAT device.
+So a NAT gateway or NAT instance.
+The NAT gateway or instance will be talking
+to the internet gateway of our VPC
+and the internet gateway will give us access
+to the external API.
+So all of this is configured
+through your route tables and your VPC configuration, okay?
+Next, what if you want you to access DynamoDB,
+well, we can access DynamoDB either
+through the public route and through your internet gateway.
+So this would work once a NAT is put in place.
+Or, if you want to access DynamoDB privately,
+you can use VPC endpoints.
+And VPC endpoints, if you remember,
+they're used to access private AWS services
+privately within your cloud
+without access to a NAT device or an internet gateway.
+So we'd create a VPC endpoint for DynamoDB
+as the VPC endpoint gateway,
+and Lambda function will be talking
+to the end point and accessing privately
+your DynamoDB service, which is great.
+And so all of that works.
+So if you deploy a Lambda function
+in a private subnet, note that your CloudWatch Logs work
+even if you have no end points or NAT gateway.
+CloudWatch Logs is something that functions no matter what.
+Okay, so that's it for the theory,
+Now let's go into the hands-on.

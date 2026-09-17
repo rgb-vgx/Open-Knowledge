@@ -1,0 +1,230 @@
+# 106. Redshift
+# Section: Data Engineering
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376608
+# Caption: en_US (manual)
+
+Okay, so now we're getting
+into data warehousing.
+And for this we have Amazon Redshift.
+So Redshift, as you may know, it is based on PostgreSQL,
+but it is not used for OLTP.
+OLTP is online transaction processing.
+And RDS is a much better choice for this.
+For Redshift, it is OLAP.
+So online analytical processing,
+and this is obviously when you want to do, analytics
+and data warehousing.
+The idea with Redshift, the cell point,
+at least it like it has better performance
+than other data warehouses and it can scale
+to petabytes of data.
+The particularity of Redshift is that the data is not stored
+as a row, it is stored as a column.
+So it's called a columnar storage of data.
+And the reason it is so is that if you want, for example,
+to sum or do the average of a column,
+then it can read all the values at once.
+And so it's very efficient in that regards.
+So this is why Redshift is great for OLAP and not OLTP.
+There is a engine called Massively Parallel Query Execution
+or MPP, which allows you to perform queries
+and distribute them across
+so many Redshift nodes in your cluster
+and get the best performance out of it.
+You now have two modes to run your Redshift cluster.
+You can have a provision cluster, which is on demand servers
+that you provision ahead of time,
+or now you have a serverless cluster.
+If you don't want to manage any of the infrastructure,
+it has a SQL interface for performing the queries.
+So it is standard
+and you can plug in some tools such as AWS QuickSight,
+or Tableau to integrate with Redshift
+and create some dashboards.
+And Redshift will be running the queries very, very quickly.
+So your dashboards are very responsive.
+Okay, so Redshift, how do we load data into it?
+Well, number one, you can load it from S3
+using a copy command.
+We can use Kinesis' data Firehose
+to load data into Redshift near real time.
+We can integrate with DynamoDB
+or use DMS database migration service
+to load data into Redshift.
+Cluster can be really, really big.
+So you can have hundreds of nodes.
+Okay, the number is 100 plus.
+It can change over time, obviously it can increase
+and each node can have up to 16 terabytes of space.
+And again, that number could increase over time.
+But what this means is that you can get really massive scale
+for your Redshift clusters.
+You can provision multiple nodes
+and you have single AZ support
+for most of Redshift clusters.
+But for some types of cluster,
+you now have a multi AZ option,
+which gives you failover capabilities
+in case you experience a disaster in one specific AZ.
+So you have two types of node in Redshift,
+you have the leader node, which is here
+for doing query planning
+and aggregate any results from the compute node.
+And the compute node are gonna be here
+for performing the queries
+and they're going to send the results back to the leader.
+Redshift is a managed service and therefore we get backup
+and restore facility.
+It's launched within the VPC.
+So we have VPC enhancements, IAM security
+for accessing the cluster, KMS security for encryption
+of the data and monitoring through CloudWatch.
+There is this thing
+called the Redshift enhanced VPC routing, which is
+to make sure that your copy and unload goes directly
+through the VPC.
+So it gives you better performance and lower cost.
+Finally, remember, Redshift is something you have
+to provisioned, so it's only worth it
+when you have a sustained usage of your cluster.
+If your queries are sporadic instead, Athena is going
+to be a much greater, better choice.
+Okay, now let's talk about
+from an architectural perspective, the snapshots
+and disaster recovery.
+This is very important, you know this going into the exam.
+So snapshots are going to be point in time backups
+of a cluster and they're going
+to be internally stored into Amazon S3.
+And anytime you redo a snapshot,
+it's going to be incremental.
+So only what has changed
+in your Redshift cluster will be saved.
+And the cool thing is that you can restore a snapshot
+into a new cluster.
+So it's not an old cluster
+that you can restore a snapshot into.
+You have to create a new cluster from a snapshot.
+So we have two kinds of snapshots.
+The first one are automated snapshots,
+and they happen every eight hours
+or every five gigabytes of data is changed in your cluster
+or on the schedule that you set.
+And you're going to set a retention for your snapshot,
+for example, 30 days.
+And after 30 days, your snapshots
+will be automatically removed.
+And then if you want to have very long term storage
+of your data for as a snapshot,
+then you create a manual snapshot.
+And in that case, the manual snapshot is retained
+until you delete it.
+So this is very, very similar to how RDS works.
+There's one cool thing though with Redshift is
+that you can configure Redshift
+to automatically copy your snapshots either automated
+or manual to another AWS region.
+And that is really, really cool because in case you are
+creating a disaster recovery strategy
+and you're saying, okay, my Redshift warehouse needs
+to be recovered into another region very quickly,
+then you know you can copy automatically your snapshots
+across regions such as whenever a disaster
+strikes your first region,
+you can restore very quickly into the other region.
+So how do we do a cross region snapshot copy
+for KMS encrypted Redshift snapshot?
+So you have the source and your snapshot
+is in your source region.
+It's encrypted using the KMS key A,
+and you want to copy it into destination KMS key B.
+So what we need to do
+is call a Redshift snapshot copy grant.
+And what this is, is that it will allow Redshift the service
+to perform encryption operations in the destination region.
+When this is done, then you can copy your snapshot
+from the region one into the region two,
+and then it will be encrypted by Redshift
+with a correct KMS key.
+So the really magical thing here that happens
+is that you need to have
+and create a snapshot copy grant.
+Redshift spectrum is a way for you
+to query data in Amazon is free
+without first loading it into Redshift.
+For this, you must have a Redshift cluster available
+to start the query,
+and then the query is then submitted to thousands
+of Redshift spectrum nodes.
+So how does that work?
+Well, we have our existing Redshift cluster
+has a leader node and has a bunch of compute nodes.
+But then if we do a query on data on Amazon S3
+that will look like this, then what's going to happen
+is that Redshift is going to spin up a lot
+of virtual spectrum nodes that will do the computation
+and the query of our dataset in Amazon S3.
+And then once the result is there, it's going
+to be sent back to the compute nodes for aggregation
+and then it will be rolled back into the leader node.
+You also have a feature
+called Redshift Workload Management, WLM.
+So it enables you to flexibly manage queries priorities
+within workloads.
+And the use case for this
+is to prevent short fast running queries from getting stuck
+behind long running queries.
+You can define multiple query queues.
+You can define, for example, a super user queue,
+user defined queues, and so on.
+And then you route your query
+to the appropriate queue at runtime.
+So in this example, I have Amazon Redshift
+and I have three queues.
+I have the super user queue, the short running queue,
+and the long running queue.
+The names are pretty explicit
+and say we have two kinds of users.
+We have our admin and our user.
+So the admin, they want their queries to be done
+as soon as possible.
+So they will do system queries,
+and then these queries will go directly
+into the super user queue.
+And this will have priority,
+the user may have some short running queries,
+and these we want to have
+into the short running query queue.
+This way we are sure that it will just be a lot
+of short running queries,
+but if the user is submitting a longer running query
+and we know it's gonna take a lot of time,
+then we should send it directly into the long running queue
+to make sure not to block the short running queries.
+So we have two kind of workload management.
+The first one is automatic WLM,
+where the queues and resources are managed by Redshift.
+And the second one is manual WLM, where the queues
+and resources are managed by you, the user.
+Then we have Redshift concurrency scaling.
+So this enables you to provide consistently fast performance
+with virtually unlimited number of users
+and queries by adding Redshift capacity on the fly.
+So this additional cluster capacity
+is called concurrency scaling cluster and allows you
+to process an increase in requests.
+So let's say we have a normal Redshift cluster
+with a few nodes another,
+and then this sustains a bunch of users
+that we have normally,
+but say tomorrow we get a lot more users submitting queries
+into Amazon Redshift,
+then automatically the concurrency scaling cluster
+will add nodes automatically to accommodate
+for this number of users.
+Now we get the ability to decide which queries get sent
+to the concurrency scaling cluster
+using the WLM feature we just saw before.
+And this feature is charge per second.
+So that's all you need to know about Redshift.
+I hope you liked it and I will see you in the next lecture.

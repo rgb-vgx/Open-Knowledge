@@ -1,0 +1,71 @@
+# 228. Neptune
+# Section: Databases in AWS
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13672456
+# Caption: en_US (manual)
+
+Now let's talk about Amazon Neptune.
+Neptune is a fully managed graph database.
+So an example of what a graph dataset would be
+would be, for example, something we all know,
+which is a social network.
+So if we look at a social network, people are friends,
+they like, they connect, they read, they comment, and so on.
+So users have friends, posts will have comments,
+comments have likes from users, users share and like posts.
+And so all these things are interconnected,
+and so they create a graph.
+And so this is why Neptune is a great choice of database
+when it comes to graph datasets.
+So Neptune has replication across 3 AZ,
+up to 15 read replicas.
+It's used to build and run applications that are gonna be
+with highly connected datasets, so like a social network,
+and because Neptune is optimized to run queries
+that are complex and hard on top of these graph datasets.
+You can store up to billions of relations on the database
+and query the graph with milliseconds latency.
+It's highly available with application
+across multiple availability zones,
+and it's also great for storing knowledge graphs.
+For example, the Wikipedia database is a knowledge graph
+because all the Wikipedia articles are interconnected
+with each other.
+Fraud detection, recommendations engine,
+and social networking.
+So coming from an exam perspective,
+any time you see anything related to graph databases,
+think no more than Neptune.
+Now Amazon Neptune also has a feature
+called Neptune Streams.
+So streams in Amazon Neptune are going
+to be a real time ordered sequence of data for every change
+that happens within your graph data
+in your Neptune database.
+So that means that whenever an application is writing
+to Amazon Neptune,
+then the changes will be available immediately
+after writing into that Neptune streams.
+So in that stream, you have no duplicates
+and a strict ordering of changes happening
+within your Neptune cluster.
+So in a graph, we have rights,
+and these rights are written, of course,
+to your Neptune cluster, but also to a Neptune stream.
+Now this stream data is accessible using an HTTP REST API.
+That means that your applications, for example,
+that want to read your Neptune Stream,
+can use this API to get all the changes in real time.
+So the use cases for enabling Neptune streams are,
+for example, to send notifications
+whenever some changes are made within your graph data,
+or to maintain your data synchronized
+into another data store.
+For example, you want to replicate the changes happening
+within your Neptune cluster into Amazon S3 or OpenSearch
+or ElastiCache or more.
+Or if you want to replicate data across multiple regions
+for your Neptune cluster by looking at all the changes
+in the stream and rewriting those
+into a target Neptune cluster.
+Okay, so that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

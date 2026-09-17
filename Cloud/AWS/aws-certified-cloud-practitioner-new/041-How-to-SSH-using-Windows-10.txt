@@ -1,0 +1,119 @@
+# 41. How to SSH using Windows 10
+# Section: EC2 - Elastic Compute Cloud
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20055732
+# Caption: en_US (manual)
+
+So on Windows 10,
+we can use the SSH command,
+so I opened Windows PowerShell
+and I typed SSH and if you see this,
+that means that it's available.
+Otherwise, you can also use the command prompt
+and do SSH and if you see this,
+that means the command is available.
+If you don't see the SSH command on your Windows,
+that means that you don't have it and therefore,
+you must use the patching method I
+just showed in the previous lecture.
+In my instance, I'm just going to use PowerShell
+to do these exercises, okay?
+So, next what I have to do
+is to actually run this SSH command.
+So the first thing I have to do is to be
+in the directory of where my pem file is.
+So right now, I'm in C:\users\stephanemaarek and I do ls,
+and as you can see, well, I don't have my pem file
+because it's under, for me, under desktop.
+So I do cd.\Desktop to just change directory,
+I clear my screen then I do ls again
+and I can see my EC2Tutorial.pem file
+which is the one I downloaded,
+as well as the ppk file but this is not relevant,
+if you don't have it, it is fine,
+this is only if you want to use PuTTY.
+The only file that is of relevance for us
+is the EC2 tutorial.pem file.
+Okay, so we need to make sure that
+on the security group of course we have
+the port 22 open for SSH, which we do
+and next we need to enter our SSH command.
+So for this, it is very similar
+to the one we have on Mac, so we do SSH minus I
+then you pass in the name of the tutorial file.
+So I did to get this, I did EC2 and then I press tab
+and I get auto suggested the EC2Tutorial.pem file.
+I press tab again, I can switch between ppk and pem.
+Okay so, by pressing tab, I get the autocomplete of this,
+so I do SSH minus I or you can just type this,
+EC2Tutorial.pem and then when to type EC2 minus user at
+and at, well, the public IP of my EC2 instance
+which is right here, so I copy and paste it.
+So now this command is saying,
+please enter this IP using this user,
+the EC2 user which is the one we have
+because we use Amazon next to using
+this key right here, so let's press enter.
+And it says, well, the authenticity
+of the host cannot be trusted,
+do you want to continue?
+You say, yes and we are in the machine.
+So sometimes you will get permission issues.
+So sometimes the permissions will not be happy
+and I will show you how to fix them.
+So first let's exit this and clear the screen.
+So in case you get a permission issue
+when running this command,
+what you have to do is to find your keys,
+so for me, it's in my desktop.
+You right click on your pem file,
+you do properties, you go to the security tab
+and this is where we're going to change permissions.
+To do so, we're going to do advanced
+and the first thing you need to make sure of
+is that the owner of this file is yourself.
+So it's working for me, but you can just click on change
+and then for object types, you can find yourself,
+locations make sure it's on your computer
+and then type the object name.
+So it would be for me, Stefan
+but I'm already an owner so just type your name
+and then you can be an owner of this file.
+The owner is also indicated in here,
+in your app permission entries.
+The second thing you have to do
+is just remove these entities,
+so system and administrator don't need to have access to it
+and we need to disable inheritance.
+So first let's disable inheritance, for this,
+we're going to remove all inherited permissions
+from this object.
+And then in here, I just select the principal
+so myself, I just go enter Stephan Maarek.
+So as we can see, I did Stephan Maarek in here,
+check names and this entered my principal name
+and we are going to give myself full control over this,
+press okay.
+So now the owner is myself and the principal
+that owns that file is myself as well.
+We do okay and okay,
+so if I right click again on this file
+and do properties under security now,
+I only see myself, Stefan Maarek with full permission.
+And then if you have that
+and you do this command again
+for sure you will not have any permission issues
+and you will not be prompted with a yes,
+no question ever again.
+And if you wanted to, you could try this command,
+so let's exit this and we can, for example,
+open the command prompt, go to my desktop.
+Again, if you don't go to desktop, it will not work
+and then paste in this command and it will work,
+as well you can do an SSH from the command prompt.
+So we've successfully seen how to SSH
+onto our EC2 instance directly from Windows to exit,
+you can just type exit or do Control + D
+and we're good to go.
+And now we can get started with this course,
+I hope you liked it.
+And I will see you in the next lecture.

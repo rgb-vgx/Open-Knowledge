@@ -1,0 +1,62 @@
+# 136. S3 Lifecycle Rules - Hands On
+# Section: Advanced Amazon S3
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/23743416
+# Caption: en_US (manual)
+
+So let's go ahead
+and create a lifecycle rule for our buckets.
+So let's go under management and create a lifecycle rule.
+This one is going to be called demo rule, and we apply it
+to all the objects in the buckets and I acknowledge it.
+Okay, so we can see we have five different rule actions.
+We can move current versions
+of objects between storage classes,
+non-current versions of objects between classes,
+expired current versions of objects,
+permanently delete non-current versions of objects,
+and finally delete expired objects, delete markers
+or incomplete multi-part upload.
+So five different use cases.
+Let's have a look at them one by one.
+So to move current version objects between storage classes
+that means that you have a version bucket, and
+the current version is the version that is the most recent
+the one displayed to the user.
+So for example, we can transition
+to standard IA after 30 days.
+Then we can go into intelligent tier after 60 days.
+Then we can go into
+say glacier after 90 days for instant retrieval.
+Then after 180 days flexible retrieval
+and then maybe deep archive after 365 days.
+So you can have a transition as much as you want.
+Okay?
+And we need to take this back to acknowledge what we do.
+We can also, for example
+move non-current versions so faster.
+So this one, we want to move an object that is non-current
+therefore an object that has been overridden
+quote unquote by near one.
+So we can say, okay, this one
+we wanna move it into glacier flexible because we know
+that after 90 days we won't need it for retrieval.
+So this is perfect and we're good to go
+but we could add more transitions.
+And for example
+we want to expire current versions of objects after,
+and at the bottom you can set it up after 700 days.
+And same for the non-current options.
+We want to permanently delete them after 700 days as well.
+Okay, so this is something we can do
+and now we can have a look
+at all these transitions and expiration actions.
+So this is nice because it shows you a timeline
+of what is going to happen to your current version
+and your non-current versions of your objects.
+So if we're happy with all of this, we can just go ahead
+and create this role, and this role will act
+in the background to do what it's supposed to be doing.
+So that's it.
+Now you know how to automate moving objects
+in AWS free between different source classes.
+I hope you liked it and I will see you in the next lecture.

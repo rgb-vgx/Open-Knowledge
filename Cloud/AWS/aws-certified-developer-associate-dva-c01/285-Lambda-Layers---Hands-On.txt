@@ -1,0 +1,76 @@
+# 285. Lambda Layers - Hands On
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26623440
+# Caption: en_US (manual)
+
+Okay, so let's practice using Lambda layers.
+For this, I'm going to create a function,
+and then I will call this Lambda-layer-demo,
+and the runtime is going to be Python
+and choose the latest version of Python,
+for example, 3.13 for me.
+Okay, you're going to scroll down
+and we're going to go,
+we're just going to create this function.
+Now, this function is going to be running some code,
+and this code is going to be dependent on a Lambda layer.
+So, first, let's have a look at the code.
+So, you go in the code here,
+and then I'm going to scroll to the right
+and find my file called layer-demo-panda.py
+under the Lambda folder.
+If you don't have it, I'll just redownload the code.
+Alright, so I'm going to copy this entire code
+and paste it in here.
+And, as you can see here, what it does
+is that it imports the Panda library,
+and then it just generates some sample data,
+and then it's going to filter the data
+using the Panda library.
+Now, you don't need to know what the Panda library does,
+but it's used for data manipulation,
+and so I want to use this library.
+And so at first it's not going to work
+because I don't have this library in my Lambda.
+So I'm going to deploy this.
+You click here on Deploy.
+Then the function is deployed.
+You go to Tests and then Test,
+and we're going to test this function.
+And, as expected, we get a failure
+because, well, we are unable to find the modules panda.
+Now, if you wanted to package the panda,
+it could be very difficult to put onto AWS,
+and so, therefore, there is a Lambda layer
+created by AWS for us.
+So what I'm going to do
+is I'm going to click on layers here
+under Lambda layer demo,
+and at the very bottom there is Add a layer.
+So I'm going to choose a layer,
+and I have a customer I can create myself,
+but I'm going to use an AWS layers.
+We have a list available to us here,
+but what I'm going to choose
+is the AWSSDK Pandas-Python313 Version 1.
+So choose whatever version it is,
+but it needs to have the Pandas.
+And so it's going to add this layer to our Lambda function.
+And we know that the Pandas library in this case
+has been packaged properly to function on Lambda
+which is the benefit from it.
+So now we have one Lambda layer on our function right here.
+And so if I go back into my function now,
+go to Test and then test it,
+as you can see, the execution is starting,
+and then it has succeeded,
+and we can see that some data has been returned.
+That corresponds to all the elements
+that have age over 30 based on our code.
+So that's it.
+We've shown how a Lambda layer can be used in this case
+to run the Pandas library,
+but you can use layers for many other use cases.
+At least this demo's how this works,
+and I hope you liked it.
+All right. I will see you in the next lecture.

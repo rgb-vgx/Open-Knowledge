@@ -1,0 +1,465 @@
+# 70. Demo: SageMaker Studio, Canvas, and Data Wrangler
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285175
+# Caption: en_US (auto)
+
+So let's play around a little bit with SageMaker.
+And specifically SageMaker studio and SageMaker canvas are kind of tied together these days.
+If this is your first time to SageMaker, it's going to prompt you to set things up.
+And for me, I already did this process for a single user.
+What that does is create what's called a domain.
+And you need a domain in order to use studio.
+So this is just a way to take a look at who's authorized to do what.
+And for a single user it doesn't do much.
+It just sets up the permissions you need for yourself and opens up things to the internet that you need
+for getting data back and forth.
+It gives you the permissions you need for canvas and SageMaker studio notebooks, whatever it might
+be for organizations, it's going to do a little bit more.
+That's going to require you to define roles and responsibilities for individuals within your organization,
+and that's where the role manager comes into play.
+But I have already done this, so I can just go ahead and start playing.
+Now, before we start, I'm going to ask that you do not follow along with me for a couple of reasons.
+First of all, this costs real money.
+So if you mess things up, if you forget to shut something down, you could very easily end up with
+a very, very, very large bill at the end of the month.
+And I don't want that to happen to you.
+Also, the UI for SageMaker changes on almost a daily basis.
+So what's important for the purpose of the exam is that you understand the concepts here, not the specific
+UI, because that will change all the time.
+And if you're trying to follow along with me, you might get confused as things change.
+So just watch would be my recommendation here.
+So let's go to studio.
+That's kind of the umbrella for everything in SageMaker right.
+And you can see I already have a default user profile that I created as part of that domain.
+So I'm going to go ahead and use that user profile and hit Open Studio.
+And here we are I will skip the tour because I'm going to give you one.
+And you can see there's a bunch of stuff you can do here to kind of get overview data.
+So feel free to go through that if you want to.
+But you know, just going down the the menu here, you can see there's a bunch of things you can do.
+There's a set of applications you can run within studio.
+Again, SageMaker studio is just kind of an integrated development environment for machine learning
+within AWS.
+So we have JupyterLab.
+If you want to write your own Python code, or RStudio if you want to write your own r R code or canvas,
+which is what we're going to be using momentarily.
+And stop asking me for feedback.
+Man, that gets annoying, doesn't it?
+All right.
+So we can see here we can look at our underlying data.
+We can do automatic machine learning.
+So if we just want to like automatically create a model based on that data, we can do so easily.
+We can set up experiments to pip models against each other and try to find the best model for a given
+job.
+And we can also manage any training and evaluation jobs you might be doing from here as well.
+We can also set up pipelines for automating our ML workflows from within SageMaker studio, and view
+any models that we've created along the way.
+SageMaker Jumpstart is also available from SageMaker studio, allowing you to kick things off with pre-trained
+foundation models.
+So if you want to build a generative AI application within a notebook, you can do so from there.
+And we'll look at that in more detail as well.
+But for now, let's just do some classic machine learning.
+So let's go ahead and start with data.
+And I want to use Data Wrangler to aggregate and prepare my data.
+So I've gone ahead and uploaded some sample data into S3 already for an absenteeism data set.
+And this is a publicly accessible data set that I found somewhere, the UCI repository.
+I think it is, but it's a data set that has a bunch of information about employees, you know, how
+far do they live from work, how often do they work things like that?
+How much even things like how much they weigh and how old they are.
+And they try to correlate that with their rate of absenteeism on the job.
+How many days off do they call in sick each year?
+So let's see if we can predict absenteeism based on the attributes of employees.
+All right.
+So let's go ahead and run this in canvas.
+So you can see that they're really pushing you to run everything in canvas within SageMaker studio these
+days.
+So fine let's go ahead and do that.
+Run in canvas no code required.
+And as you'll see, we can actually prepare our data without doing much at all.
+We can just say in plain language and use generative AI how we want to manipulate that data and preview
+what that will do as we go.
+So that'll take a minute to spin up.
+So I'm going to go ahead and pause this recording until that's ready.
+All right.
+That did take about one minute as promised.
+So let's go ahead and open canvas and wrangle some data.
+Here we are.
+So it kind of walks us through the process here.
+So the first thing we need to do is import and prepare some data.
+We need to tell it where that data is.
+So let's go ahead and click on the friendly Import and Prepare button.
+Now I know this data is tabular data.
+It's not an image.
+So it's just a raw data in CSV format.
+And the first thing we got to do is tell it where that data lives.
+So there's some sample data here you can play with if you don't have any data of your own.
+But I actually do have some data of my own.
+So I'm going to go ahead and say in Amazon S3, I've got some data for you.
+So first we need to point to where it is.
+So I need to give it a URI to where my data is in S3.
+So I happen to have an S3 window opened up here for me.
+That's in my SageMaker Sundog bucket.
+And let's use the absentee full dot CSV file.
+That's kind of the actually, no, let's use absentee train because that's specifically for training.
+So I'm going to click on that file and copy my URI for S3.
+And I'm going to paste that into canvas thusly and go.
+All right so I've got some data.
+Let's go ahead and select that and hit next.
+And this gives me a preview of what that data looks like.
+So so you can see we got a bunch of columns here that are being imported from that CSV data a distance
+from work service time, their age, their average workload.
+And I'd have to go back and look at the documentation for this data set to know what some of these columns
+really mean.
+Did they receive any disciplinary action?
+What's their level of education?
+Do they drink?
+Do they smoke?
+Do they have a pet?
+Interesting.
+There might be interesting correlation to see if somebody has a sick pet If that affects her absenteeism
+rate.
+And then in the final column here we have the absenteeism, which is the number of days out of the year
+that they called in sick.
+So it looks like it imported successfully.
+One thing that might be problematic, though is this workload average.
+You can see it has commas within the numbers there, and that might throw things off into thinking that
+it's a string instead of a number.
+So let's watch out for that as we go.
+Now if we want to, we can do random sampling, but there aren't a whole lot of rows in here.
+I think it's only like 500 or so.
+So no point in sampling for such a small data set.
+But if you did have a larger data set, you could do a random sample.
+So you could sort of preview what's going to happen as you're wrangling this data a little bit more
+quickly.
+We need to get this data set a name though, let's call it absenteeism and we'll go ahead and import
+it.
+All right.
+So again it's kind of guiding us on what to do here.
+So it set up the state of flow.
+Basically we have our source data from S3.
+But getting imported into some sort of um.
+Well, I can't even see it there because it's being obscured here.
+But what's prompting us to do is to get data insights.
+So let's go ahead and do that.
+You can also use chat for data prep.
+But this will take us to the same place basically.
+So let's go ahead and get some insights about that data.
+So what this is going to do is alert me to any potential issues in my data automatically.
+It's going to automatically analyze this thing for things like missing data or duplicate data or outliers
+or whatnot.
+So that's kind of cool.
+Now again, we can use the full data set because it's small to begin with.
+So I'm going to have to use an ML, M54 Xlarge.
+Fortunately, with this small amount of data, that's not going to run for very long and cost me too
+much, but I am going to set that to one instance instead of two to save some money.
+This is a regression problem.
+So basically I am saying that I'm trying to predict a number.
+Now I could frame that as a classification problem with like a really large number of classifications,
+right?
+Where each each individual number is a class.
+But let's go ahead and treat it as a regression problem.
+And the target column.
+The thing I'm trying to predict is the absenteeism time in hours.
+All right, so let's give this analysis a name.
+Absenteeism data analysis.
+Whatever.
+And go ahead and create that Duke.
+And it says it will take about ten minutes.
+So again I'm going to pause this recording and come back when that's done.
+All right.
+Here we are ten minutes later.
+And it gave me some pretty interesting information about this data set.
+So this did take about ten minutes for which I'm going to be charged for time on a fairly beefy machine
+learning instance in EC2.
+Worth pointing out here that for a data set this small, I would have been better off just analyzing
+it on my own desktop for free using some Python code.
+So, you know, don't use big expensive cloud systems if you don't need to.
+I'm just doing this for the purpose of illustration, but some interesting findings here.
+So it's summarizing the data set here.
+No missing data.
+That's a good thing.
+It's also breaking down the feature types that it extracted from that data and how many features it
+found.
+Again, features are just the columns in my training data.
+The things that I'm using to make a prediction from no missing data.
+But there were a lot of duplicate rows, which is kind of a surprise.
+Uh, let's go down here to the high priority warnings, where it tells me what are the main issues that
+I need to watch out for here.
+One is duplicate rows.
+So that kind of makes me wonder how valid this data is.
+I don't think it's real.
+Uh, 33% of the data is duplicate.
+With that many features, it's very unlikely that that's just by chance.
+So I'm thinking a lot of the rows in this data were fabricated.
+And that's something that I should be aware of.
+Maybe I want to deal with that during pre-processing.
+Also, it's alerting me that there are some potential outliers.
+So let's dig into that in more detail and see if that's something I want to consider removing or not.
+Um, outliers can mess up your models, but let's let's see just how skewed it really is.
+Also, it's saying that a quick model built on this data didn't do very well.
+So the predictive power of the data I have might not be that good And that just might mean that, well,
+this is fake data, for one thing, apparently.
+So maybe that's why.
+Um, but it just might mean that maybe the features I have are not predictive of absenteeism at all.
+Maybe it really is just random life circumstances that drive people to call in sick, and it doesn't
+really correlate to any of this stuff.
+Anyway, let's take a look at some of these duplicate rows so we can see that there were ten instances
+out of only, uh, what was it, 699 rows?
+I think it was, yeah, 699 rows.
+Ten of them had the same exact properties, which seems unlikely to me.
+Like really, were there ten, 38 year olds with exactly that workload average per day with exactly
+that hit target with that, exactly that distance to work.
+I don't know, this this seems a little bit fishy.
+So I think I'm going to make the choice to actually remove those duplicates when I pre-process this
+data.
+And it's also alerting me to some anomalous samples here.
+It's just warning me that it thinks that some of these, uh, rows of data might not make sense.
+But if I look through it, these look like reasonable numbers to me.
+So I'm going to say probably not really an issue.
+These don't look like they're absolutely crazy out of bounds.
+They look like real people.
+So I'm not going to worry about that just now.
+You can also look at the distribution of the target column for the actual number of hours that were
+called in sick for, and we can see there was an outlier here at.
+I think that's around 40 hours there.
+Uh, again, this seems plausible.
+So I'm not going to take that as a sign that the data itself is invalid.
+I think it just means that this person had a really bad year.
+And if we go down further, we can see the results of the quick model here.
+And we can see that, um, it did not do a very good job at all in terms of accuracy on actually making
+predictions on data that it hasn't seen before.
+So the model that it came up with quickly was not a very much use, which is interesting in and of itself.
+We can also dig into individual features here and see how they break down.
+And this is interesting.
+So this is a summary of features ordered by prediction power.
+So even though our model wasn't that good, we can tell that the workload average per day was the biggest
+predictor of absenteeism.
+So it turns out the the more you work someone, the more likely they are to end up sick.
+And also transportation expense.
+So somebody needs to pay a lot of money in order to get to work.
+They're going to be more likely to call in sick.
+Apparently everything else, not so much, which is a little bit of a surprise.
+You know, whether you drink or smoke does not matter at all, it seems.
+And things like your weight and it doesn't really matter too much either age and height a little bit.
+But I mean, compared to transportation expense and workload average, clearly these are the two main
+drivers of the data.
+So even without building a formal model and just kind of visualizing and pre-processing the data already
+we've gained some insights into this data that we have here.
+And we can go and look at histograms for each one of those features individually.
+Again, we're just going to eyeball it and make sure nothing's too crazy.
+Um, even though they're being flagged statistically as outliers, they're not really outside the bounds
+of plausibility, in my opinion, so I'm not going to worry about that.
+All right.
+So that was useful.
+So we have our little analysis here of the data that we have.
+Now that we've done that we can go ahead and actually wrangle this data.
+So so let's go back to our data flow here.
+And we can see that we have our data quality and insights report.
+And we have our data types.
+So let's back up here and open this up and go ahead and let's transform this data.
+And hey we can actually do that with chat with Gennai.
+Let's try that.
+It's a new feature.
+All right.
+So we have this handy dandy visualization of our features.
+And their distributions like might come in handy.
+But we already know from that analysis that we have some issues to deal with.
+We can see the steps that we're applying to our data transformation being built up here on the right.
+So we're starting with a given source for the data itself from S3.
+And we're assigning data types to those as well.
+So we can see already there's an issue here where that workload average is being treated as a string
+instead of a number.
+So let's see if we can fix that.
+Um, now there are some you can do this by hand.
+You can click on add transform and select from a library of transforms.
+Here again there's a very large number of them that you can dig into there.
+But I'm going to do it the easy way and just use chat.
+So let's say uh transform the work load average per day feature from a string to a long type, accounting
+for the use of commas in the numbers.
+Let's see what it does.
+Huh.
+So apparently it generated some code for me.
+It's always a good idea to double check what generative AI does.
+Looks like it's just going to strip out the commas and cast it as a long, so that seems reasonable.
+Let's go ahead and add that to our steps.
+So now we've added that step just from our Genni chat session there automatically to transform that
+data in the way that we said.
+Let's also get rid of those duplicates because I don't trust those duplicate rows.
+They seem suspicious.
+I'll just say remove duplicate rows.
+And I could just add a transform for that, I'm sure.
+But it's even quicker to just type that in.
+Again, it generated some Python code for me to do.
+That should just be one line drop duplicates.
+Yep.
+Seems reasonable.
+Let's add that to our steps as well.
+All right.
+So now we've built up a flow here for processing our data or wrangling it as you might as the case may
+be.
+So we've got all of our steps here lined up that we're going to apply to this transformation.
+Let's click on our data flow and visualize that as well.
+If we go back here so we can see that we have our report over here.
+And then we forked off here to say I'm going to transform this using a couple of transforms that I defined.
+So at this point in our data flow, we've transformed the data the way that we want.
+We've dealt with that incorrectly identified string column and we've gotten rid of duplicates.
+And now from here I can export that data to S3 if I want to.
+If I want to use it outside of canvas, or I can export it to a Jupyter notebook if I want to write
+some code surrounding that data.
+Or I can just click on create model and automatically export that data and create a model all within
+canvas.
+Let's go ahead and do that.
+Then let's give this data set a name.
+Um, absenteeism processed, I don't know whatever you want to call it and export.
+Off it goes.
+All right.
+The export succeeded.
+Now I can create a model from that exported data.
+That model also needs a name.
+Let's call it absenteeism model.
+And we need to select the problem type.
+So this is a predictive analysis problem I'm basically using tabular data to try to predict the number
+of absentee hours based on that data.
+It's not image analysis, obviously.
+It's not text analysis.
+I'm not trying to do text classification, and I'm not fine tuning a foundation model either.
+But interesting to note that you can do this within SageMaker canvas, right?
+So if I did want to ingest a bunch of data to fine tune a large language model or even a small language
+model, I could do that here as well.
+But in this case I'm doing predictive analysis.
+So we'll click on create.
+Now I need to select the column that I want to predict.
+That is going to be that final absenteeism time in hours.
+And we can double check all this data.
+Sure enough everything is numeric again.
+That's good.
+And our target column is identified.
+All right.
+And it's actually automatically recommended the appropriate model type here.
+So instead of a regression model it is saying that I'm actually better off with a category prediction
+model.
+So instead of trying to predict a floating point number, it's going to try to classify absenteeism
+in terms of the number of hours.
+Okay, I'll take your word for it.
+Typically it makes the right choice here.
+So kind of AutoML in action here.
+And to actually build the model we have a quick build option which is well quick 2 to 15 minutes.
+But if I want to choose accuracy over speed and I want to spend more time and money, I could do a standard
+build as well.
+But I'm going to stick with quick build because I'm impatient.
+So go ahead and click the quick build button and off we go.
+Now the data validation has completed.
+It's actually building the model itself.
+And I'll come back when that's done.
+And it's done.
+It said it failed, but it really didn't.
+So I'm going to close that erroneous error message.
+And I'm also going to ignore this survey.
+But here we have our model and what actually happened.
+So again even after running that more detailed model it came up with the same conclusions.
+The column impact here is saying that the transportation expense and the workload average per day are
+the biggest predictors of absenteeism, which is an interesting finding.
+Is it not?
+So we have our model here.
+And now that we have this model, we can use it to make predictions if we want to.
+Let's go ahead and click predict.
+And you can do a batch prediction or a single prediction.
+Whatever it might be.
+We can click on manual.
+And from there we could select a data set to be used for predictions.
+So to do that I have to make a data set for the stuff I want to make predictions for.
+It says it must have the same number of feature columns as the training data set.
+Okay no problem, create data set.
+Let's call it absenteeism predict.
+And we can do that from a local file or hit S3.
+And going back to my S3 view let's see where I put that data.
+There's an absentee predictor CSV file here.
+Let's go ahead and select that.
+And get a URI for that.
+In you go.
+And so now I can select that prediction file.
+Preview my data set and create it.
+So now that that's done processing I can select it for predictions and generate predictions.
+So I can see my predictions are now ready.
+I can click on that.
+And I can ship that off to QuickSight if I wanted to.
+Or do anything under this little button here, I can download that data to do whatever I need with it.
+I can get a link to the place in S3 where that result was stored, or I can just preview it.
+Let's do that for now, and we can see that I did indeed get predictions for absenteeism based on all
+of this prediction data that I set in.
+So the data that I provided, it had a list of transportation expenses and distances and service times
+and ages and everything else.
+But the absenteeism time column was left blank.
+And what this has done for me is use that model that I generated using all the training data to make
+predictions based on the features that I gave it.
+So that's pretty cool.
+Um, it's also giving me sort of a measure of confidence there.
+The probability it's not terribly confident, but given the number of classes here, you know, one
+for every number of hours that are possible, it's not that bad, really.
+Um, so this is telling me, hey, given the model that I made, I predict that this person's going
+to be out two hours during this month.
+So pretty neat.
+And from here again, I can visualize that or download the data to do what I will with it.
+So that is pretty cool.
+We used a SageMaker canvas to use Data Wrangler to pre-process our data, to build a model after transforming
+our data, and also to make predictions based on that model, we could go further.
+We could actually deploy that model as well if we wanted to.
+So if we wanted to, we could create some inference endpoints and actually host this model in real time.
+So I could build a service that hits that on demand.
+That gets really expensive very quickly.
+So I'm not going to actually do that, but that's where you would do it from.
+So that's pretty neat.
+That's a model from end to end in SageMaker canvas.
+And if I go back to my models here, I can actually see that little card from my model there that I
+just created.
+So I can do stuff with it.
+I can view it or rename it or delete it or whatever I need to do under MLOps.
+That's another way to actually set up those deployments, to set up inference models.
+And what else can we look at ready to use?
+So just to go through some other capabilities of canvas here, they also have these built in things
+that are built on top of the higher level AI services at AWS has to offer.
+So for example, if I wanted to play around with object detection and images, all I can, all I have
+to do is use Amazon Rekognition for that, right?
+I don't have to go off and build a model.
+They already have a model.
+So let's click on that.
+And it brings up this UI where I can do a one off single prediction on an image, and it tells me what's
+in it.
+If you have your own image, you can do that.
+Let's see what I got.
+What's in my photo?
+What's in my pictures folder here that I might use?
+Oh, there's a picture of a of some dude in front of a radio telescope.
+Huh.
+Interesting.
+So it identified a face ahead, a person, and, uh, a hat, some sunglasses, and it says I'm a man.
+You're right.
+Uh oh.
+You got that one wrong, though.
+That's not a person.
+That's some sort of a hose there.
+But, you know, these these models aren't perfect.
+But there you have it.
+Kind of a way to play around with some of these.
+And if I wanted to actually use this for something more useful, I could set up a batch prediction where
+I give it a data set of images to do object detection on.
+And that's just one of many of those built in ready to use models.
+Right.
+So we can also do object detection.
+We can do sentiment analysis, language detection, text detection, entity detection, any of this
+stuff built on top of comprehend, Rekognition or Textract in these cases.
+And also there's a new Gen I button.
+And this is just, you know, a standard chatbot interface for doing stuff using AI.
+I mean, it's just like any other chatbot, really.
+You can choose what foundation model you want to be playing with.
+In this case, a claw two is the default.
+I'm sure there'll be newer ones added shortly, because claw 3.5 is currently the state of the art as
+of this recording.
+But yeah, that's the SageMaker canvas in a nutshell.
+Remember to log out when you're done, because this does consume resources while you're using it.
+And this will warn you about anything that you might have still running that's still going to be racking
+up charges.
+Very important to very important to make sure that any endpoints you set up are not still running if
+you don't want them, because that's going to keep on running.
+And also very important, just remember to log out in the first place, because again, there are instances
+associated with this workspace in canvas that are racking up money as we speak.
+So log out and we're back to the home page.

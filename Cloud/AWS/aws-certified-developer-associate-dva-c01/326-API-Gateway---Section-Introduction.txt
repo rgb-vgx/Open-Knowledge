@@ -1,0 +1,17 @@
+# 326. API Gateway - Section Introduction
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/12203048
+# Caption: en_US (manual)
+
+So now let's continue our server this journey.
+We know how to do it.
+Linda we know how to store data in dynamo G.B..
+But what if you want to expose our functions to the world.
+What if you want people to access our application using a REST API.
+Again we don't want to manage servers.
+So for this we have API Gateway API gateway will enable us to spread our application expose it as a
+rest api on top of it.
+We'll see how to do user authentication using Amazon.com.
+So this section is going to really bring things together and complete the way for you to deploy an API
+to the cloud.
+Let's get started.

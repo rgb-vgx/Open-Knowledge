@@ -1,0 +1,76 @@
+# 55. AWS Backup
+# Section: Storage
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40286014
+# Caption: en_US (auto)
+
+Stephane: Hello and welcome to this lecture
+on AWS Backup.
+So, AWS Backup is a fully managed service,
+and it allows you to centrally manage
+and automate backups across all your AWS services.
+And the list is getting bigger and bigger by the day.
+So, the idea is that you want to have a central place.
+You don't want to create any custom scripts
+or have any manual processes.
+You want to have a central view on your backup strategy.
+So, supported services are pretty wide.
+For example, Amazon EC2, EBS, Amazon S3, RDS,
+and all database engines are supported.
+Aurora, DynamoDB, DocumentDB, Amazon Neptune, EFS, FSx,
+including Lustre and Windows File Server,
+and probably others.
+AWS Storage Gateway, such as the Volume Gateway,
+and more that can come over time,
+but I'm not necessarily going to update this lecture
+because, well, it doesn't really matter.
+The idea is that you get the concept behind AWS Backup,
+and the most important services are shown on this slide.
+So, it supports cross-region backups.
+Does that mean that you can have your backups pushed
+to another region for disaster recovery strategy all
+in one place?
+And also supports cross-account backups
+if you are using multiple accounts in your AWS strategy.
+So, it supports point-in-time recovery
+for supported services such as Aurora.
+It supports on-demand and scheduled backups.
+There's tag-based backup policies
+to make sure you only backup maybe resources
+that have been tagged with production,
+and you can create backup policies known as backup plans.
+You define the frequency, for example, every 12 hours,
+or weekly, monthly, or whatever cron expression you have.
+The backup window,
+if you want to transition the backup itself to cold storage,
+so never, or maybe after some days, some weeks, some months,
+or some years, and the retention period of your backup.
+So, every, always, or days, weeks, months, and years.
+So, it's quite supportive and comprehensive,
+and it supports really most services.
+So, it's a really nice addition to the AWS services.
+So, if we have a look at AWS Backup,
+we create a backup plan, as I said,
+and then you assign specific AWS resources
+that are important to you.
+So here is a list, but it can get bigger.
+And then once it's done, well, automatically,
+your data is going to be backed up to Amazon S3
+in an internal bucket that is specific to AWS Backup.
+And another feature that you need to know
+about for AWS Backup is the Vault Lock.
+So, you enforce a worm write-once-read-many policy.
+That means that all your backup that you store
+in your backup vault cannot be deleted.
+So, the idea is that you know for sure, you can prove it,
+that thanks to the Vault Lock policy,
+you cannot delete your backups.
+And it provides you an additional layer of defense
+for your backups against, for example,
+inadvertent or malicious delete operations,
+or updates that shorten or alter the retention period.
+And even the root user itself cannot delete backups
+when enabled, so it gives you strong guarantees
+on the safety of your backups.
+Okay, that's all you need to know
+for the AWS Backup Service.
+I hope you liked it, and I will see you in the next lecture.

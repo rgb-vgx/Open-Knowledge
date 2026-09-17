@@ -1,0 +1,98 @@
+# 146. SQS Overview
+# Section: Cloud Integrations
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056162
+# Caption: en_US (manual)
+
+So let's first talk about their first service
+which would allow us to decouple our applications
+which is Amazon SQS,
+which stands for Simple Queue Service.
+So what's a queue?
+Well, say we are creating an SQS queue right here.
+What we enable us to do is to have producers
+send messages into that queue,
+and then it could be one producer
+but it could be as well, multiple producers.
+And then once the messages are stored in the queue,
+then they could be read by consumers
+who will be polling the queue.
+That means requesting messages from the queue.
+They will be polling the queue
+and it could be one consumer.
+They could also be multiple consumers.
+And in this example, once the consumer poll messages
+they will share the work.
+So each consumer will get different messages
+and when they're done processing a message
+maybe for example, to process a video
+then they will delete the message
+from the queue and it will be gone.
+So in this mechanism, we have the producers sending messages
+into the queue and they're decoupled from the consumer
+reading the messages from the queue
+and processing them at different speed.
+So when you have an SQS
+turns out that it is the AWS oldest offering.
+It's over 10 years old.
+It was one of the first services to appear
+as part of the AWS cloud.
+It is fully managed, so it's a serverless service.
+You don't provision servers
+and it's used to decouple applications.
+So this is the exam tip.
+If you see decouple, then think of SQS.
+It will scale seamlessly from example, from one message
+per second to tens of thousands of messages per second.
+And the default retention
+of the messages is four days, maximum of 14 days.
+So you need to process them within that default retention.
+There's no limit to how many messages can be in a queue.
+And then once the consumers read the messages
+then they have to be deleted.
+So they're gone.
+There is low latency, we're talking about less
+than 10 milliseconds, unpublish and subscribe.
+And then consumers share the work to read messages
+and scale horizontally.
+So SQS can be used to decouple
+between your application tiers.
+So here's a classic solution architecture.
+We have our web servers and they're taking request
+maybe through an application balancer.
+They're served through EC2 instances
+in an auto scaling group.
+And then, for example, say that our users
+want us to process some videos.
+Then instead of sending it directly
+to the video application, we can instead
+insert messages into an SQS queue,
+and then we will have a video processing layer
+made of an auto scaling group with EC2 instances.
+And these EC2 instances, we'll be reading from the SQS queue
+and processing our videos.
+The cool thing about it is that we can scale the second auto
+scaling group independently from the first one
+and this is why it's called decoupling.
+And on top of it, the scaling can happen based
+on how many messages, for example,
+there are in the SQS queue.
+And this would really allow us to have two layers,
+the web servers and the video processing fully decoupled
+from the SQS queue and scaling independently.
+This will give us the best user experience
+and also the best cost efficiency and scaling concerns.
+Another feature for Amazon SQS is to have FIFO queues.
+So FIFO means First In First Out, and that corresponds
+to the ordering of the messages within the queue.
+So if you have a producer sending messages
+in a specific order such as 1, 2, 3, and 4
+then the consumer will also read these messages in order.
+So example 1, 2, 3, 4.
+So when you have a normal SQS queue
+consumers can read messages altogether
+and they could be in different orders.
+But with Amazon SQS FIFO queues
+the message are going to be in order
+and it's just a feature you need to remember for the exam.
+Okay, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

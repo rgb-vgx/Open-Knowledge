@@ -1,0 +1,106 @@
+# 329. API Gateway Stages and Deployment
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851434
+# Caption: en_US (manual)
+
+So we have deployed our first API
+through the API Gateway in a deployment stage.
+So what we've seen is that
+whenever we made changes to the API Gateway,
+they were not effective until we did a deployment.
+So we need to make a deployment for them to be in effect.
+And it's a common source of confusion.
+Some people will go and change how the API works,
+but forget to do a deployment
+and therefore the API will not be live.
+So these changes are deployed to stages
+and you can have as many stages as you want
+and you can use the naming you want.
+For example, you can use a dev, test, and prod stage
+or a v1, v2, v3 whatever you want to do.
+And each stage will get its own configuration parameters
+and they can be rolled back seamlessly
+because a whole history of all the deployments
+that have happened onto a stage is kept.
+So let's take the example of we have two stages
+and we're creating a breaking API change.
+So our Lambda function backing our API Gateway
+is going to change.
+So we have the v1 stage
+and it invokes the v1 function and we've deployed it
+and so our v1 clients are going to be able
+to access our API through this URL.
+But we are programming a new version
+of our Lambda function called v2.
+And this v2 does not respect the same format
+of data and so on and so we know
+that if we deploy the changes
+on the v1 stage, it will break our v1 clients.
+So what we do is then instead we decide
+to create a new stage, call it the v2 stage,
+pointing to the v2 function.
+And this will create a new URL.
+So now the api.example.com/v2,
+which represents the v2 stage.
+And the cool thing is that our clients
+can now be updated to version two
+and access this new URL, and we can maintain compatibility.
+So for a while, the v1 and the v2 can coexist together
+as two different stages.
+We can migrate the clients
+from the version one to the version two
+and then when no more clients are using the version one,
+then we can shut it down and move on with our API Gateway.
+So this is a very common use cases for stages.
+Now, how do we expand this?
+We can use stage variables.
+So stage variables are just like environment variables,
+but for the API Gateway stages.
+And you use them to change configuration values
+without redeploying your API.
+So they can be used, for example,
+in the Lambda function ARN,
+for the HTTP endpoint, for your parameter mapping templates.
+And so you can change pretty much anything
+through stage variables.
+The use cases is to automatically configure
+the HTTP endpoint your stages talk to.
+Would it be dev, test, and prod,
+or to pass configuration parameters to Lambda function
+through mapping templates
+or to point to the right Lambda function,
+as we'll see in a second.
+And so these stage variables will be passed
+to the contact object in your Lambda function
+so we can log it and get access to the value
+of the stage variables directly from our Lambda functions.
+Now, the format to access the value of a stage variable
+within API Gateway is $stageVariables with an S
+.variableName.
+So here is a very, very common use cases
+for your stage variables.
+So we are going to create a stage variable
+that will indicate the corresponding Lambda alias
+that our API Gateway should invoke.
+And so automatically the API Gateway will invoke
+the right Lambda function.
+So here is an example.
+We have the dev stage pointing to the dev alias
+and the dev alias is itself pointing 100%
+of the traffic to the latest Lambda version.
+We have a test stage pointing
+to the test alias of Lambda function pointing
+to the v2 version of our Lambda function.
+And finally, the prod alias is linked
+to the prod stage and pointing as well,
+but this time, 95% on the v1 and 5% on the v2.
+So in this case we can do a Lambda alias change
+in the backend by updating the percentage
+on different versions,
+but we don't need to update the API Gateway.
+Each stage points to the right alias
+and each alias will be redirecting
+to the right Lambda function.
+So this is a very common pattern for the API Gateway
+and one we'll be re-practicing in the next lecture.
+So see you in the next lecture.

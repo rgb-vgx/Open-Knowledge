@@ -1,0 +1,310 @@
+# 160. EMR Serverless; EMR on EKS
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356558
+# Caption: en_US (auto)
+
+Instructor: Let's talk about a newer feature in EMR,
+EMR Serverless.
+It works pretty much the same idea as EMR.
+The difference is that the intermediate step
+of defining just how much capacity we need
+is removed from us.
+So we can let EMR just decide for itself
+how many nodes it needs in the cluster
+to actually do what we want it to do automatically.
+So to use EMR Serverless, we just start
+by choosing our EMR release and runtime,
+Spark, Hive or Presto, just like we would before.
+And then we just submit queries and scripts
+to our EMR Serverless instance by a job run request.
+So rather than logging into your master node directly,
+it's serverless so, you know,
+you just wanna interact with it indirectly.
+You'll give it a path to some S3 thing somewhere that says
+this is where my script is.
+It'll reference data from S3, and you just feed that script
+or that Hive query into it from S3 to your serverless server
+and it will automatically, in theory,
+figure out how much capacity you need
+to actually successfully run that job.
+So EMR will manage the underlying capacity for you,
+but if you want to think about the underlying capacity,
+you still can, and this might be a good idea
+in a lot of situations.
+So if you know that your job requires quite a few resources,
+you can specify that upfront.
+You can specify the default worker sizes upfront
+and you can also pre-initialize your capacity.
+So instead of starting from nothing,
+you can tell EMR Serverless,
+"Hey, I think the base capacity I'm gonna need
+is this many nodes that are this size,"
+and start from there.
+That'll help you out.
+Otherwise it will try to compute it for you automatically.
+And even if you do start off with a base setting
+of a pre-initialized capacity, it will analyze the resources
+that are actually needed for your job
+and adjust that accordingly,
+and schedule workers as you need them,
+and deschedule them as you don't need them.
+As of right now it all works within the same region,
+across multiple availability zones, of course,
+so your serverless cluster will be within one region.
+So why is this such a big deal?
+Well, it you no longer have to figure out
+how many workers you need, right?
+So a really big pain point in things like Apache Spark
+is that if you guess too small,
+if you don't have enough resources for a job,
+you're gonna end up running out of memory.
+Your job will just fail halfway through.
+And it can be a very time consuming
+and expensive process to figure out
+how much capacity I really need,
+'cause it's really not a very good way
+of figuring that out ahead of time.
+So EMR Serverless is solving that problem.
+So that's actually kind of impressive, if you ask me.
+You'll automatically provision the capacity
+you need for your job so you don't have to worry about it,
+which is really a big deal.
+You can focus on the scripts
+and what you're trying to do instead of figuring out
+how much capacity you need to do it.
+And like I said, it's not really serverless
+in the way of some other serverless servers
+where you really don't think about the servers at all.
+Under the hood you're still using Spark or Hive or Presto,
+and those technologies kind of assume
+that you have some knowledge
+of what's going on at the worker node level
+or the driver level, right?
+So if you still want to configure Spark down to that level,
+you're still gonna have to think about the worker nodes
+and their capacities.
+The difference is you don't necessarily know
+how many of them you have
+and you don't necessarily know where they are.
+How do I go about using EMR Serverless?
+Well, you start off with an IAM user
+that you're going to be interacting with it from,
+and that will work with the AWS CLI.
+So your user will invoke the CLI
+to create this serverless cluster.
+For now only the CLI is supported.
+I'm sure that will change pretty soon.
+I can't imagine that they wouldn't have console support
+and SDK support sometime in the future,
+but for now it's command-line interface only.
+You then need to set up a job execution role
+in IAM for the job itself.
+And that makes sure that your job has permission
+to access Amazon AWS EMR Serverless,
+as well as any permissions that it needs
+to access your scripts in S3,
+any data that it needs to access in S3.
+If you're doing something with SparkSQL
+you might need access to Glue for Glue metadata stuff,
+or any KMS keys that you might need for any security
+that you've set up as well.
+With that in hand, you can then create a EMR Serverless
+application using Spark, Hive, whatever you want,
+and then just feed it in your job
+through an EMR job request there.
+So you give it a link to your Spark script, your Hive query,
+whatever it is, might look like this.
+So here's an example of a command line
+to invoke an EMR Serverless job.
+We're just saying AWS EMR serverless start job run,
+passing in our application ID, the execution role
+that we talked about earlier, with a path to that.
+And then under job driver,
+this is where it gets interesting.
+We're saying under Spark submit,
+the entry point is this path to the script itself.
+We can pass in arguments to that entry point as well
+if we want a parameter to where
+it should put its output, for example.
+And we can also override the Spark submit
+parameters as well.
+So if you want to submit parameters to Spark itself
+on the command line of Spark submit,
+you can specify that here too.
+So again, even though we're calling this serverless,
+I'm still thinking about here how big my executor cores are,
+what are my driver cores look like, things like that.
+So you still have that level of control here,
+even if you're handing off the actual capacity
+and the amount of nodes off to EMR Serverless.
+Also you can send configuration overrides
+that are specific to EMR Serverless.
+In this example here we're saying that we want
+to output our CloudWatch logs to this path in S3.
+When we're done we get our output in our logs
+wherever we said to put them.
+And that's it.
+You just shut it down when you're done
+and it's just like EMR.
+Let's talk about the lifecycle of an EMR Serverless
+application real quick here.
+So you start off by explicitly creating your application
+through a command, currently from the CLI.
+If that succeeds, then great, you created your application.
+If not, it will automatically terminate.
+From that point you have a new application
+sitting in there that you've created.
+You might choose to terminate it right away.
+That's an option. Not sure why you would do that,
+but normally you would proceed to issue a start command
+to start your application,
+and that will kick it off and actually run it.
+Once it's started, it will either succeed
+and then move to the stopping phase when you're done,
+or it will fail and move
+to the stopping phase automatically.
+Once it is successfully stopped,
+you can either run it again, go back to start,
+or go to the terminated phase
+and shut it down when you're done.
+Now I want to stress that this is
+not all happening automatically.
+I need to call commands through the API,
+such as CreateApplication, StartApplication,
+StopApplication, and when I'm done, DeleteApplication
+to make this all happen.
+So I've had students contact me saying,
+"Hey, you know you, you use EMR in a lot of your courses
+and you're always warning us to remember
+to shut down your cluster when you're done
+so you don't get charged for them unexpectedly.
+Should I just use EMR Serverless
+so I don't have to think about it?"
+No, that does not solve the problem.
+It helps because you will automatically, you know,
+not be using any more capacity than you need,
+but you still need to explicitly delete
+your application when you're done with it.
+If you forget to do that, you will still be billed
+for that serverless application,
+even if it's sitting there doing nothing, okay?
+So don't think that EMR Serverless is an excuse
+to get lazy in managing your resources.
+You still need to think about explicitly starting
+and stopping and terminating that cluster when you're done.
+EMR Serverless just means that it's thinking
+about the capacity instead of you,
+but you still need to manage that capacity
+to some extent yourself.
+Let's talk a little bit more depth about pre-initialized
+capacity on EMR Serverless.
+So here's an example off to the right here
+of what that might look like from the command line.
+You see here we have a initial capacity block here
+that we didn't have before.
+We're saying that we want to start off with five drivers
+with a specific resource configuration of a CPU type
+and the memory that each one has available to it.
+Also for the executor nodes, we're saying we want 50 of them
+to start with with four VCPUs a piece,
+and eight gigabytes per executor as well.
+So you know this, let's just say how many processes
+do I want to power my application.
+It's still EMR Serverless' job to figure out
+where those processes are running
+and the capacity needed to actually make it happen.
+But you can give it a hint like this to say,
+"Hey, I know this is a pretty demanding job.
+I wanna start with 50 executors.
+Go figure out how to make that happen.
+But just to make things go more smoothly
+and make sure that I have enough capacity out of the gate,
+I want you to start from this point."
+There's also a maximum capacity argument
+being sent here as well.
+I wanna say that I don't want to use any more than 400
+virtual CPUs and no more than one terabyte of memory.
+So that's a pretty good safeguard to have in place
+in case you do something silly
+that just wants to use infinite resources.
+That will be a little bit of a safety net for you there.
+One note from the documentation,
+and this does look like the kind of thing
+that I could imagine seeing on the exam at some point.
+Remember that Spark adds a 10% overhead
+to any memory requested for drivers and executors.
+So make sure your initial capacity request
+takes that into account.
+Make sure you're requesting at least 10% more memory
+than your job is actually requesting.
+Some notes on security with EMR Serverless.
+It's pretty much the same thing as EMR.
+For storage, if you're using EMRFS
+under the hood, that's S3.
+So you know, service side or client side encryption
+on S3 at rest is gonna be there for you.
+For in transit, TLS will be there for you
+between the EMR nodes and S3.
+If you're writing directly to S3,
+obviously all the security that comes with S3
+is available to you as well,
+SSE-S3, SSE-KMS, whatever you want to use.
+For any ephemeral storage on the local discs of your nodes,
+those are encrypted as well.
+And in transit, any communication between the driver nodes
+and executors is also encrypted automatically.
+If you're using Hive, any communication
+between the Glue Metastore and EMR
+is also encrypted in transit using TLS.
+And a quick note from the documentation here
+I wanted to pass along.
+Remember that if you are using S3,
+you can force HTTPS on in-transit traffic to S3
+using the AWS SecureTransport policy.
+Another serverless approach to EMR is EMR on EKS.
+That's Elastic Kubernetes Service.
+So if your world is built around Kubernetes,
+and that is true for many people these days,
+this is a way to use EMR, and Spark in particular,
+within EKS, within Amazon EKS.
+So this allows you to submit a Spark job
+on Elastic Kubernetes Service without having
+to worry about provisioning the clusters for it.
+So this gives you all the benefits of Kubernetes,
+as opposed to just having a standalone EMR cluster,
+and also it gives you the benefits
+of all the fully managed aspects of EMR, right?
+So you don't have to deal with setting up
+your own Spark application within EKS,
+this automates all of it for you.
+So it's a fully managed solution for Elastic MapReduce,
+and Spark in particular, on top of your EKS world.
+The advantage of doing this is that you can share resources
+between Spark and other applications
+that you might have running in Kubernetes.
+So this diagram to the right kind of speaks to that.
+We have EMR on EKS at the top here going through EKS,
+and you can see how a Spark application
+is just one of maybe many things you're doing
+on that EKS cluster, right?
+So you can have other applications doing
+totally different stuff, maybe an analytics application.
+You might even have different versions
+of Spark running alongside everything else.
+And through the magic of Kubernetes,
+we can share those resources more efficiently.
+So this may be a better way of making use of the hardware
+that you have and ultimately saving money.
+And you know, we also see that it has all these integrations
+with other Amazon services at the bottom there as well,
+spread out potentially between multiple availability zones.
+Again, you don't have to worry about that too much.
+With just a few clicks in the console
+You can choose the Apache Spark version that you want,
+deploy an EMR workload to Amazon EKS,
+EMR will automatically package that workload
+into a container and provide these pre-built connectors
+for integrating with these other AWS services.
+EMR will then deploy the container on the EKS cluster
+and it will manage all the scaling and logging
+and monitoring of that workload for you.

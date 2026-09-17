@@ -1,0 +1,92 @@
+# 254. Pillar 1: Operational Excellence
+# Section: AWS Architecting & Ecosystem
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20241384
+# Caption: en_US (manual)
+
+The first pillar
+in the well architected framework
+is operational excellence.
+So this is the ability to run and monitor systems
+to deliver business value and to continuously
+improve supporting processes and procedures.
+So what are the design principles of operational excellence?
+The first one is to perform operations as code.
+That means using infrastructure as code.
+So in AWS, that is going to be,
+for example, AWS CloudFormation.
+Also make sure to make frequent small
+and reversible changes so that in case
+of any failure, you can reverse it.
+If you start making huge changes every three months,
+things are not going to go well.
+Also, refine operations procedures frequently
+and ensure that all your team members
+are familiar with these new operations procedures.
+Anticipate failure but in case you have failure,
+you need to learn from all these failures.
+So failing is learning and of course,
+if you don't take the feedback from your failures,
+then you're not getting any better.
+Finally, use managed services to reduce operational burden
+and implement observability for actionable insights.
+That includes performance, reliability, and cost.
+So now, I'd like to just transcribe it
+in terms of AWS Services.
+And the first one is going to be prepare so prepare
+is going to be how do we basically prepare everything
+to have operational excellence?
+So you should use runbooks,
+you should have good infrastructure standards,
+you should do run deployments and like mock deployments.
+And for this we could use AWS CloudFormation basically,
+to prepare everything as a nice infrastructure as code.
+And then Config would be really nice as well to be using.
+We haven't seen Config in depth in this course,
+but Config could be used to evaluate
+the compliance of your CloudFormation templates.
+Then operate, you need to operate
+and basically, automate as much as you can.
+You should release fast, you should avoid manual processes.
+So again, CloudFormation would be
+a great tool for this, Config as well.
+CloudTrail to make sure to track all the API codes
+that are done and make sure nothing is done on purpose
+or nothing is changed manually.
+CloudWatch to basically monitor the performance over time
+of your stack and make sure that if you need to operate it,
+you know what operations to do.
+And finally, X-Ray, it's not something we've seen in depth
+in this course, but X-Ray will be able
+to trace HTTP requests,
+and to make sure that they're working correctly.
+And if they're not working correctly, it will point us
+to where the incorrect stuff happened.
+Finally, you need to evolve your infrastructure
+over time, so how do we do this?
+Well, again, CloudFormation, as you understand,
+CloudFormation is a centerpiece
+of this whole operational excellence pillar,
+but also you need to be able to evolve over time.
+So all the CI/CD tools basically CodeBuild,
+CodeCommit, CodeDeploy, CodePipeline,
+allow you to basically iterate quickly,
+deploy quickly, deploy often, deploy small changes,
+and all these things will contribute
+to operational excellence.
+Now remember just going into the exam, you don't need
+to understand and remember any of that.
+I'm just trying to educate you to all
+the AWS Services and how they can help
+with this operational excellence pillar.
+This is just educative, okay?
+Have a read through the the pillar, by the way,
+on the white paper if you want to,
+but here I'm just trying to give you a small run down.
+You don't need to remember all these services
+and there's not this service correspond exactly
+to that operational pillar or whatever,
+but it's just to give you ideas of how
+all these service can be used as a synergy
+to basically drive operational excellence.
+All right, so that's it for this lecture.
+I will see you in the next one.

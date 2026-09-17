@@ -1,0 +1,38 @@
+# 266. AWS Knowledge Center
+# Section: AWS Architecting & Ecosystem
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/29102314
+# Caption: en_US (manual)
+
+So, now let's talk
+about AWS Knowledge Center,
+which is part of the re:Post portal.
+So this is a place where you can find
+the most frequent and common questions and requests on AWS.
+So, they have a lot of different categories
+such as popular services, analytics,
+application integration, and so on.
+And what I'm going to do is just show you
+the online portal right now.
+So, I an now on the Knowledge Center
+and it's part of AWS re:Post.
+And so here we have the featured questions.
+For example, I can look at this one.
+And you have troubleshooting of objects,
+replication for Amazon S3 buckets, for example.
+So, you have the question and then you have the resolution,
+and a long article that helps you with these things.
+So, this is quite helpful.
+And if you go into Knowledge Center,
+you can go for newly created or popular ones,
+and then you can browse all the Knowledge Center content.
+And as you can see here, you can filter by tags.
+So, you can filter by AWS service.
+You can do a search and so on.
+You can sort them, you can view them as a list.
+I mean, there's a lot of things you can do with this portal.
+From an exam perspective, it's going to be the place
+to find the answers to very common questions,
+so to frequently ask questions and best practices on AWS.
+Okay, so that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

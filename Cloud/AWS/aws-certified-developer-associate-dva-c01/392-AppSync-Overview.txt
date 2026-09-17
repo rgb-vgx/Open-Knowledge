@@ -1,0 +1,114 @@
+# 392. AppSync Overview
+# Section: Other Serverless: Step Functions & AppSync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19732092
+# Caption: en_US (manual)
+
+Now let's talk about AWS AppSync
+and AppSync from an exam perspective,
+there's two angles to it.
+The first one is that it's a managed service
+that we uses GraphQL.
+So if she wants to build a GraphQL API on AWS,
+look no further than AppSync.
+What does GraphQL?
+Well, GraphQL makes it easy for applications
+to get exactly the data they need it's a new style of API.
+The idea is that you just ask for the fields you want
+and GraphQL returns just that's.
+The idea with GraphQL though is that you can combine data
+from one or more sources into a graph,
+so that means that the data sets behind GraphQL,
+can include NoSQL data stores,
+Relational databases, HTTP APIs,
+and they're all combined together.
+GraphQL in AppSync has direct integrations with DynamoDB,
+Aurora, OpenSearch and other sources
+and you can get any data from anywhere
+if you want to with Lambda to extend the pattern.
+The second angle for using AppSync in AWS,
+is to have real time WebSockets integration
+or MQTT on WebSockets.
+The idea is that if you're building
+a real time application that needs to access a data feel,
+you have many ways, but one of these ways
+is AppSync with a WebSockets.
+You could also use an application on the balancer
+or the API gateway, but AppSync is one of these options.
+Then if you have a mobile application
+and you want you to have local data access
+and data synchronization,
+AppSync is also a replacement for something we've seen
+that was outdated called cookie to sync.
+So this can come up in the exam as well.
+Finally, to get started with AppSync,
+you just need to upload one GraphQL schema
+and We'll see this in the hands on.
+So, in a diagram we have AppSync in the middle,
+and to get start with AppSync,
+you need to create a GraphSQL schema.
+So we upload the schema
+and this is what a schema may look like.
+And then you have a client and the client will say,
+"Hey, I want you to do this query on AppSync?"
+And you're specifying, for example,
+in this research, the name of the human
+and then the fact you want its name,
+the fact that we want to know which movies it appears in
+and the Starships.
+And then AppSync will run its own resolver,
+so this is the way, this is the magic of GraphQL.
+It works with resolvers and one of these results resolver
+may be DynamoDB so that means fetch the data from DynamoDB.
+And then AppSync knows how to automatically return
+the data in JSON form to the clients
+to comply exactly with the exact query that was asked.
+And as we can see, it is a very JSON.
+But with GraphQL you can ask for any fields
+and it will be returned automatically by AppSync.
+So that's the general idea, obviously going into an exam,
+you do not know how to write a Schema or a query and so on.
+Just need you to know the high level,
+but I want to show you the behind the scenes.
+So at a high level AppSync has integrations
+for your web applications, your mobile apps
+that all use GraphQL,
+but also anything that's going to be Real-time.
+So it could be a Real-time dashboard, for example,
+or any application that needs offline data synchronization
+and a replacement for convene to sync.
+For AppSync at its core you have GraphQL schema,
+you upload and resolvers to tell how to fetch data.
+For these resolvers we have direct integration
+with DynamoDB, Aurora, OpenSearch
+or anything you want through a Lambda function
+or an already existing public HTTP endpoints
+with the HTTP integration.
+And if you're an into log,
+anything that was happening in AppSync,
+it is integrated with CloudWatch Metrics
+and CloudWatch logs to get this information.
+Finally, because we're creating an API in AWS,
+we need to talk about security.
+So there's four ways you can authorize applications
+to interact with your AppSync GraphQL API.
+The first one is with API_KEY,
+so you generate these keys
+just like for the API gateway and give them to users.
+The second one is use AWS_IAM to allow IAM users roles
+or across account access to your absent API,
+which is also very similar
+to what we saw for the API gateway.
+Then we have OPENID_CONNECT
+if you wanted to have an integration
+with an OpenID Connect provider
+and a JSONWeb Token and finally AMAZON_COGNITO_USER_POOL
+to integrate with already existing User pools,
+you upgraded in Cognito and through Cognito User pools,
+then you can federate through
+other social login providers for example.
+Finally, if you want you to get HTTPs security
+on AppSync with a custom domain,
+the recommended solution is used CloudFront
+in front of AppSync.
+So that's it for this theory lecture
+we gonnaa hands on to get some practice.

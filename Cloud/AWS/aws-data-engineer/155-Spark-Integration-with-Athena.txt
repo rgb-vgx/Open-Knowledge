@@ -1,0 +1,50 @@
+# 155. Spark Integration with Athena
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356502
+# Caption: en_US (auto)
+
+In addition to integrating spark with redshift, you can also integrate it with Amazon Athena.
+Now this is a new feature for 2023, so wouldn't necessarily expect to see it on the exam until 2024 and beyond.
+But if you are watching this, then pay attention.
+And even if it's not, then this is good to know about.
+Because if you want to use this stuff in the real world, it's good to know what tools are at your disposal.
+The idea here is that you can run a Jupyter notebook that has spark enabled right within the Athena
+console.
+So you can see conceptually how this works.
+On the top diagram to the right here looks an awful lot like Amazon Athena.
+But basically you have a data lake in S3 that might have a AWS glue data catalog that imparts some sort
+of structure and schema to that data in S3.
+You can then use Amazon Athena for Apache Spark to interactively explore and prepare your data, just using
+a notebook that's built into the Athena console.
+With that, you can build your applications to analyze and visualize your data in that notebook,
+and integrate with other machine learning tools to explore that data or move it on to some other part of your
+pipeline.
+Right?
+Those notebooks, by the way, can be encrypted automatically or with your KMS key.
+And like Athena itself, this is a totally serverless solution, so you don't have to think about
+the underlying servers that are running spark or your Jupyter notebook.
+Well, sort of.
+We'll talk about that in a minute.
+We do need to think about capacity still.
+Basically the way this works is when you're in Amazon Athena, which is normally just a SQL query engine
+for your unstructured data.
+Instead of selecting Athena SQL as your analytics engine, you would just select Apache Spark instead.
+They also have an option for an example notebook that you can see there in the diagram.
+If you turn that on, it will get you started with some helpful sample code for querying
+the data in Athena and doing stuff with it under the hood, it uses something called firecracker to quickly spin up
+the underlying spark resources.
+So instead of sitting around waiting for new servers to get provisioned for your for spark, that happens pretty much
+right away because it's using something called firecracker to speed that up.
+There's also API and a command line interface access to Athena for spark as well.
+You know, you might use commands like create workgroup, create notebook, start session, or start
+calculation execution to do all of this from an API or from a command line.
+And the way that works is you would just pass in the code for your notebook as a parameter to say create
+notebook.
+Now you can adjust the Dpus the data processing units for Athena for both the coordinator and executor sizes
+for your underlying spark cluster.
+So although we're saying it's serverless, you still want to think about the CPU capacity of what you want
+to pay for, basically.
+So you can set some upper bounds on the capacity you want to use.
+Their pricing will be based on your total compute usage and also the number of GPUs data processing
+units per hour.
+We'll talk about that in more detail when we talk about Athena in more depth.

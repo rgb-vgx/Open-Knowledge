@@ -1,0 +1,73 @@
+# 430. AWS AppConfig - Overview
+# Section: AWS Other Services
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36528082
+# Caption: en_US (manual)
+
+So now let's talk about AWS AppConfig.
+So the idea is that when you configure your applications,
+it is very common for you to actually ship the configuration
+alongside your app,
+and sometimes you can modularize the configuration
+by using environmental variables.
+But what if instead you want it to be
+having the configuration outside of your app?
+For this, you could use AppConfig,
+which allows you to configure, validate
+and deploy dynamic configurations into your applications.
+So you can change this configuration
+and your application will change independently
+of you deploying any new code to your application.
+So you don't need to restart your application,
+everything works dynamically.
+So the beautiful thing about it is that, for example,
+you could use feature flags.
+What is a feature flag?
+Well say your application comes with a new feature
+but for now you want to disable it,
+so you just deploy your application,
+and in AppConfig you say the feature is off or false.
+And then when your application's been deployed
+and you're ready to test it out,
+you can just change the feature flag in your AppConfig.
+Your application will pick it up
+and automatically this new feature will be enabled.
+On top of it, you can pretty much dynamically change
+any kind of configuration,
+so you can fine tune your application performance and so on.
+You can, even for example,
+if you had IP block list or allow list,
+you can modify them in real time in AppConfig again,
+without changing your application code.
+So it's very useful for apps that you run
+on EC2 instances, Lambda, ECS, EKS, and so on.
+On top of it, if you have a configuration change
+for example, let's go back to our feature flag,
+you don't want to release the feature
+to all of your instances at once.
+You may want to gradually deploy this change
+to see if you have any issues, and if so, get a rollback.
+So that's possible with AppConfig as well.
+So AppConfig has a few config sources.
+It could be the parameter store,
+it could be the SSM documents,
+it could be your SRO buckets or somewhere else.
+And then your EC2 instances are,
+and, of course, the application running on them
+are going to regularly pull for configuration changes
+and then pull them.
+And for example, when we switch change the configuration,
+automatically we're going to be monitoring
+with CloudWatch if there is anything going wrong.
+If so, let's trigger an alarm,
+and this alarm will trigger a rollback
+of your configuration.
+On top of it to make sure that you're not actually
+distributing a configuration that is wrong.
+You can validate it either using a JSON Schema,
+which is going to check whether or not the config adheres
+to some specific types and so on, or a Lambda function.
+This is when you want to have code
+and this code is going to check the parameters
+in a more complex way.
+And that's it, that's AppConfig.
+I hope you liked it and I will see you in the next lecture.

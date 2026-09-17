@@ -1,0 +1,32 @@
+# 203. CloudFormation - StackSets
+# Section: AWS CloudFormation
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/42314138
+# Caption: en_US (manual)
+
+So now let's talk about
+CloudFormation StackSets.
+So the idea is that you want to create, update,
+or delete stacks across multiple accounts and regions,
+all within a single operation or template.
+So from an administrative account, you will take a template
+and you will create a StackSet out of it.
+And this StackSet will allow you to deploy your stack
+across multiple accounts in multiple regions,
+and that's why it's called a StackSet.
+So when you update a StackSet,
+all the stack instances that are in all the target accounts
+and in all the target regions are also going to be updated,
+so it's really all at once.
+Now, you can apply this to accounts you want,
+but also one of the most common use cases
+is actually to apply this to all accounts
+within an AWS Organization,
+which is a group of accounts in AWS.
+And within an organization, only an administrator account
+or someone who's been designated as an administrator
+can create StackSets, of course.
+Otherwise it would be chaos and security risks, okay?
+So that's it, you just need to know the StackSet concept
+at a high level.
+So that's it.
+I hope you liked it and I will see you in the next lecture.

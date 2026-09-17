@@ -1,0 +1,170 @@
+# 133. Recurrent Neural Networks
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285633
+# Caption: en_US (auto)
+
+Now let's go into some more depth on recurrent neural networks and what they're all about.
+So what's an RNN for?
+Well, a couple of things.
+Basically they're for sequences of data that might be a sequence in time.
+So you might use it for processing time series data where you're trying to look at a sequence of data
+points over time and predict the future behavior of something over time in turn.
+RNNs are fundamentally for sequential data of some sort.
+Some examples of time series data might be web logs, where you are receiving different hits to your
+website over time, or sensor logs where you're getting different inputs from sensors from the Internet
+of Things.
+Or maybe you're trying to predict stock behavior by looking at historical stock trading information.
+These are all potential applications for recurrent neural networks, because they can look at the behavior
+over time and try to take that behavior into account when it makes future projections.
+Another example might be if you're trying to develop a self-driving car, you might have a history of
+where your car has been, its past trajectories, and maybe that can inform how your car might want
+to turn in the future.
+So you might take into account the fact that your car has been turning along a curve to predict that
+perhaps it should continue to drive along a curve until the road straightens out.
+The sequence doesn't have to just be in time.
+It can be any kind of sequence of arbitrary length.
+Something else that comes to mind are languages.
+Sentences are just sequences of words, right?
+So you can apply RNNs to language or machine translation, or producing captions for videos or images.
+These are examples of where the order of words in a sentence might matter, and the structure of the
+sentence, and how these words are put together could convey more meaning than you could get by just
+looking at those words individually without context.
+So again, an RNN can make use of that ordering of the words and try to use that as part of its model.
+Another interesting application of RNNs is machine generated music.
+You can also think of music sort of like text, where instead of a sequence of words or letters, you
+have a sequence of musical notes You can actually build a neural network that can take an existing piece
+of music and extend upon it, using a recurring neural network to try to learn the patterns that were
+aesthetically pleasing from the music in the past.
+Conceptually, this is what a single recurrent neuron looks like in terms of a model.
+It looks a lot like an artificial neuron that we've looked at before.
+The big difference is that this little loop here is going around it.
+As we run a training step on this neuron, some training data gets fed into it.
+Or maybe this is an input from a previous layer in our neural network.
+It will apply some sort of step function after summing all the inputs into it.
+In this case we're going to be using something more like a hyperbolic tangent, because mathematically,
+we want to be sure that we preserve some of the information over time in a smooth manner.
+Now usually we would just output the result of that summation and that activation function as the output
+of this neuron.
+But we're also going to feed that back into the same neuron.
+So the next time we run some data through this neuron, that data from the previous run also gets summed
+into the results as an extra input.
+So as we keep running this thing over and over again, we'll have some new data coming in that gets
+blended together with the output from the previous run through this neuron, and it just keeps happening
+over and over and over again.
+So you can see that over time, the past behavior of this neuron influences its future behavior and
+influences how it learns.
+Another way of thinking about this is by unrolling it in time.
+So what this diagram shows is the same single neuron, just at three different time steps.
+When you start to dig into the mathematics of how RNNs work.
+This is a more useful way of thinking about it.
+So if we consider this to be time step zero.
+At the left, you can see there's some sort of data input coming into this recurrent neuron, and that
+will produce some sort of output after going through its activation function.
+That output also gets fed into the next time step.
+So if this is time step one in the middle with this same neuron, you can see that this neuron is receiving
+not only a new input, but also the output from the previous time step, and those get summed together.
+This activation function gets applied to it and that gets output as well.
+The output of that combination then gets fed into the next time step call this time.
+Step two where a new input for time.
+Step two gets fed into this neuron, and the output from the previous step also gets fed in.
+They get summed together, the activation function is run and we have a new output.
+This is called a memory cell because it does maintain memory of its previous outputs over time.
+And you can see that even though it's getting some together at each time step, over time, those earlier
+behaviors kind of get diluted.
+So we're adding in time step zero to time step one.
+And then the sum of those two things end up working into time.
+Step two.
+So one property of memory cells is that more recent behavior tends to have more of an influence on the
+current time step.
+This can be a problem in some applications, but there are ways to work against that that we can talk
+about later.
+Stepping this up, you can have a layer of recurrent neurons.
+In this diagram, we are looking at four individual recurrent neurons that are working together as part
+of a layer.
+You can have some input going into this layer as a whole that gets fed into these four different recurring
+neurons, and then the output of those neurons can get fed back into the next step to every neuron in
+that layer.
+So all we're doing is scaling this out horizontally.
+So instead of a single recurrent neuron, we have a layer of four recurrent neurons where all of the
+output of those neurons is feeding into the behavior of those neurons in the next learning step.
+You can scale this out to have more than one neuron and learn more complicated patterns.
+As a result, RNNs open up a wide range of possibilities because now we have the ability to deal not
+just with vectors of information or static snapshots of some sort of a state.
+We can also deal with sequences of data as well.
+There are four different combinations here that an RNN can deal with.
+We can deal with sequence to sequence neural networks.
+If our input is a time series or some sort of sequence of data, we can also have an output that is
+a time series or some sequence of data as well.
+So if you're trying to predict stock prices in the future based on historical trades, that might be
+an example of a sequence to sequence topology.
+We can also mix and match sequences with the older vector static states that we predicted just using
+multi-layer perceptrons, we would call that sequence to vector.
+If we were starting with a sequence of data, we could produce just a snapshot of some state as a result
+of analyzing that sequence.
+An example might be looking at the sequence of words in a sentence, to produce some idea of the sentiment
+that sentence conveys.
+You can go the other way around too.
+You can go from a vector to a sequence.
+An example of that might be taking an image, which is a static vector of information, and then producing
+a sequence from that vector.
+For example, words in a sentence, creating a caption created from an image.
+We can chain these things together in interesting ways too.
+We can have encoders and decoders built up that feed into each other.
+For example, we might start with a sequence of information from a sentence of some language.
+Embody what that sentence means as some sort of a vector representation, and then turn that around
+into a new sequence of words in some other language.
+That might be how a machine translation system could work.
+You might start with a sequence of words in French.
+Build up what we call an embedding layer, just a vector that embodies the meaning of that sentence,
+and then produce a new sequence of words in English or whatever language you want.
+That's an example of using a recurrent neural network for machine translation.
+There are lots of exciting possibilities here.
+Births.
+Training RNNs, just like CNN's is hard, and in some ways it's even harder.
+The main twist here is that we need to back propagate not only through the neural network itself and
+all of its layers while we're training, but also through time.
+From a practical standpoint, every one of those time steps ends up looking like another layer in our
+neural network while we're trying to train it.
+And those time steps can add up fast.
+Over time, we end up with a deeper and deeper neural network that we need to train, and the cost of
+actually performing gradient descent on that increasingly deep neural network becomes increasingly large.
+So to put an upper cap on that training time, often we limit the back propagation to a limited number
+of time steps.
+We call this truncated back propagation through time.
+It's something to keep in mind when you're training an RNN.
+You not only need to back propagate through the neural network topology that you've created, you also
+need to back propagate through all the time steps that you've built up to that point.
+Now, we talked earlier about the fact that as you're building up an RNN, the state from earlier time
+steps end up getting diluted over time because we just keep feeding in behavior from the previous time
+step in our run to the current step.
+This can be a problem if you have a system where older behavior does not matter less than newer behavior.
+For example, if you're looking at words in a sentence.
+The words at the beginning of a sentence might be even more important than words toward the end.
+If you're trying to learn the meaning of a sentence, there is no inherent relationship between where
+each word is and how important it might be in many cases.
+That's an example of where you might want to do something to counteract that effect.
+One way to do that is something called the LSTM cell.
+It stands for long short term memory cell.
+The idea here is that it maintains separate ideas of both short term and long term states, and it does
+this in a fairly complex way.
+Now, fortunately, you don't really need to understand the nitty gritty details of how this works.
+There's an image of it here for you to look at if you're curious, but the libraries that you use will
+implement this for you.
+The important thing to understand is that if you're dealing with a sequence of data where you don't
+want to give preferential treatment to more recent data, you probably want to use an LSTM cell instead
+of just using a straight up RNN.
+There's also an optimization on top of LSTM cells called GRU cells that stands for gated recurrent unit.
+It's just a simplification on LSTM cells that performs almost as well.
+So if you need to strike a compromise between performance in terms of how well your model works and
+performance in terms of how long it takes to train it, a GRU cell might be a good choice.
+GRU cells are a very popular in practice.
+Training in RNN is really hard.
+If you thought CNNs were hard, wait till you see RNNs.
+They are very sensitive to the topologies you choose and the choice of hyperparameters.
+And since we have to simulate things over time and not just through the static topology of your network,
+they can become extremely resource intensive.
+If you make the wrong choices, you might have a recurrent neural network that does not converge at
+all.
+It might be completely useless even after you've run it for hours to see if it actually works.
+So again, it's important to build upon previous research when you can try to find some sets of topologies
+and parameters that work well for similar problems to what you're trying to do

@@ -1,0 +1,180 @@
+# 176. Beanstalk Second Environment
+# Section: AWS Elastic Beanstalk
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851292
+# Caption: en_US (manual)
+
+So, now let's go ahead,
+and create a second Beanstalk environment.
+So, let's create a new environment.
+Again, it's going to be a web server environment,
+and the name, this time, is going to be prod.
+So, we'll have a development environment,
+and a production environment.
+Now, we're going to use the same managed platform of Node.js
+and we'll use the same sample application for now.
+And the Preset is going to be, this time,
+not Single Instance, but High Availability,
+because we want to have a look at more configurations
+and understand what Beanstalk is doing
+when we're doing high availability.
+So, click on Next.
+Then we want to use an existing service role,
+so we'll just use these two right here,
+so this is perfect, already created.
+And then click on Next.
+Okay. So, here we have some optional configurations,
+and we will set some of them, and others we will not.
+So, we can set up networking, database, and tags,
+so if you had a specific VPC requirements,
+you could select it here, but this is optional.
+For Instance Settings, we have to choose,
+we'll actually choose this VPC, sorry.
+And then for Instance Settings,
+we'll actually choose in which subnets we want to launch.
+So, in this case, we want to launch
+in all my subnets available,
+so that we are highly available.
+Because we will be using a load balancer,
+there is no need to assign public IP addresses
+to my EC2 instances, so I will not keep this activated.
+Then we have the option to use a database in it.
+And if we decide to use a database
+in our Beanstalk environment, just so you know,
+that database is linked to the lifecycle
+of your environment.
+That means that if you delete your environment,
+the database will go away.
+Now, of course, there are ways around it,
+you can snapshot your database,
+and then restore it at a later stage,
+but it's something that you should know about.
+Now, we don't need a database, so we'll not do it.
+So, I'll scroll down, and click on Next.
+Okay, next we configure the instances.
+So, do we want to have the root volume
+different than the default and so on?
+What security groups we want?
+I will not select this, we'll just make sure
+that this is automatically configured for us.
+What about the auto scaling group?
+So, here we have a Load Balanced environment,
+so this time we'll have a load balancer,
+and so, therefore, our autoscaling group
+will have a minimum and a maximum capacity.
+For example, one to four.
+The fleet composition, so how do we want your ASG to be,
+On-Demand, or also maybe some spots, who knows?
+So, we scroll down.
+As you can see, lots of different options.
+We want t3.micro, t3.small.
+So, I'll just leave it as t3.micro, for example.
+The AMI ID you wanna use, so pretty much the configurations
+of your ASG can be done here.
+How do you wanna scale your ASG?
+So, here we wanna scale our network out, on the average,
+what is the min, the max, and the thresholds, and so on.
+So, these are all my ASG configuration
+that I can do directly from Beanstalk.
+Regarding load balancer, what is the visibility?
+What subnets do I want in?
+So, it's a public load balancer in three subnets,
+so that's perfect.
+And then the type of load balancer.
+So, do I want a application load balancer?
+Or a network load balancer?
+And if I choose an ALB, I can either have one dedicated
+for this environment, or if you have multiple environments,
+then you can use a shared one to save on some cost,
+which is really nice.
+So, listeners for your load balancers,
+so, again, more load balancer configuration,
+processes, rules,
+I mean, you can see that everything can be configured
+directly in here.
+So, I'll click on Next.
+And then Health Reporting.
+So, what kind of health checks do we want?
+So, we can have CloudWatch custom metrics,
+we can have Enhanced type of health reporting,
+which we need.
+So, I will not go over all the health, but as you can see,
+Beanstalk itself manages its own updates,
+so it's quite nice.
+Do you want email notifications
+based on important events for your environment?
+Do you want to have rolling updates?
+So, we'll have a look at this in its own lecture,
+so we'll just skip this right now,
+but this is a very important one for the exam.
+And then Platform Software.
+So, you want Amazon X-Ray,
+do we want to stream logs to CloudWatch logs and so on?
+So, a lot again of different options.
+So, we've seen pretty much everything at a high level.
+As you can see, Beanstalk can be quite a complicated,
+and powerful, and complete service.
+So, bottom line is we have configured everything,
+but in my experience with this new console,
+we may do things wrong,
+so I'm going to go and just cancel this.
+Okay? We're going to cancel this altogether,
+and then we will recreate an environment.
+And the application is going to be MyApplication.
+The environment name is MyApplication-prod.
+We will choose again, Node.js 12,
+and then we will choose High Availability.
+Click on Next.
+Then we go into the service,
+we just click on Skip To Review.
+And from that point onwards,
+I know that everything is configured the way it should be.
+So, it's just a safety,
+but in my own experiments with this new console,
+it may be a little rough around the edges.
+So, when you're done, you just review all these parameters,
+and then you click on Submit.
+And here we go, my application is now launching,
+and that will take about 10 minutes,
+so we'll pause the video until this is done.
+So, now my environment is ready, and I can click on this,
+and open again the new Congratulations page.
+So, from an app perspective, this is the same app,
+it's just run differently.
+So, if I go, for example, for my load balancers,
+and refresh this page, as you can see now,
+a load balancer has been created,
+it's in three availability zones, and so on.
+And there is a target group,
+so this target group has one healthy instance,
+and the healthy instance is an EC2 instance
+that was created.
+So, this EC2 instance corresponds to MyApplication-prod,
+and we can have a look at the security group.
+For example, there's one security group attached to it,
+which allows port 80 coming from another security group.
+And this security group right here
+is the load balancer security group,
+which allows port 80 from anywhere,
+and allows outbounds on port 80 to anywhere as well,
+so to be able to talk to our application.
+Finally, if we go into the Autoscaling Groups,
+we'll find right here that we have two.
+There's one for our first application,
+and one for our prod environment.
+So, this one is our prod environment,
+because we have min one, and max four capacity.
+And if you look at it,
+we can, for example, have a look at Instance Management,
+and see that one is in service.
+In terms of Automatic Scaling,
+we can also have dynamic scaling policies
+that have been set automatically by Elastic Beanstalk.
+So, the beautiful thing about it
+is that Beanstalk did pretty much configure everything
+for us, and all we had to do was to upload the code,
+and say we wanted to run it in high availability.
+So, that really shows you the power of Beanstalk.
+So, we now have two environments,
+we have a prod and a dev environment, which is amazing.
+And that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

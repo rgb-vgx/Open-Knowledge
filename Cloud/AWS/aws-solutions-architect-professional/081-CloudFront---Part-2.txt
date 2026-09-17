@@ -1,0 +1,139 @@
+# 81. CloudFront - Part 2
+# Section: Caching
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376524
+# Caption: en_US (manual)
+
+So let's keep on learning about CloudFront.
+So first we have geo restriction
+to restrict who can access your CloudFront distribution.
+So we have an allow list
+to say only users from these countries
+can access CloudFront,
+or we can have a block list
+to block users from banned countries
+or countries that you don't want to access your origin.
+So the country is determined
+by using a third-party Geo-IP database
+from within CloudFront.
+So the use case for geo restriction
+is to use copyright laws
+to control access to content.
+And on top of restriction,
+you can just customize your content as well per geolocation,
+because CloudFront automatically is going to add a header
+to the request called CloudFront-Viewer-Country,
+and that is going to be accessible
+to your origin or to a function
+such as Lambda@Edge.
+In terms of pricing,
+well the Edge Locations are all around the world,
+and the cost of the data in each location can vary.
+So we have a price table
+and it turns out that, well,
+it goes from lower to higher, based on location.
+So the cheapest countries are going
+to be the US, Mexico, and Canada,
+and the most expensive one is going to be India.
+Therefore, we can define price classes in CloudFront
+to reduce the number of Edge Locations for cost reduction.
+So you have three price classes,
+the first one, is called All.
+When you have all the regions
+that gives you the best performance,
+but obviously it's the highest cost.
+Then we have the Class 200.
+It's most regions,
+but it will exclude the most expensive regions.
+And then we have Class 100,
+to only have the least expensive regions.
+So this is the table of inclusions
+of each price class and each location.
+So you can have a look in your own time.
+But from a global perspective,
+this is Price Class 100,
+so it's the cheapest one.
+Then we have Price Class 200,
+and finally, we have the Price Class All,
+with all the Edge Locations.
+Now, CloudFront has signed URL,
+so the idea is that you wanna give
+a signed URL with an expiration
+to control access to content in CloudFront.
+So the idea is that, for example,
+we have CloudFront that is integrated with Amazon S3
+through an OAC.
+And an application server
+that wants to access some content on CloudFront,
+but it needs to be protected.
+So what's going to happen
+is that the clients will need
+to talk to an application server to generate a signed URL
+with a trusted signer.
+So the clients will talk to your application,
+will do authentication and authorization,
+and if it's all good,
+then your application server
+is going to generate a signed URL
+using the SDK onto CloudFront,
+and return that signed URL to the client.
+Then the client can directly access CloudFront
+by using the signed URL
+and getting the specific bit of content
+from your Amazon S3 bucket.
+So you would do this so that your Amazon CloudFront
+origin distribution, sorry,
+is not publicly accessible,
+doesn't have everything accessible to everyone,
+but instead, some files must be accessed or a signed URL
+for enhanced security.
+So you may ask me, what's the difference
+between using a signed URL
+and an S3 pre-signed URL?
+Well, CloudFront signed URL allows you
+to access a path no matter what the origin is,
+so it doesn't apply only to S3.
+And then to sign these URL,
+there is an account wide key-pair
+that only the root accounts can manage.
+So you can filter by IP, by path, by date,
+you can add an expiration,
+so they can be quite complicated for the signed URL.
+And you can leverage caching features
+so that the signed URL may just access content
+cashed on Edge Location.
+The S3 pre-signed URL is just to issue a request
+as the person who pre-signed the URL.
+So in that case,
+you use the IAM key of the signing IAM principle.
+It has limited lifetime,
+and then you can use it
+to upload and download as well.
+So this is what a pre-signed URL looks like.
+Okay, next on CloudFront,
+we can have custom error pages.
+So the idea is that you want
+to return an object to the viewer
+when the origin returns an error code
+for example, a 400 or a 500 status code to CloudFront.
+For this, we're going to create custom error pages,
+and we can also cache them using a caching minimum TTL.
+So let's have an example,
+we have a request made to CloudFront,
+CloudFront forwards the request to your origin,
+with response to a 400 or 500 type of error message.
+Then what's going to happen
+is that instead of sending that response to the client,
+we can have custom error pages
+and they can be stored, for example, on an S3 bucket.
+So that for example, if it was a 403,
+then the 403 would be shared
+as an HTML file to the Edge Location,
+which would put it in the cache, okay?
+And then sent back to the client.
+So we would have a customization of error pages
+because they don't come from the origin,
+they come from your S3 bucket instead.
+Okay.
+So that's it for CloudFront,
+I hope you liked it.
+And I will see you in the next lecture.

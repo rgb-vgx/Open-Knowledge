@@ -1,0 +1,96 @@
+# 194. AWS Step Functions: State Machines and States
+# Section: Application Integration
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/41056828
+# Caption: en_US (auto)
+
+Tutor: Let's go into a little bit more depth
+on AWS step functions,
+because this is a very powerful orchestration tool
+and it's extremely relevant to data engineering.
+So you can expect a lot of questions on this in the exam.
+First, some terminology.
+So the workflow that you're defining in your step functions
+is called a state machine.
+That's just a fancy way of saying
+we have some system that defines a bunch of states
+that your data pipeline might be in,
+and it moves between those states somehow,
+based on some criteria, right?
+Every step in that workflow is called a state
+because it's part of a state machine, right?
+That's it, just some terminology, just some words.
+However, there are many different types of states
+that you can use with AWS step function.
+So it is important to know these.
+The most useful one is the task state.
+So that is a state within your step function state machine
+that does something right?
+Maybe it kicks off a lambda function,
+maybe it kicks off some other AWS service
+to transform your data, or move it around,
+or load it, or whatever it needs to do.
+Maybe it even talks a third-party APIs
+to do something external to AWS.
+In any case, that's a task note.
+It's performing some sort of real operation
+on your data as you go.
+There's also a choice state,
+and this adds conditional logic through choice rules.
+These can be things like comparisons.
+You know, if my data is bigger than this amount,
+maybe I do something special with it.
+If this data contains PII or something,
+maybe I do something special with it, right?
+So choice states are just a opportunity
+to apply conditional logic.
+There's also a wait state
+that can just be used to delay the state machine
+for some specific amount of time.
+If you just for whatever reason want to give things,
+you know, time to catch up,
+kind of a hacky way to do it,
+but you can bake in a time delay
+into your step functions as well with a wait state.
+There's also the parallel state,
+and this allows you to do separate things in parallel
+and separate branches of execution.
+So a parallel state isn't, well,
+it's kind of a blurry concept of state, right?
+It's really saying I'm gonna create many states
+running in parallel at this point going on.
+So I can have different things happening at the same time
+once I hit a parallel state.
+Now, there's also the map state,
+so this can get confusing.
+This is something you should probably remember.
+So a map is also run in parallel,
+but it says, "I'm going to run this following set of steps
+for each item in a data set in parallel."
+So this is especially relevant to data engineering
+because it's specifically made for operating on data.
+It's going to be able to work with JSON files, S3 objects,
+CSV files, whatever you might have.
+But it's going to take a set of steps
+and apply those to that data set in parallel.
+So remember, a map operation
+will split things up into parallel processing on your data,
+just like Apache Spark might or anything else,
+and it will run in parallel
+without needing a separate parallel state in front of it,
+it's a parallel implicitly, okay?
+So a little bit of confusing there
+between parallel and map states there.
+Parallel is used for kicking off separate branches
+within your state machine that can do whatever,
+but map is specifically about
+operating on your data in a parallel way.
+Finally, there's Pass, Succeed, and Fail.
+Pass just passes your data along to the next step,
+It's usually just used for debugging.
+Succeed and Fail, though, are where you're gonna end up.
+So once you're done with your state machine,
+you either succeed with that state machine or fail,
+and that's how you kind of wrap things up.
+So that step functions in a bit more detail there.
+Do remember what the valid types of states are
+and what they do, it might come in handy.

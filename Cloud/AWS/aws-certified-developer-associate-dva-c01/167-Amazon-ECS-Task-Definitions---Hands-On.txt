@@ -1,0 +1,169 @@
+# 167. Amazon ECS Task Definitions - Hands On
+# Section: ECS, ECR & Fargate - Docker in AWS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/31788350
+# Caption: en_US (manual)
+
+So let's have a look at all the option
+for creating a task definition.
+So here is a family name, so I'll call this one wordpress.
+And then we have to choose infrastructure requirements.
+So we can launch on Fargate
+and we can launch on Amazon EC2 instances.
+It could be either or both.
+And based on the options,
+if it's Fargate then we have to choose CPU,
+and memory increments are compatible with Fargate.
+But if it's Amazon EC2 instances
+then you can enter whatever value you want
+for memory and CPU.
+So that's one difference.
+And of course, if you are on Fargate
+then the network mode has to be AWS VPC.
+But if you're only on EC2
+then you have the option to choose
+a more advanced network mode.
+Just something to know about.
+Then, task role are very important
+because they allow your container
+to make API calls to IWS services
+and to get automatically an IAM role for this.
+So this role is pretty big at the exam.
+The task execution role is an IAM role
+specifically for the container agent
+to make AWS API requests on your behalf.
+So this is more of a standard role for ECS,
+whereas the task role is really the role
+you're going to use for your ECS tasks.
+Okay, next container.
+So you can have as many containers as you want
+in your ECS task definition,
+but one of them at least has to be an essential container.
+So that means you enter a name,
+for example, wordpress,
+and the image URI is WordPress.
+And yes, this is an essential container.
+And you can add more containers at the bottom.
+As you can see right here, I have Container 2.
+Now, if you set a container as essential
+that means that if the container fails for whatever reason
+and is killed,
+then because this's an essential container
+all the task is going to be stopped.
+If this is not an essential container
+then it can be stopped and the task will still go on.
+So it depends on what your application does
+to know whether or not a container is essential.
+So now we have Container 1,
+and it pulls an image from here and this URI.
+And so, we can have the image
+in the private registry if we want to.
+And so, for this you need authentication.
+And so, we just enter the Secrets Manager ARN
+for this secret,
+and we can pull these images from a secret repository,
+from private repository instead of public one.
+Next we have port mapping.
+So this is where you define all the ports
+for your containers,
+and the protocols,
+the port name, and the type of protocol we have.
+So HTP, HTP2, GRPC, or none.
+And you can add as many port mappings as you want,
+which is very handy
+if your application is exposing several ports.
+Next, you have some files
+around if you want to limit the number
+of VCPUs, and memory,
+and the hard and soft limits,
+which makes sense if you have multiple containers
+that run next to each other.
+Now, for environment variables
+you can add them individually.
+So we can say, for example,
+the FOO is equal to value BAR,
+so this's the name and this is the value.
+But also, we can have them from a secret manager.
+So for example,
+this one is going to be called SECRET_DB_PASSWORD.
+That's the name of this environment variable.
+And then we do value from,
+and here you add the ARN of the secrets manager secret
+that has this value,
+the SECRET_DB_PASSWORD.
+So this is for secrets manager,
+but also for the SSM parameter store.
+So this is when you set the environment variables
+directly from here,
+or you can add them from a file.
+And this file is a file
+that is going to be hosted on Amazon S3,
+so good to know.
+Now, for logging.
+So logging can be log collection,
+and this is done.
+And you can send it to CloudWatch
+or to Splunk, or Firehose,
+or Kinesis Stream, or OpenSearch, or S3,
+all via something called AWS FireLens
+or directly to CloudWatch natively.
+And if you use CloudWatch
+then we have to specify the log group,
+the log region, the stream prefix,
+and whether or not we want to create the group.
+But you can also add more log configuration values
+if you wanted to.
+HealthChecks make sure that your container is still healthy
+if you wanted to.
+Timeouts, make sure that you have
+a start and a stop timeout.
+Stop timeout you get killed
+before it properly ends,
+and start timeout is that if it doesn't start fast enough
+then it gets killed.
+We can set some Docker configuration,
+Docker labels, and specific resources,
+but these are less important.
+So as we said, \we can have as many containers as needed,
+essential or not.
+Then we have storage.
+So we can provide more storage for our containers.
+So it could be a bind mount
+or an EFS file system that we mount.
+So bind mount is saying, "Hey, what's the volume name?"
+And then we can add multiple volumes if we wanted to,
+some of them would be EFS, for example.
+It's up to you to how you wanna mount your data.
+And then you have the container mount points that you define
+and you say, "Okay, which path I wanna mount my volume on,"
+and then where the volumes can be from.
+It could be mounting a volume from another container.
+So this's all described in detail in the documentation,
+but what you have to remember is that you can mount data
+from EFS or from a file system
+directly onto your containers,
+or from containers onto each other.
+From monitoring, we can also enable trace collection
+to send data into AWS X-ray
+through a sidecar called
+the AWS Distro for Open Telemetry.
+And automatically the CPU and memory
+will be adjusted to add for this sidecar.
+And we can also collect metrics
+and send them into CloudWatch
+or Managed Service for Prometheus,
+using different kinds of libraries.
+And so, this is to send your metrics
+into a central place if you wanted to.
+So we've seen everything
+in terms of how we configure our tasks.
+And then you click on Create
+and you can review all the settings
+directly from the JSON,
+if you wanted to have a look at the JSON itself.
+Or if you wanted to have a look at the data itself
+you would just create a new revision
+and then, again, modify them one by one.
+But we've seen how to do
+a full task definition configuration using the console.
+So I hope you liked it,
+and I will see you in the next lecture.

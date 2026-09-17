@@ -1,0 +1,53 @@
+# 220. AWS Firewall Manager - Policies
+# Section: Domain 6: Security and Compliance
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37935992
+# Caption: en_US (manual)
+
+So let's do a deep dive
+into the kind of security policies you have
+in Firewall Manager.
+So the first one is for web application firewall, WAF,
+and you can create WebACLs for all your low balancers
+in all your accounts in your organization.
+Now, you have two options.
+Either you choose to not auto remediate resources
+that don't comply with these WebACLs
+meaning that the WebACLs are not attached to the resources,
+but you don't want to automatically attach them
+or you choose to auto remediate.
+In that case, you automatically apply the WebACL
+to all the existing resources.
+Then we have Shield Advanced.
+So this is to enable Shield Advanced
+in all the accounts in your organization.
+And again, you have the option to only view the compliance,
+to assess the impact, or to auto remediate.
+That means enabling Shield everywhere.
+We have security group policies,
+so we can ensure that we have common security groups
+for all your EC2 instances in all your accounts.
+Or you can audit the security group rules
+in all your accounts
+or you can audit the usage of your security groups.
+That means you're going to find the unused
+or redundant security groups
+and optionally perform a cleanup on them by deleting them.
+Next, we have security policies for network firewalls.
+So this is for you to centrally manage
+the network firewall firewalls
+in all the accounts of your organization.
+So you have two modes,
+either it's distributed
+and you have a firewall endpoint in each VPC,
+or it's centralized.
+And that means that all the firewall endpoints
+are managed in a central VPC.
+You also have the option to import existing firewalls
+if you wanted to.
+And finally, you can also manage
+Route 53 Resolver DNS Firewall.
+So you manage all the associations
+of the DNS Firewall rule groups
+and the VPCs in your organization.
+So that's it for Firewall Manager.
+I hope you liked it, and I will see you in the next lecture.

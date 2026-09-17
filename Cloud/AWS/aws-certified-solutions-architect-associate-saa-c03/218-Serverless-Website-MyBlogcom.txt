@@ -1,0 +1,152 @@
+# 218. Serverless Website: MyBlog.com
+# Section: Serverless Solution Architecture Discussions
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528396
+# Caption: en_US (manual)
+
+Okay, so let's talk
+about a serverless hosted website,
+maybe called MyBlog.com.
+So our website should scale globally,
+and we rarely write blogs,
+we often read blogs.
+So our blog is seen
+by hundreds of thousands of people online,
+and we really add blogs maybe one a day, one a week.
+But, most of the time, these blogs are being read.
+And so most of my websites is going
+to be purely static files,
+and maybe a little bit of my website is going
+to be a dynamic REST API.
+I want to implement caching, where possible,
+to really save cost and save latency,
+and have a great user experience.
+And any new user that subscribes to my website,
+to my blog, I really want them
+to receive a warm welcome email.
+And this should be serverless.
+And any photo uploaded to the blog,
+I also wanna have a thumbnail being generated,
+also serverless, because I really like serverless.
+So how do we implement all these requirements?
+Number one, we wanna serve content,
+it's static and it's global.
+So if you remember, we have our clients,
+and our static content maybe stored in Amazon S3.
+So how do we expose that bucket?
+Remember the Amazon S3 bucket is in specific region.
+How do we expose this globally?
+Well, we can use Amazon CloudFront.
+And Amazon CloudFront is a global distribution CDN,
+and so basically our client is going to interact
+with edge locations of Amazon CloudFront,
+and it's going to cache data coming straight from Amazon S3.
+Okay. Super easy.
+We've seen CloudFront,
+we've seen S3 is a classic architecture.
+Now how do we do this securely?
+Now, that's a very common question as well.
+So we have the clients, it's interacting with CloudFront
+and it's a global distribution still.
+But now we will add an Origin Access Control
+which will ensure that our Amazon S3 bucket
+can only be accessed by CloudFront.
+For this, we will add a bucket policy
+to only authorize the CloudFront distribution.
+Therefore, a user trying
+to access our Amazon S3 bucket directly
+will not be authorized,
+and we have secured our Amazon S3 buckets.
+Okay, so now we have this, and this is really good.
+How do we add a public serverless REST API?
+Well, for this, we'll have a REST HTTPS,
+talking to Amazon API Gateway,
+invoking a Lambda function,
+maybe querying and reading from DynamoDB.
+And because we have so many reads,
+maybe DAX is a great caching layer we could use.
+Okay? So far very easy.
+If we're going global,
+maybe we could be leveraging DynamoDB Global Databases
+to reduce the latencies in part of the world.
+That also could be a really good way
+of maybe speeding up our infrastructure
+and our architecture.
+Okay, so this is fine.
+We have everything we need.
+Now let's talk about the User Welcome email flow.
+Well here, remember when a user subscribes,
+I want them to be having an email saying,
+hello, how are you?
+So for this maybe in DynamoDB,
+we want to enable streams of changes.
+So we'll have a DynamoDB stream being created,
+and that DynamoDB stream will invoke a Lambda function.
+That Lambda function is going to be very special.
+It's going to have an IAM role,
+which allows us to use Amazon SES.
+So we haven't seen what Amazon SES is,
+but it's really simple.
+It's called Amazon Simple Email Service.
+So SES, and it basically allows us to send emails.
+So here our Amazon Lambda function can use the AWS SDK
+to send emails from Amazon SES.
+And here we go.
+We have a basically serverless User Welcome email flow,
+and really simple, no infrastructure to manage,
+it just works and scales really, really well.
+Okay, so now we said,
+okay, if users upload images,
+we want thumbnails to be created.
+So our clients is going to maybe upload
+to our S3 bucket directly,
+or maybe we again have an OAC and a CloudFront distribution,
+in which case our clients will upload photos to CloudFront,
+and CloudFront will forward them onto the Amazon S3 bucket.
+And this is called S3 Transfer Acceleration.
+So either directly to S3 or using Transfer Acceleration.
+And then what we'll do is
+that whenever a file is added to S3,
+it's going to trigger a Lambda function,
+so Lambda can be triggered by S3,
+and Lambda will be creating a thumbnail,
+and putting that thumbnail into an S3 bucket,
+could be a different bucket, for example.
+And just to show you that it's possible,
+Amazon S3 also has triggers to SQS and SNS.
+Now this is optional, and from SQS SNS you can do
+whatever you want, but it's just to show you
+that you're very free into how you want things to work.
+And so Amazon S3 can invoke either Lambda, SQS or SNS,
+and you're really free to think
+about your solution architecture
+and how to make things serverless
+and easy for you on your end.
+So this is quite a complete architecture we've just done,
+but it's all serverless, it's all scaling globally,
+and I think that's what matters most.
+So we've seen static content being distributed
+using CloudFront with S3.
+We've seen the rest API that was serverless.
+We didn't need Cognito this time,
+because it was a public REST API.
+And we leveraged a Global DynamoDB Table,
+to serve the data globally.
+We could have used also Aurora Global Database,
+but in this case he wouldn't have been serverless,
+it would've been provisioned Aurora.
+Or we could also enable DynamoDB streams.
+Basically, these streams will tell us about changes
+to our user tables and then trigger a Lambda function.
+And that Lambda function had an IAM role attached to it,
+so it could use SES or Simple Email Service.
+And this was just to send emails in a serverless way.
+And S3, we've seen that it could trigger SQS, SNS, Lambda
+to notify of events.
+So quite a lot of learnings.
+All these things we know,
+but now it's I think, really nice
+to see all these things working together,
+and how we can create really cool applications
+using all the concepts we know.
+So I hope you liked it,
+and I will see you in the next lecture.

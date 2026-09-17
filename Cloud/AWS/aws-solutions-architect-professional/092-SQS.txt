@@ -1,0 +1,233 @@
+# 92. SQS
+# Section: Service Communication
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376576
+# Caption: en_US (manual)
+
+Okay, so a quick lecture on SQS.
+So as we know, SQS is serverless.
+It's a managed queue,
+and it's fully integrated with IAM for security.
+And the beauty is that it has extreme scale
+for SQS Standard.
+You don't need to provision anything.
+The main purpose to SQS is to decouple between your services
+to be able to scale them independently
+and perform some work asynchronously.
+SQS does not handle big messages.
+The max message size is 1,024 kilobytes.
+So in case you want to send
+maybe a 10-megabyte file through SQS,
+you would instead upload that file into Amazon S3
+and then retrieve the S3 key for your object
+and send that through SQS instead.
+And then your consumer would retrieve the key
+and then retrieve the message from S3,
+and this would work just fine.
+So all the messages from SQS queues
+can be read from EC2 instances,
+and they could be managed
+by an Auto Scaling group,
+or it could be an AWS Lambda function using an event mapper.
+Another common architecture with SQS is to use it
+as a write buffer for DynamoDB.
+So instead of directly writing to DynamoDB
+and maybe getting some throttling issue,
+you would first write to SQS,
+and it could scale seamlessly, so you're fine.
+And then you would have an application dedicated
+to take these writes from SQS
+and write them into DynamoDB.
+Finally, there's SQS FIFO for First In and First Out.
+It means that the messages are received
+and read in the order they were sent.
+And then because there is
+this ordering constraint with FIFO,
+then you get 300 messages per second without batching
+or up to 3,000 messages per second with batching,
+so there is limited scale here.
+Now let's talk about dead-letter queues in SQS.
+The idea is that let's get into the scenario
+where a consumer fails to process a message
+within the Visibility Timeout period.
+Then we know that the message
+automatically goes back into the queue.
+So the consumer reads the message.
+Maybe there's a failure.
+Maybe we don't have enough time.
+The message goes back into the queue.
+Now if that thing happens very often,
+that can be a problem.
+For example, we read again the message,
+maybe there's something wrong with the message.
+Maybe a consumer doesn't understand the message
+or can't process the message.
+Then the message will go back into the queue,
+and it will happen again.
+We'll read the message again from SQS,
+and it will go again back into the queue.
+So we can set a threshold to how many times this can happen.
+And this failure loop can be a big problem,
+but we can set a MaximumReceives threshold.
+And if that threshold is exceeded,
+then we can tell SQS to say,
+"Well, this message looks a bit odd.
+It looks like it's being processed too many times
+and not successfully.
+Therefore, send this into a dead-letter queue."
+And the dead-letter queue will contain that message
+for later processing,
+and so the message will be removed from the first queue
+and sent into the second one.
+Why do we have dead-letter queues?
+Well, dead-letter queues are very useful for debugging,
+and in case a message goes in a dead-letter queue,
+because it is an SQS, you have to process it,
+but at least it gives you time
+to understand what is happening.
+A few things to notice
+that the dead-letter queue of FIFO queue
+must also be a FIFO queue,
+and the dead-letter queue of the Standard queue
+must also be a Standard queue.
+Finally, because we have a dead-letter queue,
+you need to make sure that the messages are processed
+before they expire from the queue.
+So it's a good idea to set a long time,
+for example, 14 days of retention,
+from within the dead-letter queue.
+And the next feature
+for management of your dead-letter queues
+are the Redrive to Source feature.
+So it's a feature to help you consume messages
+in the dead-letter queue
+to understand what is wrong with them.
+So you have your messages now.
+You know they haven't been processed
+in the source queue,
+and therefore, they are in the dead-letter queue,
+and you're going to do a manual inspection
+and debugging of these messages.
+And then you're going to fix your consumer code,
+understand why the message wasn't processed
+in case the message was correct,
+and then what you can do is redrive
+that message from the dead-letter queue
+into the source SQS queue.
+And what's going to happen with this
+is that the consumer can now reprocess that message
+without even knowing
+that the message went into the dead-letter queue,
+and then the message processing has happened.
+And that's a cool feature.
+In terms of idempotency,
+because messages can be processed twice
+by consumers in case there is a failure,
+a timeout, or something like this,
+you need to make sure that your consumers are idempotent.
+And what does idempotent mean?
+That means that if you process the same message twice,
+if you do the same action twice,
+then the effect will not be duplicated.
+So we'll show you an example right now.
+We are pulling messages from SQS,
+and we're doing long polling
+in order to minimize cost and minimize latency.
+And our EC2 consumer is writing into DynamoDB.
+After writing into DynamoDB,
+our EC2 consumer will delete the message from SQS
+so that it's not processed by another consumer.
+But in case something goes wrong,
+then your EC2 consumer will do two writes into DynamoDB
+because it will read the same message twice.
+So if you're inserting into DynamoDB
+a new row anytime you read from SQS,
+it's not an idempotent
+because if you read twice the same message,
+then you will insert two rows into DynamoDB.
+But if you're doing upsert
+into DynamoDB using a primary key, for example,
+then in case the message already exists in DynamoDB,
+it's just going to be overwritten or updated,
+and therefore, this is an idempotent request
+because there will only be one row at the end in DynamoDB,
+even if you read that message twice.
+So just remember, idempotency is very important
+when writing an EC2 consumer
+or any kind of consumer on top of SQS.
+Okay, now we also see that Lambda can read from SQS
+and using an event source mapping.
+And so the event source mapper will pull from SQS
+and return a batch
+and then invoke a Lambda function with that batch.
+And so the way the event mapper works
+is that it, by default, uses long polling,
+so it's optimized in that regards.
+We specify a batch size,
+so between one to 10 messages.
+If we do one messages,
+then we are reading as fast as we can message by message.
+If we're doing 10, we are going to be more efficient
+and then we have to configure it.
+So this is very simple.
+The event mapper says,
+"Which SQS queue we are reading from,
+and what is the batch size going to be?"
+Okay, the recommended value, though,
+for the Queue Visibility Timeout
+is to be 6x the timeout of your Lambda function.
+And that is from recommendation from the documentation.
+The idea is that
+if you are reading the same message multiple times,
+you want to make sure
+it doesn't time out in your Lambda function,.
+Okay, to use a dead-letter queue,
+you can set it up at the SQS queue level, not in Lambda.
+Remember, the DLQ for Lambda
+is only when you have asynchronous invocation.
+So in case you want messages
+that you can't process to be removed from your queue,
+then you need to set up a DLQ on the SQS queue itself,
+not the Lambda function.
+This will not work.
+Or we've seen there's a newer feature
+on Lambda called Lambda Destinations,
+in which case, using Lambda Destinations,
+we can have the Lambda function itself
+throw away these events
+that don't work for us into a destination,
+and the destination can be an SNS topic
+or an SQS queue, for example.
+Okay, one last Solution Architecture with SQS.
+We have our clients,
+and he wants to do a lot of work,
+but we're going to decouple things.
+So we're going to put these things
+into an SQS request queue,
+and there's going to be a work processor
+reading from that queue and doing the work.
+When it's done,
+it's going to send a message to an SQS response queue,
+and the clients will be reading from that queue.
+Why would we have such architecture?
+Well, we get full decoupling,
+so we can scale the left-hand side
+and the right-hand side independently.
+There's fault tolerance,
+so in case something fails in our work processor,
+another work processor will pick it up.
+And then we have load balancing,
+so we're able to scale horizontally
+in the way we are handling requests.
+And on top of this,
+SQS itself scales really well,
+so this is good.
+Just an idea of architecture,
+but again, SQS is really use it as you want.
+There's so many different architectures at SQS.
+It's really up to finding the question,
+but anytime you see some decoupling
+and making sure that the work can be processed
+at least once,
+then SQS is going to be a great answer.
+All right, that's it for this lecture.
+I will see you in the next lecture.

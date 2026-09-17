@@ -1,0 +1,97 @@
+# 167. VPC, Subnet, Internet Gateway & NAT Gateways
+# Section: VPC & Networking
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20237290
+# Caption: en_US (manual)
+
+So let's start by understanding what a VPC is.
+So a VPC is a Virtual Private Cloud,
+and it is a private network
+for you to deploy your resources in,
+for example, your EC2 instances.
+A VPC is linked to a specific region,
+so if you have multiple regions in AWS
+means you have multiple VPCs.
+So here's an example, here's my VPC that I've created.
+And within the VPC, we can have subnets,
+and the subnet is going to be a part of the VPC,
+so a partition of your network,
+and it is going to be associated with an Availability Zone.
+So here an example, we have an AZ A,
+and within this AZ, we're going to have first of all,
+a Public Subnet.
+So this public subnet is special
+because it is a subnet that is accessible from the internet.
+As you can see on the diagram on the right-hand side,
+the public subnet has direct connectivity to the internet,
+and the internet can directly reach our public subnet.
+Also, we can have a Private Subnet.
+And a private subnet is a subnet
+that is not accessible from the internet.
+We'll see how we can define
+a public subnet and a private subnet later on.
+So to define access to the internet
+and access between those subnets,
+so that the resources can communicate,
+we need to use Route Tables.
+So the question is, what do you put in a public subnet?
+Well, when we did create our EC2 instances,
+we created them in a public subnet.
+But in a public subnet, you can also put, for example,
+a load balancer.
+And in a private subnet,
+which we don't have, when we have a default VPC,
+you could place your databases, for example,
+because they don't need access to the internet,
+and therefore they're going to be more secure.
+So if we look at a VPC, a more complete one,
+we have the Cloud of AWS, we'll have Regions,
+within a Region, we'll have a VPC,
+and the VPC will have what's called a CIDR Range,
+which is a range of IP addresses
+that is allowed within your VPC.
+And then the VPC can go across
+two or three availabilities zone,
+so we have AZ 1 that contains a public subnet
+and a private subnet,
+and AZ 2, which contains also a public subnet
+and a private subnet.
+So in this example, we have two AZ, one VPC,
+four subnets, two of them are public,
+and two of them are private,
+and we can launch EC2 instances in each of these subnets.
+Finally, how do we define access to the internet
+for these subnets?
+Well, if we look at the same example as before,
+say we had an EC2 instance in a public subnet,
+for it to be able to access the internet,
+we need to create what's called an Internet Gateway.
+And this internet gateway will help our VPC instances
+to connect directly to the internet.
+So the VPC will be having an internet gateway,
+and then the public subnet will have a route
+to the internet gateway
+to be able to access the internet,
+so fairly simple,
+as soon as we have a internet gateway
+and a route to the internet gateway,
+that makes the subnet a public subnet.
+Now, if you have an instance in a private subnet,
+it is not going to be accessible from the internet,
+but you may want to give it access to the internet,
+for example, to get updates for your operating system
+or to download files.
+So for this, we can create what's called a NAT Gateway,
+which is managed by AWS,
+or a NAT Instance, which is self-managed,
+and that will allow your instances in your private subnet
+to access the internet while remaining private.
+So concretely, we create a NAT Gateway or NAT Instance
+in our public subnet,
+and we create a route from the private subnet
+to the NAT Gateway,
+and from the NAT Gateway to the internet gateway,
+and this will allow your private subnets
+to get internet connectivity.
+So that's it for the theory,
+now I will just show you in the console
+with the default VPC and what is created for us.

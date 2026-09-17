@@ -1,0 +1,56 @@
+# 121. AWS EC2 Instance Metadata
+# Section: AWS CLI, SDK, IAM Roles & Policies
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851286
+# Caption: en_US (manual)
+
+So now let's talk about EC2 instance metadata
+or IMDS.
+It's a very powerful feature,
+but not many developers know about it,
+and this is how C two works as it is.
+So let's go over it.
+So the idea is that with these instance metadata service
+the IMDS, you have C two instances
+that can learn about themselves
+without using an IAM Role for that purpose.
+So they can just talk to a specific URL
+this 169. 254.169.254
+and then they're able to learn about their own metadata.
+We'll see this in the hands-on in the next lecture.
+So the idea is that from the metadata
+you can know the instance name, you can know the public IP
+the private IP, you can know a lot of things.
+And also you can retrieve the IAM Role name
+from the EC2 instance metadata.
+You can even get some credentials out of it,
+but you cannot know what IAM policy is attached to the role.
+So metadata means information about the instance
+and user data that we've seen before is the launch script
+of the EC2 instance.
+So this URL allows us to access both the metadata
+and the user data.
+but in this lecture we're looking
+at the metadata service.
+So we can practice
+in next lecture and see what we can do with it.
+But first, I want to tell you about the two versions
+of the IMDS service.
+So IMDSv1, which is the instance metadata
+data service v1 is accessing the URL directly
+and everything works out of the box.
+But with the rollout of Amazon, the next 2023,
+there is IMDSv2,
+that's enabled by default and it's a more secure version.
+And to access the metadata service,
+you actually need to do two steps.
+The first one is to get the session token
+by using a PUT command, and we'll see this in the hand-on,
+and then from this token,
+we can call the IMDS URL bypassing in the token as a header;
+so it's a bit more overhead.
+AWS did it for security reasons
+to go from IMDSv1 to a MDSv2, and I will be demoing
+to you how to use a more complicated version
+because it's important for you to know how it works.
+Okay, so that's it.
+I will see you in the next lecture.

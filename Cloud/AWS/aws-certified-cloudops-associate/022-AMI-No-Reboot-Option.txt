@@ -1,0 +1,75 @@
+# 22. AMI No Reboot Option
+# Section: AMI - Amazon Machine Image
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512724
+# Caption: en_US (manual)
+
+So now let's have a look at one specific option when
+creating AMI, which is a No-Reboot option.
+So it allows you to create an AMI without first
+shutting down your EC2 instance.
+And by default it's not selected,
+that means that any time we want to create an AMI
+we want to shut down the instance before creating the AMI
+and this is to maintain the file system integrity.
+So this is what happens.
+So with the No-Reboot disabled,
+if we want to initiate creating an AMI,
+the instance is first shut shutdown.
+Then after shutdown,
+the attached EBS volume will get
+a snapshot taken into an EBS snapshot.
+And then the EBS snapshot will be converted into an AMI.
+Now if you enable the No-Reboot option,
+then your EC2 instance that is currently running,
+will get a snapshot directly made
+onto its running attached EBS volume
+and then the image will be created.
+So the risk here is to not have a file system integrity.
+Also, any OS operating system buffer will not be flushed to
+the disc before the snapshot is created.
+So you need to make sure that you know what you're doing
+when you're creating an AMI
+while the instance is still running.
+Now, why do I say this?
+Well, because when you use the backup service in AWS,
+you can create a backup plan
+and this allows you to create an AMI.
+Now, the backup service does not reboot the instances while
+taking EBS snapshot,
+so by default, the only option actually
+is to have the no-reboot behavior.
+That means that when you use AWS backup on Amazon EC2,
+the AMIs will be created using the parameter
+no-reboots that the instances are not being interrupted
+while they're functioning.
+So that means that when you use the backup plans,
+this will not help you guarantee that the file system will
+have its integrity, okay?
+Because you will need to reboot the instance first.
+And so, as an alternative,
+if you wanted to have a scheduled backup of your Amazon
+EC2 instance into an AMI,
+you could create an EventBridge rule.
+So for example, you could create a schedule
+which will invoke the Lambda function once every week.
+The Lambda function will have its own code to create an AMI,
+okay, create an image,
+with this time with the reboot option.
+In this case, then the Amazon EC2
+will be rebooting and an AMI will be created.
+So if you have a running instance and you want to see
+the option, very simple, right click
+and then you do Image and templates, Create Image.
+So just like before and in here,
+you have no reboot enabled.
+And this allows you for your instance to have it snapshot
+taken without an AMI being created
+without it rebooting first.
+So you need to use it at your own risk.
+And this is the option that is used by default
+when using the backup service.
+That's all I wanted to show you in this lecture.
+So I can just go ahead and cancel my window.
+So that's it.
+I hope you liked it
+and I will see you in the next lecture.

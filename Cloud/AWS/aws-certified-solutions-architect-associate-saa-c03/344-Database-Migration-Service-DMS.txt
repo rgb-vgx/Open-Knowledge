@@ -1,0 +1,124 @@
+# 344. Database Migration Service (DMS)
+# Section: Disaster Recovery & Migrations
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078449
+# Caption: en_US (manual)
+
+So let's say you wanted to migrate a database
+from your on-premise systems to the AWS Cloud.
+In this case, you should use DMS,
+or Database Migration Service.
+It's a quick and secure database service
+that allows you to migrate your database
+from on-premise to AWS, but the cool thing
+is that it's resilient and it's self-healing.
+And all alongside the migration,
+the source database remains available.
+And it supports many types of engines,
+such as homogeneous migration,
+so from Oracle to Oracle, or Postgres to Postgres,
+but also heterogeneous migrations.
+For example, if you want to migrate
+from Microsoft SQL server all the way to Aurora
+and it supports continuous data replication using CDC,
+which is Change Data Capture.
+Finally, to use DMS,
+you need to create an EC2 instance, and that EC2 instance
+will perform the replication tasks for you.
+So very simply, your source database may be on-premise
+and then you're running an EC2 instance
+that has the DMS software
+and it will pull data from the source database,
+in continuously, and put it in the target database.
+So the question is
+what are the sources and what are the targets?
+You don't need to remember them all,
+but the important to see ones,
+just to understand the concepts behind the DMS.
+So the sources can be on-premises databases
+or EC2 instances based databases,
+such as Oracle, Microsoft SQL Server, MySQL,
+MariaDB, PostgreSQL, MongoDB, SAP, and DB2.
+It can also be Azure databases, such as Azure SQL Database.
+It could be Amazon RDS, any database including Aurora.
+It could be Amazon S3 and DocumentDB.
+In terms of targets,
+well we have different options, as well.
+We have on-premises and EC2 instances databases.
+So we can have Oracle, Microsoft SQL Server, MySQL,
+MariaDB, PostgreSQL, SAP.
+We can also have any database on Amazon RDS.
+We can have Redshift, DynamoDB, Amazon S3,
+the OpenSource service, Kinesis Data Streams,
+Apache Kafka, DocumentDB, and Amazon Neptune,
+as well as Redis and Babelfish.
+So you don't need to remember all of these, of course,
+but the general idea is that DMS can help you
+take a database, for example, an on-premise database
+and have it put and exported and migrated onto a target
+that is, pretty much, any database that AWS is offering.
+If you understand this,
+then you have the general idea behind DMS.
+So what if the source database and the target database
+do not have the same engine?
+Then you need to use something called AWS SCT,
+for Schema Conversion Tool,
+and it will convert the database schema
+from one engine to another.
+So for example, if you're using an OLTP, we can migrate
+from SQL server or Oracle to MySQL, PostgreSQL, or Aurora.
+As you can see on the left hand side, the database engine
+is different from the one on the right hand side,
+but also you can transform for analytics process,
+such as Teradata or Oracle, all the way to Amazon Redshift.
+So the idea is that here, the source database
+has a different engine than the Target database.
+In the middle, we have DMS,
+but it's now also running SCT, or Schema Conversion Tool.
+And the thing to know going into the exam
+is that you do not need to use SCT
+if you are migrating the same database engine.
+So if you're doing on-premise PostgreSQL to RDS PostgreSQL,
+it is the same database agent, it is PostgreSQL.
+And so this for, you will not use SCT.
+But if you're doing something such as Oracle to Postgres,
+then you will need to use SCT.
+So just so you know, the database agent is PostgreSQL,
+but RDS is just a platform
+that we're using to run this database engine.
+So how would you go to set up
+a continuous replication for DMS?
+Well, you would have your corporate data center,
+for example, with an Oracle database as a source
+and an Amazon RDS database for MySQL DB as a target.
+And as we can see,
+we have two different kinds of types of database.
+So in this case, we have to use SCT,
+otherwise it will not work.
+So the Schema Conversion Tool.
+So we set up a server with AWS SCT installed
+and we can set it up on-premises,
+this is best practice,
+and then we will do the schema conversion
+into our Amazon RDS database running MySQL.
+Then we can set up a DMS replication instance
+that will do the full load and the change data capture, CDC,
+to have continuous replication.
+And so it will perform the data migration
+by reading the database on-premises,
+the source Oracle database,
+and inserting the data into your private subnets.
+That's it. So that's all you need to know for DMS.
+This is for Database Migration Service.
+Remember, you need to use SCT whenever you have
+two different kinds of databases that you're migrating from.
+And for DMS, there is a multi AZ deployment.
+So when you have this,
+then you have a DMS replication instance in one AZ
+and then you have synchronous replication of that instance
+into another AZ, which is going to be a standby replica.
+So the benefits of using this is, of course,
+to be resilient to a failure in one specific AZ,
+but also gives you data redundancy,
+will eliminate IO freezes and will minimize latency spikes.
+So that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

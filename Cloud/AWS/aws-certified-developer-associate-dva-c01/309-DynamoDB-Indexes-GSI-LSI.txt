@@ -1,0 +1,104 @@
+# 309. DynamoDB Indexes (GSI + LSI)
+# Section: AWS Serverless: DynamoDB
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851416
+# Caption: en_US (manual)
+
+Okay, so now let's talk about indexes for DynamoDB,
+and you have two kinds of indexes that you need to know.
+The first one is a local secondary index.
+So LSI is going to give you an alternative sort key
+for your table.
+So you have the same partition key from your base table,
+but you're going to get an additional sort key.
+And this sort key consists of one scalar attributes.
+It could be a string, a number or a binary,
+and you can get up to five LSIs per table.
+Now LSIs must be defined at table creation time.
+So you cannot create them after your tables being created.
+So you need to have some careful thinking into
+how you want your table to be designed.
+Next on your LSI you can have some or all attributes,
+you know, from your main table.
+So it's up to you to choose in your LSI.
+If you want to only have maybe one specific attribute,
+because this is what you're trying to query for.
+So if we take an example of here, this is our table,
+which has user ID, game ID, game timestamp, score
+and results, okay.
+And right now we can do queries on user ID and game ID,
+is very simply,
+but we can not do a query on a user ID and game timestamp.
+For this, we need to do a scan
+and then do some service side
+and some client site filtering.
+So to do so, if you wanted to do a query based on user ID
+and game timestamp.
+We would need to create an LSI and define the LSI
+on the attributes game timestamp.
+And if we do so, then we can do a query on,
+hey, give me all the games that have been done by this user
+between 2021 and 2020 and so on, okay.
+So this is super important for you to understand
+this is the same partition key as before,
+but we have a different sort key things to an LSI.
+Next, we have GSI or global secondary indexes.
+So this is going to give you a different,
+so an alternative primary key.
+So you could have a different hash key,
+a different partition key,
+or you can have a different hash key and sort key as well.
+From the base table.
+So this is helpful if you want it to speed up queries
+on things that are non-key attributes within your table.
+So the index can cause this upscale attributes
+of strain number in binary.
+And again, you can specify which attributes
+do you want to project on that index.
+And for that index though, it's very special
+because it's kind of like a different new table.
+And therefore for this index,
+you must provision the RCUs &amp; WCUs.
+Now the GSI are powerful because they can be
+added or modified after the table has been created.
+So let's take a very simple table in which we have user ID,
+game ID and game timestamp.
+With this table we're able to query based on user ID.
+So it gives me all the games of this user,
+but we cannot query on game ID as we can see right now,
+if you want to query on game ID,
+it would be extremely difficult when you do a scan
+and then filter client's site.
+So instead we're going to create a GSI,
+a global secondary index, okay.
+Which is going to give us the ability to query by game ID.
+So now the partition key for the GSI becomes the game ID.
+The sort key may be for example, game timestamp.
+This is what you want to query on.
+And the attributes become user ID
+because we've done a projection of the user ID attributes.
+So you can see in this one, we're creating
+some fully different new queries by defining
+a new partition key and a sort key.
+And this is why it's very important DynamoDB
+to understand how you're going to query data,
+to understand how you're going to make
+your local secondary indexes
+and your global secondary indexes.
+So we seen LSI and GSI have very, very different purposes,
+but let's talk about these indexes and throttling.
+So when you have a GSI,
+if the rights are threat load on the GSI,
+then the main table will be fertile as well.
+So this is a very, very important caveat
+that comes up in the exam.
+So even if the WCUs are fine on the main table,
+if there are throttling on the GSI, then the main table,
+no matter what, we'll be throttling
+and therefore choose your GSI and partial key carefully
+and assign your WCU capacity very, very carefully.
+Whereas for LSI, local secondary indexes,
+they will use the WCU and the RCU of the main table.
+And there's no special throttling considerations to be had.
+Okay?
+So that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

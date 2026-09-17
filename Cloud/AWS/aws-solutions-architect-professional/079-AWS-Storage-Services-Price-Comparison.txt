@@ -1,0 +1,76 @@
+# 79. AWS Storage Services Price Comparison
+# Section: Storage
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/35038402
+# Caption: en_US (manual)
+
+So here is a lecture
+that I wish I have to teach you,
+but I've seen one exam question
+where you actually had to choose the cheapest solution
+and they were pretty much equivalent
+except if you knew which one was actually the cheapest.
+So we know the price classes for Amazon is free.
+The order should make sense.
+We know them for EBS io1 and io2 are the most expensive
+because their provisioned IOPS can very quickly ramp up
+in terms of costs.
+Then we have gb2, gb3, and then we have st1 and sc1.
+And then when it comes to EFS,
+Standard is the most expensive and One-Zone
+and then we have the infrequent access tier,
+so Standard IA and One-Zone IA.
+Now, when it comes to ranking all of them,
+obviously, S3 has a different use case than EBS,
+which has a different use case than EFS.
+So sometimes just knowing the different use cases
+allows you to rule out which answer is wrong,
+but of course, if you had to choose between,
+for example, EBS and EFS,
+it could be a little bit more tricky.
+So here is the ranking of prices and it should make sense
+in terms of what is the most expensive.
+So the most expensive things in AWS for storage
+is the EBS io1 and io2 volumes.
+This is because they're used for databases,
+they're used for very latency-sensitive operations,
+and they're here to just give you great performance
+so this is what you're going to pay the most for.
+Then we have the EFS Standard and EFS One-Zone.
+So EFS is also very expensive
+because it is a network file system
+which also has good performance
+and so therefore, because it is distributed
+across multiple availability zones and replicated,
+then of course it's going to be expensive,
+but not as expensive as EBS io1 and io2.
+Then again, we go into the provisioned volume,
+so gb2 and gb3 are going to be very expensive as well.
+Then we have EBS st1.
+So st1 is for a hard drive type of volume
+and here we have a cheaper cost because, well,
+it is not frequently accessed, it's for sequential reads.
+Then we have the EFS IA tier.
+So this is the first time the storage tier for EFS
+is equivalent to pretty much the price of S3 Standard.
+Then we have EBS sc1, so sc1 is for cold storage,
+so the price, as you can see,
+is three times as less as st1.
+So it's very, very low and this is where we get
+into the archive lower latency type of workloads.
+Then we have EFS One-Zone IA,
+so this is the cheapest kind of EFS you can have
+and it is cheaper than an sc1.
+And then we have the s3 Standard IA and anything below.
+So just so you remember,
+the EFS One-Zone IA is going to be the cheapest
+of the EBS/EFS type of range, of course,
+but if you lose the zone, of course,
+it's going to cost you some money
+and if you retrieve files frequently
+it's going to cost you a lot of money as well.
+So hopefully that makes sense.
+Just try to remember the bottom line.
+It's just a mind screenshot of it
+and that should be good enough for you for the exam.
+Okay, that's it.
+I hope you liked it and I will see you in the next lecture.

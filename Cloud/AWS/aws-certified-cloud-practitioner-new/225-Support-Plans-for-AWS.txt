@@ -1,0 +1,93 @@
+# 225. Support Plans for AWS
+# Section: Account Management, Billing & Support
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20118390
+# Caption: en_US (manual)
+
+So now let's talk about
+the AWS support plans.
+So basic support is free,
+and then you have three plans,
+Business Support+, Enterprise Support,
+and Unified Operations.
+And there is a minimum spend per plan,
+and it gives you a pricing structure based on
+how many charges you have and the percentage.
+But let's have a look, more importantly,
+at what the features are.
+So the Basic Support Plan gives you customer service
+and communities with 24/7 access to customer service,
+documentation, whitepapers, and support forums.
+It gives you Trusted Advisor
+with seven Trusted Advisor checks
+and guidance to provision your resources
+following best practices
+to increase performance and improve security.
+And it gives you access
+to the AWS Personal Health Dashboard,
+which is a personalized view of the health of your services,
+and alerts if your resources are impacted.
+Next we have the AWS Business Support+ Plan,
+which is intended if you have production workloads.
+It gives you real time and contextual responses
+through GenerativeAI.
+You get Trusted Advisor with a full set of checks
+plus API access to Trusted Advisor.
+You have 24/7 access to Cloud Support Engineers
+through phone, web, and chat.
+And you have unlimited cases and unlimited contacts.
+You will wait no more than 30 minutes
+before getting a human support to respond
+to your business-critical system down cases.
+And you have third party software support.
+That means, for example,
+that if your EC2 is not operating Amazon,
+but instead Ubuntu,
+then the Cloud Support Engineers
+can help you with that, as well.
+For Enterprise Support Plan now,
+this is when you have production
+or business critical workloads.
+So you get all of the features from the previous plan,
+but also you get access
+to a designated Technical Account Manager, or TAM.
+It will take you less than 15 minutes
+for your case response,
+in case of a production-critical issue.
+And you get access
+to the AWS Security Incident Response team,
+which helps you recover from security incidents.
+You're going to get business reviews from AWS experts
+and you get access to AWS Countdown event management,
+which are specialized TAM-led support to help you succeed
+during the critical business events.
+Finally, you get the AWS
+Unified Operations Support Plan 24/7,
+which is used if you have mission critical workloads.
+So you get all of the features
+in the Business Support Plan+,
+but you also get Application Architecture Guidance
+to help you design architectures
+that will fit use case and workloads.
+It will give you a short-term engagement
+with the AWS Support
+for deep understanding analysis,
+and then provide architectural guidance.
+And you get access to a designated TAM,
+a Domain Specialist Engineer, a DSE,
+a Senior Billing and Account Specialist, SBAS.
+You get also the Incident Management Engineer, IME,
+a Migration Specialist on-demand,
+and a Specialist Support Engineer, SSE.
+You also get access to the AWS Countdown Premium
+and AWS Customer Incident Response Team, CIRT.
+So these are really big, big enterprise
+mission critical features.
+And you get critical workloads review
+and operational procedures.
+So that's it, now you've seen
+all the different support plans.
+So the exam was two easy questions
+about which one to choose,
+but now you know really the differences between all of them.
+So I hope you liked it
+and I will see you in the next lecture.

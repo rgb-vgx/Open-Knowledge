@@ -1,0 +1,50 @@
+# 36. SSM Fleet Manager
+# Section: Managing EC2 at Scale - Systems Manager (SSM)
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218447
+# Caption: en_US (manual)
+
+So now let's talk about SSM Fleet Manager.
+So it is just a way for you to centrally
+and remotely manage all your nodes on AWS or on-premises.
+So that includes your EC2 instances,
+your on-premises servers
+or virtual machines, your Edge devices, and IoT devices.
+It supports different operating systems
+such as Windows and Linux,
+and all nodes must have the SSM agent installed
+for them to communicate with the SSM service.
+So the idea is that if you have an EC2 instance,
+that's mostly gonna be the use case.
+You must have an EC2 instance role
+with a proper permission called
+the Amazon SSM Managed Instance Core permissions
+so that they can communicate with a fleet manager service.
+Or you can use a feature that prevents you from using this
+that makes it even easier called the
+Default Host Management Configuration feature.
+And so the use case for Fleet Manager on top of
+seeing all your instances and manage them all at once
+is that you can track the node status,
+health and performance.
+You can perform troubleshooting and management tasks
+and you can perform Windows RDP
+or use Session Manager for CLI access
+to your Linux based instances.
+And Fleet Manager is going to be at the core
+of using all the other features of SSM to apply actions
+to your instances at scale.
+So for the IAM permissions of SSM,
+the Amazon SSM Manage Instance Core policy will provide the
+necessary permission to your EC2 instances
+for registering them with a systems manager in fleet manager
+for accessing session manager SSM documents
+and SSM parameters, for receiving commands
+such as the Run command
+and for allowing patch operations
+such as using the patch manager feature of SSM,
+as well as reports its data to inventory compliance
+and the configuration status to SSM.
+So as you can see, attaching these permissions
+to your EC2 instances is very important.
+All right, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

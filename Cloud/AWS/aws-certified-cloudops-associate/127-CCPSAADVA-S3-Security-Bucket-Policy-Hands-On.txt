@@ -1,0 +1,82 @@
+# 127. [CCP/SAA/DVA] S3 Security: Bucket Policy Hands On
+# Section: Amazon S3 Introduction
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/19785890
+# Caption: en_US (manual)
+
+So let's go ahead and make a bucket policy
+so that we can access this coffee file from the public URL.
+So to do so, let's go under the Permission tabs.
+And the first thing we have to do is
+to allow public access from the bucket setting,
+because right now everything is blocked.
+So we edit this and we're going to untick this,
+and, therefore, we will allow public access.
+But again, this is something you would disable
+only, and only if, you know you want
+to set a public bucket policy.
+So this is dangerous action.
+So we say yes, because, of course, if you set real data
+of your company on an S3 bucket and you make this public,
+you have data leaks and that can never be good.
+So now, under Permissions overview,
+the access that objects can be public.
+So that's the first step.
+Next, we scroll down and we look at Bucket policy.
+So currently we have none and we wanna create one
+so that we make our entire bucket public.
+So the first thing you can do is look
+at the policies example, and this is the documentation,
+and it will show you a lot
+of use cases on the right hand side
+that will show you what's the appropriate
+and corresponding bucket policy.
+But for us, we're going to use the policy generator.
+So here's the AWS Policy Generator,
+and we're going to create an S3 Bucket Policy.
+So let's select the right type.
+We'll allow, and then the principal is going to be a star
+because we want to allow anyone
+on the Amazon S3 service to perform,
+and because we will read objects on our bucket,
+we want to perform a getObject.
+So here it is.
+We want to allow getObjects.
+And the Amazon Resource Name must be the bucket name
+with a slash, and then with a star.
+So let's have a look first.
+So back into our S3 buckets, we have the bucket arn here,
+the Amazon resource name here.
+So we copy it, we paste it into the Amazon Resource Name,
+and this is not over.
+We add a slash and then we add a star.
+And the reason why we do this is that this action,
+the getObject action right here,
+applies to objects within your buckets,
+and, therefore, objects within your bucket
+are after a slash and there are stars
+to represent these objects.
+So let's add these statements
+and then let's generate this policy.
+And this policy is what we copy into here,
+and this is a public S3 policy.
+So that means that getObjects are allowed from anyone
+on any objects of this bucket.
+Okay, that's good.
+So let's save these changes.
+And there is a space here, so let's remove this.
+Perfect.
+Save these changes.
+Now that works.
+So we can see that our bucket policy
+has properly been applied.
+So, now, let's go into our object, coffee.jpg,
+and let's find the object URL, right here.
+We copy it and we enter it.
+And as you can see now, my coffee image is fully visible
+and it is public as well as any other objects
+in my Amazon S3 buckets.
+So that's it for this lecture.
+We've seen bucket policies, we've seen the policy generator,
+and we've seen that now our image is public.
+So I hope you liked it,
+and I will see you in the next lecture.

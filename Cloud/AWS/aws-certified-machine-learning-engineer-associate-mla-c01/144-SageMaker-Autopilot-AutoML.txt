@@ -1,0 +1,163 @@
+# 144. SageMaker Autopilot / AutoML
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285755
+# Caption: en_US (auto)
+
+Let's also talk about SageMaker autopilot in a little bit more depth, because this two is showing up
+in the exam now.
+SageMaker autopilot is just a wrapper on what we call AutoML.
+So the idea of just automatically figuring out what the right model and algorithm is to make predictions
+based on your data.
+So this kind of is a automated you if you will.
+It's doing all the heavy lifting of figuring out what the best model is to apply and how to tune that
+model to get the best results automatically.
+So there is literally a wizard you can go through that says, my data is here.
+This is the thing I want to predict.
+Here is my data that I want to train it on, and it goes off and figures it out for you.
+It will create an optimized model, figure out what model to use, how to tune it, and show you what
+the results are.
+It's anyone can do it.
+It's kind of crazy.
+So it can automate algorithm selection.
+Also your data pre-processing, the tuning of that model and all the associated infrastructure and making
+it all work together.
+So literally with a few clicks of a mouse, you too can be a machine learning engineer.
+Crazy, right?
+It does all the trial and error for you under the hood automatically.
+All the hyperparameter tuning, all the experimenting with different model types, and you will automatically
+get an optimal result.
+Now more broadly, again this is called AutoML.
+That's nothing new, but SageMaker autopilot is their name for AutoML in SageMaker.
+The workflow looks like this.
+So they do allow you a little bit more control if you want it.
+The first step is to load your data from S3 somewhere for training purposes.
+You then need to select your target column for the thing you want to predict, and then it kicks off
+automatic model creation.
+So it goes off and tries different models and finds the one that works best for your data for creating
+the best predictions.
+It will then at that point offer you a model notebook.
+So it is not entirely a black box.
+It will give you a notebook so you can see what it actually came up with, and you can have visibility
+into what it's doing and control that and tweak it if you want to.
+So you can just use autopilot as a starting point, which is a really good idea that will save you a
+lot of work, right?
+But you can still apply your own judgment and refinement to what it comes up with.
+If you want to, it also exposes a model leaderboard, so you will be presented with a ranked list of
+the recommended models, the ones that performed the best, and you can pick one if you want to.
+You don't have to use the number one choice.
+You can go back and change that if you need to, and then you can deploy and monitor that model once
+you've selected it.
+And if you can monitor it over time and if you need to, you can refine it in that notebook that it
+gave you earlier if need be.
+Or you can just let it run.
+So yeah, this is like a actual screenshot from SageMaker autopilot here.
+Do you want to run a complete experiment?
+Yes.
+It will just go off and do it.
+It's it's um I'm not sure how to feel about it, quite honestly.
+It kind of oversimplifies things, but that's what it does.
+It works.
+A few more details on autopilot.
+You can add in as much or as little human guidance into the process as well, so you can let it do the
+whole thing automatically, or you can inject human guidance along the way.
+You can use it with or without code as well.
+So if you don't want to write any code, you don't have to.
+But if you want to.
+In SageMaker studio, you can use any of the AWS SDKs to inject code into the process as well.
+Three main types of problems.
+You can use autopilot on binary classification.
+Whether or not something is true or false, or in one category or the other.
+Multi-Class classification as well.
+And also regression.
+You know, doing a simple prediction based on a past data points.
+There are three main algorithm types to choose from.
+If you're running autopilot in hyperparameter optimization mode, or HPO, that's linear learner XGBoost
+and any number of deep learning algorithms as well.
+There's also a mode called ensemble mode that automatically mixes together all of those algorithms,
+and then some, and lets them all sort of vote on the best outcome based on the ensemble of algorithms
+as well.
+That's also an option.
+Your input data must either be tabular, CSV, or more recently parquet has been added as well as an
+input type.
+A little more depth on autopilots training modes.
+I'm a little surprised this much depth is on the exam, but that's what we're hearing.
+So there's a few choices you can select when you're setting up autopilot.
+One is for hyperparameter optimization or HPO, and in this method, autopilot will automatically select
+the algorithms that are most relevant to your data set.
+Talked about that a little bit in the previous slide.
+The choices that it has to work from are linear learner XGBoost or a deep learning multi-level perceptron
+sort of thing, and it will automatically set the best range of hyperparameters to tune your model,
+and then go off and run up to 100 trials by default to find the optimal hyperparameters in that range.
+As you can imagine, that might get kind of expensive and resource intensive, but hey, it works now.
+How it actually does that depends on the size of your data set.
+So if your data set is less than 100MB in size, it will use something called Bayesian optimization.
+But if it's greater than that, if it's a large data set, then it will use Multi-fidelity optimization.
+That means that it will automatically stop a trial that's running if it's performing poorly compared
+to other trials that it ran earlier.
+The other choice is Ensembling.
+And again, this is just more depth on what we talked about in the previous slide.
+The way that works is that it trains several base models at once, using something called the Autogluon
+library, and it has a wider range of models to choose from in the Ensembling mode.
+So in addition to Linear Learner, XGBoost and deep learning, there are more tree based methods that
+are available to it and neural network algorithms as well.
+You know, just things like random forests and a bunch of other tree related ones and, and some neural
+network algorithms that are based on PyTorch in Ensembling mode.
+It will run ten trials, all with different models and parameter settings, and then it will combine
+them together into a stacked ensemble method.
+So instead of having a single model, it's going to run those ten models together and use those to find
+the best optimal result.
+There's also an auto mode, which is probably what most people are going to do.
+The way this works under the hood is that if your data set is greater than 100MB, it will automatically
+use hyperparameter optimization mode.
+If it's less than 100MB, it will use Ensembling mode.
+It's that simple.
+However, there is a caveat here.
+In order to make that determination, SageMaker autopilot needs to be able to determine the size of
+your data set.
+If it can't figure out if you're greater than 100MB or not, then it can't make a choice and will default
+to HPO in that case.
+Some situations that might lead to that would be if your S3 bucket for your data is hidden inside a
+virtual private cloud or VPC.
+In that case, SageMaker autopilot can't figure out how big your data set is, and it will just default
+to HPO.
+Also, if your S3 data type is set to manifest file, or if your S3 URI contains more than 1000 items,
+automatic mode will just punt and go to HPO because it can't figure it out on its own.
+So those are the limitations of it.
+So those are some details about SageMaker autopilot training modes that might be important to know.
+And also autopilot again does not need to be a complete black box.
+There is a real danger here, right?
+From an ethics standpoint, if I just push a button and create the optimal model for my training data,
+I don't know what kind of bias might have existed in that training data, right?
+I could be creating something that's terribly biased and doing unethical things for all I know.
+So it's very important that we understand what this automatically generated model is really doing.
+And that might not just be not just be because, you know, you want to do the right thing, but because
+there might be auditing concerns or, you know, oversight on what you're trying to build here.
+So to that end, SageMaker autopilot integrates with something called SageMaker clarify.
+This is another relatively new feature of SageMaker.
+So clarify tells you basically how different features contributed to each prediction, and it gives
+you more transparency on what features went into your predictions and what biases might exist based
+on those features.
+So, you know, for example, if you're creating a model that approves loans for houses and you see
+that race is some sort of a really strong feature, something's wrong there, you better go back and
+take a look at the bias that might exist in your source data.
+Right.
+So I really love this.
+It's really awesome.
+Uh, acknowledging the fact that there can be bias that you don't see without some further analysis.
+And the real danger of AutoML is that you just crank out these models without thinking about them,
+and these sorts of biases can creep in without you even realizing it.
+So this is a great feature.
+So it does give you transparency on how models arrive at their predictions.
+Under the hood.
+It's a figuring out feature attribution using something called Shap baselines, which is based on Shapley
+values based on this paper that you see here on the right.
+The research for this actually comes from the field of cooperative game theory.
+So kind of a neat crossover there.
+The way it works is that it assigns each feature an importance value for each given prediction.
+So it's just a way of going back and figuring out what features in your training data or your source
+data actually lended the most weight to the final predictions.
+So that's important to know.
+And if you see surprises in how important a feature is toward your predictions, well, it's time to
+apply your human knowledge and intuition and knowledge about the domain space to figure out if there's
+actually bias going on there in your training data that you need to go back and clean or address.
+Somehow

@@ -1,0 +1,89 @@
+# 74. Amazon DynamoDB - Security
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304608
+# Caption: en_US (auto)
+
+Instructor: So one, let's talk about DynamoDB security
+and some other features.
+So for security, we have VPC endpoints
+that are gonna be available to access DynamoDB
+without using the public internet and only keeping
+all the traffic within your VPC.
+Access to DynamoDB is fully controlled by IAM,
+which makes it a great database choice in AWS.
+And you have encryption at rest using AWS KMS
+or in-transit using SSL and TLS.
+There are backup and restore features available.
+You have two of them.
+So you have point-in-time recovery,
+so PITR, just like RDS and there's no performance impact,
+or we can just do a normal backup and restore.
+Now, there's the concept of global tables in DynamoDB.
+So the idea is that you have a multi-region, multi-active,
+fully replicated, high performance table in DynamoDB.
+And how to enable it?
+Well, you need to first enable DynamoDB streams.
+So while DynamoDB is a cloud service,
+it's possible for you to get a simulation of Dynamo DB
+on your local computer called DynamoDB Local.
+And the idea is that you have a local DynamoDB database
+that you can use to develop
+and test your applications locally without using
+the DynamoDB web service, which is really, really handy.
+And if you wanted to migrate data to and from DynamoDB,
+the AWS database migration service is a great choice.
+So for example, from MongoDB to DynamoDB,
+or DynamoDB to Oracle, MySQL, S3 and so on.
+Now, another feature you need to understand
+around DynamoDB is going to be around fine-grained access.
+So for example, if you have clients and applications,
+web or mobile and they need
+to access directly our DynamoDB table,
+then we don't want to give them IAM permissions
+and IAM roles, users directly from AWS.
+That will be truly inefficient and a security hole.
+Instead, we're going to use an identity provider.
+It could be Amazon Cognitive user pools, Google login,
+Facebook login, OpenID Connect, or SAML, or whatever
+and the users will, in the simplified flow,
+login with these identity providers
+and they will have the feature to exchange the credentials
+they just got for temporary AWS credentials.
+And the idea is that because they're temporary,
+they're more secure and with them,
+they can be associated with an IAM role.
+But this IAM role must be restricted
+because now that our clients
+and applications can access a DynamoDB table,
+you want them to be able to do operations
+only on the data that they own.
+And so how do we do this, this fine-grained access control?
+Well, we have a federated login
+to get temporary credentials, then we can create an IAM role
+and this IM role will have a condition
+and this condition will lead onto what the user can do.
+So here is a sample policy.
+So in this policy, the user can do get item,
+batch get item, query put item, update item, delete item,
+and batch write item on a specific table.
+But there's a condition here
+and the condition is saying,
+hey, only if the leading keys is corresponding to DynamoDB
+and then the connector identity pseudo variables,
+which will be replaced at runtime by the specific user.
+And so effectively, what we're saying is that
+with leading key, we only limit row-level access
+for users based on what the primary key value is.
+And so therefore, we make sure
+that the users can only modify and access their own data.
+And you can also specify conditions on attributes,
+and this would be to limit the specific attributes a user
+can see in your DynamoDB table.
+So to summarize, you have fine-grained access control
+by using a federated login
+and by specifying a condition on leading keys
+if you wanted to limit at the row level
+or attributes if you wanted to limit at the column level,
+the attribute level.
+Okay, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,314 @@
+# 162. Amazon Kinesis Data Streams - Producers
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305590
+# Caption: en_US (auto)
+
+Instructor: So we need to know
+how we can produce data into Kinesis.
+So here is our Amazon Kinesis Streams
+and the exam will expect you know at a high level
+how each of these work.
+The first one is the SDK.
+The SDK allows you to write code or use the CLI
+to directly send data into Amazon Kinesis Streams.
+The second one is to use
+the Kinesis Producer Library, or KPL,
+remember that acronym.
+The Kinesis Producer Library
+is going to be a bit more advanced.
+You're going to write better code
+and it has some really good features
+that I will describe in this lecture
+which allow you get enhanced throughput
+into Kinesis Streams.
+The third one is to use a Kinesis Agent.
+So the Kinesis Agent is a Linux program
+that runs on your server, so remember that,
+it's an agent that runs on servers,
+and basically allows you to get a log file, for example,
+and send that reliably into the Amazon Kinesis Streams.
+Finally, you can use third party libraries
+that usually build upon the SDK
+such as Apache Spark, Kafka Connect, NiFi et cetera,
+and all these things will allow you
+to send data to Kinesis Streams reliably.
+So look at this diagram,
+remember that Kinesis Streams
+can have different ways of getting data
+from various sources.
+Now let's do a deeper dive into
+all the methods on the left-hand side.
+So the first one is to use the Producer SDK
+and that uses the PutRecord or PutRecords with an S, API.
+So any time you see PutRecord, that means SDK.
+So, with a PutRecord, as the name indicates,
+you send one record,
+and if you use PutRecords with an S,
+you will send many records.
+PutRecords will use batching
+and therefore increase your throughput,
+that's because you send many records
+as part of one HTTP request
+and therefore you're saving in HTTP requests
+and getting increased throughput.
+Now if you do go over your throughput though,
+you will get a ProvisionedThroughput Exception, Exceeded
+and that's important to know how to deal with this,
+we'll see this in the very next slide.
+Now, this Producer SDK
+can be used on various different ways.
+You can use it on your applications,
+but also on your mobile devices,
+such as Android, iOS et cetera.
+So when would we choose to use the Producer SDK?
+Well, any time we have some low-throughput-use case,
+or we don't mind the higher latency,
+we want a very simple API,
+or maybe we're just working straight from AWS Lambda.
+This is the kind of places
+where you would use the Producer SDK.
+You need to know as well
+that there are some managed AWS sources
+for Kinesis Data Streams.
+So they, behind the scenes, use a Producer SDK,
+but you don't see it
+and so these managed sources
+are going to be CloudWatch Logs,
+so you can send your logs directly from CloudWatch
+into Kinesis.
+You have AWS IoT, and we'll see this in the section,
+and finally, Kinesis Data Analytics
+is able to produce back into Kinesis Data Streams,
+so remember that.
+Now how do we deal with exceptions for the Kinesis API?
+Well, if you get a ProvisionedThroughput Exception,
+that happens when you are sending more data than you can,
+for example you're exceeding the number
+of megabytes per second,
+or you're exceeding the number of records per second
+you can send to any shard.
+So you need to make sure when you get this,
+that you don't have a hot shard,
+for example, if you have device ID as your key
+and you have 90% of your devices being iPhones,
+then you're gonna get a hot key, a hot partition,
+because all your devices are iPhones
+and they will all go to the same partition.
+So make sure you distribute as much as possible
+your key that you choose
+in order not to get a hot partition.
+So the solution is,
+if you get a ProvisionedThroughput Exception,
+try to do retries with backoff,
+that means that you will retry after maybe two seconds,
+and if it doesn't work, you will try to four seconds,
+and then after eight seconds,
+they're just like arbitrary numbers.
+Or you can increase the number of shards
+you have in Kinesis
+to increase the amount of scaling you can do,
+and you need to ensure that your partition key is a good one
+a very distributed one.
+So, for example, for the mobile device,
+instead of choosing Apple versus Android,
+you would choose maybe the device ID,
+which for sure is going to be different
+for each of your users,
+just an example.
+So now let's talk about
+the Kinesis Producer Library, or KPL.
+You need to learn exactly how this works
+because this is very important going into the exam.
+It's an easy-to-use and highly configurable,
+C++ or Java library,
+and personal experience,
+I've seen Java being used more
+when you use the KPL.
+It's used when you want to build high-performance,
+long-running producers
+and it has automation for the retry mechanism,
+so the exception I just described before,
+which we have to deal with when using the API,
+well the Kinesis Producer Library
+automatically knows how to deal with this.
+Now, Kinesis Producer Library has two kind of APIs,
+there's Synchronous API
+which is the same as the SDK,
+or Asynchronous API
+which will provide you better performance
+when you need to deal with asynchronicity, obviously.
+So every time in the exam you see,
+okay we need to send data asynchronously
+to Kinesis Data Streams,
+usually the Kinesis Producer Library, or KPL,
+will be the way to do it.
+It's a really nice lever
+because it also is able to send metrics
+to CloudWatch for monitoring,
+so any time you write an application with a KPL
+you can monitor it directly in CloudWatch.
+And it supports a very important mechanism called batching
+and batching has two subsections
+and they're both turned on by default,
+and they will help you increase the throughput
+and decrease the cost.
+You need to know those absolutely.
+The first one is to collect records
+and write to multiple shards
+in the same PutRecords API call.
+And the second one is to aggregate,
+which increases latency,
+but increases the efficiency as well.
+So, it's the capability to store multiple records
+in one record,
+and you're able to go over
+the 1000 records per limit with this.
+I'll describe these to you in the very next slide anyway.
+And that will allow you to increase the payload size
+and therefore increase throughput,
+so you can reach that one megabyte per second limit
+more consistently.
+If you wanna use compression,
+so that means make your records smaller,
+then this is not something
+that Kinesis Producer Library supports
+out of the box, unfortunately,
+you would have to implement this yourself.
+When we do send a record
+with a Kinesis Producer Library though,
+it's a very special record
+and you cannot just read it using the CLI,
+for this, you will need to use the KCL,
+or a special helper library
+and we'll see the KCL in the next lecture.
+So let's talk about this batching
+because this is such an important concept to understand
+in Kinesis Producer Library,
+and something the exam will ask you about.
+So, here's, for example, me sending a record to Kinesis
+and it's two kilobytes
+and I'm sending it using the Kinesis Producer Library.
+It turns out it's not going to sent right away,
+it's going to wait a little bit of time
+to see if more records are coming in,
+and maybe I'm sending the next record of 40 kilobytes,
+maybe I'm sending a next record of 500 kilobytes,
+and what Kinesis Producer Library will do
+is that at some point it will say, wait a minute,
+I can aggregate all these records into one record.
+So instead of sending three records,
+now we're sending one record
+and that record is still less than one megabyte.
+And so we can do this in multiple times,
+so maybe we're gonna have
+one, 30, 80, and 200 kilobytes again
+and it's going to aggregate that one as well
+into one record.
+So now we have two records.
+So we've seen what aggregation is.
+And then it's going to say, wait a minute,
+now we have to send two big records,
+but we're not going to use two PutRecord API,
+we're going to use one of them
+and we'll do collection.
+So we'll use the PutRecords API.
+So here you see,
+I wanted to send seven records to Kinesis,
+and I end up doing only one API call
+because we have aggregation and collection.
+And so how does Kinesis know
+how long to wait to batch these records?
+So we can control it using
+this RecordMaxBufferedTime
+which defaults to 100 milliseconds.
+Basically you're saying, okay,
+I'm willing to wait 100 milliseconds,
+so that's adding a little bit of latency
+and the trade off of it being more efficient.
+So if you want less delay,
+you would decrease that setting
+and if you want more batching,
+you would increase that setting.
+So that's it for the KPL,
+just remember the batching mechanism,
+it's really important.
+So there is one situation
+where you may not want to use the Kinesis Producer Library
+and this is something that can come up in the exam.
+So when using the KPL,
+you can incur an additional processing delay
+of up to RecordMaxBufferedTime,
+so this is a user-configurable setting
+within the library,
+and the idea is that the longer you have this buffer,
+so the larger value for that RecordMaxBufferedTime,
+means that you'll have higher packing efficiencies
+and better performance
+because more records will be accumulated in that buffer
+and they will be sent as one larger record,
+which will be more efficient, potentially compressed,
+and so on.
+But, if you have an application
+that cannot tolerate an additional delay,
+then you may need to use the AWS SDK directly,
+that means you want to send the data right away.
+So let's take an example.
+If you have an IoT sensor
+and it comes with AWS SDK
+and you want to produce to Kinesis Data Streams,
+but the IoT sensor sometimes is offline.
+So if you use the KPL
+and there is an offline event,
+what's going to happen is that the KPL will keep the data
+and accumulate it,
+and so that means that when my device goes back online
+it may take a little bit of time
+for the latest data to arrive
+into my Kinesis Data Stream
+and maybe we just want to act upon the latest data.
+So in that case, instead of using the KPL,
+it would be more sensible for us
+to implement our applications directly
+using the SDK API calls named PutRecords
+because when we use PutRecords,
+we can choose to discard all data
+and we can choose to send only
+the latest, most relevant data
+when my device is online.
+So, now you know that use case
+and it can come up in the exam.
+Last way to produce to Kinesis
+is to use the Kinesis Agent.
+And so this agent will basically be installed
+and it will monitor Log files
+and directly sends them to Kinesis Data Streams,
+it's just the configuration to do.
+It's a Java-based agent
+and actually it's built on top of the KPL Library,
+that makes it really reliable and efficient.
+You would install this only in
+Linux-based server environments for now.
+So the features is
+to write from multiple directories
+and write to multiple streams,
+it has a routing feature
+based on the directory or log file you're using,
+and it can even pre-process the data
+before sending it to Kinesis Data Streams,
+it can do single-line diversions,
+it can do csv to json, log to json.
+And on top of it, the Kinesis Agent is really well written
+so it will handle anything like log file rotation,
+checkpointing, and retry upon failures.
+And because it uses the KPL Library,
+then it will emit metrics to CloudWatch for monitoring.
+So any time you need to do aggregation of logs in mass,
+in almost real time,
+then the Kinesis Agent is the way to go.
+All right, so we've seen all the ways
+to produce into Kinesis.
+I know that's a lot,
+but remember, at a high level you need to understand
+how they work,
+and I hope I achieved just that.
+I will see you in the next lecture.

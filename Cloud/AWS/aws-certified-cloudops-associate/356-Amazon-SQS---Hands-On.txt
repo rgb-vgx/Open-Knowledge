@@ -1,0 +1,161 @@
+# 356. Amazon SQS - Hands On
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218723
+# Caption: en_US (manual)
+
+So, let's practice Amazon SQS.
+So we are going to go into the SQS console
+and then create a queue.
+Now as we can see, we have two types of queue
+we can set up in SQS.
+We have the standard queue and the FIFO queue.
+And I'm going to use standard
+and the name is going to be Demo Queue.
+We'll see FIFO later on.
+For configuration, all these things we're going to see
+in future lectures
+so visibility timeout, delivery delay, the wait time,
+the retention period, we're going to use four days
+and the max message size is going to be 256 kilobytes
+which is a max allowed in SQS.
+For encryption, we have several encryption options
+so we can disable encryption for our queue altogether
+but by default we enable it with an Amazon SQS key.
+It's called SSE-SQS type of encryption
+which is similar to what we have in Amazon S3 with SSE-S3.
+So that's one option for server side encryption.
+The other one is to use KMS.
+And this is where we have to choose the customer master key.
+So we can choose the default CMK of AWS
+called the alias/AWS/SQS
+and then we can define a data key reuse period
+that could be five minutes, for example.
+This is to limit the number of API calls made in two KMS.
+But this is not very important
+so let's keep the encryption as Amazon SQS key,
+SSE-SQS.
+All right.
+Next we have an access policy.
+And this access policy can be defined
+using these prompts right here.
+So we can say, 'Hey, who can access this queue well?'
+Only the queue owner can send messages
+or maybe I wanna specify a list of accounts,
+users and roles and then who can receive, again.
+Is it just me, the queue owner
+or specified accounts, users and roles?
+And this will generate a json document out of it
+and this json document, as you can see,
+looks very similar to what we had in Amazon S3
+with Amazon S3 Bucket policy.
+So this is a resource policy for SQS
+and it works very very similarly.
+Now for the redrive and the dead-letter queue,
+we'll see this later on so right now, we're good.
+Let's go ahead and create our queue.
+And now the queue is successfully created
+so we can go ahead and send and receive messages from it.
+So we get a lot of different panels in this UI
+but what we want to be doing is
+to go to the top right-hand side
+and click on send and receive messages.
+So here is a facility for us to send messages
+and then at the bottom, to receive them.
+So as we can see right now in the queue,
+we have zero messages available.
+But if I enter 'hello world!' in the message body
+and then send the message.
+As you can see, the message is sent
+and is ready to be received.
+Now we have a messages available one,
+and so in here, as soon as I click on pull for messages,
+the messages will appear.
+So let's have a look.
+I click on pull for messages
+and yes, we did receive that message right here.
+As we can see, we have a message id.
+And if you want to look at the content of the message,
+I click on the message details
+and I can have some information.
+So there's a lot of metadata around that message.
+For example, the hash of the message, who sent it,
+how many times were received so just one time right now
+because this is the first time we process this message,
+the size in bytes.
+And if we go and want to receive the body itself,
+we can see that whatever has sent before 'hello world!'
+has in it up right here in the message that has just read.
+If we created attributes for the message,
+there was a message attributes panel that we didn't look at,
+we could create key values and read them from here as well.
+So very simple, what you would expect
+when you send a message and then read it,
+you get the exact same message.
+But we have decoupled
+because a producer has sent some information
+and a consumer has received that information.
+Now we can see that the message has been received twice
+because we didn't process it in enough time.
+So after 30 seconds, the message went back into the queue
+and we received it again.
+So if I pull for messages,
+now the message receive count is three.
+So it has been read yet again another time.
+So to be done with this message,
+because say we've processed this 'hello world!' Message,
+I'm going to click on it
+and then I'm going to click on delete.
+And by deleting the message from the queue,
+we have signaled to the SQS queue
+that the message has been successfully processed
+and therefore we have zero messages available in the queue.
+And if we pull again,
+we will not receive the same message again
+because we have deleted it.
+So you start seeing the power of queues.
+We could go ahead and send many times different messages,
+hello world and so on, and you can just play with it
+and this is how you would set message attributes
+but this is out of scope for the exam.
+And here you would receive these messages
+and you can receive many messages at time.
+So if we send 'hello world', we'll send that message again
+and 'hello world 2' for example and send that message
+and 'hello world 3',
+whatever you want really in that message.
+As we can see, as soon as I refresh this window,
+we can see that the number of messages available is three.
+And so if I pull for messages,
+I will get three messages available in here to be processed.
+And again, you can take them all
+and delete them to signal to SQS
+that they have been processed.
+So fairly easy.
+But you've seen the power of producers and consumers.
+Now, back in the queue,
+just a few options as well we can see out.
+So we can edit this queue to edit all the configurations
+that we've seen from before or you can purge the queue.
+This will delete all the messages in the queue.
+And so to delete all the messages,
+you just need to type purge,
+and it will go ahead and remove everything
+which is very helpful when you do developments.
+But I don't think you should do this in production.
+And then you get some information around monitoring
+for example here, which gives you some information around
+how many messages are in the queue,
+what's the approximate age of the oldest message,
+which could be another way to scale your SQS Queue
+if you have an auto-scaling group reading from it,
+and so on.
+And finally, access policy,
+which is who can access the queue and how;
+encryption, which is the service side encryption we defined
+for our SQS queue.
+So for example, we're using SSE-SQS right now
+as our encryption scheme, but we can edit it.
+And finally, the dead-letter redrive status
+which is relevant if you set up a dead letter queue.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

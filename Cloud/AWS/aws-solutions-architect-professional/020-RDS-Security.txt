@@ -1,0 +1,41 @@
+# 20. RDS Security
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376384
+# Caption: en_US (manual)
+
+So, another quick lecture,
+but this time on RDS-Security,
+that you hopefully should know,
+but maybe there's a thing or two that you'll learn here.
+So you can get KMS encryption at rest
+for your underlying EBS volume and snapshots.
+You have the option
+to use something called TDE, Transparent Data Encryption,
+if you have an Oracle or SQL Server database,
+managed by RDS.
+And you are able to define in-flight encryption,
+SSL encryption, for all the databases.
+You are able to use IAM authentication
+for MySQL, PostgreSQL and MariaDB,
+but that's just for the authentication,
+the authorization itself
+still happens within RDS, not in IAM.
+But still, it's good for user management
+to be done through IAM.
+You can copy an un-encrypted RDS snapshot
+into an encrypted one,
+this is a very common DevOps feature to do,
+and CloudTrail cannot be used
+to track queries made within RDS.
+You will need to have specific monitoring tools,
+for RDS and database security
+to get these kind of logs, okay?
+So just a very short lecture, to be honest.
+We'll have a more deep dive into RDS in another section,
+but here you need to remember
+all the security options for RDS,
+because the exam may trick you into thinking
+TDE is for MySQL,
+or IAM authentication is for Oracle, okay?
+So that's it.
+I will see you in the next lecture.

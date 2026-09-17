@@ -1,0 +1,127 @@
+# 56. Training Data
+# Section: Artificial Intelligence (AI) & Machine Learning (ML)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886593
+# Caption: en_US (manual)
+
+So now let's talk about training data
+in the context of machine learning.
+So in the context of machine learning,
+we need data to train our models.
+And on top of having data, we need good data.
+So good has to been defined, of course.
+But as an into effect,
+if you put bad data, it's called garbage.
+If you put garbage into your model,
+you're gonna get garbage out of your model,
+that means your model won't be good.
+So training data and clean the data
+and making sure that it is good for your use case is one,
+if not the most critical stage to build a good model.
+And there's several options to model a data
+and that will impact the type of algorithms you can use
+to train our models.
+So first I want to talk about labeled versus unlabeled data.
+Then we'll talk about structured versus unstructured data.
+So what is labeled data?
+Well, it's data that has both input features,
+and also output labels.
+So let's give an example.
+Here we have some images of animals,
+and each image is going to be labeled
+with the corresponding animal type.
+So here we have dogs, and here we have cats.
+So this is labeled data 'cause we have some input features.
+We'll have the image itself as an input feature,
+and then the output label corresponds to what the image is,
+so dogs or cats.
+So this is a very important one
+because when we have labeled data,
+we can do what's called supervised learning,
+where we are going to teach an algorithm to map inputs.
+So here the image to the known output, meaning,
+hey, this image should have a predicted value of dog,
+and we know it's a dog because we've labeled it.
+Unlabeled data is a little bit different.
+It's data that only includes input features
+without any output labels.
+So here again, we take the example, of say,
+a collection of images,
+but this time without any associate labels.
+So we have here three cats and three dogs,
+or four cats and two dogs, sorry.
+And here we don't say to the algorithm,
+"This is a dog or this is a cat."
+And here the algorithm will have to figure out
+that there is such thing as a cat
+and that four of these things are a cat,
+and two of these things are dogs.
+So unsupervised learning is a little bit more complicated,
+but here the algorithm itself is going to try
+to find patterns between things or structures in the data
+and then group them together.
+So very different use case,
+and obviously, the most simple thing
+is to have labeled data,
+but in some cases you have so much data
+that it is very costly
+or just simply impossible to label everything.
+And so therefore, you have a lot of unlabeled data.
+This is why in the field of machine learning,
+we have algorithm for both the use case
+of labeled data and unlabeled data.
+Next we have structured data.
+So here, that's when the data is organized
+in the structured format.
+Usually it's gonna be rows and columns,
+just like in Microsoft Excel.
+So it's called tabular data.
+And here we have three rows.
+One is the rows with the name of the columns,
+and then the other rows are the data itself.
+So here we have a customer's base, we have the Customer_ID,
+the Name, the Age, as well as the total Purchase_Amount.
+So this is structured data
+because while there is a big structure to it,
+we have rows and columns.
+Another kind of structured data you can encounter,
+for example, is going to be Time Series Data.
+So when you look, for example,
+at the stock price of a company, it looks like this.
+And so that means that it's data points collected
+or recorded at successive point in time.
+So you can have time series data in the tabular format,
+but it is also very common to just have it with two columns.
+One being the Date and then one being the Stock Price.
+So there are more ways
+to have structured data than Tabular Data
+or Time Series Data.
+But the important thing is that in both cases,
+it is very easy to read it and very easy to structure it.
+On the opposite end, we have unstructured data.
+This is data that doesn't follow a specific structure.
+Usually it's often text heavy or a multimedia content.
+So for example, text data, say you have an article online
+or a social media post
+or a customer review on your business,
+then this is considered unstructured data.
+For example, here is a review of a yoga class.
+So this is a long text.
+The instructor was excellent,
+the felt city was well maintained and so on.
+But it's just a review.
+There is no structure to it except the fact
+that it's just a long text.
+Image data, for example, is also unstructured data.
+For example, this is just pixels.
+But besides the pixels, we haven't collected
+or organized anything out of it.
+So both these, the type of data are still good data.
+They're just unstructured,
+and we have specific type of algorithm
+to deal with this unstructured data.
+So now we've learned about labeled and unlabeled data.
+We've learned about the necessity of having good data
+for your ML algorithms.
+We have discussed also structured and unstructured data.
+So now we're ready to go into the next lecture.
+I hope you liked it and I will see you in the next lecture.

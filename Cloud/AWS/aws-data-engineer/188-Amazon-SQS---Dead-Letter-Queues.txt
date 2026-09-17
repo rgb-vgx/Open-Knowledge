@@ -1,0 +1,75 @@
+# 188. Amazon SQS - Dead Letter Queues
+# Section: Application Integration
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305784
+# Caption: en_US (auto)
+
+Instructor: Now, let's talk about
+dead letter queues in SQS.
+The idea is that let's get into this scenario
+where a consumer fails to process a message
+within the visibility timeout period.
+Then we know that the message
+automatically goes back into the queue.
+So the consumer reads the message, maybe there's a failure,
+maybe we don't have enough time,
+the message goes back into the queue.
+Now, if that thing happens very often,
+that can be a problem.
+For example, we read again the message,
+maybe there's something wrong with the message.
+Maybe our consumer doesn't understand the message
+or can't process the message.
+Then the message will go back into the queue.
+And it will happen again.
+We'll read the message again from SQS,
+and it will go again back into the queue.
+So we can set a threshold to how many times this can happen.
+And this failure loop can be a big problem,
+but we can set a MaximumReceives threshold.
+And if that threshold is exceeded, then we can tell SQS
+to say, well, this message looks a bit odd.
+It looks like it's being processed too many times
+and not successfully.
+Therefore, send this into a dead letter queue.
+And the dead letter queue will contain that message
+and for later processing, and so the message will be removed
+from the first queue and sent into the second one.
+Why do we have dead letter queues?
+Well, dead letter queues are very useful for debugging.
+And in case a message goes in dead letter queue,
+because it is an SQS queue, you have to process it,
+but at least it gives you time
+to understand what is happening.
+A few things to notice that the dead letter queue
+of a FIFO queue must also be a FIFO queue,
+and the dead letter queue of the standard queue
+must also be a standard queue.
+Finally, because we have a dead letter queue,
+you need to make sure that the messages
+are processed before they expire from the queue.
+So it's a good idea to set a long time, for example,
+14 days of retention from within the dead letter queue.
+And the next feature for management
+of your dead letter queues
+are the redrive to source feature.
+So it's a feature to help you consume messages
+in the dead letter queue
+to understand what is wrong with them.
+So you have your messages now,
+you know they haven't been processed in the source queue
+and therefore, they are in the dead letter queue.
+And you're going to do a manual inspection
+and debugging of these messages.
+And then you're going to fix your consumer code,
+understand why the message wasn't processed,
+in case the message was correct.
+And then what you can do is, redrive that message
+from the dead letter queue into the source SQS queue.
+And what's going to happen with this
+is that the consumer can now reprocess
+that message without even knowing
+that the message went into the dead letter queue,
+and then the message processing has happened.
+And that's a cool feature.
+So now, let's go into the console
+so I can show you the dead letter queue feature.

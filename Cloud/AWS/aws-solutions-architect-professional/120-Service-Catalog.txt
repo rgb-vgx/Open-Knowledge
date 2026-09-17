@@ -1,0 +1,114 @@
+# 120. Service Catalog
+# Section: Deployment and Instance Management
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376634
+# Caption: en_US (manual)
+
+Okay so, next let's talk about AWS Service Catalog.
+This is for the users that are going to be new to AWS.
+They will have too many options to create stacks
+and they may create stacks that are not compliant
+or in line with the rest of the organization.
+So we want to provide these users with
+a self-service portal and then where we launching
+only authorized products and these authorized products
+will be predefined by administrators.
+So it includes for example, virtual machines,
+databases, storage options such as EFS, et cetera.
+The idea is that with the Service Catalog,
+we are giving users a controlled environment
+to deploy stuff onto AWS.
+So how does it work?
+Well, it relies on the CloudFormation.
+So first, you have two parts in Service Catalog.
+You have the admins, and then you have the users.
+So the admins are going to define products.
+And what is the product in Service Catalog?
+Well, it is a CloudFormation template
+that the admins have to write.
+And because the admins are power users,
+they're going to write these CloudFormation templates
+very, very well.
+And they will put all these products together
+and create a portfolio.
+So a portfolio is going to be a collection of products.
+And then each portfolio will be assigned
+some IAM roles to give control.
+So we're going to say,
+who can access these portfolios and when.
+So then the users are going to be presented
+with a product list through the Service Catalog.
+And the products they see,
+are only going to be the products
+that are authorized by IAM.
+And then these users, for example,
+they need a stack with an EC2 Instance,
+then they will launch these products
+and the products because they correspond to
+CloudFormation templates, will be launching
+whatever the CloudFormation templates is configured to do
+and that will give you provisioned products.
+Now they're ready to use, they're properly configured
+and they're properly tagged.
+So think of Service Catalog
+as a set of CloudFormation templates
+that your users can use based on their IAM permissions.
+So in this example, we don't give the users,
+to launch CloudFormation templates themselves,
+we give them the ability to launch
+the CloudFormation templates that only the admins
+have been given the rights to do.
+And so the idea here is that
+we are giving a lot less control to our users
+and we're giving making sure that our users
+only can do the things that they are authorized to do
+with Service Catalog.
+So now, let's go back to the theory of Service Catalog.
+We're creating and managing a catalog of IT services
+that are going to be approved by our administrators on AWS.
+Each product is a CloudFormation templates
+and so you can do whatever you want
+with CloudFormation templates,
+but you can have a virtual machine image, servers,
+software, databases, regions, IP address ranges,
+whatever you want.
+The idea is that by using CloudFormation,
+we help ensure consistency,
+and we have standardization by the admins.
+So we don't give the users the right
+to use CloudFormation directly.
+We give them only the right to use Service Catalog,
+which in turns is using CloudFormation as its backbone.
+So then, the products will be assigned
+to portfolios or teams, and the teams will be presented
+with a self-service portal
+when they can launch the products.
+And all the deployed products are centrally managed
+through Service Catalog.
+Why do we do this?
+Well, to help with governance, compliance, and consistency.
+And so, this is what you're going to have to look like
+for the exam, okay?
+Whenever a user needs to be launching products,
+but doesn't require deep AWS knowledge,
+or doesn't need to know all the options of AWS,
+the idea is that,
+you should use something like Service Catalog,
+and you should define these templates in advance
+for your users to make sure that they can only do
+exactly what you intended them to do.
+So you can have standardization in tagging,
+you can have standardization in the way things
+are being configured, et cetera.
+Finally, Service Catalog does integrate with
+self-service portals, such as ServiceNow.
+So it is possible for you to completely hide
+the facts is Service Catalog and have your users
+use your internal ServiceNow portal to request for example,
+a EMR cluster to perform some big data.
+And that's it.
+So that's it for this lecture.
+Remember, Service Catalog is only when
+you're in just consistency, standardization
+and give less control to the users
+and more controls your admin.
+And I will see you in the next lecture.

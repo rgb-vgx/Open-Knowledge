@@ -1,0 +1,155 @@
+# 62. Model Fit, Bias, and Variance
+# Section: Artificial Intelligence (AI) & Machine Learning (ML)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886641
+# Caption: en_US (manual)
+
+So now let's talk about model fits and bias
+and variance.
+So in case your model has a poor performance,
+it could be for various reasons,
+then you need to look at what's called its fit.
+So we have overfitting,
+this is when your model is performing very well
+on the training data,
+but it doesn't perform well on the evaluation data.
+So here's an example of overfitting,
+where we have a lot of points
+and we just have a line that just links all these points.
+So, of course, this is going to work great
+on the training data
+because we are always predicting the point itself.
+But when we look at new data,
+which is not part of the training dataset,
+it is 100% sure that it will fall outside of this line.
+And therefore, we are overfitting.
+We're trying too hard to reduce the error
+on the training data.
+On the opposite end, you have underfitting.
+Underfitting is that the model
+is performing very poorly on the training data.
+So that means like, for example,
+on these data points right here,
+we have a horizontal line.
+This is a very bad model.
+It doesn't look at all like what the data is shaping like.
+And so it could be a problem
+of having a model that's too simple
+or you have very poor data features.
+What you're striving for is balanced.
+Balanced is neither overfitting or underfitting,
+and it looks something like this.
+This is a very balanced model.
+Of course, you have some error based on training data,
+but it looks like you are fully following closely
+the trend of your data.
+So remember overfitting, underfitting, and balanced,
+which brings me to bias and variance.
+So what is bias?
+Bias is the difference or the error
+between the predicted value and the actual value.
+And bias occurs normally because we can make, for example,
+the wrong choice in the machine learning process,
+but do you always have some bias.
+Here, for example, let's take our datasets,
+and we have a horizontal line to predict the data points.
+Obviously, it's a very bad choice,
+and so we are going to have a very high bias
+because the model doesn't closely match the training data.
+So this can happen, for example,
+when you have a linear regression,
+but your dataset is non-linear,
+it doesn't follow a straight line type of trend.
+So this is considered as underfitting
+when you have a very high bias.
+And some people like a visualization
+where you have like a circle,
+and this is like, imagine a dart board,
+and you're good if you hit the truth.
+The truth is in a center.
+If you have high bias,
+basically, you're going to be far from the truth every time,
+and so your data points are going to be away
+from the center.
+This is a high bias.
+So how do we reduce the bias?
+Well, of course, we can improve the model.
+Maybe use a more complex model
+that will fit better our datasets,
+or increase the number of features
+in case our data is not prepared well enough,
+and therefore, we need new features to predict
+and have a good machine learning model.
+On the next, we have variance.
+And variance represents how much the performance of a model
+will change if it's trained on a different dataset
+which has a similar distribution.
+So let me explain.
+If we take a dataset like this
+and we have something that is overfitting,
+we are going to try to match every single point,
+then as soon as we change the training data,
+then our model is going to change a lot.
+It's going to be very sensitive to changes.
+And so when you're overfitting,
+you're performing well on training data,
+but poorly on unseen test data,
+and therefore, you have very, very high variance.
+So when you have high variance,
+that means that your data is all over the place.
+It could be centered, like on average,
+things converge to the center, could be a low bias,
+but you have a lot of variance
+because if you change your model, then things will change.
+So how do you reduce the variance?
+Then you consider less features.
+You only consider the more important features.
+And you split the data into multiple sets
+into training and test data multiple times.
+So let me show you a representation so you can understand.
+This is overfitting and we have high variance.
+Again, to summarize, if we change the input dataset,
+our model is going to change completely.
+Underfitting is when you have high bias.
+Here, our model is not good.
+We have a lot of error on prediction
+of every of these data points.
+So it's not good.
+So what you're striving for is balanced.
+Balanced is low bias, low variance.
+Of course, you're going to have some variance
+because if you change your training dataset,
+your model is going to change,
+but, hopefully, only slightly.
+And, of course, you're going to have low bias and some bias
+because, well, your model is never perfect.
+You can't predict everything 100% of the time.
+But we want to have a balance between bias and variance.
+There's another type of visualization you can have
+to understand those.
+So this is a matrix of low variance, high variance,
+as well as high bias and low bias.
+And so the balanced use case is when you have low bias
+and low variance.
+And so all your data points are going to be in the center
+with a low variance.
+So all of them are going to be very well-centered.
+If you have a high bias but a low variance,
+you are underfitting.
+Again, that means that your data is wrong on average,
+but your model doesn't really change
+if you change your training datasets.
+And on the opposite end,
+if you have low bias and high variance,
+that means that you are overfitting.
+And that means that, for example,
+if you change your training dataset, then, your variance,
+your model is going to change tremendously.
+And finally, high bias, high variance,
+you just don't have a good model
+and you don't want to use it anyway.
+So, hopefully, you remember this from an exam perspective,
+understanding what is bias and what is variance,
+as well as underfitting, overfitting, and balanced
+is going to be very important.
+So hope you liked it,
+and I will see you in the next lecture.

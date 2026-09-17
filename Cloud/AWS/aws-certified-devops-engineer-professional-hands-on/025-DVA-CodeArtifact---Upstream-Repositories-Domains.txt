@@ -1,0 +1,140 @@
+# 25. [DVA] CodeArtifact - Upstream Repositories & Domains
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858630
+# Caption: en_US (manual)
+
+So let's do a deeper dive
+into how the repository works
+and the concept of upstream repositories.
+So, when you have a Code Artifact Repo,
+you can actually have multiple upstream repositories.
+So let's have an example.
+Here, the repository "my-repo"
+can have an upstream of Repository A
+and an upstream of Repository B.
+So what does it mean to have upstreams
+and why is it helpful?
+Well, when you have an upstream,
+any package manager that is trying to access your base repo,
+can also try to find dependencies
+in all the upstream repositories.
+But, the benefits of this, is that's for your developer,
+for whoever connects to your repo,
+there's only a single repository endpoint,
+and then you can have
+up to ten upstream repositories per repository.
+So that means we're going to be able to search
+a tree of repositories for the right dependencies.
+Now also, when you define a repository,
+you can have what's called a external connection,
+and it can only be one per repository.
+So for example,
+Repository A can be connected to an external repository,
+and this is called an external connection,
+and it could be the public NPM repo
+and algorithms that we get.
+We get the benefits that,
+by connecting to just one single repo,
+we have access to our private dependencies
+but also any public dependencies that we've defined
+through external connections.
+So let's talk about these external connections
+a little bit more.
+So when you have an external connection,
+it is by default a connection
+between one of your repos and an external public repository.
+For example, it could be Maven for the Java world
+it could be NPM, for the JavaScript world,
+PyPI for the Python world
+and nuggets for the dot-net c-sharp world.
+And so we have here a-
+the opportunity to connect NPM to a repository
+within CodeArtifacts, called an external connection.
+And then what's going to happen is that,
+if a package that is fetched from NPM is not available
+in Repo A, then we're going to fetch it
+and is going to be stored as a cash diversion in our Repo A.
+And so this is why there's only a maximum of one
+external connection per public repository to
+have like a perfect cash mechanism.
+But if you want to have multiple public repositories
+then you can just have many repository
+within CodeArtifacts.
+So for example, here we want to connect to npmjs.com
+and so we're going to configure one repo with one
+external connection in your accounts, and then
+all the other repositories of your account that needs to
+also fetch from NPM can just
+have defined the Repository A as an upstream.
+And now that we have this, any package fetched
+from NPM the "js" are going to be cashed
+in the upstream Repo A, and then automatically
+the Repo B, C, and D will have access to these packages.
+So as a developer, when you pull a package
+it's going to be cashed in repo A
+and then sent right through to your build system.
+So what about the retention
+of these artifacts in CodeArtifacts?
+So, if you have a requested package
+and it's found in an upstream repo
+then a reference to it is going to be retained
+and always available to the downstream repository.
+And then if you somehow change the package
+in the upstream repository, it's not going to
+affect your own copy in the downstream repository.
+And any intermediate repository that allowed you to
+fetch that package will not be able to keep the package
+for efficiency purposes.
+So let's have a look. If we take a package from npmjs.com,
+but to get there we have two upstreams,
+What's going to happen is
+that the package manager is going to request this package.
+Then it's not present in any of the three repos
+so it's going to be fetched, then it's going to be fetched,
+it's going to be retained in Repository A.
+That's because it's the most downstream repository
+and it's the one we connect
+to from our developer machine.
+Repository C, as well,
+because that's the one that has the external connection
+to the NPM public repository.
+So we'll keep a copy cashed in it
+and the Repository B will not have anything
+because it is considered
+in this chain an intermediate repository.
+Finally, it looks like we're copying stuff all around
+and so we are sort of duplicating packages
+but this is a good time to introduce domains.
+So when you have repository
+you can also introduce the concept of a domain.
+And a domain can span across multiple accounts
+and multiple repositories within these accounts.
+And when you have a domain, actually you define one storage
+for all your repositories and so you de-duplicate storage
+because, if the same dependency
+must be in different repository,
+then it's going to be stored once
+in a domain in shared storage and then only references
+to it will be stored in your repository.
+So it makes it extremely efficient.
+And then you can see, then you can create
+as many upstream connections as you want.
+You also have fast copying
+because when you pull repository dependencies
+then, instead of copying them,
+you just create a new reference to the shared storage.
+Also, it's very easy to share stuff
+in the domain across teams
+because you have the same metadata, the same assets,
+and you encrypt everything with the same KMS key.
+And on top of it, if you wanted to define an
+access policy into your repositories,
+you can just define what's called a domain
+resource based policy, which is going to be applied
+to all the accounts and all the repositories
+within the the domain.
+And you can define advanced rules,
+such as who has the right to set up
+and modify external connections.
+Okay, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

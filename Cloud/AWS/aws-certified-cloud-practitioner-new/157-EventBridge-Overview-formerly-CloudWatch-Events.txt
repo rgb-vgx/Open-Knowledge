@@ -1,0 +1,78 @@
+# 157. EventBridge Overview (formerly CloudWatch Events)
+# Section: Cloud Monitoring
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056214
+# Caption: en_US (manual)
+
+So now let's talk about Amazon EventBridge,
+and it used to be called CloudWatch Events.
+So if online, you see CloudWatch Events,
+think about Amazon EventBridge and vice versa,
+but EventBridge is the new name.
+So with EventBridge, you can react to events
+happening within your AWS accounts.
+And one use case for them is to schedule cron jobs.
+So you want to have a script scheduled on a regular basis.
+For example, in EventBridge, you can create a rule that says
+that every one hour you should have an event created
+and that event will trigger a script
+running on a Lambda function.
+Effectively, you've done a serverless cron job.
+But you can also not just react
+to events happening every hour,
+we can react to a service doing something.
+For example, say you wanted to give alerts
+to your security team whenever someone
+is going to log in using the root user
+because, well, the rule is that you should not reuse
+the root user or only very rarely.
+So maybe we want to react
+to the IAM root user sign-in events
+and then send this into an SNS topic
+that is combined with email notifications.
+In that case, whenever someone signs in,
+we will receive an email.
+So you can create a lot of these different integrations
+all using Amazon EventBridge.
+And you can, as the destination, trigger Lambda functions,
+send SNS and SQS messages, and so on.
+Actually, you can do all these things.
+I just wanted to give you a quick example.
+You don't need to linger on this slide, okay.
+But the sources can be anything you want.
+Could be EC2 Instances, CodeBuild, S3 Event,
+Trusted Advisor, and so on.
+There's a lot and, of course, a schedule.
+It goes into EventBridge, and from EventBridge, you can send
+and trigger many different kinds of destinations.
+Would it be for compute, for integration,
+orchestration, maintenance, and so on?
+And what I've shown you here is just a little sample.
+Finally, EventBridge has more capability.
+So what I've shown you is called the default event bus.
+And these are events happening from within AWS Services,
+or, for example, your schedules.
+But it is possible for you to receive events
+from partners of AWS.
+For example, if you're using Zendesk, or Datadog,
+or others that are partnered with AWS,
+then they can send their own events
+into your account through a partner event bus,
+and, therefore, you can react to events
+happening outside of AWS as well.
+And finally, you could plug in your own custom applications
+that would send their own event to your own custom event bus
+to write any kind of integration you want
+and be really able to customize everything.
+EventBridge also has more capability.
+There is the Schema Registry to model the events schema
+to see what it looks like, the data types and so on.
+You can also archive all the events sent to an event bus
+indefinitely or for a set period,
+and then you can replay these archived events.
+But I think that for the cloud practitioner exam
+you know more than enough.
+Again, you need to remember,
+conceptually, what is Amazon EventBridge?
+And now, I think you do.
+Okay, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

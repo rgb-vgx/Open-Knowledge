@@ -1,0 +1,50 @@
+# 45. EC2 Placement Groups - Hands On
+# Section: EC2 - Solutions Architect Associate Level
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26118770
+# Caption: en_US (manual)
+
+So let's go ahead
+and practice placement groups.
+To this, on the left hand side,
+I'm going to scroll down
+and find under network and security,
+the placement groups option.
+And I will go ahead and create a placement group.
+So the first one is going to be my-high-performance-group.
+And as you can guess, the placement strategy
+for this one is going to be cluster,
+because we want instances
+to be very close to each other
+so that they have maximum network capability.
+The second thing is going to be my-critical-group.
+And for this one,
+the placement strategy is going to be spread,
+because we want instances
+to be distributed as much as possible.
+And you can set the spread level to rack,
+which is a default,
+or host, which is outpost only,
+but we don't use outpost.
+So for now we'll just use rack,
+which is what we should know about.
+Okay. So this critical group has been done
+And finally, we have my-distributed-group.
+And this one, as you can guess,
+is going to be for the partition type.
+And here we have the choice
+between one, two, seven partitions.
+For example, I can set four, and create this group.
+So the three groups have been created.
+And now, to just launch an instance in a group,
+you click on launch instances.
+And now, when you scroll down, at the very bottom,
+under the advanced details, you can have a setting
+for right here, the placement group name,
+and you can select between my-critical-group,
+my-distributor-group,
+or my-high-performance-group
+based on your placement group strategy.
+So that's it. It's a very short lecture,
+but now you know where the options are.
+I hope you liked it.
+And I will see you in the next lecture.

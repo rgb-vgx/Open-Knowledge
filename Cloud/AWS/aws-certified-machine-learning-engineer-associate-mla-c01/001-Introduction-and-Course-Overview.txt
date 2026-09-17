@@ -1,0 +1,152 @@
+# 1. Introduction and Course Overview
+# Section: Introduction
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45270887
+# Caption: en_US (auto)
+
+Welcome, welcome, welcome. My name is Frank Kane. I'll be your host for this course where we're
+going to learn about the AWS certified machine learning engineer associate exam together.
+So there's a lot to go through here. Let's give a little overview here of what we're going to touch
+on in this course.
+First section is going to be about data ingestion and storage. So we're going to start off talking
+about the types and formats and properties of data that you might be working with.
+We'll also talk about the difference between data warehouses, data lakes and data lake houses.
+We'll talk about the extract, transform and load pipeline and orchestration tools you can use to
+manage that process of obtaining your data and transforming it into the format that your models need
+and loading that wherever it needs to go.
+We'll also go through the AWS storage and streaming services. Some of those are on the right here.
+Amazon Kinesis, FSX, S3, EFS and EBS.
+After that, we'll go into data transformation, integrity and feature engineering, also called out on the exam guide.
+We'll start by talking about Elastic MapReduce or EMR for short. That's a framework for running big
+parallel data processing jobs at scale, usually using Hadoop or Spark or something like that.
+We'll talk about techniques for handling missing data, unbalanced data or outliers that are in your
+data. Kind of a general topic in machine learning, not specific to AWS, but definitely something you need to know.
+We'll also talk about some common data transformation techniques you might need to employ to prepare
+your data for use in a machine learning model or a deep learning model.
+And we'll go through SageMaker's specific data processing and analysis features. There's quite a few
+of them. SageMaker is a really large ecosystem and that's the bulk of this exam.
+We'll also talk about AWS Glue, which is another tool that can be used for data processing and
+transformation. Kind of does the same thing as SageMaker in a lot of cases, but it's another way to do it.
+So, as is often the case with Amazon, there's more than one way to do it and you got to know them all.
+There's also a whole suite of managed AI services that Amazon offers for specific AI tasks. For
+example, if you need to do image recognition stuff, you can use Amazon Recognition to do that.
+If you want to do forecasting data out in the future, use Amazon Forecast and so on and so on.
+There's a whole bunch of these to go through.
+We're going to touch on all of them real quickly. You just kind of have to know what each one does, what they're for.
+The newest one in that list is Amazon Q. That's a system for building chatbots and stuff for
+interacting with your internal data within your corporation.
+So, that's an exciting new one there. We'll also go through the long list of built-in algorithms
+that are included in SageMaker.
+So, you don't need to package up your own models from scratch with SageMaker. There's a whole list
+of the most common ones that you might need to use that you can just choose from and deploy with SageMaker.
+For example, XGBoost, or I think that's what's being shown in this diagram here, or LinearLearner,
+whatever it might be. We'll go through what all those algorithms do.
+So, not only is that going to be a good review of how SageMaker works internally, it's also a good
+review of different popular machine learning models and what they do and what they're for.
+We'll also dive into model training, tuning, and evaluation. And I'm going to start that off by
+teaching you how deep learning works.
+So, a lot of people kind of understand what a neural network does, but do you know how they actually
+work, how they're tuned, how they're trained, what their topology means, things like that.
+We'll go through all those details from a very low level, and that will give you the foundations you
+need to really understand how to optimize these neural networks because they're kind of a black box inside.
+But if you understand how they work at a fundamental level, you can still be very effective at
+tuning their performance.
+And there are specific tuning techniques we'll go through as well. We'll also go through means for
+measuring their performance.
+It's not always straightforward to measure how well a neural network does because they are so complex.
+But we'll go through some typical measures for measuring just general classification problems, you
+know, precision recall, F1 score, all that stuff.
+Exam will certainly expect you to know that. And we'll also go through the automatic model tuning
+feature in SageMaker that allows you to automatically do hyperparameter tuning in a very efficient manner.
+And there's a lot of knobs and dials on how to optimize that process that we're going to get into
+the details of which, again, are important for the exam.
+After that, I'm going to turn our attention to generative AI. And again, it's just useful to know how it works.
+They won't necessarily test you on the inner workings of the transformer architecture, which is what
+these large language models and image generation models are built on top of.
+But we're going to go through that real quickly. And I think you'll find that it's not quite as complex as you think.
+It's built on a concept called self-attention. And once you get through that section, you'll
+understand how that works, too.
+And also how GPT works in similar large language models such as Claude. You'll see there's a lot of
+human intervention and human tuning on top of the actual AI part.
+So AI is not as artificial as you might think. We'll also touch on SageMaker Jumpstart, which is a
+way to quickly get up and running with existing pre-trained foundation models within a Python environment.
+And we'll also have a lot of hands-on labs. So if you want to get a real feel of how this stuff works viscerally,
+we've got some SageMaker notebooks you can go through to actually get a feel of how this stuff is
+really working under the hood.
+Once you understand how AI works or modern AI or LLMs, whatever you want to call it, we'll also talk
+about applying that to AWS using Amazon Bedrock.
+Bedrock is an exciting service that's built on top of a whole suite of foundation models that come
+from both Amazon and from third parties.
+These are large language models, image generation models, embedding models, whatever they might be
+that you can play with very easily using Bedrock.
+It's sort of a common API on top of all these models. We'll also talk about how retrieval augmented
+generation works or RAG for short.
+It's a very popular technique on preventing hallucinations and injecting your own proprietary data
+into a large language model or into a chatbot.
+Implementing RAG on Bedrock involves creating what they call knowledge bases, which is where that
+external data is stored.
+And underneath that, that's backed by what we call a vector store, which can be one of many
+different vector databases offered by AWS.
+We'll also talk about guardrails that can be used to prevent your model from doing things that you
+don't want it to do.
+And we'll also build an LLM agent showing how you can incorporate your own custom code and custom
+tools to extend the capabilities of your AI application.
+Again, this section has lots of hands on labs to let you practice with this stuff and really get a
+feel for how it works.
+Next section will be machine learning operations or MLOps for short.
+And I'm not going to go through this laundry list of services that support that.
+We will go into SageMaker in more depth, of course, because SageMaker really is the heart of this
+exam, the heart of machine learning on AWS.
+And then we'll touch on all the usual suspects in the world of operations, not necessarily limited
+to machine learning operations, but operations in general.
+You need to containerize things if you're going to be deploying your own models to SageMaker.
+So ECS and ECR will be a part of that.
+CloudFormation might be a useful tool. CDK, Cloud Development Kit, CodeDeploy, CodeBuild, CodePipeline.
+Even continuous integration and continuous deployment technologies are a fair game for this exam,
+even if they're not machine learning specific.
+And then there's systems that can be used for orchestrating the pipelines of transforming your data
+and moving data and models along throughout your machine learning pipeline.
+EventBridge and StepFunctions are tools you might use for that, as well as Amazon Managed Workflows
+for Apache Airflow.
+Getting toward the end of the course, we'll hit on security, identity and compliance.
+We'll touch on this throughout the course because that's an integral part of everything we do in AWS.
+There are some specific tips and tricks for SageMaker that we'll go through, and you can surely
+expect that to be on the exam.
+And then we'll go through the usual suspects for security in AWS that are sort of the fundamentals
+for security in general.
+IAM, KMS, Macie, Secrets Manager, Website Application Firewall and Shield.
+And then we'll also talk on VPCs and PrivateLink as ways to provide network isolation for sensitive data as well.
+We'll also talk about management and governance. And again, just usual suspects here.
+Some of these you've heard of before, for sure, like CloudWatch and CloudFormation, Config,
+CloudTrail, Budgets, Cost Explorer.
+And a couple of new ones you might not know about, Trusted Advisor and X-Ray are ones that I have
+not covered before in my courses.
+So a little bit of new stuff there.
+And we'll wrap up with some best practices for putting them all together.
+This is based on the recommendations of the AWS Well-Architected Machine Learning Lens.
+And even though the exam guide states that you do not need to know how to put this stuff together
+into larger systems because that wouldn't be associate level,
+I'm not sure I believe them. This is exactly what's in the Amazon provided learning path for this exam.
+So I think this stuff might be fair game, but it's a good way to wrap up the course and see how all
+the stuff you've learned fits together into larger systems, I think.
+Target candidate, according to AWS for this exam, is someone with one year of experience with
+SageMaker and other machine learning engineering services.
+Kind of a tall order. I mean, using these services is really expensive.
+So unless you're working for a big company with big budgets and working on big things, you might not have that.
+But I'm hoping this course will get you through some of the stuff you might have learned.
+If you had that practice, we'll go through it as much as we can and give you as much hands on
+practice as we can without breaking the bank.
+They also recommend one year in software development, DevOps, data engineering or data scientist roles.
+That would certainly be helpful. Notably, it does not require a higher level system architect role
+or anything like that.
+Again, this is an associate level exam, so you're not supposed to be required to know those bigger concepts.
+They do expect you to know about machine learning algorithms, but we will review them for you in this course.
+Data engineering fundamentals. Again, we'll review that in this course as well.
+And just the general principles of software engineering and continuous integration and continuous deployment.
+Again, we'll touch on that, but it's better if you have some experience in it.
+What you do not need, at least according to the exam guide, is the ability to design end to end
+machine learning solutions or have a really deep knowledge in natural language processing or
+computer vision and things like that.
+So it's more about how the individual components work and how you tune their performance as opposed
+to building larger systems.
+So with all that behind us, let's get started. Let's go and get prepared for success with the Amazon
+Machine Learning Engineer Associate exam.

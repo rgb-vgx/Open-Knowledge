@@ -1,0 +1,189 @@
+# 12. IAM Policies Hands On
+# Section: IAM & AWS CLI
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26100736
+# Caption: en_US (manual)
+
+So now let's have a look
+at IAM policies in depth.
+So first of all, let's go into users.
+And as you can see, the user Stephane
+is part of the admin group,
+and therefore, has administrator access permissions to AWS.
+That means that if I use my user Stephane
+to go into the IAM console, so now I'm using my user,
+and then I go to the left-hand side and click on users,
+as you can see, I can see my user Stephane,
+which is right here.
+So my user Stephane has permission to do anything
+because it's an administrator.
+But what I'm going to do is that I'm going to the groups
+of admins and then I'm going to remove my user Stephane
+from that group.
+So by removing the user, which I've done right now,
+then Stephane loses its permissions on the right-hand side.
+How do we make sure of this?
+Well, let's refresh this page.
+And as you can see, now I see zero users
+and I get an access denied and it said
+that I don't have the permission to do iamListUsers.
+And so therefore, because I removed my Stephane user
+from the admin group, then I've lost permissions to look
+at users on the right-hand side.
+So let's try to fix this.
+So let's go into IAM
+and we're gonna go under users, find Stephane in here.
+And right now, as you can see,
+Stephane has zero permission policies
+but let's add permissions.
+So we can add permissions directly
+or create an inline policy.
+So let's add permissions, and this is going to be easier.
+And so again, we could add the user back to a group.
+That's not what we want.
+Or we could attach policies directly to my user.
+And so the policy I'm going to attach is going
+to be IAMReadOnlyAccess.
+So this will allow my user Stephane
+to read anything on IAM, which is what we want.
+So let's add this permission
+and now this policy has been added.
+So back in here, let's refresh this page.
+And as you can see now, I can finally do my API call again
+and look at the Stephane user in my users category.
+So I can view users, I can view user groups, such as admin
+but can I create a group?
+Let's try to create the developer group
+and then create this group.
+And as you can see, I cannot create it
+because I'm not allowed to actually create a group.
+I'm only given the read-only access on IAM.
+And so therefore, because I have read-only access,
+I cannot create groups.
+So this shows you that you can only permission users
+for what they're supposed to do.
+And of course, if I wanted to give access to create groups
+on the right-hand side,
+I will need to attach a bigger permission sets,
+such as the IAM full access.
+So next, let's do something.
+So next, I'm going to go into the left-hand side
+under user groups, and I'm going to create a group.
+So this group is going to be called developers.
+And then I'm going to add the user Stephane in this group
+and I'm going to attach whatever policy I can find,
+for example, AlexaForBusiness
+but it doesn't really matter.
+Just attach the first policy you can
+and let's create this group.
+Okay, so this has been added.
+And finally, let's go into the admin group.
+And again, we're going to add users
+and re-add Stephane into this group.
+So now if we go back to the Stephane user, so let's go
+into IAM and look at the users and look at Stephane,
+I'm going to shut down this message on right-hand side.
+So if we look at Stephane as the user, as we can see,
+we have three permission policies attached to my user.
+We have the administrator access that has been inherited
+from the group admin.
+We have this AlexaForBusiness managed policy
+that has been attached via the group developers.
+And finally, IAMReadOnlyAccess
+that has been attached directly.
+And so as you can see,
+I inherited different permissions based
+on how it's been attached.
+So now let's look at policies in detail.
+So on the left-hand side, let's look at policies.
+And first, let's have a look
+at this AdministratorAccess policy.
+So if we look at it, it's the permission
+that gave us administrator access to everything.
+And if you look at the permissions defined
+in this policy as a summary, as you can see,
+this allows all the services in AWS.
+And this number can change over time.
+It doesn't matter.
+The course will be up to date.
+So all these services, for example, App Mesh
+or Alexa for Business or Amplify, they all have full access.
+So how is this permission defined?
+Well, if you click on JSON,
+this is the JSON form of this policy, and we can see
+that here we have allow Action, star and resource, star.
+So star in AWS means anything.
+So it means we allow any action on any resource.
+And of course, allowing any action
+on any resource is exactly the same thing
+as giving administrator access to someone.
+So this is how it's been defined.
+If we have a look at another policy, for example,
+the IAMReadOnlyAccess that we saw from before.
+So if we look at it, we see
+that IAM is authorized with Full: List and Limited: Read.
+And if I click on it, you can actually have a look
+at all the API calls that has been allowed
+as part of this policy, which is very handy.
+But if we look at how this has been actually defined,
+let's click on JSON.
+And here we have the JSON document that shows
+how this has been defined.
+So the effect is allow, and then we list out the API calls
+that are being allowed.
+So we have this one, this one, and then we have Get*.
+So when you have Get*, it says that anything that starts
+with Get and then has something after is authorized.
+For example, get users or get groups.
+Same for list.
+So we have a List*.
+So list users or list groups.
+So by using a star,
+we encompass and group many API calls together.
+So all this is allowed on Resource*.
+And so therefore, that summarizes
+what the read-only IAM access policy is made of.
+So this is very handy.
+You can also create your own policy.
+So let's create a policy
+and we have a visual editor or a JSON editor.
+So if you have JSON, you can just very simply edit this
+and create your JSON document with this builder,
+which is very handy.
+Or you can use the visual editor.
+And for example, let's say IAM,
+we wanna create stuff for IAM.
+And what action do we wanna authorize?
+Well, we want to authorize ListUsers.
+So we're going to take this and GetUser.
+So just two API calls.
+And as we can see, we have selected one out of 38 in list
+and one out of 32 in read.
+And then what do we want to authorize this on?
+So on all resources or only specific resources?
+So this is a very simple one
+but as you can see, this builder is very handy.
+And when you click on next,
+you can have a look and say MyIAMPermissions.
+And then we create this policy.
+And if we have a look at the policy we created,
+we can have a look at the corresponding JSON
+and see that indeed through the visual editor,
+we allowed iam:ListUsers and iam:getUser on Resource*.
+And then this policy, we can attach to groups
+or to users and so on.
+So this is how you manage permissions in AWS.
+So now to just wrap up this hands-on,
+let's go to user groups
+and we're going to delete the developers group
+because we don't need it.
+And then I'm going to go into my Stephane user
+and I'm going to just remove this IAMReadOnlyAccess
+that had attached directly.
+So now Stephane only belongs to the group admin
+and it has administrator access.
+So of course, if I go back
+to my IAM console in here and I just look at users,
+as you can see, yes, everything is showing fine.
+So it is working correctly.
+Okay, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

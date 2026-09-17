@@ -1,0 +1,52 @@
+# 124. CodeDeploy Overview
+# Section: Deployments & Managing Infrastructure at Scale
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056074
+# Caption: en_US (manual)
+
+So we have seen CloudFormation and Beanstalk,
+but now let's talk about CodeDeploys.
+So CodeDeploys is also a way
+for us to deploy our application automatically.
+Now the difference that CodeDeploy is a bit more permissive.
+It doesn't need to be using Beanstalk or CloudFormation.
+This is completely independent.
+So with CodeDeploy,
+We have our application,
+it's in version one,
+and we want you to upgrade it into version two.
+So CodeDeploy will find a way for us to do this.
+So CodeDeploy works with two things.
+It works with EC2 instances.
+And so you can have many EC2 instances being upgraded
+from V1 to V2,
+but it also works with On-Premises Servers.
+So if you have Servers On-Premises,
+and you want to help them upgrade from version one
+to version two for your applications,
+it is possible to do it with CodeDeploy.
+So CodeDeploy, If you look at it,
+it is what's called a hybrid service
+because it works both for On-Premises,
+and for EC2 instances.
+So CodeDeploy really allows you to work
+with any kind of servers,
+but you must provision the servers ahead of time.
+Okay, It's up to you.
+And you must configure them
+to install the CodeDeploy agent
+that will be assisting you to do these upgrades.
+So CodeDeploy is quite a handy service on AWS.
+It really allows people to do the transition
+from On-Premises to AWS by using the same way
+to deploy the application
+either with your On-Premise Servers,
+or your EC2 instances.
+And it is an advanced service,
+so I can't really demo it for you,
+but what you need to remember is that it allows you to
+upgrade both your EC2 instances, applications,
+and your On-Premises Servers applications
+from version one to version two,
+automatically from a single interface.
+So hope that was helpful.
+And I will see you in the next lecture.

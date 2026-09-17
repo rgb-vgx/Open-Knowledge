@@ -1,0 +1,19 @@
+# 107. Intro: SageMaker Built-In Algorithms
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285371
+# Caption: en_US (auto)
+
+Guess who's back?
+It's me.
+Frank.
+Just like there's a lot of managed AI services you can use from AWS that just work out of the box.
+SageMaker also has a lot of built in models and algorithms you can use.
+Now, for most common machine learning applications, you can just use an existing model from SageMaker
+rather than trying to package up your own container from scratch.
+It can be a real time saver whether you want to throw XGBoost at a problem which, by the way, is almost
+always a good idea, or do something more involved with image recognition, NLP, or clustering, there's
+an algorithm for you.
+Now, before we go through the laundry list of available algorithms, we'll spend a little bit more
+time on the basics of SageMaker itself to provide a little more context.
+So let's go discover how SageMaker can run common machine learning workloads at scale without reinventing
+the wheel in the process.

@@ -1,0 +1,69 @@
+# 282. Roure 53 - Email Record Types
+# Section: Networking - Route 53
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53217611
+# Caption: en_US (manual)
+
+Okay, so now let's talk
+about common DNS records types for email.
+So you don't need to be an expert on this,
+but you need to see them once
+so that you know what you're talking about
+if you see them at one question at the exam.
+So the first record is MX and it's for Mail Exchange.
+It tells where to deliver inbound mail.
+So that means that inbound mail will be received,
+for example, by this server, as I put in my example.
+Then, you have three types of TXT records.
+So TXT is text,
+and you can put whatever you want in a TXT record.
+So they can be used for different purposes.
+The first one is the SPF.
+It's important, it's the Sender Policy Framework.
+It authorizes which servers are allowed to send mail.
+So in my example, I include Amazon SES.
+So SES is a service to send mail,
+and we're telling the web that this server
+is allowed to send mail on our behalf.
+The DKIM is DomainKeys Identified Mail.
+It's a way to cryptographically verify
+the message integrity.
+So it's just some text that you have to enter.
+And DMARC is a way to define a handling policy
+for messages failing the SPF and DKIM.
+So, different levels of security,
+but all these are texts that you need to include.
+You don't have to figure it out.
+The email provider will tell you what to do.
+But, so in the case of Amazon SES,
+to integrate it with Route 53,
+first of all, you verify your domain in Amazon SES,
+and for this,
+you're going to get a TXT record for verification.
+Showing that you're able to insert this TXT record
+in Route 53
+will prove that you have the domain ownership.
+Then, you're going to set up DKIM, which is recommended,
+and is going to give you three CNAME records
+to enter for DKIM signature.
+You want to do anything besides just copying and pasting.
+Then, you update the Route 53 hosted zone,
+where you're going to add the SES verification,
+the DKIM records, and the SPF records.
+And then the MX records if you're receiving, as well,
+email through SES,
+and then you wait for propagation.
+And then when the DNS records are propagated,
+the SES status will change to verified.
+So important things to remember from an exam perspective
+is that SPF records and DKIM records are TXT records,
+and they're helpful for sending emails.
+And the MX record is for receiving emails.
+Of course, this is all complicated to do.
+So there is in Route 53, in Amazon SES,
+a button to create everything for you in Route 53
+and just wait.
+But an exam will expect you
+to know what MX and TXT records are
+and what SPF and DKM is used for.
+All right, that's it.
+I hope you liked it, and I will see you in the next lecture.

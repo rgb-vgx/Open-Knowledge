@@ -1,0 +1,75 @@
+# 360. CodeDeploy for EC2 and ASG
+# Section: AWS CICD: CodeCommit, CodePipeline, CodeBuild, CodeDeploy
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730004
+# Caption: en_US (manual)
+
+So let's have a look at a few more concepts for,
+CodeDeploy. So when we approach an EC2 instance,
+we're going to have the appspec.yml
+at the root of your code and then deployment strategy.
+So we can do, for example,
+in place updates to your fleet of EC2 instances,
+and then we can use hooks.
+We set them in the expert Hemel to verify the deployments
+after each deployment phase.
+So here we have a half at a time.
+So half of them is going to be taken down,
+then upgraded to version two.
+The other half is going to be taken down.
+I've got your version two,
+and this is an in-place deployment.
+Now for ASG deployments of code,
+the deployment's a little bit more complicated.
+So we have two options.
+We have in-place deployments and blue/green.
+So in-place we'll be doing the exact same thing we saw
+before. It will update existing EC2 instances.
+And in case you create a new EC2 instances in your ASG
+automatically, it's going to get a deployment
+by CodeDeploy, which is very nice.
+So this is where it could differ with ASG is very powerful.
+So this is for in-place deployment,
+but we also have blue/green deployments. And in this case,
+a new auto-scaling group is going to be created and settings
+are going to be copied. Then we get to choose
+how long do you keep the old EC2 instances,
+you old ASG. And then the ELB, that redirects
+from one target group to the other, is
+going to fall over. So let's set an example.
+So this is our blue/green deployments or the ELB.
+We have our EC2 instances on launch template V1 within
+the ASG,
+and then CodeDeploy is going to deploy the V1
+application to these EC2 instances. Now,
+in case we want to upgrade to version two,
+then new instances are going to be created.
+And then with launch pad V2, CodeDeploy
+is going to deploy the application to these EC2 instances.
+Then the ELB is going to receive traffic from both the V1
+and V2 instances for says for a bit,
+then, if everything is healthy, V version one will be taken
+down and we will have done a blue/green deployment.
+Finally, around the redeploys and rollbacks.
+So a rollback is when,
+when you want to redeploy a previously deployed revision
+of your application, so you want to go back in time,
+and deployments can be rolled back in two ways:
+either automatically, for example,
+when we have a failure of the deployment or when we have a
+CloudWatch Alarm that is being triggered and say,
+Hey the deployment has failed, or manually.
+If we disable rollbacks,
+then there will be no rollbacks performed
+for this deployment. Okay?
+And when the rollback happens,
+what happens is that CodeDeploy actually redeploys the
+last known good revision as a new deployment, okay,
+it doesn't go back in time.
+It actually performs a new deployment with a last known good
+version that was known to do a good deployment.
+So it's not a restored version.
+It's definitely a new deployment,
+and this is something that exam may test you on.
+So that's it for this lecture, very theory, but I know,
+but it's going to be helpful for your exam.
+I hope you liked it and I will see you in the next lecture.

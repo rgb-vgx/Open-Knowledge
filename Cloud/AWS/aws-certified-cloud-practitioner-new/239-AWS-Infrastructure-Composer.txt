@@ -1,0 +1,78 @@
+# 239. AWS Infrastructure Composer
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/41562804
+# Caption: en_US (manual)
+
+So now let's talk about
+AWS Infrastructure Composer.
+So it's a way for you to visually design
+and build serverless applications very quickly on AWS.
+It looks like this, but we'll go in the console very soon
+to show you how it works.
+And so the idea is that, thanks to a drag and drop tool,
+you're going to be able to create infrastructure as code
+very quickly without being an expert.
+And you're going to be able to configure
+how your resources are interacting with each other.
+And as a result, it will generate infrastructure as code
+so that that is compatible with CloudFormation.
+Also, you have the way to do the opposite,
+which is to have CloudFormation or SAM templates
+and actually import them into AWS Infrastructure Composer
+and visualize them.
+So let's go in the console now to practice a little bit.
+Okay, so here I am in the Infrastructure Composer console,
+and I'm going to just Open Demo to show you how this works.
+So here we are,
+we have access to a list of things.
+So we have an API gateway with five routes,
+and each of these route are connected to our Compute layer,
+which is five Lambda functions,
+and finally we have a DynamoDB table.
+This is very cool because we can visually see
+what is happening.
+So we know that whenever someone does a POST item,
+it will be connected to this Lambda function
+named CreateItem.
+So we can explore the details of all these things.
+So if you click on Details here,
+you get the actual resource properties
+of your Lambda function.
+And we can see the type of package, the runtime,
+the architecture, et cetera, et cetera.
+And you can modify all of these things.
+You can also, for example, set up permissions here
+that allow it to write to DynamoDB.
+Because here in our DynamoDB table,
+again, we have the details of it
+and we can see the logical ID,
+the partition key, et cetera, et cetera.
+So we can configure everything we want.
+We can also very quickly, for example,
+create our own function.
+So under Resources, I'm going to just go for Kinesis Stream
+and we have a Kinesis Stream right here,
+and then I want a Lambda function.
+And I want my Lambda function
+to read from my Kinesis Stream
+so I will just connect these two things
+and it is as simple as that.
+And here, you can just modify the stream if you want it to,
+the configuration, as well as the Lambda function.
+But not only you have enhanced components,
+which are serverless-specific components,
+but you also have any kind of standard IaC resources.
+So you can look for whatever you want.
+For example, you want an Amplify app,
+you just drag and drop it.
+And here you can configure everything you need to know
+for that specific resource.
+And then finally, if you go under Templates here,
+you have the output template of CloudFormation
+of what is represented on your canvas.
+And you can select YAML or JSON,
+and copy and paste this into CloudFormation
+or save it for later purposes.
+So this is a super handy tool that I love
+and I hope that you like it as well.
+All right, that's it. I will see you in the next lecture.

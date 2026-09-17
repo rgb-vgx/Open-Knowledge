@@ -1,0 +1,43 @@
+# 215. Step Functions
+# Section: Serverless Overviews from a Solution Architect Perspective
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13541324
+# Caption: en_US (manual)
+
+Now let's learn
+about the AWS Step Functions.
+So, Step Functions is a way for you
+to build a serverless visual workflow
+to perform orchestration,
+and it's usually of your Lambda functions.
+So you would design a graph,
+and you would say at each step of the graph,
+in case of success or failure, what goes on next?
+And this is really cool,
+because you can start really having some complex workflows
+within AWS.
+So Step Functions have some internal features,
+such as sequencing, parallel functions, conditions,
+timeouts, error handling, and so much.
+And it doesn't just do Lambda functions.
+It is actually integrate with EC2 instances, ECS tasks,
+On-premises servers, the API Gateway,
+the SQS queues, [00:00:47 NMADB],
+and actually a lot of AWS services.
+Also, it is possible for you
+within the Step Function workflow
+to implement a human approval feature.
+For example, a workflow goes up to some points,
+and you say, okay, a human will have a look at the results.
+And if the human says "Yes," then please go on.
+If "No," then fail.
+This is something that's possible
+thanks to the Step Functions.
+So the use cases of Step Functions are manifold,
+but, like, we can have, for example, the order fulfillment.
+We can have data processing, web applications,
+or any kind of workflow that is complex
+to describe and that would require some sort
+of graph for you to visualize it, okay?
+So that's it for this little intro.
+I hope you liked it.
+And I will see you in the next lecture.

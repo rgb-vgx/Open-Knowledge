@@ -1,0 +1,80 @@
+# 142. AWS Glue Workflows
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/41056796
+# Caption: en_US (auto)
+
+Instructor: Let's spend a little bit
+of time on Glue workflows.
+The exam's gonna mention this a lot, I think,
+because it's an orchestration tool, right?
+So it's a way of organizing larger workflows,
+which is a big part of what a data engineer does,
+but it's one of many orchestration tools that AWS offers.
+So it's important to know not only
+what Glue workflows can do, but also what they can't do,
+because you're probably gonna be asked to choose
+between Glue workflows and AWS step functions,
+and MWAA, and other alternative orchestration tools
+to fit a given use case.
+Glue workflows are really intended to do stuff within Glue.
+So it's for designing multi job,
+multi crawler ETL processes
+that you might wanna run together.
+But fundamentally it's orchestrating stuff
+within Glue, and nothing more.
+So it's a tool for doing more complex workflows
+within Glue for ETL specifically, okay?
+It's not anything bigger than that.
+You can create these workflows from AWS Glue blueprints
+from the console graphically here, or through an API.
+So in this example here that they give in the documentation,
+you can see they've defined a Glue workflow
+to de-duplicate data, fixe phone numbers in parallel.
+And once those succeed, once those are both done,
+then it moves on to do the update schema.
+So this is a workflow that will do a couple
+of transformations in parallel there and, when it's done,
+funnel that into an updated schema at the end.
+So nothing too fancy.
+Now again, I want to emphasize this is only
+for orchestrating complex ETL operations using Glue.
+It doesn't go outside of that.
+There are however various triggers
+that can kick off your Glue workflow.
+So this is how it kind of integrates
+into the other services in your larger environment.
+They're based on what we call triggers.
+And a trigger within a workflow will either start a job,
+or a crawler, or a trigger can be fired automatically
+when a job or a crawler completes.
+you can have a trigger that's based on a schedule.
+So just like a chron expression, if you want
+something to run every day, every hour, once a month,
+every third Tuesday, whatever it might be,
+you can set up a fixed schedule
+for your Glue workflow to kick off on.
+You can also do it on demand, of course,
+either through the console or through the API.
+And you can also have it triggered by event bridge events.
+Okay so remember, Glue workflows integrate
+with event bridge events, but nothing else, okay?
+It can start on a single event,
+or a batch of events, which is kind of neat.
+So, for example, if I have a new object that comes
+into S3, I could kick off a workflow right away based on
+that single object, or I could set up batch conditions
+that say, okay, I'm gonna wait until I get this number
+of new objects within this window of time,
+and only then will I kick off my new workflow, right?
+So that way I can batch stuff up, say,
+"Okay, I've got a sufficient amount of new data here,
+"I should probably go process it now."
+And by default, that is a 15 minute batch window
+but, you know, neither here nor there.
+So that's Glue workflows in a nutshell.
+It's pretty simple, right, so just remember that.
+Don't let it trip you up on the exam
+because what it does is not that hard to understand.
+It just orchestrates Glue ETL jobs.
+You can kick it off on a schedule, on demand,
+or through event bridge events, that's pretty much it.

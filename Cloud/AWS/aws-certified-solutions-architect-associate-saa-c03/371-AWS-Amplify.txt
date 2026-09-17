@@ -1,0 +1,57 @@
+# 371. AWS Amplify
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/39027582
+# Caption: en_US (manual)
+
+So now let's talk about AWS Amplify
+and it's a complicated service,
+but at its core I want you to think of it
+as a web and mobile application development tool.
+So this Amplify will basically allow you to integrate a lot
+of the stack of AWS into one place
+to build your web and mobile applications.
+So you're a developer,
+and you know you wanna do a lot of things.
+You wanna first create backends.
+So you're going to use the Amplify CLI
+to create an Amplify Backend.
+And this backend is going to internally use a lot
+of resources from AWS that we know.
+Amazon S3 for data storage,
+Amazon Cognito for identity,
+AppSync for APIs,
+API Gateway for APIs as well,
+StageMaker for machine learning,
+Lex for text detection,
+Lambda for functions data service,
+DynamoDB for data and so on.
+And so the idea is that thanks to Amplify,
+we have one place to configure authentication, storage,
+API will be REST API or GraphQL API,
+CI/CD, PubSub, Analytics,
+AI/ML predictions, monitoring, and so on.
+Then you connect your code.
+It could be from anywhere from GitHub,
+from CodeCommit on AWS or Bitbucket, GitLab,
+or you can upload your code directly.
+And so you would go ahead
+you integrate all these backend services directly
+from within Amplify.
+Then you add the Amplify Frontend Libraries
+to connect to your Amplify Backend.
+And so you have Frontend Libraries for web applications,
+mobile applications, as well as many, many frameworks.
+And finally, when you're ready,
+you're going to deploy using the Amplify Console
+to Amplify itself and Amazon CloudFront
+for your web or mobile application to be available.
+Now they may seem like a lot
+but I want you to think as Amplify
+as the Elastic Beanstalk for web and mobile applications.
+It's just a high level overview, but you need to see
+that it allows you to integrate all these things of AWS
+into one place, to have a one stop shop for developers
+to create web and mobile applications.
+All right, that's it for this overview,
+I hope you liked it
+and I will see you in the next lecture.

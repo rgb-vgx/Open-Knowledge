@@ -1,0 +1,47 @@
+# 84. RDS Custom for Oracle and Microsoft SQL Server
+# Section: AWS Fundamentals: RDS + Aurora + ElastiCache
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33878670
+# Caption: en_US (manual)
+
+So now let's do a short lecture
+on RDS Custom.
+So, we know that with RDS we don't have access
+to any underlying operating system, or customization,
+but with RDS Custom we actually do.
+And RDS Custom is for two database types,
+it's for Oracle and Microsoft SQL Server.
+In which, thanks to RDS Custom, we have access to the OS,
+and database customization.
+So with RDS, we still get all the benefits
+of automated setup, operations,
+and scaling of the database in AWS.
+But with the RDS Custom option,
+the custom part of RDS Custom,
+we actually have access to the underlying database
+and operating system.
+So we can actually configure internal settings,
+install patches, enable native features,
+and we can actually access the underlying EC2 instance
+behind RDS, using SSH or SSM Session Manager.
+So here is my EC2 instance, and as a user,
+we can now, if it's using Amazon RDS Custom,
+apply customizations and SSH into it.
+To perform any customization it is recommended
+to deactivate the automation mode,
+so that RDS does not perform any automation,
+or maintenance, or scaling, or whatever you want,
+while you perform your customization.
+And also because you may actually break things,
+because now you have access to the underlying EC2 instance,
+it is much better to take a database snapshot,
+otherwise you will not be able to recover from your actions.
+So to summarize, RDS versus RDS Custom.
+RDS will manage your entire database,
+and your operating system.
+Everything is managed by AWS, you don't have to do anything,
+and RDS Custom, it's for Oracle
+and Microsoft SQL Server only,
+and you have actually full admin access
+to the underlying operating system and the database.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

@@ -1,0 +1,140 @@
+# 180. RDS Performance Insights
+# Section: Databases for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/12993860
+# Caption: en_US (manual)
+
+So let's talk about RDS Performance Insights,
+and that's the last one around monitoring for RDS.
+But I think you need to know it,
+and it is quite a cool tool overall.
+So Performance Insights
+allows you to visualize your database performance,
+and you can analyze why there are issues
+that affect your database.
+So you can visualize the database load
+and you can filter the load
+by four different types of metrics.
+The number one is called Waits.
+And Waits is very cryptic,
+but basically it shows you the resource
+that will be the bottleneck.
+So it could be CPU, IO, could be some locks.
+So if you needed to know how to upgrade your database
+to a different type of instance
+and know if you wanted to optimize the CPU
+or optimize the IO,
+Waits will give you a good idea
+of what your database waits on the most.
+Is it the CPU, the IO, et cetera?
+Now, you can also filter by SQL statements.
+So if a SQL statement is, by default,
+blocking your database
+or making it crawl for whatever reason,
+then you can identify that SQL statement,
+and maybe you can reach out to the team
+or the application that runs that statement
+and try to understand how you can optimize that statement.
+You can also filter By Host.
+So basically, by filtering and by grouping by Host,
+you can find the server or the application server
+that will be maybe hammering our database,
+and take action, maybe blocking access,
+or maybe talking to them
+and understanding why they're using so much of our database.
+Maybe they need a read replica.
+And then finally, By Users.
+So this is to connect using the usernames
+and to find maybe the user
+that is using the most our database.
+So the idea is that this Performance Insight
+allows us to understand who, or where from,
+or what statement is using our Waits,
+which is our CPU, IO, lock, et cetera.
+Now, database load will be evaluated
+as the number of active sessions for the database engine.
+And the whole thing basically allows you to troubleshoot,
+including during the SQL Query
+that are putting load on your database.
+Finally, there's a Paid Tier feature,
+which is to generate Proactive Recommendations
+to help you prevent future database performance impacts.
+So our database is not interesting
+because it's not running anything special.
+There's no application.
+So I was just going to share screenshots
+of what you can expect.
+So this is Performance Insight
+and this is from the Amazon blog.
+And so, as you can see, you get a line right here,
+and it shows you the max number of CPU.
+So as long as you're under it,
+that means that you're doing fine.
+But if you're over it,
+that means that your database is running at capacity.
+And so if you slice that graph by Waits
+on the right-hand side,
+it shows you what's using your database.
+So CPU is only 0.32
+and io/table/sql/handler is 1.82.
+So it seems like IO in there is going to be something
+that you may want to optimize or improve,
+maybe using a better disk or whatever.
+But this is the kind of idea using the slice by Waits,
+which gives you like all this list of stuff that's happening
+and you can understand what's blocking your database.
+Now, you can also basically analyze the SQL queries
+that are running.
+So as you can see, this one,
+1.38 is a SQL query that is taking a long time.
+So maybe UPDATE 'schema3', 'table1' SET 's1' = 'md5' random.
+Basically, that does a lot of action,
+and this takes a lot of resources
+and maybe their team running that SQL statement,
+how you should go and talk to them
+and understand why they're doing it
+and if they can do anything better.
+So this is quite a cool way
+of basically troubleshooting which SQL queries
+are taking the most time.
+And then you can also view by Users.
+So you can see on the right-hand side
+that RDS user is having four connections,
+Jeremiah is having two, again, that's from the blog,
+but you get a lot more information
+around who is doing what on your database,
+which could be quite helpful as well.
+Maybe some application is opening 1,000 connections
+and you need to know about it right away.
+And so by Host, I don't have a graph for it,
+but it will basically tell you which application server
+is connected to your database.
+So overall, all these things really help.
+I think Performance Insight is a great tool
+to help you troubleshoot.
+Let me just show you where it is in the AWS console.
+To use Performance Insights, you go to the left-hand side,
+and you would need to actually enable Performance Insights.
+So, to enable it,
+you would have to go to your database and modify it.
+So you click on your Database Instance and click on Modify.
+But it turns out
+that because we are using a t2 type of instance,
+Performance Insight is not supported right now
+on db.t2 instance classes, unfortunately.
+So we can't have it,
+and this is why I showed you screenshots of it,
+but from the screenshots,
+you should get a great idea of how it works.
+But if you had a non t2 micro type of instance,
+then you should be able to modify your DB instance
+and enable performance monitoring.
+And so as you can see,
+if I click on it and maybe do m4.large
+and I scroll all the way down,
+then I start seeing Performance Insight,
+and I can enable it,
+and say how many days of retention of data I want,
+et cetera, et cetera, but I won't do it right now.
+But you get an idea,
+and now you're supposed to be a monitoring expert for RDS.
+So, congratulations, I will see you in the next lecture.

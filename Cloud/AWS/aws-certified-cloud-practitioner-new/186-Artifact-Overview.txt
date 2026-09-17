@@ -1,0 +1,56 @@
+# 186. Artifact Overview
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056324
+# Caption: en_US (manual)
+
+So now let's talk about AWS Artifacts,
+which is not really a service
+but it is presented as one in the consult.
+So what is it?
+It is a portal that will give you the customer access
+on demand to the compliance reports
+and AWS agreements.
+So these artifact reports can be downloaded
+and they represent a security
+and compliance documents from third party auditors,
+such as the alias ISO certifications,
+the payment card industry.
+So PCI reports and the SOC reports.
+There's also artifacts agreements
+which is allowing you to review,
+accept and track the status of alias arguments
+such as the BAA agreements
+or the Health Insurance Portability and Accountability Act,
+which is HIPAA, we'll see this maybe in exempt,
+for an individual accounts or in your organization.
+And so these reports can be used
+to support internal audits capabilities within your company
+or complaints needs to show
+that your compliance by using the AWS cloud.
+So if you go into artifacts for AWS,
+as we can see this is a global service
+and we can get some of the artifacts.
+We can view the reports or view the agreements.
+So if I click on the reports,
+I can see 61 reports right now that I can download.
+For example, I can say,
+I really want you to get this report right now.
+I'm going to download it,
+and I say, okay, I accept the NDA
+and then I download this report and here I am,
+I have a report that I can use for compliance internally
+or also I can go into agreements
+and find different agreements.
+For example, three account agreements
+and we don't have any organization agreements.
+So I can take one of these agreements.
+For example, this one, the BAA agreements
+accept the agreements and then download it,
+I scroll down, I accept it and then I download it.
+So it's very, very simple.
+It's not really a service.
+It's a way for you to download compliance documents,
+I just want to show you once
+and then you have to remember it
+and that will be it for this lecture.
+I will see you in the next lecture.

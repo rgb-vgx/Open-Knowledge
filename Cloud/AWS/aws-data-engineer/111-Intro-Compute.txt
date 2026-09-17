@@ -1,0 +1,22 @@
+# 111. Intro: Compute
+# Section: Compute
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332208
+# Caption: en_US (auto)
+
+-: An important part of data processing
+is the computing resources allocated to it.
+Although data processing is going to be covered
+in the context of other sections in this course as well.
+Understanding the basics of Amazon EC2, AWS Lambda,
+AWS Serverless Application Model and AWS batch
+are things you need to know.
+Stefan and I will be switching off
+on different topics within this section.
+I'm gonna assume that you know the basics of EC2 already
+and just focus on how it fits into data engineering here.
+Although the data engineering exam is Associate level,
+it's definitely a more advanced Associate level exam,
+and I'm assuming you at least have
+Cloud Practitioner level knowledge coming into this.
+So let's dive into the computing services
+you need to know about for the exam.

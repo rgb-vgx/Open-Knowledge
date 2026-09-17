@@ -1,0 +1,71 @@
+# 165. Amazon ECS - Solutions Architectures
+# Section: ECS, ECR & Fargate - Docker in AWS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/31788306
+# Caption: en_US (manual)
+
+Now let's talk about
+a few solution architectures
+you can encounter with Amazon ECS.
+So the first one are ECS tasks invoked by Event Bridge.
+So for example, say we have an Amazon ECS cluster,
+it's backed by Fargate, and we have S3 buckets.
+Our users are going to upload objects into our S3 buckets,
+And these S3 buckets can be, for example,
+integrated with Amazon Event Bridge
+to send all the events to it.
+And Amazon Event Bridge can have a rule
+to run ECS tasks on the go.
+Now, when ECS tasks are going to be created,
+they will have an ECS task role associated with them,
+and from the task itself
+what it can do is that it can get the objects, process it,
+and then send the results into Amazon DynamoDB.
+And that is thanks to the fact
+that we have an ECS task role associated with it.
+And so effectively here, what we've done
+is that we've created a serverless architecture
+to process images, or to process objects,
+from your S3 buckets using a Docker container.
+And that is using Amazon Event Bridge ECS
+in the Fargate mode, as well as an ECS task role
+to talk to Amazon S3 and Amazon DynamoDB.
+Another architecture using, again, Event Bridge,
+is to use an Event Bridge schedule.
+So we have an Amazon ECS cluster
+backed by Fargate and Amazon Event Bridge,
+and we schedule a rule to be triggered every 1 hour.
+Now, this rule is going to run ECS tasks for us in Fargate,
+and so that means that every 1 hour,
+a new task will be created in our Fargate cluster,
+and the task can do whatever we want.
+For example, we can create an ECS task role
+with access to Amazon S3, and therefore our task,
+our Docker container, our program can, for example,
+do every 1 hour some batch processing
+against some files in Amazon S3.
+And again, all of that architecture is fully serverless.
+A last example is using ECS and an SQS queue,
+so we could have a service on ECS with two ECS tasks,
+and messages are being sent into an SQS queue,
+and the service itself is pulling for messages
+from the SQS queue, and processing them.
+We can enable ECS Service Auto Scaling
+on top of this service.
+That means that, for example, the more messages we have
+in our SQS queue, the more tasks we're going to have
+into our ECS service, thanks to auto-scaling.
+Another integration is when you want to use Event Bridge
+to actually intercept events from within your ECS cluster.
+So, for example, say you wanted to react
+to tasks being exited.
+In that case, any task exiting or starting
+in your ECS cluster can be triggered as an event
+in Event Bridge, and it will look like this.
+For example, the ECS task state change for "stopped"
+and the stopped reason.
+Then from there, for example, we could alert an SNS topic
+and send emails to your administrators.
+So, bottom line, Event Bridge does allow you to understand
+the lifecycle of your containers in your ECS cluster.
+Okay, so that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

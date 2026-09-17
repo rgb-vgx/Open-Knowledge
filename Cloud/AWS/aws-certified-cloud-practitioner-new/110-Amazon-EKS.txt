@@ -1,0 +1,45 @@
+# 110. Amazon EKS
+# Section: Other Compute Services: ECS, Lambda, Batch, Lightsail
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/46803349
+# Caption: en_US (manual)
+
+Now, let's talk about Amazon EKS.
+So EKS is for Elastic Kubernetes Service,
+and this allows you to launch and manage
+Kubernetes cluster on AWS.
+So what is Kubernetes?
+Well, that's this blue logo right here,
+and so Kubernetes is an open source system
+that is used for the management, deployment,
+and scaling of containerized applications,
+usually, managed by Docker containers,
+but could be other types of containers as well.
+So these containers and these pods
+can be hosted on either EC2 instances or using Fargate,
+if you want it to be fully serverless.
+So if you use an EKS cluster,
+a Kubernetes cluster managed by EKS,
+then you're going to have, for example, EKS nodes,
+for example, in this case, there are EC2 instances.
+And so, whenever you launch a Docker container
+on your Kubernetes cluster,
+automatically, pods are going to be launched
+onto your EC2 instances.
+So why would you use Kubernetes on Amazon EKS?
+Well, launching Kubernetes is quite hard,
+and so using a managed service
+to manage your Kubernetes cluster is a great idea,
+hence the idea behind Amazon EKS.
+And why should you use Kubernetes?
+Well, if you are using multiple clouds
+or even on-premises infrastructure,
+then Kubernetes can run everywhere,
+and so therefore, this is cloud agnostic,
+and therefore, learning Kubernetes can allow you
+to learn how to launch containers anywhere would be on AWS,
+but also Azure or GCP or anywhere else, and that's the idea.
+From an exam perspective,
+you will just see the word Kubernetes,
+and you have to think about Amazon EKS.
+All right, that's it, I hope you liked it,
+and I will see you in the next lecture.

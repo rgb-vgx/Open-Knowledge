@@ -1,0 +1,36 @@
+# 283. AWS CLI Setup on Linux
+# Section: Developer Tools
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40308532
+# Caption: en_US (auto)
+
+Okay, so let's proceed with installing the aws CLI on Linux.
+So for this I'll just google it and I will choose installing the version two on Linux because this is the
+latest one.
+And I'm going to scroll down and to install the the CLI.
+Let's go to installing.
+We just have to run these three commands.
+So the first one is to get a zip file.
+So I'll copy this go into a terminal and then I will paste it.
+And here we go.
+So this has been pasted and it is downloading currently the installer.
+The next thing you have to do is to unzip it.
+So copy this command and paste it.
+And this will unzip my installer.
+Great.
+And the last thing is to run the installer as root.
+So I'll do sudo and then install.
+This should prompt me for my password which I enter right now.
+And then the install should proceed.
+Now it says you can run usr local bin minus minus version or there is simply minus minus version.
+If your usr local bin is in your path.
+And there we go.
+The it has been installed.
+As you can see it says cli slash to point.
+And then you'll get a different version based on when you do this.
+And then you get Python and Linux and boto core.
+So you're good to go.
+When this works we can run any command on the fly.
+And you can go ahead with the rest of the lectures.
+If you get any issues, please read this and this will tell you what's going on.
+And that's it.
+I will see you in the next lecture.

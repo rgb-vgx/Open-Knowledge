@@ -1,0 +1,54 @@
+# 97. SSM Automations - Use Cases
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869578
+# Caption: en_US (manual)
+
+So let's talk about a few use cases
+for automations in Systems Manager.
+The first one is to reduce cost by automatically starting
+and stopping EC2 instances in RDS database instances.
+So say you have an environment
+that is just used for quality assurance
+then we can use EventBridge to automatically schedule
+an SSM automation that will start an EC2 instance
+and start an RDS instance.
+And SSM automation has the power to do these things.
+At 5:00 p.m. we can also run an event bridge schedule
+so that we stop the EC2 instance
+and we stop the RDS instance
+that are clear from an SSM automation.
+If you want it not to start and stop,
+but to just resize by downsizing at night
+and increasing the size during the day
+then you would run a AWS resize instance
+type of SSM automation from the morning and at night.
+And as you can see in the morning, we have a 2X large
+and at night we have an M5 large.
+So we still allow people to work,
+but the instance is less powerful.
+We can also build a golden AMI
+using systems manager automations.
+Obviously EC2 image builder is a better use case,
+but it's still possible.
+So EventBridge can invoke an SSM automation every week
+to run the automation named AWS create creates image
+which will go ahead and create an AMI.
+And when an AMI is available,
+we can invoke a Lambda function pass in the AMI ID
+and then store this AMI ID in the parameter store.
+So this is very similar to EC2 image builder,
+but here we are using SSM automations.
+Also, we know that automations are tightly integrated
+with AWS Config.
+So say you have a config rule to detect
+whether the bucket versioning is enabled or not,
+if the bucket versioning is disabled
+it's going to be flagged at non-compliance.
+And if we have a config remediation automatically set up
+to run an automation,
+then an SSM automation named configure S3 bucket versioning
+can re-enable the versioning of your S3 buckets.
+So that's it.
+Hopefully it gives you a few good ideas
+into how SSM automations are used.
+I hope you liked it and I will see you in the next lecture.

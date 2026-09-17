@@ -1,0 +1,94 @@
+# 117. AWS Lambda - File Systems Mounting
+# Section: Compute
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305344
+# Caption: en_US (auto)
+
+Instructor: So now let's talk about file system mounting.
+So your Lambda functions can access your EFS file system
+if they are running in a VPC.
+To do so, we just configure Lambda
+to mount the EFS file system to a local directory
+during the your initialization.
+For this to work, you must leverage the EFS access points
+feature of EFS.
+So say you have an EFS file system
+and you create an EFS access point.
+Then if your Lambda functions are deployed
+in a private subnet that has private connectivity
+into your VPC, then you are good to go.
+The limitations of this is that for each Lambda instance
+that will come up, you will have one more connections
+into your EFS file system.
+So you need to make sure you don't hit
+the EFS connection limits.
+And also, if you have many, many different Lambda functions
+that just come up at a time as a burst,
+then you may also hit a connection burst limit.
+So I want to take some time
+to just compare the storage options for Lambda
+so you can understand which one is the best
+based on the situation.
+So the ephemeral storage of slash TMP has a max size
+of 10 gigabytes, which is a lot.
+The persistence is ephemeral.
+That means that as soon as your lambda function instance is
+destroyed, you will lose the storage.
+That's why it's called slash temp for temporary.
+The content is dynamic, you can modify it as you wish.
+It's a file system
+and it supports any file system operation.
+It's included for your Lambda function up to 512 megabytes,
+and then you pay for the extra
+if you have more than 512 megabytes
+and only your function has access to it,
+because this is storage based on your Lambda function,
+this is the fastest level of retrieval for data,
+and it's not shared
+across all your Lambda function and vocations.
+So that should make sense, now, your Lambda layers,
+the max size is five layers per function,
+up to 250 megabytes total
+to not exceed the maximum Lambda package size.
+And the persistence is durable
+because it is immutable, you cannot change
+what goes into a Lambda layer.
+So it's of type archive.
+It is static, it's included in your Lambda function pricing,
+and to get access to a layer, you need
+to make sure you have the proper IM permissions.
+It also is the fastest speed to access the data on the layer
+because it is attached as storage to your Lambda function,
+and it is shared across all your invocations of Lambda.
+So they're all shared, remember,
+you cannot modify data on the Lambda layer.
+If you're using Amazon S3,
+then you can go as big as you want
+for size, it's durable, it's dynamic.
+The storage type is object, so you need to use the S3 API
+to access the Amazon S3 objects.
+And then you have atomic operations,
+so you can get, put, post and so on with versioning.
+For the pricing, you pay, of course for Amazon S3 pricing,
+so storage plus request, plus data transfer,
+and to get access to Amazon S3, you need
+to make sure you have the proper IAM permissions.
+This is network based storage, so we'll have a fast access
+because we have dedicated AWS bandwidth,
+but it's not the fastest.
+And of course, Amazon is free, it is shared
+across all your Lambda invocations because, well,
+it is an external storage of data.
+Finally, for Amazon EFS, we have elastic.
+It's durable, it's dynamic.
+The storage type is file systems, so we access it
+using any kind of file system operation.
+We're going to pay for the storage,
+the data transfer, and the throughput.
+And because it is mounted
+as a network file system on your Lambda function,
+you're going to have very fast access to your data.
+Finally, because it is a network file system, this is going
+to be shared across all your Lambda invocations.
+So hopefully that makes sense
+into the different storage options for Lambda.
+I hope you liked it, and I will see you in the next lecture.

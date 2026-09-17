@@ -1,0 +1,73 @@
+# 173. Direct Connect & Site-to-Site VPN
+# Section: VPC & Networking
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056254
+# Caption: en_US (manual)
+
+Okay,
+So now we are getting into the hybrid cloud.
+So say you have an on-premises data center.
+This is your own data center,
+and you want to connect it to the cloud, to your VPC.
+For this, you have two options.
+Number one is to use a site-to-site VPN.
+This is to connect your on-premises VPN to AWS.
+And what is a VPN?
+Well, it is a connection
+between your on-premises data center
+and VPC that is going to be encrypted,
+and that goes over the public internet.
+So this looks like this.
+Your on-premises data center
+will connect to your VPC through the public internet,
+and then it will be encrypted.
+So no one else can access to communication.
+So this is very good because it can be set up very quickly.
+In about five minutes,
+you can have a connection between your data center in AWS.
+But it goes over the public internet,
+so you may have some limited bandwidth
+and you may have some security concerns,
+even though it is obviously encrypted.
+The other option is to use direct connect or DX.
+Direct connect, is to establish
+a natural physical connection
+between your on-premises data center and AWS.
+And then the connection is going to be
+private, secure and fast.
+And it will go over the private network.
+And that's going to be a lot more expensive
+because you have to do a physical connection
+between yourself and a direct connect partner into AWS.
+And they will take at least a month to establish this.
+But it's going to be more private
+and obviously faster and more reliable.
+So from an exam perspective,
+they will ask you if it's a site-to-site VPN,
+you should choose or a direct connect
+to connect between your on-premises data center and AWS.
+And it really depends on two factors.
+Number one, is it going to be private or not?
+And number two is,
+does it need to be established fast or not.
+And from these information's,
+you should be able to select either the site-to-site VPN
+or direct connect.
+Now, just a little bit more details on site-to-site VPN,
+so, it is to connect your corporate data center to your VPC.
+For example, you see two instances running
+in your private sub-net.
+So for this, to establish a site-to-site VPN,
+we need on-premises a customer gateway or CGW,
+and that's something you have to remember at the exam.
+So it's a customer gateway, or CGW and then
+on the AWS site you will need virtual private gateway,
+or VGW and once the two things are provisioned and created,
+then you can connect them together using a site-to-site VPN.
+And this is how site-to-site VPN is implemented
+over the public internet.
+So remember going into the exam,
+customer gateway and virtual private gateway
+are needed to establish a site-to-site VPN.
+That's it for this lecture.
+I hope you liked it.
+and I will see you in the next lecture.

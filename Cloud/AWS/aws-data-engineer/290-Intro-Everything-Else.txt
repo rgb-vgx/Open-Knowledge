@@ -1,0 +1,27 @@
+# 290. Intro: Everything Else
+# Section: Everything Else
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332304
+# Caption: en_US (auto)
+
+-: We're almost done folks.
+We have just a handful of services left to cover here,
+ones that fit into smaller categories
+such as cost management and app development.
+We'll review how AWS budgets
+and AWS cost Explorer can help you understand
+and control the expenses involved
+with your data engineering pipelines.
+And when you're dealing with big data, it can add up fast.
+We'll also touch on the Amazon API Gateway
+just because it didn't really fit anywhere else,
+but the exam guide does call it out
+as something you need to know.
+Think of it in terms of controlling access to your data
+through externally facing tools
+and having some control over throttling
+that access if need be.
+We'll wrap up with your final,
+very short quiz of this course.
+And after this we'll just talk about the exam as a whole
+and how to prepare for it.
+You're almost there, I promise.

@@ -1,0 +1,59 @@
+# 302. Route 53 - Profiles
+# Section: Networking - Route 53
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53217783
+# Caption: en_US (manual)
+
+So now let's talk about Route 53 profiles.
+So it's a way for you
+to centrally manage Route 53 configuration
+across many VPCs and AWS accounts.
+So it helps you standardize DNS configuration
+across your VPCs, and that could be something
+that can be quite complicated to do.
+So it supports various resources
+such as private hosted zone, Route 53 Resolver rules,
+Resolver DNS firewall rule groups, VPC interface endpoints.
+And all of these can be shared across multiple accounts
+using AWS RAM.
+So let me show you profiles real quick.
+So on the left hand side,
+you can click on profiles under Route 53
+and then you would create a profile.
+You enter a name, for example, DemoProfile,
+and we create it.
+It's just to visualize the options.
+Okay so as we can see here, this is one profile
+and we can associate it with DNS firewall rule groups.
+So I could associate it if I had some of course.
+You can associate it with private-hosted zones.
+So this is to manage DNS.
+You can associate it with Resolver rules,
+with VPC endpoints, and specific VPCs.
+And so this allows you to apply the profile to many VPCs
+and all these VPCs will receive the exact same configuration
+for DNS firewall rule groups, the private-hosted zones,
+and the Resolver rules.
+So the idea is that here,
+you centrally manage everything in Route 53,
+and then you apply it to multiple VPC,
+which can be quite handy.
+You can also configure it if you went
+for the Resolver DNS lookup configuration,
+the DNS SEC configuration,
+as well as the failure mode configuration.
+And finally, if you wanted
+to share this outside of your accounts,
+not just in your VPCs in your account, but outside of it,
+you could share this profile
+and this takes you into AWS Resource Access Manager
+in which you would see
+and be able to share the resources you want.
+So here, this profile, here, I would be able to share it
+and then enter which accounts would be able to read it.
+So this is perfect.
+This is one way to really centrally manage things
+and it's a one way to really simplify networking management
+in a multi-account setting.
+All right, that's it.
+I hope you liked it
+and I will see you in the next lecture.

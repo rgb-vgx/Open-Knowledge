@@ -1,0 +1,105 @@
+# 14. Data Validation and Profiling
+# Section: Data Engineering Fundamentals
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40393982
+# Caption: en_US (auto)
+
+Tutor: Let's also discuss some
+key concepts around data validation and
+data profiling to make sure that your data is good.
+This, again, is something that the exam guide calls out.
+So there's a few different
+dimensions across which we can think of data validation.
+One is data completeness.
+So do we have missing data?
+And if so, how are we dealing with it?
+So it just means do we have all the data that we expect?
+Is it all there?
+Are any essential parts of our data missing?
+A very easy thing to check for.
+You know, you can just very easily compute how
+many fields are missing in a given column.
+What is your null count
+and what percentage of all of your data does that represent, and does
+that fall within your accepted requirements or not?
+This can be very important, right?
+So imagine, for example, we have
+a data set of people's salaries and we want
+to compute the average salary for
+some subset of those people.
+If there's a bunch of zeros in there
+because people didn't report their salary,
+that's gonna drag down your average a lot, right?
+So if you have missing data and you're
+not dealing with it or aware of it, that can really
+lead to inaccurate analyses and people drawing
+the wrong conclusions from your data.
+So you need to think about how you deal with missing data.
+Do I drop the rows that have missing data?
+Do I impute that data somehow and
+put in some sort of placeholder data?
+You gotta think about that upfront.
+Is your data complete?
+And if not, what am I gonna do about it?
+Data consistency.
+Let's say that I have data being joined together
+from different sources or from different tables.
+Is that data being represented in a consistent format?
+So we can check for that with cross-field validation, just comparing
+what that data looks like from those
+different sources.
+But it can be important, right?
+So for example, let's take this example on the right here,
+where we're looking at people's ratings of movies.
+What if we have one table where
+that rating was 1 to 5 stars and we have
+another table where it's 1 to 10 stars?
+Those are not consistent rating value ranges, right?
+And if we try to combine those together, we
+can definitely have a lot of confusion
+and incorrect conclusions.
+So people who rated things on a five-star scale and
+rated things as a five, that might just
+look like a very poor rating when we're trying
+to pull that into a different table where the
+ratings go from 1 to 10.
+So that's one example of
+consistency being a potential problem.
+Also, data accuracy, is my data correct?
+You know, do I trust it?
+Is it correct, reliable?
+Does it represent what it's supposed to do?
+A little bit harder to test that, right?
+Like if you have some source of ground
+truth you can check it against, then
+great, otherwise, you just kind of have
+to make sure it passes a sanity check.
+Does the overall nature and distribution of this data kind
+of match what we expect from the real world or not?
+Obviously, it's important.
+Inaccurate data leads to inaccurate insights, and inaccurate
+results, and inaccurate decision-making.
+Finally, there's the issue of integrity.
+You know, is my data losing its validity over time?
+Usually, this manifests itself in a relationships between
+different data tables.
+So that's what foreign key checks are for, right?
+And checking the validity of those
+relationships between tables.
+They can tend to get outta
+sync if things kind of change over time.
+But again, it's important.
+You need to make sure that relationships
+between data elements are preserved, and that
+means that your data remains trustworthy over time.
+So data validation and profiling, we need
+to think about data completeness.
+Do I have missing data?
+Data consistency.
+Is my data being represented
+in a consistent format across different tables?
+Is my data accurate?
+And is my data integrity good?
+Am I like losing my relationships between
+my data in different tables over time?
+That's data validation and profiling
+in a very small nutshell.

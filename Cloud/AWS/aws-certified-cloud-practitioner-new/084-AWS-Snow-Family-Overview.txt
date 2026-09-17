@@ -1,0 +1,73 @@
+# 84. AWS Snow Family Overview
+# Section: Amazon S3
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/24682476
+# Caption: en_US (manual)
+
+Okay, so now let's talk about AWS Snowball.
+So it's a highly secure and portable device
+that allows you to collect and process data
+at the edge and migrate data in and out of AWS.
+So if you have a migration of say, petabytes of data,
+Snowball may be a good use case.
+So we have two kind of Snowball edge devices.
+One is called the Edge Storage Optimized,
+and the other one is called the Edge Compute Optimized.
+And the difference lies in their storage.
+As you can see, one has 210 terabytes
+and the other one has 28 terabytes.
+So obviously one is for storage
+and the other one is only used for computer.
+So let me tell you about data migrations.
+So it takes a lot of time to transfer some data
+over a specific bandwidth speed.
+For example, if you want to transfer a hundred terabytes
+over one gigabytes per second connection,
+it would take you 12 days.
+So when you have a slow connection,
+you may have limited connectivity, limited bandwidth,
+very high network cost, and you have to share the bandwidth,
+for example, with some other applications,
+the connection may not be stable.
+So whenever you have these kind of challenges,
+or if it takes you, for example, over a week
+to transfer data over the network,
+the recommendation is to use a Snowball device.
+So the idea is that if you upload directly to Amazon S3,
+it's simple, but it may use all your bandwidth.
+And if you use Snowball,
+well, you're going to receive a physical Snowball device,
+you, yourself in your own infrastructure.
+So it's a physical machine,
+and then you load it with the data you need,
+and then finally you ship it back to AWS.
+And then you will be having an export process
+within AWS to take your data from the Snowball onto,
+for example, an Amazon S3 bucket.
+So this is the main use case of a Snowball device.
+The other one is a edge computing use case.
+So the idea is that you wanna process data
+while it's being created on an edge location.
+For example, it's a truck on the road or a ship on the sea,
+or a mining station on the ground.
+And these locations may have no internet access
+or limited access to internet or compute power.
+So here again, we order one of these
+big Snowball edge devices and we do edge computing.
+And so that means that we have the Compute Optimized,
+this is dedicated for that use case
+for the search optimized devices.
+And then because they have computing capability,
+we can actually run EC2 instances
+or Lambda functions directly on these devices.
+The idea is that once the data is created
+and processed, we can send it back again to AWS,
+but by using an edge computing device,
+we can pre-process the data
+or we can do machine learning at the edge
+or directly transcode media at the edge.
+And that's the use case for edge computing.
+So hopefully that makes sense.
+The Snowball service is really just something that is used
+for data migrations and edge computing.
+Alright, that's it, I hope you liked it
+and I will see you in the next lecture.

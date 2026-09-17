@@ -1,0 +1,63 @@
+# 176. VPC & Networking Summary
+# Section: VPC & Networking
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20237280
+# Caption: en_US (manual)
+
+So we've learned a lot about the VPC
+so let's just try to remember all of it.
+So VPC stands for virtual private cloud,
+and within a VPC you have subnets.
+A subnet is tied to a specific availability zone
+and it represents a network partition from within your VPC.
+If you wanted to have internet access at the VPC level,
+you will need to create an Internet Gateway.
+But if your instances are private instances
+and private subnets, then instead, you will need
+to use a NAT gateway, which is managed
+or NAT instances that you manage to give internet access
+to your private subnets.
+To have a firewall that's going to be stateless,
+you need to have a NACL or network ACL,
+which is going to represent subnet rules
+for inbound and outbound traffic.
+If you wanted to have stateful rules,
+you can use security groups and they operate
+at the EC2 instance level or the ENI level.
+If you wanted to connect two VPC together
+and they have non-overlapping IP ranges,
+you can use VPC peering and it's a non-transitive thing.
+So if VPC A is connected to B and then B to C,
+it's not necessary and it won't happen.
+A cannot communicate with C.
+We have also learned about elastic IPs,
+which are fixed public IPv4
+that will have an ongoing cost if you're not using them.
+Okay, next with VPC endpoints.
+And that's to provide private access to any AWS service
+within your VPC.
+And if you wanted to establish a connection,
+a private connection to a third-party service
+in a third-party VPC, you could use PrivateLink.
+If you wanted to have access to your network traffic logs,
+you could use the VPC Flow Logs.
+Now, in terms of private connectivity,
+if you wanted to connect your on-premises data center
+to AWS, you would have to set up a site-to-site VPN
+over the public internet.
+And then if you wanted to connect
+your own personal computer directly
+into your VPC, you could use client VPN
+to establish an OpenVPN connection directly into your VPC.
+Now, if you wanted to establish a very private connection
+and direct within AWS and your data center,
+you would use Direct Connect.
+And if you want to connect everything together,
+including thousands of VPC on-premises network,
+site-to-site VPN, Direct Connect, and so on,
+then you would use a Transit Gateway.
+So hopefully all of this makes sense.
+I know VPC has a lot of information
+but the exam will ask you to choose the correct sub-service
+within your VPC.
+So I hope you liked it
+and I will see you in the next lecture.

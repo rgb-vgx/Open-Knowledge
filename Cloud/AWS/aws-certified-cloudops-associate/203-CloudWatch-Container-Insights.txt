@@ -1,0 +1,35 @@
+# 203. CloudWatch Container Insights
+# Section: Monitoring, Auditing and Performance
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218207
+# Caption: en_US (manual)
+
+So now let's talk
+about CloudWatch Container Insights.
+So this is a way for you to collect, aggregate,
+and summarize container metrics and logs
+from your containerized application and microservices.
+This supports the ECS, Fargate, EKS,
+and Red Hat OpenShift on AWS Services,
+so pretty much all the container services on AWS.
+You can gather data,
+such as CPU, memory, tasks,
+services, network utilization, disk usage,
+directly from these containers or services into CloudWatch.
+So you can overall have new metrics
+and logs available to you.
+You don't need to use any sidecar pattern
+to monitor your containers,
+and this can be enabled at the account level
+or whenever you create a cluster
+to give you cluster-level container insights.
+By default, you are going to get all the metrics
+for the cluster and the service level,
+but if you enable Enhanced Visibility,
+you're going to get metrics at the task
+and the container level.
+So the use cases would be high resource usage,
+throttling issue, and performance issues
+to get more visibility into those.
+Okay, that's it.
+I hope you liked it,
+and I will see you in the next lecture.

@@ -1,0 +1,36 @@
+# 131. S3 Versioning - Troubleshooting
+# Section: Amazon S3 Introduction
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218325
+# Caption: en_US (manual)
+
+So this can be an exam question
+for one question,
+and it's just something you have to know.
+I'm sure this will disappear in time,
+that's why I'm adding a link to the documentation.
+But if you enable versioning
+for the first time on the bucket,
+you have to wait at least 15 minutes for the change
+to be fully propagated.
+And after you enable versioning,
+when the propagation is happening but hasn't happened yet,
+you may get an HTTP 404 NoSuchKey error
+when trying to get the object created or updated.
+So wait 15 minutes before issuing write operations.
+This is something that's recommended in the documentation.
+So let me show you, on this page called
+How S3 Versioning works,
+you have this section right here,
+which I'm going to zoom in right now
+so we can really see it.
+When you enable versioning on the bucket for the first time,
+it might take a short amount of time for the change
+to be fully propagated.
+And while this is happening, you get this error right here.
+So wait 15 minutes. So this is it.
+Just something you have to know because this can come up.
+But if you see this disappear in the documentation,
+assume that maybe the exam will not ask you this anymore
+because it's an old fact.
+All right, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

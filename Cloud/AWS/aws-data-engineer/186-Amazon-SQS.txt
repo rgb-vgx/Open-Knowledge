@@ -1,0 +1,177 @@
+# 186. Amazon SQS
+# Section: Application Integration
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305768
+# Caption: en_US (manual)
+
+So SQS is a much smaller topic exam
+for the big data exam.
+Still, I just wanna give you an overview,
+just a fresh refresher on SQS.
+Now, you don't need to remember all the details.
+Overall, we'll see the differences of SQS
+and Kinesis in the next lecture,
+but you just need to get an overall understanding
+of how SQS works.
+So let's have a look.
+SQS is a queue and producers or producer,
+or producers will send message to the SQS queue
+and a consumer or consumers
+will pull messages from that queue.
+That's basically how the queue works.
+Now, that looks very similar to Kinesis,
+but it's actually very, very different.
+So, SQS is AWS's oldest offering, over 10 years old.
+It's fully managed,
+and SQS will scale automatically from one message per second
+up to 15,000 messages per second without you doing anything.
+The default retention period of a message is four days,
+but you can have a maximum of 14 days if you wanted to.
+There's no limit to how many messages can be in the queue,
+and it has extremely low latency,
+less than 10 millisecond for each publish and receive API.
+There is horizontal scaling in terms of number of consumers,
+so you can scale as many consumers as you want,
+and you can have duplicate message
+at high throughput because you get
+at least once delivery occasionally.
+You can also have out-of-order messages,
+so it's not as good of an ordering as Kinesis,
+and there is best effort ordering being done.
+Finally, the messages have to be smaller than Kinesis.
+There is a limitation of 1,024 kilobytes per message sent.
+Now how do we produce messages?
+Well, messages in Kinesis,
+they have a body, and they're made of a string,
+so made of text, and you can add metadata attributes to it.
+You can add key value pairs basically
+on top of that message.
+You can provide a delay delivery that's optional.
+And then that message is sent to SQS.
+What you get back from it is a message ID
+and an MD5 hash of the body just to remember
+what you've sent to SQS.
+So, it's very different from Kinesis.
+Kinesis, remember, we're sending bytes.
+Here, we're sending string.
+Kinesis, we're having one megabyte total max size.
+Here, we have 256 kilobytes, okay?
+Now, consuming messages, how does it look like?
+Well, consumers, they poll for SQS
+for messages and they can receive up
+to 10 messages at a time,
+and they have to process the messages
+within what's called a visibility timeout.
+And then when they're done processing that message,
+they will delete that message from the queue
+using the message ID they received
+and the received handle.
+That means that basically when you have SQS,
+your consumers will poll messages,
+and your consumers will process these messages
+and then delete them from the SQS queue.
+So, the messages cannot be processed
+by multiple different consumer applications.
+That's a very big difference versus Kinesis.
+So remember that process.
+Consumers poll messages from SQS,
+process them, and then delete them.
+Now, there is a new type of SQS queue.
+There was a standard QB4
+and now there's the FIFO or FIFO queue.
+And that means first in, first out.
+It's not available in all regions,
+but I think it's almost there.
+And basically, your name of the queue must end
+in .fifo to indicate that it is a FIFO queue
+and you get lower throughput.
+Now, you have limits.
+You get up to 3,000 messages per second
+with batching or 300 per seconds without,
+so definitely lower throughput.
+But what you get is that the messages
+are processed in order by your consumers.
+So, you get first in-first out type of ordering.
+Messages will be sent exactly once,
+and you have a deduplication interval
+of five minutes if you send something
+called a duplication ID.
+So, it's different use case.
+Less throughput, but more guarantees
+on the ordering if that's something you need.
+The FIFO queue works that if your messages
+are sent one, two, three, four, five,
+then they will be also read in the order,
+one, two, three, four, five, by your consumers.
+So how do we send large messages in SQS?
+It's not really recommended,
+but there is something called the SQS extended client,
+which is a Java library which uses a trick.
+Basically, it will use an Amazon S3 bucket as a companion,
+and we'll say, okay, I'm going
+to send the very large payload, maybe like you know,
+10 gigabytes or five, or you know,
+five megabyte or 10 megabytes to S3,
+and it will send a message metadata in the SQS queue.
+And then the extending client on the consumer side
+will receive the small metadata message saying
+where the file is in S3, and the consumer will be able
+to read the large message directly from S3.
+So, this is how you circumvent
+the 256-kilobytes message limit if you want it
+to using the SQS extended clients,
+which can be really helpful for big data.
+Now, use cases for SQS will be for decoupling applications.
+For example, if you want to handle payments asynchronously
+or buffer writes to a database.
+For example, if you have a voting application,
+you expect a peak in throughput,
+and you need to be able to scale very quickly
+or handle large loads of messages coming in,
+for example, if you have an email sender.
+SQS can also be integrated with auto scaling
+through CloudWatch if you had EC2 instances reading
+from your SQS queue.
+Now, what about limits?
+Well, you have a maximum of 120,000 in-flight messages
+processed by consumers at a time.
+The batch request can only pull up to 10 messages.
+The message content is text, so it has to be XML,
+JSON, or just text itself.
+And the standard queue themselves, though,
+they have unbounded unlimited transactions per second.
+So, you can have as many messages goes per second
+in terms of throughputs going into SQS.
+The FIFO queue, the FIFO queue, though,
+they support up to 3,000 messages per second using batching.
+So, remember that.
+And the max message size is 1,024 kilobytes.
+If you need more, you can use the extended client.
+The data retention period can be all the way from one minute
+to 14 days, but remember, once the messages are read,
+they are deleted from the SQS queue.
+In terms of pricing, it's very different from Kinesis.
+You're going to pay per API request,
+and you're going to pay for the network usage or do as well.
+Now, in terms of SQS security,
+where we get SSL encryption in-flight,
+if we use the HTTPS endpoint for SQS, which is by default
+and we can have service side encryption using KMS
+for example, we can set the master key we want to use.
+And then SSE, the KMS will directly encrypt the body
+of the message we send to SQS, but not the metadata itself.
+So, message ID timestamp
+and attributes will not be encrypted
+by server side encryption.
+The IAM policy must allow the usage of SQS.
+So, you can define which user can send data to which queue,
+and we can, on top of it, set an SQS queue access policy
+if we want to restrict the security further down.
+It can get finer grain control, for example, over the IP.
+Or we can control over the time, the request that come in.
+So that's it for SQS. Just a high-level overview.
+You don't need to remember
+all these details I just gave you.
+Just remember the general idea, the limits, all that stuff.
+I hope that was helpful and in the next lecture,
+we're going to compare Kinesis data streams and SQS.
+So, see you in the next lecture.

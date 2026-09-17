@@ -1,0 +1,184 @@
+# 170. Kinesis Data Stream Troubleshooting and Performance Tuning
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40394454
+# Caption: en_US (auto)
+
+Instructor: These exams love to give you scenarios
+of when things go wrong and how to fix them.
+So let's spend a little bit of time
+talking about troubleshooting steps
+for various Kinesis data stream issues you might run into.
+Let's start with the performance on the producer end.
+So let's say that we have writes being too slow
+from my data stream producer.
+There's a few causes of that.
+One might be that you're encountering service limits.
+You might just wanna check for throughput exceptions
+to see if that's what's happening.
+If so, the exceptions might point you toward
+what the problem is.
+So different calls have different limits
+and you might just be exceeding those limits.
+There are also shard level limits for reads
+and writes that you might be exceeding.
+We talked about those earlier,
+and some operations have stream level limits as well.
+So for CreateStream, ListStreams and DescribeStreams
+at the stream level, the rate limits on that
+are anywhere between five and 20 calls per second.
+Also, you might be counting hot shards, you know, data skew.
+We talked about that way back in the first section.
+So maybe that's what's going on.
+Maybe you need a better partition key
+to better evenly distribute your puts across the shards.
+Maybe you have a hot shard that's slowing
+things down when you're producing.
+If you have a large producer,
+it can help to batch things up.
+So you can use the Kinesis Producer Library
+with the PutRecords API
+to batch up multiple records together
+and send them all together at once.
+That can be a lot more efficient.
+Or maybe aggregate your records into larger files
+and then send those larger files across
+instead of individual records.
+Smaller producers like an app,
+same advice applies with PutRecords.
+You can also use something called Kinesis Recorder
+in the AWS Mobile SDKs to do that automatically.
+Some other issues you might see with producers,
+if you're getting 500 or 503 errors back,
+that usually indicates that you're seeing
+Amazon Kinesis exceptions more than 1% of the time.
+The way to deal with that is to implement a retry mechanism
+so that you don't just fail,
+you try it again until it works.
+You might be seeing connection errors from Flink to Kinesis.
+If so, that could point to a network issue
+or not enough resources in the Flink environment,
+or could also be a VPC misconfiguration.
+Maybe you just can't get from Flink to Kinesis
+because they're in different VPC subnets
+or you're not using VPC peering.
+If you're seeing timeout errors from Flink to Kinesis,
+connections are okay, but timeouts are happening.
+Well, you can just increase the timeout
+with the RequestTimeout setting.
+You can also set a higher queue limit
+on the Flink Kinesis producer.
+And you might be seeing throttling errors coming in.
+If so, check for hot shards again,
+using enhanced monitoring at the shard-level
+to see what's going on.
+You can also check your logs for what's called micro spikes,
+where you're seeing these sudden bursts of traffic
+that you can't handle, or you might be seeing obscure
+metrics that are breaching their limits
+that can point to those sorts of micro spikes.
+You can also try a different partitioning strategy,
+try a random partition key,
+or just try to improve the keys distribution.
+Again, it could be hot shards and if you do have data skew
+going on, a different partition key
+is a way to try to address that.
+You can also implement an exponential backoff mechanism,
+so if you are hitting throttling limits,
+then you can have a system
+that automatically backs off on the producer's side
+until things get caught up.
+And you can just do old school rate limiting as well.
+Make sure that you're never sending more than a given rate
+that's more than you can handle.
+Let's also look at the consumer side
+and some issues you might see on the consumer end.
+If I'm seeing records getting skipped
+with Kinesis Client Library, that might mean I need to check
+for unhandled exceptions on process records.
+If I'm seeing records in the same shard
+process by more than one processor,
+that might indicate that failover is happening
+on the record processor workers
+and I might need to adjust that fail over time.
+One way of dealing with that as well is to handle
+shutdown methods that come in with a reason "Zombie,"
+that is what happens when you're seeing things
+being processed by more than one thing.
+If my reads are just too slow,
+I can increase the number of shards.
+That's kind of the basic thing to do.
+Or it might be that my max records per call is too low.
+It could also just be that your code is too slow.
+So to see if your code on the consumer side
+is the bottleneck, just test an empty processor
+versus your own and see if that performs better.
+GetRecords might be returning empty results for you
+on the consumer side, it turns out that's totally normal.
+Just keep calling GetRecords.
+There are situations where data just won't be ready
+yet, so don't worry about that.
+If your shard iterator is expiring unexpectedly,
+that might indicate that you need more write capacity
+on the shard table in DynamoDB under the hood.
+And finally, if record processing is falling behind,
+one way to buy some time is to increase the retention period
+while you're trying to figure out the real issue.
+But usually that points to a problem
+with insufficient resources.
+So monitor that using
+the GetRecords.IteratorAgeMilliseconds metric,
+and the MillisBehindLatest metric
+while you're trying to figure out
+what that resource limitation might be.
+Some other issues on the consumer side,
+maybe your Lambda function isn't getting invoked.
+That's usually a permissions issue on the execution role.
+So go check your IAM permissions on the Lambda function
+to make sure Kinesis can talk to it.
+Your function might also be timing out,
+so check the max execution time on that Lambda function.
+Make sure it's large enough to handle what you need to do.
+You could be breaching the concurrency limits
+on your Lambda function
+and keep an eye on the Iterator age metric
+to see whether the Lambda's getting backed up or not.
+You might also be seeing ReadProvisionedThroughputExceeded
+exceptions coming in on the consumer side.
+That indicates that throttling is happening.
+You might need to re shard your stream in response to that
+or reduce the size of the GetRecords requests.
+This is also a situation where enhanced fan-out can help,
+so that might make for a good exam question.
+I'm seeing ReadProvisionThroughputExceeded exceptions.
+What might be a way of dealing with that?
+One of those answers might be use enhanced fan-out.
+You can also use retries and exponential back off
+to try to settle at a better throughput rate
+that you can handle.
+A few more here.
+If you're seeing high latency on the consumer side,
+you can monitor that with GetRecords.Latency
+and IteratorAge while you're trying to figure out
+what's going on and troubleshoot it.
+But the first thing to try
+is just increasing the number of shards.
+You might not have enough and also increase
+the retention period to make sure things don't get dropped.
+Check the CPU and memory utilization.
+You might need more memory to handle things more quickly.
+Again, if you're seeing 500 errors,
+that's the same thing as on the producer side.
+It indicates you're getting a high exception rate
+of more than 1%.
+All you can do there is make sure
+that you have a retry mechanism
+so that if you're getting an exception,
+you're trying again instead of just getting a 500.
+And you can see a blocked or stuck KCL application
+on the consumer side.
+If so, you might need to optimize
+your process records method and make it faster.
+You might need to increase your max leases per worker,
+or you might need to enable KCL debug logs
+to see what's going on in more depth
+and figure out what the underlying issue really is.

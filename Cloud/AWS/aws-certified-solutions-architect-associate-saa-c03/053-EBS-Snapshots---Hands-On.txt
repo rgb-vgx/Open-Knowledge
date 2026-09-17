@@ -1,0 +1,93 @@
+# 53. EBS Snapshots - Hands On
+# Section: EC2 Instance Storage
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098278
+# Caption: en_US (manual)
+
+So we have this two gigabyte,
+GP2 EBS Volume available to us,
+and we can take a snapshot from it.
+So if we do Actions, we can Create a snapshot.
+So we can add a Description, for example, DemoSnapshots,
+and then click on Create snapshots.
+So then on the left hand side menu,
+instead of Volumes, you can click on Snapshots.
+And Snapshots shows you a list
+of all the snapshots you have.
+And as you can see, we have one right here.
+It is Completed.
+It is 100% Available.
+And we get some information around the snapshot itself.
+For first of all, what we can do is that we can Copy
+this snapshot into other region.
+So if you right click and do Copy Snapshots,
+then as you can see, you can copy the snapshot
+into any destination region that you want.
+And this can come in very handy,
+in case you want for example,
+to have a Disaster Recovery Strategy,
+to make sure data is backed up in another region of AWS.
+So I won't do that, I won't do so, but you get the idea.
+Another thing I can do is take the Snapshot,
+and I can recreate a Volume from it.
+So Action, Create volume from snapshots.
+And we choose a two gigabytes GP2 Volume.
+And then the target AZ doesn't have to remain eu-west-1a,
+it can be, for example, eu-west-1b.
+And we can also encrypt these volumes if you wanted to
+and add some Tags.
+And so as we can see, when we click on Create volume,
+what's going to happen is that if we go back
+into our Volumes,
+well, now we have two Volumes, as you can see.
+And one of them,
+this one was restored through a Snapshots, okay?
+And it is an eu-west-1b.
+So the idea is that thanks to Snapshots,
+we can quote unquote copy EBS volumes
+across different Availability Zones.
+And that's very handy.
+If we look again at Snapshots, we can have a look
+at what's called the Recycle Bin.
+So the Recycle Bin is a way for you to protect
+your EBS Snapshots from accidental deletion,
+as well as your Amazon Machine Images.
+So we can Create a Retention Rule and name it
+DemoRetentionRule.
+I will select EBS Snapshots.
+I will Apply to all resources and retain them
+during one day.
+And for Rule Lock Setting, I will leave this unlocked,
+so that I can delete this rule whenever I want to.
+And then click on Create Retention Rule.
+And now on the Resources, we can see if we have Resources
+in the Recycle Bin.
+So let's go back into our Snapshots in the EC2 Console.
+So I'm going to go into EC2.
+Here we go, Snapshots.
+Little shortcuts.
+And what I'm going to do is take the Snapshots,
+and first, before I delete it,
+I wanna show you the Storage Tiers.
+So right now it is a Standard Storage Tier, okay?
+But you can move the Storage Tier,
+by Archiving a snapshots,
+and so I need to move the Storage Tier
+into another Pricing Level.
+But if you want to restore it,
+of course, you will have to wait 24 to 72 hours.
+So just to show you.
+But anyway, let's go ahead and delete the snapshot.
+So we'll delete the Snapshots.
+As you can see, it's gone.
+And before, it used to completely delete the snapshots,
+and you couldn't recover it, okay?
+As you can see, it's gone.
+But now thanks to the Recycle Bin,
+well, if I refresh here my Resources,
+I can now see that my Snapshot has appeared here.
+And what I can do is click on it and Recover it.
+Yes, Recover Resources, and voila, it's back
+into my Snapshots on my EC2 console.
+Okay, that was pretty awesome, right?
+Okay, that's it for EBS Snapshots.
+I hope you liked it, and I will see you in the next lecture.

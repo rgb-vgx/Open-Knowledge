@@ -1,0 +1,61 @@
+# 121. Neural Topic Model in SageMaker
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285527
+# Caption: en_US (auto)
+
+Next, we'll dive into the world of topic modeling.
+That's where we're trying to figure out what's a document about basically at a high level.
+And these are unsupervised methods.
+So you can just throw a bunch of documents into these things and get topics out the other side.
+Now keep in mind these are just, uh, artificial topics that the algorithm has come up with.
+They're not going to be human readable things that necessarily make sense.
+Anyway, SageMaker gives you a couple of ways of doing this.
+And one of them is neural topic model.
+And again, we're just trying to organize documents into topics.
+And we can use that for classification or for even summarizing documents based on the topics that we
+think they represent.
+So it's more than just TF-IDF where we're trying to search on specific terms.
+It's actually grouping things together into higher levels of what those terms might represent.
+So for example, the terms bike and car and train and mileage and speed might all be associated with
+a single topic that might represent transportation at a more general level.
+Again, the model isn't going to know to call that topic transportation.
+It's just going to group these documents together.
+That talk about bikes and cars and trains and mileages and speed together into one topic.
+It's going to be up to you to interpret that it is an unsupervised algorithm, which again is why it
+doesn't really know what to call these things because we're not training it on known topic names.
+But it works.
+The underlying algorithm is called neural variational inference, if you're interested.
+For training again it's unsupervised.
+So training is kind of a not really the right word to use here.
+But you can do a training pass on it and just um, pass in a validation or a test channel if you want
+to actually measure its performance on a set of known data, where you know what the topics are, you
+can pass in record I, o protobuf or CSV data to actually analyze a given set of documents.
+And those words first must be tokenized into integers.
+So you don't just pass in raw text.
+First, you have to actually break up and convert those documents into tokens for each word, and also
+pass in a vocabulary file that maps those words to actual to the numbers that are representing them
+in the documents.
+So for every document, you have a count of every word in the vocabulary, often a CSV file that's separate
+the auxiliary channel is used for that vocabulary data, and you can use file or pipe mode.
+Either is fine.
+Obviously pipe always faster.
+Where are some quirks about it?
+Well, you define how many topics you want at the end.
+So basically the main hyperparameter you have is how many topics do I want to generate.
+So that will sort of control how high of a level it's trying to organize things into.
+So it will give you as many topics as you say.
+Again, those topics aren't going to map to specific human readable words.
+They're just going to be higher level concepts that are learned in an unsupervised manner.
+Those topics are going to be what we call a latent representation based on the top ranking words in
+your documents.
+So yeah, it's just trying to find these underlying relationships that are hard to uncover otherwise.
+And again, this is only one of two topic modeling algorithms that SageMaker offers.
+We'll talk about the next one next.
+So you should try them both and see which one works best.
+Being a neural topic model, batch size and learning rate are obviously some important hyperparameters.
+And also like we said, the number of topics that you want is really the main thing that you want to
+tune with.
+This thing that will control just how high or low level your topics end up being.
+It can actually use GPU or CPU.
+We recommend a GPU for training because it is a neural network, but you know, CPUs are cheaper and
+a CPU will probably be adequate for inference.

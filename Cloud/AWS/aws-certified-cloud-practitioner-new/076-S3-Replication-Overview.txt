@@ -1,0 +1,41 @@
+# 76. S3 Replication Overview
+# Section: Amazon S3
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20055940
+# Caption: en_US (manual)
+
+Now let's talk about Amazon S3 Replication,
+and there are two flavors of it.
+So CRR is for cross-region replication
+and SRR is for same-region replication.
+The idea is that we have an S3 Bucket in one region
+and a target S3 Bucket in another region,
+and we want to set up asynchronous replication
+between these two buckets.
+So, to do so, we first must enable Versioning
+in the source and the destination buckets.
+And if we do CRR, so cross-region replication,
+the two regions must be different.
+If we do SRR, the two regions are the same.
+Now, it's possible for you to have these buckets
+in different AWS accounts
+and copying happens asynchronously.
+So the replication mechanism happens behind the scenes,
+in the background.
+And to make replication work,
+you must give proper IAM permissions
+to the S3 service so that it has the permission
+to read and write from specified buckets.
+So the use cases for replication are manyfold.
+The first one is that if you use cross-region replication,
+this can be helpful for compliance
+or for providing lower latency access to your data
+because it's in another region,
+or to replicate data across accounts.
+For SRR, or same-region replication,
+this can be very helpful to aggregate logs
+across multiple S3 Buckets
+or to perform a live replication
+between a production and test accounts,
+so, you have your own test environment.
+Okay, so that's it about replication.
+I will see you in the next lecture for some practice.

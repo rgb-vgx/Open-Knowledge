@@ -1,0 +1,164 @@
+# 295. Lambda Versions and Aliases - Hands On
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26623446
+# Caption: en_US (manual)
+
+Okay, so let's practice versions in Lambda.
+So let's call this function:
+"lambda-version-demo".
+We'll use Python 3.8
+and create our function.
+So versions are here to allow us
+to fix a amount of code and removables
+and settings in time,
+and say you are a specific version.
+And the idea is that we want to author our versions
+over time to allow our lambda function to evolve.
+So let's have a look
+and we're going to take our function code,
+we're going to just return something simple.
+So we're going to return:
+"this is version one."
+And then we're going to deploy and test our changes,
+create a sample event,
+create, test
+and we get "this is version one."
+So say we're very happy with this code
+and we want to author this
+as the version one of our function.
+So we can do "action" and then "publish new version."
+So this is going to be version one.
+We can add a description and we just click on "publish."
+And here we go,
+the version one of our function has been created.
+So what has changed?
+Well, now we are in the function overview
+at lambda-version-demo, and there's a one here
+so this is lambda version one.
+And if we go to the code itself
+it says that the designer is only available,
+we can only change it when we are on
+the unpublished function based.
+So when we're on latest, but because we're on version one
+we cannot change the code in here.
+So we can test this function.
+We can test it right here
+and it says, yes, look at this.
+This is successful.
+And it says, "this is version one."
+So this is great!
+But now say we want to keep on editing our functions.
+So we go back to our main function
+and then we're going to edit it
+and say, "this is version two."
+We're going to deploy this and then test our changes.
+So let's go to "test" and then test.
+Now it says, "this is version two."
+Great.
+So let's publish this new version because we like it.
+So let's publish it.
+And then "publish."
+Now we have the version two
+of our function "lambda-version-demo,"
+and it's available right here.
+The code is slightly different,
+obviously, because now it says, "this is version two."
+We can't edit it, but we can test it.
+We test this function
+and now we're good to go.
+So the execution to tell is correct.
+Okay, great.
+So now we need to play with aliases cause right now
+we have authored a few versions for another function,
+but we want to create aliases so.
+First back into our function
+we can view all the versions of our function
+on the version stabs in here.
+So one and two are available in here.
+And now we want to play with aliases.
+So right now we don't have any aliases,
+but let's create an alias.
+And the first alias I'm going to create is the "dev" alias.
+And the "dev" alias represents that
+our function is the most recent.
+And we want this to point to
+the latest unpublished version of our lambda function
+because we want the dev to always point to the latest code.
+So we'll click on "save."
+And now we have created a "dev" alias.
+So we're good to go.
+We go back to our function alias,
+we couldn't create a test alias
+so we'll create "test" alias.
+And there's one to point it to the latest published version
+so we'll have it as version two.
+Click on save.
+And so now the "test" alias, if we test it.
+So if we want to test that function
+so let's test it.
+It's successful
+and it says, "this is version two."
+Great.
+And one last alias we may want to create
+is the prod alias.
+So let's go and create the "prod" alias.
+And this is pointing to version one,
+so the most stable version of our function so far.
+Click on save.
+And now if we test the "prod" alias,
+obviously we know what the result is going to be.
+We get "this is version one."
+So we've seen how to create versions
+and we've seen how to create aliases.
+But now the interesting thing is that with aliases
+we can start doing some weights.
+So let's go into prod
+and let's say that we wanted to,
+and let go, let me go back.
+So let's go into prod and we want to edit this alias
+because we want to upgrade from version one
+to version two and prod.
+So we'll edit this
+and we'll say that now we want a weighted alias.
+So you are in version one right now,
+but I also want you to go on version two.
+And in a normal production setting
+you would test maybe 10% of the weights on version two
+and 90% of the weight on version one,
+just to have a small amount
+of traffic go to your new version.
+But, because I want to show you how this works
+I'm going to do 50:50, which is quite aggressive
+in terms of weight distribution, but at least
+we'll get 50% of the time version one being invoked
+and 50% of the time version two being invoked.
+So we'll save this.
+So now our alias "prod" has a weight between two versions.
+And so if we go to this alias
+and now start testing the function.
+So I'll test it once,
+we get version two.
+I'll test it one more time,
+we get version one.
+So as we can see the traffic went
+part on version two and part on version one,
+and you can play around
+and keep on testing and seeing what the result is.
+So we alternate between version two and version one
+50% of the time on the one and the other one as well.
+Okay.
+So this is how alias work,
+and then when you're happy with your production
+and say okay
+now my new function version is working just as expected,
+then you take this alias right here, you edit it.
+And now you're saying,
+okay now I want you not to use any weighted alias,
+just go on version two and send all the traffic to it,
+"save." And we've effectively updated the prod alias
+from version one to version two.
+And that's the whole idea behind
+all the versioning and aliases
+and the flexibility you get with them.
+So I hope you liked this lecture,
+and I will see you in the next lecture.

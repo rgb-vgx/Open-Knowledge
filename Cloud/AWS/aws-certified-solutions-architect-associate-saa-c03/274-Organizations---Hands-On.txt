@@ -1,0 +1,238 @@
+# 274. Organizations - Hands On
+# Section: Identity and Access Management (IAM) - Advanced
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078395
+# Caption: en_US (manual)
+
+Okay. So we're going to practice
+using the organizations.
+For this I'm just going to go into the organization service
+and get started.
+So as we can see in this example
+Organizations is a global service
+because it has to do with accounts
+and regrouping them together, okay?
+The other thing I did is that I created
+my own new account for this.
+So I created AWS course master account
+and on the other window I have AWS course child account
+because I don't wanna use my main accounts for this
+and I wanted to do a demo with two separate accounts.
+So if you wanna follow along
+I would suggest creating two new accounts.
+Call them as you want so that you can have one master
+and one child account within your organization.
+So from the master account
+I'm going to go ahead and create an organization.
+Now within the organization
+we have to define the accounts within it.
+So as we can see right now,
+this is very quick, the organization is created
+and we have the root organizational units.
+And within it, we have the AWS course master account
+which is the master account
+or also called the management account, okay?
+So we're going to do that.
+And the organization is created.
+Now we want to add a second
+AWS as account into this organization.
+And to do so I'm going to add an account.
+And we have two options,
+either we want to create an account
+and you specify the account name,
+the email address of the account owner
+as well as an IAM role that will be created
+in the target account
+to be allowed to be managed by the organization.
+Or you can invite an existing AWS account,
+in which case you need to provide the email address
+associated with that account
+or the account ID of the account to invite.
+And for this, I will just do the name of my account.
+So I would just add the email which is
+aws-child-account@stephanemaarek.com.
+And this is good to go.
+We can include the message if you wanted to
+and add some tags but I will just go ahead
+and send my invitation.
+So now my invitation has been sent to my other account
+and we can view all pending invitations through this UI
+and it hasn't expired yet,
+so if in two weeks
+it doesn't get accepted, then this will expire.
+So what I can do next is go
+to my organization on my child account.
+And on the left hand side, there is Invitations.
+So I click on Invitations.
+I'm going to refresh this page.
+And now we see my invitation from the master account.
+So as we can see in this organization right now
+we'll get full control as this organization
+has full features enabled
+and can assume full control of your account.
+So as soon as you're part of an organization,
+you accept to be controlled
+by whoever is the master of that organization.
+So we'll accept the invitation.
+And here we go.
+Now my account, the child account is enrolled into
+my AWS organization and we can only see the organization ID
+as well as the feature set.
+And an account may have
+the ability to leave the organization.
+So back into my AWS organization.
+Now, if I go to my accounts, I click on AWS accounts.
+As we can see now within my organization
+we have roots and within roots, we have two accounts now,
+the master and the child accounts.
+So we can do is now organize our accounts
+using organizational units or OUs.
+So for this, we'll just do action
+and we can create a new OU.
+So to do so we'll go on the roots, okay?
+And action creates new OU and I can have one,
+for example, for my Dev accounts.
+And I create the OU.
+I can also go again in here and create the OU,
+And this time I will say tests and maybe less time
+we'll have a product, so I'll just do a prod OU.
+And maybe within the prod OU we have different departments.
+So I can again create OUs within OUs.
+So I can have HR, if we have an HR department
+that has production applications,
+or maybe we have a finance department
+that has analytics applications within it.
+So as you can see here
+you can create as many nested OUs as you want.
+And if you go all the way to your organization
+and then you look at the OU,
+now we can see we have roots, dev,
+and right now, no accounts within dev,
+prod and we have finance and HR within prod
+and then we have test.
+So as we can see, we can start organizing the accounts
+and we have many accounts in organization
+within specific OUs.
+And the reason we do so is to have service control policies.
+So what we're going to do is first take our child account
+and we want to move it in to,
+for example, the finance department within prod.
+So I take this account and I can say move
+and then I can have it into my finance department
+within my prod OU.
+So I move the account there.
+And now if we have a look we can see
+that the finance department contains the course child.
+It's best practice as well to leave the management account
+under the root OU but you could move it if you wanted to.
+Okay. So now we want to enable service control policies
+to restrict what my course child account can do.
+So to do so we go into Policies and as we can see
+we have four different kinds of policies available
+to us right now, and they're currently disabled.
+So what we can do is take the important policy types
+that we want and enable them.
+So one we definitely want to enable is the
+service control policy, because this will allow you to
+restrict what our children account can do.
+So this is enabled and I go back to Policies.
+We have other ones that could be of interest,
+for example, backup policy allows you to
+deploy organization-wide backup plans, to ensure
+that all your accounts are compliant
+and have backups enabled
+or tag policies also to help standardize how you use tags
+within all the different accounts in your organization.
+But for the sake of this hands-on
+and from an exam perspective
+I believe only service control policies will be used,
+but still good to know
+that you can apply a backup policy across all the accounts
+and a tag policy across all the accounts as well.
+Okay. So service control policies are enabled.
+And so now what we'd like to do
+is to have service control policy defined.
+So I'm going to click on service control policy
+and this is the documentation, excuse me.
+And here we have one service control policy
+that has been created so far, which is the full AWS access.
+Okay? And the full AWS access allows all the
+accounts to access all the services.
+But we can create a new policy and attach it.
+So we can created a policy called oops-
+We can create a policy called DenyAccess to S3
+and this will deny access to the S3 service
+to whichever OU or account this is attached to.
+So in terms of the policy, we could find a statement.
+For example, we can find the S3 service in here
+and within S3, we can say all actions
+and the resource is going to be star as well.
+So I'm going to have a star in here.
+So we're denied anything on this (murmurs),
+a very simple policy
+and I'll call it deny S3 as an Sid.
+And then I will click on Create policy.
+So this, when attached to my accounts,
+should deny access to S3.
+So we can have a look.
+So let's go into our accounts.
+Okay. So if we look at the root to you and click on root,
+as we can see, there is enabled policy types
+which is service control policies.
+And if I click on Policies
+there is one applied policies that is attached directly
+to the root OU, which is the full access to AWS,
+which allows everything on root
+and all its children to access all the services within AWS.
+So if you look at the children
+of the root OU, we have, for example, the prod OU.
+And if we look at the prod OU, in terms of policies
+there are two policies, one that is attached directly
+which is the full AWS access,
+but also one that is inherited from root,
+which is the full AWS access.
+So it has duplicated this one for some reason.
+And then if I go into children in a go into finance
+and click on policies, we have three attached policies.
+So one inherited from prod, one inherited from root
+and one attached directly.
+And this is probably because I've enabled
+service control policies after creating the OUs.
+So this full AWS access was attached
+to every single element within my account.
+And if we look at the children of the course
+of the finance OU within the prod OU,
+and you click on the course itself, the account itself
+and go to policies, now we have four.
+So we have full AWS access four times.
+So you understand at least the concept of inheritance,
+which makes sense.
+And you can just inherit things from Root that are clear.
+You inherit things from the topmost layer,
+but what we can do is if we go back one up.
+So if we go to my prod and finance OU, for example,
+we can attach a new policy.
+So I'm going to attach a new policy
+and this one will be the DenyAccessS3.
+I will attach it
+and now that means that anything within my finance OU
+should also have this inherited.
+So if I click on my course child and then policies,
+as we can see the DenyAccessS3 has been inherited
+from finance.
+So how do we make sure that this is working?
+Well, if I go to my account
+now my child account, and open the S3 console in a new tab.
+We are in S3 and the buckets are being loaded
+but as we can see, we don't have permission
+to list buckets and therefore we can not use Amazon S3.
+And this was due to the policy we have attached to the OU.
+So it's quite powerful because we are able to
+restrict what an account can do overall,
+even though I am logged in right now
+with my root user, okay, with my root user of my account,
+I still don't have the access to Amazon S3.
+So this is very powerful and this is how STPs work.
+And hopefully that makes sense for you.
+So that's it for this hands-on.
+I hope you liked it.
+And I will see you in the next lecture.

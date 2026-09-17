@@ -1,0 +1,147 @@
+# 131. AWS Glue
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356180
+# Caption: en_US (auto)
+
+Instructor: All right, let's talk about AWS Glue,
+which is a system for building your table definitions
+and performing ETL, extract, transform, and loading,
+of your data automatically.
+Now, Glue is a huge deal on the exam right now.
+So, back when they removed all of the
+machine learning content from the AWS Big Data exam,
+it was called at the time, into its own exam
+for machine learning, they kind of filled that gap
+mostly with more content about Glue and Redshift.
+So, Glue really plays a major role in the exam today,
+so it's very important to pay attention to this section.
+There's not really a whole lot you need to know about Glue,
+but you need to really internalize it and understand
+how it connects all these different services together
+and how it might be used as pieces of larger applications.
+So, what is Glue all about?
+Well, it's a serverless system, so again,
+there's nothing you need to maintain there,
+that will automatically handle discovery
+and definition of table definitions and schema.
+So, its main use is to serve
+as a central metadata repository for your data lake.
+It will discover those schemas out of your unstructured data
+sitting in S3 or whatever, and publish table definitions
+for use with analysis tools,
+such as Athena or Redshift or EMR.
+So, again, the purpose of Glue itself is to extract
+structure from your unstructured data.
+If you have data sitting in a data lake in S3
+it can provide a schema for that so that you can query it
+using SQL or SQL-like tools, including RDS and Redshift
+and Athena and Amazon EMR,
+and pretty much any other SQL database
+that can use a schema like that.
+The other thing Glue does is custom ETL jobs.
+So, once it discovers that schema
+it can do some processing of it for you,
+and this could be trigger driven based on when
+that data is received or on a schedule or on demand.
+And it's fully managed, so again,
+there's no services for you to maintain,
+no hardware for you to maintain.
+The ETL jobs use Apache Spark under the hood.
+We haven't talked about that yet,
+but Spark is a very popular system
+for distributed data processing,
+but you don't need to manage the Spark cluster,
+which is really nice.
+So, you have the entire power of Apache Spark behind you
+with Glue ETL without having to manage that Spark cluster,
+which is a really, really nice thing.
+So, one piece of it is the Glue crawler
+and data catalog which it populates.
+So, the purpose of the Amazon Glue crawler
+is to scan data in S3,
+and often it will infer that schema automatically
+just based on the data that it sees sitting there.
+But sometimes you have to give it some hints.
+You can schedule that to run periodically if you need to.
+And what that does is populate the Glue data catalog.
+So, we have data sitting in S3,
+Glue can periodically or on demand scan that data
+and construct a schema of it.
+And again, that's just the table definition,
+what are the columns of data in that information
+that you have stored there in an unstructured manner,
+what's their data types, things like that.
+Column names, it can infer that as well,
+where it's stored, that's all important information as well.
+And it uses that information to allow things like Redshift,
+Athena, or systems running an EMR like Hive
+to query your unstructured data in S3
+as if it were structured data,
+just like it were a traditional relational database.
+Now, the data itself remains where it was originally.
+So, the data stays in S3.
+You're not duplicating that data,
+we're not copying it into an actual
+database table somewhere else.
+We're just using Glue to basically provide the glue
+between these relational database interfaces
+and the unstructured data lake
+that's sitting back here in S3.
+Once cataloged that data is immediately
+available for analysis, and we'll build this out
+and go into a lot more detail into these systems later on.
+And then once you actually have
+that data sitting in something like Athena
+you can use something like Amazon QuickSight
+to visualize that data.
+So, Glue, again, is the glue between your unstructured data
+and structured data analytics tools.
+So, let's talk about Glue
+and S3 partitions really quickly here.
+So, it's not entirely magic.
+You do need to think about how you're going
+to structure your unstructured data.
+I know that sounds backwards,
+but the way that you organize your data
+will affect how efficient Glue can work
+and how efficiently your systems
+can query this unstructured data.
+Now, the Glue crawler will extract partitions of your data
+based on how your S3 data is organized.
+So, you want to think upfront about how you're
+gonna be querying your data lake in S3,
+and what those partitions should represent
+for the best performance.
+So, for example, let's imagine that you have devices
+sending sensor data into your system,
+into your data lake every hour,
+just dumping raw data into S3.
+So, think about how are you gonna use that data?
+Are you querying primarily by time ranges?
+If so, then you want to partition
+based on those time ranges, right?
+So, you'd want to organize your S3 buckets as year,
+followed by month, followed by date,
+followed by device, okay?
+That way we can start by winnowing things down
+by the year and further by the month,
+furthermore by the date, and then finally,
+by the device that generated that data.
+That will allow the partitions to really allow us
+to efficiently access data for a given date
+without having to slaw through all the other information
+for other dates that we don't care about.
+On the other hand, if you're querying primarily by device
+and not by time you might wanna put the device up first.
+That way your primary partition would be the device ID
+and then followed by the year, month, and date.
+So, if you're gonna be querying
+for specific individual devices all the time,
+and that's kind of the primary thing you wanna partition on,
+you'd wanna make that the top-level bucket
+that you're organizing your data under within S3.
+So, this is something that you might see in the exam,
+what's the optimal way to organize your data
+that's being stored on S3 such that Glue can extract that
+and present it as partitions that makes sense
+for what you're gonna do with it.

@@ -1,0 +1,41 @@
+# 133. AWS Compute Optimizer
+# Section: Cost Control
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34785468
+# Caption: en_US (manual)
+
+Now let's talk about AWS Compute Optimizer,
+which is used to reduce cost and improve performance
+by recommending optimal AWS resources for your workload.
+So this is going to do an analysis of your EC2 instances,
+your autoscaling groups, and tell you, for example,
+which one are over provisioned or under provisioned.
+And then you can build your optimizations.
+And then you can have a better cost perspective,
+and also a better performance.
+This way it does it is that it will use machine learning
+under the hood to analyze your resource configuration,
+as well as track their CloudWatch metrics
+to understand their utilization.
+So supported resources by Compute Optimizer
+are EC2 instances, auto scanning groups,
+EBS volumes, Lambda functions.
+And this allows you to lower your cost
+by up to 25% without doing much.
+And the recommendations themselves
+can be exported into Amazon S3
+In order to get the most out of Compute Optimizer,
+and if you want to analyze also the memory utilization
+and so therefore get recommendations on RAM,
+then you need to install the CloudWatch Agents.
+So therefore, you have your EC2 instances.
+And they're running the CloudWatch agents.
+And then they will send their metrics,
+including the Ram, to CloudWatch service itself.
+And then Compute Optimizer can analyze these metrics
+out of CloudWatch and make recommendations as well
+for the Compute Optimizer on the RAM, on the memory.
+But just so you know, this CloudWatch Agent is not needed
+if you analyze the CPU or the NetworkIn/out
+or the DiskReadOps and the DiskWriteOps.
+So that's it for this lecture,
+I hope you liked it, and I will see you in the next lecture.

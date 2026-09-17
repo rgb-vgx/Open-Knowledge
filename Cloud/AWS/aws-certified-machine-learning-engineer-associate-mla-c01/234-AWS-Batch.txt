@@ -1,0 +1,38 @@
+# 234. AWS Batch
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/46732159
+# Caption: en_US (auto)
+
+The next service you need to know at a high level is AWS batch eight.
+AWS batch allows you to run batch jobs that its name indicates, and they're based on Docker images.
+And so with AWS batch you don't provision the instance.
+There is a dynamic provisioning of the instances for you, whether it's an EC2 instance or a spot instance.
+And batch figures out the optimal quantity and the type of these instances based on the volume of jobs
+it has to do and the requirements.
+So you don't need to manage any clusters.
+It's a fully serverless service, just like glue, you just pay for the underlying EC2 instances that
+are created by batch itself.
+So you can schedule batch jobs using CloudWatch events to allow you to maybe run on a schedule.
+Or you can orchestrate batch jobs using step functions.
+And we'll see this in the next lecture.
+But so a question you may have again is what is the difference between batch and glue.
+So glue again just to go over it one more time.
+It's Apache spark code Scala or Python only.
+And it's focused on the ETL.
+And you don't worry about configuring managing resources and you have the data catalog.
+Now for batch it is a bit different.
+It's for any computing job regardless of the job okay.
+It's not just for ETL, it's for anything that is batch oriented.
+So as long as you have a Docker image that works for batch, you can do it in batch.
+So for example, a job that may be good for batch would be a cleanup task in an S3 bucket.
+So you run a script on an S3 bucket to clean it up.
+And you run this as a batch job every so often.
+Whereas in glue it's really about taking data, transforming it, and then placing it somewhere else.
+So the resources are created in your account and they're managed by batch.
+So you're using EC2 instances within your account.
+So you have access to all the stuff within your account.
+And so if you have an ETL means you actually need to transform some data.
+Glue is probably going to be a better choice.
+But if you have non ETL related work but it is still batch oriented, then AWS batch will be better.
+So that's it just for this service.
+Hope that was helpful and I will see you in the next lecture.

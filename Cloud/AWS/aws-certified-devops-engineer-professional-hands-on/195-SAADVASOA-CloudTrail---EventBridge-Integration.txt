@@ -1,0 +1,44 @@
+# 195. [SAA/DVA/SOA] CloudTrail - EventBridge Integration
+# Section: Domain 5: Incident and Event Response
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37933046
+# Caption: en_US (manual)
+
+A very important cultural integration
+you need to know about is the one with Amazon EventBridge
+to intercept any API calls.
+So let's say you wanted to receive an SNS notification,
+anytime a user would delete a table
+in DynamoDB by using the DeleteTable API Call.
+So what happens that whenever we do an API call in AWS,
+as you know, the API call itself is going
+to be logged in CloudTrail.
+That's for any API call.
+But then all these API calls will end up as events
+as well in Amazon EventBridge.
+And so we can look
+for that very specific delete table API call,
+and create a rule out of it.
+And this rule will have a destination
+the destination being Amazon SNS
+and therefore, we can create alerts.
+So let me give you a few more examples
+on how you can integrate Amazon Eventbridge and CloudTrail.
+For example, say, you wanted to be notified
+whenever a user was assuming a role in your accounts.
+So the AssumeRole is an API in the IAM service
+and therefore, is going to be logged by CloudTrail.
+And then using EventBridge integration,
+we can trigger a message into an SNS topic.
+Similarly, we can also intercept API calls that,
+for example, change the Security Group inbound rules.
+So the Security Group call
+is called AuthorizeSecurityGroupIngress,
+and it's an EC2 API call.
+So these are going to be logged again by CloudTrail
+and then they will appear in EventBridge
+and then we can trigger a notification in SNS.
+So as you can see, the possibilities are endless,
+but now you have a few ideas
+of how the integration can be leveraged.
+So I hope you liked it,
+and I will see you in the next lecture.

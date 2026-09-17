@@ -1,0 +1,74 @@
+# 39. Amazon FSx - Hands On
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45356709
+# Caption: en_US (manual)
+
+So let's have a quick look at Amazon FSx,
+and Amazon FSx is where to get manage file systems
+on AWS.
+So, we can go ahead and create a file system,
+and you have to choose between multiple options,
+and the one you need to know for sure
+for the exam are going to be these four ones.
+If more are added over time,
+unless they appear on the exam,
+I will not update this lecture,
+just to keep it super simple.
+So here we have FSx for Lustre, and that's
+to provide a Lustre file system for your workload,
+and you can just enter the file system details.
+You can get a deployment and storage type,
+which has, gives you better overage performance.
+You can choose your throughput, and so on,
+and then the place within your VPC,
+and choose any level of encryption.
+So we don't need to know that many details
+about each file system, okay?
+Just that there's Persistent
+and Scratch file systems options for Lustre.
+Next, if I go back to Amazon FSx for Windows File Server,
+this is the way to get a Windows File Server on AWS,
+and it's accessible using the Server Message Block,
+SMB protocol.
+So if we look quickly at the option,
+we can do Multi AZ or Single AZ, which is good for Dev.
+The Multi AZ is good as well.
+The storage type, SSD or HDD, the full gift capacity depends
+on the storage capacity, so if you put,
+for example, one 10,000 gigabytes,
+then we're going to get some options for gift capacity.
+We can deposit into a specific VPC.
+We can enable Windows authentication
+with Active Directory integration,
+either through a host, active host directory on AWS,
+or a Self-managed Microsoft Active Directory.
+And we get encryption, and then we can get more options,
+such as auditing, access, main,
+backup and maintenance, and so on.
+Now for Amazon FSx for NetApp ONTAP is
+to get the NetApp ONTAP popular file system onto AWS,
+and the main feature is that it's compatible
+with Linux, Windows, and macOS, okay,
+and then, you also get access to a really good performance.
+So in that case, we can have a look
+at the file system options, where we again,
+we have Multi AZ or Single AZ,
+we specify a storage type capacity
+and whether or not we want storage efficiency,
+such as features, such as deduplication,
+compression, and compaction, okay?
+So this is where we quick create,
+and standard create, it gives you more option,
+but then again, you just need to know this file system
+at the high level.
+And finally, Amazon FSx for OpenZFS,
+and this is to have a ZFS file system on AWS,
+which is compatible with Linux, Windows, and macOS as well,
+and again, I would invite you to explore the options.
+But at a high level, from an exam perspective,
+you need to know the differences
+between these four options, okay, and all the details
+to choose which one is right was in the previous lecture.
+So that's it for this lecture.
+I hoped you liked it, and I will see you
+in the next lecture.

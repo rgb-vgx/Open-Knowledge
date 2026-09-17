@@ -1,0 +1,64 @@
+# 89. RDS  Security
+# Section: AWS Fundamentals: RDS + Aurora + ElastiCache
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528156
+# Caption: en_US (manual)
+
+Now, here is a quick lecture
+around RDS and Aurora Security.
+So you can encrypt the data at-rest
+on your RDS and Aurora database.
+That means that the data is encrypted on the volumes.
+For this, you will be having the master
+and any replica encrypted using KMS.
+And this is defined at launch time
+during the first launch of your database.
+If somehow you haven't encrypted the master database,
+the main database,
+then the read replicas cannot be encrypted.
+Also, if you wanted to encrypt
+an already existing unencrypted database,
+what you would have to do is to take a database snapshot
+from that un-encrypted database,
+and then you restore that database snapshot
+as an encrypted database. Okay?
+So you have to go through a snapshot and restore operation.
+So this is for at-rest encryption.
+Then you have in-flight encryption.
+So between your clients and your database.
+So each database on RDS and Aurora
+is ready to have in-flight encryption by default.
+And so therefore, your clients must
+use the TLS root certificates from AWS.
+They're provided on the AWS website.
+In terms of database authentication.
+Because this is RDS and Aurora,
+you can use the classic combo of username and password.
+But because it says AWS,
+you can also use IAM roles to connect to your database.
+That means that's, for example,
+if you're EC2 instances had IAM roles,
+they can authenticate to your database directly using that
+and not a username and a password,
+which can help you manage all the security
+within AWS and IAM.
+You can also control network access to your database
+using security groups.
+So you can allow or block specific ports,
+specific IP, specific security groups.
+And then finally RDS and Aurora do not have SSH access,
+of course, because they're managed services,
+except if you use the RDS custom service from AWS.
+And if you wanted Audit Logs.
+So to know what queries are being made
+on RDS and Aurora over time
+and what's happening on databases,
+you can enable Audit Logs.
+And then they will be lost after a bit of time.
+Therefore, if you wanted to keep them
+for a long period of time,
+what you need to do is to send them into a dedicated service
+called the CloudWatch Logs service on AWS.
+So that's it for the short lecture
+on the summary options for security, for RDS and Aurora.
+I hope you liked it.
+And I will see you in the next lecture.

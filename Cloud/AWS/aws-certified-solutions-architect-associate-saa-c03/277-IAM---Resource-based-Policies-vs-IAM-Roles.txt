@@ -1,0 +1,93 @@
+# 277. IAM - Resource-based Policies vs IAM Roles
+# Section: Identity and Access Management (IAM) - Advanced
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33878964
+# Caption: en_US (manual)
+
+So let's have a look now
+at the fundamental differences
+between IAM roles and resource-based policies.
+So for cross accounts,
+especially when you want to perform an API call
+on an S3 bucket cross account,
+you have two options.
+You can attach a resource-based policy to a resource,
+for example, an S3 bucket policy on an S3 bucket,
+or you can decide to use a role
+that can actually access the resource.
+So let's take an example of these two options.
+So this is the example
+where the user in Account A can assume a role in Account B,
+and that role has the permissions
+to access your Amazon S3 buckets.
+Or similarly, the user in Account A,
+through a bucket policy placed on the Amazon S3 bucket
+in Account B,
+can access the S3 buckets.
+So both these two situations are valid,
+but there is a little bit of difference, okay?
+The first one is an IAM role
+that has access to the S3 bucket.
+The second one is the S3 bucket policy that allows the user.
+So what's the difference?
+When you actually assume a role, okay,
+you actually give up all your original permissions,
+and you take all the permissions assigned to the role.
+So this is very important.
+That means that we, for example, assume a role,
+and this role can do whatever.
+We can now do anything that the role does,
+but we cannot use our original permissions.
+And so when you use a resource-based policy,
+instead, the principal does not assume a role,
+and therefore, he does not have to give up his permissions.
+So if you take an example of user in Account A,
+they need to scan a DynamoDB table in Account A,
+and then dump it in an S3 bucket in Account B.
+What they can do is we should use a resource-based policy
+because this way, we don't have to assume a role,
+and we can both scan the DynamoDB table
+and write to an S3 bucket in another account.
+So resource-based policies are supported
+by more and more AWS services and resources over time.
+So we have the Amazon S3 buckets, the SNS topics,
+the SQS queues, the Lambda functions, and so on.
+And the big difference of when this comes into play
+is when you use Amazon EventBridge.
+So when an EventBridge rule runs,
+it's going to need permissions on the targets.
+And if your target supports resource-based policies,
+for example, Lambda functions, SNS topics,
+SQS queues, S3 buckets, or API Gateway,
+then it's possible that EventBridge
+will just add a resource-based policy on the target
+to allow the invocation from the EventBridge rule.
+That's one case.
+On the other hand,
+if the resource doesn't necessarily support
+a resource policy,
+then EventBridge will use an IAM role
+to invoke the target service,
+for example, for Kinesis Stream, EC2 Auto Scaling,
+System Manager Run Command, ECS task, and so on.
+And for example, for Kinesis Data Streams,
+as a note, it supports resource-based policies,
+but still, EventBridge is going to use an IAM role.
+So how do you know which one is going to be used in which?
+Well, you need to look at the configuration
+of the EventBridge role itself
+to see how this is going to work,
+and then you will know, okay?
+But as a matter of fact, Lambda, SNS, SQS,
+S3 buckets are using resource-based policies.
+And Kinesis Data Streams, EC2 Auto Scaling,
+and so on are using IAM roles.
+Even though it's possible
+for you to use a resource-based policy
+with Kinesis Data Stream,
+that's not yet supported by EventBridge.
+So all the information you need to know
+for the exam is on this slide,
+and I know that'll be enough for you at the exam.
+All right, that's it.
+I hope you liked it,
+and I will see you in the next lecture.

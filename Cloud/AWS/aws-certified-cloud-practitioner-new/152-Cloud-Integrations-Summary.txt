@@ -1,0 +1,41 @@
+# 152. Cloud Integrations Summary
+# Section: Cloud Integrations
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20260658
+# Caption: en_US (manual)
+
+Okay, so let's summarize everything
+we've learned in this section.
+So SQS is a queuing service in AWS
+and we can have multiple producers into an SQS queue.
+The messages are going to be kept
+up to 14 days in the queue, then deleted.
+Consumers can read these messages
+and they will share the reads.
+So they will split the reads
+and then once a message is read and processed
+then it's going to be deleted.
+So when a consumer is done, the message is gone.
+It's used to decouple applications within AWS.
+So anytime you see queuing and decoupling, think SQS.
+SNS is a notification service in AWS.
+And so we have producers and subscribers.
+So it could be email, Lambda, SQS queues, HTTP, mobile
+and if you have multiple subscribers onto one SNS topic
+then SNS will send a message to all of them.
+SNS doesn't retain any message
+so it's not a durable store of messages
+and it's going to be used again for pub/sub,
+for subscribers, for topics and notifications within AWS.
+Finally, we've seen Kinesis
+which is a real time data streaming service
+which is going to have some data persistence
+and also you can run analytics
+on top of Kinesis in real time.
+And finally, we have Amazon MQ
+which is a managed message broker
+for Active MQ and RabbitMQ in the cloud.
+So if you want to migrate from on-premises
+to the cloud and use the MQTT, AMQP,
+or other kind of protocols, this is a service for you.
+So that's it for this section.
+I hope you liked it and I will see you in the next section.

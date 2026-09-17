@@ -1,0 +1,222 @@
+# 340. Networking Costs in AWS
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18609542
+# Caption: en_US (manual)
+
+So now let's talk about networking cost
+in AWS per gigabyte.
+And this is a simplified version
+to make things as easy as possible
+and to explain to you a few important concepts.
+Now, networking costs enables can get very complicated,
+but here is a high-level overview
+and that should helps you going into the exam.
+So we have a region
+and I've drawn two availability zones in this region.
+Let's assume we have an EC2 instance in the first AZ.
+And so the first thing you should know
+is that any traffic going into your EC2 instances
+is going to be free.
+So any incoming traffic onto EC2 is free.
+Now let's assume we have a second EC2 instance
+and it is in the same availability zone, then in that case,
+because an availability zone represents
+a set of multiple data centers
+that are geographically located within one another,
+then any traffic between your two EC2 instances
+will be free assuming that there are using
+their private IP to communicate,
+by using the private IP they will go over the network
+that they are connected with.
+So this is great. So far everything is free.
+But now that's include an EC2 instance in another AZ.
+And this time we want you have these two EC2 instances
+across two different AZ within the same region
+to communicate with one another.
+One approach would be to use a public IP
+or an elastic IP.
+And if we do so, we're going to pay 2 cents per gigabytes
+if using a public IP or elastic IP.
+Why?
+Well, because the traffic has to leave via AWS network
+and go back in for our two instances to communicate
+and so AWS will charge us for that.
+Instead, if we are using a private IP,
+then we're going to be charge half as less,
+because we're now using the internal AWS network
+to link between these two availability zones.
+So a takeaway here is that if you want
+to make your instances communicate one, faster
+and two, at a lesser price,
+then use as much as possible the private IP
+versus using the public IP.
+Next, let's consider another region
+with another availability zone.
+In which case the traffic to go from one region to another
+is going to be $0.02 on the gigabytes.
+So that means that the entire region traffic
+can be quite expensive.
+So what do we get as a takeaway
+from this very simplified slide?
+The first thing is that you should use a private IP
+instead of a public IP,
+if you want to have good savings, okay,
+and better network performance,
+because you will automatically be onto the private network.
+So one reason is do not use the public IP
+to communicate between two instances
+in the same region into AZ.
+The second thing is that if you have a cluster
+that does some computation
+and does require a lot of communication
+between your EC2 instances from one another,
+then you may want to use the same availability zones
+for a maximum amount of savings, okay?
+That obviously these cost savings come at a cost
+and the cost is that you're not highly available anymore.
+That means that if your AZ goes down,
+then you don't have any fell over available.
+So here you have to balance
+between the high availability and cost.
+And based on the question you will be ask in the exam,
+you have to choose the right balance.
+So typical example of that would be,
+hey, we have an RDS database
+and we want you to create a read replica
+and do some analytics on top of this read replica.
+How do we create a read replica
+for the cheapest amount of money?
+Well, if you create that read replica in the same AZ,
+then you're not going to be charged anything to replicate
+the one database to another in terms of network costs.
+But if you create that read replica in another AZ,
+then you're going to pay 1 cents per gigabyte
+of data transfer between the two databases.
+So now let's talk about
+how we can optimize our networking costs
+by making some smart architectural decisions.
+So egress traffic is outbound traffic.
+That means from AWS to the outside.
+An ingress traffic is inbound traffic.
+That means from the outside to AWS
+which is typically free.
+So sending data to AWS is usually free,
+but taking data outside of AWS, you have to pay.
+So your goal is going to be to try to keep
+as much internet traffic as possible
+within AWS to minimize the costs.
+So let's say we have a database
+and then we have a user in a corporate data center
+and we run an application in our corporate data center.
+That application is doing a query to the database
+and retrieving 100 megabytes of data from the database.
+And then it will do some aggregation, some computations
+and then finally, returned the query results,
+only 50 kilobytes to the user.
+In that case,
+the egress traffic is going to be really, really high.
+And the cost associated with it as well
+is going to be really high.
+Because we took 100 megabytes of data from AWS
+and we took it into our corporate data center,
+maybe over the internet, right?
+But if we make a smart choice,
+we could move our application directly into the AWS cloud
+on an EC2 instance.
+In this case, if we're very smart
+and we keep the data within the same availability zone,
+then the DB query data transfer is going to be free.
+And so 100 megabytes will not be built at all for accounts.
+And then the query results themselves
+of only 50 kilobytes will be sent to us
+and it will be a much cheaper cost.
+And in this case, the egress cost is minimized.
+Another thing you need to know
+to minimize egress traffic network costs
+is that if you're using Direct Connect,
+you need to choose a Direct Connect location
+that is co-located in the same AWS region
+to result in the lower cost for egress network.
+Okay. What about S3 data transfer pricing?
+Let's do an analysis for the USA.
+So we have an S3 bucket
+and any data going into the S3 bucket is going to be free,
+because this is ingress traffic.
+But if we download the data from Amazon S3
+to our computers through the internet,
+then we're going to pay an egress traffic cost
+of 9 cents per gigabytes.
+This is represented right here.
+If we want to use S3 transfer acceleration
+to get faster transfer times from 50 to 500% better,
+then we're going to get an additional cost
+on top of the data transfer pricing,
+which is going to be anywhere
+between 4 cents to 8 cents per gigabytes.
+So using transfer acceleration has a cost.
+Now S3 to CloudFront is going to be free traffic.
+So if you set up a CloudFront distribution
+on top of your S3 bucket,
+any data transfer that happens
+between S3 and CloudFront is free.
+But from CloudFront to the internet
+is going to cost you 8.50 cents per gigabyte,
+which is slightly cheaper than Amazon S3.
+On top of it, you're going to get caching capabilities.
+So lower latency for the access of the data
+and the reduced cost is going to be also
+whenever you have requests being made.
+So when someone makes a request to your S3 bucket,
+you're going to pay for that requests,
+but a request made into Amazon CloudFront is much cheaper.
+It is seven times cheaper.
+So you're going to save a lot of money by using CloudFront
+on top of your Amazon S3 bucket, if that fits your use case.
+And then finally, if you do a Cross Region Replication
+for your Amazon S3 buckets,
+then you're going to pay 2 cents per gigabyte for it, okay?
+So the numbers can change over time
+and this is for the USA and it can change for your region,
+but what you need to remember
+is that using some services have an added cost
+and it's important for you to know
+how these costs relates to one another.
+Another analysis of cost is to use a NAT Gateway
+versus a Gateway VPC Endpoint.
+So we have a VPC in the region
+and we have two private subnets
+with two different types of EC2 instances.
+And they both want to access data into an Amazon S3 bucket.
+So one way to do so is to use the public internet
+and so to do so, we set up a public subnets,
+which has a NAT Gateway.
+For the subnet to be public, we need to have a route
+into an Internet Gateway.
+And so we're going to establish a route
+using the route table.
+And then we have a direct connectivity
+from the EC2 instance through the NAT Gateway
+and through the Internet Gateway into the internet.
+Then from the internet,
+we access the data in your Amazon S3 buckets.
+And so the cost associated with this is $0.045 per hour
+for your NAT Gateway,
+$0.045 per gigabytes of data process
+through your NAT Gateway
+and then $0.09 per hour for data transfer out
+to S3 cross-region or $0 if it's same region, okay?
+But if we were to set up a VPC Endpoints, okay,
+to access our data into our Amazon S3 bucket privately,
+then we set up a different route table.
+So in this case, to access the VPC Endpoint
+we just set up a route to it.
+And so the data flows directly from the private subnets
+into the VPC Endpoints and the S3 buckets.
+And we have no cost for using Gateway Endpoint
+and we pay 1 cent per gigabytes of data transferred
+in and out of your S3 bucket for the same region.
+So this can be a significantly lower cost
+to use a VPC Endpoint instead of your NAT Gateway.
+And this is again, something that the exam can test you on.
+So I hope you liked this lecture
+and I will see you in the next lecture.

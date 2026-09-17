@@ -1,0 +1,186 @@
+# 87. Amazon Aurora - Advanced Concepts
+# Section: AWS Fundamentals: RDS + Aurora + ElastiCache
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26099176
+# Caption: en_US (manual)
+
+So now let's discuss advanced concepts
+of Aurora that you need to know going into the exam.
+So let's talk about replica auto-scaling.
+So let's say we have a client
+and we have three Aurora instances right now.
+So one will be writing through the writer endpoint
+and the other two would be reading
+through the reader endpoint, okay?
+Now let's say that we are having many, many requests,
+read requests on the reader endpoint,
+and so therefore, the Amazon Aurora databases
+have an increased CPU usage.
+In that case, we can set up replica auto-scaling.
+And what this will do is that it will add
+obviously Amazon Aurora replicas,
+and then what will happen is that automatically,
+the reader endpoint is going to be extended
+to cover these new replicas.
+And therefore, these new replicas
+will start receiving some traffic
+and the reads will be happening
+in a more distributed fashion,
+hopefully bringing down the overall CPU usage.
+So this is replica auto-scaling.
+The second thing is custom endpoints.
+So let's say we have the same setup,
+but this time, we have two different kinds of replicas.
+As you can see, we have some db.r3.large
+and some db.r5.2xlarge.
+So some read replicas are bigger than others.
+And the reason you would do this
+is that you wanna define a subset of your Aurora instances
+as a custom endpoint.
+So let's say we define a custom endpoint
+on these two bigger Aurora instances.
+The reason we would do so is, for example, that we know
+that these instances are more powerful
+and therefore they're going to be better
+to run analytical queries on these specific replicas.
+So when you do so,
+you have a custom endpoint that's defined.
+And when you have a custom endpoint,
+generally the reader endpoint itself
+is not used after defining custom endpoints.
+So it would not disappear, but you would not use it anymore.
+And what you would do, like practically speaking,
+is set up many custom endpoints
+for many different kind of workloads,
+therefore allowing you to query
+only a subsets of your Aurora replicas.
+Next, we have serverless.
+So this is going to give you
+automated database instantiation
+and auto-scaling based on actual usage,
+which is great when you have infrequent, intermittent,
+or unpredictable workloads.
+And therefore, you don't need to do any capacity planning.
+You're going to pay per the second of each Aurora instance
+that is being spun up,
+and this can be a lot more cost-effective.
+So how does that work?
+Well, the client is going to talk
+to a proxy fleet that is managed by Aurora.
+And in the backend, many Aurora instances will be created
+based on your workload in a serverless fashion,
+so you don't have to provision capacity at all in advance.
+Finally, we have Global Aurora.
+So in case we have Aurora Cross Region Read Replica,
+it's going to be very helpful for disaster recovery.
+Very simple to put in place,
+but you can also set up the Aurora Global Database,
+which is the recommended way of doing things today.
+In this case, you have one primary region
+where all the reads and writes happen.
+You can set up up to 10 secondary read-only regions
+where the replication lag should be less than one second
+and up to 16 read replicas per secondary region.
+And this will help you decrease latency
+for the read workloads all over the world,
+but also in case you have a database outage in one region.
+Promoting another region for disaster recovery purposes
+has an RTO, so recovery time objective,
+of less than one minute,
+so it takes less than one minute
+to recover into another region.
+And here is a sentence you should look out for
+from an exam perspective,
+it takes on average less than one second
+to replicate data across region
+for your Aurora Global Database.
+So this is something that if you see in the exam,
+it's a hint to use a Global Aurora.
+So let's have a look.
+We have us-east-1 as our primary region,
+which is where the applications do the read and writes,
+and then we'll set up a secondary region in eu-west-1
+or some replication happening
+with a global database of Aurora.
+And the applications there can do read-only from that setup.
+But in case us-east-1 fails,
+then we can failover to eu-west-1
+by promoting it as a read-write Aurora cluster.
+Aurora also has an integration
+with machine learning services within AWS.
+So the idea with Aurora Machine Learning
+is that you can have ML-based predictions
+to your applications via the SQL interface.
+It's a simple, optimized, and secure integration
+between Aurora and different AWS machine learning services.
+So two supported services are SageMaker,
+which allows you to use
+any kind of machine learning model in the backend,
+or Amazon Comprehend, if you want to do sentiment analysis.
+Now, you don't need to be an expert
+in SageMaker or Comprehend.
+You just need to know that
+Aurora has an integration with those.
+So in order to use Aurora Machine Learning,
+you don't need to have a machine learning experience.
+And the use cases for this would be to have fraud detection,
+ads targeting, sentiment analysis,
+or product recommendation all within Aurora.
+So to give you the architecture idea,
+Aurora is going to be connected
+to the machine learning services in AWS.
+And your application can just run a very simple SQL query.
+For example, what are the recommended products?
+Aurora will send some data
+into the machine learning services,
+such as, for example, the user's profile,
+the shopping history, et cetera, et cetera.
+And then the machine learning service
+will return a prediction directly to Aurora.
+For example, the user should buy a red shirt and blue pants,
+and then Aurora can just return the query results
+to the application,
+all through as a result of the SQL query,
+which is very handy.
+So let's talk about Babelfish for Aurora PostgreSQL.
+So this is a feature that allows Amazon Aurora PostgreSQL
+to understand commands
+that are targeted for Microsoft SQL Server
+using the language T-SQL.
+So let me explain so it's clearer.
+If you have an application in your company today
+that's using Microsoft SQL Server as a database,
+then your applications are going to be written
+and they're going to use a driver
+called the SQL Server Client Driver,
+which is going to send the commands
+to your Microsoft SQL Server using T-SQL.
+But tomorrow, you want to migrate to the cloud.
+And so you migrate to Aurora PostgreSQL,
+which is a scalable database in the cloud that you like,
+but the engine is PostgreSQL.
+So that means that your applications must be converted
+to using the PostgreSQL driver.
+And the SQL language is a little bit different.
+It's using the PL/pgSQL language.
+So it's just a different language.
+You don't need to remember the name of it.
+So the idea is that how do we make sure
+that our SQL Server application does not have to be migrated
+to be rewritten?
+For this, we use Babelfish
+and Babelfish is going to be enabled on Aurora PostgreSQL,
+and this allows your application
+to just communicate to Aurora PostgreSQL
+using the T-SQL language through Babelfish.
+And so there's almost nothing to change.
+So that means that your SQL Server applications
+can now work on Aurora PostgreSQL
+with little to no code changes using the same driver.
+And so this is very handy
+because well, migrations are super easy.
+Now to do the migration, you use something called,
+and we'll see this later on this course,
+something called AWS SCT and DMS to migrate from,
+for example, SQL Server to Aurora PostgreSQL.
+But Babelfish is here to do the translation of T-SQL queries
+into Aurora PostgreSQL.

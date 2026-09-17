@@ -1,0 +1,117 @@
+# 137. Storage Gateway - Advanced Concepts
+# Section: Migration
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34785408
+# Caption: en_US (manual)
+
+Next, what can we do,
+thanks to the File Gateway?
+So here is some interesting thing to think
+about when you're a solution architect.
+So our traditional server can access
+our File Gateway appliance on-premise using the NFS
+or the SMB protocol.
+And as we said, the files are going to be stored
+in the backend into Amazon S3.
+Now it is 100% for you possible to use a VPC,
+and create another File Gateway appliance
+and connect your E2 instances over with NFS and SMB.
+Why would you do this?
+Well, maybe you want your EC 2 instances to access Amazon S3
+as a file system and therefore you're going to use
+a File Gateway appliance for that.
+So this could also be a way
+for you to migrate your applications
+from on-premise to the cloud using the same protocol
+the same NFS or SMB protocol,
+and it would be a first step to move your migration,
+your workloads into the cloud.
+But once the data is in Amazon S3,
+remember every single file is going to be in Amazon S3.
+Then you can use S3 events to send
+that information to Lambda.
+and then Lambda functions,
+maybe process some of these objects for you.
+Or we can use Athena to query all of our data in Amazon S3.
+The beautiful thing is that Athena only uses the resources
+of Amazon S3, and so it doesn't impact the performance
+of our File Gateway.
+We can use Redshift Spectrum
+or even EMR to analyze the data.
+Finally, we are able to use cross region replication to,
+for example, back up the data
+into another region for disaster recovery.
+So by using the File Gateway, it seems very simple.
+We are exposing a network file system
+to our corporate data center,
+but because the data appears to be in S3 at the end,
+it opens up so many different possibilities,
+and I hope you see them.
+Next we could have read only replicas.
+So for example, you wanted to replicate a file system
+from one on-premise data center to another.
+In the first on-premise data center,
+you would create your File Gateway plans number one
+and your applications would write some files into it.
+And then you would appear in an Amazon S3 bucket.
+And in another on-premise data center,
+you can create a read only replica,
+so that your file system, your application servers
+can read a read only copy of your File Gateway appliance
+to get the data fast with low latency.
+So this is yet another architecture you have to think about
+when you're using your File Gateway appliance.
+Next, there's way to do backup and lifecycle policies.
+So let's take an example.
+Our file system, our application servers,
+are talking to our file system on the File Gateway
+and the files are going to be backed up into Amazon S3.
+But it is possible for these files to be used less and less.
+And so we can define S3 lifecycle policies,
+maybe to migrate stuff to Amazon S3 Standard-IA first
+for infrequent access, and then after a while
+migrate it to Amazon S3 Glacier.
+So what we've done is that effectively,
+we've made sure that we are getting some cost savings
+for our file system on top of getting an NFS interface
+for our application server on-premise.
+So yet another thing to think about.
+But this is Amazon S3,
+so we have so many other possibilities.
+The first one is that if you do enable
+Amazon S3 ObjectVersioning,
+then you can store multiple object versions
+as they are modified, which is extremely helpful
+if one of your engineers, or one of your employees,
+is asking you to restore a specific file
+to a previous version.
+Because you're storing every single change in Amazon S3,
+it is definitely possible for you to restore any file
+to any previous version, or you can even restore
+an entire file system to a previous version.
+But if you do so, to restore a file
+or a file system to a previous version,
+you need to let your File Gateway appliance know
+that there has been a change.
+And so there is a cache, a RefreshCache API
+on the gateway so that you notify the gateway
+that there has been some restore happening,
+some changes happening on the Amazon S3 buckets,
+and there will be a synchronization happening
+in the backend.
+Another one is to use Amazon S3 Object Lock.
+And this enables the File Gateway
+to be a Write Once Read Many,
+so WORM data network file system.
+So the idea is that if there are any modifications
+or renames in the file share clients,
+the file gateway will create a new version
+of the object without affecting prior versions
+and the original locked version will remain unchanged.
+Effectively, the giving, making sure
+that you're not losing any data
+and that the original data will never be deleted.
+And so for compliance reasons, or audits,
+or restore again versions, then reasons this could be
+really, really helpful.
+So that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

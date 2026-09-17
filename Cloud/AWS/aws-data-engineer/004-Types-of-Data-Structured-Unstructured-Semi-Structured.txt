@@ -1,0 +1,161 @@
+# 4. Types of Data (Structured, Unstructured, Semi-Structured)
+# Section: Data Engineering Fundamentals
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40392644
+# Caption: en_US (auto)
+
+Instructor: So again our
+focus in this section is gonna be a little bit unusual
+in that we're not talking about AWS stuff primarily at all.
+We're just going back
+and reviewing some data engineering fundamentals that go beyond AWS.
+And the exam guide does say
+you need to know some of this stuff, not just AWS services.
+So again, we're not gonna touch on everything about
+data engineering here,
+just the stuff that's explicitly called out
+on the exam guide.
+One of those is the three types of data.
+So let's review that.
+We have structured, unstructured, and semi-structured data.
+So we need to understand what those mean
+to be successful in the exam.
+Let's review.
+So structured data, we
+mean a data that is organized in a defined
+manner or schema typically found in relational
+databases.
+So data where it's already been organized into distinct
+columns of information that have distinct
+data types.
+And we've already thought
+about how all those columns relate to each other
+and how we might wanna search that data.
+Characteristics of structured data include
+they are easily queryable.
+So since it does have that structure, it's
+very easy to throw a SQL query at it, right?
+Because you already know what the columns are
+named, you know what the data types
+are, you know what to expect.
+It's already organized into rows and columns.
+And it has a consistent structure.
+There's no surprises in there. It's been cleaned up already.
+So some examples are database tables, of
+course, you know, Oracle, Redshift, MySQL, PostgreSQL, whatever
+it might be.
+Also a CSV file would count as structured data as long
+as its data is consistent, as long as
+it has consistent columns within it and you
+don't have any crazy stuff like lines that have
+varying numbers of columns, right?
+That is possible in CSV.
+But assuming it's a well-structured CSV, that would
+be structured data.
+Also, Excel spreadsheets is an example of that.
+And obviously it's possible to make an Excel spreadsheet
+that is unstructured
+and contains just a bunch of random junk.
+But, you know, your typical Excel spreadsheet
+that is organized into rows and columns of well-defined
+information would be structured data.
+Then on the other side of the
+fence, we have unstructured data, data
+that does not have a predefined structure
+or schema stuff,
+that's just a collection
+of data that we have to figure out what it is before
+we can start to query it.
+So we cannot query unstructured data
+without first pre-processing
+it and somehow extracting meaning from that data and figuring
+out how to index it first.
+Could come in any number of formats.
+For example, raw text files that have no fixed format.
+Maybe you're processing,
+you know, all the text on Wikipedia or something,
+or all the text on Reddit, or all the
+text in a book, because you wanna
+do a full text search on that later on or train a large
+language model with it.
+Who knows?
+In that case, you
+do need to do some pre-processing,
+obviously, to index that file first.
+Videos, audio, and image files are another example.
+You can't really search those directly.
+You need to extract some metadata from that first.
+So there's no structure to an image, or
+to a video, or an audio file.
+We need to extract that structure
+and say, "Hey, what's the transcript of this video?
+How do I organize it?
+When was it created?
+How long is it?
+Who made it?
+What's it about? " Right?
+What's its topic?
+Things like that would need to be extracted
+from that data first.
+Emails and word processing documents as well.
+Same category as text files there or
+just raw text information.
+Again, we need to index that information first, figure
+out its meaning, what it's all about,
+and then we can have the structure that we need to
+actually query that information.
+And then somewhere in the middle,
+we have semi-structured data.
+Kind of a gray area what you mean by this exactly,
+but the official definition is that it's data that's not
+as organized as structured data but it has some
+level of structure in the form of tags, hierarchies,
+or other patterns.
+So the structure is in there somewhere, but
+you need to do a little bit of
+work to tease it out, right?
+So it might have elements that are
+tagged or categorized in some way.
+It's gonna be more flexible than structured
+data, but not as chaotic as unstructured data.
+So you can put different types of stuff in there perhaps
+and get away with it.
+But, you know, we can still extract the information we need.
+XML and JSON files are examples of this where you can
+have different kinds of schema within the
+same document, right?
+But there's still enough tags within
+that file to figure out what we're talking about.
+So the schema in that case might not be consistent, but
+at least it exists, right?
+So that's semi-structured.
+Email headers is another example of that.
+It could have any number of bits of information
+like the date and subject
+and the unstructured data within the body as well.
+So when we aren't really sure what's in there, you know, that's
+semi-structured, if we at least
+know the stuff, what the stuff
+that is in there is, right?
+Does that make sense?
+Log files is probably the most important example of this in the context
+of data engineering because it's
+the most common one.
+If you've got an Apache log file
+out there, or a service log, or a server log, they can be
+any number of formats, right?
+And it's not always consistent what information
+they're writing.
+There might be a lot of missing data in there.
+There might be data that exists on some
+lines but not others.
+And you might need to do quite a bit of parsing of
+each line of that log to figure out what it's all about and
+what the structure of that individual line is.
+So again, semi-structured, the structure is in there,
+but it might not be consistent
+throughout the document.
+I think that's really the best way to sum it up.
+So that's structured, unstructured, and
+semi-structured data, one thing
+the exam guide calls out for data
+engineering fundamentals.

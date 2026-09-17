@@ -1,0 +1,100 @@
+# 366. SAM with DynamoDB - Hands On
+# Section: AWS Serverless: SAM - Serverless Application Model
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/51961221
+# Caption: en_US (manual)
+
+So I just wanna show you what it looks like
+when you also have a DynamoDB table.
+So we'll do sam init,
+and then we'll use quick start templates again
+and we'll use this time a serverless API,
+so number seven in this case.
+Then we'll use nodejs22.
+And then we don't want X-Ray,
+we don't want this, we don't want that.
+And then I'll call this one sam-app-dynamodb.
+Okay, so here what we have is a directory,
+because sam-app-dynamo, oh, I made a typo,
+but whatever, this is fine.
+And in it, again, if we look at the files,
+find. -print, we have the same structure as before,
+but now, we have some source there, like JavaScript sources.
+They're made for no JSON,
+so you don't need to remember those.
+What's important again, is the template
+that yaml file that I wanna show you.
+So if I do cat template.yaml,
+as you can see, this is a more full template,
+because this is a full serverless API,
+but let's have a look.
+Again, we have this transform serverless
+that's super important for SAM,
+and then in there we have resources.
+So we have several functions.
+We have the getAllItemsFunctions,
+which is a serverless function,
+and we have the source, the runtime, the memory,
+the policy, so super important here.
+It's a very simple policy
+made possible thanks to the SAM framework.
+So here we have a DynamoDB crude policy
+on a reference to the table name, and that's it,
+that's all we need to create an IAM policy
+with the SAM framework, which makes it super easy
+compared to raw CloudFormation,
+as well as the events it should reply to.
+So this should be a GET on the root path as an API.
+Again, super easy way to define an API.
+Then we have another serverless function, another handler,
+again, another policy, and another API path.
+Again, super easy to define it, thanks to this.
+We have a third function. This is for put this time.
+So, you see method is POST.
+And then, we have the sample table,
+which is a simple table, which behind the scenes,
+get converted into a DynamoDB table.
+We have the primary key and then provision throughput
+for read and write capacity unit as two.
+And that's it, that's all we need to do
+to deploy a full blown API into AWS with the SAM framework
+that is backed up by a DynamoDB table.
+So these examples are great,
+because they really allow you to see you,
+to show you the power of the SAM CLI.
+If you wanted to have fun, you can deploy it,
+but if you deploy it, make sure you delete it after
+by doing sam delete.
+But you can have fun and deploy it if you want to,
+no need to show you the step, you already know this.
+That's it, and then I can't run this thing locally
+on the Cloud Shell unfortunately,
+but SAM has local capability.
+But one thing I could show you is that you have events here,
+and in this event we have sample events.
+So I can copy one, and these events are sample events.
+And then we can do the sam local invoke command,
+but this won't work on Cloud Shell
+because I don't have the necessary things installed.
+I need Docker and so on
+to actually run these events and test it.
+So if you want to, in your own time,
+to play around with this capability, what you could do
+is that you could read the readme.md file,
+and in there you will find somewhere here,
+here, these two functions
+to invoke your application locally,
+so you can run it locally,
+and then you can invoke the put item function
+with this specific event.
+And then you can invoke the getAllItemsFunction
+with that specific events as well
+to test your function locally
+without even deploying it to AWS.
+You can even start a local API gateway
+directly on your computer using the sam local start-api,
+and then there you go, you have something on your computer.
+So this allows you to just iterate very quickly
+on your computer, and then when you're done, upload to AWS.
+So that's it for this lecture where I just wanna show you
+how to set up DynamoDB and how to run things locally.
+I hope you liked it, and I will see you in the next lecture.

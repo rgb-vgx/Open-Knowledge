@@ -1,0 +1,60 @@
+# 162. Fine-Tuning and Transfer Learning with Transformers
+# Section: Generative AI Model Fundamentals
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285941
+# Caption: en_US (auto)
+
+So I also want to talk about transfer learning.
+With Transformers.
+We generally call this fine tuning and it's a very exciting prospect.
+So you can just use a pre-trained GPT model or any other transformer model as a starting point, you
+know, as a sort of base representation of how the language works.
+So I could use GPT three for llama, whatever it is, and just use that as the foundation that I'm building
+upon.
+Right.
+So that can be the big giant model that tells me how to speak English or how to speak French, or how
+to speak Python.
+Right.
+And then I can further train that with a specific set of training data to fine tune this network for
+a very specific task.
+And that is that opens up this whole new world of applications.
+So there's a few ways of doing it.
+One is to just feed your new training data through the whole thing from the bottom to the top.
+Right.
+Um.
+That works.
+Another way is to freeze specific layers and retrain just the top few layers.
+That's another way of doing it.
+So that would be one way of training a new tokenizer, for example, to learn a new language, you could
+just freeze the layers below it and retrain the tokenization step.
+Or you can add a new layer on top of the pre-trained model that forces it to do something else.
+And sometimes all you need are just a few and a few examples of prompts and desire completions to figure
+out how to tune it.
+So, for example, um, you know, I could adjust the tone or the personality, if you will, of this
+thing by giving it examples of someone who always gives snarky responses or sarcastic responses if I
+wanted to, or someone who's just always overly happy.
+Right.
+Um, or I could adapt it to entirely different tasks.
+Entirely.
+Right.
+So I could take a language model and adapt it to classification by just saying.
+Here's some examples of doing that.
+If somebody says, wow, I love this course, that's a positive sentiment.
+And just by having another layer on top of this transformer model, I can train it how to take those,
+um, final representations and translate it into a classification that I want.
+But there's more to it than that, right?
+Like, you could also do things like train it on all of your past emails and your responses to them.
+Right.
+And you could then train your transformer on how to respond to emails, just like you would.
+I could train it with the scripts of a movie and train it how to act just like my favorite character
+in that movie all the time.
+I can bring that character to life, if you will.
+I actually did that once.
+I trained an OpenAI model based on all the scripts of Star Trek The Next Generation, and I made my
+own actual AI version of data who is a fictional AI?
+So there's some mind blowing stuff right there.
+Or you could train it on, uh, customer service transcripts.
+Right.
+And fine tune your model to really know how to return responses that are relevant to your own organization
+based on how people have actually responded to real customer service inquiries in the past.
+So fine tuning is a very powerful way of taking these large pre-trained models and fine tuning them
+to the application that you actually need.

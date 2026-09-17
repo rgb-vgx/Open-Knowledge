@@ -1,0 +1,77 @@
+# 55. [SOA] CloudFormation - Depends On
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/42314330
+# Caption: en_US (manual)
+
+So now let's talk about DependsOn.
+And DependsOn is a way for you to specify a specific order
+for the creation of resources.
+So here in this template, we have an EC2 instance
+and we have an RDS database instance.
+And if I did not have this DependsOn right here,
+they would both be created at the same time.
+But because I'm adding DependsOn DBInstance, it turns out
+that my DBInstance is going to be created first,
+and only if it gets successfully created,
+then my EC2 instance will be created on its own.
+And so DependsOn allow you to specify some hints
+at the order of which resources should be created at.
+Now we've seen that CloudFormation also makes judgment calls
+about in which order to generate resources.
+And it turns out that if,
+from your EC2 instance you're using, for example,
+a reference intrinsic function
+to a security group, then CloudFormation knows
+that your EC2 instance depends on your security group
+and therefore will create it only after your security groups
+are created.
+But if you're not using a ref function
+or a get attribute function to link two things together,
+then you can link them together
+with the DependsOn attributes,
+and that works with any resource.
+So let's have a look at it right now.
+So here is the file, 5-dependson.yml,
+and we have two resources in it,
+we have an EC2 instance of Type EC2 Instance,
+the properties is a specific ImageId,
+and an InstanceType of t2.micro,
+and MyBucket, in MyBucket is an S3 bucket,
+but we made it depend on MyEC2Instance,
+and I need to rename things correctly,
+otherwise it's not going to work.
+Here we go.
+And so what it means is that,
+well, the S3 bucket will not be created
+up until the EC2 instance is created.
+If I did not have this line, if this slide was not existing,
+then they would both be created at the same time
+because there is no link between my EC2 instance
+and my S3 buckets.
+So let's observe this real quick.
+We're going to upload the file, being this one, next.
+Then we'll, DependsOn,
+and submit.
+And so as we can see, let's look at the events
+to really make sure this is working as expected.
+So as you can see,
+MyEC2Instance is the only thing being created
+and even if I refresh,
+well, there is no S3 bucket being created right now.
+And only when the EC2 instance is going to switch
+to create completed will my S3 bucket be created.
+Again, this is due to the DependsOn attribute,
+so now MyEC2Instance is in create complete,
+and as soon as it was done, as you can see,
+MyBucket is being created and we're good to go.
+So now my S3 bucket is being created.
+And this works the exact same way on the deletes,
+so when you have a DependsOn attribute,
+let's go through the delete now,
+if I delete things,
+it's first going to delete the S3 bucket
+and then when the delete of the S3 bucket is completed,
+will it actually terminate the EC2 instance.
+And that shows you the power of DependsOn.
+So I hope you liked it,
+and I will see you in the next lecture.

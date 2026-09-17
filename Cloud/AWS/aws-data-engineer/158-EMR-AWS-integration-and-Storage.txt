@@ -1,0 +1,200 @@
+# 158. EMR, AWS integration, and Storage
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356520
+# Caption: en_US (auto)
+
+Lecturer: So EMR is not just Hadoop running on EC2, they've
+actually gone through a lot of effort
+to integrate EMR with the AWS ecosystem at several points.
+So let's talk about those 'cause
+they're important to know.
+So it does use Amazon EC2 under the hood for
+the instances that make up the nodes
+within your EMR cluster.
+So under the hood, you have EC2 instances that
+are running the nodes on that cluster for you, and
+they can do everything that EC2 can do.
+It's also using Amazon VPCs to configure the
+virtual network in which you're
+launching your instances.
+So you're launching the
+instances for that cluster within an Amazon VPC.
+It integrates with Amazon S3.
+So normally on Hadoop you only have access
+to the Hadoop distributed file system, HDFS, but
+they've extended that with
+EMR so that you can actually store your
+input and output data to Amazon S3 instead.
+And we'll talk about more about how that works.
+Also, it integrates with Amazon CloudWatch,
+as does pretty much everything,
+to monitor the performance of your cluster
+and to configure any alarms that
+you might need to rig up for the cluster.
+You can use AWS IAM to configure permissions on EMR and
+we'll go deeper on security shortly.
+CloudTrail can be used to audit
+the requests made to the EMR service
+and AWS data pipeline integrates with EMR so that
+you can schedule and
+start your clusters as part of a data pipeline.
+Remember, you can set up these transient
+clusters that will automatically kick off steps
+and with a data pipeline,
+you can schedule when that happens
+as part of a larger process.
+So let's talk more about storage with EMR.
+So there are several options available to you.
+One is HDFS.
+So remember, this is fundamentally
+a Hadoop cluster running on EC2.
+And if you want to use the HDFS file system, you can.
+So that's gonna be using the local storage on each instance
+to distribute the storage across the entire cluster.
+The way HDFS works is that it stores multiple
+copies of each file block across cluster
+instances.
+That way we have redundancy in case one node goes down, it
+can recover from that because
+it always makes sure
+that your data is copied to more than one place.
+That way, if an individual instance fails,
+no data is lost, it can
+just go ahead and reroute
+things to that other backup copy and start building
+up a new backup copy.
+So each file in HDFS is stored as blocks, and those
+blocks are what is distributed across the cluster.
+It's not files, it's blocks of data that make up each file.
+Now, by default, the size
+of a block in HDFS is 128 megabytes, which
+might be important.
+However, the thing is that with EMR,
+that HDFS storage is going to be ephemeral.
+As soon as you shut down your cluster, you're
+gonna lose all that storage.
+So that's kind of the, the problem with EMR.
+It's not necessarily something that
+you leave running forever,
+like you would with a traditional Hadoop cluster, although
+you can.
+But since you're being billed by the minute,
+you have to remember
+that as soon as you terminate that
+cluster, if you have the idea to save
+some money and stop racking
+up your bill, which can add up fast with a large cluster,
+that data is gonna go away.
+And that's a problem, right?
+So if you're writing all of your output to HDFS and you shut
+down your cluster because someone
+wanted to save a few bucks, all that data's
+gone and you're gonna
+have a very bad day.
+However, you can still use it for
+caching intermediate results
+or workloads that have significant random I/O.
+The nice thing about HDFS is that
+Hadoop will try to process data where it is stored on HDFS.
+So it will try to distribute
+the processing of your data
+such that the processing of a block
+happens on the same node where that
+block is stored.
+That's a really important optimization that HDFS enables, but it is really
+kind of a showstopper issue that as soon as you
+terminate your cluster, it's all gone.
+So what do you do?
+Well, this is where EMRFS comes
+in and the idea of EMRFS, or the EMR file system,
+is to access S3 as if it were HDFS.
+So with EMRFS, you
+can write data out just like it were HDFS.
+You just use a different
+prefix for where you're writing it out to, you
+know, S3 and that allows persistent storage
+even after your cluster terminates.
+Now, one problem that used to be an issue
+was the issue of consistency.
+So what happens if you have multiple nodes
+writing into the same spot on S3 at the same time.
+There could be a contention issue
+there, like who actually get...
+Who goes first.
+So it used to be that there was
+this thing called EMFRS consistent view, and
+at this point, I'm not
+really sure if the exam reflects that this
+is no longer necessary.
+So you might still need to know about this.
+Sometimes the exam lags changes in technology
+by several months.
+So I'm still gonna mention it here,
+but it is an option for S3 consistency where
+it uses DynamoDB under the hood to track
+file access consistency for that underlying
+S3 data store to make sure that if you
+have multiple nodes from your EMR
+cluster hitting the same file and S3 at the
+same time, it will still work.
+And this actually gets really complicated, potentially,
+because if you have a lot of I/O traffic going on there, you might have
+to tinker with the read right capacity on the
+underlying Dynamo DB instance to get it
+to work reliably, kind of a pain.
+Fortunately, Amazon realized that this was a pain
+and new in 2021, S3 itself
+is now itself strongly consistent.
+So now that S3 guarantees consistency, we don't need
+to worry about EMRFS consistent view anymore.
+So it's no longer an issue.
+It just works magically now.
+Now we are still giving up the optimization of processing data
+on the same machine where it's stored.
+Obviously S3 is gonna store this data somewhere
+else across the network.
+So in theory, it's not quite as fast as using HDFS, but in practice
+it's still pretty darn fast.
+S3 can be pretty quick and it's
+all in the same data center.
+So in practice you can still build large scale
+efficient applications using EMFRS that's using
+S3 instead of the HDFS file system that's built
+into Hadoop.
+So that let's you run Hadoop applications using
+S3 as a persistent data store so that
+when you terminate your cluster,
+your data does not go away.
+Other options are using the local file system.
+Obviously that's also gonna be ephemeral
+and not backed up anywhere either.
+So although it's gonna be fast, there's
+not much of it and it's only
+suitable for temporary data.
+So if you wanna have temporary buffers or caches,
+fine, you can write them out
+locally, just make sure you're not depending on that
+sticking around for any length of time.
+Also, elastic block store for HDFS, you could
+use EMR on EBS only types like M4 or C4
+by using that feature.
+But again, just like local storage, your
+elastic block store is gonna be deleted when your cluster
+is terminated as well.
+So not really giving you a whole lot beyond HDFS there, but if you
+don't really have a local file system because
+you're using an EBS only instance type,
+it can still use EBS for that local
+storage and for backing HDFS.
+Now, EBS volumes can only be attached when you're
+launching a cluster in number two.
+So you're not gonna be able to expand that storage
+capacity after the fact, which is another reason maybe to avoid it.
+Keep in mind as well
+that if you manually detach an EBS volume while it's
+running, EMR will treat that as a failure and it will
+automatically replace it.
+So it is resilient to that failure mode at least.
+But again, if you do want persistent storage
+that's gonna last after your cluster is terminated,
+you kind of have to use EMFRS with S3 for that.

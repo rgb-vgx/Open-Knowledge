@@ -1,0 +1,70 @@
+# 65. Service Catalog - Extras
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37859032
+# Caption: en_US (manual)
+
+So let's have a look at a few more
+service catalog concepts for the exam.
+So the first one is to use stack set constraints
+to configure how you want your product
+to be deployed using CloudFormation stack sets.
+So you can actually restrict by accounts,
+you can restrict by region
+and you can define which IAM role should be used
+to deploy this stack set into the target accounts.
+So let's say we have a product
+and we apply some stack set constraints around the regions.
+For example, we say only eu-west-1
+and us-west-2 are authorized.
+Then we cannot deploy, for example, to us-east-1.
+And that's very important because CloudFormation stack set
+itself doesn't give you any kind of control about
+where you can or cannot deploy.
+But if you put a product as part of service catalog,
+you have this kind of guardrails that you can create
+for accounts, regions, and permissions.
+So it's very important going into the exam
+to know the differences between them two.
+Next we have launch constraints.
+So this is how you want a product to be launched
+and which IAM role is going to be used
+to launch that product.
+So the idea is that if you have a user that doesn't have
+the required permission to launch a product
+because they don't have, for example,
+permissions to use the EC-2 service or the RDS service
+but the product itself uses EC-2 and RDS,
+then you use a launch constraint,
+and this launch constraint is just an IAM role
+that has full CloudFormation permission,
+that has all the services that you are defining
+in the CloudFormation template to be able to create them.
+And then the S3 bucket to be able to
+read the CloudFormation templates.
+And from that, this IAM role is assigned
+to the service catalog product
+and therefore any user who has the right
+to launch the product will be able to launch the product
+because the product will be launched thanks to that role.
+So how can we have version control on service catalog?
+For example, we want to synchronize everything
+from a CodeCommit code repository into service catalog.
+Well, for example, when we push a new product
+into CodeCommit and we can maintain a file called
+mapping.yml which says which products corresponds
+to which templates, then we have some kind of
+version control over these templates.
+All we need to do now is to apply them into service catalog.
+So for this, we can invoke a Lambda function
+and this Lambda function will be invoked
+on every Commit or every push into CodeCommits.
+And this Lambda function will be able to
+read all this information from the templates
+such as the data itself,
+so the yml templates and the mapping.yml.
+And then the Lambda function will have some logic
+to update or create the products in service catalog,
+and you have effectively created a synchronization
+between CodeCommit and service catalog.
+Okay, so that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

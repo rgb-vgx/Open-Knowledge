@@ -1,0 +1,168 @@
+# 200. AgentCore Policies
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865811
+# Caption: en_US (auto)
+
+One of the main challenges in AI agents is trust, so we have gateway, which lets it talk
+to external services and do external tool calls, but I got to really trust that agent
+before I'm going to let it go loose with my credentials and, you know, spend money and
+things like that.
+That's what policy is meant to address.
+So policy is a more recent feature in Asian core that gives you much tighter control over
+what your agents are actually allowed to do or not do and what situations are allowed to do them in.
+Policies are integrated with one or more agent core gateways, so it will look at the agents
+in your gateway and control what they have access to or not, and there's a little example
+here on the right here.
+We'll look at that in a second.
+The way it works is that it intercepts all of your tool calls outside of the actual code
+of your agent, and it will evaluate every one of those tool calls to make sure that
+it's okay vis-a-vis your defined policy.
+So let's take a look at this little code snippet on the right here.
+So this is saying, for example, that if we have a refund agent and it's trying to conduct
+a tool call of process refund, that's only going to be allowed if the amount of the
+refund is less than $200.
+So this is basically putting in a safeguard that says for a really high ticket refund,
+maybe we don't want that happening automatically.
+Maybe a human should look at that instead, right?
+So just one simple example.
+These are defined in the Cedar language, which is what you're seeing here, and Cedar is an
+open source language for policy definition.
+Now you don't have to learn Cedar to use this.
+That's the nice part.
+As you can see in the actual UI for setting up policies in the console, you can actually
+construct these just using natural language queries.
+So you can type in what you want and the AI model under the hood will convert that to Cedar for you.
+There's also a form-based solution you can use as well if you want a little bit more
+tighter control over what that Cedar language output will be.
+But at the end of the day, it's a piece of code that looks like that.
+And this gives you very fine-grained control.
+So you can define who can do what and under what set of conditions, and this specific
+example gets into all of those cases there.
+So basically your agent will request an action through its tool calls, okay?
+That goes through agent core gateway.
+If it does go through gateway, then your policy engine can intercept those calls and then
+apply your Cedar-based policies to either allow or deny those requests, right?
+And then only once it passes that policy will it actually call those tools or APIs or external MCP servers.
+The other thing too is that these are evaluated outside of the agent's code.
+This makes them a little bit more reliable.
+So you don't have to worry about whether the agent's code is going to be hiding these policies.
+It's outside of that entire world.
+So this is sitting external to the actual agent itself and sort of monitoring it from
+the outside to make it even more reliable.
+The enforcement by the way is denied by default.
+So this is always a good best practice for security.
+You know, you definitely want to make sure that you're just enforcing the least permissions
+that you can actually get away with.
+So a request comes in, if it forbids a given rule match, then it will deny it.
+And if you explicitly permit it, then it will allow it.
+But if you do not explicitly forbid it and you do not explicitly allow it, it will be
+denied by default.
+And that is just the safe thing to do.
+It also includes contextual validation as part of a feature of the policy engine.
+So it will validate the full context before it looks at it.
+If there are any OAuth subclaims, by the way, the identity that you're using for these policies
+can come from OAuth identities.
+And it will also look at these specific tool arguments and validate that those are valid
+as well for what you're trying to do.
+There are two modes to these policies.
+So just like with a web application firewall, you can either have it on enforce mode to
+actually actively block actions that you don't want allowed, or you can set it to log only
+mode and just use that for testing and validating your policies.
+So before you actually turn them on, make sure that you're not accidentally denying
+a bunch of traffic that should have went through instead.
+This will make more sense when we look at it in the UI.
+So let's hop on over to the console and see it in action.
+Let's just do a quick tour of policy within Bedrock Agent Core from the console here.
+By the way, you don't have to do this from the console.
+It is actually possible to do this entirely from code as well using the Bodo3 library
+from Python or however you want to do it.
+If you do refer to the official AWS documentation for policy, it does have a sort of a getting
+started section there that has a very lengthy code-based example that you can walk through if you want to.
+And that goes through actually setting up a gateway using code and then applying policies
+to that gateway all through Python.
+So if you do want to go into a little bit more depth, I'll refer you to the documentation.
+But it's a lot simpler to do it through the console.
+So let's take a look at what's going on here.
+And again, this is warning you that this may transmit data across regions.
+So even though it is initiating the request from a given region, it's going to send that around.
+It's actually using cross-region inference here.
+So that may or may not be okay for you given the regulations that you might be subject to.
+We can start by creating a policy engine.
+And then once we do that, we would associate it to a given gateway.
+And then we can then go off and observe what those are actually doing using observability.
+So let's take a look at the create policy engine UI.
+Give it a name, whatever you want.
+Give it a description if you want to.
+And you can also specify a KMS encryption if you want to as well.
+Once you actually create the engine itself, you can see here the UI for actually defining
+what that policy is.
+And it does have some nice little examples here that you can start from, which makes
+life a little bit easier.
+Here you would actually select the gateway that you want to associate it to by default.
+We could say all gateways or a specific gateway.
+But again, policies are associated with gateways.
+So you do have to be using gateways in order to use policies.
+Some handy-dandy examples here are kind of good.
+We can say load cedar examples and just take a look at some samples here.
+Let's take a look at, I don't know, how about deny claims without a description field.
+That's pretty straightforward.
+Let's load that example up and see what it looks like in the cedar language.
+So we're saying here that we're going to forbid this set of conditions unless the input has a description.
+So what we're saying here is that if the principle is coming from OAuth and the action coming
+in is insurance API file claim and the resource is a specific gateway, then we're going to
+forbid it unless you have a description.
+So a little bit tough to wrap your head around that a little bit because you kind of have
+to think backwards a little bit.
+But that's just an example of what the cedar language looks like.
+And it is going to validate that for you as well.
+In this case, it is valid, so yay.
+And we can also do it from a prompt or from a form.
+So you could just say in your own words what you want that to do.
+So they again have some samples here you can look at.
+Let's take a look at permit insurance agent active policy updates using Okta.
+So in this particular case, we're saying allow users with the role insurance agent to update
+coverage when the coverage type is a liability or collision and the policy is active.
+So you could just put that in plain English and click on generate cedar and it will give
+you at least a first cut at the cedar definition for that policy.
+And that can take a little bit of time, but not too long.
+It should come right up.
+Oh, that didn't actually work.
+That's not cool. Why not?
+Because the actual principles, actions and resources are not defined.
+So I didn't actually give it a specific agent to look at.
+But you get the idea.
+You can just make your policies in plain English here and automatically generate the cedar
+language policy for that.
+You can also use a form if you want to be a little bit less, shall we say, vague about it.
+So you can actually give your policy a name and description here and then go through this
+form to actually define it more specifically.
+So you can have a permit or forbid effect there.
+So even though I said that you generally in the slides want to start with forbid, it is
+possible to not do that if you really want to.
+But that's definitely not a good practice.
+The scope of the principles, the resource scope, if you want to limit that to a specific
+resource, I would first have to select a gateway to associate that with.
+And I can limit that to a specific set of actions.
+Again, in this case, I don't have any defined yet, but this is where I would enter that
+in and specific conditions on that action.
+So if I want to, again, limit actions to refunds that are less than $200, this is where I put that condition.
+That would say input dot amount less than $200, for example.
+All right. So you have many ways of doing it.
+You can write your Cedar definition from scratch.
+You can do it from a prompt or populate it from a form.
+So lots of ways to do the same thing there.
+All right. Let's go back to policy here.
+So the other option here is to associate with a gateway.
+This button would just take me to the screen to create one since I haven't made one yet.
+But the idea here is that once you have a policy and you associate with a given gateway
+and agent core, you can then set the enforcement mode like we talked about.
+So it can be log only mode if you just want to test it out and see what it would do before
+you actually start applying it or enforcement mode to actually start rejecting stuff that
+doesn't meet your policies.
+And if you want to observe what's going on, let's say you have it in log only mode or you
+want to keep an eye on what it's actually doing in production.
+You could click on observe with gateways and that will take you to CloudWatch under the
+Gen AI observability or Bedrock agent core observability underneath Gen AI observability
+where you could actually monitor those in near real time.
+So that is policies at a high level, a way of enforcing rules upon your tool calls and what
+your agent is actually doing and hopefully increasing your trust in the system as a result.

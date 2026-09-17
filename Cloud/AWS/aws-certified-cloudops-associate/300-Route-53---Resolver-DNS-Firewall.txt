@@ -1,0 +1,36 @@
+# 300. Route 53 - Resolver DNS Firewall
+# Section: Networking - Route 53
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53217823
+# Caption: en_US (manual)
+
+So now let's talk
+about Route 53 Resolver DNS Firewall.
+The idea is that you have a managed firewall
+that enables you to filter outbound DNS requests
+going out through the Route 53 Resolver.
+So the idea is that your EC2 instance, for example,
+is doing a DNS query to example.com,
+the Route 53 Resolver
+is going to go through the DNS Firewall,
+and if you've configured it properly, to block it,
+then it's going to block the request
+and come back with no data.
+The idea is that now you have control
+over attacks, for example.
+So say you have a malicious domain
+that you don't want to be able to do DNS queries on,
+then this is the way to do it.
+Or you can whitelist trusted domains.
+So here, for example,
+we can prevent a compromised application within our VPC
+to send data out through DNS to a malicious domain,
+an attack called DNS exfiltration.
+So all of this can be managed and configured
+from the AWS Firewall Manager service.
+And all the logs of this Resolver DNS Firewall
+can be sent to CloudWatch Logs
+and Route 53 Resolver Query Logs.
+So it's just a security feature you need to know about,
+but an important one at the exam.
+All right, that's it. I hope you liked it.
+And I will see you in the next lecture.

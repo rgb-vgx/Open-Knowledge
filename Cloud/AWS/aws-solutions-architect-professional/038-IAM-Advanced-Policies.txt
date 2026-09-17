@@ -1,0 +1,94 @@
+# 38. IAM Advanced Policies
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34785320
+# Caption: en_US (manual)
+
+So, now, let's talk about IAM conditions
+and what they can imply for your policies.
+So, just so you know, they apply to policies within IAM.
+So that could be for policies for users,
+that could be policies for your resource policies,
+for example, for your S3 buckets,
+or that could be endpoint policies, and so on.
+So, really, anything.
+So the first one is aws:SourceIP.
+And this is used to restrict the client IP
+from which the API calls are being made.
+So if we look at this one right here,
+it has a Deny star on everything
+if it's not an IP address.
+And then we have a list of two CIDRs,
+of two IP address ranges.
+So that means that unless the client makes an API call
+from within these IP addresses,
+then the API call is being denied.
+And this can be used, for example,
+to restrict usage on AWS only to, for example,
+your company network and, therefore, guaranteeing
+that only your company can access your own AWS environment.
+So that's one of these conditions.
+Then we have aws:RequestedRegion.
+So this is, again, something global
+because it started at the AWS,
+and it's restricting the region the API calls are made to.
+So in this one we deny anything on EC2, RDS, and DynamoDB
+if we are in the region eu-central-1 or eu-west-1.
+Okay, so here we deny access to these services
+in the specific regions.
+And this can be applied more globally
+on their organization SCP to deny or to allow
+only access to a specific region.
+Next, we have ec2:ResourceTag.
+So, as you can see now, the prefix of this tag is EC2,
+therefore, this applies to the tags on your EC2 instance.
+And, so, here we allow to start and to stop instances, okay,
+for any instance if the ResourceTag/Project
+is equal to DataAnalytics.
+So that means that if the EC2 instance has the correct tags,
+being Project and DataAnalytics, then we're good.
+But then, as you can see, there is the aws:PrincipalTag,
+and this applies to your user tag, okay.
+So it's not an EC2 instance tag, this is a user tag.
+And, so, your user must also be part
+of the department data to perform these actions.
+We have aws:MultiFactorAuthPresent
+to force multifactor authentication.
+So you can have a look at it.
+But the user can do anything on EC2,
+but they can only stop and terminate instances
+if they have MultiFactorAuthenticationPresent,
+so this is a deny on the false.
+Now let's have a look at an IAM policy for your S3 buckets.
+So this is a bucket policy, and we have two statements.
+And the first one is a ListBucket,
+and this applies to this arn right here, so s3:::test.
+Because it's a bucket level permission
+and, therefore, we have to specify the bucket itself.
+But if we have a look at GetObject, PutObject,
+and DeleteObject, this applies to objects within a bucket
+and, therefore, your arn is going to be different,
+and you're going to have /* to represent
+all the objects within your buckets.
+And this is why you have a different arn here
+because this is an object level permission.
+And, again, this is something that can come up in the exam.
+Now let's have a look at the resource policies
+and the aws:PrincipalOrgID.
+So this condition right here, the aws:PrincipalOrgID,
+can be used to restrict resource policies
+to only accounts that are a member of an AWS organization.
+So we have an organization with multiple accounts,
+and say we have S3 buckets with this policy on it.
+And it's saying that you can do a PutObject or a GetObject
+only if the API call is made from an account
+that has the PrincipalOrgID of whatever.
+And, therefore, it's only going to allow member accounts
+from your organization to access the S3 bucket,
+but any user outside the organization will be denied
+because of this S3 bucket policy.
+Okay, so you've seen a lot of different conditions
+in now your IAM policies, but hopefully that makes sense,
+and it can really start to drill down your use case
+and make really advanced use cases in terms of security.
+So that's it.
+I hope you liked it, and I will see you in the next lecture.

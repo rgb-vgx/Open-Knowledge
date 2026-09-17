@@ -1,0 +1,212 @@
+# 159. EMR Promises; Intro to Hadoop
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356548
+# Caption: en_US (auto)
+
+Narrator: So let's talk about the promises
+that EMR makes to you.
+First of all, let's talk a little bit about pricing.
+So, EMR charges you by the hour.
+So the longer you leave your cluster running,
+the more they're gonna charge you.
+And this can add up really fast
+if you're using expensive instance types
+like GPU instances and things like that.
+So keep that in mind.
+You know, if you can run your task as a set of steps
+that automatically starts and stops the cluster
+when it's done, you'll save a lot of money that way.
+If you need to leave your cluster running 24/7 though,
+it can get expensive and you need to be mindful of that.
+As far as failure goes, if a core node fails,
+EMR will automatically provision a new node
+for you under the hood.
+So you don't need to worry about that, at least.
+And that will just automatically pick things up
+where it left off.
+If you need to resize things,
+if you need to add capacity though,
+probably the best way to do that
+is by adding or removing task nodes on the fly.
+Now remember, task nodes
+are kind of like core nodes,
+but they have no storage capacity of their own.
+There's no HDFS capacity associated with a task node.
+Now, normally you don't care
+because you're probably using EMRFS
+to talk to S3 under the hood
+so that your data's more persistent, right?
+But, you know, even if you are using HDFS,
+you can still use task nodes
+to increase your processing capacity
+if you don't need to increase your storage capacity
+at the same time.
+A good example of this is
+for, let's say you're running some eCommerce website,
+like you're at Amazon or something,
+and you need to have this huge surge of data coming in
+associated with Christmas time or something like that.
+Let's assume that your storage is okay,
+but you need to process that data a lot more.
+There's a lot more CPU time involved in that processing.
+You could just temporarily add a bunch of task nodes
+to your EMR cluster to handle that surge in processing,
+and then later remove those task nodes
+when that surge has passed.
+So adding and removing task nodes on the fly
+is a good way of dealing with temporary surges
+in processing CPU needs.
+Remember that.
+You can also resize a running cluster's core nodes
+without much trouble,
+and that can be a way to increase
+both your processing and HDFS capacity.
+So, you know, if you do need to increase
+both your processing time and your storage capacity,
+and you're not using something like EMRFS,
+where your storage is somewhere else anyway,
+you could resize the core nodes as well.
+It's also possible to add and remove a core node on the fly.
+This is kind of a new thing.
+But, you know, it's not always a great idea.
+If you do remove a core node,
+remember you're removing that underlying storage as well.
+So if you're using HDFS capacity,
+you are risking data loss
+by removing a core node on the fly.
+So just because you can do it doesn't mean you should.
+Again, just to recap here, generally speaking,
+if you need a temporary increase in processing capacity,
+adding task nodes is a good way to do that.
+If you do need to add storage capacity as well on HDFS,
+you can resize a core node.
+You can also add and remove core nodes on the fly
+just like you can with task nodes,
+but a little bit more risk with data loss
+if you're doing that on core nodes versus task nodes.
+So let's talk a little bit more
+about how managed scaling works in EMR specifically.
+So, managed scaling was actually introduced in 2020.
+Before that, they called it EMR automatic scaling.
+That was the old way of doing it.
+And it created custom scaling rules
+that were based on CloudWatch metrics.
+So, you know, prior to 2020,
+or even in the first half of 2020,
+this is how automatic scaling in EMR worked.
+You would monitor CloudWatch metrics automatically
+and you could automatically add or remove capacity
+to your EMR cluster,
+but it was limited to instance groups only,
+so you couldn't really mix and match
+different instance types with your automatic scaling.
+That changed in 2020 with EMR managed scaling.
+So now in addition to supporting instance groups,
+it can also support instance fleets.
+So it can scale up and down your spot,
+your on-demand, and your regular instances in a Savings Plan
+within the same cluster.
+And this is actually available for Spark, Hive,
+or YARN workloads in EMR specifically.
+So when you're scaling up in EMR managed scaling,
+the way it works is that it will first
+try to add core nodes,
+and then if it hits the limit on that,
+it will add task nodes.
+And it will just do that up until the maximum number
+of units that you specify.
+So the configuration you provide in managed scaling
+is what's the maximum number of core nodes I wanna add?
+What's the maximum number of task notes I want to add?
+If it needs to scale down,
+if it sees some sort of CloudWatch metrics
+that suggests that you have too much capacity,
+it will start by removing the task nodes
+and then by removing core nodes.
+Again, no further than the minimum constraints that you set.
+So you can say, I want no fewer than this many task nodes.
+I want no fewer than this many core nodes.
+And managed scaling will honor that
+as it scales down as need be.
+Also, note that spot nodes will always be removed
+before on-demand instances with managed scaling, okay?
+So that's managed scaling and how it works.
+Basically, you specify a max number of units
+and in a minimum constraint on the number of nodes,
+core nodes and task nodes are both managed,
+and you can apply that across a fleet
+and not just an instance group.
+So let's start talking more about the applications
+you'll be running on your EMR cluster.
+So fundamentally, it's a Hadoop cluster.
+So let's talk about Hadoop in a little bit more depth.
+What is Hadoop?
+Well, the Hadoop architecture comprises several modules.
+These modules here.
+They make up what we call Hadoop common or Hadoop core.
+This is kind of like the basis of Hadoop itself,
+these three components that you see here.
+These are the libraries and utilities that are required
+for other Hadoop modules to build on top of.
+It provides all the file system
+and operating system level abstractions
+that we need on top of your cluster
+and the JAR files and scripts that are needed
+to actually start Hadoop itself.
+So, at the bottom here, we have
+the Hadoop distributed file system, HDFS.
+This is a distributed, scalable file system
+that stores blocks of data across instances in the cluster.
+It stores, again, multiple copies of those blocks
+on different instances to ensure that no data is lost
+if an individual instance fails.
+Now, on EMR, this is ephemeral storage.
+Your data on HDFS will be lost upon terminating the cluster.
+But it is still useful for caching intermediate results
+during MapReduce processing
+or for workloads that have significant random I/O.
+Or if you intend to leave your EMR cluster running forever,
+well, fine, go for it.
+You can use that for persistent storage,
+but it's not gonna be cheap.
+Sitting on top of HDFS's YARN,
+that stands for yet another resource negotiator,
+and it's basically an abstraction level
+that was added in Hadoop 2.0 between MapReduce and HDFS.
+And as we'll see, that allows us to run replacements
+for MapReduce that are better on top of HDFS.
+So basically, it allows you
+to centrally manage your cluster resources
+so that we can have more than one data processing framework.
+And we're not tied directly to MapReduce,
+which used to be the case back in Hadoop 1.
+Now, the core data processing framework
+that's part of Hadoop itself is MapReduce.
+It's still out there today.
+It's a software framework for easily writing applications
+that process vast amounts of data
+in parallel on large clusters of commodity hardware
+in a reliable fault tolerant manner.
+You can probably tell that's the official definition, right?
+But basically, why is it called a MapReduce?
+Well, it's made up of mappers and reducers.
+So a map function in MapReduce will map data
+to sets of key value pairs.
+And these are basically the intermediate results
+of your processing.
+So it's basically parsing your data,
+extracting the data that you need to process
+and organizing them as key value pairs.
+Then reducer functions combine those intermediate results,
+apply additional algorithms to them,
+and produces your final output.
+So generally, you have mappers and reducers
+that extract data, reduce it down
+to the final answer that you want,
+and output that somewhere.
+So that's originally how you did distributed file processing
+on a Hadoop cluster, but these days
+it's largely supplanted by Apache Spark
+because it's a lot faster and a lot more extensible
+and can do more stuff.
+We'll talk about Spark next.

@@ -1,0 +1,132 @@
+# 11. Amazon S3
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45356505
+# Caption: en_US (manual)
+
+Welcome to this section on Amazon S3.
+So this section is very important
+because Amazon S3 is one of the main building blocks of AWS.
+And the way it's advertised
+is that it's infinitely scaling storage.
+So as a matter of fact,
+a lot of the web relies on Amazon S3.
+For example, many websites use Amazon S3 as a backbone,
+and many AWS services will also use Amazon S3
+for integrations as well.
+So in this section,
+we'll have a step-by-step approach to Amazon S3
+to learn the main features.
+So there are so many use cases for Amazon S3
+because at its core, it is storage.
+So Amazon S3 is used for backup and storage.
+It could be for your files,
+it could be for your disk and so on.
+For disaster recovery purposes,
+for example, you'll move your data to another region.
+In case a region goes down,
+then your data is backed up somewhere else.
+It's for archival purposes.
+So you can archive files in Amazon S3
+and retrieve it at a later stage for much, much cheaper.
+For hybrid cloud storage,
+so in case you have storage on premises,
+but you won't expand it into the cloud,
+you can use Amazon S3 for this.
+To host applications, to host media such as video files,
+images, and so on,
+to have a data lake to store a lot of data
+and to perform big data analytics,
+for delivering software updates
+for hosting static websites, and so on.
+And two use cases is that the NASDAQ
+stores seven years of data into the S3 Glacier service,
+which is like the archival service of Amazon S3.
+And Sysco runs analytics
+on its data and gains business insights from Amazon S3.
+So now, let's talk about the bucket.
+So Amazon S3 allows people to store objects
+or files into buckets.
+They're directories within the cloud.
+And the buckets are defined at the region level.
+So you say you create a buckets for a specific AWS region.
+Even though S3 has a global interface
+in which you'll be able to see all the buckets
+from all the regions,
+the buckets themselves are assigned to a specific region.
+Now, for the naming, there is something that you should know
+that is quite recent and new.
+So it used to be that Amazon S3
+needed to have buckets with a globally unique name.
+That means that the name for your S3 bucket belong to you
+and no one else could use it across the world,
+across all the regions, across all the accounts.
+But now, there is a new feature
+to have an account regional namespace,
+and it allows you to reuse the same bucket name
+across the regions for all your accounts and so on,
+even though someone else may have named
+the bucket the same way because AWS will add a suffix
+to your bucket name,
+making sure that it's going to be unique anyway.
+So naming constraints, you have no uppercase,
+no underscore, not an IP.
+It must start with a lowercase number or letter,
+it must not start with a prefix XN,
+and it must not end with a suffix minus S3 alias.
+So overall, you're completely fine
+if you use letters and numbers and you keep it simple.
+And before there was a constraint
+around the global unique name,
+but now with the account original namespace,
+you can pretty much use whatever you want
+for your bucket name in AWS, which is super nice.
+Okay, so now let's talk about objects.
+So these objects, they're files
+and they have what's called a key.
+And an Amazon S3 object key is the full path of your file.
+So if you look at my bucket,
+this is the top level directory.
+Then the key of my file, a TXT, is my_file.txt.
+But in case you want to nest it in what we call folders,
+then the key is going to be the full path.
+So my_folderI/another_folder
+/my_file.txt.
+Therefore, the key is composed of a prefix,
+and then an object name.
+So we can, for example,
+decompose the path from before into the prefix,
+which is my_folderI and another_folder,
+and the object name, which is my_file.txt.
+So Amazon S3 does not have a concept
+of directories per se,
+although when you look in the console,
+the UI, you will think otherwise
+and you will actually create directories.
+But anything and everything in Amazon S3 is actually a key.
+And keys are just very, very long names
+that contain slashes and keys are made of a prefix
+and an object name.
+Okay, so the objects then, what are they?
+Well, the values are the content of the body.
+So you can upload a file,
+you can upload whatever you want into Amazon S3.
+So the max object size is 50 terabytes.
+And if you upload a file that is very big,
+and if that file is greater than five gigabytes,
+so a big file, okay, then you must use the multi-part upload
+to upload that file into several parts.
+So if you have a file of five terabytes,
+then you must upload at least 1,000 parts of five gigabytes.
+Now, the objects can also have metadata,
+their list of key and value pairs,
+and that could be set by the system
+or set by the user to indicate some elements about the file,
+some metadata.
+Their tags, for example,
+their Unicode key and value pairs up to 10,
+they're very useful for security and lifecycles,
+and sometimes the object will have a version ID
+if you have enabled versioning.
+So that's it for an introduction to Amazon S3.
+I'm sure you're curious about how that works.
+So let's go in the console to get started.

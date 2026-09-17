@@ -1,0 +1,109 @@
+# 60. Elastic Load Balancer - Health Checks
+# Section: EC2 High Availability and Scalability
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512932
+# Caption: en_US (manual)
+
+So we know about health checks,
+but let's do a deeper dive.
+So the ALB is connected to a target group
+with three instances,
+and then we can set up health checks from the ALB
+or the target group itself.
+So in terms of settings,
+we have seen there are multiple settings.
+So at first, the protocol, HTTP, for example,
+which is going to use HTTP protocol
+to talk to your backend instances
+to do the health check.
+The port is where to talk to your instances.
+So 80 is by default, which is the HTTP port,
+but you can customize that.
+The check path, okay, the health check path,
+is where you want that there send the request to.
+So slash means that there is to, send it to
+the root of the websites,
+but many websites or applications have a slash health route,
+and this really helps to just have
+a specific health check route
+to test something specific on the EC2 instance.
+The check timeout, which is how long
+to consider the health check failed,
+which is five seconds by default.
+So after five seconds, then the health check
+will be considered failed.
+The interval, which is how often the target group
+or the ALB will perform
+the health check, and so if you set it to something very,
+very low, maybe your application will be overwhelmed.
+So 30 seconds is a good timeout, is a good interval for
+health checks, but you can decrease this, of course,
+the healthy threshold counts, which is
+how many times the health check must be successful
+before considering a target is healthy,
+and the unhealthy threshold counts,
+which is how many times the health checks should be
+unhealthy in a row, before considering
+that the instance is unhealthy, okay.
+So in terms of status for the health,
+we have initial when the target is being registered
+healthy, unhealthy, unused,
+which is when the target is not registered,
+draining, when you are de-registering the targets,
+unavailable when the health checks have been disabled
+and then something that's good to know from
+an exam perspective is that if a target group contains
+only unhealthy targets, okay,
+then the ELB will route request
+across all the unhealthy targets,
+just because maybe it assumes that the health check is
+wrong, but maybe the health,
+the instance can still work for some cases, okay.
+This is a best effort scenario.
+So that's it, now let me show you this in the UI.
+So here I am in my target group
+and I can edit the health check settings
+that are clear from my target group.
+And as we can see, we can
+have the health check protocol to be HTTP or HTTPS
+for this load balancer.
+We have check path.
+This is where to send the request to.
+So it could be slash health, for example,
+if it is programmed by your application,
+and then the Advanced Health Setting.
+So we can do a traffic port override
+in case the health check is
+on a different port on your institute instance,
+if you want it to.
+The Healthy threshold counts, okay.
+So a lower, healthy threshold will make the instance go in,
+in activation faster.
+An unhealthy threshold, again,
+the lower number, the faster an instance
+will be considered unhealthy.
+The timeout is really depending on how often you,
+how fast you expect your health check to happen.
+Some health checks can be very, very long.
+So this is why you can have a large timeout,
+but some health check can be very, very quick.
+And so setting something like two seconds
+could be good as well.
+If it's a simple HTTP request,
+the interval is how fast to send the objects.
+So again, a faster interval means
+that the instance will be put
+in healthy state or unhealthy state faster
+as well as the code.
+So it could be any HTTP code you want.
+Okay, sometimes you just don't send back 200,
+you send back a specific code for your health checks.
+So you can specify this as well.
+So fairly simple, and in this example, when my target group,
+if you look at the targets,
+there has three of them to be unhealthy and healthy.
+And this refresh that's sort of, three of them are healthy.
+And for health checks,
+you can see the health check settings right here, okay.
+So that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

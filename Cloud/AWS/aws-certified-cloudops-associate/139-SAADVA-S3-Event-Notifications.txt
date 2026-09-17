@@ -1,0 +1,92 @@
+# 139. [SAA/DVA] S3 Event Notifications
+# Section: Advanced Amazon S3 & Athena
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/19786180
+# Caption: en_US (manual)
+
+So now let's talk about S3 Event Notifications.
+And the idea is that your events
+are going to happen in Amazon S3.
+What are events?
+Well, events are things such as an object is created,
+or an object is removed, or an object is restored,
+or there is replication happening.
+And you can filter these events.
+So you can say I only want to consider the objects
+that end with JPEG.
+So the use case for Event Notification will be, for example,
+to automatically react to certain events
+happening in Amazon S3.
+For example, you want to generate thumbnails
+of all the images upload to Amazon S3.
+Therefore, you're going to create your Event Notification.
+And then you can send it to a couple of destinations.
+It could be an SNS topic, it could be an SQS queue,
+and a Lambda function.
+And don't worry if you don't know this by now,
+we will learn about these features in the next lectures.
+So you can create as many S3 events as desired,
+and you can send them to whatever target you want.
+So the idea is that these events
+are typically delivered within seconds
+to these destinations,
+but sometimes it can take a minute or longer.
+Now, for the Event Notifications to work,
+we need to have IAM permissions.
+So the S3 service is sending data
+into an SNS topic, for example.
+So to make this possible, we need to attach
+what's called an SNS resource access policy.
+This is a IAM policy you attach to the SNS topic,
+and this will allow the S3 bucket
+to send messages directly into the SNS topic.
+Similarly, if we use SQS,
+we create an SQS resource access policy,
+which authorizes the S3 service to send data
+into our SQS queue.
+And finally, for Lambda function, you will have guessed,
+we need a Lambda resource policy
+attached to our Lambda function
+to make sure that Amazon S3
+has the right to invoke our function.
+So here we don't use IAM roles for Amazon S3.
+Instead, we define resource access policies
+on the SNS topic, on the SQS queue,
+or on the Lambda function.
+And they function similarly
+to what we had when we were using an S3 bucket policy.
+So you have to remember SNS, SQS, and lambda function
+as Event Notifications targets.
+But now, there's a fourth integration
+you need to also learn about.
+So your events are going into your Amazon S3 buckets.
+And all the events end up in Amazon Event Bridge
+no matter what.
+So all of them, okay?
+And then from Event Bridge that you don't know yet,
+but you can set up rules.
+And from Event Bridge,
+you can, thanks to these rules, send these events
+to over 18 different AWS services as destinations.
+So it really enhances the capability
+of S3 Event Notification.
+And again, we'll see Event Bridge later on this course,
+but with Event Bridge,
+you get advanced filtering options
+a lot more than what we had from before.
+So you can filter by metadata, object, size, and name.
+You can send to multiple destinations at the time.
+You can say, for example, to Step Functions,
+Kinesis Data Streams, or Firehose,
+or you even get the features
+coming straight from Amazon Event Bridge.
+So you can archive events, replay events,
+and you get more reliable delivery.
+Okay, there's a lot you don't know in this lecture
+around the news services,
+but let's just focus on Amazon S3 Event Notifications.
+The idea is that you can react to events
+happening in Amazon S3,
+thanks to sending it to SQS, SNS, Lambda,
+or Amazon Event Bridge.
+Okay, that's it.
+I will see you in the next lecture.

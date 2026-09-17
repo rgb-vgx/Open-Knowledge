@@ -1,0 +1,67 @@
+# 346. RDS & Aurora Migrations
+# Section: Disaster Recovery & Migrations
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33879102
+# Caption: en_US (manual)
+
+So here is a short lecture
+that unfortunately you have to learn for the exam,
+maybe for one question.
+It is a way to do migrations to Aurora MySQL.
+So if you have an RDS database
+and you want to move it into Aurora MySQL,
+the option number one is to take a database snapshot
+from the RDS MySQL database
+and you restore this snapshot as a MySQL Aurora database.
+Potentially, you'll have some downtime
+because you have to stop operations
+on the first MySQL database before migrating to Aurora.
+The option number two, which is more continuous,
+is to use and create an Amazon Aurora Read Replica
+on top of your RDS MySQL.
+So it's a possibility indeed.
+And once the Replica lag is zero,
+that means that once the Aurora Replica
+has fully caught up with MySQL,
+you can promote it into its own database cluster.
+Now this can take a bit more time
+than the database snapshot option
+and cost some money because of the network cost
+that may be associated with this replication.
+The other option is, if you have a MySQL database
+that is external to RDS,
+then you can back it up
+using the Percona XtraBackup utility.
+This will create a backup file and you put it in Amazon S3
+and then there is an option from Amazon Aurora
+to directly import this backup file
+into a new Aurora MySQL DB cluster.
+Just so you know,
+this only supports the Percona XtraBackup utility.
+The other option is to use the MySQL Dump utility
+to run it against a MySQL database
+and you would pipe the output of this
+into your existing Amazon Aurora database.
+So this is taking a lot of time
+and this does not leverage Amazon S3.
+And a last option is to use Amazon DMS,
+if both databases are up and running
+to do continuous replication between the two databases.
+We do the same process for PostgreSQL,
+so for RDS, it's pretty much similar.
+You have two option to use the database snapshots
+restored as an Amazon Aurora database
+or you create an Amazon Aurora Read Replica of PostgreSQL
+to have to have a Read Replica
+and then you wait until a replication lag is zero
+to promote it into its own database cluster.
+And if it's an external PostgreSQL database
+that you want to migrate to Aurora,
+you can create a backup of it
+and then you put the backup in Amazon S3,
+and then you import the data
+using the AWS S3 Aurora extension
+and this will create a new database out of it.
+And finally, again, you can use DMS to migrate
+from PostgreSQL to Amazon Aurora continuously.
+Okay. That's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

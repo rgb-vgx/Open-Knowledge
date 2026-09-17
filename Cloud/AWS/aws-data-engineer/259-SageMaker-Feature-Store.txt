@@ -1,0 +1,117 @@
+# 259. SageMaker Feature Store
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40394784
+# Caption: en_US (auto)
+
+Lecturer: Like we said,
+machine learning and SageMaker as a whole
+is out of scope for the data engineering exam.
+However, there are some components of SageMaker
+that are directly related to data engineering.
+So let's just zoom in and focus on those features.
+One such feature is called SageMaker Feature Store,
+and that is the word feature in a different sense.
+So in this context,
+a feature is a property
+that's used to train a machine learning model.
+So an example might be
+if you're trying to predict somebody's political party
+based on features,
+those features might be somebody's address, their income,
+their age, things like that.
+Their features are really just columns or fields in a row
+where you're using those pieces of information
+to try to predict a label for that row.
+So the features in this case might be
+the properties of that person,
+like their address, income, or age.
+And the label that we're trying to predict
+is their political party in that example.
+That's what we mean by features in this context.
+Machine learning models require
+fast, secure access to that feature data.
+To train a machine learning model,
+as you can imagine,
+it needs to suck up that data
+at very high quantities and very quickly.
+And it also needs to do it securely
+because some of that information
+could be sensitive or personal.
+It's also a challenge to keep that data organized
+and to share those features across different models.
+So you wanna avoid a situation
+where you're storing these features more than once.
+You wanna be able to share them
+when you're trying to do different things
+with machine learning.
+Where those features come from is totally up to you.
+You can see SageMaker Feature Store
+kind of sits in the middle of this whole universe here
+of where data might come from.
+Maybe it's coming from SageMaker Studio.
+Maybe it's coming from a pipeline
+where like step functions or SageMaker Pipelines
+or Apache Airflow, where it's just dumping stuff in there.
+Along the way, your features might be coming
+from some sort of a EMR pipeline
+or from Glue or from SageMaker Processing.
+Maybe these features are streaming in from Kinesis or Kafka
+and maybe they're being created from SageMaker Data Wrangler
+or from Glue Data Brew, right?
+These are all examples of where data might come from.
+So where it comes from can be pretty much anywhere.
+What Feature Store brings to the table
+is organizing that data.
+So it has a Feature Store
+and within a Feature Store we have
+what we call feature groups
+where we organize these features together
+and each feature group will contain record identifiers,
+feature names, and event times associated with that feature.
+How does it all work?
+So there's basically a streaming world
+and a batch world here with SageMaker Feature Store.
+So let's imagine that we're streaming data in from Kinesis
+or MSK or Apache Spark or SageMaker Data Wrangler
+or any other streaming source.
+Basically there's a put record API
+that can be used with Feature Store
+where you can feed that streaming data into Feature Store
+and it will process it.
+So under the hood, Feature Store
+will both have an online repository of those features
+and also a batch repository.
+That's the offline store in S3.
+To query features from the online store
+and stream them back out,
+there's a Get Record API you can use for that.
+So your model can stream those features
+out using the Get Record API
+or if you want to do batch access,
+that's what that offline store is for.
+So SageMaker Feature Store will automatically create
+a Glue Data Catalog for that data stored in S3,
+and you can do anything you want with that S3 data.
+You can use tools like Athena or Data Wrangler.
+Anything that can hit S3 can be done
+with the offline Feature Store.
+You can also dump data directly into it if you want to.
+So you don't have to stream data
+into SageMaker Feature Store.
+You can just put it
+right into its offline store in S3
+and do it that way too.
+Whatever works for you.
+The bottom line here is that SageMaker Feature Store
+works with streaming situations
+and also with batch situations
+that are based on S3.
+Security.
+Everything is encrypted at rest
+and in transit automatically.
+And if you have a KMS customer Master key,
+you can use it with it.
+Fine grained access control to Feature Store
+as possible through IAM,
+and you can also secure it with AWS private link
+to make sure that nobody can access it that shouldn't.

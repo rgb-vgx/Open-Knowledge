@@ -1,0 +1,197 @@
+# 55. Elastic Load Balancers - Part 2
+# Section: Compute & Load Balancing
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30990920
+# Caption: en_US (manual)
+
+Now let's talk about Cross-Zone Balancing.
+So let's take an example of a very imbalance situation
+but it will illustrate the point.
+So we have two Availability Zones
+and the first one has a load balancer
+with two EC2 instances
+and the second one also has a load balancer.
+So, a load balancer instance, obviously,
+with eight EC2 instances.
+The load balancers instances are part of the same,
+more general load balancer.
+So, the client is accessing these load balancers.
+And so with Cross-Zone Load Balancing,
+each load balancer instance will distribute evenly
+across all registered instances in all Availability Zones.
+So the client itself is sending 50%
+of the traffic to the first ALB instance
+and 50% of traffic to the other ALB instance.
+But each ALB is going to redirect that traffic
+across all 10 EC2 instances
+regardless of which Availability Zones they're in.
+This is why it's called, Cross-Zone Load Balancing.
+So, if we take a look at the first,
+at the second ALB, sorry, instance
+it's going to send 10% of the traffic it receives, okay,
+to all these instances
+because we have 10 instances,
+so each of them gets 10% of the traffic.
+And same story with this first ALB instance
+it's going to send also 10% traffic to all these instances.
+So in this example, with Cross-Zone Balancing,
+we are distributing the traffic evenly
+across all EC2 instances.
+And that may be something you want to have
+or not, who knows,
+but at least this behavior is available to you.
+The second behavior that's available to you
+is to not have Cross-Zone Balancing.
+So we take the same example,
+but without Cross-Zone Balancing
+the requests,
+the requests, sorry,
+are distributed in the instances of the node
+of the Elastic Load Balancer.
+So this example, what we have
+is that the clients sends 50% of the traffic
+to the first AZ and the 50% of traffic to the second AZ.
+Okay. But the first ALB instance is going to
+send the traffic to only the EC2 instances in its region.
+So that means that each EC2 instance in this,
+sorry, Availability Zone
+is going to get 25% of the traffic overall.
+Okay. So half and half.
+And the one on the right hand side
+will again divide up the traffic it receives
+into the EC2 instances.
+The averages are within its AZ.
+So AZ2.
+So as we can see here without Cross Load Balancing
+the traffic is contained within each AZ.
+But if there are an imbalanced number of EC2 instances
+in each AZ, then some EC2 instances
+of a specific AZ will receive more traffic than others.
+It's just an option to know about.
+There's no right or wrong answer.
+It depends on the use case, obviously.
+So let's talk about Cross-Zone Load Balancing
+for each load balancer.
+So for the CLB, it's disabled by default
+and you have no charges for inter AZ data, if enabled.
+For the Application Load Balancer,
+it's always on, it cannot be disabled
+and you have no charges
+for inter AZ data as well.
+For the Network Load Balancer
+is disabled by default
+are you going to pay charges if you do enable this feature.
+And finally for the Gateway Load Balancer
+it's disabled by default
+and you are going to pay charges for inter AZ data
+if you enable this feature.
+Let's talk about Sticky Sessions,
+also called, Session Affinity,
+for your Elastic Load Balancer.
+So it's possible to implement what's called
+stickiness or sticky sessions.
+And the idea is that the client doing two requests
+to the load balancer will have the same instance
+in the backend to respond to the requests.
+So the idea is that for example,
+you have a ALB with two EC2 instances
+and you have three clients,
+if the client one makes a request
+and it goes to the first EC2 instance,
+that means that when it does a second request
+to the load balancer,
+it will go to the same instance.
+Which is a different behavior
+where usually the Application Load Balancer
+will do a spread of all the requests
+across all the EC2 instances.
+Now for client two,
+if it goes to the ALB and talks to the second instance,
+then all the requests will go there.
+And same for client three, okay.
+So this is a behavior that can be enabled
+for the Classic Load Balancer
+and the Application Load Balancer.
+And how it works,
+well there is a cookie that is sent as part of the request
+from the clients to the load balancer
+and has stickiness
+and it has an expiration date.
+That means that when the cookie expires,
+then the clients may be redirected
+to another EC2 instance.
+The use case for this
+is to make sure that the user
+is connected to the same backend instance,
+in order not to lose his session data.
+Which can take some important information
+such as the login of the user, for example.
+But if you enable stickiness,
+it may bring imbalance to the load
+over the backend, EC2 instances.
+In case some instances,
+I have a very, very sticky user.
+Now let's have a look at
+Routing Algorithms for your requests.
+So, there is one called the Least Outstanding Request
+which is at the next instance to receive the request
+is the instance that has the lowest number of pending
+or unfinished requests.
+So basically the instance that is
+the less currently busy
+is the instance that will receive the next request.
+Which makes sense, right?
+Because you want to make sure that
+if an instance has less requests than another,
+then maybe has more capacity to receive these requests.
+So it's available for the ALB and the CLB.
+And so the idea is that the first request will go
+maybe to the first instance.
+The second request to the second.
+And then the third request has to go to the third
+because the third instance right now,
+doesn't have any requests.
+So it has the Least Outstanding Requests.
+So this is how it works.
+And then the fourth one may go again
+to the third instance.
+If the third instance has the Least Outstanding Requests
+maybe the third request was very, very quick to finish
+and so the fourth one went again
+to the third instance and so on. Okay.
+Now, for the Round Robin, this is a bit different.
+So the Round Robin is that the targets will have
+one after the other, the next requests,
+regardless of how many outstanding requests are available
+on your instance.
+And so this works for ALB and CLB.
+The idea is that number one will go to number one,
+number two will go to number two,
+and number three go to number one.
+And then number four,
+will again go through the same cycle.
+So number one and so on.
+Then for the NLB
+there is the Flow Hash Request Routing.
+Which a target is selected based on
+a hashing of the protocol,
+source/destination IP address,
+source/destination port,
+and TCP sequence number.
+That means that each TCP or UDP connection
+is going to be routed
+for a single target for the life of the connection
+which is sort of equivalent
+for the sticky sessions on the Network Load Balancer.
+So very, very simply
+whenever a user makes a request in EC2 instance
+all the information I just said below
+is going to be hashed,
+through a Flow Hash Algorithm.
+And then thanks to this hash number
+is going to route the same requests
+from the same user to the same EC2 instance
+as long as the TCP connection is open, okay.
+And this is a specificity of your NLB.
+So that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

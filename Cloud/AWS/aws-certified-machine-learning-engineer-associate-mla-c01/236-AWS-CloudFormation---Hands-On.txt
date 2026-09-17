@@ -1,0 +1,217 @@
+# 236. AWS CloudFormation - Hands On
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45356951
+# Caption: en_US (manual)
+
+Okay, so I'm going to give you
+a quick introduction to CloudFormation
+and give you an overview that really allows you
+to understand how it works.
+So let's create a stack
+and let's make sure first of all that we are in the US East,
+Northern Virginia, US East 1 region,
+because the template I've created for you
+only works in that region.
+And I will tell you why when we see the template.
+So please make sure to switch the region to this one.
+Next we create a stack and we have to prepare templates.
+So multiple options.
+We can choose an existing one,
+use a sample template and some samples are provided
+or build from Application Composer.
+But we're going to choose an existing template.
+We're going to upload a template file
+and let me show you what the file looks like.
+So in your course code under CloudFormation,
+you have 0-just-EC2.yaml.
+And this is a very simple file right now
+which has a resource blog and it creates
+an instance called My instance.
+The type is EC2 instance,
+and then you have a few properties.
+The first one is the availability zone,
+which is US East 1a
+and this is why you have to choose US East 1
+as your region in CloudFormation service right now.
+And the image ID is this AMI ID.
+And as you should know,
+AMI IDs are scoped within the region.
+So for these two reasons, you must be in US East 1
+for this hands-on.
+The instance type is T2 micro.
+And so as you can see we define how to launch
+an EC2 instance through this YAML file.
+So let's go ahead and actually upload this file.
+So select it and then you can actually view it
+in Application Composer.
+So open this in a new tab.
+So here is my template.
+So as you can see, Application Composer gives us
+a visual understanding of our templates.
+So if we look within templates,
+we get back the code that we just uploaded right here
+and we can switch it to YAML and JSON if we wanted to.
+But in the canvas we see that we have
+one standard component,
+which is an EC2 instance in my instance.
+You could double click on it
+and view it the fact that it's an EC2 instance as well.
+So Application Composer is a nice way
+of getting a visual feedback of your templates.
+Anyway, back into our stack.
+Let's click on next.
+We have to provide a demo stack name.
+So I'll call this one demo CloudFormation
+and then some parameters.
+But because we don't define any parameters
+in our templates so far, we don't do anything here.
+Let's click on next here we have tags.
+So I'm just going to show you tag being CFDemo
+just to show you how tags work in CloudFormation.
+We scroll down, no permissions to set.
+We don't touch these options and neither of these options.
+So let's click on next and we review and create.
+And when we're good to go, let's click on submit.
+So as you can see now this template I uploaded
+is going to generate some events and that was very quick.
+So the events are done
+and this actually created a resource right here,
+which is an EC2 instance.
+So the code got a resource out of it,
+and this is why it's called Infrastructure as Code.
+So you can click on this EC2 instance.
+As you can see right now in the EC2 console,
+my instance is running
+and you can check the fact that indeed it is a T2 micro
+type of instance.
+And you can also check the fact
+that the AMI ID we have selected is the one
+that was entered in our template.
+So this is all very convenient.
+On top of it, we notice that if you go to our EC2 instance
+and we look at the tags,
+we can see that some tags were applied by CloudFormation,
+which are the name of the CloudFormation,
+the name of the logical ID and the stack ID,
+but also the name we have specified.
+So the tag we specified has name CFDemo
+has also been applied to this EC2 instance,
+and therefore it's named correctly.
+Okay, so now that we have an instance,
+let's go ahead and update this stack.
+So we click on update
+and we replace the existing template.
+And this time we're going to choose this
+1-ec2-with-sg-eip file.
+And if you have a look at it, this file is right here.
+So we have a more complete file now.
+We have a parameter section
+to set the security group description.
+We have the EC2 instance section,
+which is a bit more complete
+because now it has security groups and it has two of those.
+We have an Elastic IP here that is attached to my instance.
+And we have one security group here defined for SSH rules.
+So port 22 is going to be open
+and we have the server security group,
+which is going to be open on port 80 from everyone
+and port 22 from a very specific IP.
+So this is a more complete CloudFormation template.
+Now let's go back to CloudFormation
+and we're going to apply these template.
+So here we are prompted with a parameter.
+So what is the security group description?
+So let's enter demo description.
+And as you can see now we are entering some texts,
+which is going to make everything vary.
+We don't touch the tags, we don't touch anything.
+Let's click on next.
+And now because we are applying an update,
+as you can see, we have a change set.
+And so we can preview the change sets,
+which is what is going to change
+in our CloudFormation stack.
+So as you can see, a few things are added.
+There is an Elastic IP, there is an SSH security group
+and a server security group.
+And it's add, so it's new.
+And my instance is going to change,
+it's going to be modified, and there is a column here
+says replacement true.
+That means that this EC2 instance is going to be replaced,
+that means that the previous one is going to be deleted
+and a new one is going to be created.
+So it's good to know in case you had some data
+on your EC2 instance.
+So now let's submit this update and see what happens.
+So CloudFormation is a very smart service
+because well, from just this code right here
+it's able to figure out exactly what to do
+thanks to the change sets,
+so it knows exactly what to create first.
+So as you can see, the server security group
+and the SSH security group already are created.
+And only then will it update the EC2 instance.
+So now the my instance is an update in progress,
+and as you can see, it says requested updates requires
+the creation of a new physical resource, hence creating one.
+So if you go into the EC2 console
+and we remove this filter,
+now we see that we have two EC2 instances.
+This one was created before and this one is the new one
+and it was pending and now it is running.
+So a new instance got created
+and once it's created, again, it's going to be updated here,
+the update is complete.
+And now we have MyEIP.
+So now the Elastic IP is going to be created
+and then attached to my EC2 instance.
+So if we're quick and we go on the left hand side
+to Elastic IP, even though we may not have seen what it is
+here is Elastic IP that is properly created,
+properly tagged, and it is attached already
+to our EC2 instance.
+So now if I click on this one
+and then I click on networking at the bottom,
+you see Elastic IP address here was attached.
+So everything was done by CloudFormation and was done well.
+And if you look at CloudFormation now in the events,
+as you can see, the Elastic IP was created
+and then there was a cleanup in progress due in progress.
+So that means that the previous EC2 instance right here,
+this one got terminated,
+which is very handy because CloudFormation
+takes care of everything.
+So you can go into the resources tab
+and see everything that was created through CloudFormation.
+On top of it, if you go to the template
+and you click on view in Application Composer,
+you're able to see now your new architecture.
+So we have an EC2 instance connected to an Elastic IP
+and connected to two security groups.
+So this is very handy
+because it gets a visual representation
+again of our templates.
+So finally, of course, confirmation.
+You could go ahead and delete things manually.
+You could delete this Elastic IP and so on,
+and the EC2 instances manually.
+But this is actually not recommended.
+You don't wanna touch anything manually
+when using CloudFormation.
+Instead, you want to either update the templates,
+or if you wanted to delete everything, just click on delete.
+And CloudFormation will delete all the stack resources.
+And the stack resources are also going to be deleted
+in the right orders.
+So CloudFormation will figure out what to delete first
+and so on to clean up everything.
+So CloudFormation is a really powerful service
+to do infrastructure as code because it's declarative.
+You just say what you want and CloudFormation
+figures it out, and all the code will control
+your infrastructure, which is very, very handy.
+So learning how to use it
+and write it can be a very good skill in AWS.
+So I hope you liked it
+and I will see you in the next lecture.

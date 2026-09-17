@@ -1,0 +1,47 @@
+# 67. When is ML not appropriate?
+# Section: Artificial Intelligence (AI) & Machine Learning (ML)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45796429
+# Caption: en_US (manual)
+
+So we've talked a lot
+about AI and machine learning,
+but a question you may have is,
+when is machine learning not appropriate?
+So imagine you have a well-framed problem like this one.
+"A deck contains five red cards,
+three blue cards, and two yellow cards.
+What is the probability of drawing a blue card?"
+So if I were to ask you, we have 10 cards in total.
+Three of them are blue.
+So the blue probability is going to be 3 out of 10.
+And this is very easy.
+You just computed it.
+So therefore you should be able to write
+some computer code to actually determine this solution.
+So for deterministic problems,
+for example, for when the solution
+can be computed very easily,
+it's better to write computer code
+that is going to be adapted to the problem.
+If you use any kind of machine learning or AI technique
+such as supervised learning, unsupervised learning,
+or reinforcement learning,
+you may get an approximation of the results.
+That's why we measure error and so on.
+But here, we don't want to have an answer with error.
+We want to have the exact answer.
+I know some of you may say that nowadays
+some large language models have reasoning capabilities
+and therefore they can come up with the right answer.
+And that's true and they're getting
+better and better at reasoning,
+but their solution is not perfect.
+And so therefore, we have a worse solution.
+The best solution for a very well-defined problem
+will be to write code.
+So it's up to you to understand
+when ML is or isn't appropriate
+and the exam may ask you one question about it.
+Alright, that's it.
+I hope you liked it.
+And I will see you in the next lecture.

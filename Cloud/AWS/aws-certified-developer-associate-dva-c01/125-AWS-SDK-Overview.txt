@@ -1,0 +1,40 @@
+# 125. AWS SDK Overview
+# Section: AWS CLI, SDK, IAM Roles & Policies
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851288
+# Caption: en_US (manual)
+
+So now let's talk
+about the AWS SDK overview.
+So what is the SDK?
+Well, what if you wanted to perform actions
+on AWS directly from your applications code
+without using the CLI
+that we've been using so far?
+For this, we use an SDK,
+which is a software development kit,
+and there are a bunch of official SDK
+for AWS in different languages.
+For example, Java, .NET, Node.js, PHP,
+Python, Go, Ruby and C++, okay.
+And maybe the list will get longer over time.
+So we've been using the Python SDK
+when we are using the CLI,
+because the CLI is actually written in Python
+and it uses the Boto3 SDK.
+Okay, so we use the SDK when we issue API calls
+against AWS services.
+For example, DynamoDB or Amazon S3.
+And as I said, well fun fact,
+the CLI uses the Python SDK, Boto3.
+So the exam expects you to know
+when you should use an SDK.
+So we'll see the SDK when we get
+to the Lambda functions in this course,
+and we'll see how the SDK works
+in practice with code.
+So in the meantime, we're good to go.
+So that's it for the SDK at a high level.
+Well, don't worry,
+we'll get some practice with it,
+but it's good to get an introduction
+and I will see you in the next lecture.

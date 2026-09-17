@@ -1,0 +1,32 @@
+# 125. CodeCommit Overview
+# Section: Deployments & Managing Infrastructure at Scale
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/24682558
+# Caption: en_US (manual)
+
+So now let's get
+into the code-related tools in AWS.
+So before pushing the application code to servers,
+you need to store it somewhere.
+And developers usually choose a code repository.
+Usually that was going to be backed
+using the Git technology, G-I-T.
+And so a very famous public offering is called GitHub.
+But AWS has a competing product.
+That is going to be CodeCommit.
+And so CodeCommit is a way for you
+to store your code
+within AWS in a version control repository.
+So it's going to be for Git-based repository.
+And why would you have that?
+Well, once you have a Git-based repository,
+it becomes incredibly easy for developers
+to collaborate with each other on the code.
+The code changes are going
+to be automatically versioned and can be rolled back.
+And so the benefit is that with CodeCommit,
+you have a fully-managed code repository.
+It's scalable and highly available,
+but also it lives within your AWS accounts.
+So it's private, secure,
+and it's going to be integrated with all AWS services.
+So I will see you in the next lecture.

@@ -1,0 +1,109 @@
+# 122. Beanstalk Overview
+# Section: Deployments & Managing Infrastructure at Scale
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056068
+# Caption: en_US (manual)
+
+So now let's talk about Beanstalk.
+So when we have deployed a web application in AWS,
+we typically follow a architecture
+called a 3-tier architecture.
+So our users talk to a load balancer
+that could be in multiple available zones.
+Then the load balancer will forward traffic
+to multiple EC2 instances managed by
+an auto scaling scaling group.
+And then these EC2 instances need to store data somewhere
+so they will use a database such as Amazon RDS
+for a relational database to read and write data.
+And if they need to have an in-memory database
+for an in-memory cache, then they can also use ElastiCache
+to store a retrieve the session data or the cached data.
+Now this architecture is something
+we can easily reproduce manually.
+We can also reproduce it on AWS through CloudFormation,
+but there is a better way.
+So when you're a developer on AWS,
+you don't want to be managing infrastructure,
+you just want to be deploying code, okay?
+You don't want to be able to configure all the databases,
+the load balancers, et cetera,
+and you wanna make sure that whatever you're doing scales.
+And as we saw, most web applications will have the same
+or similar architecture with a load balancer
+and an auto scaling group.
+So as a developer on AWS, all that you want to do
+is to run your code.
+Possibly you want to run your code
+for different applications and environments the same way.
+So there comes Elastic Beanstalk.
+So Elastic Beanstalk is a developer centric view
+of deploying an application on AWS.
+And behind Beanstalk
+we have the same components we've seen before.
+So your EC2 instances, your auto scaling group,
+your Elastic Load Balancer, your RDS database, et cetera.
+But in Beanstalk, it's a developer centric view.
+So it's one view that's easy to make sense of
+with everything in it.
+And we still have control over the configuration
+of all the components, but it is all within Beanstalk.
+So Beanstalk from a cloud perspective
+is a platform as a service or PaaS
+because we just worry about the code.
+So to summarize, we saw infrastructure as a service,
+so IaaS.
+We saw platform as a service for Beanstalk, PaaS,
+and then we're going to see software as a service
+for other services on AWS.
+So using Beanstalk is free,
+but you're going to pay for the underlying instances.
+So Elastic Beanstalk is a managed service.
+That means that all the EC2 instance configuration
+and operating system will be handled by Beanstalk itself.
+The deployment strategy can be configured,
+but again, the deployment itself
+is going to be performed by Elastic Beanstalk.
+All the capacity provisioning through an auto scaling group
+and load balancing are done by Beanstalk.
+And the application health monitoring
+and responsiveness is also included
+in the Beanstalk dashboard.
+So what is your responsibility as a developer?
+Well, just the application code,
+and that makes Elastic Beanstalk
+a very developer friendly service.
+There are three architecture models with Elastic Beanstalk.
+The first one is single instant deployment,
+which is good for development environment,
+but if you wanna scale up, you can have a load balancer
+and an ASG, which is going to be great for production
+or pre-production web applications.
+And finally, if you want to have non-web apps in production,
+for example, workers, you have an option to only have
+an auto scaling group on as a standalone.
+Beanstalk can be used to support many platforms.
+For example, Go, Java, as well .NET, Node.js, PHP,
+Python, Ruby, Packer, Docker, Multi Docker,
+and Preconfigured Docker.
+You don't need to remember this for the exam,
+but as you can see, Beanstalk supports a lot of ways
+to deploy your application, including Docker
+and many programming languages.
+Finally, a question that may come up in the exam
+is around health monitoring.
+So Beanstalk does have a full monitoring suite available
+within the service itself.
+And so there's going to be a health agent
+on each EC2 instance within Beanstalk
+that is going to push metrics to CloudWatch.
+And then within Beanstalk you can view these metrics,
+do some monitoring and so on.
+But it will also check for application health
+and will publish health events.
+So these are just a bunch of screenshots that I've gotten
+to really show you that Beanstalk
+is a way to do health monitoring for your applications.
+So now I really want to give you an idea
+of how Elastic Beanstalk works.
+So we'll see you in the next lecture for the hands-on
+to give you a concrete demo.

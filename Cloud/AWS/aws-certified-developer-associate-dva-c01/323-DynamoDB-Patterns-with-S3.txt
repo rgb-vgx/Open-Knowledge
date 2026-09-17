@@ -1,0 +1,83 @@
+# 323. DynamoDB Patterns with S3
+# Section: AWS Serverless: DynamoDB
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730794
+# Caption: en_US (manual)
+
+So now let's look at two ways we can use
+DynamoDB with Amazon S3
+And the first one is how
+to store large objects in DynamoDB.
+Well, it turns out that as you know,
+in your tables in DynamoDB,
+you can only store up to 400 kilobytes of data.
+So obviously if you want to start storing some images,
+some videos, all that kind of stuff,
+DynamoDB is not the best place for it.
+So instead, what we're going to do is that
+we are going to have an Amazon S3 bucket,
+that will contain our large objects.
+So what is the process to upload a large object?
+Well, say we upload an image
+into Amazon S3.
+We're going to get back objects key.
+And what we going to do is that we're going
+to store this metadata from
+the application into DynamoDB.
+So we'll have a product ID, a product name,
+and then an image URL,
+which is a pointer directly
+into Amazon S3.
+Now,
+what we've done is that we've effectively
+stored a very small amount of data in our products table
+in DynamoDB.
+And we store the large item in Amazon S3.
+Now from the reading perspective and
+clients who wants to read this data,
+first gets the metadata from dynamo DB,
+and then we'll get the image back from Amazon S3
+to reconstruct these large objects.
+So we can go on and on and have many different products and
+use the strategy at scale.
+And the cool thing about this strategy is that we're using
+each service for what it's good at.
+So Amazon S3, is great for storing large objects.
+Okay.
+And DynamoDB is great for storing small objects
+that are going to be indexed with specific attributes.
+So in this example,
+we have the perfect combination of Amazon S3 and DynamoDB
+Another combination
+or synergy we can have is to use DynamoDB
+as a way to index S3 objects metadata.
+So the application is going to upload objects into Amazon S3
+and Amazon S3 we'll have notifications set up,
+for example, to invoke a Lambda function
+that Lambda function will store
+the objects metadata into DynamoDB table, for example,
+object size, date, who created it,
+whatever you want to think of about these objects
+and why do we do this?
+Well,
+because it's much easier for us to build some queries on top
+of the DynamoDB table.
+Than on top of an S3 bucket, again,
+A S3 bucket is not meant to be really scanned.
+It's meant to store large objects, and it's supposed to,
+you're supposed to have some sort of database that knows
+what these objects are, their attributes and so on.
+So by creating an application on top of DynamoDB,
+we can answer some questions such as, hey,
+we want you to find objects by a specific timestamp on our
+S3 buckets.
+Or we want to find the total storage used by a customer or
+list all the object for attributes or find all the S3
+objects uploaded within a date range, although this,
+by querying DynamoDB table.
+And then we read it back to the results from DynamoDB
+and we retrieve the necessary objects from your S3 buckets.
+Okay.
+So hopefully these two strategies make sense.
+They're quite common and they can come up at the exam.
+I hope you liked it.
+And I will see you in the next lecture.

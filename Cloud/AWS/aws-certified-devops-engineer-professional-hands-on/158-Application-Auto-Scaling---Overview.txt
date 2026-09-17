@@ -1,0 +1,43 @@
+# 158. Application Auto Scaling - Overview
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904556
+# Caption: en_US (manual)
+
+Now let's talk
+about AWS application auto scaling.
+So that's a service and its role
+is to actually manage your auto scaling.
+So you adjust capacity to get predictable performance
+at the lowest cost.
+The idea is that from a single place though,
+you can manage the scaling for multiple resources
+across multiple services.
+So you just point to your app,
+you select the services you want
+and how you want to scale them,
+and auto scaling takes care of the rest.
+So to find these resources,
+you can use your CloudFormation stack, your tags,
+or your EC2 auto scaling groups.
+So you build these scaling plans.
+And then these scaling plans can be using
+a target tracking step or scheduled scaling policies
+and be applied to several different kind of resources.
+So for example, in your scaling plan,
+you can have your auto-scaling group policies
+but also your DynamoDB policies regarding, for example,
+your provision capacity.
+So here is the list of some of the services
+that are supported by AWS application auto scaling,
+and you not do not need to remember this entire list,
+but remember, for example, the most important ones.
+For example, Aurora replicas can be managed
+using this service,
+or DynamoDB table capacity,
+as well as the global secondary indexes, can be managed.
+The ECS service auto scaling can be managed too.
+Lambda provision concurrency as well.
+Of course, your auto scaling groups, your spot fleets,
+and also custom resources.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

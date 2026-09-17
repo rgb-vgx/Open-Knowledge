@@ -1,0 +1,54 @@
+# 164. Lex + Connect Overview
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/35038636
+# Caption: en_US (manual)
+
+So now let's discuss Amazon Lex and Connect.
+So Amazon Lex is the same technology that powers
+the Alexa devices by Amazon.
+And if you don't know Alexa, Alexa is like a little device
+that you have in your home and you say,
+"Alexa, what's the weather like tomorrow?"
+And it will reply, "The weather is good,
+it'll be 24 degrees and it'll be sunny."
+So, the idea is that with Amazon Lex,
+you get automatic speech recognition, so ASR,
+that allows you to convert speech,
+so spoken words, into text.
+There's also a very good thing
+because Lex understands the intent of text, callers
+by doing natural language understanding,
+so it understands sentences.
+And Amazon Lex is a technology
+that will help you build chatbots or call center bots.
+And talking about call centers,
+how do we build a call center?
+We have Amazon Connect.
+So Amazon Connect is a visual contact center
+that allows you to receive calls, create contact flows,
+and it's all cloud-based.
+And it can integrate with other customer
+relationship system, management systems, so CRMs
+or AWS services.
+And the cool thing about Amazon Connect versus traditional
+offering is that there is no upfront payment.
+It's about 80% cheaper
+than traditional contact center solutions.
+So the whole flow of building a smart contact center is
+that you will have, for example,
+a phone call to schedule an appointment that is made
+into a number that is defined by Amazon Connect.
+So they call Amazon Connect.
+Lex is streaming all the information from this call
+and understand the intent of the phone call,
+and therefore, it will invoke the right lender function.
+And that lender function, for example,
+can be very smart and say, "Hey, someone has said
+to schedule a meeting tomorrow with Tom at 3:00 PM."
+Okay, I will go into my CRM and schedule that meeting
+by writing some code.
+So this is the whole idea behind Lex and Connect.
+So remember Lex is for ASR
+and Connect is for contact centers.
+So that's it.
+I hope you liked it and I will see you in the next lecture.

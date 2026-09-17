@@ -1,0 +1,113 @@
+# 135. S3 Encryption - Hands On
+# Section: Amazon S3 Security
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/23743656
+# Caption: en_US (manual)
+
+So let's practice encryption.
+And for this I'm going to create a bucket
+called demo-encryption-stephane-v2.
+And we scroll down,
+we're going to leave this on, leave this on.
+We're going to enable bucket versioning.
+And then under default encryption, as we can see,
+we have three different options
+but we must choose a default encryption for our buckets.
+So I will go over SSE-S3 right now
+and we'll have a look at SSE-KMS and DSSE-KMS later on.
+So let's click on Create a bucket.
+And now we have created a bucket
+that has default encryption turn on.
+So let's verify this by actually uploading an object.
+So we're going to add a file
+and we'll add our coffee.jpg file.
+And then we're going to just click on Upload.
+And as you can see now I can click on this file
+and scroll down,
+look for the server side encryption settings.
+And indeed the file was encrypted
+with server side encryption
+with Amazon S3 managed keys, so SSE-S3.
+We can also edit the encryption mechanism for a file.
+So I could just click on Edit.
+And as you can see,
+if we do edit the server side encryption,
+then this will create a new version
+of the object with updated setting.
+And so therefore, this is why I have enabled versioning
+for my bucket, is to show you
+that a new version of the file will be created.
+So let's change the encryption.
+And for this, we're going to override the bucket settings
+for default encryption for this one object.
+And so we have a choice to use
+either SSE-KMS or DSSE-KMS.
+So DSSE-KMS, I won't spend a lot of time on this.
+It's just two level of encryptions on KMS.
+So just a stronger KMS.
+We're just going to use KMS right now.
+It is simpler and it is not going to cost us any money.
+So we're going to use SSE-KMS as we learned.
+And then we have to specify a KMS key.
+So we can either enter a KMS key ARN,
+or we can choose from your own KMS keys.
+So if we choose from the KMS keys right now,
+you should have only one key available
+the AWS/S3 key, and it's called the default KMS key
+for the S3 service.
+So if you click on it, we can use this key.
+And that's not going to cost us any money
+because this is the default key for the service.
+If you created your own KMS key,
+then it would be available in this list.
+But creating your own KMS key
+will cost you some money every month.
+So for this purpose, we're just going
+to use the default AWS/S3 KMS key.
+Okay, so let's save the changes.
+We close this, and now if we go under Versions,
+as we can see, we have two versions
+of our file right now available.
+And so the current version, if we scroll down
+and go under service side encryption,
+as we can see it is indeed encrypted with SSE-KMS
+with this encryption key, which corresponds
+to the default AWS/S3 KMS key.
+Okay, so this is really good.
+Next we go under this part.
+So we can do the same process by uploading a file
+and then we're going to add a file, for example, beach.jpg.
+And under Properties,
+we're going to find server side encryption.
+And here we can specify an encryption key
+to either use the default encryption mechanism
+or to override it with SSE-S3, SSE-KMS or DSSE-KMS.
+So this is one way of doing it.
+And finally, let's have a look
+at the default encryption properties.
+So let's scroll down
+and we're going to find default encryption.
+Let's edit this, and here we have the option.
+So we can enable SSE-S3, SSE-KMS
+as the default encryption, or DSSE-KMS.
+So in case we do SSE-KMS,
+we have the bucket key option available to us.
+So this is to reduce the cost
+by doing less API calls to AWS KMS.
+And so this is enabled by default.
+If we just use SSE-S3, then this setting doesn't count.
+So we've seen
+that we can change the default encryption here.
+And you may ask me, well, SSE-C is missing.
+Well, indeed it is missing
+because SSE-C you can only do from the CLI,
+not from the console.
+So that means that you cannot enable SSE-C right here.
+And finally, for client side encryption,
+while you have to encrypt everything client side,
+then upload it to AWS and then decrypted client side,
+and so you don't need to tell AWS
+that the data is client side encrypted.
+So therefore, the only options you can deal with
+in the console are SSE-S3, SSE-KMS and DSSE-KMS.
+So that's it, we've seen all the encryption options in AWS.
+I hope you liked it, and I will see you in the next lecture.

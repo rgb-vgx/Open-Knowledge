@@ -1,0 +1,81 @@
+# 245. X-Ray APIs
+# Section: AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrail
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730104
+# Caption: en_US (manual)
+
+Okay. So let's talk about the X-ray APIs
+and you need to know them at a high level
+and understand what they do
+cause the exam may ask you to choose whether
+this is the Write API for X-Ray to do something.
+So let's look at the right API first
+which is used by the X-Ray daemon to write data
+into the X-Ray service.
+So this is a managed policy
+called the X-Ray Write Only Access
+and you can see it has five line items
+and I'm going to try to describe them to you.
+So the first one is PutTraceSegments
+and as the name indicates,
+it uploads a segment documents into AWS X-Ray
+that's necessary to have if you want to write into X-Ray.
+Then we have PutTelemetryRecords
+and this is for the X-Ray daemon
+to upload some information about how many segments
+were received, rejected and backend connection errors.
+So this helps with the metrics.
+Next we have a GetSamplingRules.
+So usually when we write stuff, we have a lot of puts
+because this was how the APIs are named in AWS
+whenever you're write it says, "put."
+But some half of this right API there is a get
+and this one is called GetSamplingRules.
+So do you know why?
+Well, we saw that whenever we were changing
+the sampling rules in the X-Ray console,
+all the X-Ray daemons were automatically updated
+to know when to send data into X-Ray.
+So for your X-Ray daemon to be able to know
+how the sampling rules are changing,
+then the GetSamplingRule authorization and permission
+is necessary.
+So this also applies to GetSamplingTargets
+and GetSamplingStatisticsSummaries which are advanced APIs
+but are also related to the sampling rules.
+So to summarize, your X-Ray demand to write into X-Ray,
+it needs you have the rights to write.
+So PutTraceSegments and PutTelemetryRecords
+and then you should be able to get the sampling rules.
+So GetSamplingRules.
+Very Simple.
+Now, for this API calls to work obviously,
+you need you to make sure that's your X-Ray daemon
+has the correct IAM policy authorizing these API calls.
+So that's for the write side.
+Now what about the read side?
+Well, this is more complicated,
+but this is a managed policy for reading.
+And as you can see, all these things as says
+get, get, get, get, get,
+and we have one called batch get trace
+which also says gets.
+So GetServiceGraph is to get the main graph that we saw
+in the console.
+BatchGetTraces is to retrieve a list of traces specified
+by ID. And each trace, as we know, is a collection
+of segment documents that originates from a single request.
+And then we have GetTraceSummary to receive the ID
+and the annotations for traces available
+for a specified time
+and if he want to get the full traces
+then you pass these IDs into the batch,
+get traces API and finally GetTraceGraph
+to retrieve a specific service graph for one
+or more specific trace IDs.
+So that's it.
+This is all for the Read APIs
+which is necessarily when you go into the console.
+And so if you see these APIs at the exam,
+you should be prepared to know when to use which and why.
+Okay. Hope that was helpful.
+I will see you in the next lecture.

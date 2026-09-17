@@ -1,0 +1,47 @@
+# 186. Re-Ranker Models in Amazon Bedrock
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865709
+# Caption: en_US (auto)
+
+Let's quickly talk about another tool in your tool chest
+for improving the quality
+of your retrieval augmented generation context
+that's retrieved from your vector stores.
+That's re-ranker models used with Amazon Bedrock.
+So that attempts to improve the relevance
+of the retrieved results from your underlying vector store,
+from your knowledge base.
+Now, the problem is that the chunks you got back
+might not necessarily be all that relevant
+to the original query.
+And this is a way of making sure that it is.
+So the idea here is that we're not just looking
+at the vector distances, the actual embeddings,
+the semantic search results from that information
+that we're retrieving for context.
+We're also gonna look at the relevance
+of those individual chunks to the original query.
+And then we're gonna reorder those results accordingly
+to choose what the best ones are.
+So it's not just about semantic search in this case,
+we're using that as a starting point
+and then using the relevance of those chunks
+to the original query to try to re-rank them again
+in order to get the best result at the top somehow.
+How do you do that?
+Well, there's a re-rank operation in the Bedrock API
+that you can use to do that and trigger that re-ranking
+whenever you want relative to a query to your Bedrock model.
+And you can also specify a re-ranker model explicitly
+when hitting your knowledge base at that level as well.
+Now, there are built-in ones you can use.
+All it has to do is measure that relevance somehow
+from the chunk to the query, right?
+It's not that complicated of a problem to describe.
+There are two different models
+you can choose for that problem.
+There are from Amazon and currently from Cohere.
+However, they are only available in limited regions.
+So do double check that re-ranking is available
+in the region where you've deployed Bedrock
+before trying to use it.

@@ -1,0 +1,150 @@
+# 178. DDoS Protection: WAF & Shield
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056310
+# Caption: en_US (manual)
+
+Now let's talk about
+how we can protect ourselves from a DDoS attack.
+A DDoS attack is a Distributed Denial-of-Service attack
+on our infrastructure
+and we'll see how this works.
+So say there's an attacker,
+that's a hacker
+and they want to do a DDoS attack
+against our application server.
+In this case they're going to launch multiple master servers
+and these servers are going to launch bots,
+a lot of bots
+and all these bots
+are going to send a request to our application server.
+Now our server is not meant
+to handle this many requests
+so it will be overwhelmed
+and it will not be working anymore,
+he will be denied a service
+and therefore any normal user trying to connect
+to our application server,
+will see that our server is not accessible
+or not responsive,
+effectively making our application down.
+So a DDoS attack is quite scary
+when you think about it
+but on AWS
+you can protect yourself from it.
+The first way is to use AWS Shield Standard
+and that's enabled for all customers at no additional cost
+and it will protect you against a DDoS attack
+for your websites and application.
+If you want a premium DDoS protection,
+you have to use AWS Shield Advanced
+which is going to give you 24/7
+so 24 hours a day,
+seven days a week protection on DDoS.
+Then you have WAF
+to filter specific requests based on rules,
+this is the web application firewall.
+CloudFront and Route 53 that we've already seen
+to give us protection by using the global edge network
+and so when it's combined with Shield
+it will provide attack mitigation at the edge locations
+and finally you need to be ready to scale
+if you're under attack
+maybe by leveraging auto scaling on AWS.
+So here is what the sample reference architecture
+looks like for DDoS protection.
+So we have our users
+and they will be routed through the DNS on Route 53
+which is protected by shield
+so your DNS is safe from DDoS attack,
+then you should use a CloudFront distribution
+to make sure your content is cached at the edge
+and then it is also protected by shield
+and in case you need to filter
+and protect from an attack,
+you can use the web application firewall,
+then to serve that application
+you can use a load balancer in the public subnet
+that will scale for you
+and finally behind the load balancer
+you should use EC2 instances
+in an auto scaling group
+to be able to scale to the higher demand.
+So all of this will give you a really good DDoS protection
+against these type of attacks.
+Now let's do a deep dive into the services
+that I just mentioned.
+So Shield is made up of two components,
+we have Shield Standard
+which is a free service
+that is activated for every AWS customer
+and this will provide you
+protection against the common attacks for DDoS,
+they're called SYN/UDP Reflection Floods,
+Reflection attacks
+and other layer three or layer four attacks.
+Then you have Shield Advanced
+which is an optional service,
+it cost you about $3000 per month per organization
+and they will give you protection
+against more sophisticated attacks
+on your EC2, ELB, CloudFront, Global Accelerator
+and Route 53.
+You also get access to your response team
+when you need it
+to help you protect yourself
+during these DDoS attacks
+and in case you are incurring some costs
+on these attacks,
+then any fees that is incurred during this attack
+is on AWS.
+So Shield from an exam perspective
+remember that the free version
+is activated by default for every customer
+and if you need that response team
+if you need to be having a higher level of defense
+then Shield Advanced
+is something that you enable yourself
+and it cost about $3000 per month.
+Next we have the Web Application Firewall, so WAF
+and this is to protect your web applications
+from common web exploits,
+for example on layer seven.
+Layer seven as you remember
+maybe is HTTP
+whereas layer four was for TCP.
+So because it is layer seven
+it can be deployed only on HTTP friendly devices
+so it can be deployed on your application load balancer
+your API gateway we haven't seen it,
+it's out of scope for the exam
+and CloudFronts.
+On your web application firewall
+you can define Web ACL
+so Web Access Control Lists
+and these rules on this ACL
+can include filtering for example
+based on the IP addresses,
+the headers of HTTP,
+the body, some strings
+it can protect you against common attacks
+such as a SQL injection
+or Cross-Site Scripting.
+You can have size constraints
+to make sure the requests are not too big
+and also block certain countries using a geo-match.
+Finally for DDoS protection
+you can use Rate-based rules
+to count the occurrences of events,
+therefore saying that
+you know a user cannot do
+more than five requests per second
+and that would help to be protected against a DDoS attack.
+So that's it's,
+just at a high level remember
+that it is a combination of
+Shield, WAF, CloudFront, Route 53
+they will give you an entire DDoS protection
+and again all these service you need to them
+at a high level.
+So hope that was helpful
+and I will see you in the next lecture.

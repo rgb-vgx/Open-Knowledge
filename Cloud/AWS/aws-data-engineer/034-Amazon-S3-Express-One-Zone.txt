@@ -1,0 +1,50 @@
+# 34. Amazon S3 Express One Zone
+# Section: Storage
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/51958409
+# Caption: en_US (manual)
+
+So here's one more storage class,
+but I wanted to make a separate lecture for it
+because it's a bit different than the other ones.
+So the S3 Express One Zone storage class
+is high performance,
+but for a single availability zone type of storage class.
+What does that mean?
+That means that your objects are stored
+not on the standard bucket on S3,
+but in what's called a directory bucket,
+and it's a special type of S3 bucket.
+But this bucket, instead of being distributed
+across multiple availability zone,
+it's going to be in a single availability zone only,
+and you get to choose which one you want it to be in.
+So it's a different kind of bucket,
+and that's why there is a different kind
+as well of storage class.
+So it's a very specific use case, but the idea is that
+because you are in a single AZ,
+then you're going to be able to handle
+hundreds of thousands of requests per second
+with single digit millisecond latency,
+so very high performance.
+You get about 10 times the performance of S3 standard
+with about 50% lower the cost.
+So good durability, but the availability is of course lower
+because now instead of being three availability zones
+with some replication, you only have one availability zone.
+And of course, if there is a problem on this AZ,
+you're going to be directly affected.
+So the idea of using S3 Express One Zone is
+that you're gonna be able to co-locate your storage
+and compute resources in the same availability zone
+and therefore reduce latency
+and maybe even reduce your networking cost.
+So the use cases are for latency sensitive apps,
+for data intensive apps, for AI and ML training,
+financial modeling, media processing,
+and high performance computing,
+and it's best integrated with, for example,
+with SageMaker Model Training, Athena, EMR, Glue,
+all these kind of data services.
+All right, so that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

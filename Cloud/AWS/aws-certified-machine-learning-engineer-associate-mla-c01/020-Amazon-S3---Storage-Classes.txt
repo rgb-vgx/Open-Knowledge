@@ -1,0 +1,158 @@
+# 20. Amazon S3 - Storage Classes
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45356545
+# Caption: en_US (manual)
+
+Okay, so let's discuss
+different storage classes we have for Amazon S three.
+The first one is Amazon S three Standard-General Purpose.
+Then we have Amazon S three-Infrequent Access.
+Then we have Amazon S three One Zone-Infrequent Access.
+Then we have Glacier Instant Retrieval,
+Glacier Flexible Retrieval, Glacier Deep Archive,
+and then finally, the Amazon S three Intelligent Tiering.
+So we'll learn about all these classes in depth
+in this lecture, but you have to know them for the exam.
+Then when you create an object in Amazon S three,
+you can choose its class,
+you can also modify its storage class manually,
+or as we'll see as well,
+you can use Amazon S3 Lifecycle configurations
+to move objects automatically
+between all these storage classes.
+So first, before we go into the classes,
+let's define the concept of durability and availability.
+So durability represents how many times an object
+is going to be lost by Amazon S three.
+And so Amazon S three has a very high durability.
+It's called 11 nines.
+So nine nine point and then nine times nine percent.
+And that means that on average,
+if you store 10 million objects on Amazon S three,
+you can expect to lose a single object
+once every 10,000 years.
+So it's quite durable.
+And the durability is the same
+for all storage classes in Amazon S three.
+Availability represents how readily a service is.
+And so this depends on the storage class.
+For example, S three Standard has a 99.99% availability.
+That means that about 53 minutes a year,
+the service is not going to be available.
+That means that you'll get some errors
+when you deal with the service.
+So you need to take that into account
+when you develop your applications.
+Okay.
+So S3 standard has 99.99 availability.
+It's going to be used for frequently accessed data.
+This is the kind of storage you use by default,
+and it has low latency and high throughputs.
+It can sustain two concurrent facility failures
+on the side of AWS and the use cases for it
+is going to be big data analytics,
+mobile and gaming application,
+as well as content distribution.
+Next, we have S three infrequent access.
+So this is data that is going to be as the name indicates,
+less frequently accessed,
+but requires rapid access when needed.
+It's going to be lower cost than S three Standard,
+but you will have a cost on retrieval.
+So the S three Standard-IA is 99.9% availability,
+so a bit less available.
+And the use case for it is going to be Disaster Recovery
+and backups.
+And Amazon S three One Zone-Infrequent access, One Zone-IA.
+ESC has high durability, okay, within a single AZ only,
+and the data is going to be lost
+if the AZ is somewhat destroyed.
+As well as durability, it's even lower.
+So it's 99.5% availability.
+And so the use cases of S three One Zone-IA
+is to store secondary copy of backups
+of maybe on-premises data, or data you can recreate.
+Next we have the Glacier Storage Classes.
+So Glacier is, as the name it gets very cold,
+so it's low cost object storage
+meant for archiving and backup.
+And the pricing is that you're going to pay for the storage
+plus pay for a retrieval cost.
+In your three classes of storage within Glacier,
+you have the Amazon S three Glacier Instant Retrieval.
+And this gives you milliseconds retrieval
+which is great for example,
+for data that's accessed once a quarter,
+and the minimum store duration is 90 days.
+So this is backup,
+but you need to access it within milliseconds.
+Then we have the Glacier Flexible Retrieval.
+It used to be called Amazon S three Glacier
+but then they renamed things as they added more tier.
+So the Amazon Glacier Flexible Retrieval
+has three flexibility.
+So you have expedited where you get the data back
+between one and five minutes.
+You have standard to get the data back
+between three to five hours, or bulk, which is free,
+where you get data back between five to 12 hours.
+And the minimum storage duration as well is 90 days.
+So here, instance means you retrieve data instantly
+and flexible means that you're willing
+to wait up to for example, 12 hours to retrieve your data.
+And then we have Glacier Deep Archive
+which is meant for long term storage.
+So we have two tiers of retrieval as well.
+We have Standard of 12 hours and Bulk of 48 hours.
+So you may be ready to wait a lot of time
+to retrieve data,
+but it's going to give you the lowest cost,
+and as well, the minimum storage duration is 180 days.
+So as you know, that's a lot of storage classes
+and there's one last called S three Intelligent- Tiering,
+which is going to allow you to move objects
+between excess tiers based on usage patterns.
+And for this, you're going to incur a small
+monthly monitoring fee, and auto tiering fee.
+And there are no retrieval charges
+in S three Intelligent- Tiering.
+So there is the frequent access tier that's automatic
+the default tier.
+Then we have the Infrequent Access tier
+for objects not accessed for example, for 30 days.
+Then you have the Archive Instant Access tier,
+automatic as well for objects not accessed over 90 days.
+And then the Archive Access tier that's optional.
+And you can configure it from 90 days to 700 plus days.
+And then you have the Deep Archive Access tier
+also optional, that you can configure for objects
+that haven't been accessed between 180 days
+to 700 plus days.
+Okay.
+So S three Intelligent-Tiering is really
+to allow you to just sit back and relax
+while S three moves objects for you.
+So if you compare all the storage classes
+you don't need to remember these numbers,
+but it's just for you to make sense of what they are.
+So you get durability of 11 nine's everywhere.
+Then as availability goes down, the less zones you have,
+of course.
+It just shows you like for example
+the minimum storage duration chart and so on.
+So take some time to look at this diagram on your own.
+You should understand it,
+but you should not remember it for sure.
+So if we look at some pricing, for example
+in the us-east-one,
+so this is the kind of pricing you would have
+for all the storage classes.
+And again, you're not supposed to remember everything.
+But it's good for you to have a look at it
+on your own time, just to make sure you understand.
+Because if you understand what the classes name are,
+then you should be able to make sense of these classes.
+Okay?
+So that's it for the lecture.
+I hope you liked it.
+And I will see you in the next lecture.

@@ -1,0 +1,83 @@
+# 113. Seq2Seq in SageMaker
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285427
+# Caption: en_US (auto)
+
+Next up, we'll talk about Sagemaker's Seek to seek algorithm that stands for sequence to sequence,
+and that might ring a bell from when we talked about RNNs.
+This is an example of where you just take in a sequence of tokens and you output another sequence of
+tokens.
+And like we said before, a common use of that is machine translation.
+You can think of a sentence as just a sequence of tokens, a sequence of words.
+Right.
+And your output would be a sequence of translated words based on that same phrase.
+It's also used for things like text summarization.
+So maybe I can take in a sequence of tokens that corresponds to words in a document, and output a sequence
+that corresponds to words of a summarization of that document.
+Speech to text.
+Another example of that, I might have tokenized some audio waveforms, and I want to output tokenized
+words in text instead.
+Under the hood, it can implement this with either RNNs or CNNs with attention, which is sort of an
+alternative method.
+So even though we talk about sequential data as being a fit for RNNs, they can also be a fit for CNNs
+as well.
+It expects record I o protobuf as its input, where the tokens are integers.
+And that's a little bit unusual because most of the algorithms in SageMaker want floating point data.
+But if you think about it, the sequences are going to be tokens, right?
+So we're going to have some sort of a sequence of things.
+And those might be integer indices into vocabulary files for words or something else.
+And it really should be record io protobuf format, because that is really custom built for being a
+good input into a neural network like this.
+So you need to provide training input in the form of tokenized text files.
+You can't just pass in a text file full of word documents or whatever, right?
+You need to actually build a vocabulary file that maps every word to a number.
+Because, you know, computers like numbers, not words.
+So you're going to have to provide it with both that vocabulary file and the tokenized text files or
+whatever else you're tokenizing as the input.
+There is sample code provided in SageMaker that shows you how to actually do that and convert everything
+to the record io protobuf format that it expects as input.
+It ends up looking a lot like that Tfidf lab that we did earlier, actually.
+But at the end of the day, you provide training data, a validation data set, and a vocabulary file
+that it can use to actually map those tokenized files to actual words or whatever it is you're trying
+to encode.
+Now, as you can imagine, building a machine learning model that can translate between two different
+languages is a pretty tall order.
+And yeah, it can take days to train these things, even using the power of SageMaker and, you know,
+huge fleets of training hosts.
+Fortunately, there are pre-trained models available.
+So if you look at the example notebook they provide, they'll show you how to actually access pre-trained
+models for translating from one language to another.
+The details aren't important for the exam, but you just need to know that you can do that.
+And there are public training data sets out there as well that you can use for a specific translation
+tasks.
+You don't need to go out there and build your own dictionary of every word in English, and how that
+corresponds to every word in German.
+For example, there are people who have done that work for you already.
+So again, very common use of seek to seek is in machine translation.
+Usually that's the context you hear it talked about in the hyperparameters for seek.
+To seek are the ones you would mostly expect for a neural network batch size the optimizer type Adam
+SGD or Rmsprop the learning rate.
+How many layers do I have?
+Um, the thing that's a little bit different about it though are the optimizers.
+So what are you optimizing on?
+You can just optimize on accuracy.
+So you could provide a validation data set that says, here's what I think the correct translation of
+this word of this sentence would be and it will measure.
+Well, did I get that right or not?
+But in the world of machine translation, the results tend to be a little bit more nuanced, right?
+So you're going to use different metrics more likely.
+For example, Bleu score can actually compare your translation against multiple reference translations.
+So it can have a little bit more of a wiggle room there as to what's considered correct.
+There's also a metric called perplexity that's used in this space.
+That's a cross entropy metric.
+But for the purpose of the exam, just remember that Bleu score and perplexity are well suited for measuring
+machine translation problems.
+Obviously, as a deep learning algorithm, it takes advantage of GPUs and you should just use GPU instance
+types for this.
+As we said, it's a very heavy duty algorithm, so you're probably going to want to throw a P3 node
+at it.
+Unfortunately, you can only use a single machine for training, so it cannot actually be parallelized
+across multiple machines, which is kind of a bummer given how intensive this training is.
+However, the good news is it can use multiple GPUs on the same machine, at least so you want to.
+If you're doing a very large training job with seek to seek use a very beefy host.
+Uh, P3 with lots of GPUs.

@@ -1,0 +1,279 @@
+# 81. ElastiCache Strategies
+# Section: AWS Fundamentals: RDS + Aurora + ElastiCache
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/15300184
+# Caption: en_US (manual)
+
+Okay, so now let's go one step deeper
+and talk about the different caching strategies
+you can implement and the considerations you have
+coming with it.
+So if you want to have a read, I recommend this link.
+All the information is from this link
+with a little bit of bonus,
+but I'm going to try to explain in summarize everything
+to you in this lecture.
+So, is it safe to cache data?
+In general yes, but sometimes your data may be out of date.
+And so you may have eventually consistency.
+So it's not for every type of data sets, Okay.
+Some data, you want to make sure that you only cache it,
+if it's okay to cache it.
+Is caching effective for the data?
+Is also another question you need to ask yourself.
+So for example, if your data is changing slowly,
+and few keys are frequently needed,
+then that could be great, Okay.
+But for an anti pattern for example,
+if your data is changing very, very quickly,
+and you need all the key space in your data set,
+then maybe caching will not be as effective.
+Then you need to ask yourself the question
+is the data structured correctly for caching?
+For example, if you have key value,
+or if you want to store your aggregations results,
+caching is great.
+But you need to make sure that data
+is structured accordingly before caching it,
+Okay, because caching is about saving time,
+it's about optimizing.
+It's about getting there faster.
+So you wanna make sure the data is structured
+the correct way for your queries, Okay?
+And then the final question,
+which is, the more important one is,
+which caching design pattern
+is going to be the most appropriate for us?
+And this is the discussion we're going into right now.
+So there is the first one called Lazy Loading,
+but it may come up at the exam
+under Cache-Aside or Lazy Population.
+The three things mean the same thing.
+So let's have a look.
+So we have our application.
+We have Amazon ElastiCache and Amazon RDS,
+and there are three distinct components.
+So if your application goes and wants to read something,
+first, it's going to ask the cache,
+and so ElastiCache it would be Redis or Memcached,
+would say, yes, I have something
+and it's called a Cache hit.
+That's the greatest case.
+Now, if there is no Cache hit, it's called a Cache miss.
+So the application makes a request to ElastiCache.
+ElastiCache does not have the data,
+so we get a Cache miss.
+So we need to be able to find the data where is.
+So we go and read the data from your database,
+in this example, Amazon RDS,
+then the application has the correct data.
+And what it's going to do is that it's going to write
+that data to the cache to make sure
+that any other application who requests
+the same data will go directly into Cache hit.
+So this architecture is great,
+because only the requested data is going to be cached, Okay?
+If there is no data that is requested from RDS,
+it will not end up in the cache.
+So it's very efficient.
+And in case, somehow your cache gets wiped
+or you have a node failure, then it's not fatal.
+It will increase latency because the case needs
+to be one warmed
+and by warm, it means that all the reads have to go to RDS
+and then be cached.
+So that's what the warm up is called.
+But there's some cons.
+First of all, if we get a Cache hit is great.
+But if we get a Cache miss,
+that means there's three network calls being done
+from your application to ElastiCache,
+which is a Cache miss from your application to RDS,
+which is read from Data Base and finally,
+another write to the cache.
+And so for your users,
+when they are reading something,
+and they're seeing some latency,
+they're not used to it.
+And so, that three round trips may be a bad user experience.
+And finally, stale data.
+So if your data is updated in RDS,
+then it will not be necessarily updating in ElastiCache.
+And so it's possible to have outdated data in the cache.
+And that's what you need to ask yourself is my data Okay
+to be out of date and eventually consistent?
+So that's the first case,
+and so the exam does expect you to understand how
+to read a Cache-Aside or Lazy Loading type of structure.
+So I'm using Python, which is I think,
+an easy language to read, to have a look.
+So we need to look at this code and understand
+that it is indeed a Lazy Loading strategy.
+So let's have a look, and this is very easy to read.
+So def means definition
+and it's a function definition to get a user
+and the argument is the user ID.
+And so we call it on line 17.
+We want the user equals get_user id 17, Okay.
+And now how does the user get his get?
+So first, would you record equals cache.get user_id.
+So here, we're going to check in ElastiCache,
+if somehow that user ID is already cached.
+And so if we get a Cache miss, if record is none,
+we go in this loop, else, that'd be a Cache hit,
+and we just return the record.
+So we see that if we get a Cache hit,
+here, we go directly into the response.
+Now if you get a Cache miss,
+then we run a database query to find that user
+in our database,
+so we do db.query
+and we have a SQL query that goes past to RDS and say,
+Okay, we get the record,
+then we populate the cache with the results.
+So we'll do cache.set user_id, record
+so that the next time someone does cache.get
+it will be a result, it will be a Cache hit.
+And then finally, we return the record,
+which is exactly the same strategy
+as what I showed you in the diagram.
+So from this code, it appears to be indeed,
+Lazy Loading, Okay.
+Again, you don't need to know how to write code,
+but reading code and understand what the code does.
+It's very little of the exam,
+but for ElastiCache, it is necessary, Okay.
+The second type of strategy is called Write Through.
+And Write Trough, is when you add or update the cache
+when your database is updated.
+So let's have a look.
+Same thing application ElastiCache and RDS.
+And when our application talks to ElastiCache
+we get a Cache hit which is great,
+and when there is a write happening to RDS,
+so when our application modifies the Amazon RDS database,
+then on top of it, it's going to write to the cache.
+So this is why it's called the Write Through,
+because we write through ElastiCache to RDS, Okay.
+So what do we get out of this architecture?
+Well, the data in the cache is never stale, Okay.
+Whenever there is a change in Amazon RDS,
+then automatically, there will be a change in your cache.
+And this time,
+you get a Write penalty versus a Read penalty.
+So before when we had a Cache miss,
+we had to do three network calls in total,
+and that was a Read penalty.
+But now when we write to the database,
+we have a Write penalty.
+Each write now requires two calls
+one to the database and one to the cache.
+And from the user perspective,
+a user is expecting more a write to take longer than a read.
+For example, if you were on the social media
+and you post something then you expect that post
+to last maybe a second or two.
+But if you fetch a profile,
+you expected to take a split second.
+So here, the users understand that any write,
+any changes to the database may take a little bit longer.
+So there may be better from a user perspective.
+Now, what about the cons?
+Well, there is missing data
+until the Amazon RDS the database is updated or added.
+That means that your ElastiCache or your cache in general,
+will not have all the data it needs
+until the data is written to RDS
+and so there may be a problem.
+And so for this, you can combine the Write Through strategy
+with Lazy Loading such as if your application
+does not find the data in ElastiCache
+then it also does Lazy Loading into RDS.
+And so we can combine the two strategies together.
+And here we get a Cache Churn.
+That means that as we add a lot and a lot of data in RDS,
+there will be a lot and a lot of data in ElastiCache,
+but there is a chance that this data will never be read.
+So that could be a problem
+if your cache is very small, Okay.
+Likewise, we'll look at some Pseudocode.
+So this time, we have the function called save_user
+so before it was get_user
+because it was a read optimization on the cache,
+but now it's a write optimization on the cache.
+So it's save_user
+and in here, we just look at this function save_user
+and the first thing we do is to save to the database.
+So we do record equals db.query update users
+and we update the user with the values.
+And then we push it into the cache.
+So cache.set user_id, record
+and then we return the record.
+So this is the Write Through strategy
+that's been defined and Pseudocode.
+And you can as you see,
+combine the Write Through and the Lazy Loading
+because this is a function called save_user
+and the other one was a function called get_user
+so these two can be used together.
+Then there is Cache Evictions and Time-to-live or TTL.
+So your cache has a limited size.
+And so there can be something called Cache Eviction,
+to remove data out of your cache.
+So for example, it can happen if you delete an item
+explicitly from the cache,
+or if the memory of the cache is full.
+And then your item has not been used recently,
+and therefore is going to be evicted,
+it's called LRU for Least Recently Used,
+or we set an item time-to-live or TTL,
+which is saying, hey, you can live only for five minutes,
+and in five minutes, I want the cache to evict you.
+And the TTL are very helpful for really any kind of data
+would it be Leaderboards, Comments, Activity streams etc.
+And depending on your application,
+your TTL can range from a few seconds,
+so this is a very short TTL, to hours or days.
+But even a TTL of a few seconds for some data that is very,
+very requested can be extremely effective for a cache.
+So TTL is a great strategy to keep a balance between
+having data stay in the cache and also being evicted,
+so that new data takes place and replaces it.
+So if somehow you have too many evictions though,
+because your case is always at full memory,
+then you should consider updating your cache size
+by scaling up or out.
+So that means making your cache bigger.
+Okay, final words of wisdom because caching is hard.
+So the Lazy Loading and Cache-Aside strategy
+is very easy to implement
+and works with many situations as a foundation,
+especially to improve the read performance.
+So this is something that's very easy to do,
+and that I recommend you to do in many applications.
+The Write-through is a bit more hands on involved,
+and it's more of an optimization
+that comes in as an after effect on top of the Lazy Loading,
+then a cache strategy on its own.
+So make sure that Write-through is not your first priority.
+Think out how it works
+for your use case and implement it if necessary,
+to improve your cache staleness.
+And then finally, the TTL is usually not a bad idea,
+except when you're using Write-through, Okay.
+And you should set it to a sensible value
+for your application.
+Finally, also only cache the data make sense.
+So it'd be user profiles, blogs, but maybe not pricing data.
+And finally, or maybe not someone's bank account value.
+And then finally, just one last thing on cache.
+So there's this quote that says,
+"There are two hard things in Computer science:
+"cache invalidation, and naming things."
+So that means that caching is really, really hard.
+This was just an introduction
+there's a whole field of Computer Science on caching.
+But as you can see, for the exam,
+you need to know about different caching strategies,
+their Pseudocode and their implications.
+So I hope that was helpful
+and I will see you in the next lecture.

@@ -1,0 +1,83 @@
+# 227. CloudWatch Metrics
+# Section: AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrail
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851350
+# Caption: en_US (manual)
+
+Okay, so we've seen CloudWatch
+throughout the course,
+but let's just go and do a quick summary on it.
+So first CloudWatch metrics,
+it's going to provide metrics for every service in AWS,
+and you need to understand what the metric means.
+So usually the name of the metric gives you
+a pretty good indication of what it is.
+For example, CPU Utilization, NetworkIn,
+and then based on how the metric is behaving,
+it gives you an idea of how the service is behaving,
+and you can do some troubleshooting based on this.
+So metrics belong to namespaces,
+and then you have a dimension,
+which is an attribute of a metric,
+for example, instance id, environments,
+et cetera, et cetera,
+and you can choose up to 30 dimensions per metric.
+Metrics will have timestamps,
+and you can create CloudWatch dashboards of metrics.
+So in this course we've seen EC2 metrics for example,
+and we also seen the EC2 detailed monitoring.
+So we know that by default EC2 instances will have
+metrics every five minutes,
+but if you enable detailed monitoring for a cost,
+it's additional,
+then you're going to get data of metrics every one minute.
+And if you enable this, then for example,
+you're going to be able to react faster to changing metrics
+for your EC2 instances and it gives you some benefits for
+your ASG, if you want to scale out and in faster.
+Now, the feature allows you to get 10
+detailed monitoring metrics.
+And the thing to note is that the Institute memory usage,
+so your Ram, is not pushed by default and needs to be pushed
+from the instance as a custom metric.
+And we'll have a look at how to push custom metrics
+very, very soon.
+So when you are in the CloudWatch dashboard
+on the left hand side,
+there is metrics and you can find all the metrics.
+And as you can see,
+we see all the namespaces in here for our metrics.
+If we have a look, we have based on services, for example,
+ELB auto-scaling EBS, EC2, EFS and so on.
+So a lot of information given you given to you here,
+so we can click on EC2,
+And we can have a per instance metric,
+just to see one metric and I'm going to type credits
+to see the CPU credit balance.
+For example, I will take this instance,
+which was created a long time ago.
+And then what I'm going to do is I'm going to choose a
+custom range,
+which is going to be a one month to find some data in here.
+Okay, so we have the data here.
+And so the cool thing in CloudWatch metrics
+is that you can just click
+and select the time span you want.
+And here we go,
+we're getting some information around our metrics.
+As you can see, we get metrics every five minutes here.
+So every data point is every five minutes because detailed
+monitoring was not enabled for this instance, okay.
+But if I did enable detailed monitoring,
+I would get data every one minutes.
+So this is just the basics of quality metrics and nothing
+too fancy, but we can definitely filter by time.
+We can view it as a different lines or stacked area or line
+or number or a pie chart. You can add it to a dashboard.
+You can download as a CSV, you can share it.
+Okay, So cloud metric is very, very handy.
+And you can have a look at all the metrics, you know,
+based on the region you want,
+based on the dimension you want,
+the resource you want, so you can filter everything.
+So that's it for closure metrics.
+I hope you liked it. And I will see you in the next lecture.

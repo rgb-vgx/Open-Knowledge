@@ -1,0 +1,77 @@
+# 37. EC2 Instance Connect
+# Section: EC2 Fundamentals
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098164
+# Caption: en_US (manual)
+
+I want to show you an alternative to SSH
+that I found a lot easier
+which is the EC2 Instance Connect.
+So for this, you click on My First Instance
+and then you click on the top, it says connect.
+You have multiple options including
+the SSH client we saw from before.
+But one option I wanna show you is the EC2 Instance Connect.
+So this allows us to do a browser based SSH session
+into our EC2 Instance.
+For this we verified the public IP address, which is good.
+The username is provided by default,
+which is EC2 user because it get guessed
+by AWS that we are using Amazon and X2
+and therefore EC2 User is the right username,
+but if you wanted to, you could override it,
+but it doesn't work unless you enter EC2 users.
+So we'll leave it as is for now,
+and then, as you see there's no SSH key option,
+because, well, when we do connect to it,
+it's going to upload for us a temporary SSH key
+and establish a connection this way.
+So with this methodology,
+we don't even need to manage SSH keys which I found lovely.
+So you click on Connect and it's going to open a new tab.
+And very quickly you are into your Amazon Linux 2 AMI
+and you can start running some commands
+such as whoami or ping google.com.
+And as you can see, everything is working.
+So the cool thing about it is that,
+well, your session is in the browser
+instead of using a different command line interface
+such as terminal and so on.
+And so you do ping google.com or do
+any kind of commands you want really on it
+without using the SSH utility beforehand.
+But in this course, if I say use SSH,
+you have either the option to use your own terminal mssh
+or to use for example, party, or to use the SSH command
+on windows or to use, regardless of you here
+on windows, Linux, or Mac, the EC2 Instance Connect.
+Now this is relying on the SSH behind the scenes.
+So if I go, for example, to my Instance
+look at the security group and I want to edit the rules.
+So I click on my security group in here,
+the inbound rules I'm going to edit them
+and I'm going to remove the SSH inbound rules.
+So I delete it and save the rules
+and then go back to my EC2 Instances,
+and I close this one and I'll try to establish
+a new EC2 Instance Connect.
+So let's connect, as you can see, this is not working
+because while there's a problem connected to your Instance.
+The first thing is that you need to open the port 22.
+So back into my launch wizard, I can fix this.
+I will edit the inbound rule, add the SSH rule
+from anywhere IPV4, save the rule.
+Let's go back in here and just in case,
+if it doesn't work for you,
+sometimes it's because you're using IPV6, excuse me.
+So therefore you need to do from anywhere IPV6 as well.
+So you need to add these two entries
+for your EC2 Instance Connect
+to work sometimes, depends on your setup.
+So we're good to go.
+And now if we try to connect to the Instance itself,
+so let's try to connect in here.
+Voila, we are into the Instance.
+Okay.
+So there was a quick demo of EC2 Instance Connect.
+I will use it a lot in this course.
+I hope you liked it, and I will see you in the next lecture.

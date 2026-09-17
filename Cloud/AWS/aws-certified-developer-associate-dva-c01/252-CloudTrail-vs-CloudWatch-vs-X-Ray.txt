@@ -1,0 +1,43 @@
+# 252. CloudTrail vs CloudWatch vs X-Ray
+# Section: AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrail
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/15300246
+# Caption: en_US (manual)
+
+So this is something
+that may look obvious for you
+but what is the difference
+between CloudTrail, CloudWatch and X-Ray?
+I'll just try to summarize it in one slide.
+So CloudTrail is to audit API calls
+that are made in your account
+by user, services or even from the AWS console.
+It's really useful when you want
+to detect unauthorized calls
+or you wanna find the root cause
+of changes due to API calls.
+Now, CloudWatch is to use metrics for monitoring,
+so CloudWatch Metrics for monitoring
+and CloudWatch Logs for storing the application logs.
+CloudWatch Alarms to send notification
+in case of unexpected metrics, for example.
+And so all of this has to do with monitoring, okay?
+So CloudTrail is API calls,
+CloudWatch is going to be around monitoring.
+X-Ray is for automated trace analysis
+and central service map visualization
+so if you have a distributed service,
+this is a great way to look at things.
+And this is really helpful for debugging
+and also looking at stuff like latency,
+errors and fault analysis
+from within the X-Ray console.
+You can also get, as I said,
+request tracking across your distributed systems.
+So hopefully that makes it pretty clear
+which service is used for what.
+CloudWatch is really just for overall metrics,
+X-Ray is a lot more granular,
+trace-oriented type of service
+and CloudTrail is going to be for auditing API calls.
+Okay, hope that was helpful.
+I will see you in the next lecture.

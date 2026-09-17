@@ -1,0 +1,67 @@
+# 365. Amazon ECS - Rolling Updates
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218661
+# Caption: en_US (manual)
+
+Now let's talk about
+how do you update an ECS service.
+And for this we have rolling updates.
+So when you update an ECS service from v1 to v2,
+you can control how many tasks will be started
+and stopped at a time and in which order.
+So when you have an ECS updates,
+when you select a new task definition number
+and you want to update an ECS service,
+you will have two settings,
+the minimum healthy percent and the maximum percent.
+So by default they're one and 200
+but let's see what they mean.
+So your ECS service,
+for example, this one is running nine tasks
+represents an actual running capacity of 100%.
+And then if you set a minimum healthy percent
+of less than 100, this is going to say,
+"Hey you're allowed to terminate all the tasks
+on the right hand side, as long as we have enough tasks
+to have a percentage over the minimum healthy percent."
+And in the maximum percent shows you how many new tasks
+you can create of the version two,
+to basically roll updates your service.
+So this is how these two settings would impact your updates.
+And so you will go ahead, create new tasks,
+then terminate all tasks and so on.
+All to make sure that all your tasks
+are going to be terminated
+and then updated to a newer version.
+So let's discuss two scenarios.
+For example, we have min at 50%
+and max at 100% and we start with four tasks.
+In this case,
+we're going to lose four tasks to be terminated
+so that we're running at 50% capacity.
+Then two new tasks are going to be created, okay?
+Now we're back at 100% capacity.
+Then two old tasks are going to be terminated,
+we're back at 50% capacity.
+And two new tasks are going to be created,
+we're back at 100 capacity.
+And we have done a rolling updates.
+In this case, we have been terminating tasks
+because we set the minimum to 50%
+and the maximum to 100%.
+If we're doing minimum at 100% and maximum at 150%
+then we start with four tasks.
+We cannot determine a task because the minimum is 100%.
+Therefore we can go into create two new tasks
+and this will bring our capacity to 150%.
+Then because we are above the minimum 100%
+we can terminate two old task and we're back at 100%.
+Then we will create two new tasks
+and finally, terminates two old tasks.
+And this will have performed our rolling updates
+for our ECS service.
+So just something you should know,
+if you read lecture going into the exam
+this could be happening at one question only.
+All right, that's it.
+I will see you in the next lecture.

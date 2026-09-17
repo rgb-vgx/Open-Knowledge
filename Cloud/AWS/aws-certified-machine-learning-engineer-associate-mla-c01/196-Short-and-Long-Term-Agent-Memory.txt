@@ -1,0 +1,70 @@
+# 196. Short and Long-Term Agent Memory
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865793
+# Caption: en_US (auto)
+
+All right, just like people have memory, so do agents, and they come in two flavors, short-term and long-term.
+So it's very similar to how the human mind works. So what do we mean by short-term memory?
+Well, usually that's referring to the current session, the current conversation that you're having,
+and it's what enables conversations to begin with.
+So if I'm having a conversation with an AI and I refer back to earlier things I said, that's where
+short-term memory comes in.
+It's keeping track of that conversation history so I can say things like, do that again,
+or refer to it, to some earlier thing that I was talking about, right?
+So figuring out those relationships to things I talked about earlier is a result of that short-term conversation history.
+So I'm storing not just what I'm asking about right now, but also about what I asked about in the
+past during this session.
+And that all just becomes one big part of a giant prompt that includes that prior context.
+So it's pretty simple, right? That could just be in memory, or maybe I'm storing it in a distributed cache somewhere,
+like Elastic Cache or MemoryDB, or even DynamoDB would be okay.
+And it might not just be conversations, it might be events within that session,
+like tools that I called or stuff that I uploaded, you know, whatever it might be.
+But it's stuff that I've done within this session that, you know, could just be done in memory.
+That's short-term memory. DynamoDB is also appropriate for long-term storage, though.
+So this is where it gets more interesting.
+So you might have noticed that if you go to chat GPT, you can go back to a conversation you had a
+year ago and pick it back up.
+So that's being stored in some persistent manner somehow.
+So that's one form of long-term memory, but it can get deeper than that.
+So I can also, like, summarize these past conversations instead of storing them verbatim
+and kind of using that to have some sort of a background to start from in my new conversations with you.
+Maybe I can learn things about you that I'm summarizing and storing in there as well.
+Like you may have noticed that chat GPT sometimes tries to work in things that it thinks it knows
+about you as an individual.
+And that's an example of long-term storage, where it's picking up things like your coding style,
+the favorite tools that you use, or just what your interests are and what you do for a living.
+You know, these are interesting things about you that it might incorporate into future responses
+that it needs to store somewhere in long-term memory.
+Also, any explicit facts that you may have given it.
+So if you say, remember this, maybe it's going to actually remember that and store it somewhere.
+So you can refer to that in the future.
+Now, conceptually, you might store this in a unified memory record somewhere in some data store.
+But those memory records might have different strategies for different kinds of memories.
+So user preferences might be stored one way.
+Semantic facts might be stored another way.
+Summaries of past sessions might be stored in yet another way.
+And that's fine.
+So where do I store this stuff?
+Well, DynamoDB, like I said, is one option.
+SQLite is what OpenAI uses by default in their SDK.
+And for small to medium-sized solutions, RDS or Aurora might fit the bill as well.
+Also, Amazon Agent Core, where we're getting there, has a memory feature where you can very easily
+attach that agent core memory to your agents.
+And you don't have to worry about reinventing that.
+So that's one way of doing it as well.
+Highly scalable system.
+The Strands SDK has an integration with something called mem0.
+And that's also an option.
+And also, you could make an argument that knowledge bases are a form of long-term memory.
+It's not really the same sense of the word, though.
+So usually when we talk about long-term memory in the context of agents, we're talking about your
+past interactions with the system, with the agent.
+Knowledge bases are more about long-term memory of contextual information that comes from outside of
+the system, not from the user.
+But eh, potato, potato.
+It's long-term as well.
+So that's memory in the context of AI agents.
+There is both short-term for your conversation that's happening right now, long-term with insights
+from your past conversations.
+And you've got to store that somewhere.
+So that's what it's all about.

@@ -1,0 +1,217 @@
+# 67. [SAA/DVA] Auto Scaling Groups - Scaling Policies Hands On
+# Section: EC2 High Availability and Scalability
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27513028
+# Caption: en_US (manual)
+
+Okay, so now let's have a look
+at automatic scaling for your ASG.
+As you can see we have three categories,
+dynamic scaling policies, predictive scaling policies,
+and scheduled actions.
+So let's start with the simplest.
+So schedule actions
+is when you want to schedule a scaling action in the future,
+so you can create one
+and then you say what you want the desired capacity
+or the min or the max to be,
+and then is it once every week, every hour,
+is it's based on a specific schedule and so on?
+And then a start time and an end time
+if you wanted it to be done.
+So this is pretty cool and this is allowing you to schedule
+based on events that you can predict
+and that you know in advance.
+Because you know, for example
+that you're going to run a big promotion next Saturday.
+Next, predictive scaling policies
+is where it's going to be machine learning driven.
+So you need to scale it based on a forecast.
+So you need to have a look at the actual policy
+and the actual scaling based on the past
+and then it will have a look at a metric to look at.
+For example, CPU utilization or network in, network out,
+the application load balancer request counts
+or a custom metric that you want.
+And then you want to, for example,
+to have a target of 50% of CPU utilization for instance,
+and then you can set up some additional settings,
+but based on this,
+and based on the actual scheduled utilization
+for the past week, for example,
+then a forecast is going to be created
+and your ASG is going to be scaling based on that forecast.
+So it's not something I can demonstrate with you
+because I would need to enable this
+for a very long time a week
+and then make sure I have some usage on my application.
+But at least you see that predictive scaling policy
+is quite simple to set up,
+you just specify the metric you want
+and the target utilization,
+and then some machine learning will be applied
+for the scaling to happen.
+So the one policy I can demonstrate to you
+is the dynamic scaling policy.
+So let's go ahead and create a dynamic scaling policy.
+So here we have three options.
+We have target tracking, step scaling and simple scaling.
+So let's have a look at simple scaling first.
+So here we have to specify a name than a CloudWatch alarm,
+which is an alarm that can scale capacity
+whenever it is being triggered.
+So we need to create an alarm beforehand,
+but we'll see this later on.
+And so in case the alarm is being triggered
+and what happens, maybe you want to add two capacity units,
+or maybe you want to add 10% of your group.
+And then add capacity units
+in increments of at least two capacity units.
+So this is a simple scaling policy.
+So we can have a scaling policy that goes out
+by adding instances,
+or that goes in by removing instances here.
+Or you can have a set to action as well.
+And next we have step scaling.
+So this is allowing you to set up multiple an alarm
+and based on the alarm value to have different steps
+to, for example, if the alarm is very, very high
+in terms of the value, then add 10 capacity units.
+But if it's high, but not too high, add one.
+This is the idea behind step scaling,
+but we'll set up a target tracking scaling policy
+because this is going to create a CloudWatch alarms for us.
+So here's the name target tracking policy
+and it will track the average CPU utilization
+of a target value of 40,
+and then I will go ahead and create my policy.
+So now what we're saying is that, hey,
+the goal of this ASG
+is to maintain the CPU utilization to 40.
+And in case, then you go over,
+then please add capacity units.
+So to see this in action, we need to change a few things.
+So right now the main end of the desired
+is one which is good, but let's set the max capacity
+to be three or two whatever happens.
+The idea is that you want to give it a maximum
+that is greater than the minimum
+so that the capacity can go from one to two
+and then to three.
+And so the idea now is that we want the CPU utilization
+of my autoscaling group to be at a target value of 40.
+So if you have a look right now at the CPU utilization
+is going to be zero, obviously.
+So let's have a look at EC2
+is going to be close to zero because,
+well, my EC2 instance is not doing anything.
+So what I want to do is to go to my EC2 instance,
+and I'm going to stress it to make the CPU utilization
+skyrocket to 100%.
+So I'm going to connect to my EC2 instance,
+using EC2 instance connect, and then connect to it
+and then I'll Google install stress Amazon Linux 2.
+Cause there's a few commands and here is the commands,
+so I'll copy the first command in here,
+and then I'll copy the second command to install stress.
+Here we go.
+So stress is installed.
+And then I just run the command stress -C 4
+and this is going to make the CPU go to 100%
+by leveraging four CPU units by making four VCPUs
+being used at a time.
+So this should make my CPU go to 100%
+and so what's going to happen is that
+in my monitoring of my ASG in here,
+what I wanted to happen is to go see the CPU tradition
+to go to something very, very, very high.
+And then in activities, I want to see a scaling action.
+And so that means that I will go from one instance
+to two instances.
+So what I'm going to do is just pause the video until,
+well, enough metrics are being captured
+and until we can see that the CPU utilization
+is at a very high value
+and then we'll see how the target tracking policy works.
+So now I went into activity and under Activity history,
+it says that's a alarm has been triggered
+and due to the target driving policy,
+then the capacity went from one instance to two instances.
+So if I go into instance management,
+as you can see, now I have two EC2 instances
+due to the scaling.
+And if I go into monitoring
+and look at the EC2 level monitoring,
+as we can see the CPU utilization went to a very high value
+and then four scaling happens.
+So how do we know that the scaling happens?
+So if you're going to Automatic scaling, as you can see,
+there is a target tracking policy right here.
+And what I want to show you is the backend.
+So if we go into the CloudWatch service in here
+and go into CloudWatch,
+at the left hand side, I want to go into Alarms.
+So we need to go into alarms.
+As you can see, two alarms are created directly
+by the target tracking policy.
+And one of them is called AlarmHigh, which is to scale out,
+so add instances.
+And one of them is called AlarmLow,
+which is to scale in so less instances.
+And so this one is looking at if the CPU utilization
+is more than 40% for three to the points
+within three minutes, then go into the alarm states.
+And this one is looking at if CPU utilization
+is less than 20 eights for 15 data points, then scale in.
+So this is the idea.
+So this one was in alarm
+and so due to the metric itself, going into the alarm state,
+by having the CPU utilization
+going over that limit right here,
+well, it got triggered
+and this made a scaling activity happen
+from my autoscaling group,
+which in turn made a new instance being in service.
+And so now if I go here and I stop this command
+and I'm not even sure that I can stop it,
+but if I stop this command or let me just finish it
+and to stop this command,
+I can probably go to my EC2 instances and reboot it.
+So I'm going to have a look at this one, I believe,
+and I'm going to reboot it.
+So reboot this instance,
+and I'm going to also reboot that one just in case.
+So this should make my CPU utilization go back to zero
+and this would trigger a scale in action within 15 minutes.
+So I'm going to yet again, pause the video in my ASG
+and see if by any chance within the activity,
+I see a scale in action happening.
+So I will pause right now
+and actually just because I wasn't quick enough
+because the CPU still was high,
+then the desired capacity went from two to three.
+So as we can see yet another instance has been added.
+So this really shows the power of autoscaling group
+and now if I go into instance managements,
+we'll have three EC2 instances,
+and I'm going to have to wait a little while
+until they're being terminated.
+So now let's go back into activity and as you can see,
+more activities have been going on.
+So some instances have been terminated.
+So because the alarm went from the lower CPU
+and then the capacity was set from three to two
+and then one more time from two to one.
+And so if you go into your instance management,
+as you can see, one instance was already terminated
+and the other one is in the terminating phase,
+as that means that's your target tracking policy is working.
+And you can see this by going into this alarm right here.
+And as you can see, the CPU utilization went up
+and then it went down
+and then as soon it's past this 28% threshold,
+then it went to do the alarm state,
+which means that your ASG we'll start removing instances.
+So that really shows the power of target tracking policies.
+When you're done, please make sure to delete this policy
+and you'll be good to go for the cleanup.
+That's it, I will see you in the next lecture.

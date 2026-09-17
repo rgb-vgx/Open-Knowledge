@@ -1,0 +1,34 @@
+# 46. [DVA/SOA] CloudFormation - Termination Protection
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/42314132
+# Caption: en_US (manual)
+
+So a very quick lecture,
+but to actually prevent accidental deletes
+of your CloudFormation stacks,
+you must use Termination Protection.
+I will show you right now how to enable it in the console.
+So let me create a stack.
+I will upload and type of file, name just EC2,
+and then demo, next,
+scroll down, next, and then actually upload this.
+Okay, so this is my stack,
+and what I'm going to do now is that I'm going
+to edit the termination protection.
+So as you can see right now it was deactivated,
+but I'm going to activate this termination protection.
+And now it was successfully changed.
+So my stack right here, if I try
+to delete it, it's impossible.
+It says that termination protection is enabled in the stack,
+and first, I must disable the termination protection
+before deleting it.
+So this is a safety against accidental deletes.
+Now, if I have the necessary permissions
+to actually edit the termination protection,
+I can deactivate it,
+and then from there
+I can actually delete my CloudFormation stack.
+And that's it.
+You've seen termination protection.
+I hope you liked it, and I will see you in the next lecture.

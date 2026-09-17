@@ -1,0 +1,178 @@
+# 90. Aurora - Part 2
+# Section: Databases
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34782540
+# Caption: en_US (manual)
+
+So now let's talk about Aurora Serverless.
+It's a serverless offering of the Aurora database.
+That means that there is autoscaling
+and automated database instantiation
+based on your actual usage.
+So it's amazing if you have infrequent, intermittent,
+or unpredictable workloads.
+And there is no need for capacity planning.
+You pay per second, and that can be more cost-effective.
+So you have the same shared storage volume,
+and your client just access a proxy fleet managed by Aurora;
+and automatically, based on your usage,
+the Aurora is going to scale in the backend
+for your serverless database.
+So from a client perspective,
+you just connect to one endpoint,
+and the rest is happening sort of magically in the backend,
+which is great, again,
+if you don't know how you want to scale,
+if you want to have zero usage
+or then 1,000 requests per second the second after:
+this can be possible with Aurora Serverless.
+On top of it,
+Aurora Serverless has the Data API,
+which allows you to access the Aurora Serverless database
+without establishing a JDBC connection.
+The only thing you have is a secure HTTPS endpoint
+that allows you to run SQL statements.
+That means that your application does not have to have
+a complicated persistent database connection managements
+and so on.
+So there is just one API to access,
+and then the API is going to be authorized
+if the underlying application has the right
+to access Secrets Manager
+where the credentials are actually checked.
+So how does that work?
+Well, your Aurora Serverless database
+has a Data API enabled,
+and then your application does HTTP API calls,
+passing in SQL statements through this Data API
+but without providing database credentials.
+And then the API itself is going to check
+whether or not the application has enough permissions
+to access the underlying credentials
+of the database in Secrets Manager.
+So there's a transparent allow or deny.
+And your application, of course,
+in its IAM policy,
+must have access to Aurora Serverless, the Data API,
+but also have access to the underlying secrets
+in Secrets Manager.
+Alternatively, if you do want to manage connections,
+you have RDS Proxy for Aurora.
+So an Aurora primary instance, as you know,
+can do read and writes.
+And so it's possible for you to create an RDS proxy
+in front of that primary instance,
+and then have a traditional application architecture;
+for example, the users talk
+to the application load balancer,
+which talks to the Lambda function,
+and then the RDS proxy.
+But on top of it, RDS proxy for Aurora
+has the ability to create a RDS proxy
+only for the read-only endpoints of Aurora.
+So only for the Read Replicas.
+So that means that you have your primary instance
+that does read and writes, of course,
+but also Read Replicas 1 and 2 and so on.
+And you can create an RDS proxy,
+which is a read-only endpoint for your read-only replicas.
+And therefore your Lambda functions
+will have a read-only endpoint
+that is having the same feature of RDS Proxy
+but for your Read Replicas.
+You also have the option
+to create a global database in Aurora.
+So if you create cross-region replications,
+then it's useful for disaster recovery,
+and it's simple to put in place.
+But then you can actually use
+the Aurora Global Database feature,
+which is the recommended way,
+in which you define a primary region,
+which takes reads and writes,
+and then up to 10 read-only secondary regions.
+And these are going to be replicated
+from the primary region.
+And the guarantee is that the replication lag
+is less than one second,
+which is really good performance.
+So you can get up to then 16 Read Replicas
+per secondary region.
+So it really allows you to scale.
+And the reason you would use a global database
+would be to be decreasing the latency.
+On top of it if the primary region goes down,
+then promoting another region as an RTO
+of less than one minute.
+So it's really, really, really helpful.
+And on top of it, there's one more setting
+for disaster recovery,
+is the ability to manage the RPO in Aurora
+for PostgreSQL through a setting,
+therefore guaranteeing that you have less lag and so on.
+So let's have a look.
+We have applications that read and write
+to your Aurora database in its primary region,
+and then you have a secondary region.
+You have some replication.
+You can set up again an RPO setting
+for PostgreSQL version of Aurora,
+and then other regions can have read-only applications.
+But for Global Aurora,
+there's also another feature you need to know about
+called write forwarding.
+So this enables actually your secondary database clusters
+to forward SQL statements
+that try to perform a write operation
+on the primary database cluster.
+So even though only the primary database cluster
+is accepting writes,
+your users can try submitting writes
+to a secondary region for your Aurora Global Database.
+And then this is going to be forwarded
+to the primary database cluster.
+So of course, database,
+the data is always going to be changed first
+on the primary database cluster.
+And then through the replication mechanism already in place,
+it is going to be replicated
+to the secondary database cluster.
+So the writes actually never happen
+directly on the secondary database cluster.
+Therefore, the primary database cluster
+is the one with the always up-to-date copy of all data.
+So why would you do a write forwarding
+and not just write straight to the primary database cluster?
+Well, this has to do with reducing
+the number of endpoints to manage,
+because you can tell your applications in other regions
+to just connect to that secondary region,
+and they can do read and writes just as they want;
+and at some point,
+the write will be forwarded and replicated back, okay?
+You also need to know
+how to convert an RDS database into an Aurora database.
+So the RDS database instance, there are two ways:
+you can first make a database snapshot,
+and then from that snapshot,
+you can straight restore it
+into an Aurora database instance.
+So this is good, but in case your applications
+are still using the main RDS database instance,
+you're going to have some problem
+with the replication of the remaining data,
+or you would have to take the first database down,
+then take a snapshot, then restore it.
+But this has the benefits of being quite quick,
+the snapshot and restore feature.
+Now, the other option
+is to create an actual Aurora Read Replica
+on your RDS database instance.
+So it is completely possible
+to create an Aurora Read Replica
+on an RDS database instance.
+And this Read Replica is going to be replicated.
+And when the replication lag is close to zero,
+you can promote it to its own Aurora database instance
+and migrate your application from RDS to Aurora.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

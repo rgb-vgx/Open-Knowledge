@@ -1,0 +1,126 @@
+# 93. RA3 Nodes, Cross-Region Data Sharing, Redshift ML
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356048
+# Caption: en_US (auto)
+
+Instructor: Let's discuss some of the newer features
+in Redshift that have come out in the more recent years
+2020, I think it was, or end of 2019,
+RA3 nodes were introduced.
+This is a special node type that's optimized for Redshift,
+so that was kind of a big deal,
+and they've been building more and more
+on top of that over the years.
+The big idea here though, is that it comes
+with managed storage.
+So they have decoupled compute
+and storage capabilities with the RA3 node.
+Basically, their observation was that storage capabilities
+and computing capabilities were evolving at different rates.
+So by having the ability to independently scale computing
+and storage capacity, that lets you make better use
+of the resources that you have for your Redshift cluster.
+So that's kind of a big deal.
+Another thing that came out in 2020, I think, yeah,
+2020 was Redshift data lake export.
+And the idea there is that you can dump a Redshift query
+right into S3 in Apache Parquet format.
+So if you have a big query on a big data warehouse
+in Redshift, you can dump that out
+to a data lake just sitting in S3 pretty easily
+using Data Lake export.
+The motivation of doing that is that the Parquet format
+is twice as fast to unload,
+and it also consumes up to 6X less storage.
+So it's a very fast
+and compact way of exporting data to a data lake,
+and that data lake that you end up with will be compatible
+with Redshift Spectrum, Athena, EMR, or SageMaker.
+Anything that can read from .
+it's also automatically partitioned for you.
+So you don't have necessarily have to think about that.
+Also, more recently in 2022
+or end of 2021, they've introduced spatial data types.
+So now there are geometry
+and geography data types available in Redshift.
+So if you do need to do things with mapping those sorts
+of applications, you can do that in Redshift now
+with those new data types
+and also a new feature is Cross Region data sharing
+new for 2022.
+It's sort of been evolving over time,
+but it's really evolving more lately.
+The idea here is that you can share live data across
+Redshift Clusters without having to copy them.
+So we talked a lot about replicating data across different
+regions and different different entities
+and how much of a pain that can be.
+So with cross region data sharing, they've really strove
+to simplify that as much as possible.
+So that allows you, again, to share live data
+across regions.
+That's a new thing.
+And even across accounts, if you want to in a secure manner
+very easily.
+To do that, you do need to use
+that new RA3 node type that we talked about.
+It's only supported on our RA3 node types,
+so that's a big deal, cross region data sharing,
+new easy way of managing that problem.
+Another more recent feature is Amazon Redshift ML
+or Machine Learning.
+And I'm not gonna go into a ton of depth on this
+because generally speaking,
+machine learning topics are gonna be in the machine learning
+exam, not the data analytics exam,
+but still, you should at least know this exists,
+it might get referenced in the exam.
+This was introduced in mid 2021,
+so it is fair game right now.
+Conceptually, there's this high level diagram
+that Amazon gives us that says you start
+by collecting your data into a data warehouse,
+which is probably S3,
+and then Redshift ML encompasses this whole system here
+where you're creating a machine learning model
+just by using a SQL command using Create Model automatically
+that will kick off to Amazon SageMaker to automatically tune
+and train your model.
+Specifically it's using SageMaker autopilot,
+but I'll, I'll walk through that in a second here.
+It will then deploy your model.
+So you can just hit it with SQL Commands in Redshift
+to get predictions in real time using SQL commands.
+So the way this would go down in practice
+is that you would start off
+by having Redshift export your training data
+for your machine learning model into Amazon S3.
+SageMaker Autopilot is the specific technology
+that's gonna sit around there,
+it's under the train section of this diagram,
+and it will pre-process your data
+and try to find the ideal PyPI parameters,
+the I the best model to use
+and the best parameters for that model.
+Once your model has been trained,
+it's then able to make predictions
+and Redshift just registers your prediction function
+as a SQL function in your Redshift cluster.
+So you can just go ahead and hit your Redshift database
+to get predictions based on the model that you trained
+and deployed using Redshift Machine Learning.
+Now, when you do create model,
+that kicks off a lot of stuff under the hood, right?
+I mean, building and training a machine learning model
+can be computationally intensive, and that does cost money.
+So you will see a separate line item in Amazon's SageMaker
+in your AWS bill if you're using Redshift ML.
+You'll also pay for any underlying storage used in S3
+for for storing the training data
+and for the data that has to go back
+and forth between Redshift
+and SageMaker as it's going through this whole process.
+So that's Redshift ML in a nutshell.
+Again, not something you probably have to worry about
+too much for the exam, but for the sake of completeness,
+it's an important feature in Redshift.

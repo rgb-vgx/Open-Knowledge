@@ -1,0 +1,321 @@
+# 1. Course Overview - Services we will Cover
+# Section: Introduction
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40392584
+# Caption: en_US (auto)
+
+Welcome, everyone, to our prep course
+for the AWS Certified Data Engineer Associate Exam,
+DEA-C01.
+I am Frank Kane, one of your instructors for this course.
+We'll be getting started in about five minutes or so,
+but for some quick introductions and whatnot,
+so we're here to study
+for the AWS Certified Data Engineer Exam, DEA-C01.
+Hope you're in the right place.
+This is a challenging certification.
+It is extremely broad and deep for an associate-level exam.
+In fact, I would argue that preparing for this
+is even more challenging
+than the Certified Data Analytics-Specialty exam,
+which is supposed to be another level up, right?
+So expect this course to be long.
+It's the longest one I've ever made,
+but it will be interesting.
+You're gonna learn a lot along the way
+and we're gonna learn a lot about different AWS services,
+quite a few of them, it turns out.
+We do recommend that you have some prior AWS experience
+before diving into this one.
+Like I said, this is one of the more challenging
+associate-level exams,
+and I do expect you to at least have, you know,
+cloud practitioner level knowledge.
+If you're brand new to AWS,
+this is not the place to start, right?
+So at least know what EC2 is,
+at least have some rough idea of how networking
+within AWS works.
+The basics, you need those at least.
+We're not gonna start from complete scratch here.
+And it also prefer to have some
+data engineering background as well.
+So the exam guide says you should have one to two years
+of data engineering experience.
+And, you know, I think if you go through this course,
+you'll pick up a lot of what you need to know along the way,
+but definitely is preferable to at least know
+what data engineering is.
+If you don't even know what data engineering is
+or, you know, don't know what a database is
+or don't know anything about SQL,
+you're gonna have a hard time
+following some of this material.
+So just wanna set expectations, you know.
+If you need to go back and review some of those basics,
+you might wanna go do that first.
+We will review some of those basics, though,
+as we get started.
+We are going to cover all
+of the AWS data engineering services related to the exam,
+and it's a very long list as we're about to see.
+So buckle in, folks, we're in for a ride.
+And take your time. It's not a race.
+There's a lot of material to get through here.
+The exam isn't going anywhere.
+So just make sure you don't schedule yourself a time
+until you're ready for it,
+'cause it can take a while to prepare for this one;
+it is a pretty big exam.
+Let me introduce Stephane Maarek,
+our co-instructor here.
+Stephane, tell us a little bit about yourself.
+So a little about me.
+My name is Stephane Maarek,
+and I'm delighted to be your instructor for this course.
+So I've taught close to 2 million students on Udemy,
+and I'm super happy to count you as one of them.
+I hope that you will enjoy this course.
+So far I've passed over 10 certifications on AWS
+and that number may change very soon.
+I've worked at AWS for many years.
+I've built websites, applications.
+I've built streaming and big data platforms on AWS.
+And I teach about pretty much
+every AWS certifications out there.
+So you can find me on different ways.
+For example, LinkedIn, if you want me to congratulate you
+after you complete this course;
+Instagram, if you wanna know personal updates
+and get the chance to meet me while I travel;
+Twitter; GitHub; Medium, and that's it.
+So I'm excited to have you here,
+and I will pass it on now to Frank Kane.
+Thank you, Stephane.
+And Stephane, by the way,
+is one of the most successful instructors of all time.
+So a real superstar, not just in AWS
+but in online education in general.
+Really honored to have him along with us here.
+And you're gonna see a lot of his content in this course.
+So we split up the generation about 50/50 here.
+Anyway, about me, I'm Frank Kane,
+and I spent nine years at amazon.com
+in the headquarters at Seattle,
+as a senior software engineer
+and worked my way up to senior manager there.
+So I was there when they were building AWS.
+My focus while I was at Amazon was on machine learning
+and recommender systems
+and also just handling, you know, big data, data analytics,
+and distributed systems.
+Again, we invented a lot of that stuff there
+while I was there, so that's pretty cool.
+These days, I'm the owner of Sundog Education,
+which is the publisher of this course
+you're watching right now.
+And we specialize in data analytics, machine learning,
+and branching out
+into technical management topics lately as well.
+Some social links for me there
+if you wanna go take a look.
+And so far on Udemy at least,
+I've got over 750,000 students in total,
+probably over a million if you count all the other platforms
+that you can find me on as well.
+Now let's start going through all the services
+we're gonna learn throughout this course.
+It's a very long list, a surprisingly long list actually.
+Again, it's even more than you need to cover
+for the Data Analytics-Specialty exam.
+It's very broad. Let's start with analytics.
+So Amazon, EMR, Elastic MapReduce, of course,
+is one tool that we need for processing that data
+that you're gonna be ingesting.
+Now, remember that we're always gonna be looking
+at these services through the lens of data engineering.
+And a lot of these services,
+they do have some overlap with other courses
+you may have taken from us.
+So again, if you took the data analytics prep exam,
+a lot of this material is gonna seem familiar.
+So if you are going through a service
+that you already feel comfortable with in this course,
+it's okay to skim through it.
+You know, just do a brief refresh,
+turn up that playback speed to 2x,
+whatever you wanna do, that's okay.
+But there is a lot of new material here as well for services
+that maybe you haven't gone into depth on before.
+EMR, though, you've may have seen before.
+That's a distributed system for data processing,
+AWS Lake Formation,
+you definitely wanna focus on that.
+That's an important tool,
+not only just for architecting
+your data engineering pipelines,
+but also for keeping them secure.
+Redshift remains a very important piece of the puzzle,
+not just for data analytics, but also data engineering.
+We'll also dive deep again into Amazon Kinesis
+for streaming data,
+as well as Amazon Managed Streaming for Apache Kafka.
+AWS Glue is an extremely important piece
+of data engineering.
+That's really what does a lot of the ETL transforms
+and moving your data around.
+Amazon OpenSearch Service we're gonna cover in depth,
+as well as QuickSight for visualizing your data,
+and Athena for querying that data in real time
+within your data lake built on top of AWS.
+App integration, also an important part of the exam.
+We have Amazon EventBridge, Step Functions, AppFlow,
+SNS, SQS, and Amazon Managed Workflows for Apache Airflow.
+These are all tools for tying things together
+into larger pipelines.
+And we'll go into depth on each one of those.
+Cloud financial management,
+not really specific to data engineering, right?
+But the exam guide does call this out
+as things you should know about.
+Just tools for managing your expenses.
+I suppose the data engineering angle
+is that if you're dealing with massive amounts of data
+and massive services, tying it all together,
+it can add up fast if you're not careful.
+So very important to keep an eye on your expenses
+as you build these systems.
+The usual suspects for compute.
+We're gonna talk about EC2 briefly.
+Again, I'm assuming that you know
+what EC2 is already at a high level.
+Lambda, a big part of tying these services together
+and doing transforms in custom code.
+We'll also talk about AWS Batch
+and AWS Serverless Application Repository along the way.
+Containers, again, a piece of the puzzle
+of deploying your code
+that might be doing transforms of data.
+These are higher level topics than just data engineering.
+So just try to think of 'em in the context
+of how would I apply these tools
+for deploying snippets of code or applications
+that might be transforming my data along the way.
+We'll cover ECR, ECS, and EKS there.
+Database technologies.
+You know, your data's gotta go somewhere,
+maybe it's gonna go into a database
+and there's many different kinds.
+You know, we have relational databases like RDS
+and then we have NoSQL types of things like DynamoDB
+and Keyspaces for Cassandra, MemoryDB for Redis,
+and also Amazon Neptune,
+and DocumentDB for other use cases as well.
+We'll go into each one of those.
+Developer tools.
+I was a little bit surprised to see how big
+of a piece this was on the exam guide for this exam,
+'cause, again, developer tools isn't something
+you really associate with data engineering necessarily.
+I guess the rationale here is that if you need
+to develop custom code to transform your data,
+you might need to use these tools.
+So, well, we gotta cover 'em then.
+So we're gonna talk about the Command Line Interface,
+how you might use that.
+The AWS CDK, CodeBuild, CodeCommit, CodeDeploy,
+and CodePipeline.
+We'll also talk about some frontend web stuff.
+These are just sort of extra things they tacked on
+at the end of the exam guide.
+The Amazon API Gateway is usually made for, you know,
+having a API between your backend AWS services
+and a website on the outside.
+How does that relate to data engineering?
+Well, maybe you have some external facing gateway
+or website that consumes your data indirectly, right?
+And the API Gateway might be a tool
+for throttling that traffic and controlling where it goes.
+Machine learning.
+We gotta talk about that a little bit.
+Now, machine learning is explicitly out of scope
+for the data engineering exam,
+but there are components of Amazon's SageMaker,
+which is their big machine learning service
+that are directly related to data engineering.
+So we'll talk about the pieces of SageMaker
+that are relevant to data engineering and transforming data.
+Things like SageMaker Data Wrangler
+and SageMaker Feature Store in particular.
+So a very focused section on machine learning
+in this course.
+And we'll talk about management and governance.
+This is important for any AWS exam, right?
+So not just for data engineering.
+And if you've taken other certifications with AWS,
+you probably know some of this stuff already.
+Again, it's okay to skim the stuff you already know,
+but we will cover CloudFormation; CloudTrail; CloudWatch;
+AWS Config; Amazon Managed Grafana,
+that might be a new one for you;
+AWS Systems Manager; and AWS Well-Architected Tool.
+Those are all called out on the exam guide.
+We'll talk about migration and transfer.
+Getting back into stuff that's a little more
+directly applicable to data engineering.
+That includes the Application Discovery Service,
+Application Migration Service,
+Database Migration Service,
+DataSync, and the AWS Transfer Family,
+and Snow Family of services.
+Again, that's just about getting your data
+from point A to point B,
+where point A might be outside of AWS entirely.
+So that's important stuff for the exam for sure.
+Again, at a higher level,
+we'll talk about networking and content delivery.
+CloudFront and Route 53.
+Again, tools for maybe exposing your data
+to the outside world at scale.
+And then internally keeping your data secure with VPCs
+and AWS PrivateLink.
+And we'll talk about security identity and compliance.
+Again, just general stuff you need to know
+for every AWS certification.
+We'll review IAM, KMS.
+Amazon may see a little bit more relevant
+to data engineering,
+because it's more about identifying
+personally identifiable information
+that you need to deal with.
+We'll talk about Secrets Manager
+for keeping your credentials secure;
+AWS WAF for firewall;
+and AWS Shield for protecting your systems
+from DOS attacks and whatnot.
+Finally, storage, kind of the basics of everything here
+and a really basic thing for data engineering, right?
+So you gotta store your data somewhere,
+especially if it's massive amounts of it.
+Where does it go?
+S3 is kind of the default solution,
+especially if you're going with more
+of a semi-structured data lake kind of environment.
+We'll talk about what we mean by that later on.
+The exam also expects you to know about EFS and EBS
+and AWS backup.
+So we'll touch on that as well.
+So when we talk about storage in this context,
+it's really storage services as opposed to data services.
+So where do I stick my raw data
+or, you know, my data lake, if you will.
+And that's it.
+So let's dive in, folks, and get started.
+Again, we're gonna kick it off
+with sort of a high level
+data engineering fundamentals background,
+and then we'll circle back
+and hit up these services one at a time.
+So strap in, folks, we're in for a ride.
+Come along with me on your journey for preparing
+for the AWS Certified Data Engineer Associate Exam
+starting now.

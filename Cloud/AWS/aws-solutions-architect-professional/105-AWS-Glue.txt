@@ -1,0 +1,44 @@
+# 105. AWS Glue
+# Section: Data Engineering
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30991040
+# Caption: en_US (manual)
+
+So now let's talk about AWS Glue.
+So it's a managed ETL service
+for doing extract, transform and load.
+It's very helpful when you want to prepare
+and transform data ahead of doing analytics.
+It's a fully serverless service
+and the way it works is, for example,
+you have Glue ETL here
+and you have data in an Amazon S3 bucket
+that you can extract or an Amazon RDS database
+that you can extract as well,
+and then you would transform it within Glue ETL,
+and finally load it where your target is.
+For example, it could be a Redshift data warehouse.
+So this is the Glue ETL service
+and then you have the Glue Data Catalog service.
+So the Glue Data Catalog is a catalog of data sets
+and they will just have a crawler out there
+that will look into all your data sources possible,
+so it could be Amazon S3, Amazon RDS, Amazon DynamoDB,
+or any JDBC compatible database,
+and the crawler is going to look at these databases,
+find all the tables and write the metadata
+back into the AWS Data Catalog on AWS Glue.
+So we'll have met our databases,
+so a bunch of table metadata. Why?
+Well, because once we have the data catalog
+set in place, then the Glue Jobs ETL
+can find these tables, know how to connect to them,
+find the columns, find the rows and so on,
+and then, for example, other services of AWS
+also rely on the Glue Data Catalog.
+For example, Amazon Athena is using
+the Glue Data Catalog to do data discovery,
+Amazon Redshift Spectrum as well, and Amazon EMR.
+So that's it for Glue.
+You just need to know it at a high level.
+Hopefully that's enough
+and I will see you in the next lecture.

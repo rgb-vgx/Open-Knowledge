@@ -1,0 +1,39 @@
+# 344. API Gateway REST API vs HTTP API
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731696
+# Caption: en_US (manual)
+
+Okay, so now let's talk
+about the different API we can set up in the API Gateway.
+So far in this course,
+we've been using the REST API, but there's two other kinds.
+There's the HTTP API, and the WebSocket.
+And I will just describe at a high level what they are.
+I don't think they come up in the exam just yet,
+maybe WebSocket, but just, again, at a high level.
+So, the first is HTTP API, and they're low latency,
+cost effective AWS Lambda proxy, HTTP proxy API,
+and private integration.
+So, as you can see, it's all proxy.
+There is no data mapping available to us.
+And it supports only a few kind of authorizations.
+So, OIDC, and Oauth 2.0.
+And there's also built-in support for CORS,
+but you won't find any usage plan, or API keys.
+So, they're a very low cost alternative to the API Gateway.
+They're newer, they're horribly named,
+they're just more simple.
+And the REST API has all the features
+we've seen in this course,
+except that Native OpenID Connect, Oauth 2.0.
+And so, you can find a link highlighting the differences
+between HTTP and REST API.
+But what you have to remember at a high level for the exam,
+is that HTTP API's are going to be much cheaper
+than REST APIs.
+And they have a slight difference in terms of support.
+For example, REST API supports resource policies,
+whereas HTTP API's don't.
+All right, so that's it.
+I hope you liked it,
+and I will see you in the next lecture.

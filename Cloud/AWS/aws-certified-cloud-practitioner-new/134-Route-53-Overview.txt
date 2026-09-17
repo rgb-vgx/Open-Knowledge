@@ -1,0 +1,122 @@
+# 134. Route 53 Overview
+# Section: Leveraging the AWS Global Infrastructure
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056112
+# Caption: en_US (manual)
+
+The first service
+that is going to be very important for
+us to deploy a global application is Amazon Route 53.
+So, Route 53 is a managed DNS or Domain Name System.
+And what does the DNS?
+Well, DNS is just like a phone book.
+It's a collection of rules and records,
+which help clients find the right servers through URLs.
+So let's go through the most common records in AWS.
+For example,
+say you are mapping www.google.com to an IPv4 address.
+Then this is called an A record.
+If you are mapping www.google.com to a long IPv6 address,
+it's called the quadruple A record.
+Also, if you map a host name to another host name,
+so search the www.google.com come into the previous address.
+It's called a CNAME because we're
+mapping a host name to host name.
+And then finally,
+if you're mapping a host name into an AWS resource,
+it's a special type of record called an Alias record.
+And that works for you if you have an ELB,
+or if using CloudFronts, S3,
+an RDS database, et cetera, et cetera.
+Now, going into the exam,
+you don't need to know all the types of records,
+but I just wanted to give you an overview of
+them in this lecture.
+So, from an Exam perspective,
+Route 53 is a managed DNS,
+but let's go one step further because you need to
+understand a little bit better how it works.
+So for example,
+for Route 53 say,
+we want to see what happens for an A Record.
+So our Web browser is here.
+That's a Web browser,
+and we have an Application Server that we've deployed that
+has a public IPv4.
+Now we want to be able to access our application server
+using a normal URL.
+So for this, we're going to go into Route 53 and
+we're going to create a, A Record.
+And so that when the Web browser does
+a DNS Request for myapp.mydomain.com
+then the DNS will reply back with an IP.
+And then that IP can be used by our Web browser to
+get to our correct server.
+and then get the HTTP Response from our server.
+And this is the basics of how a DNS work at
+a very, very high level.
+What you need to understand as well for Route 53,
+from an Exam perspective is the Routing Policies.
+So, we need to know them at a high-level and decide what's
+the right one based on the use case,
+because you'll see, it's pretty simple.
+So, the first one is called a Simple Routing Policy,
+which has No health checks.
+So our Web browser will go into our DNS system,
+does a DNS query and gets an IPv4 for example as a result,
+that's a Simple Routing Policy.
+The basic one, we can understand.
+The Weighted Routing Policy,
+allows us to distribute the traffic across
+multiple Institute instances.
+So in this example,
+we have to assign weights to our Institute instances,
+for example, 70, 20, and 10,
+and then our DNS we'll make sure that our clients have
+70% of the traffic onto the first one,
+20% of the traffic onto the second one and
+10% of the traffic on to the third one.
+This is effectively some kind of load balancing.
+So in this Weighted Routing Policy,
+we can use health checks.
+Next, we have the Latency Routing Policy.
+So in this example,
+we'll say we are displaying our application globally,
+one in California,
+and the other one in Australia.
+And our users are all around the world.
+The Latency Routing Policy we'll look at where
+the user is located.
+And if they're located close to
+our Kelly American Institute instance,
+then they will be redirected to talk to that server.
+And if they're close to Australia,
+then they will be redirected to
+talk to the Australia server.
+And this is based on the latency.
+So, in this example,
+Route 53 will be used to minimize the latency between the
+users and the servers by making the
+users connect to the server.
+That is the closest to them.
+And then finally,
+we have a Failover Routing Policy in which
+we have a client and we have
+a primary institute instance and a Failover one.
+And so our DNS system will do a Health check On the primary.
+And in case the primary instance fails,
+then we will be redirected to the failovers.
+This helps with disaster recovery.
+So the clients will know exactly thanks to Route 53,
+which instance to connect to based on the
+health of that instance.
+So that's it,
+that's our the four Routing Policies you need to know.
+Just a first one does not have a Health check.
+All the other ones have Health checks and they
+all serve different purposes.
+So, Weighted Routing Policy is to distribute the
+traffic across multiple institute instances.
+Latency is to minimize latency and
+Failover is to help with Disaster Recovery.
+So hope that was helpful.
+And I will see you in the next lecture.

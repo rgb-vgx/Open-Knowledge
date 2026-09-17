@@ -1,0 +1,171 @@
+# 65. Phases of a Machine Learning Project
+# Section: Artificial Intelligence (AI) & Machine Learning (ML)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886663
+# Caption: en_US (manual)
+
+So we have learned a lot
+about machine learning from a technical standpoint,
+but now let's talk about the implementation standpoint.
+So what are the phases of a machine learning project?
+So in this slide I'm going to show you a diagram,
+and then in the next slide
+I'm going to do a detail on this diagram.
+So first we need to identify a business problem
+we wanna solve.
+Then we frame that problem as a machine learning problem.
+Then we collect data and prepare this data.
+We go through a phase of feature engineering
+to transform the data into having features
+that can be helpful from a machine learning perspective.
+And then once we have prepared our dataset,
+we go into the machine learning part.
+So we're going to do model training,
+and then we are going to tune the parameters of the model
+that means how our algorithm is working.
+And then we're going to evaluate the model.
+So is it working on our test dataset?
+Do we get the results that we want?
+And next we ask ourselves the question,
+are the business goals met?
+If not, then we need to of course enhance the data
+to have more data or to have it better prepared.
+So if we need more data,
+we can do what's called data augmentation
+or if we want to improve the features,
+we can do feature augmentation.
+The idea is that you will do this process
+over and over and over again.
+And of course you're going to change your model if need be,
+and tune it better up until you have a satisfactory model.
+Once the model is satisfactory, you're going to test it
+and then you're going to deploy it.
+And once it's deployed, your users can do it.
+So it starts making predictions.
+And this predictions are certain users,
+but we wanna make sure that even though our users
+are getting predictions, that we are monitoring
+and debugging our model
+because it is possible
+that the predictions sometimes will be not good
+or that it will drift, or that things will change over time.
+So monitoring and debugging is a super important phase.
+And as we make predictions if they are correct,
+we want to add this data to our original data sets
+to make it even better and to retrain our model.
+So there is a sort of loop that goes on
+where this new data helps with data collection,
+it helps with feature engineering,
+and it helps with the model training.
+And so this is the phases of machine learning project.
+Now, I'm going to do a little deeper dive on all of these,
+but it should be pretty self-explanatory.
+So to define business goals, you must have the stakeholders
+of your project define the value, budget,
+and success criteria of your project.
+And you define a KPI a key performance indicator
+that is critical.
+Once you have this, you want to frame the problem
+as a machine learning problem.
+So there's a conversion that needs to happen,
+and we need to determine if machine learning is actually
+an appropriate solution to solve that problem,
+because sometimes it is not.
+So this is when the data scientists,
+the data engineers and the machine learning architects
+and any subject matter experts will collaborate
+to figure out all these things,
+how to convert the business problem
+into a machine learning problem.
+And if machine learning is appropriate.
+Once it is a machine learning project,
+then we need to do data processing.
+So we need to collect data
+and convert it into a usable format,
+and we need to make it centrally accessible in one place
+so that we can really analyze it all at once.
+Then we need to understand our data.
+So we need to pre-process it
+and also do data visualization to understand the type
+of data we are dealing with.
+And finally, before we go into machine learning algorithm,
+we need to do feature engineering.
+That means creating, transforming,
+and extracting variables out of the data.
+Once the data is ready, we go into model development.
+So here we train our model, we tune it,
+and we evaluate it against our data sets for example,
+our test data sets.
+It's a very iterative process,
+and as you develop your model,
+it's for sure going to feed back into your data processing
+because these two processes are very intertwined.
+So you're going to do additional feature engineering,
+and you're going to tune the model hyper parameters.
+They are the parameters that define
+how the algorithm is working.
+And just as a little note, one phase that
+is part of the beginning of your machine learning project
+is the exploratory data analysis phase.
+So this is where you're going to explore data,
+you're going to compute statistics,
+but also visualize the data with graphs
+to really understand the shape it has
+and how influential it is.
+And also you may want to build
+what's called a correlation matrix, which looks like this.
+So you look at all your variables, all your features,
+and you're going to compute how linked they are.
+So for example, if we compare how we studied
+to the test score, we can see 0.85.
+That means that whenever the hour studies are increasing,
+the test score is also increasing a lot.
+So they're positively correlated.
+It's not one because one would explain it perfectly,
+but it gives you an idea.
+And for example, if you sleep a lot,
+then you're going to have also a better test score.
+And also there's a correlation between our studies
+and sleep hours and so on.
+So this is just an example,
+but it helps you decide which features can be important
+in your model and how correlated they are.
+Next we are retrained.
+So if we retrain, we look at the data
+and the features to improve the model,
+and we adjust again
+the model training hyper parameters, then we deploy.
+So if the results are good, the model is going
+to be deployed and ready to make inferences.
+That means ready to make predictions for your users.
+And we select a deployment model.
+We'll see multiple ones.
+We've seen about real time, we've seen about batch,
+but you have serverless asynchronous on premises.
+So you select the deploy model you need,
+and then you go into monitoring.
+So that means deploying a system
+that will check if your model is operating
+at the desired level of performance.
+And with monitoring systems, you can do early detection
+of problems and also early mitigation of problems
+so that your users are not impacted.
+It's good to debug issues
+and also understand the model's behavior once deployed
+to production and iterations.
+So the model must be continuously improved
+and refined as new data becomes available
+because requirements may change.
+For example, imagine that you're doing something
+around clothing prediction.
+What is true today in terms of clothing
+trends may not be true in 10 years.
+People may wear different types of clothes.
+And so of course, retraining your model
+and making sure to monitor requirements is very important
+to do your iteration and making sure the model is accurate
+and relevant over time.
+So that's it.
+I hope you liked this lecture.
+Now you know how to conduct properly
+a machine learning project.
+I hope you liked it and I will see you in the next lecture.

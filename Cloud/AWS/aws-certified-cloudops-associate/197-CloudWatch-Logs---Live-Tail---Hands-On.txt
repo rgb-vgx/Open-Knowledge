@@ -1,0 +1,61 @@
+# 197. CloudWatch Logs - Live Tail - Hands On
+# Section: Monitoring, Auditing and Performance
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/41865684
+# Caption: en_US (manual)
+
+So I want to show you
+a really cool CloudWatch logs feature called Live Tail.
+So first let's create a log group
+and I'll call this one demo log group
+and then create it.
+We click on it and then we're going
+to create a log stream called DemoLogStream.
+Let's create it and click on it
+and then we are in it.
+So we can start tailing.
+Here's the button start tailing and what this means,
+and I will just keep the other one open in the back page.
+So we have access to here our log stream,
+and here we clicked on Live Tail
+and we are in the Live Tail setting.
+So here this is a Live Tail UI
+and we have filtered on a specific demo log group
+and then demo log stream as a log stream.
+This is optional.
+You can choose to specify or not a log stream.
+Then you apply your filter
+and this is going to wait for log events
+that match your filter.
+So that means that as events are being posted
+into Cloudwatch logs,
+they are going to appear here in our Live Tail,
+which could be very helpful for your debugging needs.
+So let's do an example.
+So we're going to go into our
+demo log stream again, in here,
+and under actions we're going to create a log event
+and we'll have hello world
+so we can create a log event and post it.
+So now hello world has been posted
+and if you go into your Live Tail,
+as you can see it has appeared.
+So this is quite a nice way
+because if you have log streaming very fast,
+it can all appear here.
+And then from this we can get more information
+around when this happened, the group and so on.
+And then we can click here
+to get a link into the direct log stream it happened into.
+So it's just a very cool,
+very easy feature to debug your CloudWatch logs.
+And from a pricing perspective,
+you only get a few hours a day,
+so maybe one hour a day of free usage of Live Tail.
+So please make sure to cancel
+and close your lifestyle session
+so that you don't have any cost,
+but you have one hour of free every day.
+So this is quite nice.
+Alright, so that's it for this lecture.
+I hope you liked it
+and I will see you in the next lecture.

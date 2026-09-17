@@ -1,0 +1,112 @@
+# 247. X-Ray & ECS
+# Section: AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrail
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/15300340
+# Caption: en_US (manual)
+
+Okay so a theory lecture
+around how to integrate ECS with X-Ray
+and the three options you're going to have.
+So first, you have an ECS Cluster
+and one way to run the X-Ray Daemon
+is to use the container as a Daemon itself.
+So, what does that mean?
+That means we have our two EC2 instance.
+For example, in our ECS cluster,
+and remember we manage those EC2 instances
+and so we're going to run a Daemon task,
+a Daemon container, of the X-Ray Daemon.
+So there's two ice to the word Daemon in here.
+That means that the X-Ray Daemon Container
+will be running on every single EC2 instances.
+If you have 10 EC2 instances in your ECS cluster,
+then you will have 10 containers, one on each EC2 instance,
+running as a Daemon Container.
+Okay, so that means that the X-Ray agent
+is now running on all these EC2 instances.
+And so you can launch your App Containers
+on the EC2 instances, and after matting them correctly
+from the networking standpoint to hit the X-Ray Daemon
+with a UDP port.
+Then you can run all your applications.
+So, in this case, you will just
+have one X-Ray Daemon Container per EC2 instance.
+Now, the second pattern to run X-Ray in your ECS cluster
+is called the Side Car pattern.
+So what does it mean, Side Car pattern?
+That means you still have your EC2 instances,
+but now you're going to run one X-Ray Daemon Container
+alongside each application container,
+and they will connect from a networking stand point.
+So this is why it's called a Side Car,
+it's because the X-Ray Daemon now runs side-to-side
+as our application container, and it's a Side Dar.
+So, if we look at this now, we have one Side Car
+per App Container.
+So, if you have 20 App Containers under one EC2 instance
+then we'll have 20 X-Ray Side Car.
+So, this is the way it works,
+from a Side Car pattern.
+Now, Fargate Clusters, we don't have control
+over the EC2 instances, it's just an ECS Cluster
+that we don't have any control
+over the underlying instances.
+So, we can not use the X-Ray Daemon Container,
+we also have to use the X-Ray Container
+as a Side Car pattern.
+So, if you want to launch a Fargate task,
+it would be the App Container and the X-Ray Side Car,
+here and there.
+So, that gives you the three options
+to run ECS and X-Ray and hopefully
+that makes it a little bit clear
+as to how you could do it.
+Now, I'm going to still show you
+an Example Task Definition, though we're not going to run it
+because we need to build all the images,
+and that would be quite complicated.
+But so here's something from the documentation.
+And what do we see here?
+Well, the first thing we should look at
+is that the X-Ray Daemon is going to be running,
+that's the first part of this task definition.
+And in terms of port mappings,
+the container port 2000 is mapped onto the instance.
+And the protocol is UDP.
+So, remember this container port 2000,
+and the protocol is UDP.
+And so once the X-Ray Daemon is running,
+this is a Side Car pattern, here we have our application.
+It's called Scorekeep Api for this case.
+And so the second thing we need to look at,
+is this environment variable called AWS X-Ray Daemon Address
+and this is an environment variable you need to set,
+because that's how the X-Ray Daemon will know
+where to find
+that's how the X-Ray as the case
+sorry, will know how to find the X-Ray Daemon.
+So, the value of this, is X-Ray Daemon port 2000,
+and this 2000 is coming from the 2000 from above,
+and then finally, the last thing you need to do,
+is link these two containers together
+from a networking stand point.
+So that's why it says links X-Ray Daemon,
+and this is how it's able to resolve
+this host name X-Ray Daemon to this container right here.
+So, it could be a little bit complicated,
+especially if you're new with ECS.
+But remember, the take away from this slide
+is that you need to map the Container Port
+of the X-Ray Daemon to 2000 UDP.
+Then, you need to set an environment variable,
+called X-Ray Daemon address.
+And finally, you need to link these two containers
+from a networking standpoint.
+So, I hope that helps you to understand precisely
+how to run X-Ray with ECS.
+I know that question has come up on the exam several times
+with several students.
+So I thought it would be great for you
+to get a little bit more insights deeper inside
+to how these things work.
+All right, I hope that was helpful,
+and I will see you in the next lecture.

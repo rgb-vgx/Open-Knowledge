@@ -1,0 +1,29 @@
+# 149. Analyzing Training Jobs with TensorBoard
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285799
+# Caption: en_US (auto)
+
+Another thing you might need to know about is how you can integrate TensorBoard with SageMaker.
+So there's a way to analyze training jobs using the TensorBoard tool.
+TensorBoard is a third party thing that was just a part of TensorFlow originally, but these days it
+can also be used with PyTorch.
+And it's just this tool for visualizing things like loss and accuracy of your model as it's being trained.
+It can visualize the model graph like you can see on the right here.
+That's kind of a cool thing.
+It can view histograms of your weights and biases over time, so it can give you some insight into what's
+happening during your training run and how that's actually changing your model as it's being trained.
+It also has tools for projecting embeddings to lower dimensions.
+So embedding vectors are basically these large dimensional vectors that somehow embody the meaning of
+something.
+Right.
+And they're very difficult to visualize because they can be hundreds or thousands of dimensions.
+So if you need to visualize that in a lower dimension that your brain can wrap itself around like 2
+or 3, it has tools for projecting those embedding layers down to lower dimensions that you can actually
+wrap your head around.
+It also has some profiling tools you can use as well to try to optimize your training as well.
+And what's important for the exam is that you can integrate TensorBoard with SageMaker, either through
+the SageMaker console, or you can ask SageMaker to just give you a URL.
+You can hit to hit TensorBoard over the web.
+Now, using TensorBoard with SageMaker does require a few modifications to your training script.
+I doubt they're going to ask you about the specifics on that in the exam, but if you do want more depth
+on how that works, there's a link here you can follow for more information.

@@ -1,0 +1,148 @@
+# 78. Amazon Rekognition
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887649
+# Caption: en_US (manual)
+
+So now, let's talk about Amazon Rekognition.
+So, it's a service that allows you to find objects, people,
+texts, or scenes directly in images or videos,
+and it's using, of course, machine learning.
+So, you can do a facial analysis or a facial search
+if you want to do user verification
+or counting people in a photo.
+And you can create a database of familiar faces
+or compare any face you find against celebrities.
+So, the use cases for Amazon Rekognition
+would be labeling, content moderation, text detection,
+face detection analysis,
+such as understanding the gender,
+the age range, the emotions,
+face search and verification, celebrity recognition,
+and pathing, which is, for example,
+when you're doing sports game analysis,
+and you want to understand the path
+that the ball or a player took.
+So, here I am on the Amazon Rekognition website
+and if you scroll down,
+you can see the type of use cases and features there are.
+So, you have face liveness to see if someone is actual alive
+and is his real face using in the call, for example.
+Comparing faces and searching for faces.
+Detecting a face, and what are the attributes,
+for example, female, eyes are open, happy, smiling.
+Content moderation to have content that's going to be safe,
+for example, for children to watch and so on.
+Look at labels in pictures such as, for example here,
+the AWS DeepRacer logo.
+Detect some texts such as the numbers in a picture
+to find whose racer is where.
+Labeling again, what is a person, a rock,
+crest, outdoors, mountain bike, and so on.
+So, and detecting celebrity, for example here,
+Werner Vogels in this picture.
+So it's very, very broad and useful service,
+which allows to really analyze videos and images
+and to figure out a lot of attributes thanks to AI
+and machine learning.
+So, a feature that may appear in the exam
+is called Custom Labels for Amazon Rekognition.
+The idea is that you want to identify your own products
+or you want to find your own logo
+in social media posts or whatever.
+And for example, the NFL will use this service
+to find their own logos in pictures of Amazon Rekognition.
+In that case, what do we have to do to make it happen?
+Well, we label training images,
+we upload them to Amazon Rekognition,
+you need only a few hundred images or less,
+and Amazon Rekognition
+is going to create a custom model based on your images
+and is going to be able to recognize
+what your logo looks like,
+what your products look like,
+et cetera, et cetera.
+And so, therefore,
+new images that will be analyzed
+by this Custom Labels feature
+will be analyzed also for whatever you're looking for.
+So, it could be your logo or something else.
+So, the process is very simple.
+You label images and you store them in Amazon S3,
+so that could be a bunch of images
+with your logo on it or your products,
+and then you're going to train Amazon Rekognition
+to create Custom Labels.
+And so, whenever a user, for example,
+is posting something on social media
+and you analyze this picture,
+very quickly, thanks to Amazon Rekognition,
+you'll be able to say that yes,
+your logo is appearing in that picture
+and that could be beneficial for your brand.
+The other thing you have is content moderation.
+So, here the idea
+is that you want to automatically detect inappropriate,
+unwanted, or offensive content.
+So it could be very handy, for example,
+for your own social media page
+to filter out harmful media images
+or figure out if advertising is wrong,
+et cetera, et cetera.
+And the content moderation on Rekognition is very good
+because you bring down the number of human review
+to about 1 to 5% of the content volume,
+which is good because, well,
+you don't want to review all the things
+that have been flagged.
+You want to automate part of it,
+but sometimes AI is still not as good as humans.
+And if you need a human review,
+there's another service called Amazon Augmented AI
+or Amazon A2I that can be used for human review.
+And that's just for the basic,
+out-of-the-box content moderation,
+but it's possible for you
+to also create a custom moderation adapter.
+And here, you're going to extend Rekognition capability
+by providing your own labeled set of images,
+and you're going to define
+what you want to moderate in or out.
+And it could be to either enhance the accuracy
+of content moderation
+or if you have a specific use case of moderation.
+So, how does it work?
+Well, you label your images again
+and you train a Rekognition Custom Moderation Adapter.
+And whenever images arrive for moderation,
+either they pass or fail the moderation.
+But if Rekognition has a doubt,
+then 1 to 5%, for example, can be sent for human review,
+and then you can use Amazon Augmented AI
+to make a final decision on these images.
+And actually, the result of that assessment
+can be fed back into the training of Rekognition,
+which is very handy.
+So, here is an example
+of how you can use Rekognition Content Moderation API.
+So, say for example,
+you've developed an application and it's a chatbot,
+and this chatbot is able to generate images.
+So, the users say, "Hey, please generate an image for this."
+Then, the chatbot will generate the image,
+but you don't know if that image
+is going to be safe to return to the user just yet.
+So, you may use Amazon Rekognition
+and you send the image with the DetectModerationLabels API
+and Amazon Rekognition is going to have a look
+and create labels for your image.
+And if the labels are clear
+of any unsafe or harmful type of content,
+then your chatbot may say,
+"Okay, it's okay to return this to the user,"
+and the user will receive back your image.
+So, it's a very simple way
+how you can use the Content Moderation API from Rekognition
+to implement safety in your applications.
+So, that's it for this lecture.
+I hope you liked it
+and I will see you in the next lecture.

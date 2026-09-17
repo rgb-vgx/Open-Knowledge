@@ -1,0 +1,144 @@
+# 141. [SOA] ElastiCache - Redis Cluster Modes
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904250
+# Caption: en_US (manual)
+
+So there are two types
+of ElastiCache Replication you can have for Redis
+and we need to know them both.
+So the first one is called Cluster Mode Disabled.
+And in this case, you have one primary node
+and up to five replicas for your node.
+So this is for Redis.
+And so we have one shard,
+so all your data is in this shard,
+we'll have one primary cache node
+and then we can option optionally set up
+up to five cache replicas.
+So from zero to five replica nodes.
+The idea is that when you have a primary node
+and some replicas,
+in case of the failure of the primary node,
+then the replicas can take over.
+So the replication is a synchronous between the caches
+and the primary node will be used for read and writes
+while the other nodes are going to be read-only.
+So on top of disaster recovery,
+you can also scale your read capability
+in ElastiCache for Redis by enabling read replicas.
+So you have one shard,
+that means that all the nodes will have all the data
+in your Redis cluster.
+The idea here is that you are guarding
+against data loss if there is a node failure
+and you can also enable Multi-AZ,
+it is enabled by default by the way,
+in case you won't have Multi-AZ failover.
+So again, this is helpful for Multi-AZ
+and also for scaling the read performance
+of your ElastiCache cluster.
+So now when you've disable the Cluster Mode,
+you have two kind of scaling.
+You have horizontal scaling
+and you do this by adding or removing read replicas.
+Remember you have a maximum of five read replicas.
+And then you have vertical scaling.
+And so you can scale up or down
+to either larger or smaller node type.
+In that case, behind the scenes,
+there will be a old node group that is going to be upgraded.
+So a new node group is going to be created.
+Replication will happen automatically.
+Again, this is behind the scenes.
+And then once the new node group is up to date,
+the DNS will update and our applications
+will be using the new node group.
+Now there is a second mode
+and this says with Cluster Mode Enabled.
+And in this mode, the data is going to be partitioned
+across many shards,
+which is helpful if you want to scale your writes.
+So let's have a look at a second.
+So we have Shard 1 and Shard 2 or 3 or Shard N.
+And the idea is that the data is going
+to be partially on Shard 1, partially on Shard 2,
+all the way up to Shard N.
+So it's going to be divided across all your shards.
+Now each shard will work just as what we saw before
+when Cluster Mode was disabled.
+Now mean we can have one primary node
+and up to five replica nodes.
+So the data is replicated
+and you set up the number of replicas equally
+across all the shards, okay?
+There is also Multi-AZ capability, it's on by default.
+And so you can have, again,
+failover between your primary node and your replica nodes
+in case of an availability zone failure.
+And you get up to 500 nodes per cluster.
+That means that if you don't set up any replicas,
+you have 500 shards with a single master.
+But if you are setting up replication, for example,
+you want one master and one replica,
+then you get 250 shards.
+And if you want to have, say, five replicas and one master,
+you get 83 shards maximum.
+So the idea here is that you are really interested
+into sharding your data
+when you want to enable Cluster Mode.
+That means, again, that you want to scale your writes
+and that the data is going to be partitioned,
+that means that data will live across many different shards.
+Okay, so this is the main difference
+when you have Cluster Mode Enabled or Cluster Mode Disabled
+for ElastiCache.
+So therefore, when you are in Cluster Mode Enabled,
+you can actually set up Auto Scaling for Redis.
+So you can actually automatically increase
+or decrease the number of shards or replicas
+in your cluster.
+So this supports both Target Tracking
+and Scheduled Scaling Policies.
+And again, you must be in Cluster Mode Enabled
+for this to work.
+So there is a metric we're going to track.
+For example, the CPU utilization.
+And then we can have a Target Tracking Policy
+so that we want that the target CPU utilization
+remains at around 60%.
+If so, we can trigger a CloudWatch Alarm
+and this CloudWatch Alarm can then increase the number
+of shards in our cluster and, therefore,
+new shards will come up.
+Of course, our applications need to be able
+to leverage these shards.
+And so to connect to the cluster,
+we must use what's called
+the Cluster's Configuration Endpoint,
+which is a way to connect entirely to the cluster.
+So let's talk about these Connection Endpoints actually.
+For a standalone node, you can just connect for read
+and write operations using the one endpoint of your node.
+If you're using Cluster Mode Disabled,
+you will have one primary endpoint,
+this is for all the write operations.
+And then you will have a reader endpoint,
+this is for the read operations
+across all the read replicas.
+Finally, you have also node endpoints
+if you wanted to access individual nodes
+for read operations.
+If you have the Cluster Mode Enabled, it's very simple.
+Again, remember, it's called the Configuration Endpoint
+and it's for all read and write operations
+that are compatible with Cluster Mode.
+So you just need to have a recent enough client
+and you're good to go.
+So use the Configuration Endpoint
+and you're good for read and writes,
+which is the benefits of the Cluster Mode clusters.
+Finally, you can also access individual nodes
+if you wanted to by using the node endpoints,
+but only for read operations.
+And that's it for this lecture,
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,62 @@
+# 189. Amazon MQ
+# Section: Decoupling applications: SQS, SNS, Kinesis, Active MQ
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528474
+# Caption: en_US (manual)
+
+So now let's talk about Amazon MQ.
+So we know about SQS and SNS
+and they're cloud-native services
+because they are proprietary protocols from AWS.
+They use their own sets of APIs.
+But if you are running traditional application on-premises,
+you may use open protocols
+such as MQTT, AMQP, STOMP, Openwire, WSS.
+And when you're migrating your application to the cloud,
+you may not want to re-engineer your application
+to use the SQS and the SNS protocols or APIs.
+So instead, you wanna use the traditional protocols
+you used to, such as MQTT, AMQP, and so on.
+So for this, we can use Amazon MQ.
+So Amazon MQ is very simple.
+It's a managed message broker service for two technologies,
+for RabbitMQ and for ActiveMQ.
+So RabbitMQ and ActiveMQ are, for example,
+on-premises technologies that provide you access
+to the open protocols I just mentioned.
+So then we can get a managed version of these brokers
+onto the cloud thanks to Amazon MQ.
+So as such, you can understand the implications.
+First of all, Amazon MQ doesn't scale as much as SQS or SNS,
+which have sort of like infinite scaling.
+And because Amazon MQ runs on servers,
+you may have server issues.
+And so you can run multi-AZ setup
+with a failover if you want to be highly available.
+Also, Amazon MQ comes with both a queue feature,
+so it looks like SQS,
+and topic features, it looks like SNS
+as part of a single broker.
+Now, how does the high availability work for Amazon MQ?
+Well, for example, let's say we have a region us-east-1
+and we have two availability zones,
+us-east-1a and us-east-1b.
+One zone is going to be active
+and the other one is going to be a standby.
+So we're going to have an Amazon MQ broker in both AZ, okay,
+where one is active and one is standby.
+And so for the failover to work,
+you need to define Amazon EFS as your backend storage.
+And we've seen that EFS is a network file system
+which can be mounted onto multiple availability zones.
+So what happens is that whenever
+you have failover happening,
+well, the standby is going to be also mounted
+onto Amazon EFS, and therefore will have the same data
+as your first active queue
+and therefore the failover can happen correctly.
+So if your client talks to the Amazon MQ broker, okay,
+and there is a failover happening,
+then the data will be kept safe thanks to Amazon EFS.
+And that's it.
+That's all you need to remember for going to the exam.
+I hope you liked it and I will see you in the next lecture.

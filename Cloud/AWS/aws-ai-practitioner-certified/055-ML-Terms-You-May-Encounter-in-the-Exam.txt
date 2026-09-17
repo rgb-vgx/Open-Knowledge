@@ -1,0 +1,75 @@
+# 55. ML Terms You May Encounter in the Exam
+# Section: Artificial Intelligence (AI) & Machine Learning (ML)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45796543
+# Caption: en_US (manual)
+
+So here are some machine-learning terms
+that you may encounter in the exam.
+You don't need to know a lot about them,
+just the executive summary.
+So don't stress it too much,
+but feel free to read this lecture once before your exam
+just in case.
+So if you see GPT,
+it means generative pre-trained transformer,
+and it's a model that's going to be able
+to generate human text or computer code
+based on input prompts.
+If you have BERT, again, it's a language model,
+and it's called
+bidirectional encoder representations from transformer.
+It has a similar intent to GPT,
+but this time it will read the text in two directions,
+making great for translation purposes.
+RNN is a recurrent neural network.
+It's a neural network
+specifically geared to process sequential data.
+So it could be, for example, time series data or texts.
+So it's going to be very helpful for speech recognition
+or to make time series prediction.
+ResNet is residual network,
+so it's a type of neural network
+called a deep convolutional neural network, CNN,
+and it's used for image recognition tasks,
+object detection, and facial recognition.
+So ResNet is for images.
+SVM is support vector machine.
+It's an ML algorithm used for classification and regression.
+WaveNet is a model used to generate raw audio waveform,
+hence the name WaveNet.
+So it's used in speech synthesis.
+And GAN, generative adversarial network,
+is a model used to generate synthetic data
+such as images, videos, or sounds
+that resemble the training data.
+So for example, a big use case of GAN
+is going to be data augmentation.
+So in the case that you have a training data set
+with underrepresented categories,
+then you may want to use GAN to actually generate fake data,
+but that's still going to be looking
+like your original data
+in order for your next model to have a trained data set
+that is going to be more balanced.
+You also have XGBoost,
+which is extreme gradient boosting,
+which is an implementation of gradient boosting
+and used for regressions.
+So all these things
+maybe seem to be visited very, very quickly,
+but it's necessary
+because they just appear maybe once at the exam.
+In my opinion, GPT, BERT, and GAN
+are going to be the ones you want to remember,
+but if you quickly remember that ResNet is for images,
+WaveNet is for audio,
+and GAN is for creating data augmentation,
+GPT and BERT are for language,
+very quickly at the exam, you're going to be able
+to say which are correct and which are incorrect
+by process of elimination
+or by just remembering this lecture.
+So that's it, no need to know too many details on those,
+just know their intent.
+So I hope you liked it,
+and I will see you in the next lecture.

@@ -1,0 +1,107 @@
+# 365. SSM Other Services
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/34466246
+# Caption: en_US (manual)
+
+So let's talk about some other services
+within the Systems Manager service that can come up
+at one question at the exam maybe.
+So if you don't understand everything,
+just remember the general idea out of these.
+So the first one is run command
+and it's used to execute a document,
+therefore a script or just one command.
+And these commands are run on multiple instances
+using resource groups.
+And these instances are EC2 instances or on-premises servers
+that are registered with the Systems Manager service
+because, well, the agent is running on them.
+So for this, when we run the command, no need for SSH.
+This is using the same mechanism
+as we saw for Session Manager.
+It just runs them through the agents.
+And then any output of the command through the run command
+can be sent to S3 or to CloudWatch Logs.
+And then in case you have any kind of failures,
+then they will be sent into SNS.
+So you can have in-progress, success, failed and so on.
+All these updates can be sent into SNS.
+You have full integration with IAM for security
+and CloudTrail to see who run what commands.
+And then, of course, there is some automation out of it.
+So EventBridge can directly run a run command.
+So we have EC2 instances or on-premises servers
+and they're managed with the SSM Agent.
+And then very simply, we're going to run a command on them
+using the run command feature of Sessions Manager.
+The output can be sent to Amazon S3 or to CloudWatch Logs.
+Any kind of status notifications is sent to Amazon SNS.
+And it can be triggered either by us, the user,
+or automatically using EventBridge.
+Another one is called Patch Manager.
+So as the name indicates, it's very simple.
+It's used to automate the process
+of patching managed instances.
+So this is being used to apply operating system updates,
+application updates, security updates.
+It supports, of course, your EC2 instances
+and on-premises servers.
+And it supports Linux, Mac, and Windows.
+So you can patch either on-demand, so right away,
+or you can have a schedule of patches
+using what's called a maintenance window
+where your instances are ready to be patched.
+Now also within Patch Manager, you can scan your instances
+and you can generate a patch compliance report
+to find if all your instances are patched correctly
+and find if anyone or anything is missing a patch.
+So again, from either the console, the SDK,
+or a maintenance window,
+we're going to invoke the Patch Manager.
+And for this, it's called
+the AWS-RunPatchBaseline run command.
+And it's going to patch all of my EC2 instances
+and then we can find a report within Patch Manager.
+So I mentioned maintenance windows,
+but let's just do a deep dive on them.
+So it's used to define a schedule
+of when to perform actions on your instances.
+So for example, you want to define a maintenance window
+to do OS patching or updating drivers
+or installing software or whatever you want.
+And when you define a maintenance window,
+you contain a schedule.
+So when is it going to be triggered?
+A duration, so for how long?
+What instances is this maintenance window applying to?
+That makes sense.
+And finally, what tasks will be run
+during this maintenance window?
+And so therefore, the maintenance window, for example,
+can be triggered every 24 hour to run the command
+to update or to patch my EC2 instances,
+but you can be very creative with it as well.
+Next we have Automation.
+So Automation is used to simplify the common maintenance
+and deployment task on EC2 instances or other AWS resources.
+For example, you would use an automation
+to restart many instances at a time
+or to create an AMI or to create EBS snapshots and so on.
+So you would have an Automation Runbook.
+They represent SSM documents and they are predefined actions
+on your EC2 instances or your resources on AWS.
+So these runbooks will be used by the SSM Automation
+to execute some actions on EC2 instances,
+for example, restart them all,
+or to execute actions on your resources on AWS,
+for example, take snapshots of all my RDS databases.
+So this can be triggered using the console, the SDK,
+or the CLI, Amazon EventBridge,
+or the Maintenance Windows or as well AWS Config.
+So there's an integration such as
+if Config finds that a resource is non-compliant,
+then we can have a remediation automatically
+to run an SSM Automation
+and try to remediate this non-compliant resource.
+So that's it for this lecture, I hope you liked it
+and I will see you in the next lecture.

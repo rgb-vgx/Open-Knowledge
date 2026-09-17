@@ -1,0 +1,111 @@
+# 98. Redshift Lambda UDF
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40394288
+# Caption: en_US (auto)
+
+Speaker: Redshift Lambda UDFs user defined functions are something
+you need to know about and
+it's a pretty amazing functionality.
+This allows you to use functions in AWS Lambda
+inside your SQL queries on Redshift.
+And that's powerful, right?
+Because Lambda functions can be written in pretty much
+any language you can dream up.
+And they can do pretty much anything you can dream up.
+So you could have a Lambda function that calls
+out to other services, maybe like hit some AI service, right?
+It can access other systems that might be external.
+It can also integrate with location services.
+These are just some examples of what you
+might do with an AWS Lambda function that's accessed
+from inside your SQL query.
+To use them, you just use create external function
+to register your Lambda UDFs
+that you use within your queries.
+And on the Redshift table itself, you
+need to grant usage on LANGUAGE EXFUNC in order for this
+to work and everything
+to have the right permissions
+to talk to Lambda.
+An example of what this might look like.
+Let's imagine that we have a Lambda_multiply UDF that
+we defined.
+So we could say select a,
+b from t1 where Lambda_multiply a, b equals 64.
+So this could be used to
+say, I want to select all the rows in my
+table where the product of columns a and b equals 64.
+And this is a very perhaps silly example here of overthinking
+things.
+But in this case, we would actually call out to AWS Lambda
+to perform that multiplication.
+Obviously, far more complicated things could be done there.
+Anything that AWS Lambda can do could be done
+within that Lambda_multiply function.
+So the idea here is that we're tying in
+Lambda with Redshift through UDFs pretty neat.
+Now to actually register that function
+here's what the syntax would look like.
+So this is a different example here.
+We're gonna create an exfunc_some UDF here that takes two
+integers and adds them together presumably.
+So the syntax for defining that exfunk_sum UDF would be create
+external function, the name of that function
+and then a list of its parameters that
+it expects.
+What it returns in this case another integer.
+So it takes two integers and returns an integer.
+That's presumably the sum of them.
+Volatile Lambda and then the name of the Lambda
+function we're calling.
+And then finally, we have pass in the IAM role associated
+with that Lambda function to
+give it the permissions it needs
+to access what it needs to access.
+A little more detail on that IAM role.
+So there is an AWS Lambda role IAM policy you can use to grant permissions
+to Lambda on your clusters IAM role.
+Or you could roll your own policy.
+Just make sure that you're allowing Lambda invoke function
+as part of that policy.
+So you need to create a role with that policy and then
+pass that in through that parameter on your
+create external function command
+like we saw previously.
+It's also possible to invoke functions in other accounts
+in the same region using IAM roll chaining that way.
+So you could use somebody else's Lambda UDF using
+roll chaining.
+So how does this all work under the hood?
+What happens when it actually goes to Lambda?
+So Redshift will be communicating with your Lambda
+function using JSON data.
+So here's what your Lambda function might see coming in.
+It'll see a request id, the cluster it came from, the user
+of the database that it came from in Redshift, the
+name of the external function, and then
+a query id.
+And finally the number of records
+that it wants you to compute.
+So in this case I'm saying I want
+you to figure out four things.
+Here's the list of arguments for each of those four things.
+And then your Lambda function does something with that and
+gives back a response.
+That response might look like this.
+It will say success, true or false.
+If there was an error message, you can specify that as well.
+I'm gonna say I'm returning four records
+here that you asked for.
+And here are the results.
+A list of the results for all four records
+that you asked for.
+So pretty straightforward, right?
+Basically Redshift says,
+"Okay, well I'm calling out to Lambda.
+Here are Lambda, here's the parameters you want.
+Give me back a response
+and I'll work that into my response in SQL. So that's Redshift, Lambda,
+UDFs, user defined functions that call
+out to Lambda.
+In a nutshell. Pretty cool functionality.

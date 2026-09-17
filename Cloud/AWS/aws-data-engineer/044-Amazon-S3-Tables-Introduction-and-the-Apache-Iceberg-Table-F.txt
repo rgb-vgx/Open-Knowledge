@@ -1,0 +1,126 @@
+# 44. Amazon S3 Tables: Introduction and the Apache Iceberg Table Format
+# Section: Storage
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/54715813
+# Caption: en_US (auto)
+
+Let's talk about S3 Tables,
+another newer feature of Amazon S3.
+And this is becoming sort of the heart
+of Amazon's data offering.
+So they're building out a data Lakehouse ecosystem
+that is built largely on top of S3 Tables going forward.
+So this does seem to be AWS's future direction right now.
+They're also rolling out something
+called Amazon's SageMaker Lakehouse.
+And if you're watching this in 2026,
+that's too new to actually be on the exam right now.
+So I'm not gonna talk about it in too much depth,
+but it's basically the concept that
+kind of ties those three tables together
+with the other analytics tools within Amazon's ecosystem.
+It is at its heart a managed data lake solution.
+So it's a way to store lots and lots of data in S3
+in tabular format where you let S3 worry about
+all the details of managing and maintaining that data,
+and keeping it performing over time
+At its heart is something called a Table Bucket.
+So just like you can make a general purpose bucket
+in S3 to store CSV data or whatever,
+Table Buckets are more specialized for tabular data,
+and these will be storing data specifically
+in the Apache Iceberg format.
+Talk about that in a bit.
+So at the end of the day, you can just issue SQL queries
+from whatever your favorite tools are.
+Anything that can support Iceberg can talk to S3 tables.
+That's the cool thing. Wait, what's Iceberg?
+Might be the first time you're hearing that term.
+We're gonna talk about this more when we talk about
+Amazon Athena and the analytics tools
+that are available in AWS.
+Basically though it is a standard table format
+used in large data lakes.
+It is designed for petabyte scale data
+came from Netflix originally. They have a lot of data too.
+It offers full asset compliance, which is a good thing,
+and roll level updates and deletes, which can be important
+for compliance purposes around the world.
+It also has features for updating your tables
+as data evolves, Schema Evolution is what that's called.
+So if you do need to change your columns
+or the names of things,
+it has ways of managing that without breaking everything.
+It also has some nice partitioning features as well.
+So if you need to change your partitioning schemes,
+Iceberg makes that a little bit easier as well.
+You can also do historical data queries,
+do rollbacks easily, look at changes between updates,
+efficient metadata management.
+We'll talk about this more later in the course.
+But you know, just giving you an overview
+of what Iceberg's all about.
+And again, going forward, Amazon's SageMaker Lakehouse
+is the brand that they're gonna be
+kind of wrapping Iceberg tables with.
+You'll hear more about that in the future.
+But the important thing is that that encompasses things
+like third party tools, including Spark, Flink,
+Trino, Presto, Hive, these all can speak Iceberg, right?
+So these are all, have native integrations
+with Apache Iceberg format,
+and they also have integrations with AWS Analytics services
+and data services such as AWS Glue, Redshift, EMR, Athena,
+and some more that we'll look at in a minute.
+So Iceberg is basically the lingua franca of data
+that the entire Amazon and third party ecosystem
+is kind of converging on
+for standardizing how this tabular data is stored.
+And S3 tables uses Iceberg as its storage format.
+So again, because S3 tables is built on Iceberg's format,
+that makes it compatible with a lot of stuff.
+Now under the hood, the Glue data catalog
+is going to be what connects the S3 tables
+to the AWS analytic services.
+So what happens is when you integrate S3 tables
+with AWS analytic services,
+it will show up in the Glue data catalog
+making it accessible to any Amazon analytic tool.
+And going forward they might refer to that
+as SageMaker Lakehouse instead.
+And I'm just gonna throw that out there.
+Again, this is not on the exam in 2026,
+but I think it will play a role in future years.
+Those services include Amazon Athena,
+which is used for querying data in the cloud.
+Amazon Redshift, their data warehouse solution,
+Amazon Quick Suite, which is the new branding
+for Amazon Quick Site, which is their,
+basically tool for data analytics and graphs
+and charts and all that good stuff.
+Amazon Elastic MapReduce also exposes compatibility
+with Iceberg and S3 tables,
+Amazon SageMaker Unified Studio.
+SageMaker more than just their data platform.
+It's also their machine learning platform as well.
+And if you want to issue SQL queries through SageMaker,
+you can do that to S3 tables as well through Iceberg.
+Also AWS Glue ETL is yet another way to interact with data,
+and you can interact with S3 tables there as well.
+Not too surprising, since again,
+it's using Glue Data catalog under the hood
+to keep track of that data.
+Also, Amazon Data Firehose,
+formerly known as Kinesis Data Firehose.
+That can also integrate with S3 table data through Iceberg.
+And finally there is an Iceberg REST endpoint
+exposed on S3 tables as well.
+So anything else that can talk to Iceberg data
+through a REST interface can talk to S3 tables as well,
+including Spark, Flink, and many other third party tools.
+And Spark, by the way, also has the ability
+to talk to S3 tables directly without that REST endpoint.
+So there is native support for S3 tables
+built into Spark that's available too.
+So it's a very common pattern to store data into S3 tables
+and then analyze and manipulate that data
+using Apache Spark.

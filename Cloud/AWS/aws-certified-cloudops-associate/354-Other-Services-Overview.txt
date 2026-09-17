@@ -1,0 +1,20 @@
+# 354. Other Services Overview
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516552
+# Caption: en_US (manual)
+
+Hey, welcome to the section
+on Other Services.
+So this is just to tell you
+that these are going to be random services
+that may appear at the exam, maybe on one question.
+Sometimes a little bit of information
+you need to know on these services is really, really tricky.
+But bottom line,
+I'm going to show you what you need to know,
+and I think just by learning and listening to this lecture,
+when you see the question at the exam,
+you will remember the lecture
+and you'll be good to go.
+So I wish you happy learning,
+and I will see you in the section.

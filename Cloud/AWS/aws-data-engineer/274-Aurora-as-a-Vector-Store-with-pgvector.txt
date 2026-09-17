@@ -1,0 +1,53 @@
+# 274. Aurora as a Vector Store with pgvector
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/54321817
+# Caption: en_US (auto)
+
+So we've talked about Aurora at a high level.
+Why is it relevant to this exam?
+Well, it can also serve as a vector store it turns out
+with an extension.
+So it's called the pgvector extension. Remember that.
+So Aurora with pgvector
+can turn Aurora into your vector store
+for RAG systems or knowledge bases.
+What this does is create a new column type called vector,
+of all things,
+and it can compute distances in one of three ways.
+Cosine, L2, or inner product are the choices there
+for the similarity metrics.
+It can also do similarity search with IVF for HNSW,
+both of which we discussed earlier
+in the context of OpenSearch.
+So if you want more details, go back there.
+And it also adds vector operators for SQL.
+So this is where it adds something kinda new.
+So this lets it do stuff that OpenSearch can't do.
+So if you need to do complex filtering logic
+on what's coming out of your vector store,
+you can actually write SQL expressions
+that can operate on those vectors directly
+using the pgvector extension, which is kinda cool.
+And this allows you to store your structured
+and vector data in the same place.
+So, you know, you can have not just chunks of data,
+but also structured data.
+Technically you could do that with JSON too,
+but a little bit more native with Amazon Aurora.
+So that's what the big deal is with Aurora
+in the context of generative AI and as a vector store.
+And the cool thing though
+is that whole SQL integration thing.
+So I would remember that one.
+This can be appropriate for small or medium RAG systems
+if you have mostly structured data.
+So, of course, Aurora is kind of a more of a monolith.
+Scaling that can be a little bit more of a challenge.
+But if you do have a small or medium system,
+and let's face it, most of us do,
+and your data is mostly structured,
+this could be an appropriate choice for your vector store.
+So if you're choosing a Vector store,
+Aurora with pgvector might be the answer
+if you have a small or medium RAG system
+with structured data.

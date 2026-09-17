@@ -1,0 +1,100 @@
+# 124. Amazon EC2
+# Section: AWS Security Services & More
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45375599
+# Caption: en_US (manual)
+
+And on EC2,
+in which we will create our first website on AWS.
+So what is Amazon EC2?
+Well, EC2 is one of the most popular of AWS offering.
+It is definitely used everywhere.
+And what is it?
+Well, it stands for Elastic Compute Cloud,
+and this is the way to do Infrastructure as a Service
+on AWS.
+So EC2 is not just one service.
+It's composed of many things at a high level.
+So you can rent virtual machines on EC2.
+They're called EC2 instances.
+You can store data on virtual drives or EBS volumes.
+You can distribute load across machines,
+elastic load balancer.
+You can scale services using an auto-scaling group or ASG.
+And all these things, do not worry,
+we will see in depth during this course.
+Knowing how to use EC2 in AWS
+is fundamental to understand how the cloud works,
+because as I said from before,
+the cloud is to be able to rent those compute
+whenever you need, on demand.
+And EC2 is just that.
+So EC2, what can we choose for our instances,
+so our virtual servers that we rent from AWS?
+So what operating system can we choose
+for our EC2 instances?
+Three options,
+Linux, and is going to be the most popular,
+Windows, or even macOS.
+How much compute power and cores you want
+on this virtual machine,
+so how much CPU.
+Then you need to choose how much random access memory,
+or RAM, you want,
+and how much storage space.
+So, for example,
+do you want storage that's going to be attached
+through the network,
+and we'll see about it with EBS or EFS.
+Or do you want it to be hardware attached?
+In this case, it will be an EC2 instance store.
+And we have a whole section on storage,
+so don't worry about it.
+And then finally, the type of network you want attached
+to your EC2 instance.
+So do you want a network card that's going to be fast?
+What kind of public IP do you want?
+And finally, we need to handle the firewall rules
+of our EC2 instance,
+and that is the security group.
+And I lied,
+finally, finally, there's the bootstrap script
+to configure the instance at first launch,
+which is called the EC2 User Data.
+So we have lots and lots of options,
+and as you'll see in the hands-on,
+even more options at other certification levels
+that you need to know in EC2 instances.
+But at a core of it, what you need to remember
+is that you can choose pretty much
+how you want your visual machine to be,
+and you can rent it from AWS,
+and that is the power of the cloud.
+You can do this by just in the blink of an eye, really.
+So it is possible to bootstrap our instances
+using the EC2 User Data script.
+So what does bootstrapping mean?
+Well, bootstrapping means launching commands
+when the machine starts.
+So that script is only run once,
+and when it first starts,
+and then we'll never be run again.
+So the EC2 User Data has a very specific purpose.
+It is to automate boot tasks,
+hence the name bootstrapping.
+So what tasks do you wanna automate
+usually when you boot your instance?
+Well, you want to install updates, install software,
+download common files from the internet,
+or anything you can think of, really,
+anything you can think of.
+So it could be whatever you want,
+but just know that the more you add
+into your User Data Script,
+the more your instance has to do at boot time.
+Simple, right?
+By the way, the EC2 User Data Scripts
+runs with the root user,
+so any command you have will have the sudo rights, okay?
+So this was a short introduction to EC2.
+Don't worry, it's gonna get very, very practical very soon.
+I will see you in the next lecture.

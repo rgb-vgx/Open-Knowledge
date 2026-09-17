@@ -1,0 +1,199 @@
+# 163. AWS Global Accelerator - Hands On
+# Section: CloudFront & AWS Global Accelerator
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078279
+# Caption: en_US (manual)
+
+All right, so let's go ahead
+and practice using Global Accelerator.
+So, for this, we're gonna have to create an infrastructure
+in two regions to make the Global Accelerator useful.
+But let's go ahead and create it
+and see what the options are.
+So, first of all, we need to enter an accelerator name,
+so Demo, and then an accelerator type.
+It's going to be Standard.
+Then, the routing we want is going to be IPv4
+because right now we use IPv4 addresses.
+Let's click on Next.
+And now we have listeners,
+so what do we want our accelerator to listen on?
+So the protocol is gonna be TCP,
+and the port is going to be 80
+because we're going to send HTTP traffic to our instances.
+Client affinity allows you to handle
+whether or not you want the same client
+to go to the same backend instance.
+So you can have none or have it by source IP,
+but for now we'll leave it as none.
+Let's go Next, and now we have listeners.
+So this is where you create endpoint groups
+for multiple listeners.
+So we can configure regions,
+and then we can configure instances behind the scenes.
+So, for example, here we are going to choose
+US-East-1, very nice.
+And then we add a second endpoint group,
+which is going to be EU-West-1,
+which is the region that I want to use right now.
+As you can see, for Global Accelerator,
+because it's a global service,
+on the top-hand side it says "Global".
+So that means you cannot choose any region,
+it's just a global service.
+So, here we say, "Hey, we want to send
+some traffic to US-East-1 and some traffic to US-West-1."
+You could configure port overrides and health checks,
+but no need to right now.
+Let's click on Next.
+And now we need to have endpoints in these regions.
+So right now we don't have any endpoints,
+so we cannot finish the configuration
+but let's create this accelerator.
+And while it's created,
+we're going to add endpoints afterward.
+So now endpoints are going to be,
+for example, EC2 instances or load balancers and so on.
+So, I'm going to open EC2 instances
+and first I'm going to choose US-East-1,
+which is what I want to have one of my endpoint groups in.
+And I will add an instance, and I will launch the instance.
+We're gonna go through it very quickly,
+so I'll call this one Demo Accelerator.
+We'll use the latest Amazon Linux, this is fine.
+T3 Micro, this is fine.
+We don't need a key pair.
+We can select a security group.
+Yes, we're going to create one,
+and we're going to allow HTTP traffic from the internet.
+This is going to allow our HTTP instance to be exposed.
+And then under Advanced Details
+I'm going to, at the very bottom, select my user data,
+and I'm going to choose what we had before, so this,
+but we're going to paste it in
+and we're gonna say, "Hello World
+from hostname (indistinct) in US-East-1."
+This way we know which region
+and which instance belongs to which region.
+So this is good, I'm going to just launch the instance
+and copy this again.
+So now our instance is being launched.
+Ao I'm going to do the exact same thing,
+so let's go to the instance, refresh this,
+and we're going to copy this
+IPv4 address in here and enter it.
+Right now, it's not going to work, of course,
+because it's too early,
+but at least we have the IP address ready.
+And we're going to do the exact same thing,
+but in EU-West-1, so I click on EU-West-1.
+I'm going to launch an instance
+and then call it one Demoinstance.
+Then, the same setup as before, no key pair required.
+We'll allow HTTP traffic from the internet.
+Scroll down, and we're going to paste the user data
+but this time, for the user data, which is right here,
+I'm going to have it as EU-West-1.
+All right, so now we'll have two instances.
+I'm going to launch this one as well.
+So we have two instances now that have been launched,
+one in each region, and we have two IPs
+so I'm going to open this IP address in here as well.
+So let's see for this instance if it's ready or not.
+So let's switch regions again to get back the IP
+because I lost it.
+So here's my instance.
+And, as you can see, it says, "Hello World
+from my EC2 instance in US-East-1."
+So this one has been working correctly,
+and this one is probably just a matter of time.
+Here we go, here it's, "Hello World from EU-West-1."
+So now our two instances are ready.
+And in Global Accelerator, in our accelerator,
+we're going to now configure these instances.
+So let's click on this listener,
+and we have two endpoint groups,
+one for US-East-1 and one for US-West...
+And actually, I did US-West-1 and not EU-West-1,
+so let's configure one for EU-West-1,
+which is what I wanted to.
+And now we're going to add endpoints for this EU-West-1
+and, as you can see in here, we have several options.
+So we have Application Load Balancer, Network Load Balancer,
+EC2 instance, and Elastic IP address.
+Right now, we've configured an EC2 instance,
+and we can find this instance right here.
+And the weight allows you to
+see how you want to distribute traffic
+if you had multiple endpoints.
+But this is good, we have one, we'll save it.
+Now, for this one right here, US-West-1,
+we actually don't need it so I'm going to remove it.
+This was an oversight from me.
+And for US-East-1, I'm going to click on it, add endpoints.
+And here, again, we can add our EC2 instance.
+Here we go, and click on Save.
+So now we're having issues
+with the health check setup for our EC2 instances,
+so let's go into the configuration of US-East-1.
+We're going to configure the health checks,
+and here we'll say, "Okay, check the protocol HTTP.
+The path is /, the port is 80,
+and you can have a 10-second health check interval,
+and we'll have it as two threshold count to make it faster."
+So perfect for this one.
+And we're going to configure
+the second endpoint group as well, the one for EU-West-1,
+and we'll apply the exact same thing.
+So we're going to do health checks on HTTP,
+the health check being 10 seconds,
+and the threshold being two.
+So that means we need to wait about 20 seconds
+to make sure that our endpoints are going to be healthy,
+so let's wait and I'll get back to you.
+All right, so I'm back in my Global Accelerator,
+you can get back here,
+and I had to wait for the provisioning status to be deployed
+for my health checks to pass.
+So this is why the health checks were unhealthy.
+But now that it's been provisioned
+and my health checks are passing,
+we can see that we have two static IP addresses
+available for our Global Accelerator.
+We have this one and that one.
+And so what I can do now
+is just try to use the Global Accelerator.
+So I'm going to open a URL,
+and, as you can see, by opening this IP address
+I'm redirected to my instance in EU-West-1.
+And I keep on refreshing
+and I keep on being redirected to the same instance.
+An dif I go to this other IP address,
+I also have only EU-West-1.
+So the reason is because I'm redirected
+to the one that's closest to me,
+but I have a VPN just to show you.
+So I can connect into the United States
+to be closer to the US itself,
+and then go here and refresh
+and now I'm connected to US-East-1.
+So, here, both of them are US-East-1.
+So this shows you that the Global Accelerator
+is working as intended.
+For this part of the demo you would need to have a VPN,
+but, again, if you don't have one
+that's completely fine, just see as I do.
+And as you can see, again, if I refresh now
+we're back in EU-West-1.
+So this is pretty cool.
+And now to ensure you don't have any costs,
+please remove the accelerator, so delete it.
+You need to disable it,
+and once it's disabled you can delete it.
+And then remember that you have instances in two regions,
+so terminate it.
+Terminate one and then terminate two.
+So they're both being deleted, that's perfect.
+My accelerator is now disabled so I can just delete it,
+and we're good to go.
+So, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

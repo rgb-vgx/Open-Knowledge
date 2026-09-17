@@ -1,0 +1,85 @@
+# 40. Prompt Engineering - Hands On
+# Section: Prompt Engineering
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886473
+# Caption: en_US (manual)
+
+Okay, so let's practice
+how to do good prompting.
+So let's go into chats
+and we're going to select a model.
+We're going to select Anthropic,
+and then we select Cloud 3 Haiku.
+And we'll just write a prompt, write me a travel itinerary.
+And this prompt is very naive, it's not very detailed.
+And here the model just responds.
+Hey, here is a seven-day trip
+and it shows Rome, Florence, and Venice and Italy.
+So why not?
+This is an answer that is possible for us
+to deal with, but it's not the one I want
+because I was not very precise.
+Instead, we want to use the framework we had
+of giving instructions, giving context, giving input data,
+and then giving an output format.
+So under our code, under prompting,
+I've created prompting.txt,
+and we're going to use the first format,
+so the instructions, the context, and the output.
+So let's have a look at what it is.
+So we're saying, hey, please create a three-day itinerary
+for Paris, France.
+It should include visits to historical landmarks,
+art museums, and popular local restaurants.
+You want good balance, you wanna have suggestions
+for breakfast, lunch, and dinner.
+Here's the context.
+So we've never traveled to Paris before
+and we want to experience both the well-known
+and hidden gems.
+So of course, some people who have already been
+to Paris may want something different.
+So the context is very important.
+And then the input data right now
+is just a three-day trip to Paris.
+But we may want to add articles
+that we've read in the news,
+and this would be a good way
+to enhance the outcome of this prompt.
+And then our output indicator is what do we want?
+We want the travel itinerary with specific times,
+location, descriptions, and dining recommendations.
+So this is quite a complete prompt.
+And as you can see, now the model is telling us a lot
+of things about what to do on each specific day.
+And this is quite nice
+because well, we are getting the recommendation we want
+for the exact prompt we cared about.
+So it really shows you the difference of quality of a good
+and a bad prompt.
+Now, we also must include, if we want to improve it,
+negative prompting and negative prompting
+is what do we not wanna see?
+So here, for example, do not include activities
+that are primarily for children or families
+and avoid overly touristy restaurants and include anything
+that requires too much travel, except Versailles.
+So let's paste it and run it.
+And again, you can have a look at if this output was better
+than the previous one or not based
+on the negative prompting.
+And we can do, you know, any kind
+of creative negative prompting.
+For example, we can say, hey, here's the instructions,
+and then do not recommend more
+than three activities per day.
+And we run it, and again, with the negative prompting,
+now we're getting less activities per day.
+So it's a bit shorter day
+and maybe we'll have more time to do stuff in Paris.
+I cannot tell you if this is a good recommendation or not.
+I lived in Paris, but AI can be sometimes surprising.
+Anyway, if you would trust AI to organize your next travel,
+you know how to do it now and you know
+how to properly build a prompt for it.
+So I hope you liked it
+and I will see you in the next lecture.

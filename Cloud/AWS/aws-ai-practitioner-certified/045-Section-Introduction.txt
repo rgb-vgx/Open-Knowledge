@@ -1,0 +1,18 @@
+# 45. Section Introduction
+# Section: Amazon Q - Deep Dive
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44977031
+# Caption: en_US (manual)
+
+In this section, we are going to learn about Amazon Q.
+So I really like Amazon Q
+because once you've set it up,
+it really enables new use cases for your company
+with your internal data.
+And on top of it, Amazon Q is starting
+to slowly change your experience of interacting
+with the AWS Cloud.
+And I think over time, is going to become more
+and more prominent and more and more powerful.
+So we are in the early days,
+but it's a good time to learn about it.
+So I hope you're excited and I will see you in this section.

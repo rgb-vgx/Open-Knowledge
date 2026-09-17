@@ -1,0 +1,193 @@
+# 378. Cognito User Pools Hands On
+# Section: Cognito: Cognito User Pools, Cognito Identity Pools & Cognito Sync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731934
+# Caption: en_US (manual)
+
+So let's practice using Amazon Cognito,
+and we want first user pools.
+So we want to click on the left hand side on user pools,
+and you're taken here,
+and then create user pool.
+So here we're going to tell them about our application,
+so we have different options.
+We have traditional web application,
+single page application, mobile app,
+or machine-to-machine application.
+In this instance,
+we're just going to use a traditional web application
+and then we name it whatever we want, my web app,
+and then we configure options.
+So what do we want our sign-in options to be?
+So we want people to, for example, log in with an email,
+or it could be phone number or username, but email is good.
+And if you wanted to set up social sign-in,
+then we would need to set up federated users.
+So we'll see this in this configuration.
+And then what attributes do we want to require for sign-in,
+for example, the first name or the email,
+the birth date, and so on.
+Right now, nothing, so it's good.
+Okay, return URL is where people are going
+after successfully signing in.
+So this is your website,
+so here I'm just going to have example.com,
+but this tells you
+that they have successfully logged in, for example.
+Okay, so let's create this.
+And now we have created our first application
+and our user pool,
+and now we need to go ahead
+and continue the setup of our user pool.
+So let's go on the left hand side
+on this user pool right here,
+and I can click on it and I can configure it.
+So I will go on the left hand side
+and we have access
+to all the information we need for things.
+So our client is the application
+that will connect to user pool.
+This is the web application.
+Users is where we see all the users we have.
+So right now, no users,
+but we could create the user based on the email address,
+and then setting a temporary password.
+Groups is to group users.
+Here we could set up authentication methods.
+So we have several option.
+Here, we're going to send an email
+to verify email with Cognito,
+but in production, you would use Amazon SES,
+because Cognito is just for testing.
+You can send up to 50 emails per day.
+And then what's the from and the reply to address?
+So let's cancel this.
+SMS is to validate your users with SMS.
+Password policy is to set up a password policy
+to make sure that, for example,
+your minimum length is eight characters,
+your passwords expire in seven days,
+and then what are the requirements
+of the password requirements?
+And passkey is if you want people to sign in with biometrics
+and to bypass any kind of passwords.
+Okay, so for the sign-in experience, we can set the email,
+as we said there was this, the setting we had before,
+and we cannot edit it,
+but we can also edit, for example,
+multifactor authentication for higher security.
+And so you would edit this,
+and for example, say require MFA or optional MFA,
+and you would specify how your users
+are using multifactor authentication,
+as well as, for example, how you want users to recover.
+For sign-up, this is where you want to have a look
+at user verification, so we can have SMS verification,
+and then what attributes we want to have.
+This is not modifiable.
+So again, this is something you set up in the beginning.
+And then you can add custom attributes
+that you want if there's strings or numbers
+for people to register with, okay?
+And if they can register themselves, yes.
+So here we can set up
+what's called federated identity provider,
+and here we're able to, for example,
+say, "Hey, I want people to log in using Facebook or Google
+or Amazon or Apple or SAML or OpenID Connect."
+So this is a website.
+You know when you go and you have email password,
+but also you have a login with Google?
+This is where you would set this up,
+and each of these identity provider will have its own setup.
+And you can have extensions to plug in Lambda
+into Amazon Cognito user pools
+to invoke the Lambda functions after, for example, signup
+or after authentication or custom authentication
+or after messaging.
+So this allows you to really customize
+how Cognito is working.
+In terms of security,
+you have WAF to monitor requests to your pool
+and make sure you're not being attacked.
+You have threat protection
+to see if you wanna be protected on this user pool,
+and you can stream the logs as well
+to see if any of these logs may be suspicious.
+For your branding,
+you have a domain that's automatically generated,
+and if I open this, as you can see right now,
+it's missing authentication token,
+but we have access to our auth domain
+and you can set up your own custom domain
+if you have your own custom domain
+and you have something, for example, in root 53.
+But we, we need to create it here,
+and this would be a bit too much for now.
+Manage login is a way for you to manage the login
+directly from Cognito.
+So you have the hosted UI, that's the classic thing,
+or you have the managed login right here.
+And so here we have access
+to the styles of the managed login.
+So we can create the style,
+but we can also look at this style right here
+and you can really customize
+how you want your login to look.
+So this is my email address, my password,
+and then my sign-in button,
+but you have the option to customize pretty much anything
+as well as sign-in pages, continue as,
+the reset password page, for example, here and so on.
+So this is very powerful and this is the new edition.
+Before it used to be called Hosted UI,
+but now it's called Managed Login,
+and really allows you to have a custom experience
+for your app authentication pages.
+So now how do we test this login page?
+Well, I go to my overview
+and then there is view login page right here.
+So we have the sign in experience,
+but we are new user, so we're going to create an account,
+and here we need to enter an email address.
+So I like to use Mailinator
+as a service to go on the websites and get a fresh email.
+So I call this one demo-cognito, and that's it.
+That is temporary email address
+that I have on this website.
+So I'm going to use demo-cognito@mailinator.com
+and then you enter a password.
+So you enter a password that you have in mind,
+and then you sign up.
+So this is going to confirm our account,
+and so we need to enter the code.
+So first of all, if I go on the users now, as you can see,
+this user is now appearing here as our username,
+and the email is unverified for now,
+and the confirmation status is unconfirmed.
+So I go on Mailinator, and as you can see,
+I received one email with a verification code,
+so I'm going to paste this code and enter it here.
+And we confirm the account,
+and now we are redirected to example domain
+because this is after a successful again,
+where we set up the redirect URL to be built.
+Of course, this should be your websites.
+So this is perfect because the login has now been done,
+and if I refresh this, now my email is verified
+and my confirmation status is confirmed.
+And so this is super handy, because now,
+well, we are able to register users onto a user pool.
+Finally, if you wanted to edit your message templates,
+for example, your verification message,
+you would just edit this one
+and have more than just your verification code is whatever,
+and this could be something more of your brand, for example.
+So that's it.
+We've seen how to create users in Amazon Cognito user pools.
+We've seen the kind of settings
+we can have for authentication, security, and branding.
+We have actually registered a user
+and we have used the managed UI
+to actually have a login page.
+So I hope you liked it
+and I will see you in the next lecture.

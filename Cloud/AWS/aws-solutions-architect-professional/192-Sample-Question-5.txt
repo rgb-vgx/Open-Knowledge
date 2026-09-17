@@ -1,0 +1,132 @@
+# 192. Sample Question 5
+# Section: Exam Preparation
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/19143860
+# Caption: en_US (manual)
+
+Question five,
+a company is launching a new web service
+on an Amazon ECS cluster.
+The company policy requires that the security group
+on the cluster instances block all inbound traffic
+but the port HTTPS, which is the port 443.
+The cluster consists of Amazon, 100 Amazon EC2 instances
+and security engineers are responsible
+for managing and updating the cluster instances.
+The security engineering team is small
+so any management efforts must be minimized.
+So here we have a requirement as a company policy
+that the security group cannot allow anything
+but inbound HTTPS.
+And then we have 100 EC2 instances in an ECS cluster.
+So let's see how we can go ahead to manage and update
+the cluster instances.
+So the architecture is, our ECS cluster
+has a bunch of EC2 instances in it
+and the client is able to access our EC2 instances
+only through going through a security group
+that is allowing inbound access on 443.
+So presumably this is how we access our HTTPS application
+onto our ECS cluster.
+And now we want to be able to go ahead in these instances
+and manage them.
+But again, the company policy is to have
+only the port 443 incoming into these instances.
+So if you follow closely to the course,
+originally the answer to the question,
+but let's look at the different options.
+Change the SSH port to 2222
+on the cluster instances with a user data script.
+Log into each instance using SSH over port 2222.
+So it is definitely possible to,
+using a user data script to change the SSH port
+to another port 2222.
+And that is a common thing to do if you're
+want to enhance security
+to have a non-standard port for ssh.
+But the thing here is, here we cannot SSH
+into our instances because we would need to allow
+port 2222 into our security group,
+but that is against the company policy.
+So this would be a feasible solution, 100% for sure
+but the company policy would disable us
+from using the port 2222 to get into our EC2 instances.
+And so therefore, this option A
+looked like a viable solution, but it is not a good one
+because it violates the company policy.
+So we have to roll that out.
+Option B is to change yet again the SSH port
+using a user data script and then we use trusted advisor
+to remotely manage the cluster instances of our port 2222.
+So now we have trusted advisor that will be using that part.
+So two problems with this question.
+Number one, again, we have an incoming port
+into our security group that is against the company policy.
+So we can rule that out again for our option B.
+But trusted advisor is, if we remember correctly what it is,
+a service to help us get recommendations about our accounts.
+But in no way it is a service that would allow us
+to manage our EC2 instances actively.
+So Trusted Advisor is definitely
+not the right service for this.
+It would give us cost recommendations
+security recommendations, performance recommendations
+all these kind of things
+but it would not help us to manage our instances
+and use actively, ports to SSH into our instances.
+So we have to rule out that answer for two reasons.
+Option C, launch the cluster instances
+with no SSH key pairs.
+That is definitely an option in AWS.
+And then we use the Amazon EC2 systems manager run command
+to remotely manage the cluster instances.
+So let's have a look,
+I just made an instance a little bit bigger.
+So we have our ECS cluster security group
+and our EC2 instance accessible of the port 443.
+And we use the SSM agent inside of our EC2 instance
+and use the SSM run command to access our EC2 instances.
+So that is 100% a viable option.
+I wish this option was a bit more clear
+because to use the systems manager run command
+we need to make sure before that two things are there.
+Number one, we need to make sure the SSM agent is running
+onto our EC2 instance
+which is not the case for every EC2 instance.
+You need to install it most of the time.
+Or if you use Amazon Linux 2
+then it's already installed for you
+but you would need to install it
+if you are using other operating systems.
+So that's number one, the big problem.
+And number two is,
+for your EC2 instance running the SSM agent
+to be managed by SSM, the service itself,
+you would need to make sure your EC2 instance
+has an instance role that allows us to access the EC2,
+the EC2 systems manager service.
+So there are two things missing in that option.
+So this is the correct option for this question
+but I think it's really incomplete.
+Now that is something that does happen in the exam.
+Sometimes answer are incomplete,
+I would say most often not they're not incomplete,
+but sometimes that can happen.
+So here this is the right answer, but slightly incomplete.
+But here, using the run commands
+we can manage a fleet of EC2 instances
+and update them all at once without getting the need
+to open up any port on our instances.
+And the reason is the SSM agent will be pulling
+the systems manager service and not the other way.
+So this is the correct option.
+Now, option D, launch the cluster instances with no SSH key
+and use trusted advisor to manage the instance,
+that makes no sense.
+We cannot use trusted advisor to manage instances
+so we rule out that answer.
+So remember the correct answer here is option C,
+with the little asterisk that we would need an IAM role
+and also the SSM agent properly configured
+and running for this to work.
+But that's it.
+I hope you liked it and I will see you in the next lecture.

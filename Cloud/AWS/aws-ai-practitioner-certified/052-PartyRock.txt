@@ -1,0 +1,118 @@
+# 52. PartyRock
+# Section: Amazon Q - Deep Dive
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45375243
+# Caption: en_US (manual)
+
+So now let's talk about PartyRock,
+which is in the exam guide,
+so let's talk about it for a second,
+but it's not a real AWS service.
+So it's a playground for you to build Gen AI apps,
+and in the backend, it's powered by Amazon Bedrock.
+And you can access PartyRock
+simply without having an AWS account.
+So here, this allows anyone to build AI apps.
+So here, you can experiment with various financial model
+with no coding or accounts required.
+And the UI is actually very similar to Amazon Q Apps,
+but you have way less setup and no account required.
+So if you wanted to experiment with Q Apps,
+you could instead use PartyRock.
+Of course, you won't use your company internal data,
+but you can experiment
+with the different widgets that it can offer.
+So let me just give you a quick tour of PartyRock,
+which is going to be more than enough
+for you to understand what it does at the exam.
+So here I am on the PartyRock website
+and we can build apps.
+So let's scroll down
+and we can, for example, use one of the featured apps
+and let's look at Good Eats
+to get restaurant recommendations based on what we like.
+So we have to provide a location,
+for example, Las Vegas, Nevada,
+a cuisine American, and a meal dinner.
+And all these are inputs that users provide.
+So if you look at the configuration,
+there's a widget title called cuisine, a placeholder,
+which if you remove the American text is going to ask
+what kind of cuisine would you like,
+and then a default value if need be.
+So if I just remove this,
+it says what kind of cuisine would you like?
+So I'll say American Burgers.
+And the meal type we want is dinner,
+location is Las Vegas, Nevada.
+And here if we run this,
+so we do a Command + Enter to play the app,
+you need to log in after this.
+So after logging in, we are going to press play
+and it's going to generate a restaurant
+and generate a restaurant guide.
+So as you can see here, we get,
+here are some great recommendations
+for American burger restaurants
+in Las Vegas, Nevada for dinner.
+And we get different answers right here.
+And then restaurant guide we get,
+I'd be happy to share more details
+about the things I've provided you for.
+So if we have a look at these two things,
+which are the output of my AI apps,
+and you click on Show Configuration,
+you can see that it's using a model.
+So now we're generating something.
+So we're using a model
+and then the prompt is a prompt template.
+So it says recommend a great restaurant in location
+and you see it highlights the inputs on the top left
+for cuisine and for meal.
+And so this is a template made from user inputs.
+And if you look at restaurant guide, again we have,
+tell me more about the restaurants I recommended
+and it's going to use the output of this widget
+to feed into that widget.
+So this is very handy, and if you want to play,
+you could have your apps,
+you can generate your own app,
+you can use Gen AI to actually say,
+"I want to generate an app
+which gives recipe ideas based on the ingredients
+as well as a possible image of the recipe."
+We generate this and automatically,
+PartyRock is going to try to be smart
+and find out the types of widgets we need
+and how these widgets are linked together.
+And so here we go.
+So now the app has been created, so we have the ingredients
+and we need to enter the ingredients separated by a comma.
+Then we'll get a recipe idea
+and then we'll get a recipe image.
+So for example, say we want tomato, cucumber,
+raclette cheese to go crazy, and olives.
+And then we're going to play.
+It's going to generate a recipe
+and then it's going to generate an image
+directly from one of these recipes, which is really cool.
+And again, if you look at this,
+you see that it's using the model Stable Diffusion XL
+to generate our image.
+And, you know, generative AI is a little bit crazy,
+but, of course, here we have cucumbers, olives,
+some onions as well I can see, and some cheese.
+So this is perfect and raclette cheese in the top left.
+Anyway, makes me very happy as a French person.
+So try it out.
+You can add widgets, they have different ones,
+user input, static text, document,
+and then what you want to generate,
+text, image, or chat bots.
+But hopefully it shows you what PartyRock is.
+It's a very good playground to do AI apps
+and it's a good way for you to, for AWS I guess,
+to get people to use Amazon Bedrock
+because it shows the potential
+of using Amazon Bedrock and Amazon Q.
+All right, that's it, I hope you liked it
+and I will see you in the next lecture.

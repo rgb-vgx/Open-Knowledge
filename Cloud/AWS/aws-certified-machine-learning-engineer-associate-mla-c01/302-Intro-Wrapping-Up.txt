@@ -1,0 +1,15 @@
+# 302. Intro: Wrapping Up
+# Section: Wrapping Up
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45320511
+# Caption: en_US (auto)
+
+Oh my gosh, you made it!
+Thank you so much for choosing me and Stefan to prepare for the AWS Certified Machine Learning Engineer
+Associate Exam.
+It's a tough one, but if you've made it this far, your odds for success should be quite a bit better.
+We're just going to wrap up with some tips on the exam itself, what to expect, how to prepare further,
+and how to sign up for it.
+Once you're done, please consider leaving a written review for this course.
+It really helps us in prospective learners as well.
+Good luck on the exam.
+Let's wrap things up right now.

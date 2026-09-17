@@ -1,0 +1,28 @@
+# 130. S3 Replication Notes
+# Section: Amazon S3 Introduction
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/34353008
+# Caption: en_US (manual)
+
+Hey, so just a few notes
+about Amazon S3 Replications.
+So after you enable Replication, as you've seen,
+only new objects are going to be replicated.
+And if you want to replicate existing objects,
+then you need to use the S3 Batch Replication feature.
+So this will replicate the existing objects
+and the objects that have failed Replication,
+and in case you have delete operations,
+you can replicate these delete markers
+from the source bucket to the target bucket.
+It's an optional setting, but if you have a deletion
+with the version ID, they are not replicated,
+so if it's a permanent deletion,
+because you want to avoid malicious deletes happening
+from one bucket to another.
+Finally, there's no chaining of replications.
+So that means that if bucket one
+has replication to bucket two,
+and then, bucket two has replication to bucket three,
+then the objects of bucket one
+are not replicated into the bucket three, so that's it.
+I hope you liked it and I will see you in the next lecture.

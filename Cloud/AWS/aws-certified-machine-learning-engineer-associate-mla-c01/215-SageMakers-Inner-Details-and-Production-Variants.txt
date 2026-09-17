@@ -1,0 +1,189 @@
+# 215. SageMaker's Inner Details and Production Variants
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45286781
+# Caption: en_US (auto)
+
+Let's dive into the final domain of the exam machine learning, implementation and operations.
+And we'll start off by talking about more depth on how SageMaker interacts with Docker containers.
+This is a big part of this domain.
+This is actually going to be kind of a short domain in this course, because we've covered a lot of
+this as we've gone.
+So it's kind of hard to talk about all the different models that come with SageMaker without talking
+at least a little bit about how to deploy them and choose the right instances for them and so forth.
+So in reality, you already know a lot of the implementation and operations domain of the exam.
+We're just going to sort of fill in the blanks of stuff that we haven't covered already, which is why
+this section is rather short.
+But that's good news.
+You're almost done guys.
+Anyway, let's talk a little bit more about Docker and how that interacts with SageMaker.
+So we talked about this at a high level earlier on.
+Basically every machine learning model and deployment within SageMaker needs to be hosted inside of
+a Docker container that is registered with ECR.
+Now, that can include any number of things.
+We could have a pre-built deep learning model that's sitting in a Docker container.
+We can have a pre-built scikit learn or spark ML model that's sitting in a Docker container.
+We can have our own pre-built code built on top of TensorFlow or MXNet or Chainer or PyTorch.
+These are all supported frameworks that you can just build a Docker container from, and just have it
+work within SageMaker pretty much automatically.
+So as we'll see in an example later on, you can actually write a little snippet of TensorFlow code
+and very easily package that up into a model with SageMaker.
+One thing that's worth mentioning here, though, is that TensorFlow does not get distributed across
+multiple machines automatically.
+So if you do need to distribute that training across multiple machines that might have multiple GPUs,
+there's a couple of ways to do that.
+One is using a framework called Horovod or something called parameter servers.
+So these are little bits of trivia and important words that you might want to remember.
+Hint, hint.
+Anyway, Horovod is a way of actually distributing TensorFlow across a fleet.
+And finally, you can also develop your own training or inference code from scratch.
+Or you can take a pre-built image from one of the pre-built algorithms for SageMaker and extend that
+and build upon it, and make your own Docker image based on top of that.
+So this gives you a really flexible model, because all SageMaker expects is a Docker image that conforms
+to some specifications about where its model code is and how it's called.
+And it can be anything.
+Right.
+So any script you can dream up written in any runtime or any language that you want, as long as it's
+in a Docker container and things are in the right place, it can work with SageMaker.
+These containers are all isolated and contain all of their dependencies and resources within them.
+So you can really use any sort of technology you want within SageMaker.
+As long as it's wrapped up in a Docker container, it's really cool stuff.
+Let's make another pretty picture.
+We looked at something similar to this earlier, but it's worth reviewing again.
+So again, a Docker container is created from a Docker image and an image is built from a docker file.
+So the Docker file says how do I put this thing together?
+That resulting image that includes all of your code and resources and whatnot, gets saved into a repository.
+And in the example of using SageMaker, that should be Amazon's Elastic Container Registry or Amazon
+ECR.
+So again let's review this diagram over here.
+So we have Docker images that I've prepared ahead of time in Amazon ECR.
+These can include both inferences and training models.
+It will pluck out that training model from ECR and use that Docker container for training.
+Pulling in training data from S3.
+Those training jobs are all run after deploying those Docker images and allowing you to access that
+S3 training data.
+The resulting trained models are then stored into S3 again, and that S3 model artifact is then made
+accessible to the inference code in the model deployment stage.
+So again, we have a Docker container that contains our inference code that can consume that stored
+model artifacts to actually generate inferences in real time.
+That model is deployed to a fleet of servers, and there are endpoints that will actually expose that
+for runtime usage from your outside application or what have you.
+The actual structure of a training container for your training model looks like this.
+And this is worth remembering guys.
+So basically everything lives under a slash opt slash ML directory within your container.
+Your input should contain your configuration, your hyperparameters and resource configuration files,
+as well as any data which might include channels where that input data is coming from.
+The actual code is worth calling out.
+There's a code subdirectory that should contain the script files that actually run your training code
+itself.
+So the Python script or whatever it is that actually does your training should be deployed to opt ML
+code.
+Okay.
+Remember that.
+And finally the output goes to an output directory.
+Any failure or error messages are expected to go into there.
+The model directory is used for deployment as we'll see here.
+So the deployment container should contain an opt ML model directory.
+And that's where the files associated with your deployment your inference code should live.
+Pretty simple stuff.
+At a higher level, the entire Docker image would look like this.
+So basically you have a working directory that contains Nginx.conf predictor.py.
+Also a server directory that contains the deployment stuff.
+The train subdirectory contains all the training image code stuff and there's also a wsgi.py file.
+Um, okay.
+Let's go into more details about what these all are.
+So nginx.conf that's a configuration file for the nginx front end.
+So basically we're going to be running a web server at deployment time.
+And that's how we configure that web server.
+predictor.py.
+That's the program that implements a flask web server.
+That's the program that actually implements a flask web server for making those predictions at runtime.
+You're going to need to customize that code to actually perform predictions for your application in
+whatever way it works.
+Uh, the server directory, that program in there will be started when the container is started for
+hosting, that file just launches the Gunicorn server, which runs multiple instances of a flask application
+that is defined in your predictor.py script.
+The training directory contains the program that's invoked when you run the container for training.
+So to implement your own training algorithm, you would modify the program that lives in there.
+Again, the structure of that training directory is something we covered earlier when we talked about
+the structure of your training image.
+Finally, wsgi.py is just a small wrapper that's used to invoke your flask application for serving results.
+Now you can have separate training and inference images if you want to, or you can combine them together
+into this structure.
+Either way works.
+So to put it all together, your Docker file might look something like this.
+So we start off with from TensorFlow.
+TensorFlow.
+Well whatever it says that's just going to download the TensorFlow library used to run the Python script.
+So basically we're saying this depends on TensorFlow.
+We're going to use the TensorFlow stuff to actually run this code.
+Pip install SageMaker containers like we talked about before.
+That actually includes the common functionality necessary to create a container that's compatible with
+Amazon On SageMaker, and the copy command here is copying the script to do our training into the spot
+where it's expected to be.
+Like we talked about earlier, that training code needs to reside within opt ML code directory.
+So that's just making sure that our training script is copied into the spot where SageMaker expects
+it to be.
+And finally, we can define environment variables.
+And one of them would be env SageMaker underscore program that allows you to define the specific script
+that actually runs the training.
+So Train.py defines that as the name of the Entrypoint script that is located in the opt ML code folder
+for that container.
+That's the only environmental variable that you must specify when you're using your own container from
+scratch.
+But there are many other environment variables you might want to set as well.
+So in addition to SageMaker programs, some other ones worth looking at are training module and service
+module.
+That's basically where you're going to be loading up the TensorFlow or MXNet or whatever it is.
+Modules.
+There's also some Modeldir.
+That's where the model checkpoints are saved and pushed into S3.
+And then we have SM channels which can be SM channel, train test or validation.
+Those are basically where your train test and validation channels are coming from and what it expects
+to see there.
+And Https stands for hyperparameters.
+So that's how you can define the different hyperparameters that are exposed by your algorithm, which
+in turn can be used by automatic model tuning in SageMaker.
+And there are many more too.
+But you won't need that much detail for the exam.
+A little bit of a code snippet of what it might look like to actually use your own image.
+It's very straightforward.
+You would CD into the docker file.
+This could all be done like within a notebook.
+Even call out to Docker, tell it to build that docker file to whatever name you want to call it, and
+then the code to actually invoke it would be, you know, just from SageMaker estimator, import estimator
+that would invoke an estimator with an image name of whatever you specified.
+So when I built that Docker image above, you see there that I called it foo.
+So here I'm referring to image name foo to say I want to go load up the docker image with this name
+foo, and use that as a estimator within SageMaker.
+I can then call fit on that estimator to actually do the training, and we're done.
+So it's just that simple.
+There's a lot more detail in the SageMaker Developer Guide if you want to dig into it more, but you
+probably don't need a whole lot more for the exam.
+Also, I want to talk about production variance.
+This is an important concept.
+So you can actually test out multiple models in SageMaker on live traffic using production variants.
+So there's a concept where you can have like different versions of your model.
+Let's say you want to like try them out on real traffic and see how they do.
+Not all models can really be evaluated offline effectively.
+Recommender systems come to mind, for example, where accuracy on people's past behavior isn't always
+a good indication of their performance on future unseen behavior.
+So if you want to roll out a new model and test it out without taking a whole lot of risk, you could
+use a production variant to actually separate those two models and run them in parallel for a while
+to measure how they perform against each other.
+So there's something called variant weights.
+This tells SageMaker how to distribute traffic among your different production variants.
+So for example, I might have a new iteration of my model and I could roll it out initially at a 10%
+variant weight.
+That would mean that I would be sending 90% of my traffic to the existing model, and 10% to the new
+model, and I can just start ramping that up, like increase that 10% over time.
+Once I gain more and more confident in its performance.
+And eventually, once I'm sure that this new variant is actually doing better than the older one, I
+could ramp it up to 100% and then discard the older production variant.
+So this allows you to do a B tests and to validate performance in a real world setting.
+Again, offline validation isn't always useful, and it's always risky to launch a new, uh, to launch
+new code in general.
+Right.
+So this gives you a controlled way of rolling out a new model.
+And if it doesn't work out well, some unforeseen problem comes out.
+You can very quickly roll back to the other previous model just by changing those variant weights at
+runtime

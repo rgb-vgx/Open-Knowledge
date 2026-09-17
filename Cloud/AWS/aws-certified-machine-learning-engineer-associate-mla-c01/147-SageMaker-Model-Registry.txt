@@ -1,0 +1,58 @@
+# 147. SageMaker Model Registry
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285793
+# Caption: en_US (auto)
+
+Let's go into a little bit more depth on SageMaker model registry here.
+It's something you definitely need to know about.
+It's just a catalog for your models and a way to manage information about those models, like the version,
+whether they're approved for use or not.
+Kind of like just a fancy database, right?
+So it allows you to associate metadata with your models, whatever you want.
+Again, it's kind of just like a database lookup.
+At the end of the day, it gives you a means of managing approval for a model.
+So if you want to make sure that you're kicking off some model for manual approval before it's deployed
+to production, well, it can keep track of that for you.
+And it can also be a component of actually deploying your models to production.
+So maybe your pipeline for machine learning depends on model registry to check.
+Hey, is this thing actually approved and ready to go or not?
+It can also be a part of your larger continuous integration and continuous deployment system, and it
+can allow you to also share models among different applications.
+That's really the heart of it here.
+So by centralizing your models into one place, into this model registry, you can kind of build up
+this library of models within your organization and share those models across your organization for
+different applications.
+It also has an has integration with SageMaker model cards.
+I don't think we've touched on that in this course, but model cards are just a little, um, just a
+little website, basically a little web page that says, here's the properties of my model.
+Here are its limitations.
+Here's what it's trained on.
+So just sort of higher level governance information about a model.
+So you can point in the model registry where the model card is for this model.
+Again it's just associating metadata with your models and sort of a very simple database that can be
+part of your machine learning pipeline.
+To make it a little bit more real, let's take a look at this example from the AWS blog, where they
+have an example of a larger machine learning pipeline that involves model monitor.
+So step one is to create your model.
+So you have this little training pipeline there where we're pre-processing and training our model.
+And then we create our model.
+At that point we register that model at the number one there.
+That goes into the model registry at the top.
+At that point, we can capture the event that a new model was registered through EventBridge.
+And maybe that kicks off a Lambda function that says, hey, someone needs to approve this new model
+that goes off to the request to approve the model there at number four.
+That goes down to a human approver, which then will either approve or reject it, which then it can
+go back through the API gateway and through Lambda again, and go back to Model Registry to update that
+field in the model registry metadata for that model saying, yes, this is approved, it's ready to
+go.
+At the same time, it might update a parameter store that kicks things off to actually kick off the
+inference pipelines to deploy this model in production.
+So that can actually say, hey, let's go get those inference details and deploy it through SageMaker
+inference pipelines and notify somebody that it's ready to go for both the dev test and production stages
+as well.
+So just an example of how model registry might be a component to manage things like model approval and
+to keep track of basically what's where with your models.
+So that's all model registry is.
+Again, think of it as a fancy database table where you have information about your models that might
+include things like the model card for that model, whether it's been approved and more importantly,
+it's a central registry for all the models in your organization that might be shared by others.

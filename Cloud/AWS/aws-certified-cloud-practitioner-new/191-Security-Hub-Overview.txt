@@ -1,0 +1,76 @@
+# 191. Security Hub Overview
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/24682620
+# Caption: en_US (manual)
+
+So now let's talk about the AWS Security Hub.
+So it's a central security tool
+that is used to manage the security
+across several AWS accounts and automate security checks.
+So this has an integrated dashboard
+that's going to show you the current security
+and compliance status
+that allows you to quickly take actions.
+So it's going to aggregate alerts across different services
+and different partner tools.
+So you're going to get services such as Config,
+GuardDuty, Inspector, Macie, IAM Access Analyzer,
+AWS Systems Manager, AWS Firewall Manager,
+AWS Health, and AWS Partner Solutions,
+and maybe even more,
+I may not change this lecture over time,
+but to give you an idea,
+it just aggregates all these partners tools
+and all these services into one central dashboard,
+one central hub.
+And so for Security Hub to work, first of all,
+you must enable the AWS Config service.
+So if we look at a diagram, just to summarize,
+Security Hub can cover multiple accounts at a time
+and gather findings from Macie, GuardDuty, Inspector,
+Firewall Manager, IAM Access Analyzer,
+Systems Manager, Config, Health,
+and is going to find all the potential issues and findings.
+And thanks to automatic checks,
+you're going to see in your dashboard,
+your Security Hub findings.
+But also anytime there's a security issue
+this is going to generate an event in EventBridge.
+And finally, to investigate the source of these issues
+you can use Amazon Detective
+which is going to allow you to very quickly know
+where the security issues are coming from.
+And so in AWS we can see the Security Hub.
+So as we can see, there's a pricing per check.
+So the first 1000 checks cost you this much
+and then on so on.
+So the more checks you look
+the more pricing you're going to have.
+Then there is ingestion events.
+So the first 10,000 events are free
+but then you have to pay per finding, okay?
+Now you get 30 day trial for Security Hub.
+So I'm not going to enable it
+but I just wanna show you the options.
+And it really shows you here
+that we have these automated security checks
+and the fact that it looks at different services
+such as GuardDuty, Inspector, Macie and others
+to find these security issues
+and then allow you to take actions, okay?
+So if we go to Security Hub and enable the trial
+we'll see that first we need to enable Config
+to make sure that Security Hub can work.
+And then we need to choose the security standards
+we want to adhere to so we can have three different options.
+And finally, the integrations
+based on the services that we have enabled.
+And then you click on Enable Security Hub
+and you'll be good to go.
+But I'm not going to show you anything.
+I'm not gonna have security issues in my accounts
+because I don't really use it,
+but at least I showed you the option
+and you can see the kind of service that it is.
+Okay, I hope you liked it
+and I will see you in the next lecture.

@@ -1,0 +1,61 @@
+# 64. AI Training - Data Integrity
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57863483
+# Caption: en_US (auto)
+
+Let's talk a bit about validating your training data sets for AI models, and we're just going
+to talk about this at a high-level conceptual level here.
+That's the level that we need for this exam.
+Basically your good training data is going to be defined by being both structurally valid
+and semantically trustworthy.
+What do I mean by that?
+So it's got to be the right format.
+You know, when you're training a model, it's going to expect a very specific format for that data.
+You need to make sure you're adhering to that format, and you have to make sure that the
+data you're feeding it makes sense.
+You know, I mean, semantically trustworthy just means that it's correct.
+It's adding value.
+It's not throwing things off, and I'll talk about that a little bit more.
+However, at a very basic level, the tool you're using for pre-training or continued pre-training,
+whatever it is, is probably going to expect a very specific format for the data that you're
+training it with.
+Often, that will be JSON-L with prompt completion fields, and you see that specifically in the
+fine-tuning use case.
+So when you're fine-tuning a model, it's very common to need JSON-L format, which contains
+a prompt paired with an intended high-quality completion.
+So it's just giving it numerous examples of how to respond in an optimal way to a series
+of example prompts, and you got to make sure that data is high-quality, of course, right?
+So if you have any malformed data, missing fields, duplicates, and more importantly,
+contradictory information, mislabeled information, poor quality information, garbage in is garbage out, right?
+So if I'm going to be training my model on bad data, I'm going to get a bad model.
+If you want to get to the root of why hallucinations happen, well, a big part of it is because
+part of the data it was trained on was incorrect.
+And you want to make sure that your data set is representative of your production workload.
+So don't give it irrelevant data to what you're trying to accomplish.
+Make sure you're keeping things focused on what the behavior is that you're trying to
+squeeze out of your model.
+There's also a safety component to it as well.
+So you want to make sure that anything that's unsafe, inappropriate, sensitive, any personally
+identifiable information, anything that violates policy has been stripped out of that training
+content before it goes into training your model, of course, right?
+And doing that's not easy though.
+Like a lot of that's going to require some humans in the loop and kind of going through it by hand.
+There's only so much an algorithm can detect on that stuff for you.
+If you have any poor or inconsistent examples, you're going to end up teaching your model
+the wrong behavior and steering it in the wrong direction.
+For example, if I give a contradictory information about the return window for customer service
+purposes, that's going to lead to bad behavior.
+If I have one pair that says the right answer to what is the return window is you got 30
+days and another one says we don't accept returns, your model is not going to know what to do.
+And it's just going to pick one seemingly at random and lead your customers in the wrong direction.
+Again, this is very hard to catch.
+These are things you need to do.
+So you've got to be doing spot checks on this data.
+You've got to come up with a process for actually screening that data and making sure that it's
+high quality before you trust it to actually train the behavior of your AI models.
+Now there are runtime safeguards like bedrock guardrails for screening out bad stuff once
+you've actually trained the model after the fact.
+But the point here is that you don't want to be putting bad data in the model to begin with.
+So preserve the integrity of the data you're using for training your model and fine tuning
+your model and doing the post training on it.
+It's a very important step that can avoid a lot of pain and workarounds later on.

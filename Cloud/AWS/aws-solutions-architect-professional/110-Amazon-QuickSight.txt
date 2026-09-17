@@ -1,0 +1,102 @@
+# 110. Amazon QuickSight
+# Section: Data Engineering
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34785492
+# Caption: en_US (manual)
+
+Now let's talk about Amazon QuickSight.
+So Amazon QuickSight is a serverless machine powered
+business intelligence service,
+and so when you hear business intelligence,
+that means that you're going to create
+interactive dashboards.
+So this is what QuickSight looks like,
+you can create dashboards
+and these dashboards are connected
+to data sources that you own,
+and therefore you can create these nice visuals.
+So it's fast, it's automatically scalable,
+you can embed it in website,
+and you get a per-session pricing.
+The use cases for QuickSight are going to be
+around business analytics, building visualization,
+performing ad-hoc analysis in the visual fashion,
+to get business insights using data.
+And so you can connect to many data sources
+as we'll see in the next slide,
+such as RDS, Aurora, Athena, Redshift, S3, and so on.
+Now there is something called the SPICE engine,
+you need to remember it,
+it's an in-memory computation engine
+and it only works if you actually import data
+directly into Amazon QuickSight.
+It doesn't work if Amazon QuickSight
+is connected to another database.
+And finally,
+QuickSight has some very nice user level features,
+and so it's possible
+in the Enterprise edition of Amazon QuickSight
+to set up column-level security, CLS,
+to prevent some columns from being displayed for some users
+if they don't have enough access rights.
+So what does QuickSight integrate with?
+Well, you can integrate it with many data sources from AWS,
+for example, your RDS database, or Aurora,
+or Redshift, which is a great data warehousing service,
+or Athena to do ad-hoc queries on Amazon S3,
+or Amazon S3 to actually import data, or OpenSearch,
+or Timestream to visualize your time stream data
+in an optimized fashion.
+You can also integrate with third party data sources
+that are software as a service and supported by QuickSight,
+and the full list is on the QuickSight website,
+but some of them include Salesforce, and also Jira.
+You can also integrate with third party databases
+such as Teradata, or for example,
+an on-premises database that is using
+the JDBC protocol internally.
+And as I said, you can import data sources
+directly into QuickSight,
+such as your Excel files, your CSV file,
+JSON documents, TSV, or the EFS CLF format for log formats.
+And if these data sources are imported
+into Amazon QuickSight,
+then you can leverage the SPICE engine
+to perform in memory computation in a very, very fast way.
+So that's for the integrations,
+and you will very commonly see at the exam
+using QuickSight with Athena
+or QuickSight with Redshift,
+but any of these is possible to be seen.
+Now you have two things in QuickSight,
+you have dashboards and analysis.
+So in QuickSight, you actually have users,
+which is available in the Standard version,
+and groups of users,
+only available in the Enterprise version,
+and these users and groups,
+they only exist within the QuickSight service,
+so they're not equivalent to IAM users.
+IAM users are only used for administration.
+And so you define these users and these groups
+from within QuickSight,
+and then you create a dashboard.
+And a dashboard is a read-only snapshot
+of an analysis so they can share,
+and it will preserve the configuration of the analysis,
+so whatever filters, parameters,
+controls, and sorting options you set on your analysis,
+is going to be preserved and is going to be a dashboard.
+And so an analysis is more complete,
+but you can share either the analysis or the dashboard
+with specific users or groups,
+and to do so, you must first publish,
+for example, your dashboards.
+And then if users have access to the dashboards,
+they can also see the underlying data.
+So in QuickSight,
+you would create you analysis or dashboards,
+and then you would share it with specified users and groups.
+And that's it, you know everything there is to know
+about QuickSight for the exam.
+I hope you liked it,
+and I will see you in the next lecture.

@@ -1,0 +1,131 @@
+# 11. CloudWatch Metrics for EC2
+# Section: EC2 for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512580
+# Caption: en_US (manual)
+
+Okay, this is super important for the exam
+to know how CloudWatch is linked to EC2.
+Super, super important.
+So let's go ahead and see this.
+AWS provides some metric for your EC2 instances
+and AWS will push these metrics for you.
+You have some basic monitoring,
+such as the metrics will be collected
+at five minutes interval,
+but you can enable detailed monitoring,
+in which case these metrics will be collected
+at a one minute interval.
+And these metrics include CPU, network, disc
+and status check metric.
+Remember these four, they're very, very important.
+Then you're able to use custom metrics and custom metrics,
+by definition, they're yours to push, they're custom.
+So the basic resolution
+of your custom metric is one minute,
+but you can go into a high resolution custom metric,
+which is all the way to one second.
+And the custom metrics for EC2 you may want to push,
+well, that includes RAM or application level
+metrics, for example.
+If you do do that then too you have to make sure
+that your EC2 instance does have an IAM role
+that allows it to push metrics to CloudWatch.
+So all the metrics included for EC2, you need to know them.
+So the first metric you need to know is CPU.
+We will get the CPU utilization as a metric
+and also in case we have T2 or T3 instances that do burst,
+then we can get the credit usage for the burst
+and the credit balance.
+For the network, we're able to figure out
+how much network is going in our instance
+and out of our instance.
+For the status check, it's basically checking
+whether or not our instance is healthy.
+We get an instant status,
+which is Amazon checking if the EC2 VM is working
+or a system status,
+which is Amazon checking if the underlying
+hardware is working.
+So these are very important ones.
+These are Amazon health checks,
+so you don't have any controls over that,
+but it basically gives you an idea
+and you need to be able to differentiate
+between your instant status and your system status.
+The last status check is an attached EBS status,
+which is going to check the state
+of any attached EBS volumes.
+Finally, only for instance stores,
+instance store backed EC2 instances,
+we get disc information.
+We'll get the read and write operations
+or bytes for our instant store.
+And finally, RAM is not included in the AWS EC2 metrics.
+This is a common question at the exam.
+They ask you, can you get the RAM from CloudWatch?
+No, you cannot.
+AWS does not push the RAM usage in CloudWatch.
+It is for yours to push.
+Okay, so let's have a look at
+our monitoring metrics for EC2 instance.
+So we are going in this monitoring tab
+and then we can have a look at all the metrics in here,
+which I can add into a cloud dashboard
+to make it a little easier to see.
+So I can create a new dashboard
+and I'll call it EC2 metrics.
+And okay, click on add to dashboard,
+and that's my dashboard name.
+I'll just call it EC2, and click on create.
+Here we go.
+And then add to dashboard.
+So I am in my dashboard from CloudWatch
+and we can have a look at all the metrics.
+So first of all, CPU utilization, we know it.
+So this is something that can be varying
+between zero and 100%,
+and this is a very common metric to monitor.
+Status checks is going to be something we'll see soon,
+which is around how to have a look at if your EC2 instances
+is having a failure on the hardware level
+or the software level,
+and so we can have the metrics on the failure
+by being between zero and one.
+Network in and out is quite obvious,
+which is how much network goes in and out
+of your EC2 instance and number of packets as well.
+Disc read and disc writes look like they're zero
+and it's normal because we have an EBS volume
+attached to our EC2 instance.
+The disc reads and writes metrics
+are going to be seen on the EBS volume itself, okay?
+But if your EC2 instance was an EC2 instance
+with an instance store, that means that the drive
+and the storage is directly physically attached
+to your EC2 instance,
+then you would see these metrics being populated, okay?
+This is something common to know and to be aware of.
+Finally, for CPU credit usage,
+this is going to be seen here
+for burstable type of instances,
+otherwise it will be zero,
+and we can have also a look at the CPU credit balance.
+As you can see, as we're not using
+our EC2 instance right now,
+the CPU credit balance is going up, up, up over time.
+And finally, if you wanted to enable detailed monitoring
+for your EC2 instance, this is how you would do it.
+So you click on monitoring
+and click on manage detailed monitoring
+and you can enable it.
+So this is going to show you graphs
+with a one minute period instead of five.
+So right now, this is a five minute period,
+but we can go into one minute period,
+but you're going to incur extra cost if you do enable
+detailed monitoring, which I will not do.
+Okay?
+So (indistinct) lecture, I hope you liked it,
+and make sure at the end to delete your cloud dashboard.
+So delete this dashboard and you're good to go.
+I will see you in the next lecture.

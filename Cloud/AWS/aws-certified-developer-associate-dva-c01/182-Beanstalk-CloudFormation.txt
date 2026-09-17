@@ -1,0 +1,71 @@
+# 182. Beanstalk & CloudFormation
+# Section: AWS Elastic Beanstalk
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19729930
+# Caption: en_US (manual)
+
+Okay so let's have a look under the hood
+at how Elastic Beanstalk works.
+So under the hood, Beanstalk relies on something
+called CloudFormation, and we'll see CloudFormation
+in this course later on, but as a sneak peak,
+CloudFormation is used to provision other AWS services
+so we have our infrastructure as code.
+So Elastic Beanstalk is using CloudFormation
+as it's basis to do a lot of it's operations.
+So why would I tell you this?
+Well the use case is that using the CloudFormation resources
+in your .ebextensions folder that we just saw before,
+you can provision anything you want.
+So you can provision an ElastiCache, an S3 bucket,
+an DynamoDB table, whatever you want and that you'll
+see in this course.
+So the beautiful thing is that Elastic Beanstalk,
+even though the UI only allows you to configurate
+a few things, with EB extensions and CloudFormation,
+you can configure anything you want in your AWS.
+So let's have a sneak peek into it to see how
+CloudFormation was used during this session.
+So I'm here in Beanstalk and we have
+our application with two environments.
+So now I'm going to go to CloudFormation and show you
+what happens behind the scene.
+So in CloudFormation I can see I have two stacks,
+don't worry about this one,
+I have two stacks called eb-e stack and eb-e stacks
+and so they are different.
+So the first stack is actually, we can have a look here,
+for -en and this one is for -prod.
+So let's make it very simple let's look at the -en one.
+So if I click on the stack, it corresponds to a
+CloudFormation template and you can have a look
+by clicking on template and this would show you
+the entire template.
+Now you don't need to know how to read this right now,
+don't worry we'll learn about it later in this course.
+But the cool thing is that if you go to resources
+it shows you everything this CloudFormation stack
+has created for us.
+So as we can see, it has created an autoscaling group,
+an autoscaling group launch configuration,
+there was a Elastic IP, so EIP.
+There was as well as EC2 security group,
+and there was wait conditions
+that we can simply ignore for now.
+And then if I go to the other stack, so the -prod stack,
+this time they created 16 resources.
+So we have an autoscaling group,
+a launch configuration, a scaling policy, right here,
+another scaling policy, we can simply ignore this.
+So CloudFormation, a CloudWatch alarms, another
+CloudWatch alarm, this is used for the scaling policies.
+And then EC2 security group, another security group.
+And finally and elastic load balancer
+alongside listener rules and a target group.
+So CloudFormation was used behind the scenes
+to provision our Elastic Beanstalks.
+Now we don't need to touch anything in CloudFormation,
+but just so you know using CloudFormation you could deploy
+Elasticache, or DynamoDB, or S3 buckets.
+And so that would allow us to expand our Elastic Beanstalk
+applications to include anything we wanted.
+That's it for this Halil review, I hoped you liked it,

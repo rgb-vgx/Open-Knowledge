@@ -1,0 +1,23 @@
+# 173. AWS Elastic Beanstalk - Section Introduction
+# Section: AWS Elastic Beanstalk
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/12203034
+# Caption: en_US (manual)
+
+So now, we know all the fundamentals,
+and we know how to programmatically access AWS.
+How about we start deploying the applications,
+the right way?
+You may have noticed,
+there was a lot of manual work going on
+in the past sections,
+but in this section, we're going to learn Elastic Beanstalk.
+Elastic Beanstalk will allow us
+to deploy our applications easily,
+in a skeletal way,
+and in a safe way.
+This is actually one of the most difficult exam section,
+and I wanna do it right now,
+because I think you will be strongly empowered
+by knowing it right away.
+So, let's get started,
+and learn how to deploy an application, the right way.

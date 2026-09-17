@@ -1,0 +1,52 @@
+# 26. AMI In Production
+# Section: AMI - Amazon Machine Image
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512790
+# Caption: en_US (manual)
+
+Okay. So just a short theory lecture
+on how to use AMIs in production.
+So there's a way for you to force users to only launch EC2
+instances from pre-approved AMIs,
+and what is a pre-approved AMI? Well,
+it's an AMI that you're going to tag with a specific tag.
+And then when you combine this with an IAM policy,
+then you restrict the user to only launch, for example,
+AMIs that have been tagged with the environment prod.
+So as an example,
+we have a user with the appropriate IAM permissions,
+as you can see, it's a condition that we apply to the user.
+And so now we have two types of AMI within our accounts.
+We have the not approved the AMI, the non-approved AMI,
+which is the ones that don't have tags.
+And the AMI has been approved,
+has been correctly tagged for environment prods.
+Obviously you need to make sure that
+you're also logged down,
+who can add tags to your AMIs.
+But then thanks to this combination of tags and IAM policy,
+while the user is not going to be able to launch EC2
+instance from a not approved AMI and is going to be allowed
+to launch an AMI from an approved, EC2 instance sorry,
+from an approved AMI.
+And that's for number one.
+So this is to prevent AMIs from being launched
+if they're not approved.
+But the second thing is that you can have AWS Config to find
+non-compliant EC2 instances,
+which are EC2 instances that have been launched using
+AMIs that were not approved before.
+So let's take an example, somehow a user managed to find a
+way to launch two EC2 instances,
+one from an approved AMI.
+And one from one that wasn't approved.
+In this case, using config we can write a rule
+and it's going to monitor all the EC2 instances
+and find if these two EC2 instances are complaint or not.
+And the ones are not compliant will be flagged by config,
+and then we can take actions.
+And the ones are compliant will be marked green.
+And we're good to go.
+So that's a short theory lecture,
+but it's a good way to see how you can have a production
+ready set up for your AMIs.
+I will see you in the next lecture.

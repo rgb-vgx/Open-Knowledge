@@ -1,0 +1,115 @@
+# 410. CloudHSM Overview
+# Section: AWS Security & Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM & STS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527564
+# Caption: en_US (manual)
+
+So we have seen KMS for encryption,
+but now let's look at CloudHSM.
+So with KMS, AWS will manage the software for the encryption
+and will have control over the encryption keys.
+But with CloudHSM,
+AWS will provision some encryption hardware.
+It's called an HSM device, so a dedicated hardware,
+which is a hardware security module.
+And then we are going
+to manage our own encryption keys entirely, not AWS.
+So we have full control over the encryption keys.
+The HSM device is going to be set up within the cloud
+of AWS, but it is tamper resistant
+with FIPS 140-2 Level 3 compliance, which means
+that if anyone tries to access your HSM device manually,
+then they're going to be stopped and blocked.
+The CloudHSM device supports both symmetric
+and asymmetric encryption keys.
+So that means that you can have, for example, SSL
+and TLS keys on top of it.
+There is no free tier and to use the CloudHSM device,
+you need to use the client software,
+which is quite complicated and out of scope right now.
+There is an integration
+between Redshift and CloudHSM
+if you wanted to leverage CloudHSM
+for your database encryption and key managements.
+CloudHSM is a really, really good candidate
+if you want to implement SSE-C type
+of encryption on top of S3, for example,
+because you are managing your own encryption keys
+and you are storing them into this CloudHSM.
+So with the CloudHSM, AWS will manage your hardware,
+whereas the service itself can be used on your own.
+The CloudHSM client is something you have to use
+to establish a connection into the CloudHSM service.
+And then you are going to manage the keys overall.
+So the IAM permissions are going to be used
+to do a create, read, update, a delete of an HSM cluster
+at a high level,
+but then you're going to use your CloudHSM software
+to manage the keys and manage the users
+and their permissions to access the keys,
+which is different from KMS
+because in KMS, well, everything is managed using IAM.
+Now, the CloudHSM clusters can have high availability
+and they're spread across multiple AZ.
+So they're HA, and this is super important to understand.
+So you can have two AZs.
+One is going to be replicated from another
+and your HSM client can connect to either.
+So how do we transparently leverage CloudHSM
+within the AWS services encryption?
+Well, there is an integration between CloudHSM and KMS.
+How does that work?
+Well, in KMS, we're going to define a KMS custom key store,
+and that will be CloudHSM.
+And that means we can get CloudHSM encryption for EBS,
+S3, RDS and so on.
+So how does that work?
+Well, we create the CloudHSM cluster,
+and we define a KMS custom key store that is going
+to be connected to our CloudHSM cluster.
+From there, if we create an RDS database instance
+that has an encrypted EBS volume with KMS encryption,
+well, internally this KMS encryption is going
+to be leveraging encryption keys
+within your CloudHSM cluster.
+The benefit of doing this is number one,
+we are actually using our CloudHSM cluster.
+And number two, any API calls made through KMS
+that reaches our cloud HSM cluster is going
+to be logged in CloudTrail.
+So if we compare CloudHSM and KMS,
+the tendency of KMS is multi-tenant,
+whereas for CloudHSM, it's single tenants.
+They both have the same standard.
+The master keys are three kinds on KMS, they're AWS owned,
+AWS managed, and customer managed CMK.
+Whereas for CloudHSM, it's only customer-managed CMK
+because AWS cannot access your HSM device.
+In terms of key type, it is very similar, symmetric,
+asymmetric and digital signing for KMS
+and symmetric, asymmetric and digital sending
+and hashing for CloudHSM.
+In terms of key accessibility, well,
+KMS is accessible in multiple regions,
+but because CloudHSM is deployed in a VPC,
+you can share it across VPCs using VPC for sharing.
+And so that means that it's going to be accessible
+across multiple regions if you wanted to.
+For cryptographic acceleration, well,
+you can set up none on KMS, but with CloudHSM,
+you have SSL and TLS acceleration you can use
+at your load balancer level, or you can use Oracle
+and TDE acceleration as well for your database.
+That is Oracle based.
+For access and authentication, you have IAM for KMS,
+whereas CloudHSM has its own security mechanism
+to manage users and their permissions and their keys.
+And then finally, for high availability,
+while KMS is a managed service and is always available
+and CloudHSM will have multiple HSM devices
+over different availability zones.
+Other capability is CloudTrail and CloudWatch for KMS,
+whereas we have MFS support as well for CloudHSM.
+Finally, KMS is part of the free tier in AWS,
+whereas CloudHSM is not.
+So that's it for CloudHSM, I hope you liked it,
+and I will see you in the next lecture.

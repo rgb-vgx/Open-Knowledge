@@ -1,0 +1,35 @@
+# 41. Amazon Detective
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34785458
+# Caption: en_US (manual)
+
+Okay, so very short lecture
+on Amazon Detective.
+So, when you have all these services
+such as GuardDuty, Macie, and Security Hub
+that are used to identify potential security issues
+or findings, you need to find how these happen
+and get to the root cause.
+And so, sometimes the deeper analysis to isolate
+the root cause can be long and complicated.
+It's a complex process to analyze data
+from different places and link it together.
+It could be quite long
+and when you're dealing with security,
+you want to get to the root cause as quickly as possible
+because there may be a security hole in your architecture.
+And so, this is the purpose of Amazon Detective.
+The name is quite explicit.
+Detective is going to analyze, investigate,
+and quickly identify the root cause of security issues
+or suspicious activities using machine learning
+and graphs in the backend to really allow you
+to quickly get down to where the issue is coming from.
+And to do so, it's going to automatically collect
+and process events from your VPC Flow Logs,
+your CloudTrail trails, and GuardDuty
+to create this unified view.
+And it will, in turn, give you visualizations
+with details and context, so you can get to the root cause.
+So that's it.
+I hope you liked it and I will see you in the next lecture.

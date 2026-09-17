@@ -1,0 +1,140 @@
+# 99. Route 53 - TTL
+# Section: Route 53
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528188
+# Caption: en_US (manual)
+
+Okay, so let's have a look at TTLs.
+So a record TTL is a Time To Live.
+And let's take this example where a client is accessing
+our DNS Route 53 and a web server.
+So we do a DNS request for myapp.example.com,
+and we get an answer from the DNS,
+which is saying, hey, please, this is an A record.
+Here is the IP, and there is a TTL,
+maybe a TTL of 300 seconds.
+So TTL is saying, hey clients, please cache this result
+for the duration of the TTL.
+So for 300 seconds,
+the client is going to cache the results.
+That means that if the client is requesting again
+or accessing the same host name,
+what's going to happen is that
+the client will not issue a query to the DNS system,
+because it already knows the answer,
+because the answer has been cached,
+and we're still within the cache period, so the cache TTL.
+The idea behind this
+is that we don't want to query the DNS too often,
+because we don't expect records to change a lot,
+and so, therefore, using the response it has,
+the client can access our web server
+and do HTTP request and responses.
+So we have, you know, two extreme cases.
+For example, if you set a high TTL of, say, 24 hours,
+then this is going to do a lot less traffic on Route 53,
+because less clients are doing requests,
+because the result are cached for 24 hours,
+and, possibly, while the client will have outdated records.
+If somehow you want to change the record,
+you will need to wait 24 hours
+to make sure that all your clients
+will have the new records in their cache.
+If you said set a low TTL,
+for example, 60 seconds, at the opposite,
+then it's going to do a lot more traffic on your DNS,
+so a lot more dollar you're going to spend,
+because you get price per how many request
+do reach Route 53.
+But the records will be outdated for less time,
+so it's quicker for you to do a record change,
+and it's easier to change records overall.
+So it's up to you, really,
+to see what a good TTL or low TTL is.
+If you plan on changing a record,
+the idea is that sometimes
+you will decrease the TTL for, say, 24 hours,
+and then when you know that all the clients
+have a new TTL that is low,
+then you change the record value
+which gets updated for everyone,
+and then you increase the TTL.
+This is a strategy.
+So the TTL is mandatory for every record
+except the Alias record that we'll see in the next lecture.
+So let's have a look how TTL works in the console.
+So let's have a look at how Time To Live works.
+So let's create a new record,
+and this one is going to be called
+demo.stephanetheteacher.com,
+and the value of it is going to be
+one of the EC2 instances we know.
+So let's take the one in eu-central-1.
+So I'm gonna take this EC2 instance
+and paste the value of it.
+And then for the TTL, we're going to set two minutes.
+So to do so I'm going to click twice on this minute button.
+So the TTL is now 120 seconds.
+So let me create this record.
+And now my record has been created.
+So it is an A record pointing to a specific IP
+at demo.stephanetheteacher.com.
+Now, I want to show you that the record is working,
+but Firefox is not very nice with me.
+So if I try to open this in Firefox
+it's going to give me a problem.
+So this is not something I can fix easily,
+so I'm going to use Google Chrome on the right-hand side
+to show you this.
+So if I do demo.stephanetheteacher.com on Google,
+then automatically it should direct me to, yes,
+my eu-central-1 instance.
+So that means that this record, this A record,
+is fully functioning.
+And I can also make sure of that,
+for example, if I'm using CloudShell.
+So if I clear this and do an nslookup
+on demo.stephanetheteacher.com,
+as you can see, the address is correct.
+And if I do a dig command on this, then we get an answer.
+And there's a cool number that we're showing here,
+so the answer section, there's 115.
+So the idea here, that's because I did do a DNS query.
+Then the record get cached for 120 seconds.
+And if I retype again this dig command right here,
+as you can see the number got down to 98.
+So that means that for 98 seconds,
+actually, I will get the same response,
+because, no matter what,
+this is what's cached on my computer.
+So if I'm very quick
+and I go to this record right here and I edit it,
+so instead of this IP, I want to go to ap-southeast-1,
+so we'll use the first IP in my list and save this.
+So even though this record was being updated, okay,
+if I go into CloudShell and, again, do this dig command,
+as you can see, the insert is still the same as before.
+That's because for 66 more seconds
+this is going to be cached.
+And if I go to Chrome, I think I was fast enough,
+I go to Chrome and refresh this page,
+as you can see, I still have the answer from eu-central-1.
+And this is because, again,
+my record got cached for two minutes.
+So when the cache is expiring, then only then
+my command line interface or my Chrome web browser
+will ask again Route 53 for the value of this record.
+And then, again, will I get the answer
+and will be redirected to this new IP.
+So the best way to check it is just to wait.
+So I'm going to wait maybe one more minute
+and then get back to you.
+Okay, so it's been a minute
+and now if I refresh my web browser,
+as you can see now, I get a different Hello World
+and this time it's from ap-southeast-1b.
+And if I go into my CloudShell and do the same dig command,
+then, as you can see, there's a new TTL, so 120 seconds,
+and there is a new IP right here
+which is the IPO menu server.
+So this was a cool demo of the TTL.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,33 @@
+# 176. RDS Multi AZ – Failover Conditions
+# Section: Databases for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27514072
+# Caption: en_US (manual)
+
+Okay, so just a very,
+very short theory lecture,
+but what are the failover conditions for Multi AZ?
+You need to remember them.
+So the failover will happen from the primary DB
+to the secondary DB
+if there is a failure of the primary DB,
+or if the operating system of your primary DB
+is undergoing some software patching,
+or if your primary DB becomes unreachable
+due to loss of network of connectivity,
+or if you modify your primary DB instance,
+for example, you're changing the instance type,
+or if it's busy and unresponsive,
+if there's an underlying storage failure.
+And you need to remember those, okay?
+Because they can be tested on the exam.
+So just need to make sure that you are on with it.
+But they're quite natural.
+And also, you will have,
+if you have an AZ outage,
+and obviously, it's going to failover
+because it's Multi AZ,
+or if you initiate a manual failover of the DB instance,
+using the option named Reboot with failover.
+So that's it.
+That's all you need to know.
+I will see you in the next lecture.

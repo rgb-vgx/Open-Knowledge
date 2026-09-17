@@ -1,0 +1,187 @@
+# 261. Lambda & Application Load Balancer Hands On
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730418
+# Caption: en_US (manual)
+
+Okay, so let's go ahead
+and create a Lambda function that is going to be integrated
+with our load balancer.
+So for this I'm going to create a Lambda function,
+call it Lambda-alb,
+and for the runtime I will choose Python version three,
+and then I will just click on create function.
+Now, in the meantime,
+I also have to create a load balancer
+for my Lambda function.
+So therefore, let's go ahead and create a load balancer,
+and we'll choose an application, load balancer.
+Let's go through the create process,
+so I'll call this one demo-Lambda-alb.
+It's internet facing of IPv4.
+I'm going to deploy this in three availability zones,
+and for security group,
+I'm going to just create a new security group
+for my ALB,
+just to make sure I have one.
+So DemoLambdaALBSG.
+And for the inbound rule,
+I'm going to just allow HTTP,
+coming from anywhere IPv4.
+Let's create the security group.
+Perfect,
+and let's assign this security group
+into our load balancer.
+Okay, next we allow to listen
+on port 80 for the HTTP protocol.
+And the default action is to send to a target group,
+so we have to create a target group
+that will contain our Lambda function.
+So therefore, when we create this target group,
+we're going to choose Lambda function,
+and this one will be demo-tg-lambda.
+And this target group is accessible
+to application load balancers only.
+So let's go ahead and click on next.
+Next, we need to choose a Lambda function,
+so we'll choose the Lambda-alb we just created,
+and we click on create target group,
+which has now been created,
+so if I refresh this,
+I can choose demo-tg-lambda as my target.
+So this is good.
+Now we can go ahead and create our load balancer
+and view it.
+So while this is getting provisions,
+let's have a look at our Lambda function.
+So if you go into Lambda right now,
+we have a Lambda function with
+some very simple code,
+and that just returns the status 200
+and says hello from Lambda.
+So if we go ahead and test this function
+with a new test event and save this,
+test event, we just have to name it.
+Okay, and we go ahead and test this one.
+We can see, "Hello from Lambda" with a status code of 200.
+So this is good.
+Now let's add a little bit of logging.
+So here I will just have console dot log,
+and then event.
+This is to see what event is going to be passed here.
+So if I deploy first the changes,
+and then test my function as we can see,
+oh, and it's not console dot log of course,
+it is going to be print.
+So print, and then event.
+Let's deploy this function and test it,
+and now we get a hello from Lambda,
+and here we can see
+that the event that was passed is being printed
+to the console.
+And this will be helpful,
+when we want to see the event pass to another function
+from the load balancer.
+So back in the load balancer, let's refresh this,
+and here is the DNS name, and the status is active.
+So if I go and open a new tab and press enter,
+as you can see, this gave me a response of type DNS,
+so if I just go and open this file in a text editor,
+what I get out of it is hello from Lambda.
+So if we go back into our load balancer,
+this is because while we respond with hello from Lambda,
+but what we would like to have this response
+not to be downloaded,
+but instead to be displayed in my web browser.
+So to do so, let's do example Lambda load balancer AWS,
+and we have a documentation called
+using Lambda with the application balancer.
+And this is what the request looks like,
+we'll have a look at it in a second,
+but this is what the documents for the response should be.
+So we need to respond with something like this,
+and this is going to be interpreted correctly
+by my load balancer,
+and this will make sure we receive a proper HTTP response.
+So back in here, I'm going to, instead of returning this,
+I'm going to return the document I just found online.
+So we deploy these changes,
+and test our function
+by going directly in the load balancer,
+refreshing this page,
+and as you can see, I get the hello from Lambda,
+which was coming from my body text right here.
+So this first part is working,
+and if you want to do some examples,
+you can for example, change your text.
+The magic happens because in the headers we set
+the content type to be text html,
+and therefore this is deployed in our web browser,
+and we can change the status code here to be 200, and so on.
+So this is how a Lambda function is properly
+sent in data into our ALB,
+and then our ALB showing the data directly
+from the web browser itself.
+The other thing we can do
+is to go directly into the monitoring tab of our log
+for our Lambda function,
+and we can have a look at the recent request,
+so we can have a look at what is the type of event passed
+from the ALB into the Lambda function.
+So let me click on this one right here, this log stream.
+As we can see in this log stream,
+we have this query right here,
+this JSN document,
+which represents the type of information
+that the ALB will invoke our Lambda function with.
+This is the same thing that you will find
+in the documentation around here.
+This is the request event of the ALB to the Lambda function.
+And this is how you can, for example, look at the path,
+the HTTP method,
+the query string parameters, and so on,
+as well as the headers.
+So talking about the headers,
+as you can see here,
+I have a header where each header has a unique value,
+but if you go into your target group right here
+and you go to attributes,
+you can configure multi-value header,
+and if you allow multi-value header,
+this allows the load balancer
+to have multiple headers on here.
+So here, for example, you could have multiple values
+for the accept, or the host, or the user agent, and so on.
+So this is a feature you would just have to know
+for the load balancer,
+and you would need to modify the Lambda code
+a little bit as well for this to work,
+because right here the headers are sent just as key values,
+but if you enable multi-value header,
+you need to change your response a little bit.
+But I just wanted to show you this option,
+so you know it's a target group type of option.
+So let me, I should disable it right now.
+And that'll be it.
+And I also want to show you
+how this Lambda function was invoked.
+So as you can see, if you go under configuration,
+you see for the triggers
+that we have our application load balancer of course.
+But if we look at the permissions of our function,
+as you can see right here,
+we have a resource based policy statement,
+and this policy right here,
+if we click on the statement ID,
+allows my load balancer to invoke my Lambda function,
+which is great and what we want.
+So this is the condensed form, but you can do view policy,
+and do the actual entire JSN document to do so.
+So as we can see, this allows,
+thanks to the resource-based policy on our Lambda function,
+this allows our ALB to invoke our Lambda function.
+So that's it for this lecture.
+Now all you need to do to clean up
+is just to delete the load balancer,
+and you'll be good to go.
+Okay, that's it.
+I hope you liked it, and I will see you in the next lecture.

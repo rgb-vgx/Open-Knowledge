@@ -1,0 +1,78 @@
+# 311. DynamoDB PartiQL
+# Section: AWS Serverless: DynamoDB
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/31788068
+# Caption: en_US (manual)
+
+So let's quickly talk about PartiQL for DynamoDB,
+which allows you to use a SQL-like syntax
+to manipulate DynamoDB tables.
+So this is what the statements would look like.
+And then from this, you can insert, for example,
+or update or select or delete items from a DynamoDB table.
+So, it's to allow people who are more confident to
+use SQL to still be able to interact with DynamoDB.
+And it also supports Batch operations, if you need to.
+So let me show you how PartiQL works in the console.
+So I am in my tables,
+and the left hand side is the PartiQL editor.
+So let's open some of these tables,
+for example, let's open the user's table and I emptied it
+but I can, for example, add an item real quick,
+so I can have a user_id 123 as well as a new attribute,
+name, Stephan, and this is good.
+And for my other table, the user's post,
+I can again, add some items,
+so user_id 123 post_id 456
+and create the item, as well as for the demo indexes,
+I can create an item
+user_id 123 game times stamp 2022,
+even if it's not really good.
+And then game_id 456.
+Okay. So I have created some items into all my tables,
+and now if you go to the PartiQL editor, we can look,
+for example, at the user's table and I can delete this.
+And I click on users and I do scan table
+and it has a select start from users
+which is a SQL statements.
+And if I run it,
+it says that the statement wasn't well formed.
+So now it is completed and you can see
+that the items result is defined and user_id 123
+that we can also get in adjascent view, if you wanted to
+because this is what would be used
+in your code to deal with it.
+And we can download the results to a CSV.
+Next, for more complicated stuff,
+you can look at the demo indexes table,
+and we can scan this table again,
+so we'll have the look at all the items.
+But you can do more interesting stuff,
+for example, you can query the table,
+and when you query the table, it generates for you
+a statement and it says, solid start from demo indexes,
+where user_id equals, for example,
+1,2,3, and then you can also have an end game
+time stamp equals Sort key value, but this is optional.
+And if you run this, obviously,
+then we get the correct items.
+And so we can start building some pretty
+complicated queries, but because we have a index right here,
+we can actually use this index and scan it.
+So we can do select start from demo indexes
+and then the name of the index.
+And it's going to return the item based on my index.
+And you can do many things,
+you can run insert statements
+although they're not easy to run directly
+from the UI because they're not automatically generated.
+You can also set an item, so you can update a specific item
+and set the attribute value, the Partition key value
+and the Sort key value and so on.
+Or you can, for example,
+drop a specific item and you have a delete from statement.
+So this editor is just for people who want to use SQL
+against DinamoDB.
+And I just want to trigger the feature very briefly.
+Okay. That's it.
+I hope you liked it,
+and I will see you in the next lecture.

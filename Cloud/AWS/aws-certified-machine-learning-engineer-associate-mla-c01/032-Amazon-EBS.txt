@@ -1,0 +1,81 @@
+# 32. Amazon EBS
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45356651
+# Caption: en_US (auto)
+
+Welcome to this section where we will look at the different storage options for EC2 instances.
+So first the most important ones are going to be EBS volumes.
+So let's define what they are.
+And EBS volume stands for Elastic Block Store.
+It's a network drive that you can attach to your instances while they run.
+And we've been using them without even knowing.
+So we this EBS volumes allow us to persist data even after the instance is terminated.
+And so that's the whole purpose.
+We can recreate an instance and mount the same EBS volume from before, and we will get back our data.
+That is very helpful.
+So these EBS volumes at the CCP level can only be mounted to one instance at a time.
+Okay.
+And when you create an EBS volume it is bound to a specific availability zone.
+That means that you cannot have an EBS volume in created in, for example, US East one attached to
+an instance in US east one b.
+We'll see this in the diagram in a second.
+So how do you think of EBS volumes.
+Well you can think of them as network USB sticks.
+So it's a USB stick that you can take from a computer and put it in another computer, but you actually
+don't physically put it in a computer.
+It's attached through the network.
+Now let's look at it.
+So EBS volumes are network drive.
+As I said it's not a physical drive okay.
+So to communicate between the instance and the EBS volume it will be using the network.
+And because the network is used there may be a bit of latency from one computer to reach to another
+server.
+Now EBS volumes, because they are a network drive, they can be detached from an EC2 instance and attached
+to another one very quickly.
+And that makes it super handy when you want to do failovers.
+For example, EBS volumes are locked to a specific availability zones.
+That means that, as I said, if it's created in Us-east-1, it cannot be attached to Us-east-1.
+But we will see in this section that if we do a snapshot, then we are able to move a volume across
+from different availability zones.
+And finally it's a volume.
+So you have to provision capacity in advance.
+So you need to say how many gigabytes you want in advance.
+And the IOPs which is I o operations per second.
+And you're basically defining how you want your EBS volume to perform.
+You're going to get billed for that provisioned capacity.
+And you can increase the capacity over time if you want to have better performance or more size.
+So as a diagram, what does it look like?
+Well we have usd1 a we have one EC2 instance.
+And we can attach for example one EBS volume to that EC2 instance.
+If we create another EC2 instance, as I said, an EBS volume cannot be attached to two instances at
+a time at the certified cloud practitioner level.
+And therefore, what I want to say is that this EC2 instance needs to have its own EBS volume attached
+to it, but it is very possible for us to have two EBS volumes attached to one instance.
+Think of it as two network USB sticks into one machine.
+That makes a lot of sense.
+Now EBS volumes are linked to an availability zone.
+So as you can see, all this diagram has been so far using US East one.
+So if you wanted to have other EBS volumes in another AZ, then you would need to create this separately
+in the other availability zone.
+So just the same way that your EC2 instances are bound to an AZ, so are the EBS volumes.
+Finally, it is possible for us to create EBS volumes and leave them unattached.
+They don't need to be necessarily attached to an EC2 instance.
+They can be attached on demand and that makes it very, very powerful.
+Finally, when we go ahead and create EBS volumes, uh, through EC2 instances, there is this thing
+called a delete on termination attribute.
+And this can come up in the exam.
+So if you look at this when we create an EBS volume in the console, when we create an EC2 instance,
+there is the second to last column called delete on termination.
+And by default it is ticked for the root volume and not ticked for a new EBS volume.
+So this controls the EBS behavior when an EC2 instance is being terminated.
+So by default, as you can see, the EBS volume is deleted alongside the instance being terminated.
+So it's enabled.
+And by default any other attached EBS volume is not deleted because it's disabled by default.
+But obviously, as we can see in this UI, we can control if you want to enable or disable delete on
+termination.
+And so use case for.
+It would be for example that if you want to preserve the root volume when an instance is terminated,
+for example to save some data, then you can disable delete on termination for the root volume and you'll
+be good to go.
+And that could be an exam scenario at the exam.
+So I hope you liked it and I will see you in the next lecture.

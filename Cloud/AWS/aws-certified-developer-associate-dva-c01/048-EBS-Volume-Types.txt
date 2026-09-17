@@ -1,0 +1,124 @@
+# 48. EBS Volume Types
+# Section: EC2 Instance Storage
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26100964
+# Caption: en_US (manual)
+
+So, now, let's talk about EBS volumes
+and their different volume types.
+They come in six different types today,
+and we can group them in several categories.
+The first one is gp2, gp3,
+which is a general purpose SSD volume
+that will balance price and performance
+for a wide variety of workloads, and this is something
+we've been using so far in this course.
+Then we have io1 and io2 Block Express.
+They're highest-performance SSD volumes
+that will be used for mission-critical low-latency
+and high-throughput workloads.
+Then we have st1 volumes,
+and they're low cost HDD volume
+designed for frequently accessed
+throughput intensive workloads.
+We have sc1 volume, which are going to be
+the lowest cost HDD volume, and it will be designed
+for less frequently accessed workloads.
+Now, how do you define an EBS volume?
+Well, you can have several factors, for example, size,
+throughput, and IOPS, which means I/O operations per second,
+and, obviously, when in doubt,
+always consult the documentation.
+Now, for your EC2 instances,
+only gp2 and gp3 and io1 and io2
+can be used as boot volumes.
+That means where the root OS is going to be running.
+So, now, let's go do a deeper dive
+onto gp2, gp3, io1 io2, and the other ones,
+but gp2, the general purpose and the provisioned IOPS
+are going to be the most important for your exam.
+So gp2 is cost effective storage with low-latency,
+and you can use it for system boot volumes,
+virtual desktops, development and test environments.
+The size can vary between one gigabytes to 16 terabytes,
+and so we have differences between gp2 and gp3.
+Gp3 is the newer generation of volumes.
+So gp3 gives you a baseline of 3000 IOPS
+and a throughput of 125 megabytes per second,
+and then we can increase IOPS up to 16,000
+and throughput up to 1,000 megabytes
+per second independently, okay, so they're not linked.
+For gp2, this is the older version,
+there're small gp2 volumes that can burst up to 3,000 IOPS,
+and then the size of the volume and the IOPS are linked.
+That means that if you increase the IOPS,
+if you increase the number of gigabytes on your volume,
+then you're going to get three more IOPS
+up to 16,000 IOPS,
+and so that means that if you have 5,334 gigabytes,
+then you will have 16,000 IOPS, and you'll maxed it out.
+So what do you remember from this slide?
+You remember that in gp2, gp3,
+this is for cost-effective storage latency,
+and then gp3, you can independently set the IOPS
+and the throughput, whereas for gp2,
+they're linked together.
+So, now, let's talk about provisioned IOPS volumes.
+So they're used for critical business applications
+that need to sustain IOPS performance
+or applications that need a lot of IOPS,
+for example, more than 16,000.
+So from an exam perspective,
+whenever you see, for example, a database workload
+that is very sensitive to storage performance
+and consistency, then the provisioned volumes
+are going to be great.
+So we have the io1 type of volume
+between four and 16 terabytes,
+and the max IOPS you can provision, so the max PIOPS,
+is going to be around 64,000 for natural EC2 instances
+and 32,000 for the other kind of instances,
+and because we have an io1 type of volume,
+we can increase the provisioned IOPS
+independently from the storage size.
+If we consider the io2 block express type of volume,
+you can go up to 64 terabytes of data.
+You get sub-millisecond latency,
+and you get a lot of max IOPS, such as 256,000
+with an IOPS to gigabyte ratio of 1,000 per one.
+So this is definitely
+a very high performance I/O type of volume,
+and on top of this, the provisioned IOPS volumes
+that we'll see in the next lectures
+support the EBS multi-attach feature.
+So, now, let's quickly touch upon st1 and sc1.
+So they cannot be a boot volumes.
+This is only for the previous types of volumes.
+You can get the size up to 16 terabytes,
+and we get two kinds of volumes here.
+We have the throughput optimized HDD, so st1,
+which is great for big data,
+data warehousing, and log processing,
+which gives you a max throughput of 500 megabytes per second
+and a max IOPS of 500,
+and then for cold HDD, so sc1, this is for archive data,
+so data that is infrequently accessed,
+and this is when you would use it
+when you need to have the lowest possible cost.
+Here, the max throughput is 250 megabytes per second,
+and the max IOPS is 250 as well.
+Now, you don't have to remember
+all these details going into the exam.
+You just need to understand the differences
+at a high level of all these volumes.
+So the general purpose SSD versus the provisioned IOPS SSD,
+in case you need a database, versus some st1 and sc1,
+in case you need to have high throughput and lowest cost,
+and so you can find a summary of all I said
+in this link right here, okay,
+which is a screenshot I just took you.
+So don't need to remember the details again,
+but, remember, that if you want to get, also,
+over 32,000 IOPS, you need EC2 Nitro with io1 or io2,
+and that will be it for this lecture.
+So I hope you liked it,
+and I will see you in the next lecture.

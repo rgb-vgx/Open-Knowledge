@@ -1,0 +1,45 @@
+# 235. AppStream 2.0 Overview
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/24682648
+# Caption: en_US (manual)
+
+Now let's talk about Amazon AppStream 2.0.
+So it is a desktop application streaming service.
+So it's very different from Workspaces,
+and I'll give you the differences right after.
+But so the idea is that you want
+to stream an application to any computer
+without acquiring and provisioning infrastructure.
+And the application itself is going to be accessible
+and delivered from within a web browser.
+So here is a very concrete example.
+Say you want to have the Blender application
+to create the 3D models directly from within a web browser,
+you can with Amazon AppStream.
+So it is application-focused,
+and they're delivered through your web browser.
+But as you can see in the screen,
+you could also use Eclipse, or Firefox,
+or whatever, OpenOffice application directly
+from within your web browser.
+So how does that work versus WorkSpaces?
+Well, WorkSpaces is to give you a full VDI
+and a full Windows desktop or Linux desktop.
+So you can launch as many applications as you want
+within your desktop,
+and you have to connect directly
+using your remote desktop application, okay?
+The WorkSpaces are on demand, or they're always on.
+Whereas with AppStreams 2.0,
+you're going to stream a very specific desktop application
+directly into your web browser,
+so there is no need to connect
+to a virtual desktop in the cloud.
+And it works for any device that will have a web browser,
+so it has more compatibility.
+And you're allowed to configure an instance type
+per application. So for example, you were saying,
+"Hey, for this application, like Photoshop,
+I need more CPU, more RAM and more GPU."
+So, hopefully, they're different to you in your mind.
+So that's it, I will see you at the next lecture.

@@ -1,0 +1,41 @@
+# 128. CodeArtifact Overview
+# Section: Deployments & Managing Infrastructure at Scale
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/24682568
+# Caption: en_US (manual)
+
+So now let's talk about AWS CodeArtifact.
+So software packages the developer creates depends usually
+on each other to be built,
+and so there's like an architecture of software packages.
+And so it's called also code dependencies.
+And so to store and retrieve these dependencies,
+it's called artifact management.
+And so traditionally,
+you need to set up your own artifact management system
+maybe on Amazon S3
+or using some custom software on EC2 instances,
+and that may be complicated.
+So AWS came up with CodeArtifact, which is a secure,
+scalable and cost-effective artifact management software,
+service for software development, sorry.
+And so what that means is that now,
+instead of setting up your own infrastructure,
+you can just use CodeArtifact,
+and all the common dependency management tools
+that developers use, such as Maven, Gradle, npm,
+yarn, twine, pip, and NuGet,
+can just talk to CodeArtifact
+to store and retrieve these code dependencies.
+So your developers now have a place by default
+that's secure to store and retrieve these dependencies,
+and that means that once you push your code to CodeCommit
+and CodeBuild we'll build it, then CodeBuild
+can also retrieve the dependencies directly
+from CodeArtifact.
+So from an exam perspective,
+CodeArtifact is going to be very helpful
+if your team needs a artifact management system
+or a place to store their code dependencies.
+So that's it.
+I hope you liked it,
+and I will see you in the next lecture.

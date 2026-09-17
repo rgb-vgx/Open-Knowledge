@@ -1,0 +1,105 @@
+# 11. AWS Control Tower
+# Section: Identity & Federation
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30990692
+# Caption: en_US (manual)
+
+Now let's look at AWS Control Tower.
+So it's an easy way for you to set up
+and govern a secure and compliant
+multi-account AWS environments based on best practices.
+So out of it, you're going to get
+your environment automated in just a few clicks.
+You're going to have ongoing policy management
+using guardrails and we see this in this lecture.
+We're going to detect policy violations
+and remediate them automatically.
+And we can monitor compliance
+through an interactive dashboard.
+So Control Tower is a way for you to really automate
+best practice multi-accounts
+and it runs on top of AWS organizations.
+So it's going to set up an organization for you
+and then organize these accounts and implement
+automatically the service control policies you need.
+So out of it there is the account factory
+and since you automate account provisioning and deployments
+and it allows you to create pre-approved baseline
+and configuration options for all the accounts
+in your organization, such as, for example,
+configuring the default VPC, configuring the subnets,
+the regions and so on.
+And to do so is going to use the underlying service
+called the AWS Service Catalog
+to provision these new accounts.
+So let's have a look in where an account factor
+will be very helpful.
+So we have an cloud computing environments
+and then we have a data center
+with an ADFS and an active directory.
+And now we are going to establish a VPN
+or direct connect connection
+between the cloud and the corporate data center.
+And so therefore when we use Control Tower
+and a lending zone and we create accounts
+for account factory,
+then at the center of it is going to be IAM Identity Center.
+And we can set up in different ways.
+But if you wanted to integrate
+with Microsoft Active Directory
+on your corporate data center
+then you would create an AWS managed Microsoft AD,
+which would be the source
+of notification for your IAM Identity Center.
+And then you would create a two-way trust
+between active directory
+on your corporate data center and AWS.
+From there, any accounts created through your landing zone
+and through account factory will be properly
+configured to leverage authentication
+through IAM ID Center and therefore use underlyingly
+the active directory you have in the cloud
+and the one you have also on your corporate data center.
+Now there's another thing
+with Control Tower called guardrails.
+And this is used to detect and remediate policy violations.
+So it's going to give you ongoing governance.
+And then you have two kinds of guardrails.
+You have preventive guardrails or use SCPs.
+And this is, for example, to have an action
+to disable or disallow the creation
+of access keys from the root user.
+That's one way.
+Or detective where you want to give
+all permissions to your accounts,
+but then you use config to detect, for example,
+whether or not MFA is enabled for the root user and so on.
+And config will be very helpful
+because it gives you compliance
+or non-compliance of resources.
+And so here's an example.
+We, for example, want to see which resources are untagged.
+So we have a detective guardrail in Control Tower
+using config and it's going to monitor
+for untagged resources in your member accounts
+as part of your organization is going to trigger
+if it's noncompliance and SNS topic,
+which can notify an admin, maybe invoke Lambda function
+and that Lambda function itself can remediate
+to this and add tag where needed.
+So there are a few guardrail levels for Control Tower.
+There is the mandatory guardrail,
+which is automatically enabled
+and enforced by AWS Control Tower.
+So for example, you want to disallow
+public read access to the log archive accounts
+and this is mandatory.
+Strongly recommended, which is based on AWS practices.
+And for example, you wanna say you want to enable
+EBS volumes attached to EC2 instances.
+And then you have elective guardrails,
+which is commonly used by enterprises.
+This is optional as well, for example,
+to disallow delete actions without MFA in S3 buckets.
+Okay, so that's it for Control Tower.
+I hope you liked it.
+And I will see you in the next lecture.

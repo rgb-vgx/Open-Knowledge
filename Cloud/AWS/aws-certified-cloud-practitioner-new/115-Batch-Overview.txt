@@ -1,0 +1,86 @@
+# 115. Batch Overview
+# Section: Other Compute Services: ECS, Lambda, Batch, Lightsail
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20515556
+# Caption: en_US (manual)
+
+So now let's talk about a service
+that is named after what it does.
+It is AWS Batch.
+So Batch is a fully managed Batch processing service
+that can allow you to do Batch processing at any scale.
+And with the Batch service,
+you can efficiently run hundreds
+of thousands of computing Batch jobs
+on AWS very easily.
+So what is a Batch job?
+Well, a Batch job is a job that has a start and an end.
+And that is opposed to,
+say, a continuous or a streaming job
+that really doesn't ever end.
+It's always running.
+But a Batch job, say for example,
+starts at 1:00 a.m. and finishes at 3:00 a.m.
+So a Batch job has a point of time when it happens.
+And so the Batch service
+will dynamically launch EC2 instances
+or Spot instances to accommodate with the load
+that you have to run these Batch jobs.
+So Batch will provision the right amount of compute
+and memory for you to deal with your Batch queue,
+and you just submit
+or schedule Batch jobs into that Batch queue
+and the Batch service does the rest.
+Now, you define a Batch job using a Docker image,
+and then you can run it on either ECS, EKS,
+or the Fargate service.
+And this is going to be very helpful to use Batch
+to run these Batch jobs.
+And because it automatically scales the right number
+of EC2 instances
+or Spot instances to do these jobs,
+then you get lots of cost optimizations
+and you focus a lot less on the infrastructure.
+You just focus on your Batch jobs.
+So this should be more than enough for going to the exam.
+But I just wanna show you a small diagram that I made.
+So for example, say we wanted to process images submitted
+by users into Amazon S3 in a Batch way.
+So image will be put into Amazon S3,
+and this would trigger a Batch job.
+And so Batch would automatically have an ECS cluster made
+of EC2 instances or Spot instances.
+And Batch would make sure that you have the right amount
+of instances to accommodate with a load
+of Batch jobs you have in the Batch queue.
+And then these instances will be running your Docker images
+that will be doing your job,
+and then maybe that job will be
+to insert the processed object.
+Maybe it's a filter on top
+of the image into another Amazon S3 buckets.
+So the question you may have is what is the difference
+between Batch and Lambda because it looks similar?
+So Lambda has a time limit,
+it's 15 minutes and you only get access
+to a few programming languages on top of it.
+You have limited temporary dis space if you want
+to run your jobs,
+and it's going to be serverless,
+whereas Batch is very different.
+So Batch has no time limit
+because it relies on EC2 instances.
+It's any runtime that you want as long as you package it
+as a Docker image.
+And for storage, you rely on the storage that comes
+with an EC2 instance.
+So it could be an EBS volume
+or an EC2 instance store for desk space,
+which can be a lot more than for Lambda functions.
+And then finally, Batch is not a serverless service,
+it's a managed service, but it relies on actual EC2
+instances being created.
+But these EC2 instances are managed by AWS,
+so we don't need
+to worry about the auto-scaling and so on.
+So I hope that was helpful
+and I will see you in the next lecture.

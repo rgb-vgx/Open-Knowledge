@@ -1,0 +1,203 @@
+# 242. X-Ray Hands On
+# Section: AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrail
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851360
+# Caption: en_US (manual)
+
+So let's practice using X-Ray.
+And for this I'm gonna go into the CloudWatch console.
+And it turns out that the X-Ray console
+is now in the CloudWatch console.
+So you can see it on the left hand side under service map.
+Currently we see nothing, but we'll see something soon.
+That's because it's better to have X-Ray with the metrics
+your logs and your alarms all in one place.
+Okay, so if we wanted to have some data in X-Ray
+we need to set up a demo app
+but it turns out that, well, the demo app
+as per my trials and errors, doesn't work in AWS.
+So therefore I've created my own demo app
+that is a modification of what AWS has created.
+And we'll deploy this on CloudFormation.
+So you go to CloudFormation and you create a stack.
+And the stack we're going to use in here
+is the stack that's under the X-Ray folder
+called EB Javas Scorekeep X-Ray simplified.
+This is a simplified template from AWS.
+So we're going to upload a template file
+and choose the EB Javas Scorekeep X-Ray simplified.
+So the stack name is going to be called Scorekeep X-Ray.
+And then you scroll down, you leave everything as default
+except at the very bottom three things.
+So for subnet one, you're going to choose the first subnet.
+For subnet ID two, you choose the second subnet.
+And finally, for VPCID, you choose the VPC right here.
+And the reason we do so
+is that this is we indicate to the templates
+where we want to deploy our resources.
+So click on next, then click on next
+and then acknowledge and submit.
+And this is going to create
+a CloudFormation template for us.
+And if you have a look at it,
+this CloudFormation template actually deploys
+an ECS cluster.
+And then we're going to have a front-end API
+a front-end image, sorry, a backend API
+all using X-Ray so that we see data in the X-Ray folder
+and then it's going to be running on the T2 or T3 micro.
+Okay, so this is good.
+Now let's go in here and wait for this to be fully done.
+Okay, so my stack is now fully deployed
+and if I go into resources
+I can see all the things that have been created
+as part of this confirmation templates.
+So we can see, for example, an ECS execution role
+ASG a game table, which is DynamoDB and so on.
+So how do we use this web application.
+Well, you go to outputs, refresh this
+and then we have the loaded balancer.
+You are over here that you just open in your new page.
+And then you should have this kind of UI.
+So I'm going to leave the session as games.
+I'm going to leave this to random and click on create.
+Here we have to create a game name.
+So I'm going to create a Sample Game
+and then the rules of it is going to be Tic Tac Toe.
+And then click on create.
+And now we can view the traces recession
+but you click on this.
+This is going to take you to the old X-Ray console,
+which is right here.
+And as you can see there's a new X-Ray console,
+experience available.
+That is the one that I'm showing you right here.
+So for now, let's just keep on playing.
+So let's click on this game and click on play.
+And here we have a classic game of Tic Tac Toe.
+So you just click wherever you want.
+So here, here, here.
+And then, oh, you see there's a line.
+So you'll see in a second that X has won, so X wins.
+So yes, we have done this entire game
+and we could go back and play more games.
+What's going to happen is that as we play the games
+this is going to send traces into X-Ray.
+And so if I go into X-Ray right here
+and look at my service map, which is the first part.
+So I'm going to zoom out a little bit
+just for this ones.
+So this is my service map,
+and this shows the dependencies of all my components in AWS
+and how they relate towards the API calls
+that have been made.
+And as you can see, we have an ECS container right here.
+This is what's representing it.
+And then we also have a DynamoDB table.
+We have another DynamoDB table.
+So we have two of them.
+We have an SNS.
+And you see right now it's a bit orange
+is because this is an error and we'll have a look at it.
+We also have a session table
+we have a state table, an SNS topic, and another table.
+So we have so many DynamoDB tables and so on.
+And this is the service map.
+So you can imagine as you have many microservices
+and all of them making API calls to each other
+if they're all instrumented with X-Ray
+then you will start seeing the dependencies
+between all these services.
+And on top of it, in case there is an error
+this will be highlighted right here.
+So if we click on this, for example
+we can have a look at the latency.
+So we see the average latency and so on over time
+the number of requests over time, number of faults
+and the response time distribution if we want it to.
+And as we have a look at this, if I click on here
+as you can see here, it says error 100% to SNS.
+So it looks like that SNS is getting some errors.
+And so what I can do is that I can analyze these traces
+by clicking on view traces.
+So now we have these, this is the traces console
+and this is where we can start to query some traces
+so we can run a query and view what's happening.
+But currently we don't have any data.
+So instead I'm going to do is just run a query with nothing.
+And as you can see, we have 21 different traces.
+So everything looks good.
+And what's going to happen
+is that you can filter them by note.
+So figure out which ones are going to be important to you.
+So maybe you just wanna look at traces
+related to the ECS container
+or to this score, keep game table and so on.
+So you can start to build your query.
+As you can see, if I only want to look at score keep game
+then I can add to query.
+And this is going to populate my trace query right here.
+And I can run my query and instead of 21, I have 10 traces.
+And then on top of it, now half this,
+I can look at like the response graphs in terms of latency.
+So it looks like most of my requests
+are under 200 milliseconds
+but there has been one request at over 500 milliseconds.
+So again, it really depends on
+what you want to get out of it
+but this could be some good indications
+and help you look into, for example
+this one request right here that was slow.
+And we can have a look and understand.
+So if we look at the duration, this is probably this one.
+So if you click on it now
+you have details about a specific trace.
+And so this trace is going to show you
+the trace map just for that once.
+So as you can see, we have
+a little bit less information in here
+because this trace was using only the ECS container
+and four DynamoDB tables.
+And if you scroll down now
+you see the actual breakdown of the request
+based on the different events that happens.
+And so you can see
+that this post right here to this URL
+actually triggered a lot of API calls to DynamoDB.
+So first get item on score, keep game
+then get item on score clip states and so on.
+And you can see the latency, how long each take and so on.
+So this gives you some information around your data.
+And of course as you click on it,
+then you're going to get some segment details information
+to look whether or not you had errors,
+to look the resources, the annotations, if anything,
+and the metadata.
+So you can get a lot of information
+around what failed and what didn't fail.
+And of course, this is only relevant
+when there is a failure for analyzing the failures
+but this gives you really good latency information.
+And if you had CloudHSM logs enabled
+then you could also see the corresponding logs
+for that specific trace
+which makes X-Ray really, really, really powerful.
+So that's it.
+That's what I want you to remember for X-Ray.
+Now in the state of things,
+right now X-Ray does not have all the features
+from the previous console
+so we only have service map and traces.
+But if you're go in here in the X-Ray console
+as you can see, we have configurations
+such as sampling, encryption, and groups
+which are don't appear yet in this console.
+So for now I may use this console
+as well in the future videos.
+Just know that X-Ray and you're good to go.
+And finally, just to be clear,
+you need to delete the stack
+so that it doesn't leave it running.
+So you can just delete it, call the score, keep X-Ray
+delete the stack, and you're good to go.
+All right, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

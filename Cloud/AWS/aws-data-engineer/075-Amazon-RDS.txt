@@ -1,0 +1,166 @@
+# 75. Amazon RDS
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40355976
+# Caption: en_US (auto)
+
+Instructor: Let's talk briefly
+about Amazon RDS,
+the Relational Database Service.
+It's not really relevant to big data.
+It's really more for small data,
+but it will come up on the exam
+and you need to know what it is usually sort
+of an example of what not to do,
+or maybe an example
+of how to import your RDS data
+into a larger big data system.
+What is RDS?
+Well, it is a hosted relational database,
+and that can be any
+of the following database types.
+Amazon Aurora, which we'll talk about shortly.
+You can also host a MySQL database,
+a PostgreSQL database, MariaDB,
+which is basically an open source version
+of MySQL, Oracle, or Microsoft SQL Server.
+So it's a way to just have AWS host your own
+little database host so you don't have to worry
+about maintaining that database host yourself,
+which as we all know,
+being a DBA is not always a fun thing,
+kind of a handy thing.
+But it's not for big data.
+Like I said, it might appear in the exam
+as an example of what not to use
+for a big data problem, or in the context
+of migrating from RDS into Redshift
+or something like that.
+It's made for smaller needs
+where you can get away
+with a single database host and store all
+of your data in there.
+For example, I use RDS and Amazon Aurora
+for backing up my websites.
+So for WordPress, it's using RDS
+as its backing store for that.
+A good time as any to talk about ACID compliance.
+This comes up frequently in the world
+of relational databases in general,
+and all of the RDS databases
+offer full ACID compliance.
+So if you do need a database
+that meets these requirements,
+RDS can be a solution provided
+that you don't need massive data sets
+that can't fit on a single host.
+Now, under the hood, it might actually be using
+more than one host.
+That's all kind of a black box to us,
+but it still makes sense to think of RDS
+as more of a small data solution.
+ACID anyway stands
+for Atomic, Consistent, Isolated and Durable.
+And just a little refresher here for you guys.
+So atomicity ensures that either the transaction
+as a whole is successfully executed,
+or if part of a transaction fails,
+then the entire transaction is invalidated.
+So if you're sending a transaction
+that does more than one thing,
+if any bit of that fails,
+the entire transaction gets discarded.
+Consistency ensures that the data written
+to the database as part of the transaction
+must adhere to all defined rules
+and restrictions, including constraints,
+cascades and triggers.
+Isolation ensures that each transaction
+is independent unto itself, and this is critical
+in achieving concurrency control.
+Finally, durability ensures that all
+of the changes made to the database be permanent
+once a transaction is successfully completed.
+Let's talk a bit about Amazon Aurora,
+which is another choice for RDS.
+It provides support for MySQL
+and PostgreSQL databases.
+So for example, if you wanted
+to back your own WordPress site
+or something with Amazon Aurora,
+you could do that and it would just look
+like MySQL to WordPress as far as it's concerned.
+So it's a hosted alternative
+for MySQL and PostgreSQL.
+And according to the marketing speak
+from Amazon Web Services,
+it's up to five times faster than MySQL
+and three times faster than PostgreSQL.
+Of course, your mileage may vary.
+Actually realizing those exact gains
+may not be possible.
+That's kind of marketing speak, but it is faster.
+It's also cheap.
+It can be up to 1/10th of the cost
+of commercial databases.
+Sort of an unfair comparison there though,
+because MySQL is not a commercial database, right?
+So they're basically saying,
+compared to getting Oracle
+or something like that,
+it's gonna be a lot cheaper,
+but using just open source MySQL,
+it would be a lot cheaper as well.
+The current limit for storage is up
+to 128 terabytes per database volume.
+So note that the storage is decoupled
+from the actual instance for Aurora,
+and it also offers up to 15 read replicas.
+So if you need higher performance,
+you can use read replicas to gain faster,
+more distributed, scalable access
+to your underlying data.
+That's a good feature.
+And that also decreases the replication time
+down to milliseconds.
+So that's a handy thing too.
+It also offers continuous backup to S3,
+so you never have to worry
+about losing your data,
+and it also offers replication across regions
+and across availability zones.
+So you can replicate your data
+all over the world, however you want to.
+It also offers a newer,
+I should say, service, called Aurora Serverless.
+So if you don't want to dedicate hardware to it
+and pay for that hardware all month long,
+if you have more dynamic, inconsistent traffic
+to your database, Aurora Serverless
+might be a better choice for you.
+That offers automatic scaling with your traffic
+as opposed to just paying for a server,
+a database host sitting there
+all the time waiting for you
+that may or may not be getting used.
+But if you have a use case where you're hitting
+that database pretty consistently 24X7,
+you're probably better off
+with a dedicated database instance.
+But you have the choice with Aurora,
+you can have your own database.
+But you do have the choice with Aurora.
+You can either use your own
+dedicated database host
+or you can use Aurora Serverless
+and have that capacity scale up automatically.
+As far as security goes with Aurora,
+it offers VPC network isolation obviously.
+It can also do at-rest encryption using KMS.
+So data, backup, snapshots and replicas
+can all be encrypted and it can do
+in-transit security as well using SSL.
+So that's Aurora in a nutshell and RDS.
+Again, usually not in the context
+of big data, but Aurora is going
+in interesting directions, so we'll keep an eye
+on that going forward.

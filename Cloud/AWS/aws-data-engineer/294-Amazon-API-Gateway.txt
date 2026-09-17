@@ -1,0 +1,175 @@
+# 294. Amazon API Gateway
+# Section: Everything Else
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40308576
+# Caption: en_US (auto)
+
+Instructor: So far in our serverless journey,
+we've seen how to create Lambda functions
+and we've seen how to use DynamoDB.
+And so Lambda functions can use DynamoDB as a database
+for our API, and we can do create, read,
+update, deletes on our tables,
+but we'd like our clients to be able
+to invoke this Lambda function in some way.
+So there are multiple ways of doing it,
+we can have the client directly invoke the Lambda function,
+that means that the client would need IAM permissions,
+or we've seen we can use an application load balancer
+to have it in between the client and the Lambda function,
+and that would expose our Lambda function
+as an HTTP endpoint.
+There's one last thing we can use,
+it's called the API gateway.
+And this is a serverless offering from AWS,
+which allows us to create REST APIs
+that are going to be public and accessible for our clients.
+So the client will talk to the API gateway,
+and the beautiful thing is that the API gateway
+will then proxy the request to our Lambda functions.
+So we would use an API gateway
+because it provides us more than just an HTTP endpoint,
+it will provide us a lot of features
+as we'll see in this section,
+such as authentication, such as usage plans,
+development stages, and all that kind of things.
+So the API gateway has a lot of features,
+and this is just an overview,
+but we can integrate the API gateway with Lambda
+and that gives us a full serverless application,
+so no infrastructure to manage.
+We have support for the WebSocket protocol,
+so we can do real-time streaming
+through the API gateway in two different ways.
+The API gateway handle API versioning,
+so we can go from v1 to v2
+and v3 and not break our clients.
+We can handle multiple environments, that includes a dev,
+the test and the prod environment.
+There is a whole thing about API gateway insecurity,
+so there's tons of way to enable security
+on your API gateway
+for both authentication and authorization.
+We have the ability to create API keys,
+do request throttling in case some clients
+are doing too many requests on our API gateway,
+and we can also use some common standards
+such as Swagger or Open API 3.0 to quickly define APIs.
+And also we can export them as Swagger and Open API.
+We can transform and validate request and response
+in the API gateway level to ensure
+that the invocations are correct.
+And we can generate SDK and API specifications,
+and cache API responses.
+So lots of features that come with the API gateway
+that are not necessarily included when you use something
+as simple as an application load balancer.
+So what does the API Gateway integrate with?
+Well, there is a Lambda function,
+and we've seen this from the previous diagram,
+so it can invoke a Lambda function.
+And with this integration, it is the most common way
+and a very easy way to expose a REST API
+backed by a Lambda function
+to do a full serverless application.
+But also HTTP, so we can expose any HTTP endpoints
+in the backend, so it could be, for example,
+an HTTP API you have on premises,
+or it could be an application balancer
+you have on your cloud environment.
+And why would you do this?
+Well, you would use an API gateway
+to leverage the rate limiting features, the caching,
+the user authentication, the API keys, et cetera.
+So it's definitely useful to have a layer
+of API gateway on top of your HTTP endpoint.
+And finally, we can use an AWS service,
+so we can expose any AWS API through the API gateway.
+So which ones, for example?
+Well, we can start a Step Function workflow,
+we can post a message to SQS directly
+from an API gateway API.
+Why would you do this?
+Well, because maybe you want to add authentication,
+deploy some APIs publicly,
+or do some rate control on some AWS services.
+So here is an example of the API gateway
+used with an AWS service,
+so example, Kinesis Data Streams.
+So we want to have people send data
+into Kinesis Data Streams, but in a secure way
+without giving them access to AWS credentials.
+So what we do is that in between our clients
+and our Kinesis Data Streams
+we're going to have the API gateway,
+and the clients will send HTTP request
+into the API gateway, and it's been configured
+to then send the messages into a Kinesis Data Streams.
+And as you see in this setting, we don't manage any servers.
+Then Kinesis Data Streams, from there we can, for example,
+send the records into a Kinesis Data Firehose
+and eventually put them into an Amazon S3 bucket
+in the JSON format.
+So you start to see the power of API gateway,
+you can actually expose any AWS service
+to the outside through an API gateway.
+There are three ways to deploy your API gateway,
+this is called endpoint types.
+So the first type, which is the default one,
+is called Edge-Optimized.
+This is for your global clients,
+so that means that your API gateway
+is going to be accessible from anywhere in the world.
+And to be efficient, the requests are going to be routed
+through all the CloudFront Edge locations,
+which will improve the latency.
+Your API gateway is still only in one region
+where you created it, but it's accessible efficiently
+from every cloud formation edge location.
+Then there's a regional deployment,
+so this is when we don't want to use
+CloudFront Edge locations, so it's when we expect
+all our users to be within the same region
+where we created our API gateway.
+And if you wanted to,
+you could create your own CloudFront distribution
+and this will give you the same result
+as an edge-optimized distribution.
+But this time you have more control
+over the caching strategies
+and the platform settings themselves.
+And then finally, the last kind of API gateway you can do
+is a private API gateway, so this time it's not public.
+So a private API gateway can only be accessed
+from within your VPC,
+and it will use interface VPC endpoints, or your ENIs.
+And to define access through your API gateway,
+you can use a resource policy.
+Now a few comments about the security on top
+of the API gateway.
+So you can identify users on the API gateway
+in multiple ways.
+The first way is through IAM roles.
+So this is very helpful if you have internal applications,
+for example, running on EC2 instances
+and they want to access an API on API gateway,
+they can just use IAM roles.
+If you wanted to have external users, for example,
+from mobile applications or web applications,
+then you would use something called Amazon Cognito.
+Or if you wanted to implement your own logic,
+you could do so with a custom authorizer,
+this is a Lambda function.
+Also, you can have HTTPS security
+through your own custom domain name by integration
+with a service called the AWS Certificate Manager, or ACM.
+And so that certificate,
+if you're using an edge-optimized endpoint,
+must be in us-east-1.
+But if you're using a regional endpoint,
+then that certificate may be in the same region
+as the API gateway stage.
+Finally, you must set up, of course, a CNAME
+or an A-alias record in route 53
+to point to your domain and API gateway.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

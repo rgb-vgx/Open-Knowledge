@@ -1,0 +1,65 @@
+# 225. Monitoring ML Models in Production
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57864801
+# Caption: en_US (auto)
+
+So what are the things that we should measure in an ML pipeline or an ML application? Well,
+a lot of things. So of course there's the infrastructure itself. What am I actually
+running my endpoints on and how are they healthy? Is my traffic looking like it expects to be?
+Are my invocations within expected bounds? Is my latency within expected bounds?
+Am I seeing a bunch of errors or failures that shouldn't be happening? These are all things to
+monitor and alarm on. How's my memory utilization looking? How are my resource utilization looking
+for CPU and for GPU resources? Am I throttling due to too much capacity? That's a problem, right?
+Am I just saturating my resources in general? These are all things that we can monitor through
+CloudWatch and set up alarms on. On the input data side, if we're training a model, am I seeing
+missing or malformed features being used in that training data? If so, I should be flagging that
+and looking into it. Am I seeing unexpected ranges or categories in the training data
+or the data that's being sent in for inference? Again, something to watch for.
+Am I seeing changes in the distribution of my input data? That can be either for training
+or for inference in the real world. Am I seeing data drift in my data that's going in for inference
+versus my baseline that I used to train that model on? On the output side, do my predictions match
+the output distribution that I expect from my earlier testing? When I first deployed this model,
+am I seeing different behavior on the whole that I'm not expecting? This is something you can
+monitor. Now, in a perfect world, you would have ground truth information and I can actually
+measure things like accuracy and precision and recall or F1 or RMSE, but that depends on having
+ground truth data that I can actually compare my predictions against. Often that's going to be
+delayed or very hard to get. So if you can get that ground truth information and actually compute
+these things, obviously you want to monitor them, but you might have to make do with those output
+distributions as sort of a proxy as to things behaving differently. If any of these things go
+out of bounds, what do you do? Well, obviously you're going to have dashboards and alerts in
+CloudWatch or what have you. And if that does actually trigger something you need to investigate,
+you need to take action. So monitoring stuff doesn't do any good if you don't do anything
+with the information. Go and investigate the upstream data and the infrastructure to see
+what's going on. Maybe you need to retrain your model and revalidate it if things have drifted
+too much over time. Maybe I need to deploy a new model version after doing that training, or maybe
+it's just a matter of rolling back to an earlier model because my new one's not behaving the way
+that I expected. Anyway, the monitoring is going to be workload specific. So there's no
+one right way to do it. There's no specific drift threshold. There's no universal metric.
+You need to kind of arrive at this through your own experimentation for every individual model
+and application that you're doing. So you need to arrive at that yourself. There's no real hard
+guidelines. What might this look like in production? So let's assume that I'm using SageMaker AI to
+actually provide the endpoints for prediction here. My application out there in the world is going to
+be hitting that AI endpoint from SageMaker to make a prediction and return those predictions
+back to the user. But under the hood, SageMaker AI can be squirreling stuff away. It can be
+integrated into CloudWatch and automatically monitor things for me, like the number of
+invocations, latency, errors, CPU, GPU, memory, and any throttling that's happening. So that was a
+whole box on the previous slide, right? SageMaker AI's integration with CloudWatch can give that to
+you without a whole lot of work. And it can also capture your input and output data, or at least
+sample it for you. And given that input and output data, that you can then monitor the trends in that
+data over time. You can perform statistics on it to see what the distributions are and whether or
+not those are drifting over time. And there are tools like MLflow and Evidently AI that are the
+reference solutions that AWS gives you for doing this, because the old model monitor feature of
+SageMaker has unfortunately gone into maintenance mode, but those are some third-party open source
+tools you might use in its stead. Once CloudWatch is detecting something bad happening or not,
+they can publish that to a dashboard and your dashboards in turn can have alarms to make sure
+that you go and investigate something that's going wrong. So if something is anomalous,
+it can detect that for you and wake you up if need be. You can have your own custom metrics as well.
+And you might use other tools like MLflow again, or maybe QuickSight dashboards to help visualize
+that data and speed up your operational flow. And that MLflow mentioned comes from the box above it
+there. So this doesn't necessarily have to come from CloudWatch. That model quality analysis and
+statistical analysis that you're doing as well on the capture data on the input and output side
+might also be feeding into those dashboards and alarms. So MLflow might be getting data from
+itself there on that model quality analysis. And if something does alarm, what do you do? Again,
+check the upstream data, check the infrastructure. If you need to go back and retrain your model and
+revalidate it, you might need to deploy a new model to make things better or just roll back
+the model you put out that's not behaving the way that you thought.

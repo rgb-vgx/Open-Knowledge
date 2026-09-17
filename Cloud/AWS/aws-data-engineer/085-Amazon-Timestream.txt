@@ -1,0 +1,61 @@
+# 85. Amazon Timestream
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/41708854
+# Caption: en_US (auto)
+
+Instructor: So now, let's talk about Amazon Timestream,
+and the name indicates that it's actually
+a time series database,
+so, it's fully managed, it's fast, it's scalable,
+and it's serverless.
+So, what is a time series?
+Well, it's a bunch of points that have
+a time included in them.
+So, for example, here's a graph by year.
+So, this is a time series.
+Now, with Timestream, you can automatically
+adjust the database up and down to a scale capacity,
+and you can store and analyze trillions of events per day.
+The idea is that if you have a time series database,
+it's going to be much faster and much cheaper
+than using relational databases for time series data.
+Hence, the specificity of having a time series database.
+You can do schedule queries,
+you can have records with multiple measures,
+and there is a full SQL compatibility.
+The recent data, it will be kept in memory,
+and then the historical data is kept
+in a cost-optimized storage tier.
+As well, as you have time series analytics function
+to help you analyze your data,
+and find patterns in near real time.
+This database, just like every database on AWS,
+supports encryption in transit and at rest.
+So, the use cases for Timestream would be
+to have an IoT application, operational applications,
+real time analytics,
+but everything related to a time series database.
+Now, in terms of architecture, Timestream is here,
+and it can receive data from AWS IoT,
+so, Internet of Things.
+Can see data streams through Lambda,
+can receive data as well.
+Prometheus, Telegraf, there are integrations for that.
+Can see the streams as well through,
+can see data analytics for Apache Flink,
+can receive data into Amazon Timestream,
+and Amazon MSK, as well, through the same process.
+And in terms of what can connect to Timestream,
+where we can build dashboards using Amazon QuickSight,
+we can do machine learning using Amazon SageMaker,
+we can do Grafana,
+or because there is a standard JDBC connection
+into your database,
+any application that is compatible with JDBC and SQL
+can leverage Amazon Timestream.
+So, that's it, I think from the exam,
+you just need to remember what Timestream is
+at a high level,
+but I want to give you a bit more details as well.
+So, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

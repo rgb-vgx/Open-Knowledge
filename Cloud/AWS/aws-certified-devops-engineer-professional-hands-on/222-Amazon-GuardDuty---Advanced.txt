@@ -1,0 +1,176 @@
+# 222. Amazon GuardDuty - Advanced
+# Section: Domain 6: Security and Compliance
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37936002
+# Caption: en_US (manual)
+
+So now let's talk about
+Amazon GuardDuty with more advanced details.
+Number one, you can have a multi-account strategy
+with GuardDuty because you can manage multiple accounts
+from it and you have to use an organization.
+And the idea is that member accounts can be managed
+through the administrator accounts.
+So you send invites through GuardDuty
+and then the admin accounts can add
+and remove member accounts, and they can manage GuardDuty
+within the associated member accounts.
+It can also manage any findings that GuardDuty resurfaces.
+It can manage suppression rules,
+trusted IP list, and threat lists.
+So in an organization you can also do something else.
+The administrator of GuardDuty doesn't have to
+be the administrator of the organization.
+There is the feature called the delegated administrator,
+where a member accounts can become the administrator
+for GuardDuty.
+So how does that work?
+Well, we have an organization
+maybe two OUs and member accounts,
+and we create and we designate
+a administrator account for GuardDuty,
+which is going to manage the GuardDuty
+in all the other member accounts.
+So we have findings in GuardDuty,
+and findings are potential security issues
+for malicious events happening in your AWS accounts.
+From this, you're going to be able to automate the response
+to some security issues by using event bridge.
+So how does that work?
+Well, any finding found by GuardDuty
+is going to be sent to Amazon EventBridge.
+Now from Amazon EventBridge, we can do a lot of things.
+We can send alerts to SNS to receive email notifications
+or to Lambda function or to Slack and so on.
+So for example, these are my options in here
+but there's obviously way more.
+And from SNS we can invoke any HTTP endpoints
+or send emails.
+Now the events, when you are using a delegated administrator
+or administrator accounts, they're going to be
+published both in the member accounts
+and the administrator accounts.
+Now, how do we generate findings?
+Well, with GuardDuty, GuardDuty will directly
+pull independent streams of data
+directly from the service it reads from.
+So CloudTrail it will read automatically your management
+events and your data events.
+It will read your VPC flow logs and your EKS logs,
+and you do not have to enable these.
+And if you enable GuardDuty, that doesn't mean
+that you will have these enabled.
+It just means that GuardDuty is going to get this data
+itself from its sources independently
+by using the capability within your AWS cloud.
+Now, each finding will have a value, for example, from 0.1
+to eight plus, and it will be categorized at high,
+medium, or low.
+And there is a naming convention,
+you don't have to remember it,
+but there is a way to name things.
+So, the threat purpose
+is the primary purpose of the threats.
+Then the resource type affected is EC2 or S3 and so on.
+The family name of the threats could be related
+for example, to network port unusual,
+and the detection mechanism is how it get to
+detect this finding.
+Was it through TCP, UDP, and so on?
+And then what is being used
+in the malicious security is the artifact,
+for example, the DNS.
+So you can, if you wanted to test your automations,
+you can generate sample findings in GuardDuty.
+And this will allow to make sure
+that everything works as expected for a specific finding.
+So more concretely, let's look at some finding types.
+So for EC2 for example,
+you have unauthorized access EC2 SSH brute force.
+So someone is really trying to get
+to your 22 port and tries to brute force it
+or a cryptocurrency attack on EC2.
+Now for IAM finding types, we have for example
+a user that disables CloudTrail logging,
+or a user that is using the roots credentials,
+which shouldn't be used.
+For Kubernetes, for example,
+you'll have access to the access
+to credentials of Kubernetes from a malicious IP, and so on.
+So you can have a look at, for example
+suspicious files for malware protection
+and here successful login through an anomalous behavior.
+So it's a weird login.
+And for S3, well is the public access disabled?
+So that means now the bucket is public, this is a problem.
+Or is someone trying to do penetration testing
+onto Amazon S3?
+So let's talk about some architectures
+because now we've seen that we can automate findings.
+So let's take an example of an EC2 instance in a VPC,
+and GuardDuty is going to analyze the V VPC flow logs,
+take it in, and then it will generate findings.
+And these VPC flow logs are managed by GuardDuty.
+So GuardDuty is going to have a finding and say, well
+it looks like from the VPC flow log,
+someone is performing the SSH brute force type
+of attack on my EC2 instance.
+So if EventBridge is going to generate an event for this.
+We can hook it up to SNS to get notifications by email so
+that the security operators know about it.
+But also we can use a Lambda function.
+And that Lambda function can do two things,
+it can create a web ACL to block suspicious request.
+It says when you use WAF attached to, for example,
+a load balancer or something.
+But for EC2 instance, for example, we can also
+automatically update the network SCL to make sure
+that we block the malicious IP.
+Another architecture we can look at is, for example,
+we have a firewall subnet because we're using the
+AWS network firewall feature.
+So again, with an EC2 instance, we enable VPC flow log to
+detect suspicious behavior in GuardDuty.
+And the finding is that there is a back door in our EC2
+and there is some weird activity.
+So EventBridge can this time trigger
+a step function workflow
+and we can have multiple Lambda functions.
+Number one, making sure that is the IP of the attacker
+in our database of malicious IPs.
+If not, well block the traffic.
+And by blocking traffic, maybe the Lambda function
+can call the network firewalls API to add the IP
+in the rural group for a firewall policy that gets applied
+to a network firewall endpoint.
+And as a result of this, while the EC2 instance
+traffic will go through the firewall subnet
+and the EC2 instance cannot connect
+to the suspicious host, it is completely blocked.
+Now the block traffic can go into, you know,
+a success SNS topic to indicate that yes,
+the IP was successfully blocked or a failure,
+and then maybe we need some manual intervention.
+GuardDuty also has the concepts of trusted and
+threat IP lists.
+So this only works for public IP addresses
+and you can define a trusted IP list
+which is a list of IP addresses in CIDR that you trust.
+In that case, GuardDuty is not going to generate
+findings for these trusted lists.
+So for example, this allows one of your developer
+to perform some tests on your EC2 instance
+without generating security findings.
+Now you have also a threat IP list.
+So it's a list of known malicious IP addresses
+and CIDR ranges and GuardDuty will generate
+findings based on this threat list.
+So it can be supplied by either a third party intelligence
+provider, or you can create them yourself, custom.
+Therefore, a hacker trying to access
+your EC2 instance from a malicious IP will
+be detected and GuardDuty will generate a finding.
+Now, if you have a multi-account setup,
+only the GuardDuty administrator can manage those lists.
+So that's it for GuardDuty.
+I hope you liked it and I hope you learned a lot
+and I will see you in the next lecture.

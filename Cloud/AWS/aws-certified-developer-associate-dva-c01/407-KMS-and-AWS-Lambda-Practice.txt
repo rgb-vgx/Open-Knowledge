@@ -1,0 +1,143 @@
+# 407. KMS and AWS Lambda Practice
+# Section: AWS Security & Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM & STS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851450
+# Caption: en_US (manual)
+
+Okay. So let's practice using Lambda with KMS.
+For this I'm going to create a function from scratch.
+Call it Lambda KMS, use the Python runtime
+and create my function.
+So here we're going to play with how we can
+encrypt environment variables within Lambda.
+And for this, we'll be using the tutorial key
+that we have generated from before in KMS, okay.
+So one thing to know is that first we want to
+know what problem we are solving.
+So let's say for example, that we have a Lambda function
+and this Lambda function is very simple.
+It returns great.
+And in it, at some point we have a DB password
+variable that we're going to have.
+So DB underscore password
+and one way we could do it is just say, okay
+if your database wants to connect to the database password,
+just have database password as part of the code.
+So you have super secret as part of the code
+but this is not great because well, if you deploy this
+and then someone has access to your
+code of your Lambda function,
+then they can see directly the database password
+is super secret, so that's not great.
+You can say, Hey Stefan, you told us something,
+you can tell us about environment variables.
+So you can do OS dot getnv DB underscore password.
+And this looks better because now, well
+the database password is not in my function code.
+So you would go into the configuration
+and then for environment variables you would create one
+you would add it called DB password.
+And here you would place super secret.
+And this works better because, well now
+the code doesn't show the value of database password
+but the problem is that if someone has access
+to the configuration of your Lambda function
+then they can still read the database password,
+in plain text right here of value, super secret.
+So this is not amazing,
+but we can encrypt that environment variable.
+And for this there is the encryption
+configuration right here, menu.
+And you can enable the helpers
+and then you need to choose a KMS
+key to encrypt the variable at rest with.
+So we'll choose the tutorial, KMS key.
+And then you just click on the encrypt button.
+So we'll say, Hey, use this one and encrypt.
+So now my environment variable is encrypted,
+as you can see right here.
+And so there is a decrypt secret snippets code
+that we need to use to decrypt that secret.
+So what I'm going to do is just copy this entire blob
+of code right here, paste it
+and then I will show you what it does.
+So we are going to save this part
+we'll go into the code and I'm going to just
+paste this, okay.
+And so now we have an encrypted environment
+variable that's OS dot a get in
+which is the same as environ DB password.
+Okay. Then we have a decrypted environment variable
+which is taking the KMS client, okay.
+Using the AWS SDK and is going to issue a decrypt call.
+And then it's going to say, Hey
+you should decrypt that environment variable and use
+for this as an increase in context of Lambda function name.
+Okay. So then get the result
+plain text and decode as UTF 8.
+So this is necessary for us to get a decrypted information.
+And so in our function
+which is going to print the encrypted value,
+print the decrypted value
+and then we're going to test that.
+So I'm going to deploy this function
+and I'm going to test this.
+We will use sample events, create.
+So let's go ahead and test this function.
+Now, the first thing we get is a failure
+because we get a timeout.
+So we have more than three seconds.
+This is early for a function.
+So what I'm going to do is go
+to configuration, general configuration.
+I will edit the timeout and it will set it to be 10 seconds.
+That should be enough, save,
+and we're going to test our function again.
+So let's test it again.
+And now we get another error
+and here we have an access denied exception.
+So this makes sense.
+Our Lambda function is trying to run a decrypt call
+on our KMS environment variable okay.
+That we have in the encrypted one
+but we haven't provided the, IAM role
+with a right to decrypt, anything using that KMS key.
+So fairly simple to fix that.
+We're going to go into configuration, permissions,
+take the Lambda role.
+And we're going to have to add an inland policy
+to this role, which is a service we'll
+use the KMS service
+and we want to allow a decrypt operation.
+So this API call
+and we need to specify a specific key ARN to
+be able to decrypt that.
+So when you get the key ARN,
+we can get it directly from the console of KMS.
+So this is the full key ARN that we're going to copy
+and then paste here, and add this.
+Then review this policy, call it,
+allow decrypt KMS, create this policy.
+And now we're good to go.
+We have a managed policy and an inland policy.
+So now if I go back to my code and test my function
+hopefully we are going to get a success because now
+my function can decrypt the KMS and yes, it was successful.
+So the result is great.
+And if we look at the log lines
+this is the encrypted environment variable that was passed
+to my Lambda function as an encrypted secrets.
+Then this is the decrypted value, super secret.
+And then we get the end of the request.
+So using this method
+we have a code that doesn't show any information
+about the environment variable or the password itself.
+And then if we go into the configuration
+and look at the environment variables
+anyone who doesn't have access
+to the KMS key right here will not be able to decrypt this.
+And so the database password will be kept safe.
+So that's when we are doing it
+but this shows a cool integration
+between Lambda and KMS in this lecture.
+So I hope you liked it.
+And I will see you in the next lecture.

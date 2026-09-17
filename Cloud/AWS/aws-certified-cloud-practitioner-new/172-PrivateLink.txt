@@ -1,0 +1,54 @@
+# 172. PrivateLink
+# Section: VPC & Networking
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/33532722
+# Caption: en_US (manual)
+
+So now let's talk about AWS PrivateLink,
+also from the VPC Endpoint Services family.
+So how does that work?
+Well, say you have a service that you run within AWS,
+or say there is a vendor on the Marketplace,
+and they run a service on their own account
+within their own VPC.
+And they want to expose a service to customers of AWS.
+So to thousands of VPC, they need to have private access
+to that service, to establish a connectivity.
+You could, for example, use VPC peering,
+but that doesn't scale, and it's not very secure.
+What you want is use something else,
+and that's something else is a Private Link.
+So a Private Link allows you
+to connect a service running within your VPC
+to other VPCs directly and privately.
+So it does not require VPC peering or internet gateway,
+because it's from the private network,
+or NAT or route tables or anything like this.
+So let's go through a diagram.
+Say, for example, you are talking to a vendor
+on the AWS Marketplace, and they run application service.
+So they have their own service that you wanna use
+in their own VPC.
+And you wanna have access to it from your own VPC
+in your own accounts with your own consumer applications.
+In that case, you're going to ask your vendor
+to do a Private Link.
+On their end,
+they will have to create a Network Load Balancer
+to expose that service.
+And on your end,
+you will create an Elastic Network Interface,
+and then you will establish a Private Link between the two
+so that you have private access
+to their Network Load Balancer
+and therefore to their service.
+And all the internet traffic is actually not gonna go
+through the public internet,
+but it's actually gonna go through your private network.
+And so therefore all communications will remain private.
+And so for every new customer
+that that third party will need,
+all they will have to do is to create a new Private Link
+for their customers, which is very easy to manage
+and way more scalable.
+So that's it, I hope you like this lecture,
+and I will see you in the next lecture.

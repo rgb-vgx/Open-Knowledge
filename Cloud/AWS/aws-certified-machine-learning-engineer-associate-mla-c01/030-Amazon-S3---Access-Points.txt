@@ -1,0 +1,84 @@
+# 30. Amazon S3 - Access Points
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45356633
+# Caption: en_US (manual)
+
+So now let's talk about S3 access points.
+So let's take an example
+of an S3 bucket that has a lot of data.
+We have finance data, we have sales data,
+and we have different users
+or groups that want to access their data.
+We could create a very complicated S3 bucket policy
+and make it grow over time.
+The more users, the more data you have,
+the more unmanageable this may become.
+So what is the solution?
+Well, we can create what's called S3 access points.
+So we can, for example,
+create a finance access point that is going
+to be connected to the finance data.
+How is it connected to the finance data?
+Well, we're going to define an access point policy
+and this policy looks just like an S3 bucket policy
+and is going to grant read write access
+to the finance prefix.
+Then we can define a sales access point.
+And, again, this will be connected to the sales data
+thanks to an access point policy,
+a different one attached to this access point,
+which is going to grant read and write access
+to the sales prefix.
+As you can see, I now have two policy
+and if I want to have an analytics access point,
+well, we can create it so that it points to finance
+and sales, but in read only access.
+So we're going to create our own read only policy
+on the analytics access point.
+So you can see here we have pushed the security management
+from the S3 bucket policy into the access points
+and each access point will have its own security.
+Therefore, with the proper IAM permissions
+then our users can access the finance access points
+and connect only to the finance part of our bucket.
+The users as well for sales can only access the sales
+and the analytics group can access finance
+and sales at the same time.
+So by using access points, we define different ways
+to access our S3 bucket.
+And the result of that is that we have
+a very simple way to manage security.
+We have policies attached to each access point
+and also we have a very simple bucket policy on Amazon S3.
+Therefore, we can really scale access to our S3 buckets.
+So to summarize access points, simplify security managements
+for S3 buckets, and each access point will have
+its own DNS name.
+That's how you connect to the access point.
+You can choose it to be connected to the internet
+as an origin or a VPC for private traffic.
+And then you attach again an access point policy
+which is very similar to bucket policy.
+And this allows you to manage security at scale.
+Regarding the VPC origin of S3 access points,
+we can define them to be privately accessible.
+So that's, for example, an EC2 instance
+in a VPC access says without going through the internet
+our S3 bucket through the VPC access point
+through a VPC origin.
+So to do so, to get access to this VPC origin,
+we must create what's called a VPC endpoint
+to access the access point.
+So it's something in our VPC that will allow us to connect
+privately into the access point through our VPC origin.
+And then the VPC endpoint has a policy,
+and this policy must allow access
+to the target buckets and the access points.
+So the VPC endpoint policy will allow our EC2 instance
+to connect to both the VPC, the access points
+on Amazon S3 and the S3 buckets.
+So in this case, we have VPC endpoint for security.
+We also have security for the access point policy
+and security at the S3 bucket level.
+All right. That's it for access points.
+I hope you liked it and I will see you in the next lecture.

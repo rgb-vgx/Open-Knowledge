@@ -1,0 +1,60 @@
+# 192. CloudFormation - Mappings
+# Section: AWS CloudFormation
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11937076
+# Caption: en_US (manual)
+
+So now let's talk about
+mappings in CloudFormation.
+So mappings are fixed variables
+within your CloudFormation templates,
+and they're very handy if you want to differentiate
+between different environments.
+For example, dev versus prod,
+and give different values for those,
+or regions, such as AWS regions or AMI types and so on.
+So all the values that are possible are hardcoded
+within the template and here is the format of mappings.
+But to make it a bit more concrete,
+I'm going to show you a region map.
+So here, based on the region you have, so us-east-1,
+us-west-1, or eu-west-1, and based on the architecture
+you're using, for example, HVM64 or HVMG2,
+this is going to give you a different AMI ID every time.
+Well, we know that the AMIs are specific
+based on the region, so of course it makes sense
+to have a different AMI per region.
+So it's a great candidate for a mapping.
+Now to access the mapping values, here is an example.
+So we have an EC2 instance that is using an ImageId.
+And this ImageId is using the FindInMap function.
+And to use this FindInMap function,
+we first need to use a map name.
+So here we have the RegionMap.
+Then we have the top level key.
+So what we want to use in here,
+we have a reference to the pseudo parameter AWS::Region.
+So if you launch this template in us-east-1,
+it's going to be us-east-1,
+and if you launch it to us-west-1,
+automatically this pseudo parameter
+is going to resolve to us-west-1.
+And then finally, the type of architecture you want,
+for example, HVM64.
+And this works great because, well,
+AMIs are region specific,
+and so you want to make sure you have the right AMI
+for the right region and the right architecture.
+So when do you use mappings versus parameters?
+Well, the mappings are great when you know in advance
+all the values that can be taken
+and that they can be deduced from variables
+such as the region, the availability zone, the AWS account,
+the environment, dev versus prod, et cetera, et cetera.
+They allow you safer control over the templates.
+But if you have values that really depend
+on what the user wants
+and what they're thinking about at runtime,
+then you want parameters
+to give the user a maximum amount of freedom.
+So that's it for mappings.
+I hope you liked it and I will see you in the next lecture.

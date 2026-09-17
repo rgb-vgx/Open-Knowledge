@@ -1,0 +1,69 @@
+# 187. Content Filtering with Amazon Bedrock Guardrails
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45286425
+# Caption: en_US (auto)
+
+Let's talk about Amazon bedrock guardrails, a very important feature for AI safety and governance and
+security and all that good stuff.
+Basically, it provides content filtering for both your prompts and your responses.
+So for anything coming in or out of your bedrock system, whether it's a knowledge base or an agent
+or whatever it is, a guardrail can make sure that people aren't saying things you don't want them to
+say going into the system, and you're also filtering out the response from the system to make sure
+that it's not saying anything you don't want it to say.
+This works with the text foundation models currently, you know, like a Titan or Claude and whatnot.
+Currently not with image models, but maybe that will change in the not too distant future.
+You can filter on the word level or the topic level.
+So if there's a set of things you just don't want people to talk about, you can specify either the
+topics like maybe you don't want them to talk about religion or politics or whatever it might be, or
+maybe you don't want them to mention your competitors.
+I don't know, but you can set that all up.
+You can also have it automatically filter out words and topics just based on how objectionable it might
+be.
+So there are various dimensions, you know, for things that are hateful or biased or whatever it might
+be.
+And you'll see some of those when we do a demo in a minute here.
+Of course, it has a profanity filter as well that you can select, and it won't make you type all those
+in yourself.
+It knows what the dirty words are.
+You just have to turn that on and it can also remove personally identifiable information automatically.
+So if it sees anybody's phone number or Social Security number or driver's ID number or address or whatever
+it might be, you can select what kinds of PII you want to remove, or you might want to mask that out.
+So optionally you can just have it overlaid with sort of a in brackets address if you don't want to
+print anybody's address out.
+So if you want to make sure that you're not leaking any PII out of your system, that's a very good
+feature to use when you're putting a guardrail on the responses from your bedrock system.
+A newer feature is contextual grounding check in bedrock guardrails.
+This is pretty cool.
+It's intent is to help prevent hallucinations.
+So it measures two things.
+And you can have thresholds on these two different metrics beyond which it will filter out the result.
+One is called grounding.
+That's basically how similar is the response to the contextual data I received.
+So if you think back to how knowledge bases and retrieval augmented generation worked, were going off
+and retrieving some contextual data from a vector database, right And that will measure how similar
+is the response to that sort of ground truth data that we retrieved from the vector store.
+If it went off and made stuff up that wasn't in that vector store, and that documents that you actually
+provided to the system, it will have a low grounding score, and you can set a threshold that says,
+okay, if the response here didn't wasn't really based on what came out of the documents that I gave
+it, and it kind of went off and made up its own thing based on its earlier training.
+Maybe I want to filter that out.
+Right.
+So that's what contextual grounding check does.
+It can also measure the relevance of the response to the original query.
+So if it sees that the answer it gave isn't really relevant to what the original question was, you
+can also use a contextual grounding check to filter that out as well.
+So it's sort of a way to at least guess as to whether or not the answer you got is relevant and correct
+based on the data that you gave it.
+These are not perfect metrics, by the way.
+So obviously grounding metrics are only going to be as good as the structure that you're storing in
+your vector store.
+So if your vector store has a problem where it tends to retrieve irrelevant information, this metric
+won't work as well.
+But it's there if you want it.
+And this can be incorporated into either agents or knowledge bases.
+So in both cases, you can attach a guardrail to those systems and it will automatically be applied
+to all prompts and responses.
+You can also configure the blocked message response so that when it does choose to filter something
+out, you can control the message that the user sees.
+When that happens, this will make more sense when we see an example.
+So let's go hands on and create a guardrail in Amazon bedrock.

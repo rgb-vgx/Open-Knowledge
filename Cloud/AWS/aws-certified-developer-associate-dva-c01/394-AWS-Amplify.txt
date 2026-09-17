@@ -1,0 +1,124 @@
+# 394. AWS Amplify
+# Section: Other Serverless: Step Functions & AppSync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/30055484
+# Caption: en_US (manual)
+
+Talk about AWS Amplify.
+And Amplify is a service that in a gist
+allows you to create mobile and web applications,
+and it's made of different components.
+We have Amplify Studio,
+which allows you to visually build a full stack app
+both the front-end UI and the backend.
+We have the Amplify CLI to do the exact same thing
+but with the CLI.
+Then we have the Amplify Libraries to connect your app
+to existing AWS services, such as
+Cognito for login or S3 for storage and so on.
+And then Amplify Hosting,
+which is to host your Amplify application
+on AWS and deliver it very, very fast.
+So it can be quite complicated
+but let's go step by step to understand these components.
+So AWS Amplify first is a set of tools
+to get started with mobile and web applications.
+And you should think of it
+as the elastic beanstalk for mobile and web applications.
+So we start with Amplify Studio or the CLI,
+and for the CLI we type amplify in it,
+and it initializes our Amplify application.
+So Amplify gives us must have features such as
+data storage, authentication,
+storage of data of files overall, and machine learning.
+All of this powered by AWS services.
+So in the backend, Amplify is relying on DynamoDB,
+AWS AppSync for GraphQL APIs, Cognito, Amazon S3, and so on.
+And then Amplify also gives you front end libraries.
+They're ready to use for different frameworks such as
+React, View, JavaScript, iOS, Android, Flutter, and so on.
+And so AWS Amplify is going to be a one-stop shop
+to integrate all these things together.
+It incorporates the best practices
+for reliability, security, and scalability.
+And then to deploy this application
+we can use the Amplify CLI or Amplify Studio.
+And the exam may ask you about
+some important features of Amplify.
+So here they are.
+The first one is that Amplify gives you
+authentication out of the box.
+For this, we do amplify add auth,
+and this is leveraging the Amazon Cognito.
+You get user registration, authentication, account recovery,
+and other operations.
+It supports MFA, social signing, et cetera, et cetera.
+And you get pre-built components to build this
+in your front end and integrate with Cognito.
+And finally you get your fine grain authorization.
+The second feature is around the datastore.
+So you do amplify add api, and it's going to leverage
+Amazon App Sync for the API and Amazon DynamoDB
+for the data storage.
+And the idea is that with Data Store,
+you work with local data,
+and then you have automatic synchronization to the cloud
+without any complex code thanks to the Amplify framework.
+It's powered by GraphQL and AppSync overall,
+and it gives you offline and realtime capabilities,
+and you can even model your data with the Amplify Studio.
+Finally, we get Amplify Hosting. And this is when you want
+to start deploying your application.
+So you do amplify add hosting, and it allows you to
+build and host modern web apps.
+You do CICD, such as build test and deploy.
+You do your pull request previews,
+you have your custom domains, you can have monitoring,
+you can set up redirects and custom headers
+and password protection. So it looks like,
+for example if you know competing services such as
+Netlify Reversal, Amplify Hosting is similar.
+And so you're going to get your code somewhere.
+So for example, GitHub or Bitbucket, GitLab,
+even CodeCommit.
+Then your CICD is going to build the front end
+in whatever you have
+and then deploy it, for example to CloudFront.
+And same, you can have the CICD to build
+the backend optionally and deploy the backend into Amplify.
+Also for Amplify, you have the option of running testing.
+And you have two kind of testing,
+you have unit testing and end-to-end testing.
+So you can run end-to-end testings
+in the test phase in Amplify.
+And the goal of doing end-to-end test
+is that you can catch regressions
+before pushing code to production.
+So you use the test step to run any test commands
+at build time and you define the test steps
+in your amplify.yml file.
+And then you can use the Cypress testing framework
+to generate your end-to-end test.
+The benefits of using the Cypress testing framework
+is that you're gonna get a UI report for your test,
+and you can define web clicks.
+So Cypress can generate and simulate a web browser
+and you can just say,
+"Click here, do this, do that and do that,"
+and then verify whether or not that works.
+And that's called end-to-end test
+because we deploy the application and we verify
+whether or not the application is working as expected
+from a usability standpoint.
+So just to summarize, you have build level tests,
+which is when you are running unit tests
+when you build your application, and this is to test
+whether or not your code
+is supposed to do what it's supposed to do.
+Then you have an end-to-end test,
+which is when the app is deployed.
+You're going to run end-to-end tests, for example
+using the Cypress framework, to make sure that
+it behaves the way it's supposed to behave.
+And then finally you can deploy your application.
+Okay, so that's it for Amplify.
+I hope you liked it. And I will see you in the next lecture.

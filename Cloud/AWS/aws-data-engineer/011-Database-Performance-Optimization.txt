@@ -1,0 +1,79 @@
+# 11. Database Performance Optimization
+# Section: Data Engineering Fundamentals
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40393164
+# Caption: en_US (auto)
+
+Instructor: Let's also do
+a quick review of database performance optimization
+techniques, some basic tools for making your databases perform better.
+The number one tool is having the right indexes, right?
+So you never want to have a full table scan
+if you can avoid it.
+If you need to search through every
+single row of your data looking for what you need,
+you're doing it wrong, that means that you need an index
+and you need to look at what your queries are and
+make sure you understand what indexes you need to build to make sure
+you can quickly access the data you need.
+Indexing can also be a useful tool
+for enforcing data uniqueness and integrity.
+If you have conflicts when
+you're trying to in index your data, that might
+alert you to problems that you really
+need to deal with that you
+might not have known about otherwise.
+Another optimization technique is partitioning.
+So if you have a large amount of data,
+you can reduce the amount of data scanned
+by partitioning it based on different things that you might
+be querying by.
+For example, maybe you have partitions by date, you know
+that you're going to be searching for information
+maybe just for the past month typically.
+So by partitioning your data by month, you
+can reduce the amount of information you need
+to scan if you do need to do a full table scan
+for an entire month's worth of data.
+It can help with data lifecycle management as well.
+So if you are partitioning based on time, that means
+it's very easy to take these older partitions
+and move them off into less expensive storage solutions or maybe
+even delete them over time to save on storage costs and maybe with compliance
+requirements as well.
+It can also enable parallel processing.
+So if you have your data partitioned in
+a logical way, maybe you can process them all in parallel, one
+partition alongside the next, right?
+So partitioning is also
+a very important performance optimization.
+Compression also is an important one
+that can speed up your data transfer and
+also reduce your storage and disk reads.
+A lot of times, your databases are held back by disk IO, and if that's
+the case, then you wanna make sure you're
+storing your data compressed.
+Some common compression formats are
+GZIP, LZOP, BZIP2, and Zstandard.
+These are examples of compression formats that are
+supported by Amazon Redshift, and they all
+come with various trade-offs
+between compression and speed, so
+you don't wanna go from a situation where
+your IO bound to CPU bound, because
+your compression format was too complicated.
+So there are some compromises you might have to make there.
+Also, there is columnar compression,
+we talked about Parquet earlier
+and storing data in columnar format.
+Maybe you wanna compress that
+data in a columnar means as well.
+That can be a lot more efficient,
+because your columns are all in the same format, that same data
+format, right?
+And they might have similar structures,
+so it might be more efficient to compress that information than compressing a row that's
+full of all sorts of different kinds of information.
+So again, real quick review
+of database performance optimization.
+Indexing, partitioning, and compression are your main tools to make
+your database queries perform better.

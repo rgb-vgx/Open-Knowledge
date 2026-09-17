@@ -1,0 +1,112 @@
+# 338. API Gateway Caching
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11937082
+# Caption: en_US (manual)
+
+So now let's talk
+about how we can enable caching
+of our responses in the API gateway.
+So what is caching? Well, we know it.
+Caching is to reduce the number
+of calls made into the backend.
+So that means that our clients,
+when they talk to the API gateway,
+the API gateway will first check the cache
+and if a result is already in cache, return that result.
+Otherwise, if there's a cache miss,
+then it will go and talk to the backend to get the response.
+So the idea is that we really leverage a lot
+of the cache to reduce the amount
+of pressure on our backend.
+So the default TTL, which is how long the results live
+in the cache is 300 seconds.
+So five minutes, but the min is zero, that means no caching
+and the max is one hour.
+The caches are defined at the stage level.
+So you define one cache per stage, and it is possible
+for you to override the cache settings per method.
+So if you want a method to not use a cache,
+you can specify it as well at the method level.
+The cache can be encrypted and the cache size
+is between 0.5 gigabytes, all the way to 237 gigabytes.
+The cache is really expensive,
+so it makes sense only if you're in production
+but it may not make sense if you're in development
+or test environment, for example,
+because there's not that many requests done
+on your backend anyway.
+So caching is really something you wanna use
+in production or in pre-production.
+Now, how do we invalidate the cache?
+So you are able to invalidate the entire cache immediately
+from the UI, or clients can invalidate the cache
+with the header placed into a query
+to the API gateway called Cache-Control:max-age equals zero.
+And for the clients to do this,
+they need proper IAM authorization.
+So this is an IAM policy that would allow a client
+to invalidate the cache on a specific resource.
+And if you don't impose an InvalidateCache policy
+or if you don't require authorization in the console,
+then any clients can invalidate the API cache
+and that could be a disaster.
+So now you know everything about caching.
+Let's go in the hands-on to see how that works.
+So let's practice caching on our API.
+For this, let's go to the prod stage
+and edit the stage details.
+And here we have the cache setting.
+So we're going to enable it
+but this is not part of the features.
+So if you wanna follow along,
+just know that you'll have some charges.
+So you can choose the cache capacity.
+If you have many different API calls to cache,
+of course, you want a bigger one.
+Do you want to encrypt the cache data or not?
+And what is the cache TTL?
+So how long should the record live in your cache?
+300 seconds is five minutes.
+So this is a good default
+but you have anything between zero and 3,600 seconds.
+Next, you have also a per-key cache invalidation.
+That means that some values
+of the cache can be invalidated based on the key
+but this could be dangerous.
+So you may want to require authorization to say, hey,
+only authorized people can actually invalidate the cache.
+And if so, if it's unauthorized, what do you do?
+You just ignore the cache control header
+that was used to invalidate the cache.
+Or do you wanna fail with a 403
+or do you wanna add a warning?
+And so on.
+So this is just some things to look at.
+So for example, we can require authorization
+and just ignore the cache control header.
+Okay, so let's save this.
+So now we have a cache on our entire API
+and this would work already
+but you can also further customize the cache
+and say, for example, for this GET method,
+you can actually override how the cache is working.
+So you can edit it and say, well,
+there should be a per-method cache
+where you define a specific TTL.
+You can also define specific rules
+for the cache invalidation and so on.
+So let's test the cache.
+So it's not something you're going to be seeing necessarily
+but if you go to the stage and it says hello from Lambda
+and you refresh, now the result is coming
+from the cache and not from your Lambda function.
+So the idea here is that if people
+are repetitively using the same routes
+with the same arguments,
+then instead of asking every time Lambda
+to fetch a result, it's going to be cached in API gateway.
+So that's it. You've seen how the cache is working.
+Now to stop incurring costs, please disable the API cache
+and you'll be good to go.
+All right, that's it.
+I hope you liked it and I will see you in the next lecture.

@@ -1,0 +1,39 @@
+# 83. Amazon Neptune
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304684
+# Caption: en_US (auto)
+
+Stephane: Now, let's talk about Amazon Neptune.
+Neptune is a fully managed graph database.
+So an example of what a graph data set would be, would be,
+for example, something we all know,
+which is a social network.
+So if we look at a social network, people are friends,
+they like, they connect, they read, they comment, and so on.
+So users have friends, posts will have comments,
+comments have likes from users, users shares and like posts.
+And so all these things are interconnected.
+And so they create a graph.
+And so this is why Neptune is a great choice of database
+when it comes to graph datasets.
+So Neptune has replication across three AZ,
+up to 15 read replicas.
+It's used to build and run applications that are gonna be
+with highly connected datasets, so like a social network.
+And because Neptune is optimized to run queries
+that are complex and hard on top of these graph datasets,
+you can store up to billions of relations on the database
+and query the graph with milliseconds latency.
+It's highly available,
+with application across multiple availability zones.
+And it's also great for storing knowledge graphs.
+For example, the Wikipedia database is a knowledge graph
+because all the Wikipedia articles are interconnected
+with each other.
+Fraud detection, recommendations engine,
+and social networking.
+So, coming from an exam perspective,
+anytime you see anything related to graph databases,
+think no more than Neptune.
+That's it.
+I hope you liked it, and I will see you in the next lecture.

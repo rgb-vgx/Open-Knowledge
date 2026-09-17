@@ -1,0 +1,221 @@
+# 64. Auto Scaling Groups (ASG) Hands On
+# Section: ELB & ASG - Elastic Load Balancing & Auto Scaling Groups
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20055896
+# Caption: en_US (manual)
+
+So before we go ahead
+and practice creating an auto scaling group,
+you need to take your first two instances,
+and we're actually going to terminate them.
+Okay, so now this is done,
+we can go ahead and create an auto scaling group.
+For this, on the bottom left,
+click on Auto Scaling Groups,
+and we will create an auto scaling group.
+So I'll call this one DemoASG.
+And we need to create a launch template.
+So currently we have none.
+So let's create a launch template.
+And I will call this one DemoLaunchTemplate.
+And this template is being used to tell to the ASG
+how to create EC2 instances within it.
+So this will look very, very similar
+to what we have when we create EC2 instances.
+As you can see here, I can choose,
+for example, a quick start Amazon Linux,
+for getting Amazon Linux 2,
+as the base of my EC2 instance.
+Then we have an instance type that we can include,
+for example, t2.micro.
+For key pair, we will not include it in the launch templates
+or we can just say that, no, we don't need one.
+So this is good enough.
+For subnets, so we'll not include this
+in the launch templates.
+For security group,
+we can select a security group that's already existing,
+for example, my launch-wizard-1.
+Under Advanced Network Configuration,
+we won't do anything.
+For EBS volumes for storage,
+we don't need to do anything.
+And then for Advanced Details,
+we want these instances to start with some user data.
+And so we scroll all the way down,
+and here we copy and paste the user data.
+Okay, so let's create this launch template.
+As you can see, thanks to this launch template,
+we launch EC2 instances just like before.
+So let's refresh this,
+and then click on the DemoLaunchTemplate of Version 1.
+So here it describes what is going to happen,
+the type of instance we're going to have,
+the security groups and so on.
+So let's click on Next.
+Next we have instance type requirements.
+So as we can see here,
+I have a t2.micro directly coming from my launch template.
+But we could override this,
+but we're not going to do it.
+Then for network, which is a VPC.
+And then within the VPC,
+we choose the different availability zones
+where we may want to launch our EC2 instances.
+So I selected three.
+And then I will just use balanced best efforts
+as an AZ distribution.
+This is just a default option.
+To come next,
+next, we need to choose about load balancing.
+So we want to attach our ASG to an existing load balancer.
+And so therefore you're going to click
+on the Attach to an Existing Load Balancer,
+and then you will choose your demo-tg-alb
+that you've created from before
+to automatically attach these new EC2 instances
+to the target group that was created from before.
+We don't touch anything about VPC Lattice,
+we don't touch anything about zonal shift.
+And for the health checks,
+we have the EC2 health checks always enabled.
+But we're also going to turn on the ELB health checks,
+the Elastic Load Balancing health checks
+so that if my load balancer detects
+that my EC2 instances are unhealthy,
+it will automatically terminate them.
+All right, let's click on Next.
+Next we have group size.
+So here we can define the desired capacity
+as well as the minimum capacity and the maximum capacity.
+So we'll choose a desired capacity of 2.
+And then the min is 1,
+and the max has been automatically adjusted to 2.
+But we can also set it as 4.
+Next, we have the ability to have automatic scaling.
+For now, I will not set up one,
+but we'll look into this later on.
+And then we have instance maintenance policy.
+So right now I don't wanna change anything
+to keep it simple.
+So we'll choose No Policy.
+For Additional Capacity Setting,
+we'll just choose the default right now
+and not worry about it.
+And then we will not touch anything
+around these additional settings.
+So we don't need any notification,
+and then we don't need any tags.
+And then we can review all the options.
+And when we're happy,
+we just click on Create Auto Scaling Group
+to get it created.
+So now our auto scaling group is being created,
+and as you can see, the state is updating capacity
+because we have zero instances in our ASG.
+But we want two.
+So I can click on it to get a bit more details.
+So let's go under Activity.
+And in here we have two activity history.
+That is, we are launching two new EC2 instances
+because, well, the desired capacity went from zero to two.
+And so if we have a look under the Instance Management tab,
+as you can see now,
+two EC2 instances are in the pending states.
+So if I go under EC2
+and look at my EC2 instances,
+in that UI, we also see
+that two instances are running,
+and these have been created by my auto scaling group.
+So the benefit is that now they are fully managed
+by my auto scaling group.
+And let's go see, for example, in my target group as well.
+So if I go to my target group on the left-hand side
+and look at my demo-tg-alb right here.
+Scroll down.
+As you can see, now we have two total targets,
+and these are the targets
+created by our auto scaling group.
+So, again, thanks to the integration that we've defined
+between the auto scaling group and the load balancer,
+we are able to have automatically these new EC2 instances
+registered as targets in our target group.
+So currently they're unhealthy.
+This is because the instance hasn't started all the way yet.
+So let's wait a little bit until they become healthy.
+So to speed up the check from unhealthy to healthy,
+you can go under Health Checks of your target group.
+And here we can edit the settings.
+And under Advanced Settings,
+we can say that the healthy threshold is going to be 2
+and the interval is going to be five seconds.
+This is going to make the thing much quicker.
+So of course the timeout needs to be two seconds,
+something less than the interval itself.
+So let's save our changes.
+And now the health check settings have changed.
+Let's see, if I go back into my targets and refresh,
+now both my instances are healthy.
+We just made the health check happen faster and more often.
+So now both my instances are healthy.
+And so therefore if I go under my load balancer right here
+and I look at the DNS name and open it in a new tab,
+I get a hello world from both my instances.
+And this is cool because these two instances
+were created by the auto scaling group.
+So because now we have an auto scaling group,
+we can actually do some cool stuff.
+So if we take one of these instances, for example,
+and we can, for example, terminate it.
+So I'm going to click on it.
+And under the instance itself,
+I will do Instance State and then Terminate Instance.
+Now it's been successfully terminated.
+So what's going to happen
+is that because this instance
+is being shutting down and terminated,
+well, my auto scaling group
+is going to detect that, guess what?
+One of these instance is not in service anymore.
+It's being terminated.
+And so, therefore, because we have an auto scaling group
+with a desired capacity of two instances,
+automatically a new instance should appear.
+So let's observe this behavior
+by having here the activity history.
+And as you can see,
+in progress was terminating EC2 instance.
+And so an instance was taken out of service
+because, well, it's been terminated.
+And then we have a new activity
+saying, "Hey, an instance was launched
+"in response to an unhealthy instance
+"needing to be replaced."
+So it's very cool because the auto scaling group
+can automatically detect unhealthy instances
+and create new one for replacement.
+So if we go here now,
+there's one instance in pending state
+which is being started,
+one instance being terminated,
+and one instance in service.
+And this is the whole power of auto scaling groups.
+Of course we can go to the next level,
+but for now we know enough,
+which is around automatic scaling,
+to actually define scaling policies
+to automatically increase or decrease
+the desired capacity over time
+based on our load and so on.
+But here you've seen the basics
+and the major features of auto scaling groups,
+and you could play around
+by editing the desired capacity yourself
+to set it to 1, for example,
+to terminate instances and only keep one of them
+or to set it to 4
+and see the auto scaling group create multiple instances
+that will be registered with our load balancer,
+and so therefore the traffic
+is going to be distributed between four instances.
+So I hope you liked it,
+and I will see you in the next lecture.

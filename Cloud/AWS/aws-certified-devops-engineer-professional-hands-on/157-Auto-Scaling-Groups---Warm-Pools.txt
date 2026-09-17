@@ -1,0 +1,231 @@
+# 157. Auto Scaling Groups - Warm Pools
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904524
+# Caption: en_US (manual)
+
+So now let's talk about warm pools.
+And here is the problem, when you have an auto-scaling group
+and it scales out, that means that when you add instances
+into your auto-scaling group
+you want to launch instances as fast as possible.
+But sometimes your instances
+they're doing some initialization,
+they're doing some bootstrapping,
+and that can take several minutes before your instances
+are actually available to serve traffic.
+So you could be also getting some data,
+filling in some internal states for such as a cache
+you run configuration scripts, etc. etc.
+So historically, the solution was
+to over-provision compute resources
+in order to absorb the unexpected demand.
+But then this is going to lead
+to an increased cost because you're over-provisioned
+or you try to fit as much as possible
+into a golden image to try to reduce your boot time.
+But none of these are perfect, and actually
+you want to use the auto scanning group warm pools.
+So what are these warm pools?
+Well, the idea is that we have a pool
+of pre-initialized instances, and by having this
+we are going to reduce the scale-out latency.
+So let me explain.
+Say we have a auto-scaling group
+with a desired capacity of 3 and a max capacity of 6.
+Then the warm pool is going to be of size 3.
+Three is by default the difference
+between the max capacity and the desired capacity.
+So 6 minus 3 equals 3.
+That's basically the maximum number of instances
+that can be put from the pool
+into the auto-scaling group until we reach the max capacity.
+And so these instances in the warm pool
+they have been pre-initialized.
+So all the setup you need has been done
+and then there go into a state.
+We'll see the state is either started, stopped,
+or hibernated.
+But the idea is that whenever you have a scale-out event
+then the new instance is going to be going
+from the pool into your auto-scaling group.
+So the idea is that by doing this,
+the instance that comes into the auto-scaling group
+has done some pre-initialization work.
+Now, let's go into the warm pool size setting.
+So we have the minimum warm pool size.
+This is the number of instances you always want
+in the warm pool no matter what.
+Then the max prepared capacity, either it is equal
+to the max capacity of the auto-scaling group.
+That means that to see how many instances you have
+in your warm pool, you do the difference
+of the actual desired capacity
+of the ASG and the max capacity.
+Or if you have, say for example, a max capacity
+of 1,500 instances and a desired capacity of 1000
+you may not want to have one 500 instances
+in your warm pool.
+So you may want to specify just a set number of instances
+for example 100, so that it remains manageable,
+but at small sizes the default is fine.
+Now, more importantly, the warm pool instance state.
+So we'll talk about this in a second, but it can be
+either in the running state, stopped, or hibernated.
+And the idea is that you may want to leverage the stopped
+or hibernated state.
+This is where you get the best cost savings
+and that's where it makes the most sense.
+So the idea is that you initialize your instance
+and then when it's initialized, you either put it
+in the stopped or the hibernated states
+and then all of a sudden when you scale-out
+it will be started and put
+into the main auto-scaling group.
+On top of it, any instance in the warm pool
+does not contribute to your ASG metrics
+until it is put into the ASG.
+So this doesn't affect scaling policies.
+So let's understand why it's also very cost effective
+to have warm pools.
+So as mentioned
+we have definitely have latency improvements
+because now the instances have been warmed
+and they're ready to serve traffic
+and then we put them into the ASG.
+Let's take a look at the pricing
+for one m5 large instance.
+So if we decide to over-provision our ASG,
+then we're going to pay for the running cost
+of that instance.
+For example, $70 plus the EBS charges
+for the disk attached to your instance.
+But if we decide to use a warm pool
+and so the warm pool makes the EC2 instance
+goes into the stopped states
+then we're only going to pay for the EBS volume.
+So the EBS volume, for example,
+for 10 gigabytes EBS volume will cost us $1 for a month.
+So that means that for each EC2 instance in the warm pool,
+you're going to pay about $1 a month
+which is very, very little compared
+to the cost of actually running an instance.
+So here for not that much money
+we have the ability to keep a very large warm pool
+of EC2 instances
+in order to very quickly have these instances serve traffic.
+So how do you choose between running
+stopped and hibernated?
+Well, I made this little diagram right here
+and hopefully that helps you.
+So the idea is that if you're in the running states
+you're going to get your instances immediately
+available to accept traffic and no start delay
+because your instances are already running.
+But I don't think this is very efficient
+because while the instances are running in your warm pool
+and therefore they will incur cost even when
+they're not serving traffic.
+So definitely not my first choice.
+Next we have stopped.
+So the scale-out delay is slower
+because the instance needs to be started
+before traffic can be served.
+So that add some delay and the start delay is slower
+because well, you have already initialized the instance
+but you still need to, for example,
+start your application again.
+Now in terms of cost, you don't have any running cost.
+You're only going to pay for the attached resources
+such as your EBS volumes or elastic IPs
+but I don't think you're going to use elastic IPs
+with the ASG warm pools.
+And so that makes it way more cost effective
+as you saw from my previous analysis.
+And the one I really liked right now is hibernated.
+Well, hibernated makes the EC2 memory states
+be put on disk before the instance
+is quote unquote "stopped."
+So the idea is that when you have a scale-out
+the instance is pre-initialized
+so it's going to be quite fast actually.
+Then the startup is going to be faster as well
+because the application is already started in memory
+so it's going to be quite fast.
+And then for the cost, well, you don't have any more cost
+than for a stopped instance because you only pay
+for the EBS volume attached to your EC2 instance.
+But because you're using hibernation
+the entire memory state is written to the disc
+and so you may need to have a slightly
+larger EBS volume to fit that memory state.
+But that's why I love hibernation is because
+everything is pre-initialized in memory.
+And so to me, you're getting the best of both worlds
+between stopped and running.
+Now let's talk about the instance reuse policy.
+So by default, your ASG, when it terminates an instance
+it will terminate it from the ASG and then
+there will be a new instance launched into the warm pool.
+But you can set up an instance reuse policy to instead
+return the instance back into the warm pool.
+So the idea is that upon quote unquote "termination,"
+a scale-in event actually the instance is not terminated
+it is moved back into your warm pool, and then
+your warm pool can do whatever it wants with the instance.
+So you may want to use this or you may want to use
+the default mechanism
+which is that the instance actually gets terminated.
+So when you're using warm pools
+in order for everything to work correctly
+you must use lifecycle hooks.
+So let me explain why.
+So when an instance gets started into a warm pool
+it will go into the state named warm pending
+and then you will have access
+to the lifecycle hook named warmed pending wait.
+And the idea is that the instance will stay
+in that state until you have confirmed
+that the initialization of the instance has completed.
+So this is why it's very important to use lifecycle hooks.
+So that's when the ASG knows, okay,
+this warm instance is ready.
+When it's ready, it's going to go into
+the warmed pending proceed state, and then it will go
+into whatever state you've chosen for your warm pool.
+So it could be warmed stop, warmed running,
+or warmed hibernated.
+And so we've completed the initialization
+of our instance in our warm pool.
+Now, whenever we have a scale-out event, the instance
+from the warm pool is going to be put into our ASG.
+So we go into the pending state, then pending wait state,
+this is exactly the same as a normal lifecycle hook.
+Here we can do whatever we want, for example
+more initializations, then we go into pending proceeds
+and then the instance is in service.
+So very similarly, if we terminate the instance
+and we don't have an instance reuse policy,
+then the lifecycle hooks are exactly the same
+as a normal ASG.
+So terminating, then terminating wait,
+then terminating proceed, and finally terminated.
+But in case we are using a instance reuse policy
+then the instance is put back into the pool
+and it goes again into the warmed pending state,
+warm pending wait, warm pending proceed,
+and then finally warm stopped or running or hibernated.
+So to summarize, in case of a scale-out event
+what's going to happen is that first the instance
+will have a warmed pending wait state
+in which we can do a lifecycle action to be completed
+before the instance actually gets into the stopped state
+or whatever state you've chosen for your warm pool.
+And then when there's a scale-out event
+then it will go into the pending wait state
+because the instance is starting.
+You can do again a life cycle action
+before the instance is put in service
+and then the instance will be put
+in service and available to serve traffic.
+Okay, so that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,40 @@
+# 148. MLFlow for LLM Experimentation
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57866029
+# Caption: en_US (auto)
+
+Something you might see mentioned on the exam is MLflow.
+That is a open source platform for machine learning and gen AI workflows.
+So we've seen a few different ways of doing this already.
+SageMaker Pipelines, for example, does very much the same thing.
+But MLflow is popular and you might not want to stop using it.
+So if you already are familiar with MLflow,
+you don't have to stop using it with SageMaker
+because it's fully integrated with SageMaker AI.
+It offers observability, evaluations, tracking, tracing, and also an AI gateway,
+as well as managing your models and the deployment of those models for you.
+So it's very similar to SageMaker itself in scope, really.
+And it is fully integrated into Amazon SageMaker AI.
+So if you're familiar with the MLflow tools,
+you can use that on top of SageMaker as sort of an alternative interface, if you will.
+So it is a fully managed service.
+You don't have to worry about the actual resources for MLflow itself.
+As you can see from this diagram on the right,
+for its compute and storage requirements,
+it's actually getting that from the SageMaker service directly under the hood.
+You don't have to think about that.
+And for any output, for any actual artifacts that it produces,
+those will go into your S3 buckets as a customer.
+So it's all tightly integrated into the computing and storage capabilities of AWS itself.
+You don't have to manage those resources.
+It does integrate with SageMaker's model development, management, deployment,
+and tracking features under the hood.
+So it just makes it look like MLflow instead of SageMaker.
+Those integration points include SageMaker Studio, SageMaker Model Registry,
+SageMaker AI Inference, IAM.
+It's also integrated with that for permissions and whatnot.
+It integrates with CloudTrail to keep track of what it's doing,
+and it integrates with EventBridge for managing events as part of its workflows.
+So MLflow, just an open source platform for ML and Gen AI workflows,
+and it is fully integrated into SageMaker.
+That's the main takeaway for the exam.

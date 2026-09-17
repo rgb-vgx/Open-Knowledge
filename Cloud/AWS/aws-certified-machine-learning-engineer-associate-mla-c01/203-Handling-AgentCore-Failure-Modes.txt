@@ -1,0 +1,50 @@
+# 203. Handling AgentCore Failure Modes
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865823
+# Caption: en_US (auto)
+
+Let's talk about some specific failure modes in AgentCore that you might need to know about.
+They basically fall into three categories.
+One is coordination failures.
+So this is specific to multi-agent workflows.
+One thing that can happen is that your workflow will stall or lose its state in the middle
+of handing off between agents.
+Some tools you can use here is storing a checkpoint state in your AgentCore memory so that you
+have that information to resume from.
+You can also have a timeout in place between those agents and retry them if necessary.
+So this is important to make sure that those multi-agent workflows are idempotent, otherwise
+those retries could be harmful, right?
+So we need to make sure that it's safe to do that retry.
+And you can also introduce yet another agent.
+So if the problem is your agents aren't talking to each other properly, maybe the solution
+is yet another agent that supervises them.
+A supervisor agent could watch it and detect those stalled workers and raise the alarm
+on that and try to deal with it automatically in that case.
+There's also the problem of truncated streaming.
+So what if I'm streaming a response back and it gets caught off in the middle?
+I've seen that happen.
+Well one thing you can do is make sure you're checking the stop reason to figure out why
+that truncation happened in the first place.
+Hopefully there's some context here that you can use in your application to retry it or
+figure out what happened and get to the root cause.
+And if that does happen, if you're buffering your events, it should be possible to resume
+from the last chunk that you received.
+If all else fails though, you can fall back to a non-streaming retry.
+So if you just can't get back a streaming response in one piece, maybe you need to fall
+back to a non-streaming query.
+Also tool failures.
+This is probably the more common case.
+So you have some external tool you're calling through the gateway and it errors out or it
+times out on you.
+So the basic thing you can do is make sure that your tools that you have control over
+are returning the information that the agent needs to deal with that error.
+So don't just return an error and say, ah, I broke.
+You want to return structured error information that the LLM, the agent can then act on and
+find an appropriate backup or an appropriate retry mechanism.
+And maybe the mechanism is to retry with exponential backoff or something like that, or apply the
+circuit breaker pattern or have other tools that it can fall back on if a given tool fails on you.
+Observability is the key.
+You're not going to know about these failures if you're not watching for them.
+So make sure you're using CloudWatch or OpenTelemetry and have alarms on error rates.
+And again, keep your tools at impotence.
+So if you do need to retry, that is safe to do so.

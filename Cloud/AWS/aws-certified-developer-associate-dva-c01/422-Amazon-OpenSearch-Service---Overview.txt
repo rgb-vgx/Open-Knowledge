@@ -1,0 +1,98 @@
+# 422. Amazon OpenSearch Service - Overview
+# Section: AWS Other Services
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527984
+# Caption: en_US (manual)
+
+So now, let's talk about the Amazon OpenSearch Service.
+An Amazon OpenSearch is a successor
+to something you may have heard before called,
+Amazon ElasticSearch.
+So the name change was due to some licensing issues.
+So in DynamoDB, just to do a comparison,
+you can only query the data by primary key
+or if you have indexes on your database.
+But with OpenSearch, you can actually,
+as the name indicates, search any fields,
+even for partial matches.
+So it's very common to use OpenSearch to provide search
+to your application.
+And so you would use OpenSearch
+as a compliment to another database.
+So OpenSearch can be used for search,
+but also as the name doesn't indicate,
+you can also do analytic queries on top of OpenSearch.
+So you have two modes to provision an OpenSearch Cluster.
+Either you use the managed cluster option
+and then actual physical instances will be provisioned
+for you and you will see them.
+Or you can go the serverless route
+and have a serverless cluster,
+where everything from scaling to operations
+is handled by AWS.
+And OpenSearch has its own query language,
+it does not natively support SQL,
+but you can enable SQL compatibility via a plugin.
+So you can ingest data from different places,
+such as Kinesis Data Firehose, IoT, CloudWatch Logs,
+or any of your custom-built application.
+You have security provided
+through integration with Cognito, IAM,
+you get at rest encryption and in-flight encryption.
+And as I said, you can do analytics
+on top of the OpenSearch Service,
+so you can use something called OpenSearch Dashboards
+to create visualizations on top of your OpenSearch Data.
+So here are some common patterns to use OpenSearch.
+So you would have DynamoDB and it will contain your data.
+This is where your users will insert
+and delete and update data.
+And then you send all the streams in a DynamoDB Stream,
+which is then picked up by a Lambda Function.
+And that Lambda Function will insert the data
+into Amazon OpenSearch in real time.
+And through this process,
+what happens that your application
+now has the ability to search for a specific item.
+For example, to do a partial search with the item name
+and then find the item ID out of it.
+And then once the item ID is obtained,
+then it will call DynamoDB to actually retrieve
+the full item from your DynamoDB Table.
+So that's a common pattern in which OpenSearch
+provides the search capability,
+whereas your main source of data still remains
+your DynamoDB Table.
+There's also other ways you can ingest CloudWatch Logs
+into OpenSearch.
+So the first one is to use what's called
+a CloudWatch Log Subscription Filter,
+sending data in real time to a Lambda Function
+that is managed by AWS.
+And then the Lambda Function in real time
+sends all the data into Amazon OpenSearch.
+Or you can also use a CloudWatch Logs
+and then Subscription Filter.
+But this time Kinesis Data Firehose
+can read it from the Subscription Filter.
+And then near real time,
+because this is Data Firehose,
+data will be inserted in Amazon OpenSearch.
+Other patterns are on Kinesis,
+so to send Kinesis Data Streams into Amazon OpenSearch,
+you have two strategies.
+The first one is to use Kinesis Data Firehose.
+This is a near real time again type of service.
+You can optionally do some data transformation,
+using a Lambda Function and then send data
+into Amazon OpenSearch.
+Or you can use Kinesis Data Streams again,
+but this time, you would create a Lambda Function
+that would read the data stream in real time.
+And then you would write custom code
+to have the Lambda Function write to Amazon OpenSearch
+in real time.
+So all these patterns are valid,
+and now you know pretty much all the possible architectures
+for using Amazon OpenSearch.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

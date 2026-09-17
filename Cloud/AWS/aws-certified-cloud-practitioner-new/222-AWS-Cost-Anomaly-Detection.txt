@@ -1,0 +1,32 @@
+# 222. AWS Cost Anomaly Detection
+# Section: Account Management, Billing & Support
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/36566072
+# Caption: en_US (manual)
+
+So here is a quick lecture
+on the service named AWS Cost Anomaly Detection.
+And the name is quite explicit this time.
+So this continuously monitors your cost and usage data,
+and it will use machine learning to detect unusual spends.
+So it's going to learn from you.
+It's going to learn your unique historical patterns,
+and then it will detect one-time cost spikes
+and/or continuous cost increases.
+And you don't have to define anything,
+you don't have to define thresholds.
+It just knows on its own what looks a little bit weird.
+So it's going to monitor for your AWS services,
+your member accounts, your cost allocation tags,
+and your cost categories.
+And it will send you an anomaly detection report
+with the root cause analysis
+of what is happening in your account.
+You can get notified by either using individual alerts
+or a daily or weekly summary that leverages SNS.
+So to summarize, using machine learning,
+you can have a look at your cost,
+you can get alerted and quickly analyze the root cause,
+all of using the AWS cost anomaly detection service.
+Okay, that's it.
+I hope you liked it,
+and I will see you in the next lecture.

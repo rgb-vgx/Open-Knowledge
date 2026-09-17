@@ -1,0 +1,137 @@
+# 47. Elastic Network Interfaces (ENI) - Hands On
+# Section: EC2 - Solutions Architect Associate Level
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26118774
+# Caption: en_US (manual)
+
+So let's practice
+elastic technical interfaces,
+and to do so let's go ahead and launch two instances.
+So I can just scroll down,
+Amazon Linux 2, t.2.micro.
+I'll just choose whatever key pair, doesn't matter.
+For network settings,
+I will just use an existing security group
+which is my launch wizard one.
+This is great.
+And then I will launch two instances in here,
+and then click on launch instances.
+So what I wanna show you is that from these instances
+we're going to get these two, and under networking,
+if we scroll down,
+we're going to look at the network interfaces.
+So each of these instances
+is going to have one network interface,
+and we have an interface ID.
+So there's an ENI and an ID right here.
+And each interface contains a public IPv4,
+a private IPv4 and a private IPv4 DNS.
+So as we can see,
+if we go on the left hand side,
+so on the two instances,
+we're gonna have two different network interfaces.
+And if you go on the left hand side,
+under network and security,
+we're also going to have the network interfaces.
+So here we can find the two ENIs,
+one of each is going to be attached
+to our EC2 instances,
+and we can know it by going to the right hand side,
+and the status is in-use,
+and we can see that they are linked
+to different instance IDs.
+The one thing we can do
+is that we can create a new network interface.
+So in this instance, we can give our description.
+So demo ENI.
+We can to select a subnet for our ENI to be in.
+So it is linked to a specific AZ,
+and I will choose the AZ
+my EC2 instances are in,
+so us-east-2a.
+So let's choose, not this one, this one.
+Then we want to auto assign a private IPv4,
+but we could also customize and say,
+which IPv4 we want within the subnets,
+so we'll use auto assign.
+And then we can attach a security group to our ENI.
+So here we go and then create this network interface.
+So now we have created a new network interface
+and it is right here, the demo ENI, and it is available.
+So as we can see right now, we have created basically
+a secondary private IPv4.
+And what we can do is that we can attach this
+to our instance so we can do action,
+attach and choose an instance to attach it to.
+So I'll choose this one and attach it.
+And now if we go to our instance and refresh,
+let's go back to our instances and refresh.
+So we'll go into networking and scroll down.
+So this one, I got lucky.
+This one has two network interfaces.
+And one of them was the primary one,
+which gives us a public IPv4 and a private IPv4.
+And this demo ENI gives us a secondary, private IPv4.
+So why would you do this?
+Well, this ENI we have control over,
+so we could take it,
+and we could actually move it
+from one EC2 instance to another,
+imagining that the two EC2 instances
+are running the same application
+and we want to access them using the private IPv4.
+Then we can move the ENI over.
+And the reason for doing so
+is that we can do a very quick and easy network failover
+between the two instances by moving an ENI,
+because we can attach an IPv4 from one instance to another.
+So let's do a demo of that. So I'm going to take this ENI.
+I'm going to detach it.
+Yes, detach.
+And then once it's going to be detached in a few seconds
+we can reattach it to the other instance,
+and to do so, by the way,
+maybe it's going to be an issue to detach it like this.
+So what I can do is just click on it,
+and to action detach with a force detach.
+So here we go.
+So after refresh, all the error messages are gone.
+We can do action, attach,
+and then we can choose the other instance to attach it to,
+so then make sure yes, that's the other one.
+So I'm going to attach it to the other instance
+and now it's being attached.
+And so, as we can see now, if I refresh this,
+from two network interfaces, there's going to be only one.
+And the other instance now has two network interfaces.
+And this demo ENI I has moved to my other instance,
+so we can see how we could do some failover
+between the instances with the ENI,
+which I think is really, really cool,
+but it is advanced, okay.
+And that's something you have to practice on your own.
+So finally, if we go ahead and terminate these instances,
+so let's terminate them and see what happens.
+So they're shutting down,
+and now from the ENIs, what do you think is going to happen?
+So we have three ENI right now,
+two were created alongside my EC2 instances,
+and one was created manually.
+Well, maybe you guess right?
+So what's going to happen is
+that my ENI that was created manually is going to stay.
+Whereas the two ENIs
+that were created alongside the instances
+are going to be automatically deleted.
+So by creating your own ENIs,
+you have more control over your private IPv4s,
+and more control over your networking.
+And that could be a helpful
+in some type of advanced use cases.
+So we can see when ENI is gone
+and the other one should be gone very soon.
+So that's it for this hands-on.
+You can leave the ENI on if you want,
+or you can can delete it. It will not cost you any money.
+So that's it for this hands-on.
+I hope you liked it.
+And I will see you in the next lecture.

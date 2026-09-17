@@ -1,0 +1,112 @@
+# 203. SageMaker AI Overview
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20587274
+# Caption: en_US (manual)
+
+Okay, so now let's talk about Amazon SageMaker.
+So SageMaker is a fully managed service
+for developers and data scientists
+to build machine learning model.
+So all of the services so far we've seen
+in this section that are all
+managed machine learning service with
+a very specific purpose,
+for example translates some text,
+transcribes some audio,
+or convert text into audio
+or analyze parts of a text,
+but SageMaker is a higher level
+machine learning service where you have
+your actual developers or your data scientists
+within your organization create
+and build machine learning model.
+So it is a lot more involved
+and a lot more difficult to use.
+Now, when you want to do this kind of processes
+to build a machine learning model,
+you have to do a bunch of steps that I will show
+you in a second,
+and all these are quite difficult to do
+in one place,
+plus you need to provision some servers
+to perform these competitions to create these models,
+and that can be cumbersome as well.
+So this is where SageMaker comes in.
+So SageMaker will try to help you all along the way
+for the process.
+So I will show you what machine learning actually is,
+and this is a simplified version,
+if you are a machine learning expert
+don't get mad at me please,
+but let's say you wanted to build a model,
+or let's say I wanted to build a model
+to predict what score you're going to get
+at your certified CLAP practitioner exam.
+So how will I do it?
+Say for example that I am a developer
+or a data scientist,
+so I'm going to gather all your data from
+the actual performance of my students.
+So I will ask maybe 10,000 students
+to give me information about how many years of experience
+in IT they had,
+how many years of experience with AWS they had,
+how much time they spent on the course,
+how many practice exams they did, etc. etc,
+so I'll try to gather as much data as possible,
+and then I'm going to label the data.
+So that means you need to say which columns
+corresponds to what,
+and also you need to give some kind of score,
+and the score is the actual score for me
+at the exam that someone obtains.
+For example someone did not pass,
+670, maybe he didn't do the course completely,
+that would be the reason.
+Maybe someone passed with high grade,
+so 990 or maybe someone with an even higher grade 934,
+so, each student will get a specific score,
+and my guess is that based on the data that I've collected
+I can predict what the score will be.
+So I've first done the labeling,
+and that labeling process can be quite complicated to do
+in practice.
+Then I need to build a machine learning model,
+which is how can I predict these scores
+from the historical data.
+So, then you build that machine learning model
+and then you have to train it
+and tune it.
+So this is another part that's actually quite difficult
+to do, which is how to refine my model over time
+to better fit my data and my outputs.
+Okay, so now SageMaker and all of this will help
+you with the labeling,
+the building, the training
+and tuning, but not only.
+Now we have a machine learning model
+and it is created,
+it's fully working.
+So now I need to use it.
+So this is called deploying machine learning models.
+So, we're going to get new data coming in.
+For example you are the new student,
+and I'm going to survey you,
+and I'm going to say okay,
+how many years of experience do you have in IT,
+with AWS, how much time have you spent on this course,
+and then I will apply based on this data
+you just given me,
+I will apply the machine learning model that I have created
+from before.
+And then the machine learning model will say,
+for example, hey it sends based on the data you have
+I'm going to predict that this student
+will pass with a score of 906.
+And this whole process,
+of labeling, building the model,
+training it, tuning it,
+applying it can be all done within SageMaker.
+So, that's it for a quick introduction,
+but I hope you liked it,
+and I will see you in the next lecture.

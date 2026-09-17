@@ -1,0 +1,17 @@
+# 172. Other Services
+# Section: Other Services
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376830
+# Caption: en_US (manual)
+
+Okay, so this section is dedicated
+to what I call other services.
+These are services you don't need to know in depth,
+but you need to know what they are about
+to use them correctly in the questions.
+So it's going to be a bunch of very, very short lectures
+on different topics, and so, hopefully,
+I will show you all you need to know
+to understand these services at a high level,
+and that will be all the knowledge you need to know
+going into the exam, so happy learning
+and I will see you in the section.

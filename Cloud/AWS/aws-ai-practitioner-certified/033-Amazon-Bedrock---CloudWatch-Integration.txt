@@ -1,0 +1,54 @@
+# 33. Amazon Bedrock - CloudWatch Integration
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45796635
+# Caption: en_US (manual)
+
+So now let's talk about
+the integration of Amazon Bedrock
+and a service called CloudWatch.
+So CloudWatch is a way for you to do cloud monitoring.
+So CloudWatch has many services,
+but you can have metrics, you can have alarms,
+you could have logs and so on
+in CloudWatch and view them all.
+And many services and areas have integration
+with CloudWatch.
+So for Amazon Bedrock,
+what you can do is you can do model invocation logging,
+and that's something that can come up at the exam.
+So the idea is that you want to send all the invocations,
+so all the inputs
+and the outputs of model invocations into either CloudWatch
+Logs or Amazon S3.
+And this can include the text, the images,
+as well as the embeddings.
+And this is very helpful because you get a history
+of everything that happened within Bedrock.
+On top of it, you can analyze the data further
+and build alerting on top of it,
+thanks to CloudWatch Logs Insights,
+which is a service, which allows you
+to analyze the logs in real time from CloudWatch Logs.
+So the idea here is that we get full tracing
+and monitoring of Bedrock, thanks to CloudWatch Logs.
+The other one is CloudWatch Metrics.
+So the idea is that Amazon Bedrock is going to publish a lot
+of different metrics to CloudWatch, and then
+they can appear in Cloud Metrics.
+And some of them may be for general usage of Bedrock,
+but some of them may also be related to guardrails.
+So there is one called content filtered count,
+which helps you understand if some content was
+filtered from a guardrail.
+And so what we can do with it is
+that once you have these kind
+of metrics in CloudWatch Metrics,
+you can build cloud alarms on top of them to get alerted,
+for example, when something is caught by a guardrail
+or when Amazon Bedrock is exceeding a specific threshold
+for a specific metric.
+So model invocation logging
+and CloudWatch metrics are very important in Amazon Bedrock
+and they are topics that can appear in the exam.
+So I hope you liked it and I will see you
+in the next lecture.

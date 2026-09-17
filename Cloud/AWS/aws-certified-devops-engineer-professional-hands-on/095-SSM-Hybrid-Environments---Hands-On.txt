@@ -1,0 +1,68 @@
+# 95. SSM Hybrid Environments - Hands On
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869570
+# Caption: en_US (manual)
+
+Okay, so let's practice hybrid activations.
+And as you can see right now on the fleet manager,
+there is nothing.
+So I'm going to go on the left-hand side panel
+and under node management I have hybrid activations.
+So I'm going to create an activation and we'll assist,
+this is for one instance
+we're going to create an IAM role
+that is going to be the default role to allow us to manage
+these instances and then click on create activation.
+So as you can see now we have an activation code
+and an activation ID.
+Now under EC2 instances, I'm going to launch an instance.
+So this one is going to be an on-premises server
+and I will choose Ubuntu just to make a difference.
+So Ubuntu is nice because it comes pre-bundled
+with one EC2 instance connect, and two VSSM agents.
+So I scroll down, we have T2 Micro,
+we don't need a key pair.
+And then under network settings we're going to create
+a security group and then we launch our instance.
+So as you can see, this is an on-premises instance.
+And so as such, we don't have any IAM role for it.
+So if you go under security, there is no IAM role.
+And of course because we have disabled any kind of default
+host management it is not going to appear
+under my managed nodes.
+So let's wait for it to be started.
+So my instance is now started
+and I can connect to it using EC2 instance connect.
+So I'm now connected and we need to check
+whether or not the SSM agent is running.
+So these are commands for Ubuntu.
+So you can run a pseudo system CTL status to see if
+the SSM agent is running.
+So it is running. That's perfect.
+Then we can stop it because we're going to register it.
+And next we have to register our instance.
+So I need to copy this entire command right here.
+And then we're going to replace with what we need.
+So we have a pseudo command and I just need to remove this.
+So pseudo command, we need to have the activation code.
+So I will just get it from this window right here.
+This is my activation code.
+Then the activation ID, so I'm going to paste
+in the activation ID I found right here.
+And finally, the region for me is EU Central one.
+And if I'm good, I press enter
+and says, okay now my instance has been successfully
+initialized with the manage instance ID this.
+So finally I can just start my agents.
+So I do pseudo snap start Amazon SSM agent.
+It is started.
+And if I go now under my fleet manager and refresh this
+it took one second, but now we can see that my
+managed node MI here is located, and if I click on it
+we see its operating system, Ubuntu
+we can see the SSM agent version and so on.
+So we've successfully performed a hybrid node activation.
+So just to finish this, I can go into my instance
+and I can just simply terminate it and we're good to go.
+Okay, that's it for this lecture, I hope you liked it
+and I will see you in the next lecture.

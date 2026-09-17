@@ -1,0 +1,49 @@
+# 267. AWS Managed Services
+# Section: AWS Architecting & Ecosystem
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/36566090
+# Caption: en_US (manual)
+
+So now let's talk about AWS Managed Services or AMS
+which is a bit weird because well many services
+on AWS that shares RDS are managed services.
+But AWS Managed Services is actually a team of people
+that is going to provide you infrastructure
+and application support on AWS.
+So AWS has a team of AWS experts
+that provide services and they are called the AMS team,
+the AWS Managed Services.
+And what they will do is
+that they will manage and operate your infrastructure
+for security, reliability, and availability.
+And they will help organizations upload routine
+maintenance tasks and focus on their business objectives.
+So it's a fully managed service and AWS is going to handle
+many common activities such
+as exchange requests, monitoring, patch management,
+security, and backup services.
+And they will implement best practices
+and they will maintain your infrastructure
+to reduce your operational overhead and risk.
+They run 24/7 and 365 days a year
+and they really help you just get started in the cloud
+and worry about other things
+and how to run the cloud itself.
+So to summarize, the managed services of AWS
+enable you to create a baseline
+and then you can sustain, build or migrate
+and they will help you with that as well.
+And then they will help you operate your infrastructure
+in the cloud.
+So it's not a service, it's not like something you can do
+from the console directly.
+You have to contact the sales of AWS.
+They will get in touch and then they will help you.
+Finally, with thanks to this
+(indistinct) the benefits while you get improved security,
+you have focus on automation,
+because most of what they do is actually automated,
+stronger compliance, reduced operating costs,
+because you are dealing with experts,
+simplified management and frictionless innovation.
+Alright, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

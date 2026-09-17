@@ -1,0 +1,88 @@
+# 138. AWS Security Services - Summary
+# Section: AWS Security Services & More
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45375637
+# Caption: en_US (manual)
+
+So now, lets have a summary of all
+the security services
+that we've seen so far in this course.
+So we have IAM users, and this is a user with an IAM.
+It's usually mapped to a physical user
+and it has a password for the console.
+IAM groups are containing users only,
+and it's a way to group users.
+And IAM policies is a document with the JSON format
+that will outline the permission
+for the users or for the groups.
+An IAM role is a role for a service.
+For example, an EC2 instance
+or any AWS service such as, for example, Amazon Bedrock,
+which is using roles to, for example, allow agents
+to perform what they need to perform.
+The EC2 instance is a server,
+so it's made of an OS and AMI.
+Instance sizes, so CPU, RAM, we've seen that there
+is a GPU type of instances
+for EC2 instances.
+It has storage, security group for network access control,
+and user data to define how these EC2 instances can come
+with some things already installed on them.
+Lambda is a way for you
+to run code in the cloud in a serverless fashion.
+So it's a function as a service, seamless scaling,
+and it's used for automations into many
+things in the AI world.
+Now, VPC Endpoints are powered by AWS PrivateLink
+and it allow you to provide private access
+to some services within the VPC.
+So that means that the network never leaves AWS.
+There's an exception to this.
+It's the Amazon S3 service, for it to be private,
+in terms of network traffic,
+you could use an S3 Gateway Endpoints.
+Now we have Macie.
+Macie is a way for you to find sensitive data,
+such as PII data, stored in Amazon S3 buckets,
+which could be very handy to do before,
+for example, training a gen AI model.
+So you want to clean the data before you actually train
+a model on this data.
+Config is to track the configuration changes
+and the complaints against some rules you may set.
+Inspector is to find software vulnerabilities in an EC2,
+in ECR images and Lambda functions.
+CloudTrail is to track API calls
+made by users within the accounts
+for any kind of service on AWS.
+Artifact gets you access to complaint reports.
+such as PCI, ISO and so on.
+And Trusted Advisors gives you insights
+and also tells you which support plan is
+adapted to your needs.
+Now if we look at Bedrock, for example, IAM
+with Bedrock is going to be used
+to perform identity verification for users
+and resource level access control.
+You will define in IAM the roles
+and the permissions to users
+so they can access Bedrock resources.
+For example, data scientists and so on.
+GuardRails for Bedrock is used
+to restrict topics directly from within the GenAI
+application, filter harmful contents
+and ensure compliance with safety policies
+by analyzing user inputs.
+If you use CloudTrail now with Bedrock, you're going
+to see within CloudTrail, all the API calls that your users,
+for example, from within IAM,
+made to Amazon Bedrock.
+For config with Bedrock, we're going to look at
+all the configuration changes within Amazon Bedrock,
+for example, how you configured and changed
+a knowledge base over time.
+And if you look at PrivateLink with Amazon Bedrock,
+this is a way for you to keep all the API calls made
+to Amazon Bedrock private within your VPC.
+So that's it for the summary.
+Hopefully that puts things in perspective.
+I hope you liked it and I will see you in the next lecture.

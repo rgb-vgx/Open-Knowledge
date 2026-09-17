@@ -1,0 +1,80 @@
+# 215. Service Quotas Hands On
+# Section: Monitoring, Auditing and Performance
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516004
+# Caption: en_US (manual)
+
+So let's have a look at the service quota,
+service type service quotas,
+and go to the service itself.
+So here we can manage the quotas of all our services
+and have a look at the limits that are in place.
+So I'm going to click on every services,
+and here are all the services on AWS,
+which is quite nice.
+And I'm just going to find one that's simple to understand.
+For example, AWS Lambda.
+So here we have the service quotas for Lambda,
+and we can see that there are some limits.
+For example, the asynchronous payload is limited
+to 256 kilobytes, and we cannot adjust it.
+That's why it is grayed out.
+But some options, for example,
+the concurrent executions is not greater.
+So I can click on it, and I can adjust it.
+For example, here at the account level.
+So we click on it and we have information.
+For example, it's been used one count.
+That means that we use approximately one of the quota
+out of the 50 that is applied as a limit on my account.
+And the maximum value here,
+or default value is 1000.
+So we can adjust it.
+For example, we can request an increase at account level,
+and now we're at 50.
+But for example, we can increase 400.
+And so from some services, the smaller increases
+are going to be automatically approved.
+For the larger ones, they're submitted to the support.
+And if it's a support, there is a timeline.
+It takes time, and you need to wait a little bit.
+So you could include it to a hundred if you wanted to.
+The other thing you could do is to monitor this.
+So you can see here,
+we have the concurrent executions here, graph.
+So I use it barely,
+but if I wanted to, I could create an alarm
+if I approach my limits.
+For example, here on the CloudWatch alarms,
+I can create an alarm.
+And we say, okay, when we're at 80%
+of the applied quota value,
+then alarm quota,
+Lambda, concurrent
+execution.
+Here we go.
+And so we create an alarm
+that will trigger at 80% of the quota.
+That could be helpful for us, for example,
+to know that we should improve the quota
+in order not to get limited.
+So the alarm is created, but we can configure the actions
+by clicking on this green button.
+And this will take us directly
+into the CloudWatch alarms UI.
+And so I can do action edits.
+And in there on step two, I can configure the actions
+and for example, send a notification
+when we are an alarm to an SMS topic, demo topic.
+And then we'll receive an email if we have an email set up
+on this SMS topic
+and then save it.
+And now we have an alarm on the quota.
+So these quotas are extremely helpful
+because well, we're going to get, first of all,
+the monitoring of the values of the quotas,
+and then we can get alarms if we think that a quota
+is going to reach a limit,
+which is great when you work in an enterprise.
+All right, that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

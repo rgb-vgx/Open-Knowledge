@@ -1,0 +1,252 @@
+# 69. Amazon S3
+# Section: Storage
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376504
+# Caption: en_US (manual)
+
+Okay, so now let's get into S3,
+S3 is gonna be for object storage, it's serverless,
+you get unlimited storage, it's pay as you go.
+We already know this, it's good for a static content.
+You access object using a key
+and there is no indexing facility,
+we can use DynamoDB for that.
+It's not a file system,
+it cannot be mounted natively on EC2, so it's good to know.
+As an anti-pattern, what is it?
+It's not good to have lots of small files.
+It's not good if you want to have a POSIX file system,
+you need to use EFS instead for POSIX.
+It's not good if you want things such as file locking.
+It doesn't have a search feature,
+queries, and it's not good for rapidly sharing data.
+And it's not good if you have a website
+that has a lot of dynamic content, okay?
+For the rest, it's a great tool.
+So here is a comparison
+of all the storage classes on Amazon S3.
+So you have Standard, Intelligent-Tiering, Standard-IA,
+One Zone-IA, and then we have three for Glacier,
+we have Glacier Instant Retrieval,
+Glacier Flexible Retrieval, and Glacier Deep Archive.
+So you should know all of them by then.
+If you don't, I would suggest you look at the documentation
+or a video, for example, in my associate courses
+that will describe all of these.
+Now, the one thing you should know though
+around these storage classes that, of course,
+you can transition objects between different tiers
+or even delete them using the S3 Lifecycle Policies.
+So S3 has a replication feature,
+for this you need to enable versioning on your buckets
+and you have two kinds of replication.
+You have the CRR, Cross Region Replication
+and SRR, Same Region Replication.
+The idea is that an S3 bucket in one region,
+for example, for Cross Region Replication
+is going to be replicated
+to another region, that happens very fast.
+You can combine this with Lifecycle Rules, for example,
+so that's in the target bucket,
+you have a Lifecycle Rule
+to transition data into the S3 Glacier tier.
+But as a default,
+the S3 replication does not take into account tiers.
+So you need to manage tiers and Lifecycle Rules
+directly on the target buckets.
+So this helps to reduce latency
+when you want to access your data globally,
+this helps with disaster recovery,
+and this helps with security.
+There's also another feature you need to know about
+called the S3 Replication Time Control, S3 RTC,
+which is a way to guarantee
+that most of the objects that you upload to Amazon S3
+will be replicated in seconds and 99.99% of those objects
+within 15 minutes.
+And in case one object is beyond the 15 minutes threshold,
+then you will receive an alarm
+thanks to CloudWatch Alarm and a metric.
+So it's extremely helpful
+when you have compliance or digital recovery needs
+and you want everything to be replicated
+at the maximum of 15 minutes between buckets.
+Then we have S3 Event Notifications.
+So it is for you to react to events happening
+within your S3 buckets
+such as S3:ObjectCreated, S3:ObjectRemoved,
+S3:ObjectRestore, or S3:Replication.
+You can filter by object name,
+for example, you say only the JPEG files I want
+and the use cases, for example, would be
+to automatically generate thumbnails
+of images uploaded to Amazon S3.
+You can create as many S3 events as desired
+and these notifications
+are typically delivered within seconds,
+but sometimes can take a minute or longer.
+So the events happen to Amazon S3
+and then you can trigger SNS, SQS, or a Lambda Function.
+But there's also a second feature
+with S3 Event Notifications
+that it was going to be leveraging
+Amazon EventBridge.
+So the idea is that all your events in Amazon S3
+are going to be shared with Amazon EventBridge
+and this is a feature you can enable
+and once they are in EventBridge,
+then you can set up any kind of very complex rules
+within EventBridge
+to send to over 18 AWS service destinations.
+So that means that thanks to EventBridge
+we can really increase the power
+of the S3 Event Notifications feature.
+So thanks to EventBridge,
+we can have advanced filtering options with JSON rules,
+so before, for just the normal S3 Event Notifications,
+you cannot filter by metadata,
+object size, object name and so on,
+but you can with EventBridge because all that information
+is available within EventBridge.
+You can also set up multiple destinations for one rule.
+For example, one rule can send data
+to Step Functions and trigger a workflow.
+You can send data directly into Kinesis Streams
+or Firehose and so on.
+And because it is using Amazon EventBridge,
+then you get more visibility into the archive feature,
+you can replay events, and you get more reliable delivery.
+So it's definitely an enhancement of S3 notifications.
+Next we get the S3 performance.
+So by default,
+Amazon S3 will scale automatically to high request rate
+and the latency will be between
+100 and 200 milliseconds to get the first byte.
+Your application can achieve at least
+3,500 PUT/COPY/POST/DELETE per second
+or 5,500 GET/HEAD requests per second
+per prefix in a bucket.
+And there's no limit
+to how many prefixes you can have in a bucket.
+But when you first need to define what is a prefix.
+so I'm gonna give you an object path
+and I'm gonna give you the prefix out of it.
+So if your file is in bucket/folder1/sub1/file,
+then your prefix in this example is /folder1/sub1/.
+If you have a sub2 file in another directory
+the prefix is going to be /folder1/sub2.
+Finally, if your file is into the directory name number one,
+then your prefix is one.
+And if your file is in prefix number two,
+then your prefix is two.
+The idea is that for each of these four prefixes
+that we have extracted out of the object path,
+we're going to get 3,500 PUT/COPY/POST/DELETE per second
+and 5,500 GET/HEAD requests per second.
+So that means that
+if you want to have a maximum amount of reads,
+you can create different prefix for your file
+and then you can scale this way.
+So if you've spread the reads of that one file
+across the four prefixes we have evenly, then we can achieve
+22,000 requests per second for GET and HEAD.
+And you can do the math for PUT/COPY/POST/DELETE, etc, etc.
+So this is for the baseline performance.
+Then we have other performance optimizations
+we can get on S3.
+The first one is for Multi-Part upload.
+This is going to be recommended for files over 100 megabytes
+and you must use it for files over five gigabytes.
+The idea is that you paralyze the upload
+to speed up the transfers
+by separating a file into multiple parts,
+hence the name Multi-Part.
+So our big file has to be sent to Amazon S3.
+We're going to divide it into parts,
+they're gonna be smaller,
+and all these parts are going to be uploaded in parallel
+to maximize the bandwidth
+and then also make sure
+that in case one of these files cannot be uploaded,
+we don't have to retry the entire thing,
+we can just retry that one specific part.
+Now once the entire Multi-Part upload is done,
+Amazon S3 will be notified of it
+and will reconstruct our bigger file into the bucket
+thanks to all the Multi-Part uploads that have been done.
+That's number one and that's for upload.
+Another performance improvement we can get
+is called S3 Transfer Acceleration.
+In this case, we increase the transfer speed
+by transferring a file first to an AWS edge location,
+which will forward the data
+to the S3 bucket in the target region,
+all using the AWS internal network.
+And this is compatible with Multi-Part upload,
+so we can combine Multi-Part upload
+and S3 Transfer Acceleration.
+So the idea is that our file is in the United States
+and we are uploading to a bucket in Australia.
+Instead of going over the public internet,
+we just go over the public internet
+to an edge location in the United States
+and then Amazon from the edge location
+will go over the private AWS network into Australia
+and that is supposedly a lot faster
+than using the public internet
+and possibly a lot cheaper.
+So that is performance improvements for uploads.
+But what about downloads?
+For this, we can use S3 Byte-Range Fetches.
+The idea is that we want to receive a big file
+and we have to separate it into parts
+and so it's ranges of bytes.
+And so we're going to paralyze the GETs
+by requesting specific byte ranges in parallel.
+As well in case one of these GETs fails,
+we get better resilience in case of failure
+because we only need to request the one part, the one range
+that has failed.
+So they can be used to speed up downloads.
+So second example, our file is in S3
+and we're going to have the first part, the second part,
+and the Nth part all requested in parallel.
+And in case one of these fail,
+we can just re-request that one part as we need.
+So this is going to speed up definitely
+your GET performance because
+we are gonna have a much higher bandwidth utilization.
+But this can also be used
+if you want to retrieve only partial data.
+For example, if you want to retrieve the head of a file
+and by head of a file, I mean the first few bytes.
+So in case you have a file in S3
+and you want to retrieve the header,
+you're going to do a Byte-range request for the header
+for the whatever bytes you need
+and this will give you the part of the file you need.
+So this saves you a lot of cost, bandwidth, and so on,
+and you can just look at what you need
+to retrieve that one specific header.
+Next we learn about a feature to
+remove incomplete parts for Multi-Part Upload.
+So when we have a big file,
+we know we can use the Multi-Part Upload feature
+to upload them part by part into an S3 buckets.
+So what will happen is that there will be parallel uploads
+into the S3 buckets,
+but it is possible for you to
+stop the parallel uploads halfway
+and therefore you will have on your S3 buckets
+some parts that are going to be missing
+and some parts that will just sit there and do nothing.
+So it's possible for you to set up an S3 Lifecycle Policy
+to say that if there is an abortion of the
+parallel upload and the parts
+haven't been touched for say seven days,
+then abort the Multi-Part Upload
+and clean, delete the all files.
+So then it will be deleted.
+And for this you can also initiate it with, for example,
+an CLI API call to list and complete Multi-Part Uploads.
+So that's it for this lecture,
+I hope you liked it and I will see you in the next lecture.

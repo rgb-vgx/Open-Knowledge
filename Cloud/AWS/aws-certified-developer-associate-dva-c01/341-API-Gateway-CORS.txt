@@ -1,0 +1,42 @@
+# 341. API Gateway CORS
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731672
+# Caption: en_US (manual)
+
+So, API Gateway
+supports the browser security cross-origin resource sharing.
+So, CORS must be enabled
+if you want to be able to receive API calls
+from another domain.
+So for this,
+API gateway works without
+and we create an OPTIONS pre-flight request
+and then, this contain the following CORS headers.
+Access-Control-Allow-Methods,
+Access-Control-Allow-Headers,
+allow origins,
+and so, these methods can be set from the console.
+And so, to summarize how CORS are and how they work,
+here is a very concrete example.
+So, our web browser goes to our S3 bucket
+to get our static website content
+which is at example.com, ww.example.com.
+And the JavaScript that we've launched
+and launched from the S3 bucket
+is asking us to make API calls
+into our cross-origin api.example.com.
+So as such, our web browser as a security,
+will make an OPTIONS pre-flight request
+into our API gateway.
+Then, our API gateway will give us a pre-flight response
+if the origin is allowed to make a cross-origin request.
+And finally, if everything goes well,
+then the web browser
+and the API gateway can talk to one another.
+So from an exam perspective,
+all you need to know
+is that CORS can be enabled on the API gateway
+in case you're doing cross-origin types of requests.
+All right, that's it.
+I hope you liked it
+and I will see you in the next lecture.

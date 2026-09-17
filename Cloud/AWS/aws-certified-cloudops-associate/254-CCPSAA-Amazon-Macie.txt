@@ -1,0 +1,29 @@
+# 254. [CCP/SAA] Amazon Macie
+# Section: Security and Compliance for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/28647204
+# Caption: en_US (manual)
+
+Now let's talk about Macie.
+Macie is a fully managed data security
+and data privacy service that will use machine learning
+and pattern matching to discover
+and protect your sensitive data in AWS.
+More specifically, it will alert you around sensitive data
+such as personally identifiable information,
+which is named PII.
+So very simply, your PII data will be in your S3 buckets
+and it will be analyzed by Macie
+which will discover what data can be classified as PII.
+And then will notify you
+through EventBridge of the discoveries.
+Then you can have integrations into an SNS topic,
+Lambda functions and so on.
+So Macie in this instance will be used
+to find the sensitive data in your S3 buckets
+and that's the only thing it will do.
+It's just one click to enable it.
+You just specify the S3 buckets you want to have
+and that will be it.
+So that's it for this lecture, very, very short,
+but that's enough on Macie.
+I hope you liked it, and I will see you in the next lecture.

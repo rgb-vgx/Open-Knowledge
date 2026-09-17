@@ -1,0 +1,65 @@
+# 192. Types of Prompts
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865729
+# Caption: en_US (auto)
+
+There are three types of prompts you should definitely know about that Amazon covers,
+and this isn't just an Amazon thing.
+These are pretty widely recognized.
+One is the zero-shot prompt, and this is a prompt where no examples are given.
+So in the previous lesson, we gave an example of where we gave it some cases to go by of
+what sentiment analysis should look like.
+We gave it an example of a positive and a negative sentiment and how to label that.
+You don't need to do that, though, all the time.
+So if you have enough information in the training of the model itself, sometimes you don't need
+to give examples at all.
+You can just say, classify this as positive or negative sentiment, and it will just go off and do it.
+So that just relies on the model being large enough to have enough training information
+to know what you want, to actually understand what you're asking for without any explicitly
+given examples handed to it.
+Again, sentiment analysis being the example I want to use for that one.
+You could just say, determine the sentiment of the following sentence and not give it any examples.
+That would be an example of zero-shot prompting.
+However, few-shot prompting is the opposite of that, where you do give it some examples.
+So in a few-shot example, you could give it some examples of the desired responses to given prompts.
+So you could say, again, determine the sentiment of the following sentence using these examples.
+I had a great time at the park today.
+Should be positive.
+That restaurant had terrible service.
+Should be negative.
+Give it as many as you want.
+The more you give it, the more you'll sort of train the system as to both examples of
+what you consider to be positive and negative sentiment and also what the output should be.
+So it's not only learning how to classify things through these examples that you're
+giving it, it's also learning the format that you want the response in.
+In this case, positive or negative.
+Finally, there's chain of thought, and I mentioned this again in the previous slide, too.
+If you tell it to think step-by-step, you can get it to try to break things down, break
+down larger problems into their subtasks.
+So an example would be describe how to solve a quadratic equation using the quadratic formula.
+Think step-by-step, starting with a standard form of a quadratic equation, identifying
+the coefficients, and then applying the quadratic formula.
+Make sure to include an example equation and solve it.
+So we've done a couple of things here.
+First of all, we said think step-by-step.
+That's telling it to break this down into a few subtasks.
+So don't try to tackle this problem all at once.
+I'm forcing you to go back and break it down into some specific subtasks here.
+And often that can result in a better result and one that's more explainable as well.
+I've also told it explicitly what to do.
+So I'm not trusting it to do that reasoning by itself on how to break down the solving
+of a quadratic equation.
+I'm giving it explicit guidance on what those steps should be.
+So I'm saying start with a standard form of a quadratic equation.
+So it can go off and retrieve that from its training data.
+Then identify the coefficients.
+It can try to figure that out on its own.
+Maybe it needs to write its own code to figure that out. I don't know.
+And then actually apply the quadratic formula.
+Again, it might go off and write some Python code to figure that out.
+But we've given it guidance on how to break this complicated problem down into more straightforward subtasks.
+And this is what the output of that might end up looking like in the real world.
+I think this is an actual capture that I did.
+So here's an example of where it actually took that example and broke it down, like
+I said, and actually solved it for the specific problem.
+It might have a harder time doing that if I did not tell it to think step by step.

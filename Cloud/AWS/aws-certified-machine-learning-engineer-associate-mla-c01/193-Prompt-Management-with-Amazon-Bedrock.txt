@@ -1,0 +1,73 @@
+# 193. Prompt Management with Amazon Bedrock
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865735
+# Caption: en_US (auto)
+
+One cool feature with Bedrock is prompt management that's built in, and that allows you to reuse
+prompts across different applications,
+so you don't have to keep reinventing the wheels.
+So if you have some sort of a specialized prompt, you can share that across applications using prompt management.
+And they may be versioned as well, so if you want to keep a history of how you've refined that prompt over time
+and you want the ability to roll back, you can do that too.
+Also, what's useful is that these prompts can include variables, and this is where it becomes super useful.
+So this isn't just a version management tool, it's a way of incorporating these prompts into larger applications,
+and we'll see how that works momentarily.
+So you can have these placeholders or variables within these prompts for some value.
+So for example, I could say, make me a music playlist for genre music with number of songs,
+and by just enclosing those variables with double curly braces,
+I can tell the prompt management system that these are placeholders for other values.
+So when I'm using this prompt within a larger application, I can obtain from the user somehow what genre they want,
+how many songs they want, and then I can pass that into this prompt,
+send that off to my foundation model to actually get that playlist back for them.
+Now I can also have prompt variants, so if I want to tweak that prompt for specific models
+or for specific inference configurations or whatever, I can also have different variants of that prompt
+that are tuned for different foundation models or whatever it might be.
+Now within the Bedrock console, we have a prompt builder tool to let us play with it,
+and we're going to do that in a moment because it'll make more sense when we see it, right?
+You can also associate tools and caching strategies with a specific prompt,
+and after we're done testing with it, we can deploy the prompt,
+and once a new prompt is deployed, we can use that within a flow,
+and Bedrock flows are ways of tying these prompts together and building larger applications out of them,
+so that's up next, but for now, let's do a quick demo and see how it works.
+All right, just to make this a little bit more real because the slide didn't really convey it,
+let's take a look at the actual prompt management feature real quick.
+So I'm in the Bedrock console here, go down to Build and Prompt Management,
+and that's where it all starts, so create a prompt, test a prompt, use a prompt.
+Sounds great. Let's create one.
+All right, we need to give it a name. Now this cannot have spaces or anything,
+so make sure that you only have letters and hyphens and underscores,
+so let's call it, I don't know, let's look at the example from the slides, music playlist prompt,
+and you can give it a description if you want. That's a little bit more descriptive.
+Generate a playlist for a given genre and a given number of songs,
+and if you want to have your own KMS key associated with it, you can,
+but I am going to let Amazon manage that for me.
+Create, and now I can actually make my actual prompt here.
+So cool. Let's open that up for system instructions too.
+If you want to give it a system prompt associated with it, that's kind of guiding it further.
+You have that option here as well. Let's give it a prompt.
+You can see here the format of double curly brackets for parameters for variables.
+We'll use that. So again, we'll just say generate a playlist of genre music or songs more specifically
+with a total of number songs, and now we need to associate that with a model of some sort,
+so we can associate that with a model or a larger agentic system if you want to as well.
+Let's stick with a model and select one, and I will use Anthropic because I like Claude,
+and I'm going to go total overkill here and use Sonnet 4.5 for this. Apply.
+All right. So we can see here we have some dials here.
+We can control the maximum output tokens here if we want to.
+We can add our own custom stop sequences. We can control the temperature of it,
+but most importantly, let's put in some test values here for the genre and number.
+So I will say, I don't know, vocal jazz, and I want 10 of them,
+and now I can actually test it within this prompt window, which is pretty cool because I did select
+a model already, right?
+So let's go ahead and run it and see if it works, and obviously in the real world,
+I probably want to give it a little bit more specific guidance there, but hey, these aren't bad.
+All solid choices. Good job, Claude.
+All right. So now that I've tested it, I can actually deploy that if I want to as well,
+and to do that, I can go ahead and, well, first of all, if I wanted to make a variant, I could do that too.
+I could create a version of it if I wanted to, like we talked about, or I can save it.
+Let's save that as a draft.
+All right. So now that I'm done building my prompt, let's go back to the level above that,
+and I can actually create a version and deploy this thing if I want to.
+So let's create a version.
+And I have published version one.
+All right. So now version one of my prompt is out there, and I can actually use that within my larger applications,
+like, for example, in an Amazon Flow, which we'll talk about next.

@@ -1,0 +1,183 @@
+# 294. AWS Certificate Manager (ACM)
+# Section: AWS Security & Encryption: KMS, SSM Parameter Store, Shield, WAF
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33879018
+# Caption: en_US (manual)
+
+So now let's talk about the AWS
+Certificate Manager Service, also called ACM.
+So with ACM, you can easily provision, manage,
+and deploy TLS certificates on AWS.
+What are TLS certificates used for?
+And they sometimes say SSL.
+So they're used to provide
+in-flight encryptions for websites.
+You know when you go to websites,
+and it says HTTPS, the S stands for secure,
+and therefore this is where you know
+that there is a TLS certificate involved in the transaction.
+So how does that work?
+Well, you have an ALB, for example,
+connected to your Auto Scaling group,
+but you want to expose your application load balancer
+as an HTTPS endpoint.
+Therefore, you would integrate it with a certificate manager
+to provision and maintain TLS certificates
+directly on your application load balancer,
+and your users will access your websites
+or your API using the HTTPS protocol.
+So ACM supports both public and private TLS certificates
+and is free of charge
+if you want to use public TLS certificates.
+There is also a feature
+to automatically renew these certificates,
+we will see this in a second on other slides,
+and you have integrations with many AWS services,
+so you can load TLS certificates on elastic load balancers,
+for example, the classic one, the application load balancer
+or the network load balancer,
+CloudFront distributions,
+or any APIs on the API Gateway.
+So what's the process to request a public certificate?
+First of all, you need to list the domain names
+that are going to be included in your certificates.
+So they could be a fully qualified domain name, FQDN,
+such as corp.example.com,
+or it could be a wildcard domain,
+for example, *.example.com,
+and you can include as many domains as you want.
+Then you select the validation method.
+Would it be through DNS validation
+or through email validation?
+And for automation purposes,
+when it comes to automatically renewing
+your SSL certificates,
+DNS validation is going to be a preferred method.
+And for email validation,
+what's going to happen is that ACM
+is going to send emails to contact addresses
+in the registrar for your domain
+and verify that you did request that certificates.
+And if you decide to do DNS validation,
+then you will have to create a CNAME record
+in your DNS configuration
+to verify that you own the domain.
+And so, if you have Route 53, for example,
+then it's automatically integrated with ACM
+to do this for you.
+Next, you have to wait a few hours to get verified
+and then your certificate will be issued,
+and this public certificate
+will also be enrolled for automatic renewal,
+that means that automatically
+ACM will renew any ACM-generated certificates
+60 days before expiry,
+which gives you a lot of peace of mind.
+So when it comes to ACM,
+what if you import a public certificate?
+So you have the option
+to actually generate a certificate outside of ACM
+and then import it into ACM.
+But, in that case,
+because it's been generated outside of ACM,
+there is no automatic renewal.
+And so therefore,
+before your existing certificate expires,
+you need to import a new one.
+And how do you know when a certificate is going to expire?
+Well, the ACM service is going to send
+daily expiration events starting 45 days prior to expiration
+into your EventBridge service.
+And the number of days can be configured.
+You can set 45, you can say 30, whatever you want.
+So that means that daily, you will have an event,
+in EventBridge for expiring certificates,
+and that's one way of doing it.
+And then from EventBridge,
+then you can trigger Lambda functions
+or SNS topics or SQS queues.
+There's another way to use AWS Config,
+and there is a managed rule in Config
+called the ACM Certificate Expiration Check,
+and it's going to check for expiring certificates.
+You can configure the number of days again.
+And so the Config service
+is going to have a rule that will check the ACM service,
+and then if any certificate is deemed not compliant,
+then the event of non-compliance
+will be sent to EventBridge.
+And yet again, we can trigger Lambda, SNS, or SQS.
+So two ways of getting these automatic alerts.
+Now, how does the ACM service integrate with ALB?
+So we've seen kind of an ALB
+with an Auto Scaling group in the backend,
+and we can provision and maintain a TLS certificate
+through the ACM service.
+But there is a very good specificity.
+On your ALB,
+you can set a redirect rule from HTP to HTTPS.
+That means that if your user is accessing
+your application load balancer on the HTTP protocol,
+the ALB will return with a redirect
+and say you need to redirect to HTTPS.
+So the user comes back to the application load balancer
+now on the HTTPS protocol,
+and therefore it will leverage the TLS certificate
+coming from the Certificate Manager.
+And then once a request is going through the HTTPS protocol,
+then it will be directed into your Auto Scaling group.
+So let's look at how ACM integrates with the API Gateway.
+But first we have to remember the endpoint types.
+So we have the edge-optimized endpoint type for API Gateway.
+This is when your clients are global
+and the requests are going to be routed first
+through CloudFront Edge locations
+to improve the latency
+and then sent to an API Gateway
+that still lives in only one region.
+You can also have the regional type of endpoints
+in which clients are within the same region
+as your API Gateway.
+In this case, we don't have CloudFront available,
+but we could still, if we wanted to,
+create our own CloudFront distribution
+to have more control over the caching
+and the distribution strategy.
+And then we have the private API Gateway endpoints
+that can only be accessed
+from within our VPC using an interface VPC endpoints.
+And we need to use a resource policy
+to define access to this API Gateway in a private mode.
+So ACM makes sense for edge-optimized
+and regional endpoints, so let's have a look at that.
+So to integrate ACM with the API gateway,
+first, we need to create a resource
+in the API gateway called a custom domain name
+and then we need to configure it.
+So for edge-optimized endpoints,
+then because the requests are routed through CloudFront,
+then the TLS certificates are going to be attached
+to your CloudFront distribution
+and therefore the TLS certificate must be created
+in the same region as CloudFront, which is us-east-I.
+So therefore, your API Gateway lives in one region,
+but then everything is distributed through CloudFront
+and your ACM certificates
+must live in the us-east-I region
+because this is where CloudFront is located.
+All the certificates for CloudFront are in us-east-I.
+So then we set up a CNAME
+or an alias record in Route 53 to be done.
+And the regional endpoints, okay,
+they're for clients in the same region as your API Gateway.
+And therefore, because we only have an API Gateway,
+then the TLS certificates must be imported on API Gateway
+in the same region as the API Stage.
+And therefore, in this example,
+my ACM is only in ap-southeast-2.
+And then we set up a CNAME or an alias record in Route 53
+to point to your DNS.
+And that's it.
+So you've learned a lot about AWS Certificate Manager
+in this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

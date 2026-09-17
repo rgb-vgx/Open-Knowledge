@@ -1,0 +1,312 @@
+# 31. SSM Documents & SSM Run Command
+# Section: Managing EC2 at Scale - Systems Manager (SSM)
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512808
+# Caption: en_US (manual)
+
+Now let's talk about the center of SSM,
+which are documents.
+And documents can be written either in JSON or YAML,
+in which you define parameters,
+to define what the document does, so actions,
+and then you will have the document being executed
+by a specific service.
+So many documents already exist in AWS
+and we can leverage them obviously
+to go faster in what we do.
+So this is what a documents may look like.
+So as you can see, there's a description,
+there's a bunch of parameters,
+and then there's some steps and each step has an action
+in which maybe you can run a command.
+So this is just a simple example.
+And if you start using SSM a lot
+you will write your own SSM documents, okay?
+But what we get out of this
+is that they sort of look like
+the idea behind CloudFormation,
+but this is at the center of SSM now we have documents
+and they're gonna be how we can describe what SSM does.
+So these documents can be simply used to run commands,
+and we'll see this in this lecture,
+but also these documents can be applied
+to other SSM features such as state manager, patch manager,
+automation, and documents can even retrieve some data
+from the SSM parameter store
+to be able to give you some kind of modularity
+and dynamicity
+in the way you want to have the documents behave, okay?
+So let's have a look
+at how we can create documents right now.
+So if I scroll down on a systems manager at the very bottom
+under shared resources,
+we have documents,
+and documents are in this page.
+So we have documents owned by Amazon,
+some owned by me,
+but of course,
+none has been owned me because I haven't created one.
+Shared with me.
+If you can share documents with other people,
+or all documents, if you have to have the three of them.
+So in this example,
+I'm going to show you the documents owned by Amazon,
+and one of them for example, is called
+AWS-ApplyPatchBaseline.
+So I click on it
+and I can see that this is useful for scanning
+or installing patches from a patch baseline,
+as we'll see what that means in a few lecturers.
+The platform is Windows.
+We can see when it was created, okay?
+And who is the owner,
+and what is the latest version.
+So this document looks good.
+We can look at the contents of the patch baseline.
+So this is written for this one in JSON,
+and as we can see, there is a parameter,
+one or two parameters.
+So operation and snapshot ID,
+and then there is a bunch of runtime config
+as well as lot of commands that is going to happen.
+So complicated, but not for us to maintain
+because this is maintained by AWS.
+We can look at the version.
+So currently we cannot view the document versions
+because we don't own it.
+So it will always be version one,
+but your own documents could be versioned.
+And in details,
+we can have a look at the different parameters.
+For example, this one is on document version one,
+and it has two parameters, operation and snapshot ID,
+which are relevant to this document.
+Okay, so if I look at the document itself,
+we could create our own documents.
+So it could be a command or session document,
+or an automation document,
+and we'll see commands in this one,
+but I want you to show you this at a high level.
+So the first way we're going to apply our documents
+is using the run command SSM feature.
+So the idea is that with run command
+we're going to execute an entire document,
+which is indeed a script,
+or just run a single command
+across a fleet of EC2 Instances.
+And for this,
+we can use resource groups that we have created from before.
+So the run command has a feature of rate control
+and error control.
+So imagine you're playing a command to 1,000 instances
+and it will take them down for a minute or two.
+Then you want to make sure you do this progressively,
+and that in case you have any errors,
+you are able to stop running the command in your fleets.
+It is fully integrated with IAM and CloudTrail.
+So you can see who runs commands.
+There is no need for SSH,
+so the agent itself will be running the commands,
+but systems manager does not need SSH access
+to your instances to run the command,
+which is quite magical and cool.
+The command outputs can be shown in the console,
+but it can also be sent to your S3 buckets
+or to CloudWatch Logs.
+And finally, to know the status of your run command,
+you can look in the console obviously,
+but you can also send them to SNS to get information around
+in progress, success, failed and so on.
+And finally, for automations and EventBridge
+for CloudWatch Events,
+can be used to invoke run commands.
+So let's take an example.
+Run command can be run across a fleet of EC2 Instances.
+The outputs of the command itself can be sensed for analysis
+in CloudWatch Logs or Amazon history,
+notifications is through SNS,
+and events triggered in EventBridge
+could have a rule to trigger a run command itself.
+So what we want to do is to install an HTTP server
+onto my three instances, okay?
+But first, to verify that it will work,
+we need to open up the security group.
+So let's go into the security group rules.
+And under the inbound rule,
+I'm going to add a rule for HTTP on port 80
+coming from anywhere.
+So this is allowing us to access our instances of HTTP,
+and we can make sure that our instances
+currently do not run a web server
+by taking, for example, one of these IPs.
+So we'll copy this IP and then paste it here.
+And as we can see,
+we are not getting anything.
+So let's go back into my security group.
+HTTP port 80,
+and it should not time out,
+it should just give me an error.
+So let's try again.
+Which is just a weird behavior of Firefox.
+So I'm going to copy this and I'm gonna go into Chrome.
+And as you can see, if I go into my IP,
+I get a site can't be reached.
+That means that the port 80 is open,
+but no HTTP server is currently running on my EC2 Instance.
+So, okay, so that's cool.
+We want to now install our web server onto these instances.
+So let's go into systems manager
+and we're going to run a command,
+but first we're gonna need to create our own documents.
+So this document is going to be for a command or session.
+And then we'll call this one, InstallApache.
+And the target type is going to be for an EC2 Instance.
+Now, the document type is going to be a command document
+and we can specify it either in JSON or YAML.
+So we'll specify in YAML form
+because I think this is a bit easier to read.
+And to make it easy,
+you can just get the code directly from the SSM directory
+and copy this entire file document-install-apache, okay?
+And going back here, paste it and we're good to go.
+So in this YAML document, we can easily read it.
+We have one parameter, which is a message,
+which by default is Hello World,
+and this is the welcome message we want you to have
+as part of our EC2 Instances, their web server.
+And then the main step is to run a ShellScript
+and it has several run commands in it, okay?
+So we update the instance,
+we install HTTPD,
+we start HTTPD, we enable it.
+So this is in case of restarts.
+And then we echo message from host name
+into this file right here, in this HTML.
+And so this message under this double brackets
+is coming from the parameter message above, okay?
+So I will go and create the document.
+So this document is now owned by me
+and it's called Intel HTTP.
+And so now we need to go into the run command and run it.
+So lets go into the run command direct here.
+We're going to run a command,
+and we need to find the document itself.
+So we're going to go on owned by me.
+Find Apache.
+I will select this one, version one.
+And then we can customize the message.
+So for example, we can say, Custom Hello World.
+And for the targets,
+we can either specify instance tags
+or we can choose instances manually,
+or we can choose a resource group,
+and as you can see,
+the resources we've created from before
+are available in this console.
+So I will choose my instances manually,
+and I will actually choose my three instances right here,
+because I want to be able to install HTTP
+to all them three, okay?
+Next, for other parameters.
+So we can have a timeout in terms of the commands.
+So if the commands don't finish within 600 seconds,
+so 10 minutes,
+then you should fail the command.
+So this is a much larger timeout
+than what we need for this command, this is fine.
+And then rate control.
+So this is pretty cool.
+The concurrency.
+So do we want to run the commands on 50 targets at a time
+or maybe one target at a time, so one by one?
+Or maybe percentage, so 33% at a time?
+It's up to you.
+But I will choose for this example, one target at a time.
+And then the error threshold.
+So that means just after one error,
+you know, on the first error,
+then this will stop the entire task, okay?
+But maybe you know that some of these commands
+will have errors and so maybe you're saying that
+as long as 5% of my instances don't error out,
+this is fine, please keep on going,
+but if you go above this 5% of error threshold,
+then stop running the command.
+So right now we'll keep the error at zero
+because we don't want any errors.
+Now, for the output options,
+we can create an S3 buckets to send the output to,
+but I will disable it,
+or we can send logs to CloudWatch Logs,
+and for example, I will call it runCommandOutput
+as my log group name.
+SNS notifications.
+If you wanted to get notifications
+about the status of this run command.
+And this is nice, we can get the equivalent
+AWS CLI interface command
+if we wanted to run this directly from within the CLI.
+So I'll click on run.
+And as we can see,
+we have three targets and one of them is in progress
+while the other two are pending.
+So let me refresh this.
+And as we can see now,
+because we did one at a time,
+it will go this one in progress and it will be successful,
+then this one, and then that one.
+So in here, I'm able to refresh and here we go.
+The first one in the first two actually were a success.
+So we can see the start time and the end time.
+And for each of the targets, we can click on view outputs.
+So the output is literally the output of the command itself.
+So it shows you a maximum of 48,000 characters.
+So here is all the outputs that is available from it,
+and as we can see at the very end is going to say that,
+if we're very lucky, HTTPD was installed.
+Very nice. Okay?
+And then complete, so the command is complete,
+and this is complete from the YAML install.
+And you can click on the CloudWatch Logs
+to view the logs directly of your commands
+into the CloudWatch Log groups.
+So this is my run command output log group,
+and we can see that
+we have many different streams available here
+for the standard out and standard error
+in case some errors were happening onto our instances,
+but if you go to standard outs,
+as we can see, we have the five commands,
+and what happened
+and the fact that they did install and enable HTTPD.
+So this is great.
+We're good to go.
+So back into our run command,
+we can look at the command history.
+This one was a success,
+and yes, three instances
+were having their command run on it.
+And if I go back now
+to my EC2 management console and refresh.
+So they're still here obviously,
+but now if I click on this IPv4 and paste it,
+then we're going to get a Custom Hello World
+from this IP right here.
+And if I go to another EC2 Instance,
+this one,
+we're gonna get again, a Custom Hello World.
+So this is a custom message that I did pass to my documents
+and the IP is going to be different on this one.
+That means that the command was run differently
+on two different EC2 Instances.
+So this is pretty cool
+because here we are able to run a command
+across three EC2 Instances,
+but remember, these EC2 Instances
+do not have the SSH port open, okay?
+So what happens is that the SSM agent
+did run the commands for us,
+which is super helpful
+because we don't compromise on security.
+So this is it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

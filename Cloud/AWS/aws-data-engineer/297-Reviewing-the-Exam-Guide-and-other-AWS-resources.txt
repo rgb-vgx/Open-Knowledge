@@ -1,0 +1,204 @@
+# 297. Reviewing the Exam Guide (and other AWS resources)
+# Section: Wrapping Up
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40394888
+# Caption: en_US (auto)
+
+Instructor: In addition to this course,
+there are also resources provided by Amazon itself
+to help you prepare for this exam,
+so I wanna review those with you real quick as well.
+So if you head
+to the AWS Certified Data Engineer Associate page
+on aws.amazon.com, presumably that URL won't change,
+but you can search for it
+and get to it that way as well.
+This will give you more information about the exam itself
+and what it costs and when it's being offered
+and how to sign up for it.
+More importantly, though,
+are these preparation resources that they give you.
+So we're gonna go through the Exam Guide real quick here,
+which gives you a very detailed listing
+of what it expects you to know,
+and that's what we generated
+the content of this course from.
+There's also a practice question set
+that you should definitely, absolutely, positively take.
+That is a free practice exam
+of, I think, just 10 questions or so.
+But it's good practice
+of what sorts of questions you can expect,
+the level of details you can expect,
+and you can also take it for free
+as many times as you want to.
+So if you don't pass it the first time,
+keep on taking it until you ace it.
+You know, make sure you get these concepts in your head.
+Sometimes those practice questions might be similar
+to the real ones, so it could be a good thing to do.
+There's also additional resources here on the right here,
+and this might change over time.
+Basically, a review of some of the sessions
+in re-event Analytics 2022,
+A Day in the Life of the Data Engineer,
+which is some hands-on activities
+in the Skills Builder environment.
+Same thing here,
+another activity of building
+batch data analytics solutions on AWS.
+These are good to do.
+you know, it's not enough, though, on its own.
+So more practice is good.
+AWS Skill Builder is not always free, however,
+so you might have to spend some money to do those,
+and well, whether that's worth your time
+and money, that's up to you.
+But let's start with the Exam Guide
+'cause that's probably the most important resource here,
+and this does change over time.
+So as AWS' systems change and evolve,
+which happens every day,
+this Exam Guide might also change
+to reflect changes in the exam to reflect that.
+So as of this recording, there is a one-to-one mapping
+between the content in this course and this Exam Guide,
+and we will strive to keep that up-to-date,
+but things change.
+So it's a good idea to review this
+and make sure that there's not something in there
+that you didn't expect that we did not cover in this course.
+So this tells you the high level tasks
+that you need to be able to do to pass this exam,
+ingest and transform data, orchestrate data pipelines,
+choosing an optimal data store,
+operationalizing, data pipelines,
+dealing with security, authorization, all that stuff, right?
+So we absolutely talked about all this
+in the context of AWS' services
+and how to do all of that stuff.
+But if they slip in something new, keep an eye out.
+Some general information on the target background,
+they are saying you should have two
+to three years of experience in data engineering.
+Well, I mean, if you went through this course,
+maybe you can shave that down a little bit.
+But it is important to note
+that these are going to be giving you real-world scenarios
+in these questions,
+and you need to wrap your head around
+these real-world situations
+and real-world problems you need to solve.
+You can't always learn that
+from a video or from a book, right?
+So some experience both with data engineering
+and with AWS is going to be beneficial.
+It's going to be extra hard for you
+to pass this exam even if you took this entire course
+without at least a little bit of experience
+in the real world.
+And some specific knowledge
+that they expect you to have is listed here,
+ETL pipelines, programming concepts
+that are language-agnostic
+because they're not gonna ask you to write code,
+how to use Git.
+You know, that's why we had a whole lecture on Git.
+You might've wondered why. That's why.
+It's on the Exam Guide.
+Using data lakes, networking, storage, compute concepts,
+yeah, we covered all that.
+Recommended AWS knowledge, right?
+So how to use specific services
+to accomplish those tasks we talked about.
+That's what this whole course has been about.
+But again, review that
+and make sure we didn't miss anything.
+Things that are out of scope, AI and ML.
+You know, you don't have to focus on that.
+Don't worry about it.
+Any programming language-specific syntax.
+They're not gonna ask you to write code.
+Drawing business conclusions based on data.
+This is not an analytics course.
+It's about data engineering.
+That's an important distinction,
+and it tells you what to expect on the exam.
+It's the typical stuff for AWS,
+multiple choice or multiple response.
+As of now, there is some unscored content,
+so they might be using you as guinea pig
+for some questions that don't actually count.
+They're just trying to measure how people do on them,
+but you don't know what they are.
+So it doesn't do you much good to know that.
+It tells you what the criteria is for passing.
+That might change over time.
+And finally, they get into the content outline,
+the specific things that you need to know.
+So this is probably the most important thing to go through.
+Make sure that you go through each of these Domains
+and you understand how to do them all.
+If not, go back
+and review that portion of the course that talks about it.
+So perform data ingestion
+and a very long list
+of very specific skills you need to know about.
+And we have gone through this list for you
+and made sure that this is all covered somewhere
+in this course.
+But the course itself is laid out organized by services.
+So while this is organized
+by Domains, like Data Store Management,
+and whatever 1 was, what was that?
+It's a big one, Data Ingestion and Transformations.
+We're actually organizing this course by the services
+that make these things happen.
+By the way, they do break down the expected distribution
+of these Domains throughout the exam.
+It's not terribly helpful strategically in this case
+because they're fairly evenly distributed.
+But it does tell you
+that Data Ingestion and Transformation
+is the most important thing to focus on.
+But that alone won't get you through it.
+So I'm just gonna scroll through this real quick.
+You should read through it, though.
+Make sure there's nothing surprising or new in there.
+And also I wanna call your attention to the list of services
+that are covered at the very end.
+That's in the Appendix.
+So you might notice that this matches up very closely
+to the list of services that we introduced
+at the beginning of this course
+and the ones that we cover in it.
+That's not an accident.
+You know, this is where that came from.
+But go through this list
+and make sure there aren't any new ones.
+So AWS is always adding new services and new features.
+Maybe something brand new is gonna show up
+on the exam that we didn't know about.
+So as of right now,
+everything in this list is covered
+explicitly in this course.
+But take a quick check
+and make sure that you know what these all are
+and how to use 'em.
+It's a good little sanity check to make sure you've prepared
+for the exam as well as you can.
+But it's a very long list
+and a very expansive list of services,
+and there they all are.
+And again, it has out-of-scope services as well,
+and sometimes things move from in scope to out-of-scope.
+So if you see something we cover
+that shows up in the out-of-scope list,
+well, you know you don't have to worry
+about that one anymore.
+Cool, all right, so that's the Exam Guide
+and the other resources
+that Amazon makes available to you for preparation.
+Do a avail yourself of any help you can get.
+So make sure you're going through
+whatever they're giving you for free
+and use that to augment what you've learned with us.

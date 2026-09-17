@@ -1,0 +1,109 @@
+# 99. Redshift Federated Queries
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40394300
+# Caption: en_US (auto)
+
+Instructor: Let's talk about Redshift Federated Queries.
+This is a way to query
+and analyze across databases, across warehouses,
+and even across data lakes.
+Now, let's specifically talk about
+the case of tying together Redshift with other databases,
+with RDS databases in particular.
+So what we can do is tie Redshift to Amazon RDS
+or Aurora for PostgreSQL and MySQL currently.
+Maybe that will expand in the future.
+But this is exciting because it means I can access
+live data from RDS and query that from Redshift.
+So this avoids the need for ETL, right?
+I don't need to worry about importing data
+from those relational databases from Aurora
+or RDS into Redshift itself, I can just query
+those databases in place directly and avoid the need
+for moving that data around.
+So that allows me to create a query in Redshift that hits
+tables that are
+in external relational databases like PostgreSQL
+and MySQL that are in RDS.
+So that's pretty cool.
+It offloads the computation as well
+to those remote databases.
+So that also reduces data movement further.
+It means that if I have some complex
+query, I can break that out
+and spread out that load to those RDS instances
+to take up some of that slack.
+How's it work?
+So first you need to make
+sure that you have connectivity between your Redshift
+cluster and the RDS or Aurora instances that you want to talk to.
+Now, you need to make
+sure they're either in the same VPC subnet or use VPC peering to
+make them visible to each other.
+VPC peering again, will only work if you don't have
+overlapping IP address ranges between the two.
+How to access it?
+So Redshift needs to know how to sign in and access
+those RDS or Aurora instances, right?
+So the credentials for doing so
+must be stored in AWS Secrets Manager for this to work.
+And then you include those secrets in the IAM role that you
+give to your Redshift cluster
+for accessing those external databases.
+To create an external table
+that is hitting those external RDS or Aurora
+tables, you can say CREATE EXTERNAL SCHEMA.
+And you can also use that same syntax for connecting the S3 or
+to Redshift Spectrum as well.
+So remember earlier I said this wasn't just for federating
+to RDS in Aurora, you can
+also federate to data lakes this way, same idea.
+Over on the right,
+by the way, is an example of the IAM role
+that includes the access to AWS Secrets Manager that's needed
+for accessing those external databases.
+And if you want to get
+a quick view of what external schemas
+are currently available and defined, the SVV_EXTERNAL_SCHEMAS view
+will contain that list for you.
+Let's look at an example here.
+Now, remember, with Federated queries
+you only have read only access to those
+external data sources, and you may incur additional
+costs on those external DB's based on the traffic and load that
+you're putting on them.
+So it doesn't come for free as part of Redshift.
+Anything that you're, any load you're putting
+on Aurora or RDS or the data lake will be in addition.
+So remember you can query RDS and Aurora from Redshift but
+it doesn't go the other way around.
+This is a one-way connection
+and it's a read-only connection from Redshift
+to RDS in Aurora.
+Let's take a look at this example on the right here.
+So here we're saying CREATE EXTERNAL SCHEMA, apg.
+So we're going to be re referring to this external
+table as apg within my Redshift queries here.
+From Postgres, that
+means I'm gonna talk to a Postgres database out
+there in RDS or Aurora, the database
+name that I'm talking to is called
+database-1.
+The table within that database I'm talking
+to is called myschema.
+However, I'm renaming it to apg here.
+Then we say URI with the endpoint to the Aurora hostname
+that I'm talking to.
+I pass in that IAM role that we saw in the previous slide.
+That includes all the Secrets Manager stuff that
+I need, and then the ARN of the secret itself that's
+needed to connect to that Postgres Aurora instance.
+Once I've done that, I can then access that external table.
+Just like any other table,
+I can say SELECT count(*) FROM apg. lineitem.
+And apg again is referring to this external Postgres table, myschema
+under the database-1 database in Postgres remotely, and it just works like
+any other table at that point.
+Pretty cool.
+So that's Redshift Federated Queries in a nutshell.
+Something the exam expects you to know.

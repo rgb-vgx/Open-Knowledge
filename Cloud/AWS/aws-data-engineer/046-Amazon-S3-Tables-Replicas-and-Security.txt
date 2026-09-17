@@ -1,0 +1,88 @@
+# 46. Amazon S3 Tables: Replicas and Security
+# Section: Storage
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/54715835
+# Caption: en_US (auto)
+
+Another feature in S3 tables is replication
+that can be automatically managed for you.
+So if you need to have read-only replicas
+of your S3 table buckets
+for backup purposes or availability purposes
+or compliance purposes, you can just turn that on.
+It's quite simple.
+So these create read-only replicas of your S3 tables,
+and those can potentially be across regions
+or across accounts even.
+So if you want to have copies
+across a different region for backup purposes
+or even across a different account
+to make that data available to some other organization,
+you can use S3 tables replication to achieve that.
+Some specific use cases that might be relevant here.
+So if you're looking to minimize latency,
+S3 table replication might be a way of doing that.
+If you have a local replica
+in the region that you're accessing the data from,
+that can be used to improve performance.
+Another use case is to centralize your analytics.
+So let's say you have a bunch
+of S3 tables in different regions.
+If you want to replicate those all into a single region,
+you can use that to centralize your analytics
+and actually query that data
+within a single region more efficiently.
+There might also be compliance reasons for doing this.
+So sometimes there are laws about where your data resides
+if it's sensitive or private.
+And this is a way of ensuring compliance
+by splitting up your tables with replicas in unique regions.
+Also, it's useful for test or development environments.
+So if you just want a replica read-only of your data
+for playing with in a, you know, safe, controlled manner,
+you might use tables replication for that as well.
+And also, intelligent tiering can also apply
+to replicas as well,
+and that can further minimize your costs.
+So you can apply intelligent tiering to any replica
+and it will pay attention to how often that data is accessed
+and bump that up and down to different storage tiers
+to optimize your storage costs.
+A little bit about S3 table security.
+This is always something important to think about.
+Like we said, the standard tools apply here.
+You can use IAM identity-based policies to control
+access to S3 table operations
+at the user, group, or role level.
+You can also set up resource-based policies
+attached to specific buckets if you want to as well.
+And there is also organization
+with service control policies, or SCPs,
+through Amazon Organizations.
+Also, you can set security through standard SQL commands.
+So there are ways of setting permissions through SQL itself,
+and under the hood that will map to specific IAM permissions
+that correlate to those SQL permission commands.
+You can also use Amazon Lake Formation
+to manage your access as well at a more granular level
+and do things like row- and column-level
+query permission there.
+On the encryption side, you have two choices,
+S3-managed keys or your own KMS-managed keys.
+You can choose between those.
+And one other finer point
+is using VPC endpoints through PrivateLink.
+So if you do need to isolate this data somehow,
+you can set up gateway and interface endpoints.
+Interface endpoints are just
+for finer-grain IP-level control.
+Gateway's actually doing the routing there.
+And you can set up different endpoint policies
+to restrict access by table or by bucket.
+There are also dual stack endpoints
+for Ipv4 and IPv6 if you need them.
+And by the way, public access is not allowed
+at all on S3 tables.
+You cannot make these publicly accessible,
+no matter how hard you try.
+Also, HTTP is not allowed at all.
+It must be accessed through HTTPS.

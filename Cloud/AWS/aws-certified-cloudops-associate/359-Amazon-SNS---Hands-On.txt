@@ -1,0 +1,115 @@
+# 359. Amazon SNS - Hands On
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218711
+# Caption: en_US (manual)
+
+So, let's practice using SNS.
+So, we're going to go into the Simple Notification Service
+and create our first topic.
+So I'll just call this MyFirstTopic,
+and then click on Next step.
+So we have two options for creating a topic.
+It can either be a standard topic,
+and this what we'll be creating,
+which is best-effort message ordering,
+at least once message delivery,
+highest throughput in terms of publishes per second,
+and SQS, Lambda, HTTPS, SMS, email,
+and mobile application endpoints can read
+from this SNS topic.
+Or we've seen that we could create an SNS FIFO topic.
+And this is to get strictly preserved message ordering,
+exactly once message delivery,
+high throughput up to 300 publishes per second,
+and the only thing that can subscribe
+to a FIFO SNS topic is an SQS queue.
+In this case, if we have FIFO, we can see
+that the name of topic has to end with .fifo.
+So we'll just go with standard,
+and then we'll use MyFirstTopic as the name.
+We can encrypt the messages in our topic.
+We can set up an access policy.
+And the access policy is going
+to define who and what can write to the SNS topic.
+So this is similar to an S3 bucket policy,
+and this is similar to also an SQS access queue policy.
+Okay?
+The idea is that with this access policy, for example,
+we could set up an S3 bucket
+to write events into an SNS topic,
+and then the SNS topic could send data to SQS, and so on.
+So the access policy will be needed
+to allow the S3 bucket to write to our SNS topic.
+So for now, I'll just use basic,
+because we don't need to do anything fancy,
+and then we are not going to set up any of these.
+And then we'll just click on Create topic.
+So MyFirstTopic is created,
+and as we can see right now, we have zero subscriptions.
+So we need to create our first subscription.
+So I'm going to create one,
+and we need to choose the protocol.
+So it could be Kinesis Data Firehose, SQS Lambda, Email,
+Email-JSON, HTTP, HTTPS, and SMS, okay?
+And you have to remember those going into the exam.
+But to make it very simple, we're first going to use Email,
+and actually only going to use Email in this hands-on.
+Now we need to use an endpoint on the email address.
+I will use stephanetheteacher@mailinator.com,
+and this is just a service for me to get a temporary email.
+So if I type stephanetheteacher, and press on GO,
+then I'm getting a public inbox,
+and they will receive emails from this address, okay?
+So we're going to create this.
+As we can see right here,
+we could set up a subscription filter policy.
+This is optional, but with this policy,
+we could filter the messages
+that will be sent to the subscription,
+which can be really helpful if you have many subscribers
+that just need to get only subsets
+of the messages sent into your SNS topic.
+But we will not set it up right now.
+So we'll create the subscription,
+and now we need to validate the subscription.
+So as you can see right now, it is pending confirmation.
+And so to confirm it, I'm going to go into my Mailinator,
+and I've received an email.
+And by clicking on this Confirmed subscription,
+I'm going to confirm my subscription, so here we go.
+And now if I refresh this page, what I should be seeing is
+that my subscription right here is confirmed.
+So this is perfect.
+So again, if I click on my subscription,
+I can look at it, see that is going
+to send an email to this endpoint.
+And if I wanted to do it,
+I could have a subscription filter policy.
+But right now we don't have any,
+because we want all messages sent to my SNS topic
+to go directly into the subscription.
+So now, let's do a test.
+We're going to publish a message,
+and I'm going to just enter a message structure.
+I'll say hello world, which is very common
+when we test some services, and then publish the message.
+So the message has been published into MyFirstTopic.
+And so what I should be seeing is
+that if I go back to my emails and go to my public messages,
+so back to my inbox, I should be seeing, yes,
+an AWS notification message coming straight from SNS
+saying hello world.
+So very easy, very cool,
+and we just shows that SNS is working for us.
+So this is perfect. We're good to go.
+If we wanted to implement the SQS fanout pattern,
+we will need to choose SQS
+and set up many, many different queues as the receivers
+of the subscription for our SNS topic.
+So yeah, that's it for SNS.
+When you're done, delete the subscription
+and then go back to the topic on the left hand side,
+and then click on Delete to delete the topic
+by typing, delete me.
+And off you go. That's it for SNS.
+I hope you liked it, and I will see you in the next lecture.

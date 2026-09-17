@@ -1,0 +1,28 @@
+# 136. S3 Replication Time Control (RTC)
+# Section: Amazon S3 Introduction
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218291
+# Caption: en_US (manual)
+
+Let's also talk about Amazon S3
+replication time control or RTC.
+So it's a feature of Amazon S3 replication
+that guarantees replication speed.
+So the guarantee is that if you enable this option, 99.99%
+of the new objects will be replicated within 15 minutes.
+That provides you predictable,
+and auditable replication time.
+So for, it's for companies that require
+this kind of precision,
+it will publish CloudWatch metrics for you to monitor
+and give you alerts if your replication falls behind.
+You can also replicate to same or different areas, region,
+and this most likely helps you meet compliance
+or business requirements.
+To enable this option, you have an extra cost
+and it's going to be one extra cost
+per gigabytes for the replication.
+But in case you need a replication time control,
+then you know this option exists
+and you can propose it at the exam.
+Alright, that's it.
+I hope you liked it and I will see you in the next lecture.

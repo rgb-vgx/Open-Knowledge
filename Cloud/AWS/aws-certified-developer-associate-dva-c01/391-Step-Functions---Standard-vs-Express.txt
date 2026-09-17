@@ -1,0 +1,87 @@
+# 391. Step Functions - Standard vs Express
+# Section: Other Serverless: Step Functions & AppSync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26101914
+# Caption: en_US (manual)
+
+So we have different ways of running
+our step function workflows.
+The first one is to use a standard workflow.
+This is the default.
+The second one is to use express workflows.
+And within express workflows,
+we have the asynchronous workflows
+and we have the synchronous express workflows.
+So, we'll have a look at all of them.
+So, for the standard default step function workflows,
+the max duration of a single workflow is up to one year.
+The execution model is exactly-once execution
+and you may execute about 2,000 standard workflows
+per second, which is a good rate.
+And in terms of execution history,
+you get up to 90 days in the console history
+or you can use CloudWatch to have more logs
+and you can keep the logs forever
+with log retention settings in CloudWatch.
+The pricing is going to be by the number
+of state transitions, so going from one state to another.
+And the use cases for using standard workflows
+is for non-idempotent actions such as,
+for example, payments processing.
+Next, we have the express workflows
+and as the name indicates, they're for short ones,
+so, up to five minutes of execution.
+But you have extremely high capacity
+for extremely high rates.
+So, you have over 100,000 executions per second
+that you can do.
+So quite a bit of volume.
+Now, there is no way to track things in the console.
+The only way to get execution results
+and analysis is by using CloudWatch logs.
+And you're going to be billed
+by the number of the execution,
+the duration of an execution, and the memory consumption.
+So the use cases for express for Cloud would be,
+for example, to do IOT data ingestion, or streaming data,
+or mobile app backends and so on.
+Now, within express we have asynchronous and synchronous
+and the main difference I want you to remember
+is that the asynchronous express workflow has at least once
+execution model guarantee, and the synchronous type
+of express workflow has at most once,
+and the exam will test you on this.
+So, when you're using an asynchronous express workflow
+the workflow, the execution just starts
+and we don't wait for the results and how do we know
+if it has ended, and if the result is correct,
+well, we'll have to check CloudWatch logs.
+So, this is when you don't need an immediate response.
+For example, for messaging services, you just want
+to send a message, you just do it, but you don't wait
+for the response whether or not the message
+gets sent successfully.
+So because we have an at least once execution guarantee
+in case there are errors we can try again directly,
+automatically from within step functions
+and so it's possible for the same action to be done twice.
+And so in that case, you must manage at the idempotence
+to make sure that if you run the same action twice,
+you don't have twice the same effects.
+For a synchronous, at most once,
+this is when we invoke an express workflow, but we wait
+for the workflow to complete
+and when we get the result out of it.
+So this is, for example, when you need an immediate response
+from the workflow itself.
+So, for example, if you orchestrate microservices
+and you want to make sure that everything
+is working correctly before you stop the execution.
+In that case, for synchronous workflows,
+you can invoke them from the API gateway
+or Lambda function and get a response from it.
+And it's at most once because if there's a failure,
+the step functions will not restart the workflow for you.
+It's up to you to try again if you wanted to
+but that's the kind of logic that you need to implement.
+Okay, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

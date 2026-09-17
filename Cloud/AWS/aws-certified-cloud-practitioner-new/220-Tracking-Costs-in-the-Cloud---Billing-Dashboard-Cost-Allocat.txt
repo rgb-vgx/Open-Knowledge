@@ -1,0 +1,236 @@
+# 220. Tracking Costs in the Cloud - Billing Dashboard, Cost Allocation Tags, Reports
+# Section: Account Management, Billing & Support
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20118368
+# Caption: en_US (manual)
+
+So now let's talk about the ways
+you can track your cost in the cloud.
+The first way is to use the Billing dashboard,
+which will show you all the costs summary for the month,
+the forecast, and the month to date.
+This is a very high level tool,
+but it will be helpful
+to just get an overview of what's happening.
+So let's have a look at the Billing dashboard.
+And for this, you can click on the top right,
+and then click on Billing and Cost Management,
+or use a search bar and type billing.
+So this is one of my main accounts
+because I want to show you some costs.
+So as you can see,
+this is what my bill looks like on AWS for this accounts.
+So we have a cost breakdown by month.
+Here we have some information
+around the month-to-date cost,
+and then the last month cost and the total forecasted.
+So a lot of good information.
+And here you get a cost breakdown per service per month,
+which is gonna be very helpful.
+So it turns out that in November,
+and then December, I had some cost regarding, for example,
+the Amazon RDS service.
+So this is very important for me to see.
+And you can group them by service,
+by account, by region and so on
+to start to drill down into them.
+Okay, so next we want to explore our build a bit deeper.
+So for this, we're going to use cost allocation tags.
+They will allow us to track our cost on a detailed level
+and group them together.
+For example, I have defined a cost allocation tag.
+And then, you export your report.
+And then, you would get the cost
+by category in an Excel format.
+So for this,
+you can use different tags,
+you can use the AWS-generated tags, for example.
+They will be automatically applied
+to the resource that you create,
+and they will start with the AWS prefix,
+for example, AWS created by.
+And you can also define your own user tags
+that will be defined by the user
+that will start with the prefix user column.
+And this will be helpful, for example,
+to tag your resources,
+and then have them grouped by cost center,
+by tag, by owner, by stack, by application, and so on.
+You can use tagging as well to create groups.
+So tags are used for organizing resources.
+For example, your EC2 instances, your images,
+your load balancers, your security groups,
+your RDS databases, your VPC resources, Route 53,
+your IAM users, et cetera, et cetera.
+And if we create resources through CloudFormation,
+they will all be tagged the same way
+if you remember it from the CloudFormation hands-on.
+There's free naming for your tag.
+You can do whatever you want,
+but common tag names are going to be name,
+environment, team, cost center, and so on.
+And these tags can be used for cost reason, obviously,
+but also to create resource groups
+to create, maintain, and view a collection of resources
+that will share the common tags
+and you can edit those using the tag editor.
+So to show you where that would be,
+you would go in the search and you type resource groups
+and you arrive onto the resource groups
+and Tag Editor console.
+And you open one tab here and one tab for Tag Editor.
+And this would allow you to edit
+your tags for your resources.
+So for example, for the Tag Editor in here,
+I can look at resource types of, for example,
+security groups for EC2.
+And I will search my resources.
+I will find all the security groups
+and I can, for example, manage the tag
+of the selected resources.
+And say that, yes, I'm going to add a tag of department,
+and then, say IT.
+Review and apply the tag changes
+and it will apply the tag to all these resources.
+And then, I can create resource groups
+and I say, okay, it's going to be tag based.
+I can select the resource type
+or all resource types.
+So this is great and I will say, for example,
+that I want my departments to be IT, add it.
+And here I will have to see
+that if I preview my resource groups,
+I can find the five security groups
+that I've tagged from before.
+Then, we can call it IT resources
+and then click on Create group.
+And we don't need a space,
+I'm going to have IT underscore or no, IT dash resources.
+Here we go, and I have created my first resource group
+based on this tag.
+And this is very helpful
+to see what belongs to different departments.
+And you can use this tags for cost purposes.
+So then, I can click on the left hand side
+to cost allocation tags
+and actually activate the one I want.
+And then, I will be able to generate a report
+for this specific user-defined cost allegation tags.
+So now let's talk about the reports we can generate in AWS.
+We can generate a cost and user report
+to dive deeper into your cost and usage,
+and they will give you an information
+and it's going to be the most comprehensive set
+of cost and usage data available on AWS.
+It will include all the additional metadata about services,
+the pricing, and the reservations.
+So you can get some information, for example,
+around your Amazon EC2 Reserved Instances usage.
+This cost report will give you
+all the usage for each service category
+used by an account and its IAM users
+in hourly or daily line items,
+as well as any tags that you have activated
+for cost allocation purposes.
+And this report can be integrated
+and analyzed using Athena, Redshift, or QuickSight,
+which is a dashboarding tool.
+So this report looks like this.
+It is going to be the most granular report
+you can get with the most comprehensive data,
+and it'll describe everything for every cost:
+when it was incurred, why it was incurred,
+and the description of the associated cost.
+So this is definitely a report you may want to use
+to analyze your bill in details
+and really understand where a charge is coming from.
+Next we have Cost Explorer,
+which is a more visual tool
+in which we visualize, understand,
+and manage your cost and usage over time.
+You can create custom reports
+that will analyze the cost and usage data,
+but it is for a high level, okay?
+You can get your total cost and usage it across all accounts
+or monthly or hourly or at the resource level.
+And with this Cost Explorer tool,
+you will be able to access your optimal savings plan
+to lower the prices on your bill.
+And most importantly, you can forecast usage
+up to 12 months based on the previous usage,
+which is an exam question.
+So if you're looking for a tool that will allow you
+to forecast your bill for 12 months ahead,
+then it's going to be Cost Explorer.
+So here is an example with Cost Explorer.
+You can get the monthly cost by AWS service.
+And as you can see here,
+you will get these graphs
+based on each different month
+and it will give you,
+In this example for EC2 instances,
+which one are costing you money
+as well as the types.
+You can get hourly and resource-level information.
+So this is your cost every hour with, again,
+the cost defined by EC2 instance
+so you can understand which EC2 instances
+is costing you more every single hour.
+And we can define savings plan,
+which is again an alternative to using Reserved Instances.
+And so you would get recommendations on savings plans
+right away directly from Cost Explorer.
+Finally, as I said, you can forecast usage on Cost Explorer.
+So for example, you can have a look at your previous cost.
+And then, you can go up to 12 months ahead of time
+to forecast your usage
+and see how much it's going to cost you
+to use AWS in the future
+based on the growth you have been experiencing in the past.
+So under Cost Analysis,
+we have two things you need to look at.
+The first one is Data Exports.
+So if you click on it,
+that allows you to export your cost and usage reports.
+So for this, you would just create an exporting dashboard.
+You would say it's a standard data export,
+then you specify an export name,
+you say whatever you want to have included in your export,
+the time granularity,
+the columns you want in that export.
+So as you can see, it's a lot of column
+and a lot of information you can get in the report.
+And then if you want the table
+to be delivered in specific formats,
+for example CSV or Parquet,
+if you want to export over the new file
+over an existing file or not,
+and then an S3 bucket to export to
+and you'd be good to go.
+This would allow you to use your tool of choice
+to analyze this data or even use Athena if you wanted to.
+But if you wanted to just use
+the standard AWS tools to analyze this data,
+then you would look into Cost Explorer.
+So here, you can have a look at all your cost over time.
+So here, you have based by month of January, February,
+and then and so on all way until August.
+And then for the other months, I had no cost.
+So they're not showing here.
+And then for each month you can see the services,
+that's where build the most.
+So for example, on this one,
+Elastic Load Balancing was built a lot.
+You can also have a table that you can download
+as a CSV to get that breakdown
+and you can change the parameter
+of your report in here.
+And you have a lot of parameters
+to choose from as you can see.
+And if you're happy with it,
+then you can save this to the report library
+to have a quick access to it
+and access it on the left hand side.
+So that's it in the first lecture.
+Now we've seen Data Exports and Cost Explorer.
+I hope you liked it
+and I will see you in the next lecture.

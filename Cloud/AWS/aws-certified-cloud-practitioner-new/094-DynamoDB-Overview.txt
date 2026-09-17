@@ -1,0 +1,82 @@
+# 94. DynamoDB Overview
+# Section: Databases & Analytics
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20055996
+# Caption: en_US (manual)
+
+So now let's talk about DynamoDB.
+DynamoDB is a fully managed, highly available database
+with replication across three availability zone.
+It is part of the NoSQL database family,
+so it's not a relational database.
+DynamoDB is one of the flagship product of AWS.
+It scales to massive workload
+and it's distributed serverless database,
+that means that we don't provision any servers.
+With RDS or with ElastiCache
+we need to provision a instance type,
+but with DynamoDB we don't.
+So it's called a serverless database,
+but there are still servers in the backend,
+we just don't see them.
+So DynamoDB is great
+because it scales to millions of requests per seconds,
+trillions of rows, and hundreds of terabytes of storage.
+It has fast and consistent performance.
+And so anytime you need a single digit millisecond latency
+with low latency retrieval,
+DynamoDB is the database for you.
+So you would be looking for keywords in your exam,
+such as serverless and low latency.
+For example, single digit millisecond latency.
+It is integrated with IAM for security,
+authorization, and administration.
+Has low cost and auto scaling capabilities.
+And finally,
+a standard and infrequent access, IA, table class
+based on how you want to classify your data for cost saving.
+So the question you may have is,
+what type of data goes into DynamoDB?
+Well, it's a key value database
+and the data looks like this.
+You have a primary key,
+which is made of one or two columns,
+a partition key and a sort key.
+And then attributes on the right hand side
+where you can define your own columns for your data.
+Finally, all the items are going to be row by row.
+And this is how a DynamoDB table works.
+Very, very simple,
+but again, remember it's a NoSQL database.
+It has low latency retrieval of data
+and you also get access to a serverless database.
+Then we have DynamoDB Accelerator also called DAX.
+In the exam both can be used.
+So it is a fully managed in-memory cache for DynamoDB.
+So this is a cache that's specific for DynamoDB
+so it's not like ElastiCache.
+So for example, say your application wants
+to access DynamoDB tables in DynamoDB,
+for this if you want to cache
+the most frequently read objects,
+then you would use DAX or DynamoDB Accelerator
+as a cache in between.
+And DAX is made just for DynamoDB. Okay?
+So you would not use ElastiCache in this case.
+Even though you could, you would use DAX
+because it's already really, really well integrated
+with DynamoDB.
+So this is going to give you a 10x performance improvement.
+So instead of digit,
+instead of single digit millisecond latency to read records,
+you will have microseconds latency
+when accessing your DynamoDB tables.
+It's going to be fully secure, highly scalable,
+and highly available.
+And the difference with ElastiCache again,
+is that DAX is only used in,
+it's fully integrated with DynamoDB.
+Whereas ElastiCache can be used for other types of databases
+to provide caching capabilities.
+So that's it for this lecture.
+I hope you liked it
+and I will see you in the next lecture.

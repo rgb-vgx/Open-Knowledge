@@ -1,0 +1,52 @@
+# 327. VPC Managed Prefix List
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53217701
+# Caption: en_US (manual)
+
+So there is a way for you
+to manage prefix lists,
+which is a set of one or more CIDR blocks.
+The idea is that by using
+these managed prefix lists,
+it makes it easier for you to configure
+and maintain security groups and route tables.
+So let me explain.
+For example, say, in account A,
+you have a prefix list
+of these three CIDRs, okay?
+This can be quite complicated.
+What we can do is that you can share these
+with other accounts,
+and you can apply security group rules directly,
+of the source being the prefix list.
+So imagine that you had to enter all these rules
+for all the security groups across all accounts.
+That would be a nightmare.
+But now, with a customer-managed prefix list,
+it's a set of CIDRs
+that you define and that you manage.
+And you can share those with other accounts
+or within your organization.
+And this allows you, once it's linked
+to many security groups, for example,
+to update them all at once
+because you only need to update the prefix list.
+So that also separates the concern.
+You also have AWS-managed prefix list.
+They're a set of CIDRs for specific AWS services.
+You can't create, modify, share them,
+or delete them, but they're very helpful if you want
+to allow specific IP ranges from AWS.
+And AWS will automatically update
+and manage this IP list for you.
+So here are some example of services
+in which AWS manages the prefix list.
+So we have Amazon S3, CloudFront, DynamoDB,
+or Ground Station.
+So it's a way for you to really simplify
+the management of security group rules
+or route tables in a multi-account setting
+or a multi-security group route table setting.
+All right, that's it.
+I hope you liked it,
+and I will see you in the next lecture.

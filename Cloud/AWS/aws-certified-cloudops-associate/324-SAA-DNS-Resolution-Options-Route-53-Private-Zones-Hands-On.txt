@@ -1,0 +1,79 @@
+# 324. [SAA] DNS Resolution Options & Route 53 Private Zones Hands On
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/28875444
+# Caption: en_US (manual)
+
+Okay, so now let's enable DNS resolutions.
+So for this, I'm going to go into my VPC, right click,
+and then I can edit DNS hostnames and resolution.
+So, we need to enable DNS hostnames.
+And this is to indicate whether instances with public IP
+addresses get corresponding public DNS hostnames.
+So if we go into our EC2 instances and look at the
+bastion host, which was a public instance,
+it has a public IP forward address,
+as you can see right here.
+But there is no public IP before DNS.
+So what I need to do is just click on this enabled DNS'
+name and then save the changes.
+So now,
+if I go into my management console and refresh this and look
+at my bastion host again, as you can see now,
+there is an public IP before DNS that is available right
+here, which were resolved to make public IP forward address.
+So the setting we just enabled, made it work.
+And also we can look at edit DNS resolution,
+as we can see DNS resolution is already enabled.
+That means that our instances will resolve DNS names within
+AWS.
+So that means that now we can go to the next stage and look
+at Route 53 hosted zones.
+So now we can create a private one.
+So what I'm going to do is going to host the zones,
+and I'm going to create a hosted zone.
+Now this one is going to be called demo.internal.
+And as you can see,
+this is a domain name that I don't own,
+but because this is a private hosted zone,
+I don't need to own this domain.
+This just allows my EC2 instances to resolve it.
+So I'm going to select a private hosted zone,
+and because this is a private hosted zone,
+we need to associate it with a specific VPC. So the region
+I'm in is EU-Central-1 and the VPC ID is my demo VPC.
+So as you can see for each VPC that you associate with the
+private hosted zone, you must set the Amazon VPC setting,
+enabled DNS host name and enableDnsSupport to true,
+which we did in a few minutes ago.
+So just remember that if you create this hosted zone is
+going to cost you 50 cents per month, just so you know.
+So let's create this hosted zone, okay.
+It is created. And within they have two records,
+but let's create a new record.
+And this one is going to be a google.demo.internal,
+and it's going to be a C name.
+And the value of it is www.google.com.
+And this is just to demonstrate as creating a quick record.
+So we'll choose a simple routine. Everything is good.
+Let's create this record. So this was created successfully.
+And now we need to see with our not instances within our
+VPC can resolve this hostname.
+So let's go into the easy to manage run console,
+and then I'm going to connect to my bastion hosts and
+connect to it. So this is an instance in my public subnets,
+so I can directly SSH into it and I need to install the
+decrement. So the decrement is already installed.
+So it's it perfect.
+And then just dig and then google.demo.internal.
+Press enter. And as we can see, we get an answer.
+So google.demo.internal is a C name and the value of it
+is Google.com and Google.com then corresponds to
+Google. And it's an area code with this IP address.
+So the really cool thing is that now we are able to create
+internal private records for our DNS, thanks
+to this things we enabled. And this is Tasha VPC,
+and this is really,
+really powerful because now we can start creating some very
+interesting domain names for our internal applications.
+So that's it. I hope you liked it.
+And I will see you in the next lecture.

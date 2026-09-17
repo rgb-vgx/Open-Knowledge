@@ -1,0 +1,48 @@
+# 19. Intro: Storage
+# Section: Storage
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332180
+# Caption: en_US (auto)
+
+-: If you're going to wrangle massive amounts of data,
+you need a place to store it all.
+That's what this next section is all about,
+the storage technologies AWS offers us.
+We're switching gears right now
+from higher level data engineering topics to deep dives
+into the long list of AWS services
+this exam expects you to know about.
+And kicking it off is my co-instructor, Stephane Maarek.
+He'll be walking you through all the finer points of S3
+with lots of hands-on examples of its many features
+that are useful in the data engineering context.
+He'll also touch on Amazon EBS, Amazon EFS,
+and Amazon Backup as part of this section.
+At the end, we've got some quiz questions
+to test your knowledge.
+A quick note about the quizzes in the course going forward.
+They are intended to be in a similar style
+as the questions on the actual exam.
+AWS certification exams usually pose questions
+in the context of a specific scenario or real-world problem
+you might encounter where you have to choose
+the best solution.
+Sometimes more than one solution would actually work,
+but you have to pay attention
+to which one best meets the requirements spelled out
+in the question itself.
+And some of the choices you're presented with
+might not make sense.
+They might cover technologies we haven't even talked about
+or maybe don't even exist at all.
+But just like on the real exam,
+you'll have to use the process of elimination
+to rule out choices when you've identified the one
+that meets the requirements the question specifies.
+We've provided detailed explanations
+for why each answer is right or wrong though.
+So you can learn from these questions no matter what.
+These aren't your typical quick quizzes.
+They're intended to make you think
+because the exam will too.
+And with that, let me hand it off to Stephane
+and the AWS storage systems you need to know about.

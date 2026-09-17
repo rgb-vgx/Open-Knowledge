@@ -1,0 +1,15 @@
+# 254. AWS Lambda - Section Introduction
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/12203044
+# Caption: en_US (manual)
+
+Now we're getting into the real stuff the new developer exam will ask you a lot of question about serverless.
+Serverless, you may have heard of it.
+It's not just a buzzword.
+It is a new trend and a new paradigm.
+We will start on the Serverless journey with AWS Lambda.
+AWS Lambda is becoming one of the most widely used and popular service within AWS.
+It has revolutionized how people do applications, deploy them and scale them.
+It is so important for you to know how to do AWS Lambda properly and dedicate this whole section to
+understanding how Lambda works, not just at a high level but also in a real world fashion.
+So let's get started and code our first Lambda functions.

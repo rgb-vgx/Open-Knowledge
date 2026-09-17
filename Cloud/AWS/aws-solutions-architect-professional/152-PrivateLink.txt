@@ -1,0 +1,123 @@
+# 152. PrivateLink
+# Section: VPC
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18387222
+# Caption: en_US (manual)
+
+Okay, so now let's talk about AWS PrivateLink,
+which is also called VPC Endpoint Services.
+So PrivateLink is going to be the most secure
+and scalable way to expose the service to thousands of VPC,
+either your own VPC or other accounts.
+Why?
+Because you can expose a service within your own VPC
+privately to others without doing any sort of VPC peering,
+using an internet gateway, NAT gateways
+or NAT instances, and route tables.
+So the idea is that we still allow other people
+to access our application,
+but very securely by really protecting our network
+to just one PrivateLink.
+So here's an example.
+We are the service VPC and we have created an application
+and it's an application service,
+and we want to be able to give access
+to other customers in other accounts access
+to our application.
+So here is a customer VPC,
+and they will have consumer applications,
+and they want to be able to connect
+to our application service.
+We could obviously do a VPC peering and that would work,
+but the problem of VPC peering would be
+that all the customer VPC instances would be able to talk
+to all the instances in my VPC,
+and that makes me way too exposed
+from a network perspective.
+I could also go over the public internet,
+but this is not really good
+because then that means that my service needs
+to be publicly accessible, and I don't like that.
+So what I really want is to be able to go
+through a PrivateLink.
+So for this, I have to create a network load balancer
+in my service VPC
+and in the Elastic Network Interface and my customer VPC.
+So now my application is going to be exposed through an NLB,
+and on the customer VP side,
+there will be an ENI being created.
+And then the magic happens.
+There's going to be AWS PrivateLink.
+And with PrivateLink, there's going
+to be a private connection between the ENI
+and the network load balancer.
+And so for our customer VPC,
+to access our application service, they just need
+to talk to the ENI.
+The ENI will forward the traffic
+onto the network load balancer,
+and the network load balancer will forward traffic
+onto the application service.
+And here we go, we have a PrivateLink.
+And this is hugely scalable
+because we can do this a thousand times.
+We just need one network load balancer
+and as many ENI as target customer VPC that we have.
+So if the NLB is going to be in multiple availability zone,
+then you need to make sure your ENI are also going
+to be in multiple AZ and then we have a solution
+that is going to be fault tolerance.
+So I found PrivateLink
+to be revolutionary to work really great.
+It's really scalable, and you have to remember it going
+into the exam.
+So let's consider how to make PrivateLink works
+for Amazon S3 with Direct Connects.
+So here's the issue.
+We have a corporate data center
+and want to access our Amazon S3 bucket
+through Direct Connect connection.
+And we have two options, right?
+Number one is to use a public VIF so that the traffic goes
+from direct connect to the public URL
+of Amazon S3, but through Direct Connect.
+The other option if we wanted to make all traffic go
+through your VPC would be to create a VPC endpoint.
+Now you cannot use a gateway endpoint in this case
+because gateway endpoints only works from within your VPC.
+So if your EC2 instances wanted to connect
+to Amazon S3, fine, use a gateway endpoint.
+But the corporate data center
+through Direct Connect cannot access the gateway endpoint.
+Therefore, we have to create an interface VPC endpoint
+for Amazon S3 that is linked to a PrivateLink.
+And therefore, for Direct Connect
+to access your PrivateLink,
+you must create a private VIF,
+which then allows you to keep all traffic private
+through your VPC into your Amazon S3 bucket.
+Another architecture you must know is how
+to use PrivateLink VPC endpoints cross region.
+So here's the idea.
+You want to access an S3 bucket in eu-west-1,
+you have EC2 instances as a service in ap-east-1
+and you want to access those from us-east-1.
+So the previous solution was requiring VPC peering,
+but now if you use PrivateLink, you don't even need it.
+So how to do this?
+Well, you create a VPC interface endpoint
+for Amazon S3 directly in your us-east-1 VPC,
+and you can link it to a service in another region,
+which gives you private connectivity
+into your Amazon S3 bucket without the use of VPC peering.
+Also, if you expose your EC2 instances
+with a network cloud balancer to expose it as a service,
+then you can create a VPC endpoint
+for your application just like you would for the normal NLB,
+and again cross region.
+And that would allow you to expose your application
+without needing for VPC peering.
+So this announces security
+and allows you to have clean architectures.
+Alright, that's it.
+I hope you liked it,
+and I will see you in the next lecture.

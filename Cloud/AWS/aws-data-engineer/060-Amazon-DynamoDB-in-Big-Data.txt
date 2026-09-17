@@ -1,0 +1,40 @@
+# 60. Amazon DynamoDB in Big Data
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304524
+# Caption: en_US (auto)
+
+Narrator: Now, how does DynamoDB relate
+in the big data world?
+Well, there's some very common use cases.
+That includes mobile apps, gaming, digital arts ad serving,
+live voting, audience interaction for live events,
+sensor network, log ingestion,
+access control for web-based content.
+Metadata storage for Amazon S3 objects,
+e-commerce shopping cart, web session management.
+So the use cases are quite diverse,
+but basically that means that anytime you have some data
+needs to be very hot, that needs to be ingested
+at scale within a database,
+DynamoDB is gonna be great for that.
+In terms of anti pattern, what don't you do with DynamoDB?
+Well, for example, an application that uses RDS
+like a traditional database, like a RDBMS, then you may
+choose RDS instead because you don't wanna
+rewrite it entirely.
+Or if you need to have joins or complex transactions,
+then DynamoDB may not be the best friend for this.
+Maybe again, an RDS database may be better for you.
+If you need to store binary large objects or blob data,
+so big data, maybe it's better to store in S3,
+and store the metadata in DynamoDB.
+This is a very common pattern.
+And in general, if you have large data
+that has low I/O rate, so very little writes
+or very little reads,
+S3 is going to be a much better storage option for you.
+So think about it.
+DynamoDB is gonna be more for when your data
+is hot and smaller.
+While S3 is going to be more when your data is a bit colder,
+but much bigger.

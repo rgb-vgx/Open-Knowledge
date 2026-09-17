@@ -1,0 +1,157 @@
+# 144. S3 Inventory
+# Section: Advanced Amazon S3 & Athena
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27513780
+# Caption: en_US (manual)
+
+So let's have a look at S3 Inventory.
+So the idea is that using an S3 Inventory operation,
+you can list all the objects
+as well as their corresponding metadata in your S3 bucket,
+which is a better way than using an S3 list API operation
+to list all your objects
+and get all the associated metadata.
+So some usage example
+for S3 inventory include creating an audit
+and reports on the replication
+and the encryption status of all your objects.
+So using this for example,
+you can identify which objects are not encrypted.
+You can get the number of objects in an S3 bucket,
+or you can identify the total storage
+of all the previous object versions of your bucket
+because S3 Inventory can list all object versions.
+So the output files is CSV, ORC or Apache Parquet,
+and this inventory can be generated on a daily
+or weekly basis.
+All the data can be queried,
+then using the famous tools you have in AWS
+such as Amazon Athena, Redshift, Presto, Hive
+and Spark, including that Presto, Hive
+and Spark are not within AWS, it can be from outside.
+And the use cases for inventory is going
+to be business compliance and regulatory needs.
+So let's go in the hands-on to see how it works.
+So let's set up S3 inventory.
+And for this I'm going to create a bucket
+and the bucket name is going to inventory-stephane-demo,
+something like this.
+And then I will go ahead and just create this bucket.
+So my bucket is not created and I can view the details.
+And now I need to set up inventory
+on another bucket of mine.
+Then I picked one of my buckets,
+so demo-stephane-s3-bucket-2020 which has some data in it,
+so that's all that matters to me.
+And I'm going to click on Management and then scroll down.
+And at the very bottom I have Inventory configurations.
+So I can create an inventory configuration right here,
+I'll call it DemoInventory.
+You can set up a prefix if you want to apply
+to a second prefix, but we won't.
+And this will include current version only,
+but you can include all object versions if you wanted to.
+And then the report detail should go in this account
+and then you need to specify a destination for it.
+So we can go into my s3
+in s3-inventory-stephane-demo
+which has just created before.
+And then there is going to be a following statement
+that will be added to the destination bucket policy
+to allow Amazon S3 to place data in that bucket.
+So here is the bucket policy that will be applied.
+Then what do we want the frequency to be? So, daily.
+And the first report will be delivered within 48 hours
+or weekly as well as the the output format,
+so CSV, ORC or Parquet
+and CSV is the format you need to use,
+if you plan to use S3 batch operations to,
+or if you want to analyze the S3 inventory using Excel.
+And if you use ORC and Parquet, then you can for example,
+analyze it using a tool like Athena.
+So this configuration is going to be enabled. Okay?
+And we'll select CSV,
+whether or not we want server that encryption,
+so I can disable it for now.
+And if you want additional fields for the reports,
+you can have Size, Last modified, Storage class, ETag,
+Multiple workload, Replication status,
+Encryption, Bucket key status,
+then whether or not they're Intelligent-tier
+and the All Object Lock configurations.
+So we're good to go.
+So this bucket has not been found in the eu-west-1 region,
+so I need to choose to recreate that buckets,
+but in the same region that I'm in right now.
+So let's go ahead and do this.
+So I'll take this S3.
+So this inventory buckets
+and it's always good to have errors,
+so that's why I always keep them on video.
+So we'll delete it.
+And as you can see, it shows that inventory has
+to be done from within the same region.
+So I will recreate this, but this time in eu-west-1
+and then create my buckets.
+And this is not going to work right now
+because the old bucket is being deleted.
+So let me pause for a second or I will just rename it,
+demo-2, and this should work just fine.
+My bucket is now created
+and I will just add demo-2 in here
+and we should be good to go.
+Let's create this.
+And now my inventory configuration is created.
+So what I need to do now is to wait a little bit
+for this inventory to be active.
+And this could take up to 48 hours.
+So I'll get back to you in 48 hours.
+Okay, so I've left the inventory on for a few days now.
+And if you go into the demo inventory bucket,
+you can see that a folder has been created for every day.
+So if I take any of these days,
+as we can see, we get a manifest.checksum,
+and a manifest.json.
+And this contains metadata around the data itself.
+So if we look at the manifest.json file
+and we download it, that file manifest.json,
+is going to show us the sourceBucket,
+the destinationBucket,
+the version of the manifest file,
+the fileFormat,
+which is CSV and the fileSchema.
+So all the columns that are belonging into my CSV file,
+as well as the files that correspond to this manifest.
+As you can see, one file is in it.
+This is this one right here, DemoInventory/data.
+So DemoInventory/data, and then this key right here.
+So let's go ahead and find that file right now.
+So back in my folder, I go back to the DemoInventory
+and then scroll down, find data.
+And in here I have found all the files
+that correspond to every single day.
+So July 4th is this one.
+So I will take this file,
+but they should all be the same
+because my bucket content has not changed.
+And I'm going to save this file and extract it.
+And so if we have a look at the content of the CSV file,
+we can find the first column corresponds to the bucket name,
+the second column corresponds to the files in it.
+The third column is going to correspond
+to a version ID of the files.
+Then we get some true false information
+around encryption, I guess,
+some file size, dates and so on,
+as well as the last column, which is going to be, sorry,
+the type of encryption right here that we have, okay?
+So this file contains really all the metadata
+around all our S3 files,
+which is very helpful if you wanna get a list
+or if you want to get an encryption status and so on.
+And when you're done with the hands-on,
+please make sure to go to Management
+and then to delete or disable this inventory configuration
+because otherwise you will keep on running every single day.
+So let's it for this lecture.
+I hope you liked it
+and I will see you in the next lecture.

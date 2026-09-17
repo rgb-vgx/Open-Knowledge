@@ -1,0 +1,132 @@
+# 393. AppSync Hands On
+# Section: Other Serverless: Step Functions & AppSync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19732102
+# Caption: en_US (manual)
+
+Okay, so let's go ahead
+and practice using AWS AppSync.
+So we're going to create an API and we have two options.
+The GraphQL APIs or Merged API,
+which is a combination of GraphQL APIs.
+So we'll choose the first option
+because it is by far the simplest
+and the one you should know about.
+Then we're going to design this from scratch
+but you could also import
+from DynamoDB or create a real-time API.
+So we'll design it from scratch
+and we'll name it My AppSync API.
+This is fine.
+And then click on next.
+So this GraphQL type can be backed
+by DynamoDB table so that the schema is configured
+and the data is stored.
+So we will create a type backed by DynamoDB table right now
+and the model name is going to be Student.
+Next, we're going to create fields for our students.
+So the first field is going to be an ID.
+So the type is ID and required, yes,
+but we can have, for example, a student name.
+So it's a type string and maybe it's required.
+And then we can have a type age,
+which is going to be an int,
+not necessarily required, and then certified
+is going to be a Boolean and not required.
+Okay, so this is how we model our information.
+And then we need to configure the model table,
+which is what is the name
+of the table going to be in DynamoDB?
+So I can name it StudentTable.
+We have to select a primary key, for example, ID,
+and we don't need any sort key right now.
+So click on next.
+And we have designed our first API.
+So let's create it.
+So my API is now created, and if I look at the schema,
+this was automatically created from the schema
+I have provided for my DynamoDB table.
+So by the way, we can go into DynamoDB,
+and we can check whether or not this table got created.
+So I'm going to go into tables and yes,
+we can find our StudentTable right here.
+So let's go back here.
+So we have a bunch of schema that is created
+and this is GraphQL-specific knowledge,
+so you don't need to linger over this.
+Then data sources.
+So this is my DynamoDB table that is linked
+to my GraphQL API.
+Functions, we don't need to know about it right now.
+And queries, this is where we can start using this API.
+So as we can see here, we have the option
+to run what's called the createStudent mutation
+or the listStudents mutation.
+So for example, if I run the listStudents mutation,
+which is a GraphQL query,
+right now we see that there is no results in our query.
+So first, I need to create the students.
+So we'll run the createStudent mutation
+and this takes inputs and this input comes from right here.
+So the name is, for example, we have Mike, age: 25.
+Certified: true.
+So let's run this right now, createStudent.
+So this is done and I can do another one.
+For example, Alice
+who is going to be 30, and she's also certified.
+So let's run this again.
+And now if I run the listStudents API from my GraphQL,
+as you can see, I get the list back.
+So we have Alice
+and we have Mike available right here from this API.
+And in DynamoDB, if I go into explore table items,
+as we can see, both my items get stored
+and returned in my DynamoDB table.
+But the cool thing about it
+is that now we have a full GraphQL-compatible API
+on top of our DynamoDB table.
+So we can expose it to our mobile clients
+or any websites that is using GraphQL
+and API mechanism, which is very, very handy.
+We have caching type of settings.
+So we can have full request caching,
+per-resolver caching or no caching.
+We have settings that we can edit.
+So we get, for example, the GraphQL endpoint.
+We get the API ID, the real-time endpoints,
+a bunch of information.
+We have the authorization modes, so is it an API key?
+And we can create new API keys if you wanted to
+as you can see right now.
+Or is it using IAM or OpenID Connect
+or Lambda or Amazon Cognito User Pool
+if you wanted to connect the authorization to Cognito.
+So we'll leave it as API keys.
+Then do we want to have additional authorization providers,
+which you can have multiple ones.
+As you can see right here, you can select multiple ones.
+So this is cool.
+And then finally, monitoring for our API.
+So how many errors, how many requests, and so on.
+As well as finally, if you wanted to connect
+to custom domain names to host this
+under your own domain name.
+So that's an overview of AppSync.
+You don't need to know about GraphQL in great details.
+As you can see, once you have GraphQL,
+you can integrate it with JavaScript
+for your websites or Android or iOS for your apps.
+So this is really meant to create a API that works
+for both web and mobile.
+And that's all you need to know
+that there is a link between GraphQL and AppSync
+and that you can back AppSync by your DynamoDB tables.
+So to finish this hands-on, just go
+and find your APIs, take it, and then you can delete it.
+So just enter the name again, My AppSync API,
+and this is going to delete all the AppSync level stuff.
+And of course, you also need to delete
+in DynamoDB your table.
+So you do action and then delete table.
+No need to have a backup and we delete it and we're done.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

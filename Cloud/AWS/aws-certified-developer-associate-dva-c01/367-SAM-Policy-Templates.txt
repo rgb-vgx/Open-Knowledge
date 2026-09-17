@@ -1,0 +1,61 @@
+# 367. SAM Policy Templates
+# Section: AWS Serverless: SAM - Serverless Application Model
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/15300330
+# Caption: en_US (manual)
+
+So let's talk about SAM policy templates
+or serverless model policy templates
+because they can come up in the exam as well.
+So it's a list of templates that you can apply permissions
+to your Lambda functions.
+And so, they're very simple templates
+and they allow you to reason much easily about
+what your Lambda function can do
+based on these templates that regroup a set of permissions.
+There's a full list of all the SAM policy templates
+that are available at this link
+and there's a lot of them,
+but I wanna walk you through three important examples.
+Overall, it's pretty self explicit about what they do
+once you see them once.
+So for example, if we have S3ReadPolicy,
+this is a policy template that gives read only permissions
+to objects in S3.
+That makes sense, right?
+SQLPollerPolicy allows your Lambda function
+to poll an SQS queue.
+And DynamoDBCrud, C-R-U-D, Policy.
+C-R-U-D in this case means create read update delete.
+So that means that you are able,
+from your Lambda function,
+to do create, update, delete, and read operations
+to your DynamoDB table.
+Overall, it's pretty self explicit,
+but once you see how it's defined
+it makes a lot of sense.
+So for example, say we define a function.
+It's running Python 2.7
+and we want to be able to read from SQS.
+In this case, instead of attaching an I-A-M role
+what we do is that we create a SQS.
+We call the policy SQSPollerPolicies
+in this little orange box right here
+and say okay we wanna be able to poll this queue name
+and automatically when the SAM policy template
+has been transformed by the SAM framework,
+it will become IAM policy attached to our Lambda function.
+The idea with the SAM policy templates is that
+it becomes much easier to write
+what your function should do
+and prevents you from worrying too much
+about how you should provide, er provision, your IAM roles.
+Okay, so that's it.
+All you should know for SAM policy templates.
+Make sure you just see once how they look like
+so on the right hand side
+and from the name of the policy template
+usually it's pretty obvious what they do.
+All right.
+Well, that's it.
+Thank you so much for watching.
+I will see you in the next lecture.

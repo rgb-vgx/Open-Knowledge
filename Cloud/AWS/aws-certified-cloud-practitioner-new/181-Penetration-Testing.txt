@@ -1,0 +1,49 @@
+# 181. Penetration Testing
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056314
+# Caption: en_US (manual)
+
+Okay, so now let's talk about
+penetration testing on the Cloud.
+So, penetration testing is when you're trying to attack
+your own infrastructure to test your security.
+A customer of AWS is welcome
+to carry out these security assessments
+and penetration testing against your own infrastructure
+without prior approval for eight services.
+So, our Amazon EC2 instances,
+NAT Gateways and Elastic Load Balancers, Amazon RDS,
+CloudFront, Aurora, the API Gateways, Lambda,
+and Lambda Edge functions,
+Lightsail resources and Elastic Beanstalk environments.
+The list can increase over time,
+but this is not something that you will be tested
+on at the exam.
+Just remember that you don't need an authorization
+for these eight services,
+but if you wanted to do other type of activities
+that could be prohibited.
+For example, you cannot do a DNS zone walking
+via Amazon Route 53 Hosted Zone.
+You can not perform a distributed attack on your system,
+so you cannot perform a DoS or DDoS or a Simulated DoS
+or Simulated DDoS.
+You cannot just attack your own infrastructure
+with a denial of service.
+You can not do port flooding.
+You can undo protocol flooding, request flooding,
+which are, you know, variants of an attack.
+And for any other events,
+you need to contact the security team at AWS
+to ensure that they can approve it.
+If you wanted to read more, you can read more here.
+So, from an exam perspective, yes,
+you can do pen testing on your Cloud.
+Remember that some are authorized,
+but anything that looks like an attack such as DDoS attack
+or a DNS zone walking or a port flooding is not authorized
+because for AWS,
+it would seem like you're trying to attack
+their infrastructure and they wouldn't like it.
+So, I hope that was helpful
+and I will see you in the next lecture.

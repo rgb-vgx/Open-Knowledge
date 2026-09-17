@@ -1,0 +1,41 @@
+# 184. AWS Certificate Manager (ACM) Overview
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/26623502
+# Caption: en_US (manual)
+
+Now let's talk about
+AWS certificate manager or ACM,
+which is a service to easily provision, manage
+and deploy SSL or TLS certificates.
+What do you use the certificates for?
+Well it's to provide in-fight encryptions
+for your websites by providing an HTTPS endpoints.
+So let's take an example.
+We have our application load balancer
+and it is connected in the backend through HTTP
+to an auto scaling group with our EC2 instances.
+But we want our end users to have HTTPS exposed
+on our application of answer.
+So to do so we're going to use ACM.
+And ACM once it's connected to our domain
+is going to be allowing us to provision
+and maintain these TLS certificates.
+They will be loaded onto our application load balancer
+and then automatically the load balancer will be able to
+offer HTTPS as an end point for our clients,
+which allows us to get in-flight encryption
+over the public web.
+So ACM supports both public and private TLS certificates
+and it is free of charge for public TLS certificates.
+There's also a very nice feature
+which is automatic TLS certificate renewal
+which is very helpful, I use it all the time.
+And it has integration, that means
+that it loads the TLS certificates on different services.
+It could be your elastic load balancer,
+your CloudFront distributions
+or your API is on API gateway, for example, okay?
+So anytime you see what service can help us do
+in-flight encryption and generates these certificates
+then think ACM, that's it.
+I will see you in the next lecture.

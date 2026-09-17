@@ -1,0 +1,182 @@
+# 312. Internet Gateways & Route Tables Hands On
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/28874492
+# Caption: en_US (manual)
+
+So first let's be certain
+that our EC2 instances in these subnets
+do not have access to the internet.
+So to do so, let's go into the EC2 console
+and we're going to be launching an instance
+into these subnets.
+To do so, I'm clicking on launch instances.
+And in here I scroll down Amazon Linux 2.
+T2.micro, this is good.
+I will not select the key pair.
+And for network settings, I will edit them.
+In here, I will choose the VPC address created
+named DemoVPC.
+And from there, I'm able to choose whatever subnet I want.
+For example, I can use public subnet A.
+We have 251 IP addresses in there
+so I can launch my instances here.
+And as you can see,
+the setting auto assigned public IP is currently disabled.
+This is because we need to,
+if we wanted to get a public IPv4 address
+to enable this, of course.
+But why is it disabled by default?
+Whereas when I go and select a subnet from before,
+it is actually enabled by default, if you try it.
+So the idea is that if you go into your subnet settings,
+you're going to see that
+and let's go in here, the public subnet A right here.
+If I do action and then edit subnet settings.
+In here I'm able to enable
+the auto-assigned public IPv4 address
+which is something we do want for our public subnets.
+So I have to enable it for the public subnet A,
+and then also I need to enable it
+for the public subnet B.
+So action and then edit subnet settings and then save.
+And so what's going to happen
+is that if I now refresh this page entirely
+to create a new instance again,
+but this time I go into the network settings
+and say, edit.
+I will go to DemoVPC.
+I will choose public subnet A.
+And as you can see now, by default,
+the auto-assigned public IP setting is set to enable.
+So we modified the default in our subnets
+and it got reflected into the EC2 instance launch console.
+This is good.
+So we get to create a new security group
+and we add the SSH rule on port 22,
+because we will SSH into our EC2 instance.
+The rest looks good so let's go ahead
+and launch this instance,
+and we're good to go.
+And now my instance is running.
+As we can see it has been assigned a public IPv4 address.
+So it turns out that it has a public IPv4 address
+but does not have internet connectivity.
+How do we make sure?
+Well, for example, let's try to connect
+to this instance using EC2 Instance Connect
+and then click on connect.
+So remember we did open the SSH rule on our instance
+yet there was a problem connecting to our instance.
+It turns out that's maybe the instance network settings
+are not correctly configured.
+So this is where the internet gateway comes in.
+So let's go ahead and add an internet gateway.
+So this is my VPC.
+And as you can see, there's no matching internet gateway.
+By the way, if I remove the filter,
+we can see there's already internet gateway
+attached to my default VPC.
+So let's create an internet gateway
+and I'll call this one DemoIGW,
+so internet gateway's IGW
+and click on create internet gateway.
+So very, very simple.
+It's been created and it's in detached states.
+So what we need to do is to attach it to a VPC
+and obviously the VPC we're going to attach it to
+is our DemoVPC.
+So now my internet gateway is attached into a VPC
+which provides internet access into our VPC.
+So if we try again, the EC2 Instance Connect,
+is this going to work?
+So let's try to connect again.
+And as we can see, yet again,
+there is a problem connecting to your instance.
+So what is happening?
+Well, even though we have an internet gateway,
+we need to give it a route.
+And so we need to edit the route table.
+So if we have a look at this route table right here,
+this is a default route table.
+And the default route table
+is going to be associated with subnets
+that don't have an explicit route-table association.
+So currently this default route table,
+main route table, is associated with four subnets,
+but I don't like it.
+I think there's much better
+to have explicit subnet associations.
+So what I'm going to do
+and I'm going to create two route tables.
+So I'll call it PublicRouteTable
+and then we'll assign it to this VPC.
+This is going to be assigned to my public subnets.
+And then I'm going to create a second route table
+called the PrivateRouteTable.
+And again, assigned to my DemoVPC.
+And the reason we do so is that I want to assign my subnets
+to the right route table.
+So the public route table should have subnet associations.
+We're going to edit then.
+And we're going to add all the public subnets
+into my public route table.
+So I click on save.
+And then my PrivateRouteTable,
+again, I will edit the subnet associations
+and I will assign them the private subnets, A and B.
+So let's save these associations.
+Okay, we're good.
+So as we can see my public and my private route tables
+both have two subnets associated with them.
+And it turns out that my main route table,
+this one, does not have any subnet association
+because all subnets have been assigned.
+So this is better.
+We've solved some problem.
+Now let's go into our public route table.
+Remember our EC2 instance was launched
+into this public subnet.
+So it's associated with the public route table.
+And so what we want to do is to edit the routes
+in our public route table.
+So if you have a look at the route right now
+in our route table, it turns out that we have a traffic rule
+for 10.0.0.0/16 to go to local.
+That means that any IP within our VPC,
+so this is the VPC CIDR,
+already corresponds to the VPC.
+So it should be routed from within the VPC
+hence the target is local.
+But we can edit the routes and saying,
+hey, I want to have a second route
+and I'll take the first one.
+So any IP, so this represents any IP.
+So any IP that does not match this rule,
+the target should be going to,
+and as you can see there are a lot of different options
+but for now it's an internet gateway
+and we'll choose the internet gateway we just created.
+So we're saying, hey, if this is a local IP in our CIDR,
+just please make sure you route locally.
+But if this is anything else,
+including obviously public IPs,
+then target is going to be the internet gateway.
+So send traffic to the internet gateway.
+We'll save these changes.
+And now that we've done that, we should have given access
+to the internet to our EC2 instance.
+So let's retry.
+So I'm going to take my EC2 instance,
+click on EC2 Instance Connect and then connect.
+And as we can see, now I am in my EC2 instance
+and it is connected to the internet.
+For example, I can do ping google.com.
+And as you can see, we get some data back from Google.
+So we are connected to the internet.
+Everything is working great.
+And currently what we've been doing
+is giving internet access into our public subnets
+with the public route table.
+We don't know yet how to give internet access
+into the private EC2 instances,
+and we'll see how to do this in the next lectures.

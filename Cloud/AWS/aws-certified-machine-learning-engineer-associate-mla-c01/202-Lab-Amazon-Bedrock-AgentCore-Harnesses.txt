@@ -1,0 +1,112 @@
+# 202. Lab: Amazon Bedrock AgentCore Harnesses
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865817
+# Caption: en_US (auto)
+
+Let me walk you through using AgentCore without using a command line at all and without writing
+any code at all.
+So you can do that too.
+Let's see how you can do this all just through the AWS console as more of a basic exercise.
+So if we go to the AgentCore console, we can go to build harness.
+So a harness is kind of their way of making agentic AI applications without writing any code.
+You can just tie it to MCP servers, skills, whatever you want that already exists that
+somebody else wrote code for.
+So let's go ahead and create a harness.
+We'll do a quick create to make it simple.
+And we need to give this a name.
+So what I'm going to do is build a agent that knows a lot about using Amazon Bedrock.
+So we'll call it Bedrock Expert Agent, whatever you want.
+And we'll create that.
+It should come back pretty quickly.
+So in less than a minute, I think it'll come back with a harness that we can play with.
+We will be playing and configuring that harness in the harness playground next.
+And if we were to actually deploy this into the real world, we could actually observe
+its performance using observability as well from that link there.
+So let's go ahead and wait for that to finish.
+Looks like it's already been created, and now it's ready.
+Let's get rid of this message here.
+So let's see what we can do.
+So we have our harness selected.
+We have our default endpoint selected as well.
+This is real, folks. It's out there.
+And now we can configure it to have the intelligence that we want.
+So we start by selecting the model that we want, and that can come from Bedrock from
+something we're hosting on Bedrock Mantle, LightLLM, or OpenAI, or Gemini Direct, whatever you want to do.
+Let's use Bedrock.
+And you need to select a model.
+And the trick here is to find a model that you have access to in your account and also
+has reasoning capabilities.
+For me, I'm going to choose Anthropic Sonnet 4.6.
+Is that still here? 4.
+Yeah, let's do that one.
+And again, this is going to depend on what you have access to.
+So unfortunately, Bedrock is notorious for limiting access to anthropic models for a lot of users.
+But hopefully, you have access to that.
+If not, you can try to find an alternative model that supports reasoning and is still supported.
+Let's apply that.
+System prompt can be whatever you want.
+You are a helpful assistant.
+Well, you're not just a helpful assistant.
+You are always a helpful assistant that always talks like a chicken, of course, because we
+all know chickens can talk, right?
+All right, tools.
+So if you want, you can add a tool to this.
+And again, there's sort of a limited menu here for what's built into AgentCore.
+There's the browser tool and the code interpreter tool.
+But you can also tie it into a gateway to talk to whatever other system you want if
+you have AgentCore gateway set up.
+And you can also tie it to remote MCP servers, which is probably what most of you will do.
+So if your organization has an MCP server for some specialized capability that you want
+to incorporate into your AgentCore agent, this is where you would put in the endpoint
+URL for it, and you would automatically gain access to whatever capabilities that MCP gives you.
+We're not going to do that, though, but we are going to give it a skill.
+So let's go ahead and add a skill.
+And there are some AWS skills out there available to us, or we could specify a link to our own
+skill through Git or through S3.
+But let's go ahead and see what we have out there in GitHub for AWS.
+What is a skill?
+Well, let's take an example.
+Let's go to Azure skills.
+Let's go to core skills and Amazon Bedrock because we're making a Bedrock agent, right?
+So if we actually look at the skill.md file, that's all a skill is.
+It's a big old markdown file with guidance for the model on how to answer certain kinds of questions.
+So inside this big md file, there's a bunch of information about Amazon Bedrock and links
+off to even more information about Amazon Bedrock.
+So if someone's asking about building a RAG application, it knows to go off to the KB
+setup reference page there for more information.
+There's also guidance here on how to actually respond to certain queries.
+So here's some rules about how it responds to different types of questions, constraints
+that it must follow.
+Here's some examples that can go by, some sort of like, you know, multiple shot examples
+here of how to deal with specific kinds of questions and how to query knowledge bases.
+So it basically has all the information the model needs to answer any question about Bedrock
+in an optimal way.
+That's all a skill is, giant old markdown file that might link off to other resources as well.
+So the UI is a little bit unclear on how to put that path in.
+What we want to do is get core-skills slash Amazon-Bedrock is the path within the context of AWS skills.
+So back to our agent core here, let's go ahead and enable a specific AWS skill instead of all of them.
+And the path again is going to be core-skills slash Amazon-Bedrock.
+Did I get that right? Yes.
+All right, so let's go ahead and apply that.
+So at this point, we should have an agent that's out there built on top of the Clawed
+... I don't want Opus, I want Sonnet, Opus is too expensive, Clawed Sonnet 4.6.
+And it's going to talk like a chicken and it knows an awful lot about Amazon-Bedrock.
+Let's see if it works.
+So I can write a prompt here in the agent core playground, tell me what data sources
+can connect to Bedrock knowledge bases.
+All right, so the Clawed Sonic model is deciding what skill to use.
+And it's giving me back a trace that I can take a look at.
+Looks like it gave me back a good answer.
+And it is in fact answering in the form of a chicken. Cool.
+So yeah, there's your list.
+A little bit of a review there for you.
+Knowledge bases can talk to Salesforce, Confluence, SharePoint, web crawlers, S3 of course.
+And here's a bunch of other information too, custom data sources too.
+And if we look at the trace, we can see that it did in fact consult the Amazon-Bedrock skill. Cool.
+Now when we're done, we need to make sure to destroy this thing because again, it costs money.
+So now that we're done playing with it, we can go to build harness, select that harness and delete it.
+And that should be a pretty clean way of getting rid of those resources.
+All right, that'll take a few minutes to actually delete.
+But in the meantime, there you have it.
+Bedrock agent core harnesses, a way to deploy AI agents that's using configuration, external
+MCPs, skills, whatever you have.

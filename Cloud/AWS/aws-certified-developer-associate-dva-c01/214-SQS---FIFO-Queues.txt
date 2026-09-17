@@ -1,0 +1,93 @@
+# 214. SQS - FIFO Queues
+# Section: AWS Integration & Messaging: SQS, SNS & Kinesis
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851382
+# Caption: en_US (manual)
+
+So now let's talk
+about Amazon's SQS FIFO queues.
+So FIFO means first in, first out,
+and it corresponds to the ordering of messages in the queue.
+That means that when you have a producer
+that send messages in a specific order,
+then one, two, three, four,
+then the consumer's polling messages
+from your SQS FIFO queue
+is going to read these messages in the same order.
+So this is a guarantee of the FIFO queue
+but this is not true for just a regular SQS queue.
+Messages can be received out of order.
+So because you have this ordering guarantee,
+you have limits on throughput,
+about 300 messages per second without batching,
+and 3,000 messages per second with batching.
+FIFO queue also have the ability
+to do something called exactly-once send.
+That means that any duplicates can be removed directly
+at the queue level.
+For this, you're just going to provide
+on every message you send a deduplication ID.
+And if this ID is seen twice
+in the time range of five minutes,
+then duplicates are going to be removed.
+So this is a very handy thing
+if you want to make sure you have no duplicates
+within five minutes.
+The messages are going to be processed in order
+by the consumer and the ordering guarantee
+is at the message group ID level.
+So you need to send a message group ID
+every time you send a message to Amazon SQS FIFO queue,
+and then all the messages are going to be in order
+for that specific group ID.
+So that's it.
+Now let's go in the console to see
+how the FIFO queue work.
+So let's go and create a queue,
+and I will create a FIFO queue.
+So as you can see, it's first-in-first-out delivery
+and the message ordering is preserved.
+Okay, so I will name it DemoQueue.fifo.
+And you have to end it with .fifo,
+otherwise you will not have the ability
+to create this queue.
+It has to end with .fifo.
+Now, if we look at the configuration,
+it looks very similar to before,
+but we have one more setting
+called content-based deduplication.
+This is to deduplicate the messages
+if the same is sent twice
+in a very small five-minute window.
+Access policy will be left the same,
+encryption and so on will be left the same.
+So I'll create this queue.
+And now if I go to send and receive messages,
+we can have a look at the message body.
+We can say Hello World 1,
+and then I will have to specify a message group ID.
+I'll call this one demo,
+and we'll use the same message group ID all along this demo.
+So demo is sent and a deduplication ID, excuse me,
+I will say it's my message number one.
+So I'll say ID one, send this message.
+I'll do Hellow World 2, the same message group ID,
+and I will say deduplication ID two.
+And then message the third one.
+And I will say three in here, and finally the fourth one,
+and I will say four.
+Okay.
+So now the messages have been sent
+and they're ready to be received.
+And so we have four messages available,
+and if I pull four messages, we look at all the messages,
+and if I look at this one, it's actually in the wrong order.
+So if I look at the bottom one, which is the first one,
+it says Hello World 1.
+Then if I look at the second message,
+I have Hello World 2.
+The third message, I have Hello World 3,
+and the fourth message, I will have Hello World 4.
+So this is a guarantee that you get thanks to FIFO queues.
+Then you go ahead and delete these messages and you're done.
+So that's it, I hope that was helpful
+and I will see you in the next lecture.

@@ -1,0 +1,174 @@
+# 272. Lambda Destinations Hands On
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730538
+# Caption: en_US (manual)
+
+Now let's practice the destinations feature.
+And for this, we're going to go into the lambda S3 function
+and we're going to add destinations directly
+into my lambda S3 function.
+We're going to add a destination for successes
+and a destination for failures.
+So to do so, first we need to go into SQS
+and we're going to create two queues
+that will be these destinations.
+So lets create a queue.
+I'll call this one S3-success,
+which is going to be a destination
+for the successes of processing from our S3 function.
+And just click on create queue.
+And I'll create second queue called S3-failure.
+And create this queue.
+Okay, great.
+So we have success and failure queues.
+Now let's go into our lambda function
+and go over the configuration.
+So let's add a destination.
+And so the source type
+is going to be for asynchronous invocation,
+but you can also have a destination
+for a stream type of invocation.
+For example,
+if it's Kinesis or DynamoDB stream mapped to this function.
+But let's go over asynchronous invocation,
+the condition is going to be on failure.
+The destination type is going to be an SQS queue,
+and the destination is going to be S3-failure.
+Now it says that the function execution role does not
+have the permission to send the results to the destination.
+And yes that's expected,
+but this lender console is nice and clicking saved,
+the permissions will be added automatically.
+So let's click on save,
+and the permissions should be added as well.
+And we can make sure of that
+by going into the IAM role of our lambda function.
+So to do so let's open our function in a new tab,
+go to configuration,
+permissions,
+find the role name.
+And as we can see here we do have indeed,
+um, a destination,
+Amazon lambda, SQS queue, destination execution role.
+which allows us to do a write to an SQS queue.
+If the queue name is S3-failure.
+So this was added correctly.
+And I can add a second destination
+for asynchronous invocations on success.
+This time for my SQS queue and the destination being again,
+my S3-success queue.
+And same as before,
+the permissions are going to be added for it.
+So we're good to go.
+Okay, great.
+So now we need to test the fact
+that these two destinations are working properly.
+And so to do so we will test one success event,
+and one failure type of event.
+So first let's test the success.
+So we're going to go into, and by the way,
+you can see the two destinations
+here are configured under the destinations tab,
+but also you can see them right here, in the lambda console.
+Okay.
+So let's test the success use case.
+So let's go into Amazon S3,
+Our buckets, so let's open our buckets.
+Let's see if I can click on this.
+Yes, we can.
+To go into our S3 buckets.
+And I'm going to just upload a new file.
+I'll add a file.
+And this one's going to be beach.JPEG,
+and upload it.
+Now the upload has succeeded.
+So the lambda function should be run
+and it should return just this which is a success.
+It's not a failure.
+So it's a success.
+And so therefore the log should be in CloudWatch logs,
+and then the destination should send it
+into my SQS queue named S3-success.
+So if I go into SQS and refresh this page,
+I see my S3-success queue is right here,
+and we see that one message is available in it,
+which means that yes indeed the message was sent
+into my SQS queue named S3-success.
+So we go to send and receive messages,
+and we can receive messages.
+One is available, let's poll for messages.
+Here is the message.
+And in terms of the body of the message,
+we get a lot of information around the request context.
+Which is that there was a success and it was invoked once.
+As well as the record itself.
+So it was an S3 event source.
+Object Created:put and so on.
+We get a lot of information around the event source itself.
+And we also get information around the response payload,
+which contains the status code and the body.
+So we get both the event source,
+as well as the event response and some extra information
+into the body of my SQS queue message,
+which is amazing.
+So destinations have a lot of information packed into them.
+And so if you want to test the failure case
+then we need to go into the code.
+And instead of this return, we need to raise an exception.
+So raise exception,
+and we'll just have "boom!" as the exception message,
+let's deploy this.
+So now my function should be raising exceptions.
+So if we go yet again into our S3 console,
+and we're going to go back into here and upload a new file.
+So this time we'll upload a maybe an index.HTML file,
+and upload it.
+So the upload has succeeded.
+And my lambda function is going to be invoked asynchronously
+and is going to raise an exception.
+So if you remember if I go into a SQS right now
+I should not see any messages right away.
+And let's see let's refresh this.
+So yes, my S3-failure does not have any messages yet.
+And do you know why?
+You should know by now.
+But because S3 invoking my lambda function
+is an asynchronous type of invocation.
+Then if we go into the configuration remember,
+and go to the asynchronous invocation,
+well we have two retry attempts
+that are going to be running.
+So these retry attempts are going to be run.
+And then once the retry attempts are run,
+then the destination will be invoked as a failure.
+And the message should end up into my SQS queue.
+So let's just wait a little bit I'm going to pause the video
+and get back to you in two, three minutes.
+Okay so I just refreshed and indeed
+we see one message in my S3-failure SQS queue.
+So let's go in send and receive messages,
+scroll down, poll for message.
+Here is my message.
+And if you have a look at the body itself,
+well it has decided that the condition for this message
+to be here is that the retries have been exhausted.
+Then the approximate invoke count was three.
+And so then it was sent to my destination failure.
+We can have a look at the record itself
+that made our lambda function fail.
+So we could debug what happened in here,
+in our lambda function to make sure
+that it doesn't happen next time.
+And we can handle this error case maybe more gracefully.
+And then we can also get information
+about the response payload.
+Which says the error message was "boom!".
+The type was an exception,
+and the stack trace was right here,
+which also helps us debug our function.
+So this is great.
+We've seen how destinations work and they're amazing,
+because we can have both the successes and the failures
+in two different destinations.
+I hope you liked this,
+and I will see you in the next lecture.

@@ -1,0 +1,18 @@
+# 4. Intro: Data Ingestion and Storage
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45284649
+# Caption: en_US (auto)
+
+Let's kick things off with the basics of data ingestion and storage.
+All machine learning starts with data and potentially a large amount of it.
+All that data needs to be stored in some sort of central repository in a scalable and secure manner.
+That's what this section is all about.
+I'll start by reviewing the different types of data and the properties of data, as well as storage
+strategies, including data warehouses, data lakes, and data lake houses.
+I'll talk about the pipelines and orchestration required for extracting, transforming, and loading
+your data, and cover some of the different data formats and the sorts of applications that are appropriate
+for.
+Then Stefan will take over as he's the expert on AWS storage services.
+You'll go in depth with S3 Elastic Block Store, Elastic File System, Elastic FSX, Kinesis, and Kafka,
+along with a little bit of a hands on practice to make it real.
+So let's get started with data ingestion and storage.

@@ -1,0 +1,274 @@
+# 354. CodePipeline - Hands On
+# Section: AWS CICD: CodeCommit, CodePipeline, CodeBuild, CodeDeploy
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851328
+# Caption: en_US (manual)
+
+So now let's have a look at CodePipeline.
+And we're going to create a pipeline
+to deploy our code from GitHub to Beanstalk.
+And we're going to build a custom pipeline
+to get access to all the options.
+And this one is going to be called MyFirstPipeline.
+Let's scroll down.
+We're going to leave
+the execution mode to Queued.
+This is perfect.
+We leave the default on.
+And then we're going to create a new service role
+and this is the role name.
+And this service role will allow CodePipeline
+to do what it needs to do.
+So this is very important to have it created.
+So no variables are needed.
+And under Advanced settings, we leave everything
+for artifact store and encryption key.
+So let's click on Next.
+And here comes the source provider.
+So as you can see,
+we have a lot of different source providers.
+We have CodeCommit, Amazon ECR, Amazon S3,
+Bitbucket, which is a Git provider,
+GitHub version 1 and version 2, Enterprise Server,
+GitLab and GitLab self-managed.
+So a lot of different integrations are possible
+and I would recommend for you to use GitHub version 2.
+So we're going to connect directly GitHub
+into our repository.
+So we need to have a connection.
+And then we return to this task.
+So let's connect to GitHub
+and I'll call this one MyGitHubConnection
+and Connect to GitHub.
+And then, you're going to be greeted with this
+to authorize the AWS Connector for GitHub.
+So please say yes, you authorize it.
+And now, this connection is fully created.
+So next, we need to have a GitHub Apps
+to install a new app.
+So let's install this new app right now.
+So you're saying to what do you want to connect to.
+So which parts and then what repositories.
+So I put all repositories.
+Then, you put
+your little codes if need be for security.
+And now, you will have a GitHub app ID in here.
+So, you can connect.
+And now, the connection to GitHub should be done.
+So everything is good now.
+The status is available.
+And so, now I can go back here
+and I probably need to refresh this.
+So let's do it again.
+Thank you, AWS, for being smooth.
+So let's create the pipeline
+and I call this one MyFirstPipeline.
+We go, again, press Next.
+Source provider is going to be GitHub version 2.
+And now, I see MyGitHubConnection.
+So it's ready to use.
+And now, we need to choose a repository in there.
+So, sounds good because the repository name I have
+is my-nodejs-app.
+So you just paste it in.
+And then, what is the default branch
+is going to be the main branch.
+So we're going to start deploying from this one.
+Next, what is the output artifact format?
+We use the CodePipeline default.
+Trigger, so here,
+we need to have a trigger that starts the pipeline
+and we are going to specify a filter
+saying for any push to the branch,
+and the branch being and we'll have it as main;
+for the branch being main.
+Then, push it into CodePipeline.
+So let's click on Next.
+Build provider, we're going to skip this for now,
+but we'll have a look at it later.
+And you can see we have CodeBuild and Jenkins available.
+Yes, we skip this.
+And the deploy is where do you want to deploy this to?
+So we have lots of options as you can see,
+but the one that is interesting to us
+is AWS Elastic Beanstalk.
+And then, for the application name
+is the one we have just created
+and we'll use right now the env environment.
+Let's click on Next.
+And so, what happens is that this pipeline
+is going to send whatever is in our GitHub
+directly into our Elastic Beanstalk application
+on the env environment.
+So let's create this pipeline
+and see what happens.
+So one little thing you may have to do
+is to go under Settings for your pipeline,
+click on the service role.
+And in here, we have two policies.
+We're going to add a new one
+that is missing permission sometimes for Beanstalk.
+So you're going to attach policy,
+you're going to look for Beanstalk in here,
+and you're just going to add AdministratorAccess Beanstalk.
+That's gonna make it very simple
+just for demo purposes.
+This way, our pipeline will be able to deploy to Beanstalk.
+So make sure you add this
+into your CodePipeline service role.
+And then, you can go back to the tutorial.
+So as you can see, things are in progress now.
+Don't mind this little error right now.
+It's something I have to fix behind the scenes.
+But anyways, if you go into Beanstalk right now
+and look at your environment and open it,
+you see it's green and you need to do this very quickly.
+And so once this source has been pulled,
+we're pulling the version of index.html
+that has blue as the background color.
+So if you go into here and you scroll down,
+you will see that by here,
+background color is blue.
+And so, therefore, when the deploy action happens,
+this new version is going to be deployed
+into our Elastic Beanstalk environment.
+And if I click on it,
+we can see that right now,
+there is a deployment happening.
+So the environment update is starting.
+And so automatically, when it'll be done,
+my environment should be switched to blue.
+So now, as you can see,
+my code is running a version
+named CodePipeline something.
+And if you go into Elastic Beanstalk now,
+the background is blue.
+And so we have successfully completed our first pipeline
+in which we have hooked automatically
+a GitHub repository
+to a Elastic Beanstalk environment through CodePipeline.
+But we can do so much more.
+So what we can do is that we can edit this pipeline
+and start adding stages.
+So here, as you can see, we have the source.
+And then, we have the deploy into Elastic Beanstalk.
+But we can add a stage
+and call this one DeployToProd
+in which we're going to deploy to our prod environment.
+And within this stage, we can add an action group.
+And remember, action groups
+are going to be within the stages.
+And so, we need to choose an action provider.
+And you have a lot of different things that are possible,
+but we want to use Elastic Beanstalk.
+So the action is going to be DeployToProdBeanstalk.
+And then, input artifacts,
+we'll choose SourceArtifact.
+Application name is the one we already have.
+The environment this time is going to be prod.
+And then, we click on Done.
+So here we can see we have from the source
+to deploy onto Elastic Beanstalk, to DeployToProd.
+And this is our first action group,
+but let's say we want to DeployToProd.
+And so, therefore, we want a manual approval beforehand.
+So this one, I'm gonna say manual approval
+because we want to check things before we deploy to prod.
+So we'll have it like this.
+We can specify an SNS topic,
+a URL for review, comments and so on,
+but we don't need this.
+We click on Done.
+And as you can see now,
+in this stage now,
+we have two sequential action groups.
+So just remember, multiple action groups
+can build in into one stage.
+Okay, so we're good to go.
+We're done for this.
+And then, we're going to Save our pipeline and save it.
+So as you can see now,
+we have our pipeline,
+and now we have these two,
+this extra stage, DeployToProd,
+which contains a ManualApproval and DeployToProd.
+So, how do we make it run?
+Well, if you've been following,
+you should know how to make it run.
+We need to make a change in the source.
+So let's go in the source.
+And then, we're going to edit this file.
+And in here, I'm going to have the background color
+changed to something else.
+We'll have it as red.
+So let's commit the change and say:
+change background color to red.
+And we commit directly into the main branch
+to make things quicker,
+and we save it.
+So now, we have a new commit.
+So if we go into our commit list right here,
+we have a new commit
+in which we have updated index.html.
+And when we look at this commit,
+we can see that the color
+was changed from blue to red.
+So back into CodePipeline,
+if you have been following,
+the pipeline has been automatically triggered
+because there was this change in GitHub.
+So the source was being pulled right now,
+and now there's a deploy happening
+in our first Beanstalk environment.
+So if we go back into Beanstalk right here
+and refresh this page,
+as you can see now,
+we are in Health Info
+because there is a new deployment happening.
+So let's wait for it to be over.
+It is done.
+We're okay now.
+So if I go back into my domain,
+now we can see that it is red.
+So as you can see,
+it was successfully deployed in my env environment.
+So this is successful here.
+But now, we are in the DeployToProd stage.
+And let me refresh this.
+As you can see now,
+we have a manual approval that is necessary.
+And until we have given this manual approval,
+we're not deploying to prod.
+So we would review the development environment and say,
+well, this looks good.
+This is exactly what I want,
+so I'm going to give my approval.
+So I'm going to review it
+and I'm going to approve it and say:
+Looks good in red!
+It looks good in red.
+Okay, we submit it.
+Now the manual approval was approved,
+and now my prod environment is being deployed to.
+So if I go here,
+I go into my prod environment.
+As you can see right now, it is green.
+This is the old version of my prod environment.
+But now, there's going to be env deployment
+into my environment, which is happening,
+which should make this go from green,
+which is the initial state into red.
+So, let's wait for this to be done.
+And now, we are in Ok, Health.
+So if you go again to the Domain,
+we can see it now it is red.
+So this is all very successful.
+So back into our pipeline,
+we've seen how to do a deploy to dev,
+a ManualApproval, a DeployToProd.
+We can look in the pipeline history on the left hand side
+to see all the runs, how long they took if they succeeded,
+what commit they correspond to and so on.
+And we've seen the basics of CodePipeline.
+So I hope you liked it.
+This is your first CI/CD pipeline,
+and I will see you in the next lecture.

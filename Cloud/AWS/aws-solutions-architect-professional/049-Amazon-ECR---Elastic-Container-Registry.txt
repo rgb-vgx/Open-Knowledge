@@ -1,0 +1,77 @@
+# 49. Amazon ECR - Elastic Container Registry
+# Section: Compute & Load Balancing
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34783186
+# Caption: en_US (manual)
+
+So now let's talk about Amazon ECR.
+So the Elastic Container Registry is used to store
+and manage Docker images on AWS.
+And you have two kind of repositories,
+you have the Private and the Public repositories.
+By the way, there is a whole repository you
+can see called gallery.ecr.aws,
+it has public images you can get.
+So you have an ECR repository, and for example,
+you have two Docker images, A and B
+and then you have an ECS cluster.
+And the Instance is going to have a role
+that allows it to pull images from the ECR repository
+and therefore start containers on it.
+So the ECR is fully integrated ECS
+in terms of pulling Docker images
+and the access to ECR is controlled through IAM.
+So in case you have any permission errors,
+you need to check the policies.
+Now, ECR has many features. We'll see those in a bit.
+We have vulnerability scanning, versioning,
+image tags, image lifecycle, and so on.
+So some features you must know, for example,
+is the cross-Region replication.
+So it both supports cross-Region
+and cross-account replication in ECR.
+So let's take an example.
+Say you have a pipeline to build images from CodeBuild.
+So CodeBuild will run container, will build images
+and will register and push these images to Amazon ECR.
+Then from ECR, if you've set up cross-Region replication
+these images are going to be replicated directly
+into other regions.
+The advantage that you don't have to rebuild these images
+into other regions
+and you can start launching, for example, your task on ECS
+from other regions as well, giving you a global application.
+Another feature is the image scanning.
+So Amazon ECR creates containers
+and it's important to scan these containers
+to look for vulnerabilities.
+So they can be either manual scan
+or automatic scan with scan on push.
+So whenever you push an image into your ECR repository
+then the image is going to be scanned.
+Now you have two types of scan.
+You have the basic scanning that looks
+for common vulnerability.
+So we push an image into ECR.
+ECR is going to scan the image through its service itself
+and then the results in case, for example,
+you have vulnerabilities.
+They can be triggered
+and sent as events into EventBridge.
+That's for the basic scanning.
+And then you have enhanced scanning,
+and that actually leverages the Amazon Inspector Service,
+and it's going to do more than just looking
+for common CVE is going to look
+for operating system and programming language vulnerability.
+So it's a deeper scan, it's enhanced scanning.
+So again, we push an image into ECR
+but this time the inspector service is going
+to scan our image.
+And then in case we have any results of that scan,
+it's going to be in EventBridge.
+But this time the trigger service is inspector,
+it's not ECR.
+Also, you can view the scan results directly
+from the AWS console for both types of scanning.
+Okay, so that's it for Amazon ECR.
+I hope you liked it and I will see you in the next lecture.

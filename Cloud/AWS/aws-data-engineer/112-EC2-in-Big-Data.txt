@@ -1,0 +1,62 @@
+# 112. EC2 in Big Data
+# Section: Compute
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356074
+# Caption: en_US (auto)
+
+Instructor: So there's one service we've been using
+without really knowing.
+It is EC2, and EC2 has a good role in Big Data,
+especially behind the launch modes.
+So we knew about On-Demand, Spot and Reserved Instances,
+but let's do a quick review again.
+So Spot means that it's going to be
+a very, very cheap instance,
+but AWS can take it away from you at any time.
+So you need to be able to tolerate loss of instance.
+That means that usually if you do Big Data
+with Spot Instances,
+there needs to be some sort of checkpointing features.
+So machine learning algorithm, Spark, Hive,
+all these things are meant to tolerate loss.
+So they would be great candidates
+to run your Big Data processing jobs
+or your machine learning jobs on Spot Instances.
+Similarly, if you have a very long running cluster
+or a database,
+like think EMR cluster running for over a year
+or RDS database running for over a year,
+then you need to start reserving your instances
+because by reserving your instances ahead of time,
+you're gonna get a tremendous discount.
+So this is for stuff
+that's going to be very stable over time.
+Finally, for all the remaining workloads
+that we don't know if we can lose them,
+or we don't know if we can use them for a year continuously,
+then On-Demand is going to be the type of instance launch
+that we want.
+Also, let's talk about Auto Scaling.
+So Auto Scaling can be leveraged for EMR or other services.
+It's automated for DynamoDB, Auto Scaling Groups, et cetera.
+It could be really helpful
+in case you get more data over time
+or if it's a seasonal data
+or if it's, like, a daily data.
+Maybe you get more load
+during the day and less load at night.
+Auto Scaling can be very handy for that.
+And if you combine Auto Scaling with On-Demand, Spot,
+this could give you some really good price
+and cost benefits.
+Finally, EC2 is behind your EMR cluster.
+So think about the type of nodes
+that you're going to assign into your master nodes
+and the type of nodes for your compute nodes.
+So compute nodes, remember, contain the data,
+and the task nodes do not contain data.
+They're just here to make task, okay,
+so that's it for EC2.
+Just a quick review,
+but hopefully, you get a better idea
+of how EC2 fits into the Big Data ecosystem.
+I will see you in the next lecture.

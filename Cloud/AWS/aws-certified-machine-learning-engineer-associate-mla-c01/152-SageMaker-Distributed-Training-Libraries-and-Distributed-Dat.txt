@@ -1,0 +1,89 @@
+# 152. SageMaker Distributed Training Libraries and Distributed Data Parallelism
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285833
+# Caption: en_US (auto)
+
+Now, since we're talking about training truly massive models, often you can't do that on one machine,
+right?
+One instance is not going to cut it.
+So we need some way to distribute that training across multiple instances.
+Now of course you can always run multiple separate jobs in parallel.
+We call that job parallelism.
+So if you're training more than one model then you can train those multiple models in parallel.
+Of course you can.
+Right.
+I mean that's kind of intuitive.
+However, individual training for an individual model can also be parallelized.
+And there's two different branches to how to think about that.
+One is distributed data parallelism.
+That's how we actually distribute the data used to train your model.
+And then there's distributed model parallelism where maybe the model itself can't even fit on one instance
+because you have so many parameters, so many weights and biases in there, even that won't fit on one
+system.
+And you need to distribute the model itself, not just the data and the training that's happening for
+that model.
+Now, before you go to that extreme, make sure that you're maxing out the instance types that you have
+at your disposal before you go to multiple parallel instances.
+I mean, you do need to be training a pretty large model to need truly parallel training for an individual
+model, right?
+So you could go all the way up to an ML p42 for xlarge.
+X-large.
+That will give you eight GPUs, and you should max that out before you move to anything more to multiple
+instances.
+So make sure you're maxing out what the individual instances will give you first, because there's always
+an overhead to parallelism, right?
+It's always going to be more efficient to use multiple GPUs in one instance than to use a bunch of GPUs
+spread across multiple instances.
+So it's always going to be more efficient, more cost efficient, more time efficient to use a larger
+instance type than using multiple smaller instance types if you're distributing your training.
+Remember that, by the way, this does get expensive.
+There's not going to be any hands on activities in this section of the course because, well, I don't
+have millions of dollars.
+However, maybe your company does.
+So there's a few ways of doing this.
+So let's start talking about the distributed training libraries in SageMaker itself.
+These are built on top of the AWS Custom Collective library for EC2.
+And you can think of this as solving a similar problem as MapReduce in spark.
+So whereas MapReduce in spark distributes data processing, the distributed training libraries in SageMaker
+are going to be distributing the computation of the gradients when we're doing gradient descent to train
+your model.
+So but the same general idea of map and reduce holes.
+So there's two components to this.
+One is called the all reduce collective.
+And what that does is distribute the computation of these gradient updates to and from GPUs across your
+fleet of instances.
+This is part of the SageMaker Distributed Data Parallelism library, or DDP library.
+And to use it, you just specify the back end of Smdp to torch distributed init process groups inside
+your training scripts.
+After that, you just specify distribution of SM distributed data parallel and enable it within your
+PyTorch estimator, and it will automatically use that all reduce collective.
+There's also the Allgather collective.
+Its job is to manage the communication between the nodes in your cluster to improve performance, and
+that works by offloading communications overhead to the CPU, thereby freeing up some of the capabilities
+of the GPUs instead.
+So you'll see more than once some of the optimization techniques we see are offloading stuff from the
+GPU to the CPU, so we can take advantage of the main memory and the CPU's computational abilities to
+free up some more capacity on the GPUs themselves.
+This, however, like I said, is not compatible with the SageMaker training compiler.
+But again, the SageMaker training compiler seems to be no longer maintained.
+So I guess you shouldn't have to worry about that too much.
+It's kind of a shame, because SageMaker Training Compiler is pretty cool.
+That can pretty much double the speed of your code by itself.
+However, I guess AWS wants you to buy more hardware and well, I won't go there.
+Other distributed training libraries.
+You don't have to use the SageMaker one, so if you don't want to be locked into AWS, you can use other
+training libraries as well for distributed training, for example, the PyTorch Distributed Data Parallel
+library, or DDP.
+To use that, you would just set your distribution to PyTorch, DDP and enable that instead.
+You can also use torch run.
+The distribution for that would be torch underscore distributed and just enable that.
+However, that does require a P3, P4 or Trn1 instance types.
+At this recording.
+You can also use Mpirun.
+You can use Deepspeed, which is an open source distributed training framework from Microsoft.
+It is PyTorch specific, however, but I think you'll see a lot of these solutions are indeed PyTorch
+specific.
+That seems to be the way to go these days.
+There's also the Horovod distributed training framework.
+Um, you should at least know that name.
+It might pop up.

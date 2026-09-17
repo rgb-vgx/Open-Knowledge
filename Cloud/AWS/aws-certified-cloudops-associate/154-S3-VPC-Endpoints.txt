@@ -1,0 +1,54 @@
+# 154. S3 VPC Endpoints
+# Section: Amazon S3 Security
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218567
+# Caption: en_US (manual)
+
+Okay, so let's talk about the ways
+to access Amazon S3 privately
+from within a private subnet in your VPC.
+So say you have an EC2 instance
+and you wanna access an Amazon S3 bucket.
+So for this, we can use a gateway endpoint for Amazon S3.
+It's free, it has no cost,
+and it's only accessed by resources
+within the VPC where it's created.
+So you're creating this one VPC
+and your EC2 instance can access it.
+For this, you must enable
+the DNS support option within your VPC,
+which is going to update the route table.
+And then you keep on using the public DNS of Amazon S3.
+You need to make sure as well that your security group
+allows traffic out to your VPC gateway endpoint for S3,
+and you're good to go.
+The EC2 instance will be able to access Amazon S3 privately
+through your VPC gateway endpoints.
+And that is going to be 99% of use cases
+is to use a gateway endpoint,
+because it's free
+and it's meant to really allow your EC2 instances
+in private subnets to use Amazon S3.
+But you also have the option to use an interface endpoint.
+So this is something that's not just for S3,
+but for almost all services on AWS, but also for S3.
+So in this case, you're going to deploy
+elastic network interfaces, ENIs,
+and then these ENIs will have their own security group,
+and then the routing will happen
+through these ENIs into Amazon S3.
+The difference is that now because you have these ENIs,
+you can actually access them from on-premises
+using a VPN or direct connect.
+And there's a cost to enabling these network interfaces.
+It's about 1 cent per hour per AZ.
+So you need to have multiple ones in multiple AZ.
+And for this to work,
+you must enable DNS support in your VPC and DNS host names.
+These must be true.
+And then your EC2 instances again will be able
+to access Amazon S3 privately.
+Most likely you will want
+to use gateway endpoints at the exam,
+but you need to know that interface endpoints exist as well.
+All right, that's it, I hope you liked it,
+and I will see you in the next lecture.

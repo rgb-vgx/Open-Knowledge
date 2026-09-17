@@ -1,0 +1,39 @@
+# 322. [SAA] Regional NAT Gateway
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/55787785
+# Caption: en_US (manual)
+
+So now let's have a quick chat
+about regional NAT gateways or RNATs.
+So it's a new type of NAT gateway that is highly available
+and associated directly with your VPC.
+So before, the NAT gateway had to be created
+within each public subnets,
+but now you just create it at the VPC level,
+and then you link it to the Internet gateway.
+How?
+With the route table.
+So you create the NAT gateway, it's in your VPC,
+and you tell it that anything that goes to the Internet
+should go to your Internet gateway.
+The added benefit is
+that now you don't need to deploy a NAT gateway per AZ,
+automatically, this is shared across all the AZs.
+You also don't need to maintain public subnets in your VPC
+to host the regional NAT gateway.
+So no risk for anyone to create resources
+in the public subnet
+that you didn't want to use in the first place.
+Then, you link your private subnet directly
+into your NAT gateway using a route table,
+and you're good to go.
+Your private subnet instances will have access
+to the Internet through this NAT gateway.
+And automatically, if you add another AZ,
+another private subnet in another AZ,
+then it will be detected
+and the NAT gateway will scale for you.
+So this simplifies solution architecture
+by having one central NAT gateway per VPC
+instead of creating a NAT gateway instance per AZ.
+I hope you liked it and I will see you in the next lecture.

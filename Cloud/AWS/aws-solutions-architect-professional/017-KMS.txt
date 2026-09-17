@@ -1,0 +1,211 @@
+# 17. KMS
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/17881468
+# Caption: en_US (manual)
+
+Okay, so now let's talk about AWS KMS,
+which is the key management service.
+So anytime you hear encryption in AWS,
+you have to think about KMS, obviously,
+and it's a way to easily control access to our data,
+and AWS will manage the encryption keys for us.
+It's fully integrated with IAM for authorization,
+and it has seamless integration
+into all the AWS services pretty much,
+so EBS, S3, Redshift, RDS, SSM, et cetera, et cetera.
+You should know and remember that KMS keys are regional
+and they can only be used in the region they're created in,
+and that can come up in the exam a lot.
+So in KMS you have two types of key.
+You have the symmetric keys and the asymmetric keys.
+So the symmetric keys were the first offering of KMS.
+It's a single encryption key that will be used
+to encrypt and decrypt information.
+And then all the services that are integrated
+with AWS KMS use symmetric KMS keys.
+It's necessary if you wanna do envelope encryption,
+and you never actually get access
+to the KMS key itself or unencrypted.
+You must just send data into KMS
+with a KMS API call to use it.
+Now, the asymmetric key are new,
+and they can allow you to have two kind of public keys,
+it's a key pair, so it's a public key and a private key.
+The public key will be used to encrypt,
+and the private key will be used to decrypt.
+Now, this is very helpful when you want to have
+encrypt/decrypt or sign/verify operations,
+and you can download the public key.
+That means that you can encrypt stuff
+from anywhere with a public key,
+and you can send the public key to people
+that you don't trust in untrusted environments.
+But once the data is encrypted with the public key,
+only the private key has the power
+to decrypt your information.
+You still cannot use the private key unencrypted though.
+You have to use the KMS API calls.
+So the use case for an asymmetric key
+is to have encryptions outside of AWS by users
+who cannot directly call the KMS API for whatever reason.
+Now, you have different types of KMS keys.
+The first type is a customer-managed key,
+and this is a key you create directly in KMS.
+So you can create, manage, and use them.
+You can enable, disable them.
+You can enable a rotation policy
+to rotate the key every year
+while the old key is still preserved, of course.
+And you can add a key policy, which is a resource policy
+for KMS keys, and you can audit the key usage in CloudTrail.
+This is the kind of keys you will leverage
+for envelope encryption, so these are the kind of keys
+that you manage yourself.
+Therefore, they're called customer-managed keys.
+But a second kind of key is the AWS-managed keys.
+So these ones are used exclusively by AWS services,
+such as aws/s3, aws/ebs, and so on.
+And this is what you see in the UI
+when you use the AWS-managed keys.
+So they are managed by AWS
+and they're automatically rotated every year.
+You can view the key policy and you can audit in CloudTrail,
+but you cannot leverage them
+for your own encryption operations.
+And finally, you have AWS-owned keys,
+and these are created and managed by AWS,
+used by some services to protect your resources,
+and they can be used across multiple AWS accounts,
+but they're not in your accounts.
+They're used by AWS internally,
+and you cannot view, use, track or audit these keys.
+But AWS tells you that these keys actually exist.
+Okay, so now if we want to have a summary
+of the different types of KMS keys,
+for the customer-managed keys, you can manage metadata,
+you can view metadata,
+and you can manage it,
+and you can also use for your accounts,
+and you can have an automatic rotation every one year.
+The AWS managed key can be used in your accounts, okay?
+But you cannot manage them,
+and they're required to be rotated every one year.
+This is automatic.
+And then the owned keys, you just know they exist,
+but you cannot use them or see them.
+Okay.
+Now, how do you create a KMS key?
+So you have what's called a key material origin,
+and it cannot be changed after creation,
+so you have to define it as creation time.
+So you have the KMS, which is the AWS_KMS key material,
+which means that you are going to have KMS
+automatically create, generate, and manage the key
+in its own key store
+to see what happens when you go into KMS
+and start to create a key.
+But you have a second option called external.
+In that case,
+while you import the key material directly into the KMS key
+and you are responsible for securing
+and managing this key material outside of AWS, okay?
+So maybe you just wanna create it outside
+and then import it into this KMS
+and then be done and delete it on your end,
+or you just also wanna keep a copy in KMS,
+and therefore you're responsible, obviously,
+for the copy outside of KMS.
+Now, the last option
+is to use a custom key store called AWS_CLOUDHSM.
+And this allows you to create the key material
+directly within your HSM cluster
+and manage the key material there.
+So let's consider how it works
+when you have a custom key store
+which is backed by CloudHSM.
+So you create your CloudHSM cluster as a custom key store,
+and there is a integration with KMS.
+That means that when KMS creates key,
+well, the key materials are going to be stored
+in your HSM cluster that you own and manage.
+That means that the keys live within your HSM cluster.
+They are only managed by KMS and used by KMS,
+and all the cryptographic operations
+will be directly performed in the HSMs, okay?
+So this is the architecture.
+You have your CloudHSM cluster with two AZs,
+and it is directly connected to KMS.
+So once you have at least two HSMs for high availability,
+then you can integrate with KMS,
+and then the users can still use the KMS API
+to view, create, and manage keys.
+But behind the scenes, you know for sure
+that KMS will be using your CloudHSM cluster
+for all the cryptographic operations
+and for storing and retrieving these keys.
+So why we do this?
+Well, the use case is that you need
+to have direct control over the HSMs
+for higher security or for security requirements at least,
+or you have a requirement
+to store the KMS keys in a dedicated HSM environment.
+Now, if you choose to have an external KMS key source,
+then you can bring your own key using your own key material,
+and you are really going to be responsible
+for the key material's security,
+availability, and durability outside of AWS.
+There is support for both symmetric and asymmetric KMS keys,
+and it cannot be used with custom key store.
+It has to be used on its own.
+For this, if you want to have KMS key rotation, of course,
+because the key source is external,
+then you have to rotate it on your own.
+So automatic rotation is not supported.
+So how does that work?
+Well, the user will create a KMS key in KMS
+and say that it's a symmetric type of key,
+and that the source is external.
+Now, the key envelope is created,
+but the key material is not.
+So then you download the public key and an import token,
+and you're going to use the public key with your internal,
+okay, your externally generated key material
+to create an encryption thanks to the public key.
+Now, this public key,
+this private key that has been encrypted
+can be sent back to the KMS service
+using also the import token.
+And then KMS will use some decryption mechanism
+to get the key material
+and store it in your KMS key in there.
+So this is the process to import external keys in KMS, okay?
+Lastly, so you need to know about KMS multi-region key,
+so it's possible for you to create a key,
+for example, in us-east-1
+and have it replicated across multiple regions.
+So they will have the same key material
+and actually the same key ID,
+but they will be in different regions.
+So the use cases are amazing
+because thanks to this, well,
+you have the same key in multiple regions,
+and that means that you can encrypt in one region
+and decrypt in the other regions using the same KMS key ID.
+So you don't need to re-encrypt data
+or make cross-region API calls.
+So they will have the same key ID, the same key material,
+the same automatic rotation, and so on.
+But these keys are not global keys, okay?
+It's this principle that there is a primary key
+in one region, and all the others are replicas.
+Each key can be managed independently,
+and although you can only have one primary key at a time,
+it's possible for you
+to promote one replica into their own primary key.
+So the use cases for multi-region keys
+is going to be disaster recovery, global data management,
+for example, for DynamoDB global tables,
+active-active application that span multiple region,
+or distributing signing applications, and so on.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

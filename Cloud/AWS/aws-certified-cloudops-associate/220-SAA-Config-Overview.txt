@@ -1,0 +1,122 @@
+# 220. [SAA] Config Overview
+# Section: Monitoring, Auditing and Performance
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516072
+# Caption: en_US (manual)
+
+Okay, let's have a look at AWS Config.
+So Config is a service that allows you to get auditing
+and record compliance of your resources in AWS,
+based on some rules that you're going to set,
+you can also record Configuration
+and their changes over time
+to quickly be able to roll back and to figure out
+what happened in your infrastructure if you need to.
+So some questions that can be solved by Config are,
+is there an unrestricted SSH access to my security groups?
+Or do my buckets have anybody public access?
+Or is there an ALB configuration that has changed over time?
+Then based on these rules being compliant or not,
+you can receive alerts or SNS notifications for any changes.
+Config is a per region service,
+so you need to configure it for all the regions
+if you need to,
+and you can aggregate the data across regions and accounts
+to centralize it into one place,
+you can also can store the configuration
+of all your resources into Amazon history
+to be later analyzed,
+for example, by serverless query engine, such as Athena.
+So what types of rules go into Config?
+Well, you can have AWS managed config rules,
+and there are over 75 rules that you can use,
+or you can create your own config rules.
+In this case, you need to define that rule yourself.
+We're using a Lambda function.
+For example, you can evaluate if each EBS disk
+is going to be of type gp2
+or if each two instance in your development accounts
+is of type t2.micro.
+Some rules can be evaluated or triggered
+whenever a configuration is going to change.
+So whenever, for example,
+you have a new configuration of your EBS disc,
+please evaluate the type of your EBS disk,
+or you can also have the rule to be evaluated
+at regular time intervals.
+For example, every two hours,
+please make sure that all my EBS discs are of type gp2.
+Now, Config Rules are just for compliance.
+They do not prevent actions from happening.
+This is not a denied action on anything.
+It doesn't replace security mechanisms such as IAM.
+Okay, but what it does give you is a overview of your
+configuration and the compliance of your resources.
+Now there's no future for config.
+It can be quite expensive very quickly.
+You're going to pay 0.003 cents per configuration,
+item recorded per region and 0.001 cents per config rule
+evaluation per region.
+Now for the company resource,
+you're going to be able to view the compliance
+of a resource over time.
+For example, the security group has been non-compliance.
+Then you can view the config resource configuration
+over time, okay?
+You can see when the change and who changed it and so on,
+and you can link it to CloudTrail to view the API calls
+made for that resource.
+So you can get a full picture
+of everything that's happening.
+Now, although you cannot deny any action from happening
+from within the config,
+you can do remediations of your non-compliant resources
+using an SSM Automation Documents.
+So the idea is, for example,
+you are monitoring whether or not
+your IAM access keys have expired.
+For example, they are older than 90 days.
+In which case you want to mark them as non-compliant.
+So this will not prevent them from not being compliant,
+but you can trigger whenever a resource is not compliant,
+a remediation action.
+For example, there's an SSM document
+named RevokeUnusedIAMUserCredentials, okay.
+Maybe you want to use this one
+and then is going to be applied
+to whatever resource you have, okay?
+And in this instance,
+it's going to deactivate your IAM access keys.
+So the idea is that's either using either using
+AWS-Managed Documents
+or creating your own automation documents,
+you can have remediations
+of your non-compliant resources, okay?
+And if you want it to and go all the way through
+with the scripting,
+you could create a document
+that will invoke a Lambda function
+and you're free to do whatever you want there.
+Finally, your remediation may have retries.
+So in case the resource is still non-compliance
+after an auto remediation, it may retry for example,
+up to five times.
+So lastly, what about notifications?
+Well, we can use if EventBridge to trigger notifications,
+whenever our resources are not compliant.
+So, for example,
+we monitor our security group, it becomes not compliance.
+Then we can trigger an event in EventBridge,
+and then pass it on to whatever resource you wants.
+Or you can also pass on all the changes
+and all the compliance that notifications
+of your resources to SNS from Config.
+So one configuration item,
+and then if you want it to just filter
+for only for some events,
+you could use an SNS filtering to have a filtered SNS topic,
+and then you can send it these notifications, for example,
+to an admin email or to a slack channel and so on
+to get all these notifications in one place.
+So that's it for a Config.
+I hope you liked it,
+and it will see you in the next lecture for some hands-on.

@@ -1,0 +1,105 @@
+# 235. AWS Service Catalog Overview
+# Section: AWS Account Management
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516214
+# Caption: en_US (manual)
+
+Now let's talk a service
+that can come up at the exam on one or two questions,
+which is the AWS Service Catalog.
+So the idea is that when you go and start with AWS,
+you have too many options,
+and it's very complicated for beginners to get started,
+and sometimes your users just want to be using the services,
+and so they may create stacks,
+though they are not going to be compliant,
+or in line with the rest of your organization.
+So they just want a quick, self-service portal,
+that allows them to be launching
+a set of authorized products,
+that will be predefined by admins in the Service Catalog.
+So for example, you may have a user that say, hey,
+I want a virtual machine for doing my machine learning.
+I want a database for my application,
+I want storage options, etc, etc.
+So this is where the Service Catalog comes in.
+So the idea is that you have admins and users.
+So your admins are going to create products,
+and products are a short name for CloudFormation templates.
+So we already know CloudFormation templates,
+the idea is that we'll use products to encapsulate them.
+Then we build a portfolio,
+which is a collection of products, okay,
+a collection of CloudFormation templates.
+And then we define controls such as IAM Permissions,
+for who can access this portfolio.
+Now your users on the other side,
+they will have a product list available to them,
+and they will see that list,
+thanks to the IAM Permissions we have defined from before.
+And if they're happy with the product, they will launch it,
+and then the product will be provisioned,
+which is ready to use, properly configured,
+and properly typed.
+So the idea is that here,
+we allow our users to pick and choose
+from a list of CloudFormation templates,
+organizing portfolios, and launch them safely.
+So our users may not have access to AWS at all,
+but only to the Service Catalog,
+and they can launch full stacks, okay,
+without directly accessing CloudFormation,
+only by using the CloudFormation templates
+authorized in the Service Catalog.
+But this allows them to be faster,
+and launch exactly what they can.
+Okay, so now let's talk about sharing catalogs,
+so you have a catalog in your account, okay?
+And you can share it with other accounts,
+or within an organization.
+So let's say there's a portfolio,
+you have two sharing options.
+The first one is to share a reference to the portfolio,
+and then import the shared portfolio
+in the recipient accounts.
+And in that case, that will be synchronized
+with the original portfolio.
+So that means that the admin in account B,
+can import the full portfolio,
+and launch products out of the portfolio.
+And then in case we add more products to the portfolio
+in account A, then the admins will see them,
+because they're in sync.
+And so will be able to launch products from them as well.
+But we can also deploy a copy of the portfolio
+into the recipient accounts,
+in which case, well, in case of updates happening
+in portfolio A, they need as well to be copied
+into the account B.
+Because this is a copy, and not an in-sync sharing.
+So two options in different use cases.
+And then based on this,
+you can create products from the imported portfolio,
+to your local portfolios.
+Okay, finally, let's talk about tags with Service Catalog.
+So you can manage tags on your provision products,
+and this is called a TagOption.
+So this is a key value pair you predefine
+in the Service Catalog, and it's managed by it.
+And this is used to create a tag in AWS,
+so you can associate a TagOption
+with a portfolio and a product.
+For example, we can associate the TagOption environment
+with the key and value prod, okay.
+We associate it with portfolio A,
+and that means at any time we launch a stack
+from a product in portfolio A,
+then it will inherit the tags, key environment
+and value prod, and as you can see, for example,
+my EC2 instances now are tagged properly.
+So the use cases of that is to do proper resource tagging,
+or to only use allowed tags
+that are defined in the Service Catalog.
+And these TagOptions can also be shared
+with other accounts, or with an organization.
+So that's it for the Service Catalog, I hope you liked it,
+And I will see you in the next lecture.

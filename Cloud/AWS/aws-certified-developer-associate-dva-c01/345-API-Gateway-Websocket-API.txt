@@ -1,0 +1,173 @@
+# 345. API Gateway Websocket API
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26101848
+# Caption: en_US (manual)
+
+So let's discuss,
+WebSocket APIs with API gateway.
+So what is WebSockets?
+WebSocket, anytime you see it,
+it means that there is a two way interactive communication
+between the user's browser and a server.
+And it's two-way because the server,
+it can choose to push back information to the client
+without having the clients
+making a request to the server, okay?
+So this enables stateful application use cases.
+And so WebSocket APIs are often going to be used
+in real time applications
+such as chat applications, collaboration platforms,
+multiplayer games and financial trading platforms.
+So in the context of a chat application,
+the client is going to connect
+to a WebSocket API on API gateway
+and is going to establish a persistent connection.
+So there's not multiple connections,
+it's just our connection is open
+and the API gateway is connected to the clients.
+Then on the first connection
+there's going to be a Lambda function called onConnect.
+There's going to be invoked
+and you can do whatever you want
+such as persisting the connection ID into DynamoDB
+and we'll see this in details in the next slides.
+Then whenever the client chooses to send a message
+over this persistent connection,
+it can invoke a new Lambda function called sendMessage.
+And then finally, when the client has sent many messages
+and want to disconnect,
+you will be sending a message to the Lambda function,
+onDisconnect.
+So we can work with any kind of integration
+API gateway has in the backend.
+It could be Lambda functions,
+it could be DynamoDB tables,
+or HTTP endpoints or whatever you want, okay?
+The idea is that there's a WebSocket API.
+So what I'm not showing in this graph
+is how to send data back to the clients.
+But I will be showing this to you right now in the slides
+as we go over the details over how WebSockets works
+because I think it is important to you
+to understand this,
+to understand the questions of the exam.
+So there's a WebSocket URL that start with wss,
+it's an encrypted WebSocket URL.
+And it looks like there's some unique ID,
+.execute-api.region.amazonaws.com/the stage name.
+So this is when you deployed your WebSocket API.
+So the client is going to connect
+to your WebSocket API gateway
+and establish a persistent connection into it
+which is going to invoke the Lambda function
+and perform a connection ID.
+And the connection ID is going to remain persistent
+as long as the client is connected to the API gateway.
+Then the connection ID can be for example,
+persistent into Amazon DynamoDB
+to store some metadata
+around the, what, who the user is for example.
+Then the client wants to send some messages to the server.
+So is going to use the same URL I just gave you,
+some dummy data in here.
+And is going to send messages over the persistent connection
+into the WebSocket API
+and these messages are called frames.
+So these frames are going to invoke a new Lambda function
+and we'll see how the routing works in a few minutes.
+But the connection ID is going to be the same.
+So the Lambda function can interact with DynamoDB
+to retrieve the user information based on the connection ID,
+do whatever it wants
+and maybe persist some messages back into DynamoDB.
+And so if the clients chooses to send more messages
+through the API gateway on the WebSocket API,
+is just going to send it more frames
+over the same connection.
+And therefore the connection ID is not going to change
+and it's going to be reused
+when the Lambda function is invoked.
+Now, how does the server,
+our API gateway
+communicate back to the clients
+without the client making a request?
+So again, we use the same WebSocket URL
+and we do the same thing as sending messages
+but now we want to get some data back.
+And there is when you have a API gateway,
+a connection URL callback
+and it looks like this,
+it looks just like the URL but slash adds connections,
+/connectionid.
+And if a Lambda function or whatever,
+makes an HTTP post that is signed
+using IAM Sig v4,
+to this connection URL callback
+by specifying the connection ID of the clients,
+it is going to send back a message
+from the API gateway into the client.
+And this allows for two way communication
+which explains how you can obviously
+set up a chat application
+because you can choose send messages
+but also receive messages.
+Now, for the operations of this URL,
+the very specific, /connectionsid URL
+you can do a post to send back a message from the server
+to the connected WebSocket clients.
+You can do a GET to get the latest connection status
+of the connected WebSocket clients
+and DELETE if you want it to disconnect the client
+from the WebSocket connection.
+Finally, how does the client know
+which Lambda function to invoke
+or which backend to invoke?
+In WebSocket, there's a concept of routing.
+So the incoming JSON messages are going to be routed
+to a different backend.
+And if you don't specify your route,
+it's going to be sent to the default route.
+So you can select,
+you can create a route selection expression
+to select the field on the JSON to route from.
+So let's go through a concrete example.
+So say we, the incoming data from the clients
+into our API looks like this,
+the service is chat,
+the action is join
+and the data is room, room1234.
+Then we have a Route Key Table
+that we define at the API gateway level.
+Where we define connect, disconnect, default
+which are mandatory routes
+and then our customer routes:join, quit, delete,
+et cetera, et cetera.
+If we specify the sample expression to API gateway,
+$request.body.action,
+it is going to look at the action field
+of the incoming data
+which currently says join.
+So the result of this expression is going to be evaluated
+against the Route Key Table available in the API gateway.
+And we see that the join route does exist.
+And so therefore the API gateway
+knows that this route is connected to a specific backend
+and that could be a Lambda function
+or anything else that API gateway integrates with.
+And in case there is no route being matched
+then it's going to go into the default route.
+So that's it for how WebSocket APIs work.
+I give you way more information
+than what you need going into the exam
+but I think it is very important for you to understand
+how this works at a high level.
+And so from an exam perspective,
+just remember WebSocket APIs is for two-way communication
+and the routing you need to understand it.
+The routing is used
+to make sure that you can route to a specific backend
+based on the routing expression
+because the connection is already open
+and the routing should be part of the incoming data message.
+So that's it.
+I hope this helps and I will see you in the next lecture.

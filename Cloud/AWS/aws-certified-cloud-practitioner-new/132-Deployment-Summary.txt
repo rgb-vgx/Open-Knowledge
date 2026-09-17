@@ -1,0 +1,62 @@
+# 132. Deployment Summary
+# Section: Deployments & Managing Infrastructure at Scale
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20216544
+# Caption: en_US (manual)
+
+Okay, so let's summarize
+everything we've learned about deployment on AWS.
+So first CloudFormation, which is an AWS-only tool,
+which is allowing you to do Infrastructure as Code
+and works with almost all types of AWS resources.
+This allows you to create templates,
+and these templates can be used
+to deploy infrastructure on AWS
+and to use these templates across different Regions
+and accounts to make your infrastructure truly repeatable.
+Then we have Beanstalk, which is, again, AWS-only,
+So Elastic Beanstalk,
+which is a Platform as a Service or PaaS,
+and it's limited to certain programming languages or Docker.
+You can deploy your code consistently
+with a known architecture, for example,
+using the combination of a load balancer, EC2 instances,
+and an RDS database.
+CodeDeploy is to deploy
+and upgrade any applications onto servers,
+and this can be done on AWS,
+for example, your EC2 instances,
+but also it can be done on your on-premises infrastructure.
+And this is why it's called
+a hybrid type of service.
+Systems Manager, yet again,
+is a hybrid type of service,
+which allows you to patch, configure,
+and run commands at scale across all your servers.
+So that's for all the deployment services,
+but now let's talk about the developer services.
+We've learned about CodeCommit,
+which does come up in the exam,
+which is to store code in a private Git repository,
+giving you a version-controlled code repo,
+CodeBuild, which is allowing you to build
+and test your code in AWS in a serverless fashion,
+CodeDeploy, which is allowing you
+to deploy code onto servers,
+so I bundle it both into the deployment
+and the developer services
+because they go along,
+CodePipeline to do the orchestration
+of a pipeline within AWS,
+so from your code to your build, to your test,
+your deployment, and your provisioning and so on,
+CodeArtifacts to store software packages
+and dependencies on AWS,
+and then we have the CDK
+to define your cloud infrastructure
+using a programming language,
+for example, JavaScript, TypeScript,
+Java, Python, et cetera.
+And this gets compiled into a CloudFormation template.
+So that's it.
+I hope you liked it,
+and I will see you in the next section.

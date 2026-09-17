@@ -1,0 +1,103 @@
+# 295. [SAA/DVA] Routing Policy - Multi Value
+# Section: Networking - Route 53
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/13193870
+# Caption: en_US (manual)
+
+Let's talk about the last routing policy,
+which is Multi-Value,
+which is going to be used when you want to route traffic
+to multiple resources.
+And Route 53 will therefore
+return multiple values or resources.
+Now, you can associate them with Health Checks,
+and so therefore the only resources returned
+via the Multi-Value policy are going to be the ones
+that are associated with a healthy Health Check.
+So up to eight healthy records are going to be returned
+for each Multi-Value query.
+And although it looks like an ELB,
+it's not a substitute for having an ELB.
+The idea is that it's the client-side load balancing.
+So let's look at an example.
+We are going to set up multiple A Records
+for our example.com,
+and we associate them with Health Checks.
+So when a Multi-Value query is done by our clients,
+it's going to receive up to eight records back,
+and then the clients will choose one of them.
+But at least by combining this with Health Checks,
+we know that one of the eight records being returned,
+or up to eight, are going to be healthy.
+And therefore the client
+can have very safe queries into them.
+This is going to be different, for example,
+when you have a simple routing with multiple values in it,
+because as you know, the simple routing policy
+does not allow for Health Checks,
+and therefore it's possible
+that one of the resources returned in the query
+of a simple routing policy will be unhealthy.
+This is why Multi-Value are a little bit more powerful
+as types of records.
+So let's have a look in the UI at how we can test them.
+So let's practice the Multi-Value record.
+So let's go and create a multi-record,
+so a multi dot blah blah blah.
+And then the value of it
+is going to be linked to us-east-1.
+So I will add this value here,
+and then the Routing policy is going to be Multivalue.
+The Health check is going to be us-east-1.
+And the Record is going to be US.
+And TTL is going to be 60 seconds.
+Let's add another Record.
+So, multi, and again,
+we're going to route to a different region,
+so this one is ap-southeast-1.
+So the answer is Multivalue answer.
+The Health check is ap-southeast-1.
+And the Record ID is going to be Asia.
+And then the record TTL is one minute.
+And then finally, the last one,
+so again, one more Record name.
+The Value is going to be linked to eu-central-1 right here.
+The TTL is one minute.
+And the Routing policy is Multivalue answer.
+And for the Health checks,
+we're going to use the one from eu-central-1.
+And the Record ID is EU.
+Okay, so let's create these records.
+And the records are successfully created.
+Now let's test it out.
+So for this, we're going to use our CloudShell in here.
+So let's reconnect to CloudShell.
+And what I want to do is to test this record.
+So I will copy the record in here,
+and then I will clear my screen.
+And so if I test a dig on this,
+then I get three answers.
+So the three IPs are returned,
+and the reason is, well,
+the three health checks are fully working.
+So as you can see, they're all healthy.
+But if I take one of them, for example,
+I remove the eu-central-1,
+so I'm gonna make this one unhealthy,
+and I'm just going to trick it
+by editing and do an Invert health status.
+So this is going to make the healthy unhealthy,
+and vice versa.
+It's just a quick way for me
+to create an unhealthy health check.
+So let me pause right now.
+Okay, so now my eu-central-1 health check is Unhealthy.
+And so if I reissue a dig command right here,
+I should expect to see only two values, yes, as a result.
+So the Multivalue answer has worked,
+and it worked really well.
+So just to revert this, edit this health check,
+and let's untick this Invert health check status,
+and we're good to go.
+Okay, so that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

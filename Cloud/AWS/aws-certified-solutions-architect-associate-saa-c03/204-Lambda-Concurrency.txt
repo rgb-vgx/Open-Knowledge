@@ -1,0 +1,166 @@
+# 204. Lambda Concurrency
+# Section: Serverless Overviews from a Solution Architect Perspective
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/47771015
+# Caption: en_US (manual)
+
+So now let's talk
+about Lambda concurrency and throttling.
+So the more we invoke our Lambda functions,
+the more we will have concurrent executions
+of our Lambda functions.
+We know this because Lambda can scale
+very, very easily and fast.
+So that means that's if we invoke our Lambda function
+at a low scale, we may have two concurrent executions
+of our Lambda functions.
+But if we have a very high scale of events happening,
+we may have up to 1000 concurrence of Lambda functions
+working together to process whatever comes through.
+So something can do though is to limit the number
+of concurrent execution a Lambda function can do,
+and that is recommended.
+So for this, we can set what's called a reserved concurrency
+and that is set at the function level.
+So this is a limit, and we're saying,
+"Okay, this Lambda function can only have
+"up to 50 concurrent executions."
+So each invocation over the concurrency limits
+will trigger what's called a throttle.
+And there are different behaviors with a throttle
+if it's a synchronous invocation.
+So we invoke our Lambda functions directly
+and we're being throttled,
+it will return a throttle error, 429.
+And if it's an asynchronous invocation,
+it will retry automatically and then go to the DLQ.
+So in case you need a higher
+than 1000 concurrent executions at a time,
+you can just open a support ticket
+to request a higher limits.
+So now that we know about the concept of currency,
+here is something that can happen
+if we don't set the concurrently very carefully.
+So if you don't set any reserve concurrency,
+so any limit on your function concurrency,
+then this could happen.
+So we have our application balancer,
+for example, connected to a Lambda function.
+We have another application where we have few users
+that connect to an API gateway,
+connected to another Lambda function,
+and one last application may be using the SDK and the CLI
+to invoke a Lambda function.
+So when everything is pretty low-level,
+like low throughput of invocation,
+everything is fine.
+But let's say that we are running a huge promotion
+and somehow we get many, many users hammering
+our application load balancers, we're very successful.
+So what happens is that our load balancer
+will be invoking many, many Lambda functions
+and Lambda functions can scale automatically.
+So we'll get up to 1000 concurrent executions.
+So this looks good, right?
+Lambda has scaled.
+But here is the problem.
+All of the concurrent executions
+went to the first application.
+So that means that the application users
+of our API gateway will be throttled.
+And that means that the CLI and SDK will also be throttled.
+So what you get to remember out of this slide
+is that the concurrency limit applies
+to all the functions in your accounts,
+and so you have to be careful because
+if one function goes over the limit,
+it's possible that your other functions get throttled.
+So that's very, very important.
+Next, let's talk about concurrency
+and your asynchronous invocations.
+So let's take the example of S3 event notifications.
+So we are uploading files into our S3 buckets,
+and this creates a new file event
+that will invoke our Lambda functions,
+and say we are putting many, many files at the same time.
+So we get many, many different Lambda
+concurrent executions happening.
+And if the function doesn't have enough
+concurrency available.
+So if it cannot scale up because we have reached the limits,
+then the additional requests are throttled.
+But this is an asynchronous request.
+So for any throttling errors and system error,
+so 429 and 500-series,
+Lambda will return the event to the event queue.
+So remember in the asynchronous mode
+there is an internal event queue,
+and Lambda will attempt to run the function again
+for up to six hours.
+So there's a lot of retries that happens
+due to the throttling and so on.
+Then this retry interval will increase
+in an exponential bucket fashion.
+So from one second to our maximum of every five minutes.
+So this allows your Lambda functions to keep on retrying
+and hopefully one day find the concurrency
+and capacity available to run correctly.
+Okay, so next let's talk
+about cold starts and provisioned concurrency.
+So you may have heard the term before, if you use Lambda.
+So cold start, it means that when you create
+a new Lambda function instance,
+your code has to be loaded and your code outside
+of the handler has to be run.
+So this corresponds to all your initialization.
+So in it.
+And if your initialization is large,
+because you have a lot of code, a lot of dependencies,
+you're connecting to many databases and creating many SDK,
+this process can take a lot of time.
+So that means that the first request
+served by new instances has a higher latency
+than the rest and that may impact your users.
+So if your user is maybe waiting three seconds
+to get a request response,
+that may be very, very slow for them
+and they may experience a cold start
+and may be unhappy with your product.
+So what can you do?
+Well, you can use something
+called a provisioned concurrency.
+That means that you allocate concurrency
+before the function is even invoked.
+So you allocate this concurrency in advance.
+This way, the cold start never happens,
+and all the invocations will have a lower latency.
+And to manage this concurrency, you can...
+This provisioned concurrency,
+you can use Application Auto Scaling.
+For example, for a schedule or target position
+to make sure that you have enough reserved Lambda functions
+to be ready to be used and minimize this cold start problem.
+So please note that whenever before you used
+to launch a Lambda function in a VPC
+that used to take forever.
+So now there was a blog in October and November, 2019
+that has been released by AWS.
+Here is the link.
+And this blog show the improvements they have done
+to dramatically reduce the cold starts in your VPC.
+So the good news is if you were using Lambda before
+the cold starts, really have a minimal impact on your VPC.
+Okay, finally, there's two diagrams you can look
+in your own time to look at the concept
+of reserved concurrency and provisioned concurrency.
+And this graphs, I like them.
+So here's the link in the slides.
+Have a look at them.
+They explain to you how they work.
+I think they're quite complicated to describe
+as is with a slide.
+But have a look at them in your own time,
+and hopefully they will help you understand
+this concept a little bit better
+if I didn't help you right now.
+Okay, so now let's go into the hands-on
+and see how concurrency works.

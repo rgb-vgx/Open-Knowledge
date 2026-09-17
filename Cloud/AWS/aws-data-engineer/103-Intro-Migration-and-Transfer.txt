@@ -1,0 +1,22 @@
+# 103. Intro: Migration and Transfer
+# Section: Migration and Transfer
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332194
+# Caption: en_US (auto)
+
+-: This next section is pretty quick.
+Migrating and transferring data is, of course,
+a big piece of data engineering,
+but Amazon's offerings in this space
+are relatively straightforward.
+You just need to know what tools they offer
+for migration and transfer and how to choose between them.
+Stephane will be covering this section,
+where he'll teach you
+about the AWS Application Discovery Service,
+the AWS Database Migration Service, AWS Data Sync,
+the AWS Snow Family, and the AWS Transfer Family.
+As always, he'll have a few hands-on examples
+and will wrap up with a quiz
+written in the style of exam questions.
+So let's learn how to move data into AWS
+from wherever it may be.

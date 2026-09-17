@@ -1,0 +1,53 @@
+# 263. SageMaker Canvas
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/54600343
+# Caption: en_US (auto)
+
+Just a quick overview of SageMaker Canvas.
+This will certainly show up on the exam once or twice.
+You just need to know that it's the no-code
+machine learning environment that's geared
+more toward business analysts.
+So if you just have some data somewhere,
+and you don't know how to write code
+or really do machine learning yourself,
+you just wanna make a model
+without thinking about it too much,
+SageMaker Canvas can do that for you.
+So long as you give it some CSV data, you can say,
+okay, here's the column that I wanna make predictions for.
+And it does the rest for you using auto ML techniques,
+so it can automatically build a model for you
+and make predictions from it.
+It can also join datasets together if you need to.
+It can perform classification or regression
+as part of its predictions.
+And it even automatically cleans your data for you.
+So it will look for missing values, for outliers,
+for duplicate rows, and deal with it for you
+without you even having to think about too much.
+So think of it as machine learning for the non-ML engineer.
+It also allows you to share your models
+and your datasets with SageMaker Studio.
+So if you do want to give this to an ML engineer
+to do something more interesting, you can do that as well.
+So it is possible to export models
+and the data that you use to train those models
+from Canvas to SageMaker Studio,
+and use those as a model within SageMaker Studio.
+Also, it now has support for generative AI models as well.
+So pretty much anything that you see in Bedrock
+as a foundation model, or through Amazon SageMaker Jumpstart
+is fair game within SageMaker Canvas as well.
+And you can even fine tune these within Canvas.
+So you can think of Canvas
+as more than just automatic machine learning.
+It's also a user-friendly interface
+for just creating generative AI applications as well.
+So you can create your own foundation model
+and extend it with your own data through fine tuning,
+all within SageMaker Canvas,
+without even having to be an AI expert
+or a machine learning expert, pretty cool stuff.
+So Canvas, AI and machine learning
+for the masses, if you will.

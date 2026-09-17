@@ -1,0 +1,43 @@
+# 136. AWS Glue Flex Jobs
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/54600683
+# Caption: en_US (auto)
+
+Something coming up on the exam lately
+is Glue Flex jobs.
+They're pretty much what they sound like.
+So it's a new execution class called FLEX,
+that's appropriate for non-urgent workload.
+So if you don't really care when your job runs
+or necessarily how much capacity it has,
+you can run a Flex job to use spare compute capacity
+instead of dedicated workers.
+And of course, this is a way to save money.
+Now, the trade-off is you might have to wait
+for that capacity to become available,
+or it might not be available at all,
+in which case you might get less capacity
+than you asked for even.
+However, if you have a time-insensitive workload,
+maybe you're doing some testing,
+or a one-off load, or something on the weekend
+where you don't really care when exactly it runs,
+you just want it to run sometime in the near future,
+a Flex job might be a way to save some money.
+How much money? Usually about 30-35%
+less than a standard execution job.
+You're only going to be billed
+for the actual number of workers used
+and the duration that they actually ran for.
+And again, you might end up with less than you asked for
+if the capacity is not available.
+Few caveats, though, so you cannot use Flex jobs
+with Python shell jobs, with streaming jobs,
+or with AWS Glue machine learning jobs
+that might be important to remember.
+So at a nutshell, at a high level,
+if you do need dedicated resources or predictable times
+and predictable performance or concrete SLAs,
+you want to use a standard glue job.
+But if you're willing to trade that off
+for saving some bucks, a Flex job might be for you.

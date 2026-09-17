@@ -1,0 +1,127 @@
+# 243. X-Ray: Instrumentation and Concepts
+# Section: AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrail
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730084
+# Caption: en_US (manual)
+
+Okay. So now let's talk
+about some advanced concepts for X-Ray,
+and the first thing I want to show you
+is how to instrument your code.
+So this word may be new, it was new for me.
+So instrumentation means the measure of a product's
+performance, diagnose errors,
+and to write trace information.
+So it is a field in Software Engineering
+to do all these things.
+So now it makes a lot more sense.
+When we want to instrument our our application with X-Ray,
+we need to change our code and to use the X-Ray SDK.
+So here is an example of how we can instrument
+our node js code with the X-Ray SDK.
+And so once we add some code, for example here,
+requiring the X-Ray SDK and using it in our express app,
+then our code will be instrumented.
+That means that we will get trace information from our code
+into the X-Ray service.
+So the use of the X-Ray SDK is very minor.
+Sometimes it only requires a configuration changes only
+and you can modify as well your application code.
+If you want to customize your traces
+and annotate the data, or change the way X-Rays send it out
+to the express service.
+And so for this we can create interceptors, filters,
+handlers and middleware.
+This is pretty advanced,
+but what I mean is that you can customize how X-Ray works
+in your code.
+So, now some advanced X-Ray concepts.
+So the definition is that a segment
+is how we can see things in the URL
+so we've been looking at segments so far,
+and so each application and service will send them.
+But if you want to be more granular,
+you can define subsegments.
+This is when you leave more details in your segments.
+Then the trace is when you get
+all the segments collected together
+and this will form an end-to-end view
+of your API call, or your call.
+And so this will be an end-to-end trace
+sampling.
+We'll see this in a second.
+This is to decrease the amount of requests sent
+to X-Ray, in order to reduce costs
+because maybe we don't need all the requests.
+Now, very important.
+Annotations is when we add some key value pair data
+to index our traces and use with filters.
+So annotations is are extremely important in X-ray.
+If you want to be able to search your traces
+with new indexes versus metadata.
+Metadata is key value pairs, as well.
+But these this time they're not index.
+Okay, so your annotations are indexed
+and you can use them to search with filters,
+whereas metadata are not indexed
+and you cannot use them for searching.
+Now the X-ray daemon agent also has a config
+to send traces across accounts.
+And for this we need to make sure the IAM permissions
+are correct.
+The agent will automatically assume the correct role
+and this will allow us to have a central accounts
+for all logging and application tracing.
+Now let's talk about sampling in details.
+So with the sampling rules,
+we are able to control the amount of data that you send
+to the X-Ray service and record.
+And the more data you send you X-Ray,
+the more you're going to pay.
+So you can modify your sampling rules
+without changing your code.
+And by default there is a sampling rule,
+which says that X-Ray SDK will record every first request,
+each second, and then five percent
+of any additional requests.
+And so the blue part, the first request,
+each second is called the reservoir,
+which ensures that at least one trace
+is recorded each second as long as a service
+is serving requests.
+And then the five percent is called the rate
+at which additional requests beyond the reservoir size
+are sampled.
+So let's talk about the custom sampling rules.
+You can create your own rules
+and you can define what
+is a reservoir and what is the rates.
+So here is an example.
+We have in this example a higher minimum rate for posts.
+So we're saying the reservoir is 10.
+That means that 10 requests per second
+will be sent into X-Ray and then 10%
+of the other ones will be sent.
+So here we have a higher minimum rate
+and we send more requests into X-Ray.
+Whereas here we want you to have debugging.
+And so we say we want to have all requests.
+So one a reservoir and one of rate.
+That means that all requests will be sent into X-Ray.
+So we don't want to lose any traces.
+And this is very helpful when we want you to debug
+to find what's going on for every single trace.
+Obviously, in production, this will be very, very expensive
+because now we are sending a lot of data into X-Ray,
+but it's very helpful temporarily
+to change these custom sampling rules
+to see what's going on.
+And the cool thing about it is that
+if you change your sampling rules in the X-Ray console,
+you don't have to restart your applications.
+You don't have to do anything with your X-Ray in SDK.
+Automatically the daemon, the extra daemon knows how
+to get visa something rules
+and correctly send the right amount
+of data into the X-Ray service.
+So let's go into the next lecture
+to see how we can define the sampling rules.

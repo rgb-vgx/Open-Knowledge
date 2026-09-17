@@ -1,0 +1,176 @@
+# 35. How to SSH using Linux or Mac
+# Section: EC2 Fundamentals
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11848196
+# Caption: en_US (manual)
+
+All right.
+So now we're going to add SSH into our EC2 Instance
+using our Linux or our Mac computer.
+And you may say, what the hell is SSH?
+What are you talking about Stephane?
+Well, SSH is one of the most important function
+when you deal with Amazon Cloud.
+It basically allows you
+to control a remote machine or server,
+all using your terminal or your command line.
+So how does that look like with the diagram?
+Well, we have our EC2 machine,
+and we launched Amazon Linux 2 on it
+and our machine has a public IP.
+Now we want to access that machine.
+And so for this, I don't know if you remember
+but we have a security group
+and on it we allowed the Port 22 of SSH.
+So what's going to happen is at our computer,
+so my laptop for you, for me, or whatever for you,
+then we'll access over the web.
+Through that Port 22,
+it will access the EC2 machine.
+Basically, our command line interface is going to be
+just as if we were inside that machine.
+So let's get started.
+Okay.
+So we are going to SSH into our instance.
+So remember that PEM file you've downloaded
+called EC2 Tutorial.pem?
+Please make sure to remove the space in it
+if you have a space, even if you have a PPK file.
+Please rename it and remove the space from it.
+So EC2Tutorial.pem is removed for me.
+And then, you go ahead and place it in a directory you like.
+So for me, I took my file and I pasted it,
+and I placed it in a folder called aws-course. Okay?
+So this is the first step to making sure you are ready.
+So next, what I'm going to do is that I am going to go
+in my EC2 instance overview page
+and find my first instance.
+So here we have my first instance
+and we're going to SSH into it.
+So we're going to open a remote terminal into it.
+And for this, I need to get the public IPv4 address,
+so I can copy this, and I will use it later.
+The other thing I need to do
+is to look at the security of my instance.
+So again, if you did everything with me,
+then your security groups have this rule in it
+called Port 22 which is the SSH port
+from anywhere by 0.0.0.0/0. Okay?
+So if you have that rule, then you're good to go.
+If not, please click on the security group
+and add the missing rule.
+Next, I need to try to do an SSH.
+So first of all, ssh ec2-user@
+and then the IP you have.
+So the reason we do ssh ec2-user
+is because the Amazon Linux 2 AMI
+has one user already set up for us
+and that user is named ec2-user.
+Then we have at,
+to say that we want to access that user
+on the specific server.
+And then, we have the IP right here.
+This is the public IP of our EC2 instance.
+So we try this.
+So we do SSH and then we're going to get
+a too many authentication failure.
+So that means that we don't authenticate
+into our EC2 instances.
+Well, that makes sense
+because we haven't specified the key
+that we downloaded from before yet. Okay?
+You may get another kind of error
+but right now this is the one I get.
+So for this,
+we need to reference the file we just downloaded
+called EC2Tutorial.pem into our command.
+So make sure again, there is no space.
+And then, you need to make sure your terminal
+is exactly where your file is.
+So if I do ls right here to list the files in my folder
+and I'm sorry if this is too advanced for you
+but I have to cover the grounds for everyone.
+So if I do ls, as you see right now,
+it says EC2Tutorial.pem
+that's because I placed my command line
+in the correct directory on my computer.
+Okay.
+So for this, if you were not in the correct directory,
+for example if I was line level up, so I do cd ..,
+which puts me one level up,
+then I do ls.
+Of course, I don't see my EC2Tutorial.pem.
+Okay?
+So to do so, what you can do is just check where you are.
+So pwd is where you are.
+So, I'm in user stephanemaarek
+and I know that I placed my folder aws-course
+within my home.
+So right under user stephanemareek, there is aws-course.
+So for this, then I know that I can do ls or ll
+just to confirm that my folder exists.
+As you can see right here is my aws-course folder,
+so this is good.
+So what I do is I will do cd and then aws-course
+which now puts me in the directory of my aws-course.
+So if I do pwd, I am in the correct directory.
+And if I do ls, I can see my EC2Tutorial.pem file.
+The reason we have to do this is that
+because now in the next command.
+So the SSH command,
+you do ssh -i then you specify the EC2Tutorial.pem file
+and that will not work
+if you're not in the correct directory.
+So please make sure to get there
+and if you're missing the bit of the Linux here,
+please try to go online,
+but I should be good with what I showed you.
+And then, ec2-user@
+and we reference the public IP of our instance.
+So this one right here, we reference it.
+Press enter,
+and now we get another kind of error
+which is saying that we have an unprotected key file
+and we need to change the permissions for it.
+So for that reason, we'll have to enter another command
+and that command is chmod.
+So chmod 0400, and then we pass in the file itself
+so EC2Tutorial.pem.
+So I clear my screen
+and then I'm going to try the exact same command as before.
+So I press enter and I am logged into my machine.
+So you may have seen a screen
+where they prompt you for yes/no
+to trust the instance as well,
+just enter yes if you do get that screen.
+So as you can see,
+now I have done the SSH into my instance
+and now it says ec2-use at this IP,
+which means that now all the commands are issued
+are going to be issued directly
+from the Amazon Linux 2 AMI EC2 instance
+that I've just launched from before.
+So let's try a few commands.
+For example, if you do whoami
+then it says ec2-user
+or I can ping google.com
+and we see the google.com is responding to our pings.
+So we can launch some commands directly
+from the Amazon Linux 2 AMI,
+and I did control C to stop that command,
+Now to exit the instance itself, you can either type exit
+and I think this should work,
+or you do control G and then you will close the connection
+into the EC2 instance.
+And if you ever want to get back into it
+remember this command,
+ssh -I EC2Tutorial.pem
+if you are in the correct directory.
+Please make sure to do so.
+As well as ec2-user@
+and then the public IP of your instance.
+Remember that if you stop and then start your instance
+then the public IP can change.
+So make sure to change that part as well.
+All right.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

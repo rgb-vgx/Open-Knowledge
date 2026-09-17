@@ -1,0 +1,94 @@
+# 194. Basics of LLM Agents
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865755
+# Caption: en_US (auto)
+
+Let's talk about agentic AI and LLM agents and a brief introduction as to what they're
+all about and how they work.
+So here's sort of the classic definition of how an LLM agent works.
+At its core, it's basically a large language model.
+So the idea is that we're giving our language model tools to work with so it can actually
+look things up, get information in the real world, and maybe do things in the outside
+world and create code or write files or do stuff.
+That's the agency that we're talking about when we talk about agents.
+At its heart though is an LLM and that's what we're calling the agent core in this diagram.
+This is not the same thing as Amazon Bedrock Agent Core, one word.
+That's a specific service that we're going to talk about later.
+But at its core is this LLM and this agent, the agent core, has a bunch of things that it can draw on.
+One is a memory and that is basically short term and long term memory.
+The short term memory is just the chat history that you're having with the agent, but long
+term memory might be some sort of external store, maybe in a vector store of things that
+it wants to remember about you that it might draw from in later sessions.
+So what are your preferences?
+Where do you live?
+You know, what kind of code do you like to write?
+Things like that.
+That might be stored in an external long term memory.
+And agent core, the service does have a memory function that you can plug in for that purpose.
+So memory can be short term, it can be long term.
+Basically it's giving it information that it might need for its context.
+It also has some sort of a ability to plan on how to answer a given request.
+So it has some mechanism, some logic on how to farm this out to the tools that it has.
+That's the planning module.
+And under the hood, this might just be part of the prompts for that agent under the hood.
+And then it has tools it can use.
+So external things that it can use to talk to the outside world, MCP servers or APIs
+or Lambda functions, whatever it might be that allows it to collect information from
+the outside world and do things in the outside world.
+Write code, execute code, book a meeting for you, whatever it might be.
+So again, in practice, the memory is usually just the chat history and maybe some external
+data store of stuff that it wants to memorize more long term.
+The planning model is just going to be guidance that you give to the LLM on how to break down
+a question into sub questions and perform that reasoning and what the tools might be
+able to help with.
+So in a practical standpoint, your tools will have instructions on when they can be used.
+That is basically what makes up your planning module.
+So every tool will have a prompt associated with it that just gives guidance to the agent
+on when it should be used and what data it expects to receive and what it will give you back.
+Okay, pretty simple.
+A more practical view would be a diagram like this.
+So tools are really just functions that are provided to some tools API.
+Now an agent core bedrock agent core, this is pretty specific.
+So they have an agent core gateway that can be used to turn Lambda functions or external
+APIs into what looks like an MCP server.
+So whether your tool is fronted by MCP or not, gateway and agent core can abstract that
+away so it all looks the same.
+Then again, you have prompts associated with every tool that will guide the LLM on how
+to use them, when it's appropriate to use that tool, what input it expects, what output
+you can expect to get back from it.
+Those tools again can access outside information, retrieve information, call other Python modules,
+call external services, whatever you need to do to give your LLM agency and actually
+perform useful work.
+How do they know which tool to use exactly?
+It seems like magic, but it isn't.
+Again at its heart, there is a large language model.
+There is a foundational model that this whole thing is based around.
+So an agent prompt comes in and the first step is to decompose that problem.
+So once it decides how to break that up into specific tool requests or knowledge base requests,
+it then needs to go off and retrieve that information or perform those tasks through
+that gateway to that tool.
+In the context of Bedrock Agent Core, that agent core gateway is what manages that.
+So that will be exposing your tools via MCP.
+Basically every tool has a prompt associated with it that tells the foundation model when
+it's appropriate to use it.
+For example, a weather retrieval tool might have a prompt that says, use this function
+to determine the current weather in your city or in a city that you specify.
+You then need to provide the parameters that that tool expects in a lot of detail.
+And you can also make sure that the foundation goes back and asks for missing information
+from the user if it needs more information than what it has.
+Those tools can be defined in many different ways, JSON schemas, OpenAPI, Smithy APIs,
+or just through the gateway itself.
+Agents can also access knowledge bases.
+So apart from tools, it can also have knowledge bases for retrieving information.
+And again, there would be a prompt associated with that knowledge base to inform the agent
+as to when it's appropriate to use that and access that information.
+Use this knowledge base to answer questions about whatever it is, for example.
+This can sometimes be called agentic rag.
+In this case, the knowledge base is just another tool in the agent's arsenal.
+Also worth mentioning is the code interpreter tool built into AgentCore.
+This allows the agent to write its own code to answer questions or produce charts or whatever it might be.
+So a lot of times when you see agents doing fancy stuff, it's actually writing its own
+Python code under the hood and executing it to give you a more complicated result.
+So LLMs and foundation models tend to be really good at writing code.
+That's kind of their strength, right?
+So this allows it to leverage that strength to write code to fulfill the prompt that you're giving it.

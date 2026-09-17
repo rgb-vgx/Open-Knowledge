@@ -1,0 +1,61 @@
+# 154. Elastic Fabric Adapter (EFA) and MiCS
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285849
+# Caption: en_US (auto)
+
+Another trick for accelerating your training is something called the Elastic Fabric Adapter, or EFA
+for short.
+That is a network device attached to your SageMaker instances, and that its job is to make better use
+of your network bandwidth.
+So its promise is to give you the same performance as an on premises high performance computing cluster.
+But in the cloud, that's its job.
+And you use it with the Nvidia Collective Communication Library, or Nccl.
+Obviously, that requires Nvidia GPUs to use it.
+So you're going to be tied to Nvidia by using this technology.
+To use EFA though, you need to include Nccl, also EFA, which is the elastic fabric adapter itself,
+and the AWS offie Nccl plug in within your training container.
+And then you just need to set some environment variables like Fi, underscore, provider equals EFA.
+Refer to the documentation if you want to have more details, but that should be enough for the exam.
+Basically, it's a network device attached to your instances to make better use of your bandwidth during
+training, and it requires Nvidia GPUs.
+Now, this, uh, becomes part of an even larger framework that they call mix.
+So Amazon went off and said, well, what if billions of parameters aren't enough?
+I want trillions, I want to create, you know, GPT 20 or whatever.
+So Amazon came up with something they call minimize the communication scale or mix for short.
+An example of that is in this diagram to the right that I'll point out shortly here.
+Basically, it's just another name though for the stuff we've talked about.
+So using SageMaker is sharded data parallelism and its capabilities and EFA and things like that.
+You just need to know that this distributed training stuff is what enables training models with more
+than 1 trillion parameters.
+So if you're being asked how do I support training with more than 1 trillion parameters?
+All the stuff we just talked about with distributed parallel training and model parallelism and data
+parallelism and EFA and mix, that's all part of the solution.
+And it also helps to have bigger instance types as well.
+Like we said, um, parallelism does not come for free.
+So the more you can minimize the communication between instances, the better the bigger instances you
+have, the less communication overhead you'll have to deal with.
+And in this particular example that they are documenting, they're using EC2, P4, d GPU instances.
+Those come with 400 gigabit per second networking capabilities and 80GB of GPU memory.
+And as you can imagine, that isn't cheap, especially when you're talking about having thousands of
+them.
+Again, we're not going to have a hands on lab for this unless you have, you know, a few hundred million
+dollars sitting around.
+But let's look at this diagram here of how they're tackling this problem of really massive training.
+So at the base of it they're using FSX to have really fast, low latency storage with a throughput of
+billions of IOPs or petabytes per second throughput.
+Right.
+This is communicating with a giant cluster.
+They are proposing here of 4000 plus Nvidia A100 GPUs.
+Again not cheap.
+Um, but these are built on these P4 d instance types here.
+And on top of that they're using the 400 gigabit per second elastic fabric adapter.
+The EFA that we just talked about to further accelerate matters within these instances you can see that
+we have eight Nvidia A100 GPUs per instance.
+And these are using all sorts of tricks to maximize the bandwidth between the CPU and the GPU, between
+for all that data flowing around.
+So that's what they call an EC2 ultra cluster as part of their mix or minimize the communication scale
+architecture.
+That's an Amazon specific thing that they seem pretty proud of, so might want to know that.
+Anyway, that's an overview of how to use AWS in EC2 and SageMaker to train truly massive models.
+You know, trillions of parameters using distributed training, distributed models, distributed data,
+and also very large instance types and things like EFA to accelerate the communication between them.

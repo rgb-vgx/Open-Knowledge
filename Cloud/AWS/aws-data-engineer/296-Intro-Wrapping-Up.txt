@@ -1,0 +1,23 @@
+# 296. Intro: Wrapping Up
+# Section: Wrapping Up
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332324
+# Caption: en_US (auto)
+
+-: My sincere congratulations.
+You've gone through a ton of material in this course,
+and now you're just about ready
+to tackle the Amazon Certified Data Engineer Associate exam.
+In this last section, we'll take a step back
+and look at the exam as a whole.
+We'll review Amazon's exam guide, some tips for preparing
+for it further if you want to,
+and some general tips for getting through this
+or any other AWS certification exam.
+They definitely make you work for it.
+So going into the exam with some strategy is important.
+Stefan will wrap things up with some general tips on how
+to sign up for the exam itself
+and some common certification paths.
+So let's wind things down here
+and just let all that information settle for a bit.
+I'll be back at the end to tie things up.

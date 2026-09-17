@@ -1,0 +1,204 @@
+# 222. AI-Specific Cost Drivers
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57864069
+# Caption: en_US (auto)
+
+Well, let's talk about some cost drivers
+that are specific to AI workloads,
+and they fall into some basic categories.
+One is foundation model inference.
+So whenever you call a foundation model,
+you're gonna be billed by the input and output tokens
+that you're consuming.
+And that's gonna vary based on the model
+that you're choosing to use.
+So the bigger models are gonna cost more,
+the smaller, more efficient models will cost less.
+And a very easy way to waste money
+is to choose a model that's more powerful
+than what you actually need.
+So just right-size the model to what you need to do.
+If you're just doing a simple classification,
+you don't need to throw the latest
+and greatest frontier model at that necessarily.
+Something much smaller and cheaper
+will probably do the job probably more reliably even,
+and more quickly as well.
+Match the pricing mode to your traffic.
+So when you're talking about
+actually hosting your own inference,
+if you're actually serving inference
+on servers that you control,
+choosing between provisioned and on-demand
+or batch processing can make a big difference too.
+So it's often a false economy
+to have your own dedicated server running some local model
+because unless you're maxing out that server 24-7,
+it's probably not gonna pay for itself.
+If you're just hitting things sporadically
+or in a batch manner,
+you just wanna be able to use that capacity
+on an on-demand manner,
+and that's gonna save you a lot of money.
+So match your pricing mode to your traffic patterns.
+If you're gonna be using this
+in a very steady manner of 24-7,
+then sure, provision capacity might make sense.
+But for a lot of people,
+on-demand or batch mode might be more economical.
+Speaking of tokens,
+there are a bunch of techniques
+for minimizing or optimizing your token usage.
+So it's very easy to burn more tokens than you need.
+So your prompt is maybe longer than it needs to be.
+Maybe the chat history
+is longer than it needs to be as well.
+Maybe you're feeding in more and more context
+with each turn of your conversation
+and accumulating this massive context over time
+that's bloating your prompt.
+So remember, when you're doing a chat in AI,
+you're not just sending over the current chat turn,
+you're also sending in everything but for it
+within that session, and that can add up.
+Also, the retrieve context,
+if you're actually attaching information to those prompts
+or asking your prompt to go out
+and retrieve external information,
+that's also gonna burn up tokens.
+And if you have long responses that are coming back as well,
+that burns up tokens as well.
+Some models are notorious for being overly verbose.
+And unless you specifically tell it
+to give me back terse structured data,
+or don't talk too much, basically,
+it can run up your token bill more than it needs to be.
+Now, there are ways to estimate this ahead of time
+for some models,
+and this is kind of going out of style, unfortunately.
+Count tokens can estimate your usage
+before you actually do the inference.
+So you can sort of have a check there to say,
+oh my gosh, this is gonna use more tokens than I expected.
+Maybe I need to go back and optimize that first.
+But at any rate, some optimization tips
+are to make sure you're trimming your prompts
+to what they need to be.
+Be concise is gonna be cheaper,
+and concise prompts will work better too.
+Trim your context.
+That's the whole topic of context management.
+So you wanna make sure you're not filling up
+your context window and maxing that out,
+because not only does that get expensive real fast,
+it also degrades the quality of the model
+and its responses that you get back from it.
+Cap the response length.
+So tell it, you know,
+I don't want a response more than this number of characters.
+Try to fit it in this budget that I have.
+And that can be a good way of controlling token usage
+on the output side.
+Also structured data is a good way of doing that as well.
+Something else I should mention here is prompt caching.
+So often it can be cheaper to have a prompt cache
+where if you're sending data in repeatedly,
+like the past history as part of a conversation,
+there are often cheaper rates for cached prompts
+than new prompts that are coming in.
+So prompt caching is important too.
+Also embeddings can be a source of cost.
+So every time you do an embedding call,
+that's gonna consume resources.
+Now, embedding models themselves are generally very cheap.
+It's the actual retrieval and storing of them
+that can add up.
+So if you're gonna be doing high volume re-embedding
+all the time, and you're using vector dimensions
+that are larger than they need to be,
+that can drive up your cost.
+A very interesting thing that I see very often
+is that people have these 2,048 dimension
+embedding vectors for things,
+and you end up, you know,
+wasting a lot more space storing those vectors
+than you would have on the actual original text itself.
+A lot more, right?
+So you wanna make sure you're using
+the right dimension size to save money.
+Maybe you don't need all those dimensions
+for what you're trying to do.
+And don't do re-embedding more often than you need to do.
+All that storage IO is gonna add up,
+especially if you're using something like OpenSearch on the backend.
+Use batch jobs when you can to save more money.
+And under the hood, your choice of a vector store
+matters a lot as well.
+What is your storage size, your number of dimensions again,
+and the index and query capacity that you're using
+are all gonna add up to your bill at the end of the day.
+And your choice of platform matters too.
+So something like S3 Vectors is gonna be pretty cheap.
+Something like OpenSearch is gonna be more expensive.
+And you gotta choose the right tool for the job
+and make the right trade-offs for latency
+and performance that you need.
+And the more indexed content you have,
+of course, the more infrastructure you need to pay for.
+Sometimes a vector store isn't the answer.
+So do you actually need to index all this information?
+Does your retrieval actually need this?
+Could you have just put it in the context
+instead of storing it in a vector database?
+Consider that if you're gonna be chunking data up,
+the way you do that chunking
+is going to affect the quality of your output.
+And sometimes it might be better
+to just not use a vector store at all
+and just put the grounding information in
+as part of the context itself.
+So these are all different ways
+of managing your costs with AI.
+Basically, watch your choice of model,
+watch your token usage on the input and output side,
+watch your embeddings,
+because even though embedding models are cheap,
+storing and retrieving them might not be.
+And use the right tool for the job more generally.
+So use the right vector store choice
+if you are using a vector store,
+use the right model for what you're trying to do,
+and take advantage of tricks like prompt caching
+and choosing the right vector store technology
+to manage your costs.
+Things can get even more ugly if you're using agents,
+those can multiply your costs even further.
+So when you're using an agentic system,
+one prompt can actually trigger a bunch of model calls
+or tool calls or retrievals under the hood,
+and all of that activity adds up your tokens as well.
+If you're doing heavy reasoning,
+that chain of thought can add up tokens
+as it goes through each step of that chain of thought.
+So when you're dealing with agents,
+cost becomes even more of an issue,
+and your choice of how your tools work,
+how you're writing those tools,
+how much reasoning you're choosing to do
+will affect your bill at the end of the day.
+Don't use high or ultra high reasoning if you don't need to,
+it does come at a cost.
+And also be wary that there are trade-offs here.
+So you need to optimize cost
+together with quality and latency.
+It's not always the right decision to use a cheaper model.
+You know, it might not actually meet your needs
+or it might actually lead you down the wrong direction
+or lead you down rabbit holes
+that end up costing you more money in the end
+because you have to go back and redo the whole thing again
+with a better model.
+So cheap is not always better,
+but you need to find the right balance
+between cost and the quality and latency
+of your system at the end of the day.

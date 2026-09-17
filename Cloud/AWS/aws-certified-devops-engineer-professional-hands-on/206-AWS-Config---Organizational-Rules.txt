@@ -1,0 +1,41 @@
+# 206. AWS Config - Organizational Rules
+# Section: Domain 6: Security and Compliance
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37935784
+# Caption: en_US (manual)
+
+So now let's talk about organizational rules.
+So they are rules that you can manage
+across all your accounts within your organization,
+so you define the rule at the management accounts
+or the delegated administrator,
+and then this rule is deployed to all the member accounts.
+So you may say, "Hey, that looks very similar
+to conformance packs."
+And you're right, it is the same scope,
+as in we deploy rules from the management account
+into many member accounts all across your organization,
+but it turns out there is a little bit of a difference.
+So the scope of the organizational rules
+is only the organizations,
+whereas Conformance packs works both for many accounts
+as well as your organization.
+On top of it, the organizational rules
+are defined at the organization level,
+and they are one rule only
+so you can deploy one rule at a time,
+and you manage them only from your organization accounts.
+The conformance packs will give you access
+to many rules at a time,
+so you can deploy many rules, many Lambda functions,
+many remediation actions,
+and the compliance of these things
+will be seen at the account level.
+So the first rule will be at the organization level
+and the second one will be for each account level,
+we'll see whether or not we are compliant.
+So that's the difference, they're very similar,
+the exam shouldn't ask you the difference between them two
+but you know that they can come in both cases
+to deploy rules across your organization.
+So I hope you liked it,
+and I will see you in the next lecture.

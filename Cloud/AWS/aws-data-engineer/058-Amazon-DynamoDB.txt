@@ -1,0 +1,218 @@
+# 58. Amazon DynamoDB
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304520
+# Caption: en_US (auto)
+
+Stephane: Now let's have a look at DynamoDB,
+which is a NoSQL Serverless Database.
+So if you consider the traditional architecture
+that we've seen in and out in this course,
+we have clients and they connect to an application layer
+that could be made of an elastic load balancer
+and E2 instances that are grouped
+and scaling with an auto-scaling group.
+And then the data has to be sourced somewhere.
+So we have a database layer,
+and it could be using Amazon RDS,
+which is backed by MySQL or Postgres,
+or these kind of technologies.
+Now, these traditional applications
+will leverage RDBMS databases,
+and we do so because we have the SQL query language,
+it's really good.
+And then we can define strong requirements
+about how data should be modeled
+because we have tables, we have schemas and so on.
+We can do joins, aggregations, complex computations,
+and that's all very good in working.
+What we get out of it though, in case of scaling,
+is mostly vertical scaling.
+So in case you want a better database,
+and I'm talking just about a database layer right now,
+if you want to scale it vertically,
+you need to replace the database
+and get a more powerful CPU, more RAM
+or better disk with IO.
+And you can do some sort of horizontal scaling,
+but this is by only increasing the read capability.
+So either by adding EC2 instances at the application layer
+or by adding RDS read replicas at the database layers.
+But if you add read replicas, you're going to be limited
+by the number of replicas you can have
+and therefore limited into your horizontal read scaling
+and not talking about horizontal write scaling
+because you don't have that with RDS.
+So introducing to you no SQL databases,
+which means not only SQL
+or non-SQL databases depending on the definition.
+So the idea is that there are non-relational databases
+and they're going to be distributed,
+which gives us some horizontal scalability.
+And some very famous technologies
+that are NoSQL databases are MongoDB,
+and of course, DynamoDB.
+Now these databases do not support query joins
+or have very limited support.
+And so for simplicity is just assumed
+that it don't have query joins.
+Now all the data that is needed therefore
+must be present in one row in your database.
+And again, to simplify things, I know they're evolving,
+but let's just assume that NoSQL databases
+also do not perform aggregation computations
+such as the sum or the average and so on.
+But the good thing out of it is that thanks to the design,
+the NoSQL databases will scale horizontally.
+That means that if you need more rights
+or read capacity,
+you can behind the scenes have more instances
+and it will scale really well.
+So there's no right or wrong for NoSQL versus SQL,
+it just depends on how you think about
+your modeling of data, about your application,
+about your user queries, and about your scaling needs.
+So let's talk about DynamoDB now.
+So DynamoDB is a fully-managed NoSQL database
+and it's highly available
+and has replications across multiple AZs out of the box.
+So it's a NoSQL database, it's not a relational database.
+So it's different than RDS.
+It scales to massive workload and it's fully distributed.
+That means that you can scale to millions
+of requests per second, trillions of row
+and hundreds of terabytes of storage regardless
+of your workload.
+So fast and consistent performance.
+So that means you get really low latency on retrieval
+and it's a service,
+so it's going to be fully integrated with IM
+for security authorization and administration.
+You can enable event-driven programming
+with DynamoDB streams as we'll see in this section.
+It's low-cost and has auto-scaling capability.
+And you have the standard
+and infrequent access IA table class
+for different storage tiers.
+So let's have a look at the basics of DynamoDB.
+So Dynamo DB is made out of tables
+and each table will have a primary key
+and we'll see what the primary key can be
+in the next slides.
+You must decide what the primary key is
+before you create your table.
+Now each table can have an infinite number
+of rows, also called items.
+So I will use rows and items term interchangeably
+in this course, and each item will have attributes.
+Now, these attributes could be similar
+to the columns in your table, okay?
+But these attributes can also be nested,
+so it's a bit more powerful than columns
+and they can be added over time.
+You don't need to define them
+all at creation time of your table.
+And some of them can be null.
+So it's completely fine for an attribute
+to be missing in some data.
+Now an each item
+or each row will have up to 400 kilobytes of data,
+so it's a limitation.
+And data to data types supported
+are going to be scaler types,
+so string number, binary, Boolean and null.
+That's going to be document types such as list and maps.
+So that gives you some kind of nesting capability
+and set types such as string sets, number sets
+and binary sets.
+Now, a very important point to understand
+is how to choose a primary key for DynamoDB.
+And the exam will definitely test you on
+the knowledge of this.
+So you have two options for primary keys,
+and the first one is called a partition key,
+which called also a Hash strategy.
+So the partition key in this case must be unique
+for each item, which is very similar to a normal database,
+and therefore, the partition key must be diverse enough
+so that your data is going to be distributed.
+For example, if you consider User_ID for users table,
+then you can have the partition key as being User_ID,
+the attributes as being first name, last name and age.
+And then you have your first User_ID
+with some attributes being filled out.
+Your second User_ID, as you can see,
+does not have a last name, but this is fine in DynamoDB.
+And the third partition key
+yet again has three attributes attached to it.
+So this is what DynamoDB looks like.
+It looks like a database for now, it's pretty easy.
+But you can have a second option of partition key
+and sort key also called Hash plus Range.
+And now the combination of these two items
+must be unique for each item.
+So the data is going to be grouped by partition key,
+and this is why it's very important
+to choose a good partition key.
+So if you consider a users game table, then User_ID
+for the partition key and Game_ID for the sort key.
+Let's see what that means.
+That means that users can attend multiple games.
+So we have these four columns attributes,
+but the first one is going to be our partition key.
+We want data to be grouped by User_ID.
+And the second one is going to be the sort key,
+this is going to give us the uniqueness of the combination
+of partition key and sort key.
+So both of them are going to be making the primary key
+and the rest are going to be attributes.
+So if you consider a User_ID,
+then it has a sort key, which was on the Game_ID,
+and then we attribute score 92, result win.
+Again, another different User_ID
+and another different Game_ID.
+So this works as well, we have a lose game
+with a score of 14.
+And more interestingly, in this third row,
+what we have is that we have this same partition key, okay?
+So row two and three have the same partition key,
+but a different sort key.
+Of course, it is fine for a user to attend multiple games,
+and so therefore you want the combination of User_ID
+and Game_ID to be unique, obviously.
+But it's fine to also have the same partition key
+and different sort key.
+And this is why it's super important
+to choose a really good partition key.
+So the data is going to be distributed enough.
+So here's an exercise,
+and this is what the exam may test you on as well.
+So you're building a movie database,
+and you want to choose what is the best partition key
+that is going to maximize data distribution.
+Is it movie_id?
+Is it producer_name?
+Is it leader_actor_name, or is it movie_language?
+Well, think about it for a second.
+What if you choose the first one,
+you choose the second one and so on?
+Now the answer is you choose movie_id
+because movie_id is going to be unique for each row,
+and therefore it's a really good candidate
+to partition your table by.
+If you have a movie language as a...
+Sorry partition key, then you won't have as many language
+as many values as you want.
+And maybe most of your movies
+are going to be towards English.
+So it's not gonna be a great choice
+because there's not enough diversity
+and there's a skew of data towards one specific value.
+And so the exam will ask you
+to choose the best partition key
+for some tables based on what it means.
+So always choose the one with the highest cardinality
+and the one that can take on the most amount of values.
+So that's it for a short overview of DynamoDB.
+We have a long section on it,
+but let's go over the hands-on
+to practice a little bit using DynamoDB.

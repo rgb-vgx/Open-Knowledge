@@ -1,0 +1,90 @@
+# 219. CloudTrail for CloudOps
+# Section: Monitoring, Auditing and Performance
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516016
+# Caption: en_US (manual)
+
+Okay. So here are a few things
+you need to know for CloudTrail
+going into the exam.
+The first one is that you can have
+a log file integrity validation.
+So when you do API calls within AWS,
+they're going to be logged by CloudTrail
+and you can have these logs
+being sent into Amazon S3, okay, every one hour.
+But, you can also create what's called a digest file.
+And this is a file that will reference
+all the log files from the last hour
+and will contain a hash of each.
+And this is going to be stored in the same S3 buckets
+as your log files, but within a different folder.
+And the idea is that,
+this is going to reference all of them, okay.
+And this will help you determine
+whether or not a log file was been tampered with.
+So either modified or deleted
+after CloudTrail delivered it.
+So if the log file hash
+corresponds to the digest file hash,
+then you know for sure that the log file
+has not been modified and you're good to go.
+So this is very helpful for compliance purposes.
+The hash is using the SHA-256 algorithm, okay.
+And then the idea is that
+you still want to protect your S3 buckets
+using a bucket policy, using versioning,
+using MFA Delete protection, encryption,
+and object lock if you wanted to make sure
+that all these files within your S3 buckets
+from CloudTrail are kept all along this time. Okay?
+But if you want to show from a compliance perspective
+that these files are not modified with,
+you would use a digest file from CloudTrail.
+Finally, you should protect CloudTrail using IAM
+if you want to make sure
+that CloudTrail keeps on delivering
+these log files into Amazon S3.
+You can also integrate CloudTrail with EventBridge.
+So CloudTrail can trigger EventBridge
+for any kind of API calls made within your AWS accounts.
+And then from EventBridge,
+you can do any kind of integration you want
+using Lambda, SNS, SQS, and so on.
+So if you want it to react to any API call, you know,
+not even something that's covered by EventBridge,
+but you know that will appear in CloudTrail,
+then you would define an EventBridge integration
+with CloudTrail.
+But CloudTrail is not real-time, okay?
+The events may be delivered within 15 minutes
+of an API call
+and then the events in log files
+will also be delivered within S3 within 5 minutes. Okay?
+So this is not a real-time automation
+on top of API calls,
+but this is for you
+a way to get some kind of integration
+on top of any API calls made within CloudTrail
+when it is delivered into EventBridge.
+Finally, you can have organization trails,
+so, you can setup CloudTrail at the organization level.
+So you have a management accounts
+and many different member accounts.
+And so your CloudTrail at your org level
+is going to log events for all of API calls
+for all your member accounts
+into a target S3 buckets that is organization wide. Okay?
+And this is very handy for account managements.
+So all the events will be logged
+and this is going to give you
+for both the management and the member accounts,
+and the trail name will be the same
+for every accounts in AWS.
+And the member accounts cannot remove
+or modify the organization trail
+which is good for compliance.
+They can only view that it exists.
+So that's it for all the additional stuff
+you need to know on CloudTrail.
+I hope you liked it.
+And I will see you in the next lecture.

@@ -1,0 +1,71 @@
+# 58. AWS AppSync
+# Section: Compute & Load Balancing
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30990876
+# Caption: en_US (manual)
+
+So now let's talk about AppSync.
+So AppSync is a managed service
+that uses GraphQL in the backend.
+So anytime you see GraphQL, think AppSync.
+And GraphQL, what is it?
+Well, it makes it easy for applications
+to get exactly the data they need.
+That includes if you wanna combine data from one
+or more sources of data.
+So it could be a NoSQL data store, a Relational database,
+HTTP APIs, also has integration with Dynamo DB,
+Aurora, Elasticsearch and others.
+And you can even get data from custom sources using Lambda.
+The idea is that this data is going to be retrieved together
+and sent back to the clients.
+And the particularity of AppSync is that the data
+can be retrieved in real time with WebSockets
+or MQTT on WebSockets.
+So this real time aspect is very big
+and something that the exam may test you on.
+So for mobile applications, AppSync also gives you
+local data access and data synchronization.
+And just to get started, you need to upload one
+GraphQL schema, and off you go.
+So how does AppSync work?
+Well, you have AppSync in here, and your clients
+are accessing AppSync, very important,
+mobile apps, web apps, realtime dashboards,
+or even for offline synchronizations.
+Within AppSync, you have GraphQL schema and then Resolvers.
+And these resolvers know how to get the data
+from the various sources of data.
+So it could be DynamoDB, Aurora, ElasticSearch Service,
+Lambda, which leads you to pretty much
+any kind of source you want
+or HTTP to lead to public HTTP APIs.
+Finally, of course, you monitor AppSync
+with CloudWatch Metrics and Logs.
+So from an exam perspective, AppSync is going to
+be used whenever you see GraphQL or whenever you need
+to have access to realtime data as well for an API.
+Next, we have an integration between AppSync and Cognito.
+So we can perform authorization on Cognito users
+based on the groups that they belong to.
+So in the GraphQL schema, you specify the security
+of your Cognito groups, just like this.
+So you have a type and you have @aws_auth,
+and then you define Cognito groups of bloggers and readers.
+So, both bloggers and readers can do a query.
+But on the type mutation to add a post,
+only bloggers can actually add a post,
+because they are authorized to do so.
+So from a solution architecture perspective,
+the client is going to authenticate with Cognito,
+get a JWT token, and pass hat JSON Web token
+into AppSync.
+Then AppSync is going to verify the token
+and make sure it's authorized with Cognito.
+And then as you can see in the resolvers,
+that I wrote right here, in your GraphQL schema,
+the resolvers are going to look at the group
+that the user in Cognito belongs to.
+And then if it's all good, then access, for example,
+your backend, it could be a DynamoDB database.
+Okay, so that's it.
+I hope you liked it and I will see you in the next lecture.

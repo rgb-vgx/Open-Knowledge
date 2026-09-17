@@ -1,0 +1,47 @@
+# 76. Amazon Polly
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887635
+# Caption: en_US (manual)
+
+So Amazon Polly
+is the opposite of Amazon Transcribe.
+So this allows you to turn text into lifelike speech
+using deep learning.
+And allows you to create applications that will talk.
+For example, if I write, "Hi, my name is Stephane,
+and this is a demo of Amazon Polly,"
+then the speech is going to be generated for me
+by Amazon Polly.
+So Polly has a few advanced features
+that may come up in the exam.
+The first one is around lexicons.
+So you define how to read certain pieces of text.
+For example, I may write AWS,
+but I want Polly to pronounce Amazon Web Services.
+Or I may write W3C,
+but actually want Polly to say World Wide Web Consortium.
+Then we have the SSML,
+so the Speech Synthesis Markup Language,
+and I give you an extract on the right-hand side.
+And so they are markups that indicates
+how your text should be pronounced.
+For example, if you have "Hello"
+and then break, "how are you?"
+It's going to say "Hello," then have a long break,
+and then "how are you?"
+So it's not going to say "Hello, break, how are you?"
+It's going to know to whisper, to say it,
+to pronounce abbreviations, to emphasize a word, and so on.
+The voice engine has multiple ones,
+so you have, from the most historical to the new one,
+you have neural, standard, long-form, and generative.
+And so the newest one have very good human-like voices.
+And then you can have speech mark.
+So you want to know where is audio,
+like where a word or a sentence starts or ends in the audio.
+So Polly can give you this information
+because they give you the audio as well as this speech mark.
+And this can be very helpful for lip-syncing
+or for highlighting words as they are spoken.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

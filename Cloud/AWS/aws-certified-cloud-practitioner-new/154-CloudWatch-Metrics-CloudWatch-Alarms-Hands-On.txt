@@ -1,0 +1,188 @@
+# 154. CloudWatch Metrics & CloudWatch Alarms Hands On
+# Section: Cloud Monitoring
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056182
+# Caption: en_US (manual)
+
+Okay, so let's go into CloudWatch.
+And we're going to look at first CloudWatch metrics.
+So let's go onto the right hand side, onto metrics,
+All metrics, and here we have some information
+and we can try the new interface. Okay.
+So, here we have some information around all the metrics
+that we have created in this course, and you may have
+a different screen, but as you can see, lots of services.
+We're already publishing some metrics into CloudWatch,
+which is pretty cool.
+So for example, I can click on the SQS, Queue Metrics,
+and look at this demo SQS queue.
+And, we can see that the number of messages received
+has like, one data point right here.
+If I look for example, at number of messages deleted,
+it doesn't show anything.
+Number of sessions sent, here's one, and then we can have,
+for example, Number of Empty Received and so on.
+So you can get a lot of information for SQS.
+But, let's have a look for example for EC2 instances.
+So let's go into EC2, Per-instance Metric,
+and then we can look at the CPU utilization of my instance,
+and I've just launched an instance before, so again,
+it will show you some metrics.
+So you need to, you know, have it (stutters)
+running for a longer period of time
+to get some information out of it.
+But at least it shows you that within the dashboard
+of culture metrics, you can get a lot of information
+for a lot of different services, okay?
+Next, what we want to do is to create an alarm.
+So let's go through the process of creating an alarm.
+So, let's go to All alarms and create an alarm.
+We need to first select a metric, so let's find
+that CPU utilization metric for our EC2 instance,
+we'll select it.
+And, then, we can say whether we want, we want to consider
+the average, the sum, the maximum zone,
+so we have different settings for this alarm.
+We'll keep it very simple, exhibit for the average
+over the five minute period,
+and while saying, hey, if the CPU utilization
+is greater than 80%, okay, then please
+treat this as a alarm.
+But you could say Alarm, OK, or Insufficient data,
+but we'll say it's an alarm.
+In which case, well, you need to send a notification
+in to a new topic of SNS called
+the Default_CloudWatch_Alarms_Topic,
+and then the recipient will be stephan@example.com.
+Let's create this topic.
+And now, any time the Cloudwatch alarm is going to go
+into the alarm state, it's going to send an email
+into this SNS- sorry,
+a notification to this SNS topic,
+which will in turn, send an email to stephanie@example.com.
+So this is pretty cool, cause we have notifications,
+but also we have other options to set up
+Auto Scaling actions, EC2 actions,
+or Systems Manager actions.
+But again, to keep things very simple,
+let's just consider only the notification.
+Click on Next.
+Then, this one is my DemoAlarm.
+Click on Next.
+And then as you can see,
+this is the alarm threshold, the red line,
+and the blue dot is the actual value,
+so as we can see we're, far below the actual threshold.
+So let's click on Create alarm and here we go,
+I have created my first alarm.
+There's another way you can create an alarm,
+it's directly from within the EC2 console for EC2 instances.
+So I am in my EC2 console,
+and this is the instance I created from before,
+so just a very simple instance with no configuration.
+Okay. And I just launched it.
+And if you go first under the Monitoring tab, here.
+As we can see, we have some information around
+all the monitoring of our EC2 instance,
+So we get CPU utilization, status checks, and so on.
+So lots of information right here.
+And, what we can do here, is that we can add an alarm
+to our EC2 instance.
+So to do so, you scroll to the right hand side
+and there is an alarm status,
+and you can click on this plus button right here
+to create an alarm.
+So here we manage CloudWatch alarms for our EC2 instance.
+We're going to create an alarm for it.
+And then we're going to say, hey,
+the alarm notification should go to this topic
+that we've created from before.
+And, then there should be an alarm action.
+And, the alarm action is going to be
+recover my EC2 instance.
+So we're going to say, hey,
+I want to recover my EC2 instance, when,
+and then you do say the data to sample.
+So we'll choose Status check failed: either.
+So when either status check is failing,
+please recover my EC2 instance.
+So this is a very handy way
+to create an alarm for CloudWatch.
+And then, click on Create.
+And this is not working,
+because we need to choose (stutters)
+Systems check failed for the metrics.
+So, always good to be wrong sometimes.
+So, Status check failed: system, and Create, and here we go.
+Now I have created a CloudWatch alarm on my instance.
+So now we have two alarms for my CloudWatch instance,
+uh, for my EC2 instance.
+Great. And we can create a third alarm if you wanted to,
+For example, we're saying, hey, if, then,
+so we can notify to the same topic
+and we're going to add an alarm action to reboot this time.
+And we'll say, hey, if the CPU utilization is greater
+than 95% for three consecutive periods of five minutes,
+then we're assuming that's, hey, I think
+our EC2 two instance is stuck on a CPU solution loop.
+Therefore, please reboot it.
+So this is just a use case.
+So as we can see we are far below,
+and we can create this alarm.
+And again, now we have three alarms
+attached to our EC2 instance,
+which is quite good.
+Okay, and if you go back into the Cloudwatch console,
+as you can see, and refresh this page,
+now we have three alarms.
+So there's another kind of alarm
+that we can not create in all the regions.
+You can actually create it in only one region.
+And this region is us-east-1
+because it is a billing alarm.
+So as you can see on the left hand side right now,
+there is no billing alarm.
+To make billing alarm appear here,
+you click on the region selection
+and go into us-east-1.
+So going into us-east-1,
+as you can see on the left hand side now, there is billing.
+And, now we can create a billing alarm,
+which is to alarm us based on the billing
+for specific services.
+So, we're going to create an alarm.
+And then when you specify a metric,
+so there's going to be estimated charges of USD.
+And in here you can say, okay, if my charters
+are greater than eight USD, then go into an alarm state
+and then, send a notification into a new topic,
+so we'll call this one-
+this one is the default topic for billing,
+and then against it's stephan@example.com.
+So we need to recreate an SNS topic
+because we are in another region.
+And obviously, every resources in the database
+is scoped by region. Okay.
+Almost every resources.
+So we need to create this topic, here we go,
+and click on Next and then DemoBillingAlarm.
+Click on Next.
+And we're good to go.
+So again, just to show you that billing data
+is only available in us-east-1,
+and this could come up in the exam, okay.
+So as we can see with alarms and metrics,
+we can do a lot of automation in AWS, which is quite handy.
+So just to finish with this hands-on,
+we just need to clean up what we have.
+So let's clean up this alarm right here, the billing alarm.
+And then please make sure to go back
+to the region where you were working from before.
+So for me, this is Ireland.
+And what I'm going to do is delete all my alarms,
+so I'm going to delete my three alarms right here.
+So Actions, Delete.
+And then I'm going to also go into my EC2 instance
+and terminate it.
+So that's it for this hands-on.
+I hope you liked it.
+And I will see you in the next lecture.

@@ -1,0 +1,143 @@
+# 318. DynamoDB CLI
+# Section: AWS Serverless: DynamoDB
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/15300314
+# Caption: en_US (manual)
+
+Okay, so a few CLI options
+that may come up in the exam for DynamoDB.
+So the first one is projection-expression,
+and with it, we can specify one or more attributes
+to retrieve.
+The idea is that we don't want to retrieve
+all the columns, all the attributes.
+We just want to retrieve a subset to maybe have less data
+come to us, or only the data we need.
+There is filter-expression, which is to filter items
+returned to you, so there is going to be some filtering,
+and we can specify some conditions
+that we'll see very, very soon.
+There is also some very important pagination options
+for DynamoDB S1.
+So, for DynamoDB, of course, page-size.
+So page-size is saying
+that we still want to retrieve the entire dataset,
+but this time, each sub-API call that we'll make to AWS
+will be smaller.
+And the idea is your API call won't time out.
+For example, if you have a table of 10,000 items
+and you do one API call,
+maybe you will retrieve 10,000 items at a time
+and you will time out.
+But if you specify a page-size of 100,
+what's going to happen is that there's going to be
+100 API calls of size 100,
+that are going to be made behind the scenes,
+to make sure that the complete API call succeeds.
+So page-size is an optimization in that sense,
+in that it allows you to do more API calls,
+but also avoid timeouts.
+Max-items, instead, is to have a limited number of items
+to show when you get a result back from the CLI call.
+And max-items works in combination with NextToken,
+or starting-token, which is to say
+that now that you've received, say, 25 items,
+we want to get the next 25,
+and so therefore, you need to use that NextToken
+to retrieve the next 25 items.
+Now, I'll make this very clear,
+because we're going to practice right now.
+So let's go into our UserPosts table
+and let's view the items.
+So here are all the items in our table,
+and we're going to have a play with it.
+Now, I want you to open the CLI
+so you can use a terminal, if you've configured it,
+or I'm going to use AWS CloudShell.
+And also, please make sure that you open
+the cli-examples.sh file in your DynamoDB folder.
+Okay, so the first thing is that we're going to do
+a DynamoDB scan.
+Okay.
+And we should specify the table name,
+but we'll also specify a projection-expression
+on user_id and content.
+So what's going to happen is that in this table currently,
+we have three attributes.
+We have user_id, post timestamp, and content.
+By using a projection-expression,
+we're not going to retrieve post timestamp.
+So let's have a proof of this.
+So let's copy and paste this.
+Press Enter.
+And as you can see, I'm getting some items back, okay?
+And as we can see, we only have content and user_id.
+We don't have post timestamp as part of the results.
+Okay.
+Next, let's talk about a filter-expression.
+So we want to scan this table.
+But this time, we're going to filter all the results
+using a filter-expression,
+so this is happening client-side.
+And we'll look for user_id = u.
+And then u has to be a string that has the value john123.
+So that means that we want to only retrieve
+the rows that have john123 in it.
+And as we can see, we have items.
+Count is 2.
+And we only retrieve the content for john123.
+So this is working.
+And this is all happening client-side, okay?
+If you wanted to have it server-side,
+because the user_id is john123,
+and it's a user_id call and so it's a primary key,
+we could run a query directly to be a lot more efficient.
+But at least we show the power of filter-expression.
+We could filter on user_id.
+We could filter on post timestamp.
+And we could filter on content as well.
+Next, we want to demo the page-size.
+So if you are doing this API call to scan this entire table,
+then it's going to be one API call in the background,
+and this API call is small enough, of course,
+but we retrieve three items.
+But if you wanted to be efficient,
+say there was like 10,000 items,
+you could specify a page-size 1.
+Now, page-size 1 will just do three API calls
+in the background, but you will still retrieve
+your three items as part of one command.
+So if I press Enter, as we can see,
+I did receive yet again my three items, okay?
+But what happened in the background is that
+there were three API calls made to DynamoDB.
+So this is the page-size optimization to avoid timeouts.
+Instead, if you wanted to retrieve one item at a time,
+you would use the max-items and then a number,
+so max-items 1 should return only one item.
+As you can see, we have this item being returned to us.
+And then the count is 3.
+But we have now a NextToken available to us.
+So this NextToken, we have to use using this command.
+So we're going to use the same max-items 1,
+but now we have the starting-token that we have to enter.
+And the value of the starting-token is what is in your CLI.
+So you paste the starting-token in your command,
+and then you press Enter.
+And now you get the second post.
+So here was the first blog.
+And we had a NextToken.
+And now it's our second blog, and we again have a NextToken.
+And so finally, if you wanted to retrieve the last one,
+we would run this command yet again, okay?
+So we'd run this command,
+and this time we would specify the NextToken from above,
+which happens to be the exact same.
+I don't want to show you again the process.
+So you copy this entire token in your command, press Enter,
+and now we get "Alice blog edited."
+And now we don't have any more NextToken.
+That's when we know that we've reached the limits
+of all the things we could scan from this table, okay?
+So hopefully these options of the CLI make sense.
+I hope you liked it.
+And I will see you in the next lecture.

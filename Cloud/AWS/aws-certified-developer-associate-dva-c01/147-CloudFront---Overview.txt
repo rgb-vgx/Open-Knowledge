@@ -1,0 +1,137 @@
+# 147. CloudFront - Overview
+# Section: CloudFront
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19729720
+# Caption: en_US (manual)
+
+Now let's talk about CloudFront.
+CloudFront is a content delivery network or CDN.
+So anytime you see CDN in the exam, think CloudFront.
+It improves the read performance by caching the content
+of your website at the different edge locations.
+And because your content is cached all around the world,
+then your users all around the world
+will have a lower latency
+and this will improve the user experience.
+CloudFront is made of hundreds of
+points of presence globally and that includes
+edge locations and caches across the world.
+On top of it, by having the content distributed globally,
+we are getting DDoS protection.
+So DDoS is a sort of attack where all your servers
+around the world are getting attacked at the same time.
+We'll see this later on in this course,
+and the idea is that CloudFront,
+because your application is worldwide,
+then you're protected against these attacks
+also using something called Shield
+and Web Application Firewall
+that we will be seeing in the security section.
+So if you wanna look at a map of the world,
+these are the map and we see some edge locations
+as well as edge caches.
+And so say we had created an S3 bucket
+and a website on our S3 bucket in Australia,
+but we had a user maybe in America.
+Then what the user will do is that
+it will request the content
+from an American edge location using CloudFront
+and CloudFront will be able to fetch
+the content from Australia.
+Now, if another user in the US
+will be requesting the same content,
+then it will be served directly from the edge
+and it will not go all the way to Australia
+to serve that content.
+Same if a user is in China, then it'll be talking
+to a Chinese point of presence
+and then redirected to the S3 buckets,
+and then the content will be cached at the edge.
+CloudFront has several origins, which are basically backends
+that you want CloudFront to connect to.
+For example, we have an Amazon S3 bucket.
+So this is used for distributing files
+and caching them at the edge.
+Or to upload files directly into Amazon S3
+through Amazon CloudFront.
+And the access between CloudFront and Amazon S3
+is secured using something called
+origin access control or OAC.
+You can also connect CloudFront to anything within your VPC.
+So it's called a VPC origin,
+and it's for applications that are hosted
+within your network on Amazon, within the private subnets.
+So it could be a private application balancer,
+it could be a private network load balancer,
+or even private EC2 instances.
+You can also connect to a custom origin
+over the HTTP protocol,
+and it could be, for example, on the S3 website,
+you first must enable the bucket as a static S3 website,
+or it could be any public HTTP backend you want.
+For example, if you have a public load balancer,
+you can connect it directly into CloudFront.
+So at a high level, how does CloudFront work?
+We have the edge location all around the world, okay?
+And then it will be connecting to your origin.
+So would it be an S3 bucket or an HTTP server.
+And when the client connects
+and does an HTTP request into your edge location,
+then the edge location will see if it has it in the cache.
+If it doesn't have it in the cache,
+then it will go to the origin to get the request results.
+And then once it retrieves the results,
+it will be caching it into a local cache
+so that if another client requests the same content
+from the same edge location, then the edge location
+does not need to go to the origin.
+So if we have S3 as an origin, then if we look at the cloud,
+your S3 bucket is your origin in some region,
+and then you have edge locations all around the world,
+for example, at Los Angeles,
+and your users accessing the edge location in Los Angeles
+will get their content directly served
+through the edge location.
+But first, the edge location will get it
+from the origin S3 bucket through the private network.
+And the S3 bucket will be secured
+using an origin access control
+and by modifying the S3 bucket policy on the S3 bucket.
+So this is the same when we have a user in Sao Paulo,
+for example, in Brazil.
+Again, this will be another edge location,
+which will be serving users close to Brazil,
+and then it will be a private connection
+between your edge location and your S3 bucket and so on.
+So using CloudFront and the edge locations,
+we can see that the content of our S3 bucket in one region
+can be distributed all around the world
+through the edge locations or points of presence.
+So one question that's common is what is the difference
+between CloudFront and something like S3 replication?
+Well, if you have CloudFront,
+you're using the Global Edge network.
+So this is about 216 points of presence.
+And the files are going to be cached
+in each edge location maybe for a day.
+So this is amazing if you have static content
+that must be able to be available
+everywhere around the world.
+S3 cross region replication is different.
+It must be set up for each region
+you want replication to happen.
+So this is not for every region in the world.
+And then files are going to be updated in near real time
+so there's no caching that happens.
+And it is only for read only.
+And so this is great if you have dynamic content
+that needs to change all the time
+and be available at low latency in a few regions.
+So these are very different purposes.
+CloudFront is a CDN, which is to cache content
+all around the world, whereas S3 cross region replication
+is to really replicate an entire bucket into another region.
+So hopefully that makes sense about CloudFront.
+In the next lecture we'll have a play
+and see how we can set up a CloudFront distribution
+on the CloudFront and S3 buckets.
+So we'll see you in the next lecture.

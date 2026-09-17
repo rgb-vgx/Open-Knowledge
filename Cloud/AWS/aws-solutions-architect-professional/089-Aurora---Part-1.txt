@@ -1,0 +1,194 @@
+# 89. Aurora - Part 1
+# Section: Databases
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376564
+# Caption: en_US (manual)
+
+Okay, so now let's talk about Aurora,
+which is going to be a big focus on the exam
+from an architectural point-of-view.
+Again, to understand the difference
+between Aurora RDS and DynamoDB, for example.
+So Aurora is only for PostgreSQL and MySQL-compatible APIs,
+and the really cool thing about Aurora is the storage.
+So it automatically grows by increments of 10 gigabytes
+up to 256 terabytes.
+So storage is something you don't have to think about
+when using Aurora, it's one less constraints on your end.
+There's six copies of data being made across different AZ,
+and Aurora by default is going to be a multi-AZ database.
+In terms of read replicas,
+you can create up to 15 read replicas
+and you're going to get a reader endpoint to access them all
+so you don't need to remember
+where all your read replicas are.
+You can just use them from a reader endpoint.
+You can do cross region read replica,
+in which case you need to know
+that the entire database is going to be copied,
+not just select tables.
+So this is different from DynamoDB.
+So if you need to replicate just a single table
+that you need to create a specific database for that.
+With Cross-region Replica,
+it is the entire database that's being copied.
+And you can have the capability to load or export data
+directly from or to S3.
+The idea is that you don't need to use a client application
+to read the data from Aurora
+and then add it into S3, or vice versa.
+It goes directly from Aurora into S3,
+hence saving you a lot of resources and network costs.
+There's backup, snapshots, and resource feature,
+which are the exact same as RDS.
+Okay, now let's have a look at how Aurora works
+from an architectural standpoint.
+So you get six copies of your data across 3 AZ,
+and four out of the six copies need are needed for writes,
+and three out of the six copies are needed for reads.
+There's self-healing with peer-to-peer replication,
+so you don't need to worry about it.
+This is Amazon's Web Services engineering behind this
+that made it possible,
+and the storage of your database is going to be striped
+across hundreds of volume,
+so there's no single point of failure.
+So here's the idea.
+We have a shared storage volume
+that is replicated, self-healing, and auto expanding,
+and so as as you start inserting data
+into your Aurora database,
+it's going to be replicated across six blocks
+in three different AZ.
+So here's the blue, here's the orange,
+and here's your entire database.
+Then you're gonna get different Aurora there.
+So in case you have a master,
+you need to know that the failover for the master happens
+in less than 30 seconds,
+so this is quite helpful,
+and the master is the only database in Aurora
+that's able to write to the storage.
+And then you can use the master
+plus up to 15 Aurora Read Replicas to serve the reads.
+So you can add as many as the, for example,
+six or five read replicas in this example
+to help you enhance the read volume.
+So the idea here is
+that you can really have the RDS capability
+while making sure it's going to be a bit more cloud native,
+a bit more fast for failovers,
+in case there's an issue with the master.
+Now finally, as I said, there is support
+for cross-region replication for your read replica.
+So this could be a way for you
+to create a disaster recovery strategy,
+and then you would promote that replica into its own region
+in case there is a global outage in your region itself.
+Okay, so for your DB cluster,
+we have this shared storage that has autoexpanding,
+and we have a writer endpoint.
+This is going to point directly
+into the master Aurora database,
+and then the client, if it talks to the write endpoint,
+will be redirected to that master,
+and then we have a bunch of read replicas
+and they could be autoscaling as well,
+so it's possible for you
+to add and remove read replicas over time.
+And the reader endpoint is going to be used
+for doing a connection load balancing.
+And so the client should use the reader endpoint
+to make sure it's gonna be reading
+from one of the read replicas in Aurora.
+Okay, next, let's talk about Aurora endpoints.
+So an endpoint is the combination of a host address
+and a port, and you have multiple types of endpoints.
+You have a cluster endpoint that's a writer endpoint,
+which allows you to connect
+to the primary DB instance in your Aurora cluster,
+that is going to be used for all the right operations.
+So inserts, update deletes, as well as maybe some queries.
+Then we have the reader endpoint.
+And the reader endpoint is going to provide load balancing
+for read-only connections
+to all the Aurora replicas in your Aurora cluster.
+So it's going to be used only for read operations,
+so queries.
+And then you can define custom endpoints
+and these endpoints are a set of database instances
+that you choose in the Aurora cluster,
+and they're very helpful when you want to connect
+to different of database instances
+with different capacities and configurations,
+for example, a different DB parameter group.
+And finally, you have an instance endpoint,
+which is the endpoint to connect
+to a specific database instance in the Aurora cluster,
+which is used
+when you want to diagnoses a specific DB instance
+or fine tune one specific DB instance.
+So for custom endpoints, how they work.
+So here is represented the writer endpoint
+as well as the reader endpoints, okay.
+But say you want to define a subset of Aurora instances
+as a custom endpoint,
+in which case you can define a custom endpoint.
+And as you can see, this endpoint is connected
+to db.r5.2 x large instances of Amazon Aurora
+and I have two.
+So there are more powerful instances,
+and therefore maybe I wanna use this custom endpoint
+to run analytical queries on specific replicas.
+So this would be one of the use cases of this feature.
+Now the reader endpoint is generally not used
+once you define custom endpoints because well,
+you would define custom endpoints
+for all your database instances.
+Next, you have Aurora logs,
+so you can monitor the following logs with Aurora logs.
+You can define and monitor error logs, slow query logs,
+general log, and the audit log.
+So all these log files are created
+within Aurora and then they can either be downloaded
+or published to CloudWatch logs.
+So you will find them as a stream in CloudWatch logs
+or download them directly on your computer
+for offline analysis.
+So if you had to troubleshoot the RDS
+and the Aurora performance, how would you do it?
+Well, you can use the performance insights tool.
+This is going to give you issues in your database happening.
+So waits, SQL statements, host and users.
+To make it more simple,
+for example, if you use performance insights
+for SQL statements, that means you're going
+to see right now the SQL queries are going
+to put some load on your database
+and you can have a look at them in real time
+or for users, the users,
+they're actually doing the most load
+on your database as well.
+To see, for example,
+if a application is misbehaving.
+The host is going
+to give you information around
+which servers are using your database the most,
+and the waits give you the amount
+of time your database spent on computations
+or on networking and sort of thing,
+so it's lower level type of information.
+CloudWatch metrics give you basic information
+around the CPU usage, the memory usage
+as well, the swap memory usage,.
+and enhance monitoring can be enabled
+for your RDS database as well.
+So you get a lot more information.
+You get per second metric.
+You get host level information such as, for example,
+the top 100 processes running on your database.
+So this is really when you wanna go deep
+into the process level stuff on your database.
+And, of course, if you had to troubleshoot performance,
+you can also look at the slow query logs.
+Okay, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

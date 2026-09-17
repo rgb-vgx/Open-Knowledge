@@ -1,0 +1,372 @@
+# 57. Lab: Preparing Data for TF-IDF with Spark and EMR Studio, Part 2
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285017
+# Caption: en_US (auto)
+
+All right.
+So for this activity we're going to recreate Wikipedia if you will, using a little subset of data that
+we took from the real Wikipedia.
+But instead of being all trendy and using some deep neural network to power search, we're going to
+do it the old fashioned way with term frequency, inverse document frequency instead.
+And to make it more relevant to this course, we're going to build that on elastic MapReduce using Apache
+Spark running on EMR workspaces, which in turn has an EMR notebook all running in an EMR studio instance.
+So let's get started.
+I've already signed in to my AWS console here.
+And a little note here.
+Do not do this under your root account if you can help it.
+I did run into a bug with EMR studio that seems specific to root accounts, so assuming that's still
+there, better to log in with a specific IAM user if you can.
+Instead go on to your console home and go to EMR if you haven't been there before.
+So let's go ahead and use EMR to spin up a little notebook instance we can use in order to play around
+with PySpark and actually implement Tfidf TF-IDF.
+Using some little sample of some real Wikipedia data.
+Now this used to be a lot harder.
+It used to be that you had to open up a tunnel to look at a notebook that was running directly on your
+EMR server, on a cluster somewhere.
+These days it's a lot easier.
+You can just go to EMR studio here and let's go to studios and hit Create Studio, and you can see that
+it has this pre-populated thing for an interactive workload.
+Well, that's what we want.
+We want to interactively work with PySpark in a notebook environment.
+So these default settings are going to be fine.
+And furthermore it's going to be using an EMR serverless application.
+So we don't even have to worry about setting up an EMR cluster ourselves either.
+It's all serverless now, so that makes life a whole lot simpler.
+Now, do make sure that you're logged in as an IAM user and not as your root account.
+When you're doing this, there's a lot of trickery it has to do under the hood to make sure that your
+user has the appropriate permissions in IAM to actually run that serverless application properly, and
+it can't do that if you're the root user.
+So if you are signed in as a root user.
+Sign out.
+Create an IAM user if you have to and log in using that IAM user instead.
+All right.
+So let's go ahead and create a studio and launch workspace.
+It's just that simple.
+Well let's change something here right.
+Just to do something make ourselves feel a little bit productive.
+Let's at least change the name.
+So the studio name by default is studio underscore one.
+Let's call that something else.
+Like, I don't know, tf IDF.
+Now in the real world, this is going to be some sort of a shared environment used by your organization
+or by your team.
+So in a practical sense, this is probably going to be a name that's more associated with your work
+group.
+You know, the people that you're working with, the the organization that's going to be using this
+studio together.
+Remember, EMR studio has collaboration features so multiple people can work on it at the same time.
+So that might not be the best name in the real world, but for what we're doing, just a little toy
+example using tf IDF, that makes sense.
+Now we're going to go ahead and let it create its own S3 bucket for storage.
+We're going to let it create its own service role as well.
+That saves us a whole lot of time.
+Instead of mucking about with IAM.
+And we're also going to set up a workspace setting here, so let's go to change that as well.
+We'll call that Tfidf as well, just for lack of a better idea.
+The workspace is basically the new name for the notebook itself.
+So this is going to be encompassing the environment that your actual Jupyter notebook is running on.
+And that is going to attach itself to the EMR serverless application.
+Right.
+So it's kind of this hierarchy going on, right.
+So at the bottom we have an EMR serverless application that's actually doing the work of running our
+code and running spark above that.
+That's wrapped by a workspace that contains a notebook to let us interact with that serverless application
+on EMR.
+And above that we have a Visual Studio that includes this workspace.
+So not much to change here.
+I'm just going to stick with the default application name.
+And you can't actually change these.
+So we're just going to leave them as they are.
+It's serverless.
+So it has pre-initialized capacity.
+But it does have the capability in theory to grow as needed and expand its capabilities.
+Now if you did want to have more control, there is a custom option here when you create the studio,
+and that will give you finer control over the exact IAM permissions you want to use, the exact S3 buckets
+you want to use.
+You can even create your own EC2 cluster from scratch if you don't want to use EMR serverless.
+So that's there as well.
+But again, that's a lot of work you don't need to deal with right now, and you don't need that for
+the exam for sure.
+It's just the concepts here.
+Let's go ahead and create that studio and launch a workspace.
+Shouldn't take too long.
+And so now the workspace is launching for this studio instance.
+And that's going to be encompassing our notebook.
+So we're just going to wait for that to open up in a new browser tab us.
+Again that shouldn't take too long.
+Here we go.
+And what we're going to do is upload the notebook that I already gave you.
+Now you could just hit PySpark here and go to town and start writing stuff from scratch.
+But I'm not going to make you do that because again, the exam does not expect you to actually write
+code.
+So let's just hit this little upload files button here and navigate to your course materials.
+You should find a tfidf dot ipynb file.
+Let's go ahead and upload that and we will overwrite the default one that came with this workspace.
+And now we should be able to double click that and open it up.
+All right.
+So you can see that we have the PySpark kernel selected here but no clusters attached yet.
+That's because it's still in the process of spinning up up that EMR serverless instance.
+So we're gonna have to give that a little bit of time.
+You can see that it's now in the status of attaching that serverless interactive app.
+And that went pretty quickly.
+Now once it's to select a kernel now we're going to be using PySpark because that's what this notebook
+was written in to allow us to do spark and not just Python.
+So let's select PySpark.
+And you can see that it's back in the process of still attaching that.
+We can't actually use this notebook until it's done.
+So we're just going to wait a little bit for that to finish.
+Again it shouldn't take too long.
+And it says it's attached.
+Very cool.
+And PySpark.
+So we should be good to go.
+Now one thing we have to take care of is making sure that our workspace here can actually get to our
+data, so we need to put that into an S3 bucket that we have permissions to access.
+Now, because we didn't go to the trouble of creating a custom configuration for this workspace, we
+didn't set up explicit permissions to a specific S3 bucket.
+So to make life easier, I'm just going to throw that data into the bucket that it automatically created
+as part of the quickstart there.
+So to find out where that bucket is, you need to go back to EMR studio, select the studio we just
+created and then click on Workplace Storage.
+And that is the place it has access to.
+If you did want to add another bucket there that you want to put stuff in or get grant access to, then
+you'd have to go through all the stuff of making sure that your VPC can access the external internet
+to hit S3, make sure that your IAM permissions have the right permissions to access that bucket, and
+so on and so forth.
+But again, we're going to cheat and make things easier by just using the bucket that we know works.
+So here we are in our bucket.
+And we just hit upload and we'll go to Add files.
+And if you just go to your course materials you should find the subset small dot TSV file.
+We'll go ahead and upload that.
+There it is.
+Let's go ahead and click on that.
+And from there we can copy the URI that we need to access from within our script.
+So let's go ahead and copy that back to our notebook.
+And we're just going to replace this string here with the one that you just copied.
+All right let's go ahead and restart this kernel just to clear out all this other stuff from when I
+ran it originally.
+To do that, I'm going to go to kernel and say restart kernel and clear all outputs and restart.
+And that might take a moment.
+You can see down at the bottom it says restarting.
+Give it a little bit of time to finish.
+This also has a nice little side effect of kind of forcing the serverless application to do what it
+needs to do to get spun up.
+Honestly, this can be a little bit, uh, a little bit finicky sometimes.
+I found a couple of troubleshooting steps, so if you've run into some trouble so far, if you did get
+some permission errors that popped up again, that's probably because you're running as the root user
+and not as an IAM user.
+It cannot automatically attach the permissions you need to your user account if you're the root user.
+So make sure that you're running this as an IAM user.
+And sometimes this just plain doesn't work.
+You know, I've run into a lot of instances where I start to run this code and it says it's running,
+but nothing at all happens.
+I get no feedback whatsoever.
+It just immediately terminates.
+And it seems to be that spinning up, that serverless cluster is just a little bit flaky sometimes,
+you know, sometimes you just have to try it a few times until you get an instance that actually works.
+I could, you know, editorialize a little bit about the reliability of AWS these days, but I'll spare
+you that, you know, sometimes you just have to try it a few times and get an instance that works.
+All right.
+It looks like this, uh, kernel finally restarted.
+That took kind of a surprising amount of time.
+Let's make sure it actually works.
+So we're going to start off by just reading in some raw data from Wikipedia, we have this subset small
+TSV file that I've already loaded into S3 for you in a publicly available bucket, to save you the trouble
+of uploading that data and finding where it comes from.
+So all we're going to do is read that in using spark, and then call show on the resulting data frame
+to see what's in there.
+So let's shift enter to run that first block.
+And it looks like it's working so far.
+That's a good sign.
+Execution started starting the spark application.
+First time you do this it might take a minute or so to spin up.
+So we'll just give that a little bit of time to run again.
+If you're not seeing that though, if there's no output whatsoever you might have got a bad serverless
+cluster.
+So go ahead and start over until you get one that does work.
+Unfortunately, I don't have better advice there.
+Anyway, this one is working, so let's just wait for that to finish.
+Go ahead and load up that data and it's done.
+Very cool.
+All right we're back.
+That didn't take too long, but pretty cool huh?
+So we actually loaded up that data set.
+And here is what it looks like.
+You can see that we don't have any column names.
+So that's the first problem we're going to have to address.
+Say what these are.
+But obviously these are some sort of identifiers and some sort of article title.
+So apparently this data set starts with anarchism and then autism and albedo and goes through the A's
+and then the date of the article and the text of the article itself.
+So pretty interesting data set here.
+Show the top 20 rows there.
+First thing we need to do is give those columns a name so we can refer to them more intuitively.
+So we're going to go ahead and load up that raw data that we just loaded up from the CSV file, and
+load that up into a spark data frame.
+And do that with the specific column names of ID, title, time and document.
+And go ahead and show the results of that.
+So again I'll shift enter to run that.
+And now that we've loaded up spark already, that runs much more quickly.
+And you can see we have the same data here but with human readable column names.
+All right.
+That's progress.
+So now we need to clean our data out.
+So first let's explore it shall we.
+Exploratory data analysis a bit here.
+We know that Tfidf cannot handle null documents.
+So let's first make sure that we don't have any null documents.
+The syntax for spark is just to call the filter command here on the operator is null on the document
+field, and we want to count up how many they are.
+So at a high level what this line is doing is saying count up how many documents have null values in
+the articles data frame.
+And the answer is go, spark, go.
+It's one.
+There's actually one null document.
+So it's a good thing we checked.
+We have to get rid of that.
+Now if you were to dig into that I'm not going to do that right now because I'm conscious of your time.
+But it is a corrupt record.
+So we're just going to drop it.
+You know, there is this whole problem of how do you deal with missing data in data analysis.
+But when you're talking about one row probably makes sense just to drop it.
+So we're going to go ahead and run a filter for just documents that are not null, and then count up
+how many are null, just to double check that there aren't any left after that operation and make sure
+that the is not null.
+Operator did what we wanted and only gave us back a new data frame called cleaned articles that contains
+not null documents.
+Let's kick that off.
+And it returns zero, indicating that our new cleaned article's data frame has no null documents.
+Good.
+That's progress.
+Now, the thing we need to deal with next is the TF-IDF model itself requires numbers, not words.
+So it needs us to tokenize all of the words in these articles into numerical representations.
+Basically, we need to come up with some sort of a mapping of each unique word in our data set that
+maps to some unique number.
+So we need to do that before we can actually run any fun algorithms on it.
+So we're going to go ahead and tokenize these articles to split them up into words.
+And then we'll store them into a sparse vector that is a numeric representation of the words in each
+article.
+So again, I'm not going to dig into the code too much here.
+But basically we're going to make use of something called a tokenizer and a hashing TF from the PySpark
+machine learning library to take care of that for us.
+So we'll first tokenize our data, which again just figures out what words are unique, what's the list
+of unique words.
+And then we'll call this hashing function to associate those unique words with numerical hashing values,
+and we'll show what we end up with again, just hitting shift.
+Enter in each column here and each cell here as we go.
+Go, spark.
+Go!
+All right.
+There we have it.
+So you can see here that for each document ID we have a list of words.
+And followed by the numerical representations of those words.
+So very cool.
+Looks like it worked.
+Now it also basically computed term frequencies for us by also adding up how often each hashed word
+occurs in each article.
+So without digging too much into the structure that it gave us back here, that information does include
+the term frequencies for each article.
+However, we want tf IDF scores for each term in every document, so we're only halfway there, but
+it's not hard to do.
+We also have an IDF thing that we can use from the Python, from the Spark Machine learning library
+that will do that part of it as well.
+So we're going to go ahead here and create an IDF model here and take in those raw features from above
+and create a new features column in the end that contains those tf IDF scores for each individual feature.
+Let's go ahead and kick that off.
+And we'll show the results.
+All right.
+So now we have a features column as well as a raw features column that contains not just the TF but
+also the tf IDF scores.
+So let's use that information to actually do sort of a search.
+So let's say we want to search for the term Gettysburg.
+Well this is a little bit harder than you would think it would be in spark.
+But this is one way to do it.
+So again we need to use numbers not words.
+So I can't just say search for Gettysburg.
+First I need to figure out what is the hash value for Gettysburg in that same structure that we had
+above.
+So I need to figure out what's the hash value from the model that I used above to compute these scores
+for the actual term Gettysburg.
+So that's what this huge block of code does.
+Basically, it's saying I want to create a data frame that just contains the word Gettysburg, just
+that one feature.
+And I'm going to go ahead and use that same hashing TF transform on it to transform that and then collect
+back the actual hash value associated with that term.
+So by running all this big chunk of code, we should get a number.
+And that number is 116,775.
+So apparently that's the magic number that represents Gettysburg.
+Again I want to stress that understanding the code of spark is not relevant for the exam.
+That's why I'm kind of glossing over that there.
+I don't want to clutter your brain with stuff you don't need.
+But the important thing here is that we do have a a hash value for Gettysburg.
+And now all we need to do is extract the TF-IDF value for Gettysburg for each document.
+So previously we extracted the scores for every term in every document.
+All we care about though is Gettysburg.
+So let's go ahead and extract that using this UDF function on our data frame to suck that out, basically,
+and create a new data frame that's only about Gettysburg TF-IDF scores.
+Kick that off.
+And now we have our new data frame.
+That's just the TF-IDF scores for Gettysburg.
+Now if you run into an error, just try it a few more times.
+If you're just running on a single extra large instance, that's kind of borderline enough resources
+for what we're doing here.
+So sometimes that will fail and you just have to try again.
+Spark can be a little bit non-deterministic that way, but we're almost there now.
+We have all of our documents here with the score for Gettysburg associated with it.
+All we need to do now is sort them by the score for Gettysburg, and we can already see Abraham Lincoln
+sticking out there already.
+Right.
+So let's go ahead and order that by that score for Gettysburg and print out the results.
+And we'll truncate that to 100 characters per column just to make sure we can read it.
+Here we have it.
+So for the search term Gettysburg, we got back articles about Abraham Lincoln, Abner Doubleday, who
+was a Civil War person, the American Civil War itself, the city of Austin, Texas.
+And then we start to get a little bit sketchy and we get the result of Assyria.
+But the top results definitely make sense.
+So TF-IDF seemed to have worked.
+But what's really cool is that we did this from scratch, right?
+So we just took a raw set of data from Wikipedia.
+We created our own TF-IDF model.
+After cleaning that data and creating a model for it, and we applied that model to actually do sort
+of a quasi search here for a term and get back meaningful results.
+All on EMR using an EMR workspace within it, running an EMR notebook, running PySpark within an EMR
+studio instance that is backed by an EMR cluster.
+So very cool.
+We did it.
+Let's clean up our mess though.
+So let's go ahead and close out of this and go back to EMR studio.
+Now there are quite a few resources here that we need to get rid of to make sure that we're not going
+to get any surprise charges on our bill.
+And, you know, honestly, AWS is getting pretty sneaky about this stuff lately.
+They make it a little bit too easy to leave stuff running that you're not using.
+And in the case of things like SageMaker studio, you could find yourself with $1,000 bill at the end
+of the month if you're not careful.
+Um, so let's be paranoid.
+Let's start by going to the underlying EMR serverless application we created for this workspace.
+And we're going to find that under Manage Applications.
+And there's the interactive serverless app that we were using there.
+Let's go ahead and delete that.
+So I'm just going to say stop the application.
+Wait for that to stop.
+Can't delete it till it's done.
+And now that it is stopped we're going to go ahead and delete that permanently.
+All right.
+Next we need to delete the workspace that was using that serverless application.
+There it is under the workspaces section.
+We'll go ahead and select that and say delete confirm.
+And that is deleting.
+And now finally we can go back to our studio itself.
+We got kicked into a different UI here that doesn't show that to you.
+So you have to go back to the main EMR screen here and go back to studios.
+There's that studio.
+Select that and delete it as well.
+All right.
+Now there's still some leftover stuff in S3 and also an IAM role you might want to get rid of just to
+clean things up.
+But that's not going to cost you really anything.
+So I'm not going to go into that too much.
+But just be sure to clean up your mess here with the studio itself and the underlying workspace and
+EMR serverless app, to make sure that you don't get any surprises on your bill at the end of the month.
+And there you have it.
+We've used EMR studio to go ahead and create a interactive notebook that we use to actually implement
+Tfidf, and did a little Wikipedia search from scratch, so very cool.

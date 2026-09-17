@@ -1,0 +1,37 @@
+# 213. AWS Resource Access Manager (AWS RAM)
+# Section: Account Management, Billing & Support
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/38535912
+# Caption: en_US (manual)
+
+So now let's talk
+about the AWS Resource Access Manager Service or AWS RAM.
+So, the idea is that you can share with other AWS accounts,
+resources that are owned by your accounts,
+and this can be any other accounts
+or accounts within your organization.
+This allows you to avoid resource duplication
+and the supported resources include Aurora databases,
+VPC Subnets, Transit Gateway, and a lot of other resources.
+Now, you don't remember these resources in particular,
+but just the idea behind RAM service.
+So, let's say we have a cloud accounts
+and we have a VPC within the cloud accounts
+and within the VPC, there are private subnets.
+Now, we can actually share this VPC with other accounts,
+such as Account one and Account two
+which are different accounts, still have access
+to the same VPC and the same subnets.
+The result of this is that, for example,
+if an account decides to create EC2 instances
+and the load balancer within your VPC Account two,
+with their own EC2 instances,
+can access directly from the network,
+for example an Amazon RDS database,
+or your application load balancer.
+So, the idea here is that because we've shared our VPC,
+all the resources within the VPC
+are going to be able to connect with each other
+from a network perspective,
+which is going to simplify our deployments.
+So, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

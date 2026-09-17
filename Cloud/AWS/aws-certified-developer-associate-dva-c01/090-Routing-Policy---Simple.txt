@@ -1,0 +1,108 @@
+# 90. Routing Policy - Simple
+# Section: Route 53
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19728958
+# Caption: en_US (manual)
+
+So now let's talk about routing policies
+for Route 53.
+So a routing policy is helping Route 53
+respond to DNS queries,
+and we shouldn't be confused about the word routing.
+This is not like when you have a load balancer and the
+actual load balancer will route traffic
+to the backend EC2 instances.
+No, no, no.
+This routing is from a DNS perspective.
+So the DNS does not respond, does not route any traffic.
+So the traffic doesn't go through the DNS.
+The DNS only will respond to the DNS queries
+and then the clients will know to which way
+they should be doing these HTTP queries, for example.
+So the DNS just helps translate host names
+into actual endpoints that the clients can use.
+So Route 53 will support the following routing policy.
+There's simple, weighted, failover, latency based,
+geolocation, multi-value answer, and geoproximity.
+And we're going to have a look at all of them
+in this section.
+So the first one is going to be the simple routing policy.
+And the idea is that with this,
+that we've actually been using before,
+we're going to route traffic to a single resource typically.
+So here's an example.
+The clients that will say, hey,
+I want to go to foo.example.com,
+and Routes 53 will say, hey,
+go to this IP address.
+And this is an A record.
+So it is possible for us to specify multiple values
+in the same record.
+And if so, if multiple values are returned by the DNS,
+then a random one will be chosen by the clients
+or client side.
+So in this example,
+we have the client's asking again for foo.example.com,
+and Amazon Route 53 will just reply with three IP addresses
+that occur embedded into the A record.
+And then the clients will pick one of them randomly
+and apply it for the routing.
+So if you have enabled an alias record alongside
+the simple policy,
+then you can only specify on AWS resource as a target.
+And finally, it's called simple because it's very simple.
+And therefore you can not associate this with health checks
+and we'll see health checks later on in this section
+and how they work.
+So let's go in the console to see how a routing policy
+of step simple can be created.
+So let's create a record, and the record name is going to be
+simple.stephanetheteacher.com.
+It's an A record, and the value of which is going to be,
+for example, my instance in ap-southeast-1.
+Now for TTL, it will say something very low,
+like 20 seconds.
+And the routing policy is going to be here.
+So as you can see, we have different possibilities,
+six of them, and then one other that is
+somewhere else in the UI.
+So we have a TTL 20 seconds as simple writing policy,
+and let's just create this record.
+So we've been doing this before.
+We know how this works.
+So now if we go to simple.stephanetheteacher.com.
+And go to this URL, we get
+Hello World from my instance in ap-southeast-1b,
+which is awesome.
+And if we do a dig command and have a look,
+so we need to reinstall dig.
+So sudo yum install bind-utils.
+So this is because I restarted my machine here.
+Okay, we're going to redo the dig command.
+So we do the dig command on this.
+As we can see, we have an A record of a TTL of 20 seconds
+pointing to this IP.
+But we can change this record now.
+We're going to edit the record.
+So I will just simply click on it and edit the record.
+And for the value, now, I can enter multiple IPs.
+So I can insert my one in ap-southeast-1
+or one in us-east-1, for example.
+So when I do so and save this,
+what's going to happen is that once the TTL expires
+from before, we're going to get two records back.
+So let's use CloudShell to verify this.
+So I'm going to do a dig command.
+And as you can see,
+now we have in the intersection, we have two responses.
+We have one in this IP and one in this IP.
+So it's a client side choice.
+So that means that if I go to this website and refresh,
+I have one chance out of two to go into us-east-1.
+And I didn't.
+So I was back into ap-southeast-1b,
+but let me pause for 20 seconds and I'll get back to you.
+And I'm refreshing.
+And I get back the Hello World from us-east-1a.
+So this worked.
+This absolutely shows how simple records work.
+I hope you liked it, and I will see you in the next lecture.

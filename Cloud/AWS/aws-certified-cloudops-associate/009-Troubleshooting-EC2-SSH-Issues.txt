@@ -1,0 +1,188 @@
+# 9. Troubleshooting EC2 SSH Issues
+# Section: EC2 for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512540
+# Caption: en_US (manual)
+
+Okay, so let's learn all the common issues
+around SSH for troubleshooting.
+So the first one is that
+if you don't have the right permissions on your PEM file,
+you're going to get an unprotected private key file error,
+and need to fix it before being able to SSH.
+Also, you need to make sure that the username you provide
+when doing the SSH command is correct
+based on the OS you're connecting to,
+otherwise, you will get an error
+that will say host key not found, permission denied
+or connection closed by the instance on port 22.
+And finally, if you get a connection timeout error by SSH,
+you know, this is network-related.
+So that means that your security group
+is not configured correctly,
+or you need to check that the route table for the subnets
+also are not configured correctly,
+maybe it's a NACL that is not configured correctly.
+So all these things are related to networking.
+Also, it's possible that the instance
+just doesn't have a public IPv4,
+and therefore you can't reach it obviously,
+or if your EC2 Instance is doing a lot of work
+and is swamped,
+and the CPU is maxed out at 100%,
+then the instance will sort of be unreachable
+and so you will also get a connection timeout error.
+Okay, the second type of SSH issue in (mumbles)
+is when using SSH versus EC2 Instance Connect.
+So we're going to do a little bit of a deeper dive
+into how EC2 Instance Connect works.
+So the first one is that when you connect using SSH,
+we know we have a rule
+and the user that has a IP that fits the inbound rule
+will be allowed to SSH onto your EC2 Instance,
+and a user with a different IP will not be allowed to SSH.
+So this is something we already know.
+But now for EC2 Instance Connect,
+things are a little bit different.
+So your EC2 Instance will have an inbound rule
+in which we allow a specific range of IP from AWS
+that corresponds to the EC2 Instance Connect range.
+So how do we get this range?
+We'll see this there's adjacent file available online,
+which gives us for a specific region,
+what is the IP prefix
+coming from the EC2 Instance Connect service.
+What does that mean?
+That means that a user
+with an IP that is completely different from that range,
+for example, 1, 2, 3, 4,
+will be using the AWS API
+to use the EC2 Instance Connect API,
+and then EC2 Instance Connect will be pushing
+a one-time SSH public key that is valid for 60 seconds
+onto our EC2 Instance and connect to it
+from this IP group that we have defined before.
+So this is why when you use EC2 Instance Connect,
+you don't provide your SSH key,
+it actually pushes a one-time SSH public key
+onto your EC2 Instance and connect directly to it,
+and what we do is that we just interface
+with the EC2 Instance Connect service directly.
+So let's have a look at all these cases and the hands-on.
+So we have our EC2 Instance right here,
+and I'm going to copy the IPv4,
+and then launch an SSH command.
+So if we launch a SSH command
+with the right key pair and so on,
+we are able to log into it
+because SSH security group is open.
+Now, if I change the permissions of my KeyPair file,
+and try to run again this command.
+As we can see,
+we get a warning, unprotected private key file.
+So this is not going to work.
+We need to first revert the permission.
+So to a 400 for my DemoKeyPair file,
+and then you will be allowed to run the SSH command
+and login.
+Okay, this is perfect.
+The second kind of issue
+is if we launch using the wrong username.
+So we're using right now EC2 user
+because we're doing it into Amazon and X2,
+but say that we mistakenly think that it's Ubuntu.
+So we do SSH Ubuntu at the IP.
+Then as we can see,
+we receive a response from the instance
+saying too many authentication failures,
+and then we're disconnected.
+The idea is that we still are accessing the instance
+over port 22,
+but then we are presenting the username Ubuntu
+and the KeyPair, DemoKeyPair.pem,
+which is not a valid combination for my instance,
+and so we get an authentication error.
+So again, we need to make sure that we are using
+the correct username for your operating system,
+and this is something you can only know
+by having a look from the AMI you are into.
+The other thing is around security and timeouts.
+So right now we have port 22 open on my security group.
+But if I open my security group,
+edit the inbound rules,
+and for example, I will delete this rule and save this,
+and now we try to SSH into my instance.
+Then we can see that we are timing out
+and this is not going to work.
+And if you wanted a restrictive kind of rule,
+you could edit the inbound rule, add a rule,
+and then you would do SSH from my IP
+and then save the rule.
+And now if I try again,
+I'm able to connect into my EC2 Instance,
+which brings us on to EC2 Instance Connect.
+So as we can see right now,
+and I will close this page.
+As we can see,
+the inbound rule that is available
+is SSH in port 22 from my IP.
+So one would think that if we do EC2 Instance Connect,
+then it will work,
+but it turns out that if you do this,
+it will not work,
+because the CIDR range we need
+is not the one we have configured.
+So if we look at the documentation around configuration
+and of this,
+we need to allow the SSH traffic, okay?
+Coming from the list of IP range.
+So there is this IP address range right here
+that we can have a look at,
+and we need to look for the EC2 Instance Connect block
+for my specific region.
+So let's open this IP address range.
+We click on download
+and it's going to open the IP address range.
+And so we'll look at prefixes,
+and I'm going to just filter the JSON
+for EC2 Instance Connect,
+is going to be a bit quicker,
+and which you expend all.
+And this is something that I'm using Firefox
+just for this example,
+so this is why it's a little bit slow.
+Okay, and I'm going to look at the raw data
+is going to be even better.
+Okay, here we go.
+We're going to look for EC2 Instance Connect.
+Okay.
+And as we can see now,
+we need to have a look at the EC2 Instance Connect IP range
+for the region we're in.
+And currently I am in the Frankfurt region,
+which is eu-central-1.
+So we'll go in here and I will look for eu-central-1.
+So it's going to take a little bit of time,
+but I think it was used right before.
+Here we go.
+Eu-central-1 and the service is EC2 Instance Connect.
+And here's the IP prefix I need to enable
+into my security group
+for the EC2 Instance Connect service to work.
+So let's go back in here into my instance,
+security, security group,
+and then I will edit the inbound rules.
+And so we'll remove this rule
+and instead add this specific CIDR block,
+which comes from this file we have just downloaded.
+So I'll click on save the rule and now my source is correct.
+So it's gonna be different obviously for you
+if you are in a different region.
+And then I will retry access using EC2 Instance Connect,
+and Vwa-lah, I am connected into my EC2 Instance,
+but of course, if I try to SSH directly into it,
+it's not going to work.
+So that's it.
+We've seen all the SSH and connection issues,
+troubleshooting for EC2 Instance.
+I hope you liked it,
+and I will see you in the next lecture.

@@ -1,0 +1,341 @@
+# 56. API Gateway
+# Section: Compute & Load Balancing
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376462
+# Caption: en_US (manual)
+
+Now let's get into the API gateway.
+So at a high level we know what a API gateway does,
+it exposes a REST API to our clients.
+Usually it will proxy a request to Lambda, but not only,
+and we'll see this in this lecture.
+And Lambda can do some create-read-update-delete
+on a Dynamo DB table, that is some very classic
+solution architecture that is serverless,
+but it can do so much more.
+But as in the general idea,
+we have our first point of contact with our client
+is going to be our Amazon API Gateway.
+So what does it do?
+It helps expose Lambda functions, but not only,
+also HTTP endpoints and AWS services as an API.
+But why would you leverage an API gateway
+instead of just calling these things directly?
+Well, the API gateway gives you a lot of features
+that you may want if you are maintaining APIs at scale.
+The first one is API versioning.
+So you can publish multiple versions of your API,
+which is really helpful to make sure your clients
+can migrate from one version to another as you add features.
+It gives you authorization.
+So we'll see the integration for security on that.
+Traffic management so you can define API keys,
+usage plan and throttles.
+You can get huge scale.
+So the API Gateway does scale very well.
+It's serverless, so you don't you manage any server
+for these features.
+You can do some request and response transformations
+directly from the API gateway,
+for some compatibility issues for example.
+You can publish an API as an open API spec,
+or import an API as an open API spec.
+The idea is that, when you have an open API specification,
+your clients can just generate
+a client library automatically from that specification
+and start using your API on the go,
+which is a lot of time saved and has support for CORS.
+Okay, so some limits to know right off the bat
+for the Amazon API Gateway,
+when you think as a solution architect
+is it the right thing for me?
+Number one is, there is a 29-seconds timeout,
+and that is a very important limit.
+So if you are proxying a request to a Lambda function,
+but that Lambda function,
+even though it has a 15 minutes timeout,
+takes three minutes to process a request,
+your Amazon API Gateway will timeout
+before your Lambda function,
+because the timeouts on any requests on the API gateway
+is 29 seconds.
+So that is a really important limit to know
+when you look at your solution architecture.
+The second thing is, the 10 megabytes max payload size,
+and I'll be talking about it more.
+But the idea is that you cannot send
+more than 10 megabytes of data in one request
+through the Amazon API Gateway.
+So again, if you're trying to upload
+big files onto whatever,
+maybe the Amazon API Gateway is not the right thing for you.
+And it's super important to take into account
+these two limits when designing your solution architecture.
+Okay, so something we've already seen are deployment stages.
+So the API changes are deployed to stages
+and we can have as many stages as we want,
+and you can name it however you want.
+For example, dev, test, prod, and so on.
+And the stages could be rolled back,
+as a history of deployment is kept.
+So you can roll back in previous stages
+in case a deployment was wrong.
+It's a really neat feature in case you something bad
+and want to get back in time.
+So we've seen how to deploy a stage
+and what it can be pointed to.
+So it can be pointed to a prod alias
+or a test alias for you Lambda function,
+and these aliases can be pointing to V1, V2.
+I'm not going to go over it again,
+but you remember this from a previous lecture.
+Next, for the integrations.
+So we have HTTP-type of integration,
+in case you have an HTTP endpoint exposed in your backend,
+for example, you have an internal HTTP API on premise
+or you have an application load balancer
+and you want to add an API gateway in front of it,
+why would you do it?
+Maybe you want to add rate-limiting, caching features,
+user authentication, API keys, et cetera, et cetera.
+So these could be very good reasons
+to add an API gateway as an extra layer.
+There are Lambda functions and they're very classic,
+we've seen it many times.
+So the API gateway will invoke a Lambda function,
+and it's a very easy way to create a REST API
+that is backed by AWS Lambda, all in a serverless fashion.
+Also very important.
+This is something that's very prominent
+in the devops exam that still comes up
+in the solutions architect professional exam,
+which is that you can expose a service specific API
+through the API gateway.
+So it's any API.
+So some very common use cases for example
+would be to start a Step Functions workflow
+or to post a message to SQS.
+But again, leveraging these features of authentication
+to deploy publicly, to have rate control and so on.
+So it is very common to have an API gateway
+proxying an AWS service for a specific API.
+Now let's talk about directly one of these application
+as a solution architecture discussion.
+So we want to have API gateway in front of S3
+to upload a file.
+But the thing, is if you remember what I said
+in the very beginning of this lecture,
+I said you will be impacted by the 10 megabytes
+payload size limits.
+So let's have an example.
+We have the client application
+and we have an S3 bucket and it's private,
+and we want to allow users to upload files into S3.
+One way do it, we'd say okay, we have an API gateway
+and the API gateway is going to be a proxy
+in front of the service S3 for the API put objects.
+So we can say okay, I wanna upload a file,
+and then the API gateway with the proper configuration
+will upload that file into S3.
+But the limits here is that you cannot go over
+10 megabytes of payload size.
+So if you want to upload a big file,
+you'll run into some issues.
+So this is not a perfect architecture,
+but it is a possible architecture.
+And this is the kind of things you have to go
+and really really look at when you go into the exam.
+Now, what is a better architecture?
+Well, we have the same kind of things.
+The client application does talk to the API gateway,
+because we like the features of the API gateway,
+and says I want to upload a file.
+Now, the API gateway will talk to a Lambda function,
+and that Lambda function can do something.
+It can generate a pre-signed URL from our S3 buckets.
+And what it does by getting this pre-signed URL
+is that it will return the URL itself, which is very light,
+and the real URL will be forwarded
+to our client application from the API gateway.
+And then, using that pre-signed URL
+directly from our client application,
+we are able to upload directly into S3,
+any file of any size we want.
+So this architecture is much better.
+Yes, there is an extra Lambda function,
+but it's scales a lot better, it respects every component
+for what it's supposed to be doing,
+and using a pre-signed URL, we can upload files
+of megabytes, gigabytes or terabytes, whatever we want.
+So this is a much better solution architecture.
+Again, these two architectures work.
+It depends on what kind of limits you want to have.
+And again, this is the kind of things
+that the exam will test you on.
+Now, the API gateway has different endpoint types.
+The first one is Edge-Optimized,
+which a default which means that your requests
+are routed through the CloudFront Edge locations.
+So that improves latencies,
+and that's really helpful when you have global clients.
+But your API gateway itself still lives in only one region.
+Then you can deploy it also as a regional API gateway,
+so that means that all the clients
+are within the same region, otherwise it doesn't make sense,
+and you could manually combine this with CloudFront
+if you want to have more control
+over the caching strategies, distribution,
+that kind of things.
+So by default Edge optimized,
+but you could have a regional API gateway
+and combine this with CloudFront.
+Finally, private,
+where you want to just deploy things only within your VPC
+and get access from the ENI,
+and you need to use a resource policy
+to define access to your private API gateway.
+So remember, three different ways
+of deploying your API gateway.
+Next, super important,
+you can cache API responses from your API gateway.
+Why would you use caching?
+Well, to reduce the number of calls made to the backend.
+So the idea is that your client talks to the API gateway,
+and your API gateway,
+before issuing a request to the backend,
+will check the gateway cache,
+and if it is available in the cache
+it will return it to the clients.
+Otherwise, it will do a query in the backend
+if there's a cache miss
+and store the result in the gateway cache.
+This is very helpful.
+And then your data in your cache has a time to live,
+which is 300 seconds by default.
+So five minutes.
+But you can set it to zero if you don't wanna cache,
+or one hour if you want your data
+to be cached for a long time.
+Caches are defined per stage,
+and it's possible to override each cache setting per method.
+So if you have a get on whatever URL,
+or a put in whatever URL,
+and you don't want it to cache for that thing,
+you can overwrite the cache setting
+for these specific methods.
+The clients themselves as well can invalidate the cache
+using a header called "Cache-Control: max-age=0,"
+and you need the proper IM authorization to do this,
+but it's possible for the client
+to basically bypass the cache.
+You also have the ability to flush the entire cache,
+so it means invalidating it immediately,
+if you wanted to repopulate the cache at one point of time.
+Finally, the cache can be encrypted,
+and you can define a capacity of the cache
+between 0.5 gigabytes to 237 gigabyte.
+So it can be quite big.
+Now in terms of errors,
+it's very important to understand the API gateway errors
+because they indicate to you a lot of information.
+In case you get a 4xx, that means it's client errors.
+So examples, 400 is Bad Request.
+403 is Access Denied,
+or maybe your web application firewall
+has filtered the request.
+429 is quota exceeded, or a throttle
+directly coming from the API gateway.
+And when you get a 5xx,
+that means it's a server-side error.
+So some notable one.
+502 means a Bad Gateway Exception.
+That means usually when the Lambda function
+returns a bad output, or occasionally
+when you have out of order invocations due to heavy loads.
+You have 503, which is Service Unavailable Exception.
+So this is when the backend cannot respond.
+And 504, which is Integration Failure.
+And one example is the limit
+I was talking to you about in the beginning of this lecture,
+which is for example when the endpoint request timed out
+because the API gateway has a request timeout
+of about 29 seconds maximum.
+So this is when you will get a 504.
+Next for security.
+So you can load SSL certificates onto your API gateway,
+and then you use Route53 to define a CNAME.
+You can have resource policy,
+for example, like an S3 bucket policy.
+So this controls who can access the API,
+which accounts, which IP, which CIDR blocks,
+which VPC or VPC endpoints.
+And then, IAM Execution Roles
+for the API gateway at the API level,
+for example, if your AIP gateway
+needs to invoke a Lambda Functions
+and you need to define the IAM roles for that.
+It support CORS, so Cross-origin Resource Sharing.
+That means it gives you some browser-based security
+and it controls which domain can call your API,
+if the client is well behaved.
+Authentication, there's three ways.
+You have IAM-based access.
+This is good when you want to provide access
+within your own infrastructure,
+and it uses the IAM credentials passed in in the header
+through something called Sig V4.
+You have Lambda-based authorizers,
+used to be known as custom authorizers,
+and this is when you want to use a Lambda function
+to verify a custom authentication token,
+things like Oauth, SAML or 3rd party authentication,
+and you have to program the Lambda function
+to verify the authentication mechanism.
+Or we can use the deep integration with Cognito User Pool,
+in which case the client has to authenticate with Cognito
+and the client will pass in
+the authentication code token to API gateway,
+and the API gateway knows out of the box
+how to verify that token.
+So what does it look like?
+With the client connecting to the Cognito User Pool,
+authenticating and then gets a token back,
+it passes the token to the API gateway
+and the API gateway can verify that token
+with the Cognito User Pool.
+And then if it does, then it can invoke your Lambda function
+and it will pass the identity of the color
+to the Lambda function,
+so you can do some extra logic on your Lambda function side.
+So the thing to notice here is that your client
+has to first authenticate with Cognito User Pool,
+and you need to program obviously for this, the right code.
+Finally, in terms of logging, monitoring
+and tracing, that's very important,
+CloudWatch Logs does give you logging at the stage level
+for log-level error or info,
+and you can log full requests and responses data.
+So it can be quite helpful when you want to troubleshoot.
+You can also send API gateway access logs
+which is customizable,
+and the logs can be sent directly if you wanted to
+into Kinesis Data Firehose
+as an alternative to CloudWatch Logs.
+You have CloudWatch Metrics
+where you get metrics by stage
+and you can enable detailed metrics,
+and you get some information such as
+the integration latency, the latency overall,
+the cache hit count and the cache miss count.
+All of these are very important to understand
+if you have optimized your API gateway the right way.
+Finally, X-Ray will give you tracing
+to get extra information about the requests
+going through API gateway,
+such as latency, errors and so on.
+And so, if you have X-Ray on the API gateway
+plus X-Ray on your Lambda function,
+that will give you the entire picture
+of how your architecture is working.
+Okay, so lots of good information.
+I hope you liked this lecture
+and I will see you in the next lecture.

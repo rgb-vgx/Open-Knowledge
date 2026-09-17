@@ -1,0 +1,16 @@
+# 74. Section Cleanup
+# Section: EC2 High Availability and Scalability
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27513052
+# Caption: en_US (manual)
+
+Okay, so just to clean up the section,
+please take your ASG
+and delete this field type delete in this field,
+and then you can take your load balancers
+so in the load balancer section,
+you can take it and then delete your DemoALB.
+And finally,
+you could go ahead and delete your target group as well,
+if you wanted to.
+And you're good to go, so that's it for this lecture.
+I hope you liked it, and I will see you in the next section.

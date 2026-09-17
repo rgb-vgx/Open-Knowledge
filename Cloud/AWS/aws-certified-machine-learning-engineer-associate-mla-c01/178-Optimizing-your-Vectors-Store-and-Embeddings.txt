@@ -1,0 +1,105 @@
+# 178. Optimizing your Vectors Store and Embeddings
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865627
+# Caption: en_US (auto)
+
+All right, so we saw that your chunking strategy is one way to optimize the retrieval phase from
+your knowledge base or retrieval augmented generation system. Another is optimizing the
+actual sizes of those embedding vectors themselves. So if you recall, those embedding vectors that
+we're translating our chunks of text into kind of sort of represent the meaning of those chunks
+of text. More specifically, how close those vectors are to each other represents how
+semantically similar these bits of text are to each other. So you need to kind of figure
+out how big do those vectors really need to be. If it's too big, you're wasting space,
+and you're spending money storing more information than you need to and sending more data across the
+wire than is necessary, right? But if the vectors are too small, then you're going to lose some of
+that important meaning, some of that important information, and it will affect the quality of
+your retrieval. So smaller vectors will mean fewer dimensions per chunk, and it will cost you less to
+store and process that data. But there's going to be a trade-off with your retrieval performance
+there as well. Now, Titan has a default of 1024 or more dimensions. I've seen it cited as 1024 or
+1536. Maybe it's changing, but it's a lot, right? So if you're storing a chunk of like 300 characters,
+you might actually be spending more money storing that embedding vector than the actual chunk of
+data. So ask yourself, you know, what's the size of my chunks? First of all, do I really need that
+much information to encode what it means? And it might have to do with the domain that you're
+dealing with as well. So depending on what kind of data you're storing, maybe it's pretty
+straightforward stuff. You know, there aren't a whole lot of categories of things that might be
+similar to each other. In that case, maybe you can get away with a smaller dimension size than a
+larger one. So if the semantic concepts you're searching for are complex, you might benefit from
+larger vector sizes in your embeddings. But if not, maybe you can experiment with smaller ones
+and save a few bucks. What do I mean by sparse and dense embeddings? So this term is kind of used in
+different ways, but technically a sparse vector is one that's mostly empty. That's why it's sparse.
+An example is one-hot encoding. So say I have a vector that represents what kind of an animal
+something is. Maybe I have a dimension for every animal I know about, and I just have a one in the
+one that's actually correct and a zero in all the other ones, right? Very extreme example there,
+but you know, a vector representing a chicken might just have a one in the chicken dimension
+and a zero in the squid dimension and so on and so forth. And a bonobo would have a one in the
+bonobo dimension, but a zero in the lemur dimension, right? So that's an example of a sparse vector.
+Very similar, but obviously there's a lot of wasted space there, and that's a problem.
+What you see almost all the time, like I've never seen anything but this personally, is a dense
+embedding. So in the context of generative AI, typically we have these floating point dimensions
+where taken together, these dimensions represent a vector in multi-dimensional space that represents
+the semantic meaning of that chunk of data. This is generally what you use. Now these can be smaller,
+because there's not a lot of wasted space. It's really packing that information in there, right?
+That's why we call it a dense embedding vector. Now there's a trade-off here. A sparse vector is
+going to give you bigger similarity factors. So you see these used a lot in recommender systems,
+where we're trying to say, okay, here's the stuff this person bought, here's the stuff this other
+person bought, how similar are they? And you can get some really clean similarity metrics using
+those sparse vectors. But dense vectors are going to be a lot more efficient, both in memory and in
+general. Now there are ways to compress sparse vectors, and we see that in recommender systems.
+Kind of hard to do that on a GPU though. So you don't see that as much in generative AI.
+Wait, what's a similarity factor? What do I talk about there? So a similarity factor is just some
+measure of how close those vectors are. So we've talked about embeddings kind of being
+close to each other, representing two things having a similar meaning. How do we actually
+measure that? Well, that's what a similarity factor is. And a very common one is the cosine
+similarity factor. All it is, is the cosine between those two vectors. And you can do that
+in multi-dimensional space. It doesn't have to be just x and y. The math is the same. And if you
+remember your trigonometry from high school, the cosine is related to the angle between the two
+vectors. And it's set up in such a way that if two vectors are the same, you end up with a cosine of
+one. If they're totally different, then it's a cosine of zero. So it is basically a measure of
+how close those vectors are to each other in that embedding space. The other nice thing is that
+cosine has a nice smoothness to it. So it doesn't just have these sharp points, you know, these
+discontinuities. You know, it has a smooth up and down motion, which makes it a little bit more
+useful from a mathematical standpoint too. Cosine similarity, remember that one. Also, another way
+to optimize your retrieval is by embedding metadata along with your embedding vectors as well. So you
+can feed more than just the raw text of the chunk into a knowledge base and get back these embedding
+vectors in your vector store. You know, typically you'll store both the chunk itself and its embedding
+vectors so you can look up those chunks by their embeddings, right? But you can also pass in
+metadata and this is important. So if you pass in a metadata.json file to your knowledge base when
+you're creating it, you can specify additional metadata with each chunk. And because it's being
+flagged as metadata and not a content column, the knowledge base will know not to try to chunk that
+up. You know, that's just going to be metadata that's attached to each chunk. As an example,
+let's say I have a book about chickens, getting back to chickens. So I can have a passage from
+the introduction of that book that says a chicken is a domesticated bird commonly raised for meat
+and eggs. And I might have some metadata associated with that chunk. It's from the introduction
+section. The book is about biology and it hits these keywords about chicken, domesticated bird,
+meat, eggs. So that can all be associated with that chunk. And that can let me do sort of a
+hybrid approach when I'm searching for that chunk of data in my vector data store. So when I'm
+looking that up from the vector embeddings, I can start initially with that semantic similarity,
+the distance between those embedding vectors. But then I can use that metadata maybe to fine tune
+those results, maybe to re-rank those results based on how relevant the metadata for that chunk
+is to the prompt that's coming in. That's called re-ranking. We'll talk about that in a little bit
+more detail later on in the course. But the idea here that I want you to take home is I can actually
+attach metadata to my chunks in addition to the embedding vectors themselves. And I can use that
+metadata to optimize my retrieval even further. And other examples of metadata you might include
+the original document ID that might let me go back and get the original source document and
+do something with that. The category of this information, it could be access control
+information. Maybe I want to use that to make sure that this information is not being used
+in certain scenarios. The data lineage of where this came from, maybe I need to document that.
+For example, in providing citations. So if I have a chunk of data, I can attach metadata saying where
+that data came from. And maybe I can cite that in my final response from the system or any
+additional context that you want to attach to this chunk of text. So you can see metadata can be very
+important in your vector store. You can have more than just the embedding vector and the actual raw
+text. You can have information surrounding that as well that can be retrieved along with it to
+improve your retrieval further. And the chicken approves. Quick note on keeping your knowledge
+bases up to date. So how do you make sure it's not stale? That's also important for getting good
+results out of it, right? So one general idea is that if you have new or changed content, maybe
+there's some sort of an event trigger like an S3 event that can kick off a lambda function, which
+in turn can kick off a batch update to your knowledge base, right? So maybe that lambda
+function can kick off new embeddings being created and you can batch generate them for even greater
+efficiency. So the diagram here is probably not something you really want to do in practice. The
+idea is sound, but what's going to happen is if you have a lot of updates happening in S3 and that
+lambda function gets triggered a lot, you don't want to be calling start ingestion job on bedrock
+over and over and over again every second, right? I mean, that's going to back up really, really
+fast. It would be better to batch that up using something like AWS batch and maybe event bridge
+as well on top of that to queue that up and do it more infrequently. But conceptually, you will be
+expected to understand that you might want to use a lambda function to kick off updates to your
+knowledge base. And we'll get into some more fancy ways of doing that later.

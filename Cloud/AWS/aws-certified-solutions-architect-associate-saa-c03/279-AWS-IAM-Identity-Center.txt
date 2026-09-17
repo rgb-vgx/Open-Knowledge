@@ -1,0 +1,169 @@
+# 279. AWS IAM Identity Center
+# Section: Identity and Access Management (IAM) - Advanced
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078409
+# Caption: en_US (manual)
+
+So now let's talk
+about the AWS IAM Identity Center.
+And this service is the successor
+to something that you used to know probably,
+which is called the AWS Single Sign-On Service.
+So the idea is that it's the same service,
+just been renamed and it gives you one login,
+therefore it's called single sign-on,
+for all your AWS accounts in the AWS Organizations,
+but also your business cloud applications.
+So you can connect to Salesforce to Box to Microsoft 365
+and so on, or any application you want,
+as long as you have a SAML2.0 integration.
+And finally, it gives you also a single login
+into your EC2 Windows Instances.
+So one login, access to everything,
+which is really, really good.
+And the exam most likely will ask you about one login
+into multiple AWS accounts.
+Now, the identity provider, so where your users are stored
+for this login, can be twofold.
+It could be a built-in identity store
+in the IAM Identity Center, or you can connect
+to a third-party identity provider.
+It could be Active Directory, AD,
+or OneLogin or Okta and so on.
+So just to make it very visible
+and visual for you, we have the login flow, such as this.
+You go onto the login page, you enter your username
+and your password, and then you go directly
+into the AWS IAM Identity Center.
+And this is actually a screenshot
+from my own Identity Center page.
+And as you can see from there,
+I have enabled it for my AWS accounts.
+And so I can click on the account I want
+and connect directly, for example,
+in the management console.
+And then if I do this,
+then I'm taken directly from this into the home page
+of your console.
+But I'm logged in in that specific console.
+So the idea is that I don't need to know
+how to log in into that specific console.
+I can just log in into my IAM Identity Center portal.
+And from there I have SSO.
+So no need to enter your password once,
+it's single sign on,
+have SSO access to accounts,
+business applications, and so on.
+So if in the real world you have multiple AWS accounts,
+I would recommend 100% to use this service.
+Okay, so now let's talk about how this works.
+So the browser interface is going to connect
+to the login page of your AWS IAM Identity Center.
+And then you have to integrate it, as I said,
+with different user stores.
+So it could be an Active Directory,
+it could be on the cloud or on premises.
+And this is where you would use Active Directory
+to manage your users and your groups.
+Or you can use the IAM Identity Center.
+This is the built-in identity store.
+And this is where, for example, you would define your users
+and your groups as you're used to in IAM.
+Then you integrate Identity Center with SSO
+for your organization
+or your Windows EC2 instances,
+your business cloud applications
+or your custom SAML2.0-enabled applications.
+Again, the cool thing is that you have one login for all
+of this, and that simplifies a lot your flow.
+Now, of course, when you log in,
+you don't have access to everything.
+You define something called permission sets
+in the Identity Center to define
+which users have access to what.
+So how does everything relate in IAM Identity Center
+for permissions and users and groups?
+So we have an organization
+and we set up IAM Identity Center
+in the management account.
+We have two OUs, a development and a production OU,
+each with their own accounts.
+Now we have two developers in our company.
+We have Bob and Alice.
+So first of all, we're going to do, just like we do in IAM,
+we're going to create a group of developers
+for Bob and Alice.
+Now we want to make sure that Bob and Alice both have access
+to full access of the OU for development.
+So we're going to create what's called the permission sets,
+and we're going to allow admin access on it.
+And then you have to assign this permission set directly
+into specific accounts, for example,
+your development accounts,
+and then you assign this permission set either to your users
+or to a group of users, for example, your developers.
+So this would allow Bob and Alice to assume a role
+with full access on the development account B right now.
+You can also have a permission set, for example,
+for read-only access
+and assign this permission set directly
+into your production account,
+so account A and account B.
+And then you assign this permission set again to Bob
+and Alice, which would allow them
+to have a read-only access to these accounts.
+So now let's talk
+about the fine-grained permissions and assignments.
+And the first one is multi-account permissions.
+So, of course, using the service,
+you can manage access across multiple accounts
+in your organization.
+And using permission sets, you define one
+or more IAM policies that you assign to users
+and to groups to define what they can access in AWS.
+So here is the IAM Identity Center,
+and it's integrated with your organization
+and you define a permission set for database admins.
+So it's a collection of IAM policies.
+And you say, for example, that you have access to RDS
+and Aurora in your dev account,
+as well as RDS and Aurora in the prod account.
+And this will automatically create a corresponding IAM role
+for your users.
+And therefore, when you have your database admins,
+it can be a group, for example,
+and your users are in this group,
+you will assign it the permission sets of database admins.
+And whenever users log in through the IAM Identity Center
+and access the console of your dev accounts
+or your prod accounts,
+they will be automatically assuming an IAM role
+in that specific account
+that will give them the permissions they're supposed
+to get, which is pretty good.
+So it works the same way.
+So you have application assignments
+and you can define which users
+or groups can access which applications.
+And it gives them the required URLs,
+the certificates and metadata.
+So all of this is supported out of the box.
+And something that enables
+is called attribute-based access control.
+So the idea is that you're going
+to have fine-grained permissions
+based on the users' attributes stored
+in the IAM Identity Center store.
+So that means that you can have tags and so on.
+And using this, you can, for example, assign a user
+to a cost center or give them a title,
+so like junior, senior or a locale, whatever,
+so they only have access to a specific region.
+And the use case of this
+is that you actually define the IAM permission sets once
+and they leverage these attributes,
+and you only modify the access to AWS of your users
+or your groups by just changing these underlying attributes.
+So this is a use case that is advanced,
+but that is enabled by using the AWS IAM Identity Center.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

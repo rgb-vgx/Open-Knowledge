@@ -1,0 +1,35 @@
+# 346. Transit Gateway for CloudOps
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53217687
+# Caption: en_US (manual)
+
+Okay, so now let's talk about other facts
+for the transit gateway.
+First of all is how to enable inter-region communication.
+Well, it's fairly easy.
+Each region will have several VPCs,
+and the solution is to have one transit gateway per region.
+And then once you have this, you can peer them together.
+And once you do so, then you get inter-region communication
+and connectivity between the VPCs of different regions.
+This follows AWS best practices.
+We can also reference security groups,
+thanks to transit gateway.
+What do I mean?
+Well say, you have a VPC-A,
+which contains a security group, which is database instance,
+and you want to allow a web server from another VPC
+with its own security group.
+Then it would be nice to do so,
+but they're not listen VPC, so you can't reference it
+unless you are using a transit gateway.
+So again, you use transit gateway-peering,
+and then you can reference the security groups
+from one VPC to another.
+For this, you must enable a setting in your transit gateway
+called the security group referencing support
+when you create the transit gateway attachment
+and you have this possibility and connection.
+Alright, that's it.
+I hope you liked it
+and I will see you in the next lecture.

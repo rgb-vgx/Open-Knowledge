@@ -1,0 +1,62 @@
+# 104. Running Jobs on AWS
+# Section: Data Engineering
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376606
+# Caption: en_US (manual)
+
+Okay, so let's take a step back
+and have a look at how we can view running jobs on AWS.
+So the first strategy is to provision an EC2 instance
+for long running jobs,
+and you wanna run CRON jobs there.
+So this is good, and this works for those who know CRON,
+but the problem is that it's not highly available,
+it's not scalable, if that EC2 instance goes down,
+you have problems, so it's really not a great strategy
+and something that's, as a social architect,
+you should never vouch for.
+The second architecture is to use something
+like Amazon EventBridge and Lambda.
+So this is a way to get a serverless CRON job
+because EventBridge can have a rule
+to invoke and lend a function every hour,
+and then the functions are purely serverless.
+So you're limited by Lambda function capabilities
+in terms of run time,
+in terms of time before timeout, and so on.
+But this is a great solution,
+and AWS is going to push you for that
+as many times as possible, if possible.
+Option number three is to have
+some kind of reactive workflow.
+So to get a Lambda function invoked
+by events happening within AWS.
+So of course EventBridge is a great one
+in case you want events happening
+within many different AWS services.
+But also S3 emits its own kind of events
+for new object creations, for example.
+API Gateway can also invoke Lambda functions,
+SQS and SNS can also be sources of data
+and invocations for Lambda function, et cetera, et cetera.
+This is reactive because as soon
+as something happens in your infrastructure
+you react to it by running Lambda function.
+The strategy for us to use batch.
+So for longer running jobs, for full lock containers
+you can use Event Bridge with batch two.
+For example, in Invoca batch job, every three hours, thanks
+to Rule with time based events in Van Bridge and Batch
+for long running workloads.
+The certified is to use Fargate.
+So Fargate is more bare bones than batch.
+Batch has a bit more capabilities, more scalability in terms
+of like how to run a batch job, but you can also use Fargate
+as a target of Abridge to just run a container very quickly.
+Or strategy six.
+If you wanna run very long jobs
+on mostly like big data jobs
+then using emr Elastic Map produce is going to be good
+if you have like step execution or you need to cluster
+and run this kind of big data workloads.
+So let's say, hopefully that makes sense.
+I hope you liked it and I will see you in the next lecture.

@@ -1,0 +1,96 @@
+# 311. [SAA] Subnet Hands On
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/28875410
+# Caption: en_US (manual)
+
+So let's go ahead and create our subnets.
+So on the left hand side, I will go to Subnets,
+and as we can see, there are three subnets
+and they belong to the previous VPC.
+So what I can do is I can filter my views by a specific VPC.
+So I need to refresh this page first,
+so it will click on Select a VPC,
+and I will choose the DemoVPC
+just to filter all my views by VPC
+and not have any noise in my UI.
+Okay, so now, as you can see,
+we have zero subnets associated with that specific VPC.
+So we'll create a subnet, and then we just select a VPC,
+so this DemoVPC subnet.
+And then, we need to specify the subnet settings.
+So, the subnet name.
+The first one is going to be PublicSubnetA,
+and this is because we put a subnet in AZ A.
+So, we'll specify a specific AZ,
+so eu-central-1a, so AZ number A.
+And then, we need to select an IPv4 CIDR block.
+So to get started, let's go with 10.0.0.0/24.
+This is because, in a public subnet,
+you wanna choose not too many IP addresses.
+Usually, this is reserved for your load balancers
+or your front-facing infrastructure.
+So, a smaller subnet size is good.
+And again, if you wanna check what this is,
+this is 256 addresses.
+And because we have a slash 24,
+only the last octet can change.
+And so therefore, it goes from .0 all the way to .255.
+Okay, so we have this name tag, PublicSubnetA.
+And here, we can actually add a second subnet, okay?
+So it could be PublicSubnetB,
+and this one is going to be an AZ eu-central-1b.
+And, so we need to choose an IPv4 CIDR block.
+Now, the last IP address that we had in here was .0.255,
+so what I would choose is 10.0.1.0/24, okay?
+And this is the next range
+after the one we've defined right here, okay?
+So again, you can check out what this range means
+in this website.
+And as you can see, the first IP is 10.0.0.1.0,
+and the second is 10.0.1.255.
+Perfect, so we have defined two public subnets
+and now we're going to have some private subnets.
+So PrivateSubnetA,
+and we need to choose an IPv4 CIDR block.
+Now, let's choose something
+like 10.0.16.0/20,
+and this is a bigger subnet size, okay?
+And if you have a look at the range about what this is,
+so we have 4,096 IP addresses in it.
+So, it starts at 10.0.16.0,
+and then it ends at 10.0.31.255.
+Okay, so this is good.
+And now, let's add one last subnet, so PrivateSubnetB,
+and the AZ is going to be an eu-central-1b.
+No, I didn't set up the AZ here,
+so let's make sure we do.
+Okay, perfect.
+And, the IPv4 CIDR block
+is going to be the next logical one,
+so .32.0/20.
+Okay, so we have four subnets being created.
+I will create them four.
+And because there's no overlapping IP addresses,
+as we can see, the creation was successful.
+So now, if we have a look on the right hand side,
+we can see that there are different amount
+of IP addresses available.
+So, this one is 251, and this one is 4,091.
+So again, there are five IP addresses, remember,
+that were reserved by your subnets.
+And this is something that you remember.
+So what you're going to get
+is the size of the CIDR minus five,
+so this explains these numbers right here.
+Also, we did define these segments across two AZ,
+so eu-central-1a and 1b,
+and the reason we do so is you get high availability
+if we were to put resources in it.
+But we haven't done anything yet
+to define what makes subnets public,
+or what makes a subnet private.
+Right now, they all look the same,
+so we'll see how to do this in the future lectures.
+For now, we're good to go in this setup.
+So I hope you liked this lecture,
+and I will see you in the next lecture.

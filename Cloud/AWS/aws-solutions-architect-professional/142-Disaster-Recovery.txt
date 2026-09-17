@@ -1,0 +1,305 @@
+# 142. Disaster Recovery
+# Section: Migration
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18373264
+# Caption: en_US (manual)
+
+So disaster recovery
+as a solutions architect is super important,
+and the exam expects you to know about disaster recovery.
+And there's a white paper on it, you should read it,
+but I try to summarize everything clearly
+with graphs and diagrams in this lecture,
+so you don't have to read it if you don't want to.
+But overall, you can expect some question
+on disaster recovery, and as a solutions architect,
+you need to know about disaster recovery anyway.
+Don't worry, I try to make this
+as simple as possible for you.
+So what is a disaster?
+Well, it's any event that has a negative impact
+on the company's business continuity or finances.
+And so disaster recovery is about preparing
+and recovering from these disasters.
+So what kind of disaster recovery can we do on AWS
+or in general?
+Well, we can do on-premise to on-premise.
+That means we have a first data center, maybe in California,
+another data center maybe in Seattle.
+And so this is traditional disaster recovery,
+and it's actually very, very expensive.
+Or we can start using the cloud
+and do on-premise as a main data center.
+And then if we have any disaster, use the cloud.
+So this is called hybrid recovery,
+or if you're just all in the cloud,
+then you can do AWS cloud region A to cloud region B,
+and that would be a full cloud type of disaster recovery.
+Now, before we do disaster recovery,
+we need to define two key terms,
+and you need to understand them from an exam perspective.
+The first one is called RPO, Recovery Point Objective,
+and the second one is called RTO, Recovery Time Objective.
+So remember these two terms,
+and I'm going to explain them right now.
+So what is RPO and RTO?
+The first one is the RPO, Recovery Point Objective.
+And so this is basically
+how often basically you run backups.
+How back in time can you to recover?
+And when a disaster strikes, basically,
+the time between their RPO
+and the disaster is going to be a data loss.
+For example, if you back up data every hour
+and a disaster strikes, then you can go back in time
+for an hour and so you'll have lost one hour of data.
+So the RPO, sometimes it can be an hour,
+sometimes maybe one minute.
+It really depends on the requirements.
+But RPO is how much of a data loss
+are you willing to accept in case a disaster happens.
+RTO, on the other end,
+is when you recover from your disaster, okay?
+And so between the disaster and the RTO
+is the amount of downtime your application has.
+So sometimes it's okay to have 24 hours of downtime,
+I don't think it is.
+Sometimes it's not okay,
+and maybe you need just one minute of downtime, okay?
+So basically optimizing for the RPO and the RTO
+does drive some solution architecture decisions,
+and obviously, the smaller you want these things to be,
+usually the higher the cost.
+So let's talk about disaster recovery strategies.
+The first one is Backup and Restore.
+Second one is Pilot Light. Third one is Warm Standby.
+And fourth one is Hot Site or Multi Site Approach.
+So if we basically rank them,
+all will have different RTO.
+Backup and Restore will have the smaller RTO.
+Pilot Light then Warm Standby, and Multi Site,
+all these things cost more money, but they get a faster RTO.
+That means you have less downtime overall.
+So let's look at all of these one by one
+in details to really understand
+from an architectural standpoint what they mean.
+Backup and Restore has a high RPO.
+That means that you have a corporate data center,
+for example, and here is your a AWS's Cloud,
+and you have an S3 bucket.
+And so if you want to back up your data over time,
+maybe we can use AWS's Storage Gateway
+or and have some lifecycle policy,
+put data into Glacier for cost optimization purposes.
+Or maybe once a week, you're sending a ton of data
+into Glacier using AWS's Snowball.
+So here, you know, if you use Snowball,
+your RPO is gonna be about one week,
+because if your data center burns or whatever
+and you lose all your data, then you've lost one week
+of data because you send that Snowball device once a week.
+If you're using the AWS's cloud instead,
+maybe EBS volumes, Redshift, and RDS.
+If you schedule regular snapshots and you back them up,
+then your RPO is going to be maybe 24 hours
+or one hour based on how frequently
+you do create these snapshots.
+And then when you have a disaster strike you
+and you need to basically restore all your data,
+then you can use AMIs to recreate EC2 instances
+and speed up your applications.
+Or you can restore straight from a snapshot
+and recreate your Amazon RDS database or your EBS volume,
+or your Redshift, whatever you want.
+And so that can take a lot of time as well to restore
+this data and so you get a high RTO as well.
+But the reason we do this is actually
+it's quite cheap to do Backup and Restore.
+We don't manage infrastructure in the middle.
+We just recreate infrastructure
+when we need it, when we have a disaster.
+And so the only cost we have
+is the cost of storing these backups.
+So it gives you an idea. Backup and Restore.
+Very easy, not too expensive,
+and you get high RPO, high RTO.
+The second one is going to be Pilot Light.
+So here with Pilot Light,
+a small version of the app is always running in the cloud.
+And so usually that's going to be your critical core.
+And this is what it's called Pilot Lights.
+So it's very similar to Backup and Restore,
+but this time, it's faster because your critical systems,
+they're already up and running.
+And so when you do recover, you just need to add on
+all the other systems that are not as critical.
+So let's have an example.
+This is your data center has a server and a database
+and this is the AWS cloud.
+Maybe you're going to do continuous data replication
+from your critical database into RDS,
+which is going to be running at any time.
+So you get an RDS database ready to go running,
+but your EC2 instances, they're not critical just yet.
+What's really important is your data.
+And so they're not running,
+but in case you have a disaster happening,
+Route 53 will allow you to fail over from your server
+on your data center, recreate that EC2 instance in the cloud
+and make it up and running.
+But your RDS database is already ready.
+So here, what do we get?
+Well, we get a lower RPO, we get a lower RTO,
+and we still manage costs.
+We still have to have an RDS running,
+but just the RDS database is running, the rest is not.
+And your EC2 instance only are created
+when you need to do a disaster recovery.
+So Pilot Light is a very popular choice.
+Remember, it's only for critical core systems.
+Warm Standby is when you have a full system up and running,
+but at a minimum size.
+So it's ready to go, but upon disaster,
+we can scale it to production load.
+So let's have a look.
+We have our corporate data center.
+Maybe it's a bit more complicated this time.
+We have a reverse proxy, an app server,
+and a primary database.
+And currently, our Route 53 is pointing the DNS
+to our corporate data center.
+And in the cloud, we'll still have our data replication
+to an RDS secondary database that is running.
+And maybe we'll have an EC2 Auto Scaling group,
+but running at minimum capacity.
+That's currently talking
+to our corporate data center database.
+And maybe we have an ELB as well, ready to go.
+And so if a disaster strikes you,
+because we have a Warm Standby,
+we can use Route 53 to failover to the ELB,
+and we can use the failover to also change
+where our application is getting our data from.
+Maybe it's getting the data now from the other RDS,
+and so we've effectively basically stood by
+and then maybe using auto scaling,
+our application will scale pretty quickly.
+So this is a more costly thing to do now
+because we already have an ELB
+and EC2 Scaling running at any time.
+But again, you can decrease your RPO
+and your RTO doing that.
+And then finally, we get the Multi Site/Hot Site approach.
+It's very low RTO.
+We're talking minutes or seconds,
+but it's also very expensive.
+But you get two full production scales
+running on AWS and on-premise.
+So that means that we have your on-premise data center,
+full production scale.
+You have your AWS data center, full production scale
+with some data replication happening.
+And so here, what happens is that
+because you have a hot site that's already running,
+your Route 53 can route request
+to both your corporate data center and the AWS cloud.
+It's called an active-active type of setup.
+And so the idea here is that the failover can happen.
+You know, your EC2 can failover
+to your RDS database if need be,
+but you get full production scale running
+on AWS and on premise.
+And so this costs a lot of money,
+but at the same time, you're ready to failover already
+and you're running into a multi-DC type of infrastructure,
+which is quite cool.
+Finally, if you wanted to go all cloud,
+you know, it would be the same kind of architecture.
+It would be a multi region.
+So maybe we could use Aurora here
+because we're really in the cloud.
+So we have a primary database in a region,
+and then we have a Aurora global database
+that's being replicated to another region.
+These both regions are working for me,
+and then when I want to failover, you know,
+I will be ready to go full production scale again
+in another region if I need to.
+So this gives you an idea
+of all the strategies you can have for disaster recovery.
+It's really up to you to select
+the disaster recovery strategy you need.
+But the exam will ask you basically
+based on some scenarios, you know, what do you recommend?
+Do you recommend Backup and Restore, Pilot Lights?
+Do you recommend Multi Site or do you recommend Hot Site?
+All that kind of stuff.
+Warm Backups and all that stuff.
+Okay, so finally, disaster recovery tips.
+And it's more like, real life stuff.
+So for backups, you can use EBS Snapshots,
+RDS automated Snapshots and backups, et cetera.
+And you can push all these Snapshots regularly
+to S3, S3 IA Glacier.
+You can implement a Lifecycle Policy,
+you can use Cross Region Replication if you wanted
+to make sure these backups would be in different regions.
+And if you wanted to have your data from on-premise
+to the cloud, Snowball or Storage Gateway
+would be great technologies.
+For high availability, using Route 53
+to migrate DNS from a region to another region
+is really, really helpful and easy to implement.
+But you can also use technology
+to have multi easy implemented, such as RDS Multi-AZ,
+ElastiCache Multi AZ, EFS, S3,
+all these things are highly available by default
+if you enable them.
+Obviously, if you are talking about the higher availability
+of your network, maybe you've implemented Direct Connect
+to connect from your corporate data center to AWS,
+but what if the connection goes down for whatever reason?
+Maybe you can use site-to-site VPN
+as a recovery option for your network.
+In terms of replication,
+you can use RDS Replication (Cross Region),
+Aurora + Global Databases.
+Maybe you can use a database replication software
+to do your on-premise database to RDS.
+Or maybe you can use Storage Gateway as well.
+In terms of automation,
+so how do we, you know, recover from disasters?
+I think you would know already CloudFormation,
+Elastic Beanstalk can help recreate whole new environments
+in the cloud very quickly.
+Or maybe if we use CloudWatch,
+we can recover or reboot our EC2 instances
+when the CloudWatch alarms fail.
+AWS Lambda can also be great
+to customize optimum automation.
+So they're great to do, you know, rest API,
+but they can also be used to automate
+your entire AWS infrastructure.
+And so overall, if you manage
+to automate your whole disaster recovery,
+then you are really, really well set for success.
+And then finally, chaos testing.
+So how do we know how to recover from the disaster?
+Then you create disasters.
+And so an example that's I think widely quoted now
+in the AWS world is that Netflix,
+they run everything on the AWS
+and they have created something called a simian army,
+and they randomly terminate EC2 instances, for example.
+They do so much more,
+but basically, they just take an application server
+and terminate it randomly.
+In production, okay? Not endeavor test, in production.
+So they wanna make sure that their infrastructure is capable
+to survive failures,
+and so that's why they're running a bunch of chaos monkeys
+that just terminate stuff randomly
+just to make sure that their infrastructure is rock solid
+and can survive any types of failures.
+So that's it for this section on disaster recovery.
+I hope you enjoyed it
+and I will see you in the next lecture.

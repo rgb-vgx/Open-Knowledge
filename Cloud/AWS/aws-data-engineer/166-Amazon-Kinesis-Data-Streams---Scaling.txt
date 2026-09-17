@@ -1,0 +1,207 @@
+# 166. Amazon Kinesis Data Streams - Scaling
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305630
+# Caption: en_US (auto)
+
+Instructor: From an exam and real world perspective,
+it's really important to understand
+how you can scale Kinesis.
+So the first operation you can do is to add shards
+and adding shard in Kinesis world is called shard splitting,
+and we'll see why in a second.
+It can be used to basically increase the Stream capacity.
+So remember how you get one megabyte per second
+of data per shard,
+then if you have 10 shards, you have 10 megabytes, right?
+So if you want to increase the Stream capacity,
+you need to split a shard.
+It can also be helped to use and divide a hot shard.
+So if you have a hot shard,
+one shard that's being used more than others,
+we'll just split it,
+and it will probably increase our throughputs.
+So what happens when you split a shard?
+Well, the old shard is closed and will be deleted
+once the data in it is expired.
+So let's have a look with the diagram,
+'cause I think it'll make a lot more sense.
+So we have shard one, two, and three in this example,
+and they occupy the same space.
+Now shard two is very hot,
+and we want to split it to increase throughput
+on this key space of shard two.
+So we're going to do a split operation,
+and what's going to happen is
+that there's gonna be shard four that's being created
+and shard five that are being created.
+And as you can see,
+they're occupying the same space as shard two.
+But now because we have two shards,
+we have two megabyte per second on this space
+instead of one megabyte per second.
+Then the other shard, one and three, they remain the same.
+So before our shard looks like this, it has three shards.
+Our Stream looks like this, has three shards,
+and then after the splits,
+we have four shards,
+and we can see that four and five
+are occupying the space of shard two.
+So shard two will be available
+as long as the data in it is not expired,
+but when it's expired, it will be gone.
+So now this is the state of our new Kinesis Stream.
+When producers write data to it,
+they have four shards to write to.
+So this is really important concept you understand
+because basically you can split as many shards
+as you want over time
+and increase your throughput this way.
+Now, what's the inverse operation
+to adding or splitting shard?
+Well, it's to decrease shard or merging shards.
+And so when you merge shards,
+you would use that to decrease the Stream capacity
+and save on some cost.
+And it can be used, for example,
+to group two shards that have low traffic,
+and you want to merge 'em together in order to save cost.
+So the old shards will be closed and deleted again
+based on data expiration.
+So now, for example, say we have this shard, and it has,
+our Stream, it has one, four and five,
+three, just like before,
+and we want to merge one and four together.
+So we're going to merge them together,
+and it's becoming shard six.
+That's because maybe shard one and four
+didn't get much traffic,
+so we can merge them together and save some cost.
+So we merge them together, and then shard five and three,
+while they remain on the same as before,
+and so now we've went from four shards
+to three shards in our new Stream because we've merged it.
+So you can see now how we can
+merge and split and merge and split,
+and we can basically modularize
+our entire Kinesis data Stream
+to increase and decrease throughputs over time.
+This is how it works.
+A common scenario question in the exam
+will be asking you about a case
+where the producer is sending data to a Kinesis Stream
+with the correct partition key,
+yet your consumer receive the data
+out of order at some point.
+And so a reason for that would be resharding,
+so let's explore this use case.
+So when you do a Kinesis resharding,
+you can read straight from the child's shards
+after the resharding.
+However, if you haven't read all the data yet
+from the parent shard,
+then what's going to happen is
+that you may read the data out of order
+for a particular hash key.
+So let's look at it in the diagram.
+So we have the parent shard,
+and we have a device producing to the Kinesis Stream,
+using the KPL for example.
+And we have a consumer application running on EC2,
+using the SDK.
+So we're going to do get records, API calls.
+So say that the IoT device
+just before a resharding operation
+sends some data, one and two.
+So in terms of consumption rates,
+our consumer application has been consuming
+everything in the parent shard
+up to the two data points, one and two.
+Then we start a shard splitting operation.
+So from this parent shard,
+we're going to have two new child shards.
+And what's going to happen is that once the split is over,
+well the IoT device is going to start producing
+to the new children shard
+because the parent shard will be closed for rights.
+So that means that the data points three and four
+are going to end up on the child shard.
+Now if your consumer application isn't very, very smart,
+what's going to happen is that you can request data
+directly from the child shard
+before you have read the end of the parent.
+So that means that you will see data points
+three and four first and then maybe one and two next.
+So this is something that can create out of records order,
+out of order records, sorry, after a resharding operation.
+So the guideline is that
+after a reshard in your consumer application logic,
+you need to make sure that you have the logic
+to read entirely from the parent
+until there are no new records from the parent.
+That means you reached the end of the parent shard,
+and then you can start reading from the child shard,
+and this will guarantee the order of the records.
+Now this can be complicated to implement, so as a note,
+the Kinesis Client Library, the KCL,
+already has this logic built in
+even after the resharding operation,
+so you're good to go.
+But hopefully, you're good with that use case,
+and this can come up in the exam.
+So what about Auto Scaling, you may say,
+do we have to do this thing manually?
+Well, there is Auto Scaling,
+but it's not a native feature of Kinesis,
+and there's an API call that you can use
+to update the shard count, called update shard counts,
+and you can implement some kind of Auto Scaling
+using AWS Lambda.
+There's a whole blog on it, if you're curious.
+This is the architecture diagram directly from that blog.
+So read that blog,
+if you're interested in implementing Auto Scaling,
+but you have to do it a bit manually to make it work.
+So what about Kinesis Scaling?
+What are the limitations of it?
+Well, you cannot do resharding in parallel,
+so you need to plan capacity in advance.
+So that means you can't like reshard 1,000 Streams at a time
+or 1,000 shards at a time, that would not work.
+So this is why you need to plan capacity well in advance
+in case you're expecting some big throughputs.
+And you can only perform one resharding operation at a time.
+It takes a few seconds.
+So for example, if you have 1,000 shards,
+it will take you about 30,000 seconds or 8.3 hours
+to double the number of shards up to 2,000.
+So that's gives you an idea
+that scaling in Kinesis is not instantaneous.
+It takes time.
+And as you can see,
+doubling from 1,000 shards to 2,000 shards
+takes over eight hours,
+so you need to plan a lot in advance.
+On top of it, there are some limitations.
+Now, they're a bit complex
+and you don't need to remember them,
+but have added in the slides just in case
+you need to use Kinesis in the real world
+and need to know about them.
+So here they all are.
+Basically, that means that you can't scale up too quickly,
+and you can't scale down too quickly.
+There is some limits that AWS imposes on you.
+So I won't read them out to you.
+You don't need to know them for the exam, okay.
+I just need to know that
+resharding cannot be done in parallel, and you need to,
+basically, resharding takes a few seconds for each shard.
+So remember that for 1,000 shard,
+it takes about 8.3 hours
+to double the number of shards to 2,000.
+That's what I want you to remember out of it.
+Don't need to remember all the limitations, obviously,
+but they're here just in reference in case you need them
+for your real world application, all right.
+So that's it for Kinesis Scaling.
+I hope you liked it, and I will see you in the next lecture.

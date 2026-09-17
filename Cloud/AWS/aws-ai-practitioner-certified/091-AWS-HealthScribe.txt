@@ -1,0 +1,65 @@
+# 91. AWS HealthScribe
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/54471271
+# Caption: en_US (manual)
+
+So now let's talk about AWS HealthScribe.
+So it's HIPAA-eligible service
+that will automatically generate clinical notes
+by analyzing patient clinical conversation.
+So from the audio,
+you're going to get rich transcripts.
+You're going to identify speaker roles,
+classify dialogues,
+extract medical terms,
+and generate clinical notes.
+So you just send the audio into HealthScribe
+and then it will provide its report to you.
+So the use cases is to reduce documentation time,
+to have AI generated transcript and clinical notes,
+and to have efficient patient visit recap.
+So to show you HealthScribe,
+I just click on the region
+and I choose Northern Virginia, us-east-1,
+because this is where this is currently available.
+And then I type HealthScribe.
+So as you can see, it is right now
+a Amazon Transcribe feature.
+So I just click on it.
+Maybe it'll have its own console someday,
+but it's here on the bottom left
+of Amazon Transcribe.
+And so you can upload an audio,
+you can customize a vocabulary,
+you can filter out sentences
+and then analyze results.
+But there's a cool demo that you have
+called Medical Insights.
+So here you can select one of these audios.
+So either diabetes or blood pressure.
+So let's choose diabetes.
+Then you can have a customization.
+So if you want to have a custom vocabulary,
+and we can look at the vocabulary itself.
+So this is the kind of thing
+that this phrases should be displayed as something else.
+And then you can start analyzing.
+And so this is going to analyze the transcript
+and then give you the output.
+So you can see here that the transcript is
+between the clinician and the patient,
+and you can see what everyone is saying over time.
+And you can even play from the audio.
+The part which is pretty cool.
+And then you get the insight section.
+So what is the chief complaint is tiredness.
+Then you have more clinical stuff
+that are most likely better understood
+by doctors than myself.
+But anyways, it gives you the assessment, the plan.
+Okay, this is diabetes,
+so you must do this for the patient, and so on.
+So that's it.
+You have a better understanding of
+how AWS HealthScribe is working.
+I hope you liked it and I will see you in the next lecture.

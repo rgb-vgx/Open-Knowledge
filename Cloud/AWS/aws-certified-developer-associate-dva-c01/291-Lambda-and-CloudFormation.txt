@@ -1,0 +1,78 @@
+# 291. Lambda and CloudFormation
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/15300288
+# Caption: en_US (manual)
+
+So we can use CloudFormation to upload Lambda function.
+And so the way we do it, we have two ways.
+Number one is inline.
+And so we would define our Lambda code
+inline of our CloudFormation templates.
+So we can see in this screenshots
+the code of my Lambda function is right here.
+So that's possible.
+This is for very simple functions.
+We use the Code.ZipFile property
+but the thing is with this inline function
+we cannot include function dependencies.
+So this is just for very simple use cases
+where you want you the Lambda function code,
+the without dependencies to be
+in your CloudFormation template.
+The other way to do it is to use a zip file
+and do it through S3.
+So this is what the CloudFormation template would look like.
+And we'll look at it in the hands-on right now.
+And so for this, we must store the Lambda function zip
+in Amazon S3, you must refer the S3 zip location
+in the CloudFormation code.
+It could be the S3 bucket attribute the S3 key
+which represents the full path to your zip in S3.
+The S3 object version, if you have a versioned bucket
+and this is recommended in case you overwrite a file.
+And so if you somehow update the code in S3
+but you don't update either S3 bucket, S3 Key
+or S3 object version in your CloudFormation template
+then CloudFormation will not update your function.
+And this is why versioning is recommended
+because if you're enabled versioning
+and you overwrite the file
+and you specify a new S3 object version
+then CloudFormation will pick up the change
+and update your Lambda function.
+Finally, if you wanted to deploy a Lambda function
+through CloudFormation in multiple accounts,
+say you will have an account which contains
+an S3 bucket with your Lambda code.
+Now you want to deploy this Lambda code
+into Account 2 and Account 3.
+So how do we do this?
+Well, first of all, we need to launch CloudFormation
+in Account 2.
+And the S3 bucket is going to be referencing is
+the S3 bucket in Account 1.
+Now you need to ask yourself,
+how do we make sure that Account 2 has access
+to the Lambda code in Account 1?
+Well, we can use a bucket policy
+and a bucket policy on the S3 bucket
+in Account 1 should allow CloudFormation to access the code.
+But also we can define an execution role
+on your CloudFormation service for the template itself
+which will allow to get
+and list to the S3 bucket in Account 1.
+And the two things combined is going to allow CloudFormation
+to retrieve the code from the S3 bucket
+and therefore create your Lambda function.
+And similarly, if you have an Account 3
+with a bucket policy on Account 1
+and an execution role in Account 3,
+we are able to read it the code from the Lambda
+from this bucket and access the code
+and deploy it on the function in Account 3.
+So just a bit of security around it do you need to know,
+but it should all make sense.
+It's just a matter of putting things together.
+So that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture for a hands-on.

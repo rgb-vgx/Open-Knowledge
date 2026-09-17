@@ -1,0 +1,103 @@
+# 28. Systems Manager Overview
+# Section: Managing EC2 at Scale - Systems Manager (SSM)
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512800
+# Caption: en_US (manual)
+
+So now let's discuss
+a service that will come up with the exam,
+which is the Systems Manager service.
+So this helps you manage a fleet of EC2 instances
+and on-premises servers at scale.
+And this is going to be a suite of tools that'll see.
+There's so many tools in Systems Manager
+that will give you insights
+about the state of your infrastructure.
+It allow you to easily detect problem
+and also gives you some patching automation
+and enhanced compliance.
+This is something that comes up at the exam a lot.
+Whenever you need to patch your instances,
+usually it's going to be done with Systems Manager
+or any kind of automation you'll be running,
+also will be using Systems Manager.
+So it works for both Windows and Linux OS
+and it's going to be fully integrated
+with CloudWatch metrics and dashboards.
+Also integrated with Config and it's a free service.
+You're only going to pay for the resources they use
+or creates if it does anything like that.
+So there are so many features in Systems Manager
+that it can be overwhelming.
+So I'm going to list them and tell them
+afterwards what we're gonna do about it.
+So we have node tools.
+We have fleet manager, compliance, inventory,
+hybrid activations, session manager, run commend,
+state manager, patch manager, and distributor.
+We have change management features
+such as automation, change calendar, maintenance windows,
+documents, quick setup.
+Application tools such as application manager,
+app config, and the parameter store.
+We have resource groups and we have operations tools
+such as Explorer, app center, CloudWatch dashboard.
+So as you can see, that's a lot of features,
+but what I highlighted in blue
+is what I think is important from an exam perspective.
+Still System Manager is very important.
+So we're going to spend a bit of time
+to learn all of those and it'll become very easy
+to answer exam questions which you've seen them once.
+All right, so don't be overwhelmed, don't be afraid.
+This section is here to help you ease
+into this service that, by the way,
+has new features all the time.
+So now if I go into the SSM Service,
+just to show you the Menu.
+So we are in it, and as you can see,
+on the left hand side, we have all these options.
+As you can see right here, AWS knows how
+to change the structure of them as well over time.
+So it's not a given.
+That one will be here
+and not moved here at some point, okay?
+But do not worry, I will spend some time
+going over the most important ones
+and they should make sense to you.
+Now, how does SSM work?
+So we need to install the SSM agent
+onto the systems we want to control at a high-level, okay?
+And this is an agent that comes bundled
+with Amazon Linux 2 AMI.
+This is why we love using the Amazon Linux 2 AMI.
+And also some Ubuntu AMI.
+If your instance cannot be controlled with SSM,
+it's probably an issue with the agent
+or the IAM permissions, okay?
+And if your AMI does not have the SSM agent on it,
+it's as simple as running a few commands
+to install that agent.
+So you are going to have EC2 instances
+with the SSM agent running or an on-premises server
+or VM with a SSM agent running.
+And then automatically after the correct configuration
+and making sure that these have enough IAM informations
+to talk to the Systems Manager service,
+then the instance will be connected
+and then Systems Manager can operate all these kind
+of features that I just told you
+about on the instances to perform,
+for example, some compliance.
+So patching with some automation, okay?
+So if there's an issue with an instance
+not being registered into SSM,
+you either like to have to look
+with the SSM agents not running
+or not working correctly,
+or making sure that the EC2 instances
+have the right IAM role to perform actions on SSM.
+So in the next lecture, what I'm going to do
+is that I'm going to go ahead
+and set up three EC2 instances with the SSM agents
+and register them into Systems Managers.
+So I will see you in the next lecture.

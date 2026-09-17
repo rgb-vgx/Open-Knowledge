@@ -1,0 +1,47 @@
+# 244. Automating RAG Updates
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57864515
+# Caption: en_US (auto)
+
+Another AI-specific pipeline to think about is dealing with changes in your knowledge base.
+So when your source documents change, what happens?
+You need to go and compute new embeddings and store them again in your vector store
+somehow automatically, right?
+So there's a real challenge to keeping your retrieval index in sync with your source documents
+over time, or else they'll start to drift, and that's a bad thing.
+So if you're doing retrieval augmented generation and using a knowledge base of some sort, there
+is a real problem here of keeping that data and those vectors in sync with what's in your
+source documents if those source documents change over time.
+Now Bedrock Knowledge Bases does have a feature to help you with this.
+There's a start ingestion job API you can call to automatically reprocess new data.
+So it can handle the ingestion and the sync for you once you call that, but something
+needs to call that, right?
+So there still needs to be some sort of a pipeline around ingesting this data that you're
+kicking off with that start ingestion job call.
+And that can reprocess anything that's been added, modified, or deleted from your source
+data automatically if you've set it up right.
+Now you can do this as an event-driven process as well.
+So you could set things up so that it's automatically monitoring your data in S3 or something, and
+whenever something changes, it can automatically kick off that ingestion job, or it can run on a schedule.
+You can just say, you know, start it up every night for looking for anything that's new.
+But however you're triggering it, you need to make sure you're checking the status of
+that job when it's done and validating the retrieval before you promote it to actual
+usage in a production setting.
+So a pipeline might look like this.
+Your source documents change.
+Maybe you call start ingestion job on your Bedrock knowledge base to handle this automatically,
+or maybe you have some other system of your own, but something needs to ingest those changes,
+preprocess them, and chunk them up.
+And that's going to involve updating the embedding vectors for anything that's new or changed.
+Then you have to store those somewhere, right?
+So you need to update the underlying vector store or knowledge base with those new embedding
+vectors that represent the meaning of each chunk of data alongside with some way of retrieving
+the original data itself.
+And then we need to make sure it worked.
+So validate that your retrieval quality is still good, and we didn't break something in the process.
+Only at that point should you promote things to production and promote your new knowledge
+base into production use.
+So this is another example of sort of a continuous integration and deployment pipeline that's
+specific to retrieval augmented generation and knowledge base updates.
+Exam tip, just remember that you can only consider a refresh of your knowledge base
+successful once your ingestion completes and you verify that your retrieval quality is still good.

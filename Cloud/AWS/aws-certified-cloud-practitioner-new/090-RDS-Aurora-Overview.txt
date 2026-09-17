@@ -1,0 +1,120 @@
+# 90. RDS & Aurora Overview
+# Section: Databases & Analytics
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20055978
+# Caption: en_US (manual)
+
+The first kind of databases we're going
+to see is the relational databases and for it, we have RDS.
+RDS stands for Relational Database Service.
+So, it's very clear that it's only for relational databases,
+and it will be using the SQL language.
+So, it's a managed database service for databases
+that will use SQL as a query language,
+and it will allow you to create databases
+in the cloud that will be managed by AWS.
+These databases can be of different kinds.
+It could be a Postgres, MySQL, MariaDB, Oracle,
+Microsoft SQL Server, IBM DB2,
+and finally, something called, Aurora,
+which is a proprietary database from AWS,
+which we'll be seeing in this lecture as well.
+So why would we use RDS instead
+of deploying our own databases on EC2?
+Well, RDS is a managed database service,
+so provisioning the database will be automatic.
+The patching of the operating system will be done by AWS.
+We will have continuous backups
+and restore options with point in time restore.
+We'll have monitoring dashboards
+to see if our database is doing good.
+We'll be able to scale the reads by creating read replicas
+and improve the read performance.
+We will have the way to set up multi AZ to make sure
+that we're ready to have against the,
+to have a plan for disaster recovery
+against a whole availability zone going down.
+And finally, we can set up maintenance windows for upgrades,
+and we can scale vertically and horizontally.
+The storage is going to be backed by EBS.
+And the only thing that we cannot do with an RDS database is
+that we cannot SSH into your RDS database instance, okay?
+We're just using the service.
+AWS manage entirely the database for us,
+so we cannot use the SSH utility
+to see what's going on within our database.
+Okay, so where does RDS fit
+within our solution architecture?
+Well, we have our load balancer,
+and it's fronting multiple backend EC2 instances.
+They're possibly into an auto-scaling group,
+and they need to store and share the data somewhere.
+And this is structured data, so they're not going to use EBS
+or EFS, or EC2 instance store.
+They will be using a database.
+And in this example, it is a relational database,
+so SQL based, and the EC2 instances will be connecting
+to the database and doing rewrites and all at once.
+So, they will be sharing the database in the backend.
+And this is a classic solution architecture,
+not just using RDS, but using any kind of database.
+You have the load balancer layer
+that will be taking the web request,
+the backend EC2 instances doing the application logic,
+and the last tier, which is the right hand side,
+which is going to be the database tier
+doing the reads and the writes of the data.
+Okay, so this is for RDS. So, now, for Aurora.
+So, Aurora is going to be
+a database technology created by AWS.
+It's not open source, and it works the same way as RDS.
+We have our EC2 instances connecting directly
+into Amazon Aurora.
+And Aurora supports two kind of database technologies.
+It supports PostgreSQL and MySQL.
+The idea with Aurora is that it's going
+to be cloud-optimized.
+And so, there is a 5X performance improvements over MySQL
+on RDS and a 3X performance improvement
+over using Postgres on RDS.
+On top of things, we don't need to worry about the storage
+of an Aurora database because the storage
+will grow automatically in increments
+of 10 gigabytes up to 256 terabytes.
+Even if Aurora is going to be more expensive than RDS,
+about 20% more, it's going to be more efficient,
+and so, it should be more cost-effective.
+So, from an exam perspective,
+RDS and Aurora are going to be the two ways
+for you to create relational databases on AWS.
+They're both managed
+and Aurora is going to be more cloud-native,
+whereas RDS is going to be running
+the technologies you know directly as a managed service.
+And we also have a serverless option for Amazon Aurora.
+So, this is where the database instantiation
+is going to be automated.
+And on top of it, you will have autoscaling
+based on actual usage of your database.
+So, both PostgreSQL and MySQL are supported
+as engines of Aurora Serverless database.
+You don't need to do any kind of capacity planning.
+There is no management because you don't manage servers,
+and you're going to pay per second.
+So it can be a lot more cost-effective
+than provisioning an Aurora cluster yourself.
+So this is going to be great when you have infrequent
+or intermittent or unpredictable workloads.
+So how does that work?
+Well, the clients, from the client perspective,
+it's super easy.
+It connects to a proxy fleet that is managed by Aurora.
+And Aurora behind the scenes is going
+to instantiate database instances
+when it needs to scale up or down.
+And these Aurora databases are going
+to be sharing the same storage volume no matter what.
+So from an exam perspective,
+if you see Aurora with no management overhead
+and so on, think of Aurora Serverless.
+Okay, so that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,33 @@
+# 158. FSx for CloudOps
+# Section: Advanced Storage Section
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27513944
+# Caption: en_US (manual)
+
+Okay, so just a few notes on FSX for SysOps.
+So there is FSx for Windows in Single-AZ and Multi-AZ.
+So in Single-AZ, while you have a Single-AZ file system,
+and it will automatically still have data replication,
+but just from within that AZ, okay.
+And you have two generations for that option,
+you have Single-AZ 1, which is just SSD and Single-AZ 2,
+which is SSD and HDD, in terms of how the storage is done.
+The other option is you want to have Multi-AZ is
+to use the FSx for Windows Multi-AZ option,
+in which case, where we have two AZs,
+and it will be synchronous replications
+between the two file system,
+between the primary one and the standby.
+So this will automatically replicate data across AZ.
+It's synchronous, and then in case you have a problem,
+there will be an automatic failover.
+So in case one file system fails,
+then a failover will happen automatically
+to the standby replicate.
+So it's always recommended in FSx for Windows
+to use Multi-AZ instead of using 2 Single-AZ
+and doing your own replication between them, okay.
+Because this option exists in the exam,
+you should always choose Multi-AZ over Single-AZ
+in case you want to have failover.
+That's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,242 @@
+# 91. Step Functions
+# Section: Service Communication
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376570
+# Caption: en_US (manual)
+
+Okay, so next we are learning about
+step functions.
+And step functions you don't need to know them in depth
+going into the exam
+but you need to know the capabilities
+and where they fit in your solution architecture.
+So the idea with step functions is that you're
+going to build serverless visual workflow
+to help you orchestrate your Lambda functions, but not only.
+They represents the flow as adjacent state machine.
+And if it has so many features such as sequence actions,
+parallel actions, conditions, timeouts
+error handling, and so on.
+The maximum execution time of a workflow is one year.
+So that is something you need to know
+as a solution architect.
+And you have the possibility to implement human
+approval features if you wanted to go on with your flow.
+The idea is that if you chain Lambda function
+with step functions,
+which is a very common pattern, you need to be mindful
+that there is going to be latencies between all the calls
+to the Lambda functions because you are
+passing some information
+from one Lambda function to another.
+So if we look at step functions visually
+here's what it looks like.
+So this is the graph
+that AWS will generate from your JSON state machine.
+And as you go through an execution, you will see
+in real time what the execution is and how it looks like.
+And so you get success, failed, canceled in progress
+and then when it's done, you can look
+at the entire flow that your step function
+went through to go to completion.
+So step functions has a lot of integrations.
+There are some optimized integrations, for example
+with some Lambda functions.
+So step functions can obviously invoke Lambda functions.
+They can run AWS batch jobs.
+They can run ECS tasks and wait for it to complete.
+They can also insert an item into a DynamoDB table.
+They can even publish messages to SNS and SQS.
+They can launch EMR jobs, Glue SageMaker jobs and so on.
+They can launch another step functions workflow.
+And then using the AWS SDK integration, you get access to
+over 200 AWS services directly from your state machine.
+And it works like a standard AWS, SDK API call.
+So step functions are very versatile.
+On top of it, there are ways to trigger step functions,
+and there are multiple ways.
+So you can invoke and trigger a step function state machine
+using the management console, using the AWS SDK.
+You can use the CLI,
+you can use AWS Lambda data will be leveraging
+of course the SDK.
+You can use API gateway so
+that any call to API gateway does trigger a step function.
+You can use EventBridge
+and then the integrations are limitless.
+Code pipelines so it's possible for you
+and your CSD pipeline to invent, to invoke step functions.
+And finally,
+well step functions can also invoke step functions.
+Now step function have so many applications
+and you can see a bunch
+of sample projects at this URL in your console.
+The idea is that there's so many different applications
+I can't even count them all
+but I'll give you some, right.
+Process high volume message from SQS.
+and level function to process a lot of message from SQS or
+and Lambda function to process a lot of message from SQS.
+Or for example, train a machine learning model when
+you have to synchronize between SageMaker, Lambda
+and Amazon S3.
+Or manage a batch job if you want to have
+batch Amazon SNS and so on.
+Or if you want to manage a container task,
+so you wanna run Fargate task whenever something happens.
+And so there's so many different of those.
+But the idea is that as soon
+as you need to change stuff and orchestrate stuff in AWS
+the best way to do so is usually with step functions.
+So what can a step function do?
+It can do many things
+and you have to remember them going into the exam.
+Number one is do stuff with AWS Lambda,
+they're called Lambda tasks
+and they will just invoke a Lambda function.
+You also have activity task
+and the activity is something a bit more broad.
+It is you have to set up an HJTTP activity worker.
+It could be an EC2 instance,
+a mobile device or even an on-premise data center.
+And they will pull the step function service
+and they will get the activities out of the step function.
+So this is not serverless.
+This is your activity worker who have to
+pull the step function service and say
+Is there something for me to do?
+And then step function, you say, yes there is, do that.
+You have service task which is more integrated.
+So when step functions will connect
+to a supported AWS service and that it can include
+a Lambda function an ECS task,
+a Fargate container, a DynamoDB table, a batch job
+and SNS topic and SQS queue.
+So there is direct integration between step function
+and all these services as part of your workflow.
+And finally, a wait task. If you want to wait
+for a certain duration or until a timestamp.
+So a very common question at the exam is going to be
+does step functions integrate with AWS mechanical Turk?
+The answer is no.
+The best way to do it is to use SWF
+as you'll see in the next lecture.
+So that is the one little thing, if you see Mechanical Turk
+usually they want you to use SWF instead of STEM functions.
+So the standard workflow was the first workflow
+for step functions.
+The maximum duration was one year
+and you can start about 2000 standard workflow per seconds
+or you can have about 4,000 state transitions
+per second, per account.
+The pricing is going to be per state transition.
+And so state transition means whenever
+your execution goes one step at a time.
+You can see the execution history
+and you get exactly once workflow execution.
+So this was the first one, but then some customers
+of AWS thought they were very expensive at a high rate
+and sometimes they didn't need all the niceness of one year.
+They just wanted to do very, very quick activities.
+And so AWS came up with the express workflows.
+So the express workflows have a maximum duration
+of five minutes.
+So they're expected to complete very quickly
+but you have a much higher rate of starting them.
+You have over 100,000 per second express workflow
+you can start.
+The state transitions is nearly unlimited
+and you're going to be to be priced
+by the number of executions you run
+as well as the duration and how much memory you consume
+which looks a lot like Lambda functions.
+And the executions themself don't have a history
+but they can be inspected using CloudWatch logs
+by logging your whatever happens
+in your state machine directly into CloudWatch logs.
+And you get at least once workflow execution.
+So just knowing at a high level
+the difference I think is pretty obvious when it's
+for very express, fast high throughput workflows.
+The other one is for longer, slower throughputs.
+It's going to be enough for you going to the exam.
+So in the case of express workflows, we have two cases
+the synchronous and the asynchronous case.
+So if you have a synchronous express workflow
+you're going to wait
+until the workflow completes and then return the results.
+This could be very helpful
+if you want to orchestrate microservices, handle errors
+retries, have parallel tasks and so on.
+So here's an example with the API gateway.
+We do a request to the API gateway
+which is going to start a workflow
+but synchronously, therefore, we're going to wait
+for it to be over to complete its execution.
+The result is going to be returned to the API gateway
+which is going to return the results to our users.
+For the asynchronous express workflow is going to
+be slightly different.
+So we don't wait for the workflow to complete.
+And so this is
+for workflows that just don't require immediate responses
+or messaging and so on.
+So here's an example.
+We have, again, the API gateway
+but this time it's integrated
+with an asynchronous express workflow.
+So when the API gateway invokes our workflow
+it's just going to start it.
+And then the response is going to be
+that the start has been confirmed
+and then the user knows that the workflow has started
+but cannot know the execution result
+at least from this request.
+So how do you do error handling in step functions?
+Well, we can add retries and end all the errors
+from within the state machine and then outside of it
+we can set up Event Bridge to get alerts in case
+our state machines fail.
+So here's an example.
+The user is going to invoke a state machine
+which is going to invoke Lambda function.
+And let's say that we know that this Lambda function
+can fail from time to time, but we can retry it.
+Therefore, we're going to add a retry block saying, Okay
+for two more times you're going to retry calling
+this Lambda function.
+But what if it fails all the time?
+Then we can set up Event Bridge
+and we can have a rule to look
+for the execution failure events.
+If so, we can trigger an SNS topic.
+So we send this message, this event
+into an SNS topic that is configured to send us an email.
+That is sort of the best practices
+for error handling in step functions.
+So let's see a solution architecture with step functions.
+So we have step functions
+and we can invoke them in three different ways.
+We can use, for example, the SDK and the CLI.
+We can use Event Bridge integration to have pretty
+much any service trigger a step function workflow.
+Or we can also integrate it
+with the API gateway through a service proxy integration.
+So that's any user doing an HTTP rest API call
+can start a function function, for examples
+as we saw asynchronously or synchronously.
+Now within step function
+you describe it with adjacent document
+and it gives you a visual representation if you wanted to.
+And you could integrate it, for example
+with different services, such as Lambda
+such as DynamoDB or SQS.
+What I want to show you through this diagram is
+that step functions are not just made
+of Lambda functions, okay?
+They have deep integration with other services.
+For example, to read messages from DynamoDB
+or to send messages from SQS.
+We can just do it straight from the step functions.
+We don't need a Lambda function for that.
+Okay? So that's it for step functions.
+I hope you liked it, and I will see you in the next lecture.

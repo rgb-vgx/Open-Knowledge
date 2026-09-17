@@ -1,0 +1,34 @@
+# 84. Athena Performance
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/46730261
+# Caption: en_US (auto)
+
+A few quick notes on optimizing Athena's performance.
+The exam allows to focus on topics like this.
+Uh, basically, it comes down to three things that we want to talk about here.
+One is you're usually going to get better performance by using columnar data formats like Orc or parquet.
+Uh, Athena will just work better if you can pre-process your data somehow to be in a columnar format.
+And you can do that with things like glue or through an ETL transform.
+Uh, you know, there's a lot of tools you can use to transform your data into a format that's more
+optimized for Athena's use.
+So if you are concerned about performance, uh, make sure that you're using a columnar data format
+under the hood with Athena and Orc or parquet.
+So if it's hitting S3 data, if it's in that format already, it will save you quite a bit of work.
+Also remember, a small number of large files will generally perform better than a large number of small
+files with Athena.
+So if you can have a small number of large ish columnar data files, that's probably going to be your
+optimal performance case right there.
+Also, take advantage of partitions.
+So if you're able to organize your data in S3 in a partition format, that lines up with how you're
+going to be querying that data.
+So for example, if you're, uh, hitting up your data most commonly by a specific date range or something
+like that, then partitioning your data by date would make a lot of sense right now.
+If you do need to add partitions after the fact, let's say that you have an existing data set in S3
+that is not partitioned, and you want to improve its performance by adding partitions.
+You don't have to totally start from scratch.
+What you can do in Athena is use a command called MSK Repair Table to go back and add that metadata
+for the partitions into Athena.
+So if you do need to add partitions later on to an existing Athena database, you can use MSK repair
+table to accomplish that.
+So those are the main points about Athena performance.
+Just remember those three things and you should be in good shape.

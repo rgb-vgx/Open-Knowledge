@@ -1,0 +1,69 @@
+# 151. S3 Access Logs - Hands On
+# Section: Amazon S3 Security
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/23743440
+# Caption: en_US (auto)
+
+So let's go ahead and practice S3 access logs.
+And for this I'm going to create an S3 access logs, define V3 buckets.
+And then I will go ahead and create that bucket.
+So that bucket is going to be our logging bucket.
+And I'm going to keep this open here.
+And in another tab I'm going to take one of my buckets that I've created.
+And then I'm going to enable the um logging.
+So I just took one bucket.
+But whatever bucket you want for your really I will go on properties and then I will scroll down and
+look for server access logging.
+So we edit it.
+So let's enable it.
+And as you can see the bucket policy will be updated for the target buckets where we want to write data.
+So first we have to specify a destination.
+So oops.
+So I'm going to go in my bucket and type access.
+So Stefan access log v3.
+This is the bucket I want.
+And I will choose this as my destination.
+Then we have a destination region.
+So this is EU West one.
+We have the destination bucket name prefix.
+This is if I wanted to select an optional prefix in my bucket to for example have slash logs, but we
+will not do this.
+And then the log object key format.
+So we have this format right here.
+And there is an example here given to me as the log key example.
+Or if I use the second one, I can also specify a different S3 event time or a log file delivery time.
+And again this would change my final uh key format.
+Right now we're going to keep it as default.
+So let's just use the first option okay.
+Which will be enough for our use case.
+And then click on Save changes.
+And now my S3.
+Uh, server access logging is enabled.
+So now what I can do is I can go to my objects, I can click on this one, I can maybe open it, um,
+back into my bucket, I can go in it and I can upload a file.
+So I'll add a file and it'll be, for example, my JPEG.
+So you can do a lot of things in your bucket.
+And all of this is going to generate activity.
+And this activity is going to be logged into your logging bucket.
+Now if I refresh, as you can see nothing happens yet.
+That's because it takes a little bit of time for your access logs to go into your logging buckets.
+But what we can do in the meantime is have a look at the permissions.
+Because when we enabled the server bucket.
+So we were right here the server access logging.
+When we enabled it, it was saying that the bucket policy will be updated.
+So let's verify that we can scroll down.
+And we have the bucket policy right here.
+And indeed yes, the bucket policy was updated to allow the logging service of Amazon S3 to put objects
+into this buckets.
+So this is pretty good.
+So this, um, not what we have to do is go back into our buckets and wait for the first logs to be
+sent.
+So it took a couple of hours, but I just refreshed.
+And in my bucket I see a lot of files now objects and these have been created directly for my access
+log.
+So I can click on one of them and I can open it for example.
+And in here I'm able to see, well what happened.
+And this is quite hard to decipher okay.
+But it gives you the API call, the success rate, who accessed it, what bucket it was, at what time,
+and a lot of information.
+So okay, that's it for S3 access logs.
+I hope you liked it and I will see you in the next lecture.

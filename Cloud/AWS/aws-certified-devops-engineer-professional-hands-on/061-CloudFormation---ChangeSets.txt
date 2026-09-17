@@ -1,0 +1,78 @@
+# 61. CloudFormation - ChangeSets
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/42314510
+# Caption: en_US (manual)
+
+Okay, so let's talk about change sets.
+Let's formalize it.
+So when you update a stack,
+you need to know what changes will happen
+before they happen to apply them with greater confidence.
+The change sets will not tell you
+if the update will be successful or a failure,
+but at least it will tell you what should happen.
+So you have a stack.
+You're going to create a change set
+by applying a new template on top of it.
+You can view the change set
+and make sure that the change are okay
+and then execute them.
+If you wanted, you could also iterate on the change set
+to create additional change sets
+and apply the one that makes sense for your templates, okay?
+So for nested stacks,
+the changes you see will be across all the stacks
+in the nested stacks.
+So this is something we've seen as well
+when we were dealing with nested stack in that section.
+So let's just go and formalize change set right now.
+So let's create a stack,
+and we'll upload a template file.
+And for this, I will choose my 4-resources,
+ec2-with-sg-eip.yaml
+I'll click on Next.
+I'll call it DemoChange.
+And then Next, Next.
+And then at the bottom, we click on Create change set.
+So this is an option you have when you do an update
+or when you do a creation of a stack.
+So it will name this change set.
+As you can see,
+with the option to also enable this change set
+for nested stacks, yes or no.
+By default, it's enabled.
+and we'll leave it as is,
+even though we don't have a nested stack right now.
+So this change set is in the CREDIT_PENDING state
+and is going to be executed.
+So here we go.
+And we can view the changes right now appearing
+for our CloudFormation templates.
+So we see that we are adding four resources,
+and it makes sense because we're having a stack creation,
+but at least, we have some information here.
+We get some information around parameters and so on,
+the templates that was applied,
+as well as JSON of all the changes of your change sets.
+So if you go back to your stack now, as you can see,
+the stack is in a new state that we haven't seen before,
+which is REVIEW_IN_PROGRESS.
+So if you look at the events,
+basically a change set has been created,
+and now we are in REVIEW_IN_PROGRESS.
+You can view all the change sets
+that are available to you on the Change Set tab,
+a tab within CloudFormation.
+And so if you want to apply this one,
+you just select it, and then you could execute it.
+And now that the change set is executed,
+the stack creation will happen normally.
+That's it.
+You will also find a change set
+whenever you have an update of your templates,
+and this is just if you want to add one extra review step
+in your workflow for safety purposes
+or maybe for processes within your company.
+That's it.
+When you're ready, just delete the stack,
+and I will see you in the next lecture.

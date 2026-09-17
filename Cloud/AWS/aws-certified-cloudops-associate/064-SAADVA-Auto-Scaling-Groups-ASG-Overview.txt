@@ -1,0 +1,117 @@
+# 64. [SAA/DVA] Auto Scaling Groups (ASG) Overview
+# Section: EC2 High Availability and Scalability
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512980
+# Caption: en_US (manual)
+
+So now let's talk about
+what is an auto scaling group.
+So when we deploy a website or an application,
+the load can change over time because we may have
+more users visiting our websites over time.
+And we've seen that in the cloud, in AWS,
+it's possible for us to create
+and also get rid of servers very quickly
+with the EC2 instance creation API call.
+So, if you wanna automate this,
+we can create an auto-scaling group.
+So the goal of the ASG is to scale out,
+that means add EC2 instances and you need to remember this,
+scale out to match an increased load
+or to scale in that means removing EC2 instances
+to match a decreased load.
+And so therefore the size of our ASG
+is going to vary over time.
+Overall, we can also define parameters
+to ensure we'll have a minimum
+and a maximum number of EC2 instances running at any time
+in our ASG.
+ASG also have the superpower
+that if you are pairing it with a load balancer,
+then any EC2 instances as part of the ASG
+will be linked to the load balancer.
+Another superpower is that
+if one instance is deemed unhealthy, it is terminated
+and a new EC2 instance is created to replace it.
+So, auto scaling groups are free
+and you're only going to pay
+for whatever resources are created underneath
+such as your EC2 instances.
+So let's see how an ESG works in AWS.
+So we set a minimum capacity,
+which is how many instances you want at minimum in your ASG.
+For example, two.
+Then you set a desired capacity,
+which is how many instances you want in your ASG,
+for example, four and then you set a maximum capacity
+which is how many instances
+at a maximum do I want in my ASG.
+And then that means that if you move the desire capacity
+to higher number,
+but that's still less than a maximum capacity,
+then you can scale out as needed.
+That means scale out means adding EC2 instances
+and so therefore your ASG can grow bigger
+and bigger and bigger.
+In this instance, the maximum capacity is seven.
+As I said, the ASG also works with a load balancer.
+So if we have four instances registered in our ASG,
+then the ELB is going to distribute traffic
+to all these instances right away
+and so your users can access a load balanced website.
+But the ELB also has the ability
+to check for the health of your EC2 instances
+using the health check
+and that health check can be passed on to the ASG.
+That means that the ASG can terminate EC2 instances
+if they are deemed unhealthy by the load balancer,
+which is very handy.
+Also, if you scale out, that means if you add EC2 instances,
+then of course the ELB is going to send traffic
+to them as well and spread the load.
+Therefore, it's a really great combination
+to use a load balancer and an auto scaling group.
+Now, in terms of attributes to create your ASG,
+you need to create a launch template.
+There used to be a thing called launch configurations
+but it's deprecated, but the idea is the same.
+A launch template contains information
+on how to launch EC2 instances within your ASG.
+So you have information about the AMI
+and the instance type, the EC2 user data,
+the EBS volumes, security groups, SSH key pair,
+IAM roles for your EC2 instances,
+network and subnet information
+as well as load balancer information and more if you want.
+And so all these parameters look a lot like
+the ones we specified when we created an EC2 instance.
+On top of it, your ASG has a min size,
+a max size and an initial capacity we need to define
+as well as scaling policies.
+Talking about scaling policies,
+let's see how CloudWatch alarm integrates with auto scaling.
+So you don't know what CloudWatch is yet of course,
+but let me just tell you a little bit about it right now.
+So it's possible to scale in and out,
+an ASG based on CloudWatch alarms.
+So for example, we have an ASG right here
+with three EC2 instances
+and the alarm is going to be triggered
+and therefore we're going to get a scale out activity.
+So what would trigger an alarm?
+Well, it's a metric you can return, for example,
+for the average CPU or any custom metric you want.
+So for example, if the average CPU
+as a whole for your ASG is too high,
+then you need to add EC2 instances
+and therefore the alarm is going to be triggered
+and is going to trigger a scaling activity
+in your auto scaling group
+and this is why it's called an auto scaling group
+because paired with alarms,
+there is an automatic aspect of scaling behind the scenes.
+So based on the alarm, we can create scale out policies.
+That means increasing the number of instances
+or we can create scale in policies
+to decrease the number of instances.
+And all these things together are what composes ASG.
+I hope you liked it and I will see you in the next lecture.

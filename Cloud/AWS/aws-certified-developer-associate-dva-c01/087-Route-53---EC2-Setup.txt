@@ -1,0 +1,125 @@
+# 87. Route 53 - EC2 Setup
+# Section: Route 53
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19728944
+# Caption: en_US (manual)
+
+So let's get started.
+And before we use Route 53,
+I want to go ahead and create three EC2 instances
+in different regions, as well as one ALB.
+So in one of these regions I'm going to go
+into instances and then launch an instance.
+And very simply, I will choose Amazon Linux2
+on this architecture, a T2 micro type of instance.
+I don't need a key pair, because I will use,
+if I need to, I will use EC2 instance connect.
+And then for network settings,
+I'm going to create a security group.
+I will allow SSH as well as HTTP from anywhere.
+Then I will just, in advanced details,
+specify a bootstrap user data script.
+So, to do so, just go into your Route 53
+user script and you copy this entire script.
+And you paste it here.
+So what's going to do is it's going to say
+hello world from the instance, just as before.
+But now we're going to add the AZ
+the instance was launched in,
+using this environment verbal called EC2,
+availability, zone that I created from before.
+So it's going to give us a little bit
+more info about EC2 instance.
+So I'm going to go ahead and launch this instance.
+So this has been launched and it is right here.
+Okay, that's good.
+Next I'm going to go into another region.
+For example, Northern Virginia, so US East one.
+And then I will launch an instance.
+And same settings.
+So again, no key pair required.
+So proceed without a key pair.
+I will allow HTTP as well.
+And for advanced details, I will provide
+the exact same EC2 user data script.
+Then we click on launch instance and we're good to go.
+And finally I'm going to go into
+one last region, for example Singapore.
+And in Singapore I'm going to launch an instance.
+And then we'll leave it as t2 micro,
+we will choose no key pair.
+We'll allow HTTP from anywhere.
+And then, under advanced details,
+I'm going to paste in the data and launch this instance.
+Okay, so we have three instances
+now being started in three different regions.
+So we have one in Frankfurt,
+one in Northern Virginia, and one in Singapore.
+So this is good.
+Lastly, what I'm going to do is that
+I'm going to launch a load balancer
+in Frankfurt, for example.
+So here I'm going to create a load balancer
+and choose an application load balancer.
+Create.
+And then the unique name will be DemoRoute53ALB.
+This is fine, it's going to be internet facing, on IPv4.
+I will choose for mapping, one, two, and three subnets.
+And for security group I can choose up to five.
+So I'm going to choose the one that I've created
+just from before, which was the launch user two,
+which had AWS and HTTP enabled.
+This way we're sure that HTTP is enabled.
+And the protocol is on 80, you're going
+to forward to a new target group,
+that we're going to have to create, based on instances.
+And I'll call it this one demo tg route 53.
+And, what I want to do is next
+and register my one instance right now
+that I just created from before.
+So you do include as pending below.
+Then on the review targets, you have one target.
+And then create the target group.
+So the target group is not created.
+So back into model balancers.
+I can refresh this and select the demo tg group route 53.
+And everything looks good.
+Let's create our load balancer,
+and then click on view the balancer.
+And here we go.
+So now to summarize, let's see
+if everything has been working properly.
+So, we have one EC2 instance right here.
+And let's take the public IP, so I'll just copy
+the IP itself, make sure using the IP via http.
+And it says hello world from blah, blah, blah.
+So this is good, so what I'm going to do
+is that I'm going to, under a text file,
+just to have a mark of a trace of everything,
+I'm going to put the IP address
+as well as the region I'm in.
+So EU central one.
+As you can see, it says hello from AZ EU central one B.
+Okay, so this instance is working.
+I'm just testing whereas everything's working.
+So I'm going to also take this public IP right here,
+paste it in, and it says yes hello from US East one A.
+So this is perfect, so this is US East one.
+And the last instance right now it's here.
+And then I'm going to copy this IPv4 address,
+paste it in, and it says hello from AP Southeast one b.
+So this one's working as well.
+So let's go here, AP southeast one.
+And finally, if I go under my ALB
+and take the DNS name right here,
+let's see if it has been provisioned.
+So let's refresh this.
+So it is provisioned as we can tell.
+So this can take a bit of time.
+So for you, it may not work, for me it worked.
+And so because it is pointing to one EC2 instance,
+it's a hello world from AZ EU Central one B.
+So now we have properly set up
+all our instances, as well our GNS.
+So we're good to go.
+And keep this information handy,
+and I will see you in the next lecture.

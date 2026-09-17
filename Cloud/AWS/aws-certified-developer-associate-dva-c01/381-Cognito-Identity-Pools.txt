@@ -1,0 +1,169 @@
+# 381. Cognito Identity Pools
+# Section: Cognito: Cognito User Pools, Cognito Identity Pools & Cognito Sync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731966
+# Caption: en_US (manual)
+
+So now let's talk about a service
+that I wish wasn't named like this, but is named like this.
+It's the Cognito identity pools,
+also called Federated Identities.
+And I wish it wasn't named like this
+because it's so not the same as the Cognito user pool,
+but it's under the same umbrella of Cognito,
+which I don't like, but it's just my personal opinion.
+Let's try to understand what Cognito identity pools are.
+So our users are outside of our AWS environments,
+and they can be a web application users or mobile users,
+and they want access to stuff within our AWS environments.
+So for example, they want to have access
+to DynamoDB table or an S3 bucket.
+And so to access these things,
+they need temporary AWS credentials.
+So we cannot create normal IAM users for these users
+because there are too many of them,
+it doesn't scale and we don't trust them.
+So instead, we are going to give these users
+access to AWS through a Cognito identity pool.
+So this identity pool can allow your users
+to log in through a trusted third-party.
+And that could be a public provider, for example,
+log in with Amazon, Facebook, Google and Apple.
+Or even allow the users that are already logged in
+with the Amazon Cognito user pool
+or even allow OpenID Connect providers and SAML providers.
+Or, finally, the developer authenticated identities,
+which is a custom login server.
+So on top of all these login providers
+to allow to give our users their identity
+before they trade it for AWS credentials,
+we can allow unauthenticated guest users
+access into AWS.
+So it is possible for us to define a guest policy
+and give our guest users AWS credentials.
+So once the users have obtained these AWS credentials,
+then they can access the AWS services directly
+with the API call using an SDK or through the API gateway.
+So these these credentials that the users get,
+they have an IAM policy that is defined
+by what we do in Cognito identity pools,
+and they can be customized based on the value
+of the user ID for fine grained control
+and we'll see this in this theory lecture.
+So, I'll try to make it as simple as possible.
+So we have a web and mobile applications
+and they want to access our private S3 bucket
+and a DynamoDB table, but we want to make sure the users
+first get credentials of AWS,
+but we don't want to create an IAM user
+for these applications.
+So what do we do?
+We're going to leverage Cognito identity pools,
+but first we want the users to get a login
+and obtain a token out of this login.
+So we will allow our users to connect,
+for example, to a Cognito user pool,
+or to connect to Google login, Facebook login,
+so for social identity providers or SAML
+or Open ID Connect.
+So they will log in with any of those.
+They will get a token and they will go
+and talk to the Cognito identity pool service
+to exchange the token for temporary AWS credentials.
+So first, the identity pool will verify the login
+with whatever provider we have defined.
+And then once it's validated,
+Cognito identity pool will talk to the STS service
+to get temporary credentials
+for our web and mobile application users.
+Once this is done,
+the credentials are returned to our applications
+and they can use and directly access AWS
+thanks to these credentials and the associated IAM policy.
+So this is very simple
+and a big difference from what Cognito user pools are,
+but you see there's a lot of common,
+especially around the identity provider.
+So the question is how does it work
+if I use Cognito identity pools with Cognito user pools?
+So here's the answer.
+We have the same diagram.
+We want our users to connect to a private S3 bucket
+or DynamoDB table, but we want their identity
+to be stored in Cognito user pools.
+Okay, so this is the same diagram as before,
+but I'm just expanding into Cognito user pools.
+So they're going to log in and get a token.
+And why would you do this?
+Well, maybe because we want all our users
+to be centralized in the Cognito user pools database.
+So it could be an internal database of users,
+or we can also enable social identity providers
+SAML and OpenID Connect as federated identity providers
+for our Cognito user pools.
+But nonetheless, all users are going
+to show up in my Cognito user pool.
+Then our web and mobile application users
+can exchange those JSON web tokens
+obtained from Cognito user pools
+into the Cognito identity pool for credentials
+so there will be verification of these tokens
+and then talking to the STS service
+to get these credentials that will be returned
+to our web and mobile applications.
+And then thanks to these credentials,
+we will have direct access into AWS.
+If you understood this,
+I'm so happy and you're good to go for the exam.
+So how does Cognito identity pools
+decide which role to apply to which user?
+Well, we can define a default IAM role
+for both authenticated users and guest users.
+So that means the guest users will have one IAM role
+and the other will have another one's IAM role.
+And we can define rules to choose which role
+goes to which user based on the user ID.
+And then we can customize the IAM policy
+thanks to using policy variables.
+And this will be allowing us to make sure
+that the users will only get access
+to what they need in DynamoDB or Amazon S3, for example.
+These IAM credentials are obtained by Cognito identity pools
+through the STS service with the API call
+named AssumeRoleForWebIdentity.
+And for it to work,
+the roles must have a trust policy
+of Cognito identity pools.
+So I'll make it a bit more concrete.
+Here is an example.
+So we want to give our guest users access to AWS,
+and so we want to create an IAM policy, for example,
+that would allow any guest user
+to do a GetObject on a bucket for my_picture.jpg.
+So this would give us for the guest users
+access to AWS with a very simple,
+and obviously restricted, IAM policy.
+Then for the authenticated users,
+we can define a policy variable on Amazon S3.
+So our users are connected,
+but we want to make sure that they only have access
+to a prefix in your S3 bucket that represents
+what the user identity is.
+And so as such, you can use a policy variable
+like here in green, and this is allowing a user
+to only access within the bucket we've defined,
+anything that starts with the prefix of its user ID.
+So effectively we gave the user access
+only to what it can access thanks to its user ID.
+And we can define the same on DynamoDB.
+So here is a sample policy in which we allow the user
+to do anything it wants on DynamoDB for my table,
+as long as the leading key for DynamoDB
+is corresponding to the user ID of the user.
+So effectively we've done row-based security
+thanks to this IAM policy.
+Now these are advanced,
+but I just wanted to give you a sneak peek
+into how they worked.
+So that's it for this theory lecture.
+In the next lecture,
+we're going to practice Cognito identity pools.

@@ -1,0 +1,55 @@
+# 33. SSM Automations - Patch AMI & Update ASG
+# Section: Managing EC2 at Scale - Systems Manager (SSM)
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218461
+# Caption: en_US (manual)
+
+Okay, so here is a real-life example
+of what an SSM automation may look like.
+So for example, say we have an auto-scaling group
+and it's running a source AMI,
+but we want to actually patch that AMI
+and have the auto-scaling group launch EC2 instances
+based on a new patched AMI.
+So to do so, we must, and we can use an automation
+because everything will be managed by AWS.
+So what are the steps of our automation?
+Well, step number one, we need
+to make sure it has a proper IAM role to perform all needs
+to do, but then what happens?
+We set up the automation,
+first of all to launch an EC2 instance
+from the source AMI.
+And then the second step of the automation is
+to do a run command from SSM to install the patches
+on your EC2 instance called AWS run patch baseline.
+This is going to give you an EC2 instance.
+Then you can, that is patched of course, then we can stop it
+and when it's stopped, we can create an image.
+So again, all these steps are run by your automation.
+I'm just demonstrating what's happening over time.
+And then that instance is terminated.
+So out of this first part of the automation,
+what we have is a patched AMI.
+Okay, so how now do we apply this patched AMI
+on the auto-scaling group?
+Well, we have the opportunity
+to run a script directly in your automation a Python script.
+So this script is going to update the launch templates
+to have a new base AMI for your EC2 instances.
+And then we update the auto-scaling group
+with the new launch templates, again, from the automation.
+But still, this doesn't change all the EC2 instances,
+it just make sure that the new EC2 instances
+of your auto-scaling group will be launched
+with a proper patched AMI.
+And so therefore, we must replace all the EC2 instances
+of your ASG.
+And for this, we're going to use the feature
+of auto-scaling group called EC2 instance refresh
+that it can, that again can be launched
+and started from your automation.
+So as you can see here, an SSM automation allows us
+to do a very complex flow, interact with many different APIs
+of AWS, and everything is managed directly from SSM.
+Alright, that's it. I hope you liked it
+and I will see you in the next lecture.

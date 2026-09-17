@@ -1,0 +1,156 @@
+# 146. S3 Multi-Part Upload - Hands On
+# Section: Advanced Amazon S3 & Athena
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/36519034
+# Caption: en_US (manual)
+
+So let's have a look at whether
+the commands that are necessary to create
+and do a multipart upload in Amazon S3.
+So to do so, I'm going to use CloudShell.
+CloudShell is a way to get a terminal in AWS
+that's going to be already set up with your account.
+So that's perfect.
+It has your credentials and your permissions.
+Next we're going to actually go and create a file,
+create a bucket, and so on.
+So you do copy this file from S3-advanced,
+multipart-upload.sh.
+And what you're going to do
+is that you're going to create first a bucket.
+So name whatever bucket you want,
+for example, multipartuploadstephandemo,
+and of course the bucket name needs not to be taken.
+So then we'll do aws s3 mb to make a bucket.
+And then we pass in the bucket name.
+So this bucket has been created
+and if I go into my buckets in here
+and I find the bucket by name, I find it right here.
+Okay, so my bucket is created
+and currently there are no objects in it.
+So next we're going to do
+is that we're going to create a large file.
+Now a large is going to be 100 megabytes,
+not keep it too large, but you get the idea.
+And so this command, dd, just generates a file
+that is going to be exactly 100 megabytes.
+So now we have this file and we're good to go.
+So if I list my files doing ll,
+as you can see there's 100 megabytes
+for the file named 100MB.txt.
+So that's perfect.
+Next, we're going to split that file into parts.
+So imagines it's a big file
+and you want to split it in to many parts,
+you can use the split command.
+And this split command in the way I set it up is
+that it is going to divide it in blobs of 35 megabytes.
+And so these 35 megabytes
+are not going to be three times equal.
+So the first two are going to be equal.
+They will have the same size, but then the last one
+will be smaller because well my file is only 100 megabytes
+and not exactly 3 times 35 megabytes.
+So we have our three parts and they're named
+100MP_part_aa, part_ab, and then part_ac.
+So now that we have different parts,
+we can upload them into Amazon S3 with a multipart upload.
+So to do so first we need to create a multipart upload.
+So let's paste this command in, and we're good to go.
+So we have initiated a multipart upload.
+As you can see, the target key is the name file
+that will write to our S3 bucket,
+so it's the same that I have on my computer right here.
+And the upload ID is something you need to keep
+because this represents the ID
+that we will use to upload each parts.
+So what you can do is that you can take this upload ID,
+you copy it in your text file,
+and then you're going to paste this so that you would
+define the variable in our terminal called UploadId.
+Okay, so we're good.
+Now we have the upload ID done.
+So now we can actually see if we have initiated
+a multipart upload using
+the s3api list-multipart-uploads command.
+And as you can see all the commands
+so far we're using is aws s3api.
+Just before we use s3 to create a bucket,
+but then to do the multipart upload
+it is the s3api command.
+Okay, so we list the multipart upload.
+As we can see one upload is pending, it is been initiated.
+This is the key.
+This is the upload ID, and we're good to go.
+So let's go ahead and actually upload each part.
+Now when you upload the part
+you specify the target buckets,
+you specify the key,
+and then you specify the part number,
+and the body of the part.
+So the part number is going to be 1, 2, 3.
+And then the body itself is going to correspond
+to the splits that we have created from before.
+So part_aa, part_ab, and part_ac.
+So let's upload one part in here.
+And then I'm going to upload a second part.
+And I'm going to upload a third part.
+Now don't clear your screen, just leave it like this.
+And if I go into my S3 bucket now and refresh
+we currently don't see any objects.
+That's because the parts don't appear in the console UI.
+The parts are not yet objects.
+So how do we view the parts?
+Well, we can do a s3api list-parts,
+and then we specify the upload ID, and it's going
+to give us the list of the parts for our stuff.
+So as you can see, we have part one, part two, part three.
+We have the ETag and the size and so on.
+So this is awesome because now that we have the parts
+we can actually go ahead and complete the multipart upload.
+So I could upload as many parts as needed.
+And all those parts are going to be combined
+by Amazon S3.
+But of course I know I'm done
+because I have uploaded each part individually.
+So how do we complete this multipart upload?
+Then you do this command right here.
+And you have to specify here the parts.
+So we paste this in.
+And what we have to do now is to replace the ETags.
+So the ETag one right here has to be replaced
+by the ETag one right here.
+We paste it in, that's one ETag and that's part number one.
+This is the little manual part we have to do.
+The EAG two is here.
+We paste it in.
+And I have the wrong one, so let's try again.
+So I'll take this one right here.
+And I will paste it in.
+And finally, the ETag three.
+I will take this one.
+Nope, wrong command again.
+I will remove it.
+And finally paste it in.
+Let's press Enter.
+And there's a dot that shouldn't be here.
+Let's press Enter.
+And now as you can see this multipart upload get completed
+and we have completed it.
+So if I have a look at the list-multipart-uploads
+I shouldn't see anything anymore.
+Yes, there are no more.
+And if I go into my S3 bucket, refresh my object,
+here is my 100 megabyte text file.
+It says 95.4 because it was actually 100 just bytes itself.
+But don't worry about this, this is expected.
+We're good to go.
+So we have completed the multipart upload.
+We've seen all the commands.
+Remember is the aws s3api.
+We've seen the process to do so.
+Now, if you don't want to be billed
+for this 100 megabyte file that has nothing in it
+then just permanently delete it.
+And then you can also delete the underlying S3 buckets.
+Alright, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

@@ -1,0 +1,40 @@
+# 140. RMSE, R-squared, MAE
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45536603
+# Caption: en_US (auto)
+
+So we've talked a lot about ways to measure the accuracy or precision or recall F1 score, whatever
+it is, of categorical predictions.
+But there's other types of predictions out there as well.
+So we've been talking about measuring classification problems so far.
+And this is a very common use case in machine learning right.
+So accuracy precision recall F1 score.
+These are all classification metrics.
+So so accuracy how accurate are our predictions.
+Overall precision and recall.
+You know tuning in more to false positives or false negatives.
+F1 score kind of being a blend of the two.
+However sometimes you're predicting actual numerical values and not discrete classifications.
+So you got to use a different technique for measuring how accurate your numerical predictions are.
+So if you're doing regression or something like that where you're producing a predicted value, that's
+a number and not just a classification, you need some different types of metrics.
+One is called r squared.
+And that is technically the square of the correlation coefficient between the observed outcomes and
+the predicted outcomes.
+So this example on the right here, that line that I fit there with a regression, those are my predicted
+values for a given x value.
+And those dots those blue triangles are the actual observed real values.
+So we can look at the correlation between that line and the actual data and square that.
+And you get r squared.
+More commonly you might see something like RMSE.
+Or maybe that's root mean squared error and mean absolute error, which is pretty much what it sounds
+like.
+So error in each case is going to be the distance between that prediction and the actual data point.
+So for every one of those blue triangles I can measure how far it is from that black line.
+That's the error.
+And if I just take the average of that, the mean of those values and take the absolute value, that's
+me.
+That's it.
+If I square it, that's going to give me RMSE, which just is more of a better job of punishing outliers.
+But just remember RMSE Mae R squared.
+Those are ways of measuring numerical predictions as opposed to categorical predictions.

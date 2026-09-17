@@ -1,0 +1,15 @@
+# 301. DynamoDB - Section Introduction
+# Section: AWS Serverless: DynamoDB
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/12203046
+# Caption: en_US (manual)
+
+So we know how to do distributed computing and scalable using AWS Lambda.
+But where do we store our information where do we store our data?
+It'd be great if we had a serverless database.
+Well look no further that database is going to be DynamoDB. DynamoDB is awesome.
+It's a database that is managed by AWS and it will scale for you.
+It is really well integrated with AWS Lambda and other AWS services. In this section,
+We're going to dedicate a lot of time to learn how to properly design your DynamoDB tables, how to enable
+streams and make sure your DynamoDB tables are going to be fully secured.
+I hope you're excited.
+Let's get started.

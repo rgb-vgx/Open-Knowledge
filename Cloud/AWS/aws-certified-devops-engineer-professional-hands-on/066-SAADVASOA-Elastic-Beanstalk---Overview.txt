@@ -1,0 +1,143 @@
+# 66. [SAA/DVA/SOA] Elastic Beanstalk - Overview
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869100
+# Caption: en_US (manual)
+
+Okay, so now let's talk
+about Elastic Beanstalk.
+So so far in this course
+when we've been deploying an application,
+we've had the same architecture.
+So we have a load balancer
+that is taking all the requests from our users
+and then we have an auto scaling group
+with multiple available zones and in each AZ
+there will be some EC2 instances being deployed there
+and then in the backend,
+we have maybe some data subnets,
+so we have an RDS database to take the reads and writes,
+maybe we have replicas and so on.
+And if you're in the caching layer,
+in the caching layer, we need to look at ElastiCache, okay?
+So if there are so many applications for us to deploy
+and they follow the same architecture,
+it may be a pain to recreate it every single time.
+So as a developer, it's complicated
+to manage infrastructure, to deploy code,
+we don't want to be configuring all the databases,
+the load balancers, et cetera, et cetera.
+And of course we want everything to be scaling.
+So as we can see, most of the web applications
+will have the same architecture
+with a load balancer and an auto scaling group
+and as a developer, all I want to do
+is for my code run, okay?
+I don't want to worry about everything else.
+So also, if I develop in different programming languages
+and have different applications and environments,
+I possibly want a single way of deploying my application
+and this is where Beanstalk comes into play.
+So Beanstalk gives a developer centric view
+of deploying an application on AWS.
+The idea is that from one single interface,
+it's going to reuse all the components we've seen before,
+such as EC2, ASG, ELB, RDS,
+but it's going to be a managed service
+that will deploy all these things for you.
+So it will handle the capacity provisioning,
+it will handle all the configuration of the load balancer,
+the scaling, the application health monitoring,
+the instance configuration and so on.
+And the only responsibility for you as a developer
+is going to be the code itself, okay?
+You still have full control over the configuration
+of each component, but at least they come bundled
+as one single interface in Beanstalk
+and the idea is that Beanstalk also has a really cool way
+of updating applications.
+So the Beanstalk service is free on its own,
+but you're going to pay for the underlying instances
+that are going to be leveraged by Beanstalk
+or your ASG or your ELB, those kinds of things.
+So components of Beanstalk consist of an application,
+which is a collection of Beanstalk components,
+such as environments, versions and configurations.
+A version of the application itself
+is an iteration of your application code.
+So you can have version one, version two,
+version three, et cetera, et cetera.
+Then an environment, it's just a collection
+of your resources running the specific application version.
+So you can only have one application version at a time
+in an environment, where we can see
+we can actually update an application version
+within an environment from version one to version two.
+We have tiers, so we can have two different tiers.
+In Beanstalk, we have the web server environment tier
+and the worker environment tier.
+We'll see those very quickly.
+And we can also create multiple environments in Beanstalk,
+such as dev, test and prod
+and whatever environment you have in mind really.
+So the process is to create an application,
+then we upload a version.
+Then we are going to launch an environment
+and then we're going to manage an environment lifecycle
+and if we wanted to iterate on that,
+we could update the version by uploading a new version
+and then deploy that new version again in our environment
+to update our application stack.
+So Beanstalk supports many programming languages,
+such as Go, Java SE, Java with Tomcat,
+.NET Core on Linux, .NET on Windows Server,
+Node.js, PHP, Python, Ruby,
+Packer Builder, Single Docker Container,
+Multi Docker Container, Pre-configured Docker.
+So the idea is that on Beanstalk
+you should be able to deploy pretty much anything.
+Now to finish, what do I mean
+by server tier and worker tier?
+Well, the web tier is looking like this.
+This is the traditional architecture that we know,
+where we have a load balancer
+and then it's sending traffic to an auto scaling group
+that has multiple EC2 instances
+that are going to be your web server.
+This is the architecture number one with Beanstalk
+and the architecture number two with Beanstalk
+is going to be around a worker environment.
+So this time there is no clients accessing directly
+your EC2 instances.
+We're going to use an SQS queue, which is a message queue
+and the message will be sent into the SQS queue
+and the EC2 instances are going to be workers,
+because they're going to pull messages
+from the SQS queue to process them.
+And in this case, the worker environment
+is going to scale based on the number of SQS messages.
+So the more messages, the more EC2 instances.
+And then the cool is that you can put the web environment
+and the work environment together
+by having the web environment push some messages
+into the SQS queue of the worker environment.
+Finally, there are two deployment modes
+you need to know for Beanstalk.
+The first one is a single instance,
+which is great for development purposes.
+In this case, you'll have one EC2 instance
+which will have an Elastic IP,
+potentially it can also launch an RDS database and so on,
+but it's all based on one instance with an Elastic IP.
+It's great for development purposes,
+but then if you wanted to scale
+a real Elastic Beanstalk mode,
+then you would go for high available with a load balancer,
+which is great for production environments,
+in which case, you can have a load balancer distributing
+the loads across multiple EC2 instances
+that are managed for an auto scaling group
+and multiple available zones.
+And finally, you may have an RDS database
+that's also multi AZ with a master and a standby.
+All right, that's it.
+I hope you liked it and I will see you in the next lecture.

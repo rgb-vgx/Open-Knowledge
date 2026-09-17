@@ -1,0 +1,60 @@
+# 120. Random Cut Forest in SageMaker
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285517
+# Caption: en_US (auto)
+
+Next we'll cover Random cut forest.
+And that's Amazon's algorithm for anomaly detection.
+And it works in an unsupervised setting.
+So it basically it's looking at a series of data and trying to find things that are anomalous in that
+series.
+You know what things are sticking out as maybe being a little bit weird.
+And it could look for things like breaks in periodicity, things that are just unclassifiable.
+And for every data point, it will assign an anomaly score to that.
+Amazon developed this algorithm themselves.
+They wrote a paper on it and they're like really, really proud of it.
+It seems because it keeps creeping into all their different systems.
+So it's a pretty safe bet you'll see something about this on the exam, because Amazon seems to be very
+proud of it and using it all over the place.
+So what does he expect?
+Either CSV format or Recordio protobuf?
+You can use file or pipe mode in either case.
+Optionally, you can have a test channel if you just want to compute accuracy or precision or recall
+or F1 on labeled data.
+Again, this is an unsupervised algorithm, so there is no real training.
+But you can provide a test channel and try to measure its accuracy against something where you know
+what the anomalies are.
+How does it work under the hood?
+Well, they have a whole video on this available on AWS, but all you need to know is that basically,
+it's creating a forest of trees where every tree, like a decision tree, is a partition of the training
+data.
+And what it does is it looks at the expected change in the complexity of that tree as a result of adding
+a new point into it.
+So if you add a new data point into this decision tree and it causes a whole bunch of branches to form
+off, it says, well, this might be anomalous, right?
+So it's kind of a cool idea.
+They're basically using the properties of a decision tree and saying, okay, the fact that a decision
+tree needs to make a bunch of new branches to accommodate some new data probably means there's something
+weird about that data point.
+That's that's the basic idea.
+The data is sampled randomly.
+That's the random cut part of random cut forest.
+And then we train it.
+So Random cut forest is showing up, like I said, all over the place.
+It also shows up in Kinesis Analytics where it's available for doing anomaly detection on streams of
+data.
+So yeah, it can actually work on streaming data as well.
+It's not limited to working on batches of data, but under the hood it's based on looking at a series,
+maybe a time series of data and flagging things that are anomalous as it goes.
+The important hyperparameters are the number of trees, and if you have more trees, it reduces the
+noise or the number of samples per tree.
+The guidance is that you should choose that, such that one over number of samples per tree approximates
+the ratio of anomalous to normal data.
+So if you have a rough idea of how much of your data is anomalous ahead of time, you can tune num samples
+per tree to do a better job of identifying those anomalies.
+It does not take advantage of GPUs.
+It's really a fairly simple algorithm under the hood.
+So you want to use an M4 or C4 or C5 for training.
+And a C5 XL is recommended for inference.
+So that's random cut forest.
+Just remember that random cut forest is for anomaly detection and you should be okay

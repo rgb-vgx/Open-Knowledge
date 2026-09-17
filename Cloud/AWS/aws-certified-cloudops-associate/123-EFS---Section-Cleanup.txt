@@ -1,0 +1,32 @@
+# 123. EFS - Section Cleanup
+# Section: EC2 Storage and Data Management - EBS and EFS
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27513586
+# Caption: en_US (manual)
+
+Hey, so to clean up this section,
+if you have any instances,
+make sure you can terminate them
+because it will release any EBS volumes attached to them.
+Okay, so delete your instances.
+Then under volumes, you can delete your volumes as well.
+So first you need to delete the snapshot.
+So take any snapshots
+and then delete the snapshots themselves.
+Then you can take a look at the volume
+and you do action, delete volume.
+So you can do them one by one.
+So this one, I can delete the volume.
+And this one right here,
+I need to wait a little bit until it is detached
+and then after being detached, you can delete it.
+So I need you to probably refresh this page.
+Here we go.
+And then delete my volume, this is perfect,
+which actually doesn't exist
+because it's been deleted automatically.
+And for EFS file systems,
+you can just take this one and delete it
+by entering the file system ID.
+So that's it for this lecture,
+I hope you liked it
+and I will see you in the next section.

@@ -1,0 +1,86 @@
+# 37. Amazon GuardDuty
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/19143900
+# Caption: en_US (manual)
+
+So now let's talk about Amazon GuardDuty.
+GuardDuty helps you do intelligent threat discovery
+to protect your AWS accounts.
+How does it do it?
+Well, it has machine learning algorithm,
+performs anomaly detection,
+and uses third-party data to find these threats.
+So to enable it, it's just one click.
+Then you have 30 days trial.
+You don't need to install any software.
+So GuardDuty is going to look at a lot of input data,
+such as your CloudTrail event logs
+to look for unusual API calls
+or unauthorized deployments.
+It's going to look at your management events
+and your data events,
+so for example, on the management side,
+the create VPC subnet event, and so on
+Whereas, on the S3 data events,
+for example, get objects, list objects,
+delete objects, and so on.
+And then for VPC Flow Logs, it's going to look
+at unusual internet traffic.
+It's going to look at unusual IP addresses.
+DNS logs to look at EC2 instances sending encoded data
+within DNS queries, which would mean they're compromised,
+and optional features to allow you to analyze, for example,
+other input data sources, such as your EKS audit logs,
+your RDS and Aurora login events,
+your EBS, your Lambda, and your S3 data events.
+So we can also set up EventBridge rules
+to be notified automatically in case you have findings.
+And then these rules can target
+whatever EventBridge can target,
+such as AWS Lambda or SNS topics.
+Also, this can come up in the exam.
+GuardDuty is a very good tool to protect you
+against cryptocurrency attacks
+because there is a dedicated finding for it,
+so it knows how to analyze all these input data
+and find that there is a cryptocurrency attack.
+So to summarize, within GuardDuty,
+we have several input data.
+We have the VPC Flow Logs,
+the CloudTrail logs, and the DNS logs
+that will be no matter what into GuardDuty,
+as well as some optional features you can enable,
+such as your S3 logs, your EBS volumes,
+your Lambda network activity, RDS and Aurora login activity,
+and your EKS audit logs and runtime monitoring
+as well as most likely more features over time
+that I will not put here
+because you get the idea of optional features.
+And so from all these things,
+then GuardDuty can generate findings,
+and if these findings are detected,
+an event is created in Amazon EventBridge.
+And therefore, from Event Bridge, thanks to rules,
+we can trigger automations,
+for example, using Lambda functions,
+or send notifications, for example, using SNS.
+You need to know another feature
+of GuardDuty called the Delegated Administrator.
+So when you have an AWS Organization,
+one of the member accounts can be designated
+a GuardDuty Delegated Administrator.
+The idea is that that one account has full permission
+to enable and manage GuardDuty for all accounts
+in the Organization.
+So you have your Management accounts,
+and you want to have GuardDuty enabled
+for several member accounts.
+Therefore, you're going to name one of these member accounts
+a Delegated Administrator for GuardDuty,
+and it will have the power to enable and manage GuardDuty
+on all the accounts within the Organization.
+Now to name a Delegated Administrator,
+this can only be done using
+the Organization Management Account.
+Okay, so that's it for GuardDuty.
+I hope you liked it, and I will see you in the next lecture.

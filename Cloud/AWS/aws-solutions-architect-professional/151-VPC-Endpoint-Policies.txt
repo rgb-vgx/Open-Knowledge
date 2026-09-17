@@ -1,0 +1,158 @@
+# 151. VPC Endpoint Policies
+# Section: VPC
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18387216
+# Caption: en_US (manual)
+
+Okay, so now let's talk about the security
+of our VPC endpoints.
+And they're called VPC Endpoint Policies.
+So VPC Endpoint Policy, as you can guess,
+is going to be a JSON document
+to control access to a service.
+And this looks just like this.
+So in this example, what do we have?
+Well, we have a policy that allows us to do SQS SendMessage
+to a specific queue using a specific principle,
+which represents a user through IM.
+So this is applied to a VPC endpoint.
+That means that only that user can access this queue
+through that VPC endpoint,
+and it has to be an SQS SendMessage.
+So this does not override or replace IM user policies
+or service specific policies,
+so you may still have an SQS queue policy
+and the IM user still needs to be allowed to talk to SQS.
+But this is yet another level of protection.
+This one is happening at the VPC endpoint level.
+So for notes, is that if our IM user is trying to access SQS
+out of our VPC endpoint using the public route,
+then it may still work,
+because the VPC endpoint policy will not apply.
+In this case what we could do,
+is add an SQS queue policy to deny any action
+that is not done through the VPC endpoint,
+effectively forcing any connection
+to go through the VPC endpoint.
+And then forcing the VPC endpoint policy
+to be applied no matter what.
+Okay, so another way you can apply
+a VPC endpoint policy is going to be on an S3 bucket.
+So here is an example.
+In this example, we are restricting access,
+through the VPC endpoint only,
+to one specific bucket called my_secure_bucket.
+So here we're saying,
+anyone can do GetObject and PutObject
+on and only on my_secure_bucket.
+Hopefully that makes sense.
+But if you can't remember,
+this VPC endpoint policy is applied
+at the VPC endpoint level.
+And one can circumvent it, if they want to go
+through Amazon S3 through the public route.
+So here is another VPC endpoint policy.
+And this time it's to only allow access
+to Amazon Linux 2 repositories.
+So the idea is,
+when our EC2 instances need to do an update
+of their Linux operating system,
+what actually goes on is that they are getting some objects
+on an S3 bucket that belongs to Amazon.
+And so, this VPC endpoint policy allows your EC2 instances
+to have access privately to this repository
+through your VPC endpoint policy.
+Okay, so we can combine your VPC endpoint policy
+and your S3 bucket policy.
+So your S3 bucket policy may have some specific conditions.
+And this one example is aws:sourceVpce equals this VPC ID
+to deny any traffic that doesn't come
+from a specific VPC endpoint.
+So here we're saying,
+if we have this condition in our S3 bucket policy,
+then any traffic going through
+our VPC endpoint is going to be authorized.
+And any traffic not going through the VPC endpoint,
+is going to be denied.
+So effectively, we've locked down our S3 bucket
+to be only usable from our VPC endpoints.
+And if we have many VPC endpoints,
+and we want to be able to have a more global condition,
+then we can use the condition aws:sourceVpc equals this,
+for a specific VPC.
+But here's the catch,
+the aws:sourceVpc condition only works
+for VPC endpoints and for private traffic.
+So this is when you have multiple endpoints
+and you want to manage access to your S3 bucket
+for all your endpoints.
+So it only works when you go through VPC endpoints.
+So that means that if you want to restrict access using IP,
+the only way to do it,
+is to use a specific public IP address or an elastic IP.
+You cannot use this SourceIp condition
+to restrict based on a private IP.
+So remember, if you are having a private VPC endpoint
+and you want to restrict access using private IP,
+you have to use aws:SourceVpce or SourceVpc as a condition.
+But if you want to restrict based on the public IP,
+then you have to use the aws:SourceIP.
+The aws:SourceIP only applies to public IPs,
+and the other ones only apply to private network traffic.
+So let's have a look through an example
+for S3 bucket policy.
+So this S3 bucket policy restricts your access
+to your S3 bucket through only one specific VPC endpoint.
+So we're saying principal, star, action, star, effect,
+deny anything that doesn't come from the source VPCE
+that we have specified here.
+Or, here is an example where we're denying any traffic
+that doesn't come from the source VPC
+and the source VPC we have.
+This is in case we have multiple VPC endpoints.
+So finally, how can we troubleshoot a connection
+from an instance in a private subnet in a VPC to Amazon S3?
+And, as you can see,
+there's going to be a lot of moving parts.
+But just before I do so,
+if you want to do it as an exercise yourself,
+try to see all the possible things that can go wrong
+when trying to connect an EC2 instance
+in a private subnet onto an Amazon S3 bucket privately.
+Okay, so let's get started.
+First one, is that we have to check
+the security group of our instance.
+The security group has outbound rules.
+And if the outbound rules are not allowing the traffic out,
+then things will not work.
+Then we have to create our VPC endpoint gateway,
+because we are accessing Amazon S3.
+And so, our VPC endpoint gateway will have
+a VPC endpoint policy.
+And it needs to allow, obviously,
+our EC2 instance to access Amazon S3.
+Then we need to make sure we update the route tables
+to make sure that anything that is requested
+for Amazon S3 is going to go
+through the VPC endpoint gateway.
+If we don't set up the route table,
+then our EC2 instance can never talk
+to the VPC endpoint gateway, and things will not work.
+And also, we need to make sure that the VPC DNS settings
+for the DNS resolution are enabled
+for the resolution to be correctly done.
+Next, once we go through the VPC endpoint gateway,
+we are getting into the Amazon S3 bucket.
+And here we have to verify
+that the Amazon S3 bucket policy is indeed allowing
+our EC2 instance to access Amazon S3.
+And then finally,
+our EC2 instance may have an EC2 instance role.
+And that role may allow it, or may not allow it,
+to access the S3 bucket.
+So we also have to check IAM permissions.
+And that's it.
+As you can see, there's a lot of moving parts
+that can restrict your EC2 instance
+from connecting to your Amazon S3 bucket.
+And understanding that, is key going into the exam.
+So that's it for me, I will see you in the next lecture.

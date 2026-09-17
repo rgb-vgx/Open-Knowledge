@@ -1,0 +1,184 @@
+# 147. S3 CORS Hands On
+# Section: Amazon S3 Security
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/19736418
+# Caption: en_US (manual)
+
+So let's practice using CORS.
+And for this we first must change the index.html files.
+So if you open it,
+you will find that this part has been commented out
+and this part is to demo CORS.
+Okay, so the way to just make it work
+is that you first go to line 13
+and you remove the first characters before the div.
+And after script,
+you remove as well the dash, dash and arrow.
+So this is going to enable CORS.
+And what's going to happen is that
+my first webpage is now gonna say
+Hello world I love coffee
+and show the coffee image.
+But after this, we're going to have a script
+that is going to fetch an extra page,
+an extra HTML page, okay?
+And then displays underneath.
+And this extra HTML page right here is saying
+this extra page has been successfully loaded.
+So let's go into our buckets
+and we're going to upload two files.
+So we have the extra-page.html and the index.html.
+So we're going to do
+is that we're going to upload these two files now,
+because this is successful.
+And if I go into my Properties
+and look for my endpoints right here,
+I can click on this to open in a new tab.
+And we have I love coffee, Hello world! The coffee image.
+And then this extra page has been successfully loaded.
+So that means that the fetch request worked
+from within the same origin
+because, well, both my extra page
+and my index.html files are on the same bucket.
+So now let's demonstrate CORS.
+And to do this,
+I must first create another extra extra bucket
+and enable it as a website.
+So let's create a bucket and call it
+demo-other-origin-stephane.
+And I will choose it to be in another region, for example,
+to demonstrate that there are very different servers.
+For example, I will put this one in Canada.
+Okay, so I'll scroll down.
+I will unblock all public access
+because we will make this public.
+And then I will scroll down, create this bucket.
+Now I go into the bucket itself.
+And then under Properties I will scroll down
+and make sure that we have enabled this as a website.
+So yes, this is a website
+and I wanna host a static website.
+And then we'll say index.html,
+even though we don't have one,
+this will be enough for the index documents.
+Okay, so this is good.
+Next, we need to make this bucket public.
+So let's go into Permissions.
+And then for the bucket policy, let's edit it, okay.
+And to make it simple,
+I'm going to just copy the one I had from before.
+So this one is going to be copied here and pasted,
+and I will just swap out the buckets ARN,
+right here under the resource.
+So this is effectively going to make
+these buckets public as well.
+So let's save these changes.
+And we have an unexpected response
+because we just removed the first character.
+Save the changes. Perfect.
+Back in here, we are going to now upload,
+in my other-origin, we're going to upload a file.
+So we're going to upload this extra-page.html.
+Upload it, and we're good.
+So this file should now be a public file
+on my buckets enabled as a website.
+So if I click on this, this Object URL right here,
+as we can see the extra page has been loaded
+and the file is public.
+So now what we have
+is that we have the origin buckets in here
+and we can remove this extra-page.html
+because we don't need this one right now
+because we have placed it in another bucket.
+And then we're going to have to change the index.html file
+to point instead to the extra page in my other origin.
+So first, let's go to this page,
+and I'm going to refresh this.
+And I get a "404 Not Found" because, well,
+we cannot find the extra-page.html.
+So this is perfect.
+Right now we shows that we have something to fix.
+So let's close this.
+Let's go to this demo-origin-stephane, other-origin.
+Let's go to the properties, find the public URL, this one.
+So let's open this as an STS website,
+/extra-page.html.
+So perfect, we have this extra page, this puzzle website.
+And we'll use this entire URL and change our index.html.
+And this time to fetch, we're going to fetch not this
+but the full path to my extra-page.html on another bucket.
+And this is going to trigger
+across origin resource share request.
+So now I need to re-upload this index.html file
+where I need to.
+So let's upload it here on the main buckets,
+the first one.
+Perfect. And let's override it.
+Okay, so now my file is uploaded.
+So let's go onto my first webpage right now.
+And it's using the new index.html.
+And I'm going to first open, under More tools,
+I'm going to open the web developer tools.
+This is something also called the Chrome Developer Tools.
+And I'm going to refresh this page
+to see if we have an error.
+So let's refresh this page.
+As you can see now, we don't have any error message here,
+but in my console log debugger,
+we have something that is written very, very small
+and may be aware.
+But it says cross-origin request blocked
+because the policy does not allow this.
+There's a CORS header called
+the Access-Control-Allow that is missing.
+And so therefore, currently,
+because my request is going onto this other bucket,
+but this other bucket is not set up for CORS yet,
+then this request is failing.
+And the web browser is saying
+that the cross-origin request has been blocked.
+So let's fix this by adding the CORS setting.
+So let's go here under my other origin, okay,
+and you go under Permissions, scroll down,
+and we have the CORS setting here that we define in JSON.
+So let's edit this.
+And we need to add the correct CORS setting.
+So thankfully I have them here.
+So you just copy this block of code and you paste it here.
+And here, the AllowedOrigins we need to define
+are going to be a URL of the first bucket with http
+without a slash at the end.
+So fair lazy.
+Let's go to my first web page.
+We copy this entirely,
+we paste it here,
+and if there's a slash at the end like right now,
+just remove it.
+And then you're going to save these CORS settings.
+So now we're saying to this other origin that's, yes
+it's okay to make requests from the first origin.
+So how do we know that it's going to work?
+Well, let's refresh this page now.
+As we can see now,
+this extra pet has been successfully loaded,
+and that's correct.
+And we can also have a look at this
+by going into the networking tab.
+And if you look at the request that was made
+on the extra page, and we look at the response headers,
+we can see right here, again, it's very small,
+but we can see that there is
+Access-Control-Allow-Methods GET,
+Access-Control-Allow-Origin,
+and this is the origin of my first buckets.
+So these are the headers
+that allow this cross origin request to be made.
+Now, I know that what we've seen right now
+may be a bit advanced, of course,
+but this CORS settings just come up at the exam
+at a high level.
+Did you know what it is?
+But I wanted to show you exactly how it worked
+so that it becomes very easy
+for you to answer this one question.
+Okay, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

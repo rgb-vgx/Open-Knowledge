@@ -1,0 +1,125 @@
+# 380. Application Load Balancer - User Authentication
+# Section: Cognito: Cognito User Pools, Cognito Identity Pools & Cognito Sync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527558
+# Caption: en_US (manual)
+
+So we know we can integrate Cognito
+with the API gateway to authenticate users,
+but we can actually do the very same thing
+with an application load balancer.
+So your ALB can securely authenticate user
+and this allows you to remove the work
+away from your application
+and have this responsibility put on your load balancer
+so that your applications can only focus
+on their business logic.
+So you can authenticate in multiple ways
+for your application load balancer.
+The first one is to use an identity provider
+that is OpenID Connect, so OIDC-compliant.
+The second option is to use Cognito user pools
+and this is for social identity providers
+such as Amazon login, Facebook login, or Google login
+or if you have corporate identities
+that are compatible with SAML, LDAP, or Microsoft AD.
+So the first one, first option is to integrate
+directly without Cognito user pools
+and the second option is to use Cognito user pools,
+and I will show you them both in this lecture.
+Now to make it work,
+you must set up an HTTPS listener, S for secure,
+and then you can set either the authenticate-oidc
+or the authenticate-cognito rules.
+So when you go and you configure your load balancer,
+you will see something like this
+where as you can see for this listener detail on HTTPS,
+the first default action is to authenticate
+and then to forward to your backend.
+Now in case your user is unauthenticated,
+what do we do?
+We have the option, we have three options.
+The first one is to naturally say please authenticate.
+That's the default one.
+But you can also just deny the request altogether
+or allow the request altogether,
+and allow would be very helpful,
+for example, for your login page
+because people would access your login page
+without first being authenticated.
+So how does that work?
+Well, let's say we have an application load balancer
+connected to Amazon ECS
+and we want to implement a login through Amazon Cognito
+in which case the users will do GET/api/data.
+Then the ALB is going to be set up with HTTPS
+with the action authenticate-cognito.
+So Cognito will do its thing
+and authenticate the user,
+and then the payload and the request is passed on
+to Amazon ECS with the added information
+of the user that was doing the request from Cognito.
+And this is very helpful
+because now you have more information
+to deal with with Amazon with your application,
+for example, with Amazon ECS,
+and you can return a specific response
+that is based on what the user information is.
+So to set it up, it's very easy.
+You go to the ALB UI
+and then you would first create a Cognito user pool,
+a client, and a domain.
+You make sure that the ID token, the JWT token, is returned,
+but this is the default in Cognito user pools.
+Then you connect your Cognito user pool to your social
+or your corporate IdP if that's what you want,
+and then you set up several URL redirections
+and then you go ahead and you set up more callback URLs
+which are very specific to Cognito user pool
+so I don't wanna linger on this.
+And then you just link that Cognito user pool
+into your ALB with the specific app clients
+and you're good to go.
+So it's quite easy.
+In case you're using OIDC authentication,
+there is a little bit more work
+because it's not using the Cognito integration.
+You can just integrate
+with any OIDC-compliant identity provider.
+So let's take the same example.
+They will be an HTTP requests.
+Then the ALB is going to redirect the user
+for authentication to the authentication endpoint
+of your identity provider
+which is going to grant an authorization code.
+The authorization code is going to be passed to the ALB
+which is going to send it to the token endpoint.
+So the grant code is going to be switched
+and exchanged for an ID token
+and an access token.
+And then your ALB will again do a request
+to the user info endpoint of your identity provider
+to exchange that access token for a user claims.
+And user claims is basically saying
+hey, this is the user id,
+this is the user attributes, and so on.
+And then once the user claims is obtained,
+then the request is going to be sent to Amazon ECS
+with the original request and the user claims.
+We get the response
+and the response gets passed to the user.
+So similar functioning as Cognito
+but a bit more request happening between your ALB
+and your identity provider.
+So a bit more, as you can see,
+settings to configure as well.
+So we have what is the authorization endpoint,
+the token endpoint, the user info endpoint.
+We need to set up a client's ID
+and a client secret
+and then we need to allow proper redirection,
+again just like before so that your ALB
+and your OpenID Connect endpoints can function together.
+But you've seen now the two ways
+to authenticate users with your ALB.
+So I hope you liked it
+and I will see you in the next lecture.

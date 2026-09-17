@@ -1,0 +1,38 @@
+# 168. Amazon Kinesis Data Streams - Security
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305638
+# Caption: en_US (auto)
+
+Instructor: Okay, let's talk about Kinesis security.
+So security is going to be a big part in your exam.
+It's a dedicated section to it,
+and so we need to know about security for each technology,
+so let's start with by Kinesis.
+Basically, we control access and authorizations to Kinesis
+using IAM policies, and we can get encryption in flight
+using the HTPS endpoints.
+That means that the data we send to Kinesis
+will be encrypted and it cannot be intercepted.
+We can also get encryption at rest
+within the Kinesis streams using KMS.
+And if you wanted to encrypt your message client-side
+and decrypt it client-side, then you must do this manually.
+So it is possible to do, but it is harder.
+There are no clients to help you do that,
+and it's up to you to implement
+that kind of technology, encryption technology.
+Finally, if you want to access Kinesis
+within your VPC within a private network,
+you could use something called VPC endpoints.
+They're accessible for Kinesis
+that basically allow you to access Kinesis,
+not on the public internet,
+but on your private VPC internet.
+So that's it for Kinesis security.
+Don't worry, overall, at the end of the course,
+I'll have a whole section on security,
+describing in-depth the security for each technology,
+but at least it gives you some kind of idea
+of how Kinesis security works.
+All right, that's it.
+I will see you in the next lecture.

@@ -1,0 +1,114 @@
+# 180. SQS + Auto Scaling Group
+# Section: Decoupling applications: SQS, SNS, Kinesis, Active MQ
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078357
+# Caption: en_US (manual)
+
+So I've told you that we can use the SQS Q
+with the autoscaling groups.
+But I want to show you how and the patterns
+that it opens up.
+So we have a SQS queue and an autoscaling group.
+And the EC-2 instances within the ASG
+are going to poll for messages from the SQS queue.
+Now the idea is to scale the auto scaling groups
+automatically based on the queue size.
+And so therefore, we can look at the CloudWatch metric
+called queue length, called approximate number of messages,
+which basically represents how many messages
+are left in the queue.
+And you can set an alarm and say, well, if this metric
+is over, say, for example, 1,000,
+that means there are 1,000 messages in the queue
+waiting to be processed, that means that we are lagging
+on the processing.
+And therefore, we're going create an alarm saying,
+hey, over 1,000 is going to be an alarm.
+And this alarm is going to trigger a scaling action
+in your auto scaling group.
+Because, well, we don't have enough EC2 instances.
+And therefore, more EC2 instances are going to be added
+into your auto scaling group, which will scale.
+And therefore, the message will be processed faster.
+The SQS queue size will decrease.
+And you will have scaled for it.
+And it works in both ways.
+You can scale up or scale down.
+And this is the main idea of using an auto scaling group
+and an SQS queue.
+Now, what patterns as it open up?
+Well, say, for example, that you are running a very big sell
+and this is the biggest marketing campaign you've done
+in your life.
+And all your customers are going to place orders.
+And these orders can be stored
+in different types of databases.
+They could be stored in Amazon RDS or Amazon Aurora
+if you wanted to have some OLTP type of databases
+or Amazon DynamoDB, if you want to have
+no SQL type of database.
+And so these transactions may be written very, very fast
+into RDS or very suddenly.
+And so if your application handles them,
+they can handle requests.
+But then on uncertain transactions,
+there may be some errors, if the databases are overloaded.
+And you will lose some customer transactions,
+which is bad for your business.
+So how do we solve this?
+Well, we can solve this by using SQS as a buffer
+to the database writes.
+And this is a very common exam pattern.
+So the same databases are here.
+And the same fronting application is here.
+But instead of writing directly into the database,
+the applications are going to write
+the transaction request or transactions into your SQS queue.
+Which, by definition, from AWS is infinitely scalable,
+doesn't experience any kind of throughput issue.
+So your request goes into your application,
+which will enqueue messages.
+That means that all the transactions, all the request
+will be sent as a message into your SQS queue.
+And so that means that we will not lose
+any single one of them.
+They will be durably stored into your SQS queue.
+Now, we can create another auto scaling group.
+This one to dequeue messages.
+And the sole role of this auto scaling group
+is to receive the messages and then insert them
+into the databases.
+And only when a message is known to be inserted
+in a database, then we will delete the message
+from the original SQS queue.
+And therefore, we used SQS as a buffer.
+And we guarantee that every single transaction
+is going to be written into your database.
+Now, this pattern works only if the client does not need
+to have the confirmation that the write has been happening
+into the database.
+But this is fine because if the write has been done
+into an SQS queue, we sort of have the guarantee
+that it will be written eventually to the database.
+So we're good.
+So this works for decoupling between database writes,
+but also between application tiers.
+So imagine an application that is getting a request
+performing some processing and then sending back a response.
+Instead, we can decouple it.
+So we can have all the requests come
+into a front end web application.
+Send the request into an SQS queue.
+And then, the backend processing job
+will just receive these messages and deal with them
+in their own time.
+And we can scale this accordingly.
+So SQS is going to be a very, very common way of dealing
+at questions at the exam.
+It is more common than usual now.
+And so anytime you see decoupling, or sudden spike load,
+or timeouts, or whatever, and you need to just make sure
+you can scale a lot very fast, you may want to look
+into an SQS queue.
+All right, that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

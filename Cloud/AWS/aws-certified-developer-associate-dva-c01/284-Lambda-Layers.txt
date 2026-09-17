@@ -1,0 +1,50 @@
+# 284. Lambda Layers
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730674
+# Caption: en_US (manual)
+
+Okay, so now let's talk about Lambda Layers.
+They're a newer feature of Lambda,
+and they allow us to do two things.
+Number one is to create custom run times for Lambda.
+So that means languages that are not meant
+for Lambda initially,
+but that the community has decided to support
+through Lambda Layers.
+So we have C++, and we have Rust, for example.
+So these are two examples that allow you
+to use a C++ language or the Rust language
+onto Lambda functions.
+The other more common use case for Lambda Layers
+is to externalize dependencies in order to reuse them.
+So, if we look at a zipped application package,
+it could be pretty big, we have a Lambda function
+and there'd be some heavy libraries, heavy dependencies.
+And so that's maybe 30 megabytes.
+And we saw that to update another function,
+we need to re-upload that zip over and over and over again.
+So that would mean that every time
+we repack your application and re-upload everything,
+but sometimes the dependencies we're using are not changing
+or are changing very, very, very slowly.
+And so it would be better to externalize them
+into what's called a layer.
+So the goal is to have your application package
+which is what you could change very,
+very often your code externalize.
+So this has maybe 20 kilobytes, so very, very small.
+And then you have created layers for your heavy libraries.
+So you've created a first and then the layer of 10 megabyte
+the second limited layer of 30 megabytes
+and these layers together can be referencing your function
+and sorry your functioning can be referencing your layers,
+obviously, and therefore we have a much faster way to
+deploy our functions
+and we don't need to repackage every time our dependencies
+and because our layers are externalized, another function
+another application package could create another function
+maybe 60 kilobytes and reference these, same layers.
+So this the whole purpose
+we are packaging our application dependencies and layers
+and we can reuse them across Lynda functions.
+Now let's go in the hands-on to see how that works.

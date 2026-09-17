@@ -1,0 +1,125 @@
+# 77. S3 Replication Hands On
+# Section: Amazon S3
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20207498
+# Caption: en_US (manual)
+
+So let's practice replication
+on Amazon S3.
+For this, we're going to create a new bucket.
+I'll call it S3 Stephane bucket origin V2,
+and I will set it in one region that I want,
+for example, EU west one.
+This will be my origin buckets
+and then data will be replicated
+from this bucket to another bucket.
+So the thing I need to do of course,
+is to enable versioning
+because replication only works
+if versioning is enabled.
+So I will create this bucket,
+and then open this bucket in a new tab
+and I will create a second bucket
+and this will be my target bucket.
+So I will do S3 Stephane bucket replica V2.
+And this time, the region can be either the same,
+for example, if you wanted to do same region replication
+or something completely different,
+for example if you wanted the US,
+you could do US east one
+to replicate from Europe to the US.
+Okay, so let's scroll down
+and let's again, enable bucket versioning
+on the target buckets.
+And we're good to go.
+So now we have our primary buckets
+and our secondary buckets.
+What I'm going to do is that in the origin bucket,
+I'm going to upload a file
+so I will add a file of my beach,
+for example, beach.jpeg.
+Okay, this is done and we can close this.
+So now this has one file,
+but of course, this does not get replicated yet
+because we haven't set up replication yet
+so let's go ahead and do this.
+So on the origin bucket,
+what I need to do is to go under management,
+scroll down and there are replication rules,
+currently, zero.
+So let's go ahead and create our first replication rule.
+So I'll call this one demo replication rule.
+Okay, perfect.
+We'll set it as enabled.
+For the source bucket,
+we'll leave it as is
+and in terms of rule scope,
+we'll apply it to all objects in the buckets.
+Now for the destination,
+we can specify a bucket in this account
+or in other accounts,
+and we'll choose one in this account
+and the bucket name is my target bucket.
+So I need to actually enter the name.
+So I'll take this bucket right here, copy and paste it.
+Okay, and as you can see,
+the destination region was identified
+as being US east one,
+so therefore, this is a cross region replication.
+Okay, now for IAM role,
+we need to actually go
+and create a new role for this.
+So there's the option.
+And then we can have a look at some settings,
+but for now, it doesn't really matter for us.
+Let's just save this.
+So we get a prompt right here,
+which says, do you want to replicate existing objects?
+So it turns out that when you do enable replication,
+it will only replicate objects
+from the moment you set it,
+so for newer uploads.
+So if you wanted to replicate the previous objects
+from the source of the destination bucket,
+you could use something called a batch operation,
+an S3 batch operation to do so
+and you would need to say yes, replicate existing objects,
+but this is separate from the replication feature itself.
+Therefore, I'm going to say no,
+do not replicate existing objects
+and we're good to go.
+So now let's have a look.
+So we have this management
+with a replication rule that is ready.
+And now what I'm going to do is check in my replica bucket.
+Of course, if I refresh now,
+we see that the objects haven't been replicated.
+So I'm going to do is now upload a new file,
+for example, upload the coffee.jpeg file,
+upload it.
+We're done.
+So here is the coffee.jpeg file.
+Let's show the version.
+So this is coffee.jpeg and the version is GBK.
+Okay, perfect.
+Now, if we go in my target bucket and refresh this,
+it's gonna take maybe five seconds.
+And this took about 10 seconds on the first replication,
+but we can see that my coffee.jpeg
+has been added into my replica bucket.
+And if I show the versions,
+we can see the version ID
+of my coffee.jpeg is the exact same of the origin bucket.
+So the versions IDs are replicated, which is great.
+And if I wanted to port the beach.jpeg,
+I would need to upload a new version of that file,
+so let's upload beach.jpeg again.
+Now this has been uploaded.
+We can look at the version.
+So there is a new version right here
+of DK2, of my beach.jpeg file.
+And now if I go here and refresh,
+and this took a bit of time, but as you can see,
+you can find the DK2 version of that file.
+So that's it for S3 bucket replication.
+I hope you liked it
+and I will see you in the next lecture.

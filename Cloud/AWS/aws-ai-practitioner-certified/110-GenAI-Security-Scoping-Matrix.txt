@@ -1,0 +1,58 @@
+# 110. GenAI Security Scoping Matrix
+# Section: AI Challenges and Responsibilities
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45375487
+# Caption: en_US (manual)
+
+So now let's talk about a framework
+called the Generative AI Security Scoping Matrix.
+And this framework is designed to help you identify
+and manage security risks associated
+with deploying GenAI applications.
+So it classifies your apps into five defined GenAI scopes
+from low to high ownership.
+So the first scope is a consumer app,
+and the consumer app is using public GenAI services,
+for example, if using ChatGPT or Midjourney.
+Here you have very, very low ownership.
+Then we have an enterprise app.
+So it's an app that is, for example,
+using software as a service GenAI features.
+And for examples you can have Salesforce Einstein GPT
+or Amazon Queue Developer.
+So here you're using someone else's service,
+but you are also customizing it a little bit
+so you have higher ownership.
+Then we have pre-trained model.
+So this says when you are using an app,
+you're building your app on a pre-trained model
+on the version model,
+such as, for example, the Amazon Bedrock base models,
+but you haven't trained the model yourself,
+so it's medium level of ownership.
+Then you have fine tune models.
+So this time you want to use, for example,
+Amazon Bedrock customized models or SageMaker Jumpstart,
+and you're going to fine tune the model with your data.
+Because you are providing your own data,
+then of course, the ownership is going to be higher
+because now you have to maintain that as well.
+And on the very end of the ownership spectrum,
+you have the self-trained models.
+This is where you train a model from scratch on your data,
+for example, using the SageMaker service.
+And here you own everything,
+from the algorithm, to the data, to everything else.
+And so when you apply security on top of it,
+based on the type of scope you have,
+you may have a different concern.
+So governance and compliance, legal and privacy,
+risk management controls and resilience,
+all these things change based on the type of scope you have.
+And I still need you to know from this exam perspective,
+but it's good for you to be aware
+that there's different level of ownership
+based on the GenAI use-case and how you do it,
+and there are different associated security risks
+with all of those.
+So I hope you liked it,
+and I will see you in the next lecture.

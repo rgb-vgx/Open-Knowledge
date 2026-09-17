@@ -1,0 +1,110 @@
+# 284. Amazon CloudWatch - Alarms
+# Section: Management and Governance
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45357133
+# Caption: en_US (manual)
+
+Now let's discuss CloudWatch Alarms.
+So alarms, as we know, they're used
+to trigger notifications from any metric.
+And you can define complex alarms
+and on various options such as sampling or doing percentage
+or maximum, and so on.
+Alarm has three states,
+OK, it means that it's not triggered,
+INSUFFICIENT_DATA means that there's not enough data
+for the alarm to determine a state
+and ALARM, which is that your threshold has been breached
+and therefore a notification will be sent.
+The period is how long you want the alarm
+to evaluate for on the metric.
+And so it could be very, very short, very, very long.
+And it can apply also to high resolution customer metrics.
+For example, 10 seconds, 30 seconds,
+or multiple of 60 seconds.
+Now, alarms have three main targets.
+The first one is actions on EC2 instances
+such as stopping it, terminating it, rebooting it,
+or recovering any instance.
+The second one is to trigger an auto-scaling action.
+For example, a scale out or a scale in.
+And the last one is to send a notification
+to the SNS service, for example,
+and from the SNS service, we can hook it
+to a Lambda function
+and have the Lambda function do pretty much anything we want
+based on an alarm being breached.
+So now let's talk about Composite Alarms,
+because we know that CloudWatch Alarms
+are on a single metric,
+but then if you wanted to have multiple metrics,
+you would need to use Composite Alarms.
+So because composite alarms are actually monitoring
+the states of multiple other alarms,
+and these alarms can be each relying
+on one different metric.
+So the Composite Alarm is the action
+of combining all these other alarms together,
+and you can use AND or OR conditions
+to be able to be very flexible in terms
+of the condition you're checking for.
+So it's very helpful to reduce alarm noise
+because you can create complex Composite Alarms
+and saying, for example, if the CPU is high
+and the network is high, then don't alert me
+because I only wanna know when the CPU is high
+and the network is a low, these kind of things.
+So let's take an example, we have an EC2 instance,
+and we're going to create a composite alarm on top of it.
+So therefore we create a first
+underlying alarm called the Alarm A,
+which is going to monitor the CPU of the EC2 instance.
+Then you create Alarm B, which is going to monitor the IOPS
+of the EC2 instance,
+and then the composite alarm is defined as the junction
+of Alarm A and Alarm B.
+And therefore, if Alarm A is in alarm
+and Alarm B is in alarm,
+and this is something we have to define ourselves,
+then the Composite Alarm itself will be an alarm
+and can trigger, for example, an SNS notification.
+So as you can see, you can get quite creative
+with the Composite Alarms.
+So let's talk about EC2 instance recovery.
+So we have the status checks
+and we have the instance status check,
+which is going to check the EC2 virtual machine.
+And we have the system status check,
+which is going to check the underlying layer hardware
+of our EC2 instance.
+And finally, the attached EBS status check,
+which is going to check any attached EBS volumes health.
+And you can define a CloudWatch Alarm on these checks, okay?
+So you'll monitor a specific EC2 instance,
+and in case the alarm is being breach,
+then you can start an EC2 instance recovery
+to make sure, for example, that you move
+your EC2 instance from one host to another.
+When you do a recovery, you get the same private,
+public, and elastic IP, the same metadata
+and the same placement group for your instance.
+And you can also send an alert to your SNS topic
+to get alerted that the EC2 instance was being recovered.
+Now, the cloud alarm has some good stuff.
+To know that, first of all is that as we've seen,
+we can create an alarm on top
+of a CloudWatch logs metric filter.
+So remember, the CloudWatch logs are having a metric filter,
+which is hooked to CloudWatch Alarm.
+And then when we receive too many instances
+of a specific word, for example, the word error,
+then do an alert and send a message into Amazon SNS.
+And so if you wanted to test alarm
+and notifications, you can use a CLI call
+called set alarm states.
+And this is helpful when you want to trigger an alarm,
+even though it didn't reach a specific threshold
+because you wanted to see whether
+or not the alarm being triggered results in the correct
+action for your infrastructure.
+So that's it for alarms, I hope you liked it,
+and I will see you in the next lecture for some practice.

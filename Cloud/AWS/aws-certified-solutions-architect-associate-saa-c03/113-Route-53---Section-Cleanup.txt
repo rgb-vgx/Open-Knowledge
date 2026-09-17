@@ -1,0 +1,44 @@
+# 113. Route 53 - Section Cleanup
+# Section: Route 53
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528214
+# Caption: en_US (manual)
+
+Okay, so let's clean up
+what we've done in the Route 53
+if you wanted to avoid some costs.
+So the domain name you've bought,
+of course stays in your accounts,
+and it will cost you $12 a year
+if you wanted to renew it
+or more if you've bought a more pricey domain name
+And the domain name itself, so the hosted zone,
+if you're not using it,
+you can delete this hosted zone
+by first emptying all the records.
+Otherwise it will cost you 50 cents per month
+to keep this hosting zone alive, okay.
+Within it, it doesn't matter if you have many records,
+you can just leave them as is.
+This is fine.
+The other thing we have to delete is all our EC2 instances
+in our different regions, as well as our ALB.
+So we had EC2 instances in three different regions.
+So what I'm going to do is just delete them one by one.
+So there was one from me in Frankfurt,
+and I believe that the load balancer I had created
+is also here.
+So let me delete this load balancer as well.
+And we can also delete the associated target group
+with that load balancer, okay.
+This is good.
+And we have to perform the same kind of cleanup
+in other regions.
+So for me was us-east-1 where I'm going to go ahead
+and delete another, terminate another EC2 instance,
+and finally do the exact same thing in ap-southeast-1.
+Okay.
+After this, you should not incur any costs
+out of this lectures.
+Okay, so I really hope you liked this section
+and I will see you
+in the next lecture.

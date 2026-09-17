@@ -1,0 +1,109 @@
+# 4. [DVA] CodeCommit - Overview
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858352
+# Caption: en_US (manual)
+
+So let's talk about AWS code commit now.
+So the concept we need to introduce is version control.
+It's the ability to understand the various changes that
+happen to code over time and possibly roll back.
+So to have version control,
+that means that you can see what happened in the past,
+who committed some code, what changed,
+what was added was removed and so on, and then roll back.
+And so to get version control,
+there is an underlying technology that's very,
+very popular nowadays called Git,
+and a Git repository can be synchronized on your computer,
+but it's also very usually uploaded onto a central online
+repository.
+And the benefits of having a central online repo for a git
+repo is that you can collaborate with other developers.
+So it allows, you know,
+organizations up to maybe hundreds of thousands developers
+to work on the same code at the same time, which is amazing.
+Make sure that also the code is backed up somewhere.
+So the code lives on the cloud and not on just someone's
+computer,
+make sure it's fully viewable and editable so we can see who
+committed to what line of code when, and we can revert them.
+You can roll back.
+You can do a lot of good things with code repositories
+And so with Code Commit, well,
+we have a code repository in AWS and our developers.
+For example,
+Emma and John can collaborate and push and pull code from
+our code repo
+So why do we want to use Code Commit? Well,
+Git repository can be quite expensive.
+And so there is like some industry, that offer,
+third party services, which is github,Gitlab,
+Bitbucket and so on, but the bill could be pretty high,
+but by using code commits, which is on AWS,
+you get a private git repository
+that's because your code
+actually lives and stays within your VPC on AWS cloud.
+There's no size limit on the repo.
+That means that you can scale to, you know,
+gigabytes of code, if you want it to
+it's fully managed is highly available.
+And the Code, as I said, is only in the AWS cloud.
+So that means there is increased security and compliance,
+and maybe for example,
+unacceptable for you to have your code elsewhere then on
+AWS
+also could commit a security. So it's encrypted,
+you have access control using IAM and so on,
+and you have integrations within code commit and industry
+standards for such as Jenkins or CodeBuild or other CI
+tools, which make it a great choice to store your code.
+If you want it to now Code Commit as very,
+very good security.
+So interactions are done using this standard Git command
+line, but then you have authentication on top of it.
+It could be using SSH keys. In which case, as a user,
+you can configure your SSH keys to be able to
+go into a Git repo or HTTPS.
+If you wanted to get access using standard login and
+password to get repo. for authorization,
+you have IAM policies are used to manage users and roles
+permissions to the specific repos,
+which is nice because that means you only have one way of
+managing security in AWS
+Encryption.
+So your code is ultimately going to be encrypted using KMS.
+And that means that no one else, but you can retrieve it.
+And also while you push your code to code commit,
+you have encryption in transit because you use HTTPS or SSH
+protocols, which are both secure.
+And then in case of cross account access,
+of course you would not share you as SSH keys or your
+credentials with someone else. Instead,
+you would create an IAM role in your accounts and then use
+STS the AssumeRoleAPI to get access to a code commit repo.
+So just to finish your high-level overview,
+because you may be very well familiar with GitHub.
+So CodeCommit versus Github is almost a one-to-one
+comparison in some ways,
+but so codecommit and Github support code reuse also
+called pull requests.
+There is both integration with code build and there is a
+authentication with SSL and HTTPS for both codecommit and
+Github. In terms of security. Now it's very different.
+So Github support to Github users and SSO if you have
+enterprise level,
+but codecommit is fully integrated with AWS.
+So you have IAM users and roles
+for hosting while your code
+is only on AWS for codecommit, whereas Github,
+you can host dates directly on GitHub itself,
+or if you'll get an enterprise,
+you can host it on your own servers.
+The UI for codecommit, may I say is quite minimal.
+Whereas I really like GitHub UI it's fully featured,
+but again, if you're just using it as a code repo,
+then maybe you want to go towards code commit for many
+reasons that I've just said it from before. Okay.
+So that's it for an overview of codecommit.
+I hope you liked it.
+And I will see you in the next lecture for some practice.

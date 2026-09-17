@@ -1,0 +1,64 @@
+# 135. S3 Replication - Cross-Account Replication
+# Section: Amazon S3 Introduction
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218307
+# Caption: en_US (manual)
+
+So now let's talk about S3 replication,
+but in a cross-account setting.
+So we want to replicate a source bucket
+into a destination bucket.
+So we have an IAM role in the first account.
+That's going to be the IAM role responsible
+for performing the replication.
+So on the destination bucket, we have a bucket policy.
+And so what we need to do is to edit the bucket policy.
+And the first set of permissions is
+to allow the IAM role of the Account A
+to replicate objects and replicate deletes
+directly in the destination bucket.
+So to allow the service role to do
+what it needs to do on our destination bucket.
+But you also have bucket-level permissions
+around versioning to get the bucket versioning
+and to put the bucket versioning.
+So that means that the IAM role must be, of course,
+enabled to replicate to the destination bucket,
+and the destination bucket must allow,
+through the bucket policy,
+the IAM role to do what it needs to do.
+So this is a classic cross-account setting.
+But we have one more thing to consider.
+So by default, the owner of the source object,
+so the source bucket, is going to be the same owner
+of the replica object in the destination bucket.
+That means that when you replicate an object
+from Account A to Account B,
+Account A is still the owner of the object
+but in Account B.
+So that may be something you want, for example,
+if you do a backup or something.
+But if you want to actually give the other account ownership
+of the object, then you need to do more.
+You need to add the owner override option
+to the replication rule configuration.
+That means that the destination account is now going
+to be the owner of the objects.
+To do so, you also need to grant more S3 permissions
+to the source IAM role.
+The first one is
+the S3 Object Owner Override to Bucket Owner permission
+in the IAM role.
+And then in the destination bucket policy,
+you must also allow the IAM role
+to override the bucket ownership
+to have the destination bucket being the owner
+of the new object.
+So this is an exam question that can come up
+because sometimes when you do a replication
+and you don't enable this option
+and the correct IAM permissions,
+then the target objects are still not readable
+in the destination bucket,
+and that may be a problem based on your use case.
+All right, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

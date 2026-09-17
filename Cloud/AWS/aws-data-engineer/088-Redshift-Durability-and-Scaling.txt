@@ -1,0 +1,106 @@
+# 88. Redshift Durability and Scaling
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40355996
+# Caption: en_US (auto)
+
+Instructor: Now let's talk about the specifics
+of RedShift's durability and scalability.
+Redshift replicates all of the data
+within the data warehouse cluster
+when it is loaded automatically.
+Also, your data is continuously backed up to S3 for you.
+Three copies of the data are maintained,
+on the original, on a replica on compute nodes,
+and in a backup in S3.
+So your data is stored in three different places.
+There's the original copy within your cluster,
+there's a backup replica copy within your cluster as well,
+and furthermore, it does periodic backups into S3 for you.
+So for disaster recovery,
+Redshift asynchronously replicates your snapshots to S3
+in another region as well.
+It can enable automated snapshots
+of the data warehouse cluster
+with a one day retention period by default,
+you can extend that retention period up to 35 days
+if you want.
+If you turn the retention period down to zero however,
+automated backups will be turned off.
+Now, if you need to restore your cluster from a backup,
+you just choose one of the automated backups,
+and then AWS will provision a new data warehouse cluster
+and restore your data to it.
+You can then switch over to the newly restored cluster
+from the old one.
+Redshift replicates the data
+within the data warehouse cluster
+and continuously backs up that data to S3.
+It will mirror each drives data to the other nodes
+within the cluster as well.
+Redshift will automatically detect a failed drive or node
+and replace it for you automatically.
+In the event of a drive failure,
+the Redshift cluster will remain available
+with a slight decline in performance of certain queries
+while Redshift rebuilds that drive from a replica
+of the data on that drive,
+which is stored on another drive within that node.
+Single node clusters do not support data replication,
+because there's nothing to replicate it to.
+In that case, you would have to restore your cluster
+from a snapshot in S3 instead.
+In the event of an individual node failure,
+Redshift will automatically detect that node failure
+and replace a failed node in your data warehouse cluster.
+Now, until that replacement node is provisioned,
+and added to the database,
+the cluster will be unavailable for queries and updates.
+Most frequently accessed data from S3,
+however, is loaded first in the new node,
+so you can resume querying that data as quickly as possible.
+Single node clusters do not support data replication,
+and hence, you will again need to restore the cluster
+from a snapshot on S3
+in the case of a node failure on a single node cluster,
+AWS recommends at least two nodes in your cluster
+for production purposes.
+Now, in the event of a Redshift
+cluster availability zone outage,
+in this case, you will not be able
+to use your cluster until power and network access
+to the availability zone are restored,
+because Redshift is currently limited
+to a single availability zone,
+however, you can restore the cluster
+from any existing snapshot to a new availability zone
+within the same region.
+So in that case too, your most frequently accessed data
+will be restored first from S3,
+so you can resume your queries as soon as possible.
+Amazon is working to remove that restriction, however,
+as of November, 2022,
+they announced multi-availability zone support,
+specifically for RA3 clusters.
+How does Redshift scale?
+Well, Redshift clusters support both vertical,
+which is increasing the node instance type,
+and horizontal, which is increasing the number
+of nodes scaling.
+Your requested changes will be applied immediately
+when you modify your data warehouse cluster.
+Here's how the process works.
+So when you're scaling,
+an existing data warehouse cluster will remain available
+for read operations
+and a new data warehouse cluster is created
+during scaling operations.
+When that new cluster is ready,
+the existing cluster will be temporarily unavailable.
+While a CNAME record for the existing cluster
+is flipped to a point in the new data warehouse cluster.
+That only takes a few minutes,
+and it's usually done during some sort
+of a maintenance window.
+Redshift will move the data from the compute nodes
+in the existing data warehouse cluster
+in parallel to the compute nodes in the new cluster.

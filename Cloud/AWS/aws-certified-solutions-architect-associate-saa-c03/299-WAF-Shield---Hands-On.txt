@@ -1,0 +1,144 @@
+# 299. WAF & Shield - Hands On
+# Section: AWS Security & Encryption: KMS, SSM Parameter Store, Shield, WAF
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078435
+# Caption: en_US (manual)
+
+Okay, so let's have a look at WAF and Shield
+in this lecture.
+So here in WAF we have the ability
+to protect our web applications from common web exploits.
+And this is going to protect multiple type of resources such
+as CloudFront distributions, API gateways, APIs,
+application balancers and so on.
+So what I'm going to do is that I'm going
+to just create a protection pack
+and see what are the steps to do so.
+So if we look at this, first we need
+to tell AWS about our app.
+This is the new flow.
+So for example, let's say we are pretty much everything.
+This is going to give us the best options.
+So then what do we protect?
+Both the API and web version,
+or just the API, or just the web version?
+Again, we're just going to choose both as an option.
+Now you have resources to protect.
+So it turns out that if you call info, you will see the kind
+of resources that you can protect.
+For example, you have Amazon platform distributions,
+and it tells you what you're going to do
+by protecting distributions, amplify applications,
+Amazon API gateway or AppsSync APIs,
+load balancers for example, to filter malicious traffic
+before it reaches your application server,
+cognito user pools, and app runner services,
+and of course, over time maybe you will have more services.
+So it turns out, because we have none
+of this already in our accounts,
+we can't really click on add regional resources.
+It's not going to give us anything.
+Or we cannot also click on add, for example,
+platform distribution tenants
+'cause they have deleted everything.
+But if we had, we could add it.
+But that's fine for this tutorial, we don't need to.
+So we just click on skip for now.
+Now we need to select the web ACL resource types.
+So either it's going to be Amplify application,
+CloudFront distribution, and CloudFront distribution tenant
+is gonna be be a global rule,
+or we have this option to select
+all the other kind of services.
+So this is up to us, let's just select the second one,
+and next we choose the initial protections.
+So this is the kind of stuff we can use a list for,
+or we can build your own.
+But if we use, and I'm going to just close this info panel.
+If we use the recommended rule, we have some rate limits
+for get requests, rate limit for post put
+and delete requests, Amazon IP reputation list,
+anonymous IP protection, manage IP DDoS protection,
+and bot control protection.
+If we want more rules, for example, we want
+to apply an IP allow list or an IP block list,
+or geographic restriction, we would need to go
+into the essentials pack,
+or you can build your own pack.
+In here, you have the option to either define a custom rule,
+for example, if we do so, we can choose an IP based rule,
+or a geo-based rule, or rate based rules, or a custom rule.
+So for example, geo-based rule.
+And here we would say in this rule, for example,
+we would choose these countries right here,
+and we would for example, block them.
+So this is the kind of configuration you would do.
+Block these countries.
+Of course, this is a whole course on its own to just
+parametize WAF correctly, but you see
+that you can use custom rules.
+You can also use the managed rules from AWS
+in which you would choose the kind of rules
+that you want to apply.
+For example, hey, these are free rules,
+so you want to protect a PHP application, sure.
+Click on this and you'll have a rule from AWS
+to protect against injections and unsafe PHP functions,
+for example.
+Or if you wanted to, you also have paid rules,
+for example, bot control,
+or for account takeover prevention,
+or for layer seven attacks.
+So as you can see, lots of different rules.
+You can build your own, or use the ones from AWS,
+but there is a cost to everything.
+So this one is going to cost you, for example, between 62
+to $63 per 10 million requests.
+And here, based on the customer you have,
+you'll have different costs.
+Next, you need to name your web ACL, so what MyWebACL,
+and then potentially you could customize it more in terms
+of logging, but no need to.
+And then you would click on create protection pack.
+If you do so, just so you know, this will actually
+be billed at $5 per month per web ACL.
+So I'm not gonna do it, just to not encourage to do it,
+and we're not going to use it anyway.
+But you've seen the flow of how we would define a web ACL,
+how we would add rules to it, and how we would link it
+to some resources if we needed to.
+Okay, so that's it for WAF.
+Then for Shield, this is the protection
+against DDoS attacks.
+So here this is manage DDoS,
+and that means we're going to be protected against attacks,
+and we'll have automatic mitigations.
+So we have two tiers of protection.
+We have standard and advanced.
+And standard is already included.
+And if you go to Advanced, and you click on here
+to subscribe to Shield Advanced,
+just be aware you're going to pay about $3,000 per month.
+So this is quite a big cost, and we're not going to do this.
+But as we can see, it's going to help you
+to protect your infrastructure globally.
+So this is good, but we won't do anything else
+besides just watching this.
+And then finally, around Firewall Manager,
+let's have a quick look right here in getting started.
+This is a way for you to manage firewall rules
+across different accounts.
+So this is centralized security management.
+As you can see, if you wanted to have an admin account,
+and then have a firewall manager policy to apply
+to all accounts and applications, this policy will cost you
+about $100 per month.
+Again, we just need to know it at a high level,
+and that's what we're doing right now
+by just exploring this UI, but we won't go deep with it.
+So WAF is to protect your applications individually.
+Shield is to protect your account against DDoS,
+and Firewall Manager is to manage policies for security
+across, for example, your different firewalls
+and so on across all your accounts.
+Alright, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,159 @@
+# 138. The Confusion Matrix
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285703
+# Caption: en_US (auto)
+
+Something you'll see a lot in the exam is the concept of confusion matrices.
+So let's dive into what those are all about.
+What's the confusion matrix for?
+Well, the thing is, sometimes accuracy doesn't tell the whole story, and a confusion matrix can help
+you understand the more nuanced results of your model.
+For example, a test for a rare disease could be 99.9% accurate by just guessing no all the time by
+saying you don't have it.
+A model that does that would look on paper to have very high accuracy, but in reality it's worse than
+useless.
+Right.
+So you need to understand with a case like this, how important a true positive or true negative is,
+how important a false positive or a false negative is to what you're trying to accomplish, and to be
+able to measure how good your model is at each one of those cases.
+And a confusion matrix is just a way to illustrate those nuances in the accuracy of your model.
+One might look like this.
+This is a general format of it.
+So imagine that we have a binary situation where we're just predicting yes or no, like I have this
+disease or I don't have this disease or, you know, I test positive for this drug or I don't test positive
+for this drug.
+This image has a cat in it, or this image does not have a cat in it.
+This is the format of what it would look like, right?
+So you see that on the rows we have predicted values.
+And in the columns we have actual values.
+So go through it.
+If we predicted something is true and it really is then that's a true positive.
+If we predicted yes but it's actually no actually negative.
+That would be a false positive.
+If we predicted no.
+But it's actually yes.
+And that's a false negative.
+And if we predicted no.
+And it's actually no that's a true negative.
+I mean it gets a little confusing.
+But you know, if you think through it this all makes sense.
+Right?
+So in an actual confusion matrix, these cells would contain actual numbers of how often your model
+actually did that on it's testing data set.
+So keep in mind too that you have to pay attention to the labels.
+There's no real convention to how this is ordered.
+Sometimes you'll see predictions up here and actual values over here.
+Don't just jump in assuming that a given confusion matrix is of a certain format.
+Pay attention to how it's labeled and make sure you understand what it's telling you before you draw
+conclusions from it.
+Something else worth noting here is that you typically want to have most of your values here and here.
+Right.
+So the diagonal here of your confusion matrix is where most of your results should be.
+This is where accuracy lives right.
+So this is where I have a true positive.
+This is where I have a true negative.
+You want those to be, you know, nice big numbers and false negatives and false positives to be, you
+know, comparably low numbers hopefully.
+Right.
+So an accurate model would have high numbers along this diagonal value here.
+Let's plug in some actual numbers to see what that might look like.
+So say I have a machine learning model that's trying to figure out if an image contains a picture of
+a cat or not.
+If we predicted that it had a cat, and it really did have a cat, that happened 50 times in my test
+set.
+But sometimes I predicted it was a cat.
+But it wasn't a cat.
+It was a dog or a fish or something that happened five times.
+If I predicted that it wasn't a cat, but it really was a cat.
+That happened ten times in this example.
+And if I said it was not a cat and it really was not a cat, that happened 100 times in this case.
+So that's just how you interpret a confusion matrix.
+And we'll talk about how to make metrics off of this data that are more useful for analysis shortly.
+Sometimes you'll see confusion matrices in a different format, where we actually add things up on each
+row and column as well.
+So that's something you might see once in a while.
+All that is, is adding up.
+You know how many actual nodes we have, how many actual yeses we have, how many predicted no's we
+have, and how many predicted yeses we have in total.
+So just so you have seen that format before, that's what that looks like.
+The inner part of it, though, is just the same confusion matrix that we looked at before.
+And again, remember, things can be flipped as far as where the predicted values and the actual values
+are.
+So make sure you pay attention to the labels on these things.
+And you know what can I say?
+Confusion matrices can be confusing.
+There's no real standard surrounding them, unfortunately.
+So just make sure you pay attention to what they're telling you and make sure you understand them before
+you answer any questions on the exam about them.
+Sometimes you'll see them in this sort of a format too.
+So maybe we have a Multi-classification model here too.
+Imagine that we have, um, a handwriting recognition system that's trying to identify somebody writing
+the values zero through nine.
+So a more complicated confusion matrix might look like this, where instead of just yes no answers,
+we actually have multiple classifications, but it works the same way.
+So here we have predicted labels on this.
+Axis and true labels on this axis.
+So we're saying that if I predicted something was a five.
+And it really was a five.
+Well that shade of blue corresponds to some number here.
+So two things that are different in this example.
+First of all we have more than yes no options here.
+We have multiple classifications.
+So our confusion matrix is larger.
+Uh let's dive into another example there just to drive that home.
+So uh, sometimes I predicted it was a one, but it was really an eight that has sort of a lighter blue
+there.
+You know, maybe that happened, you know, 20 or so times in this example.
+And we're also using what's called a heat map.
+So instead of just displaying numbers in these individual cells, we're mapping those numbers to columns
+where the darkness of that color corresponds to how high of a number it is.
+You would expect to see sort of a dark line going down the diagonal here, representing a good accuracy
+on true positives and true negatives.
+And, you know, some sparser, lighter colors outside here ideally.
+But that color will map to an actual value and it just makes it easy to visualize how your confusion
+matrix is laid out.
+All right.
+Makes sense guys.
+That's what a confusion matrix is all about.
+It can be a little bit confusing, but just stare at these examples a little bit and it should make
+sense to you.
+Finally, I want to talk about this particular style of a confusion matrix.
+It's again in that heat map style we just talked about, and I've gotten some reports from people that
+this is actually still showing up on the exam, this this format here, which surprises me because I
+lifted this from the AWS Machine Learning Service documentation, which is where this originated from.
+And that service has been deprecated for a long time.
+So I thought they had removed all that content.
+But just in case, I guess you need to know about it.
+So let's talk about how to break this format down.
+It's what we just talked about with the Multi-classification heat map that we just looked at in the
+previous slide, but a little bit of a different format.
+So I don't want it to confuse you if you see this.
+So let's break down what we're seeing here.
+Again.
+The color of each cell shows you the number of correct and incorrect predictions per class.
+And again, that diagonal going down from left to right is going to represent the correct predictions
+per class.
+So if you look at where romance and romance intersects, you would hope that would be a good shade of
+blue.
+Inferring that you actually got a correct prediction more often than not.
+So in this case, we can infer that 80% or more of the romance predictions were correct and correctly
+classified as romance.
+And we can also infer that for thriller and adventure, those were incorrectly predicted less than 20%
+of the time by looking at that graph.
+Also, in the F1 column, you can see the F1 score per class available, and we have total columns in
+both the well, both the total column and a total row at the bottom right.
+So the total column over on the right there to the left of the F1 column, that's going to be your true
+class frequencies that they're showing you there.
+That's what those percentages mean.
+True class frequencies.
+And on the bottom there that row that's going to be the predicted class frequencies.
+Okay.
+So that's the terminology there.
+That's all you need to know.
+You can just read it straight from that graph.
+And all you need to know is how to read this graph.
+Really.
+All right.
+So again not sure if that's going to be on the exam long term because this is sort of a holdover from
+a service that they deprecated.
+But just in case that's how you read one of these guys.

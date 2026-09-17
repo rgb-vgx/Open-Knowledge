@@ -1,0 +1,50 @@
+# 287. AWS CodeDeploy
+# Section: Developer Tools
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40308554
+# Caption: en_US (auto)
+
+Stephane: So we have seen CloudFormation and Beanstalk,
+but now let's talk about CodeDeploy.
+So CodeDeploy is also a way
+for us to deploy our application automatically.
+Now, the difference
+that CodeDeploy is a bit more permissive.
+It doesn't need to be using Beanstalk or CloudFormation.
+This is completely independent.
+So with CodeDeploy, we have our application.
+It's in version 1,
+and we want to upgrade it into version 2.
+So CodeDeploy will find a way for us to do this.
+So CodeDeploy works with two things.
+It works with EC2 instances,
+and so you can have many EC2 instances being upgraded
+from v1 to v2,
+but it also works with on-premises servers.
+So if you have servers on-premises,
+and you want to help them upgrade from version 1
+to version 2 for your applications,
+it is possible to do it with CodeDeploy.
+So CodeDeploy, if you look at it,
+it is what's called a hybrid service
+because it works both for on-premises and for EC2 instances.
+So CodeDeploy really allows you to work
+with any kind of servers,
+but you must provision the servers ahead of time.
+Okay, it's up to you,
+and you must configure them to install the CodeDeploy agent
+that will be assisting you to do these upgrades.
+So CodeDeploy is quite a handy service on AWS.
+It really allows people
+to do the transition from on-premises to AWS
+by using the same way to deploy the application,
+either with your on-premises servers
+or your EC2 instances.
+And it is an advanced service,
+so I can't really demo it for you.
+But what you need to remember is that it allows you
+to upgrade both your EC2 instances applications
+and your on-premises servers applications
+from version 1 to version 2 automatically
+from a single interface.
+So I hope that was helpful,
+and I will see you in the next lecture.

@@ -1,0 +1,69 @@
+# 27. S3 Multi-Region Access Points
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/36230426
+# Caption: en_US (manual)
+
+So you also have the possibility
+to define multi-region access points on Amazon S3.
+The idea is that with this access point,
+you have a global endpoint
+that will span multiple S3 buckets in multiple regions.
+And the idea is that you access it only through one endpoint
+and this endpoint will redirect you to the S3 bucket
+that makes sense in the region that makes sense.
+So it's going to dynamically route requests
+to the nearest S3 bucket,
+therefore providing you the lowest latency
+and to make sure that while the data
+in all the S3 buckets are equal,
+you have bidirectional replication.
+So the data is replicated
+from one bucket to the next and vice versa.
+This way, all your regions are synchronized
+and we'll see as well, we have failover controls,
+so it's possible for us to define all buckets are active,
+or to have some buckets as a backup, so as a passive,
+so that if we failover if there's a region problem,
+then we can failover to the passive buckets.
+So let's have a look at, for example,
+an example with three regions.
+We have US-EAST-1, EU-WEST-1, and AP-SOUTHEAST-1,
+with the same S3 bucket
+that's going to be replicated across all regions.
+So automatically, these roles are created
+by Amazon S3 for you,
+so you just have to say it.
+But then all the data within these buckets is
+going to be replicated no matter what.
+And as you can see, we must have replication rules
+across all buckets to one another.
+Then we create this S3 multi-region access point.
+And then when our application is going to
+request an S3 bucket object
+then we're going to be routed automatically
+to the region with the lowest latency.
+And in case this region is down
+then we may be redirected into the other regions.
+So then we have the fellow rear controls I told you
+about for your S3 access point.
+So let's take an example of a bucket that's across
+that's replicated across two regions.
+Okay? And we have a multi-region access point.
+Now in the case of an active passive fellow rear control
+where you're going to designate one bucket as active
+and the other one as passive.
+Therefore whenever we request an object.
+We're not going to go this time to the lowest latency
+we're just going to go to the one that's active.
+And of course, if you have multiple active ones
+you will have the lowest latency.
+And in case you will have a regional traffic discretion
+for example, US-East-1 is experiencing a bad outage
+then automatically you're going to have a failover initiated
+and your request will go to the passive S3 bucket
+which no matter what will contain all your data.
+And these kind of failover controls are valid
+for active/passive type of setups, but also active/active.
+This is when you can write to multiple regions at a time.
+Alright, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

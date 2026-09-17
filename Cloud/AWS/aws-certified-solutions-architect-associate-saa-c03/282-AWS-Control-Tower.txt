@@ -1,0 +1,78 @@
+# 282. AWS Control Tower
+# Section: Identity and Access Management (IAM) - Advanced
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/34465994
+# Caption: en_US (manual)
+
+So now let's talk
+about the AWS Control Tower service.
+So it's a very easy way for you to set up and govern
+a secure and compliant multi-account AWS environment
+based on best practices.
+So actually to create these accounts,
+well, the Control Tower service
+is going to use the AWS Organization service
+and then the accounts are automatically being created
+and we'll see in the next slide
+how to make them secure and compliant.
+And so the benefits of using a Control Tower
+is that you automate the set up
+of your environments in a few clicks
+and you have all your configs you want in advance.
+Then you can automate
+ongoing policy management using guardrails.
+I will show you this in the next slide.
+You can detect policy violations
+and remediate them automatically,
+and you can monitor the overall compliance
+of all your accounts through an interactive dashboard.
+So it's yet another service on top of organizations.
+So what are these guardrails?
+So say you set up multiple accounts on AWS,
+but you want to restrict all of them at once
+for certain kind of things,
+or you want to monitor the compliance
+for certain kind of things.
+So using these guardrails,
+you're going to get ongoing governance for all your accounts
+within your Control Tower environments.
+So you have two kinds of guardrails.
+The first one is called a preventive guardrail.
+And so it's to prevent accounts from doing something
+and therefore they're restrictive.
+And so we're going to use SCP, so Service Control Policies,
+from the AWS Organization service
+to apply them to all our accounts.
+For example, we could create a preventive guardrail
+to restrict regions across all your accounts to say,
+hey, you should only operate in the us-east-1
+in the eu-west-2 regions.
+And so therefore behind the scenes,
+Control Tower is going to tell organizations to use SCPs.
+The second kind of guardrail we have
+is a detective guardrail.
+So this time, we want to just detect non-compliance.
+And because I talk to you about compliance,
+of course, it's using the AWS Config service.
+For example, we want to identify untagged resources
+in our accounts.
+So we have Control Tower
+and we set up a detective guardrail.
+And so it's going to use Config
+and Config is going to be deployed
+on all your member accounts
+and is going through the rules,
+monitor any untagged resources.
+In case anything is non-compliant,
+it's going to trigger an SNS topic.
+So we could be notified as an administrator
+or the SNS topic can also invoke a Lambda function.
+And the Lambda function
+can automatically remediate the action
+and add tags to your untagged resources.
+So we've seen Control Tower,
+we've seen how it can generate new accounts
+and how we can have guardrails,
+either preventive or detective, to control the security
+and the compliance of our environments.
+So I hope you like this lecture
+and I will see you in the next lecture.

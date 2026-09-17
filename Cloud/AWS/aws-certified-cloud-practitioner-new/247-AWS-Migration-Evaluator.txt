@@ -1,0 +1,39 @@
+# 247. AWS Migration Evaluator
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/38270572
+# Caption: en_US (manual)
+
+So now let's talk about
+AWS Migration Evaluator,
+which is a service to help you build a data-driven
+business case for migrations to AWS.
+So the idea is that you wanna migrate,
+and first you need to get the clear
+baseline of what your organization is running today,
+so you know your workloads.
+And so therefore, you install the Agentless Collector
+to conduct a broad-based discovery
+of all your infrastructure.
+And then you're going to take a snapshot
+of your on-premises footprint,
+your server dependencies, and so on.
+And you will analyze your current state,
+you will define the target state in AWS,
+and then develop a migration plan.
+So to summarize, you can install a Collector,
+and that will gather data for you.
+Or you can use the data import feature,
+and there is a tool, and there is a template.
+And what you can do is that you can
+shape the data you have into this template,
+and these sources of data will allow you
+to run the Migration Evaluator Service,
+which is going to give you quick insights
+to understand your customized cost insights,
+and to make sure that your migration can be cost efficient
+and also good for your business.
+And therefore, you will have a good business case.
+And if you need to, you can even get expert guidance
+on your business case from AWS.
+So that's it for this lecture, I hope you liked it.
+And I will see you in the next lecture.

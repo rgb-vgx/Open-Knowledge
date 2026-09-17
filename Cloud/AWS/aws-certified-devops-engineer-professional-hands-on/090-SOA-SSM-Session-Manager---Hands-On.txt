@@ -1,0 +1,61 @@
+# 90. [SOA] SSM Session Manager - Hands On
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869544
+# Caption: en_US (manual)
+
+So on the left hand side, let's find Session Manager
+and we want to establish an SSH session
+into our EC2 instances.
+So if you have a look, MyDevInstance, under security,
+the security group does not
+have any SSH security group rules inbound. Okay?
+Yet we're going to be able to start a session.
+And this session is going to be started, for example,
+on MyProdInstance, we can start the session right here.
+And as you can see, I am connected directly into my
+EC2 instance, so I can do echo hello world, and here we go,
+we have some information around the hello world
+and we can run any command.
+So we can do LS and have a look at all the directories.
+So we can go to home, EC2-user, and we need to go SUDO
+to be elevated, so SUDO SU is what I use to be elevated.
+And then we can do CD home, EC2-user,
+And now I am in my EC2-user directory and I can do
+whatever I want. Okay?
+We could see if a HTTP is installed so we can do
+SUDO YUM -y install and HTPD
+and obviously it is going to be already installed because
+we did install it before using a RUN command.
+So pretty cool because this session entirely is going to be
+logged, okay, because it is done from session manager,
+and also my instance does not have any SSH inbound
+security rule, yet I am able to run some commands within it.
+So this is the power of session manager,
+and I can just terminate this. Okay?
+And now if I go back into my session manager,
+I can look at session history and see that the history was
+being created right here.
+And finally, you could edit the preferences
+of session manager to have an idle timeout,
+to have KMS encryption for your sessions and to run the
+session as a specific user for your next instances. Okay?
+So put a username, could be, for example,
+EC2-user, if you wanted to,
+if it's relevant IAM Linux too.
+You can enable CloudWatch logging.
+So do you want to log all the sessions
+with CloudWatch logs? Yes.
+And S3 logging, Do we want to send all the logs data
+into Amazon S3.
+As well as some profile for Linux shell
+and Windows shell profile as well.
+So it's quite, quite handy to be honest,
+and all this can be edited in here.
+And I know a lot of companies and people who use
+Session Manager from within Systems Manager
+to do the executing actions onto your EC2 instances
+because it is way more controlled and also has a lot more
+compliance around it.
+So that's it.
+I hope you liked it.
+And I will see you in the next lecture.

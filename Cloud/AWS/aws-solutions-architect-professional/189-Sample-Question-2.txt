@@ -1,0 +1,110 @@
+# 189. Sample Question 2
+# Section: Exam Preparation
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/19143852
+# Caption: en_US (auto)
+
+Okay.
+So question to a company has multiple accounts and the company has integrated its on premises Active
+Directory ADI with Atlas so so single site on to grant 80 users leased privilege abilities to manage
+infrastructure across all the accounts.
+So there is a classic use case of S-so a solutions architect must integrate a third party monitoring
+solution that requires read only access across all device accounts.
+The monitoring solution will run in its own analyst accounts.
+How can it be given the required permissions?
+Okay, so here we have a separate account with a monitoring solution that needs read access into all
+the accounts.
+But this is special because we have an ad integrated with SSL for this.
+So let's have a look at the architecture on premise premises.
+EDI is integrated with, so SSL manages multiple accounts and then we have a separate ILS account from
+a third party monitoring solution that we don't have control over right now.
+And it looks like this account wants to access the other alias accounts with read only permissions.
+So let's look a look at the options.
+So we create a user in alias so directory and assign a read only permission sets, assign all alias
+accounts to be monitored to the new user and provide the third party monitoring solution with the username
+and password.
+So we have the same architecture as before.
+But now in so we are going to create a new user and this user is going to be used by a cloud.
+The new accounts, the third party monitoring solution to access all my other accounts.
+And to be fair, this would work.
+But there is one problem with the solution with so you can only have one identity source.
+And in this example we are already integrating our on premise Active Directory with us.
+So and as such we cannot create users directly within so and so here.
+This is what happens in the console.
+As you can see when you go into the CSO configuration, you need to choose where your identities are
+sourced and it can be either.
+So in which case we can create users and groups within so directly, or we can integrate with Active
+Directory or we can integrate with an external identity provider.
+But in no case, in no situation right now can you use so with the On-premise ID and its own internal
+database for user managements.
+So this is where I want to draw your attention.
+This is why it's super important for me to review this with you.
+In the sample PDF that you download from the website, it says that the option A is incorrect because
+credentials supplied by SSL are temporary, so the application will lose permissions and have to re
+log in.
+And that is just wrong.
+And I wish I didn't have to say this.
+I wish there were more due diligence on these answers.
+But this is wrong.
+Okay.
+Users created an sstl have a password.
+It doesn't change and it must respect a password policy that you've defined in advance and you can go
+ahead and try it on your own.
+You'll see it's very easy and you can use this username and password as many times as you want so you
+don't have to rely again.
+Okay, you won't lose permissions.
+So in this example, as I said, option A is wrong because you cannot have both users defined in so
+and in Active Directory at the same time.
+So only allows for one identity source would be so ID or IDP.
+And these questions are new.
+They just came out.
+So I'm recording videos on them.
+So it's very possible that Alias in the future will correct their explanation on the question.
+But right now I believe you have the correct explanation which is mine and not the one provided by the
+sample pdf.
+So option b create an IAM role in the organization's master accounts.
+Allow the account or the third party monitoring solution to assume the role.
+So we have the same architectures before, but now we have a role and that role is being assumed by
+our third party monitoring solution.
+So what does it give us?
+Well, it gives us our third party monitoring solution, a way to read into our master accounts.
+But in an organization, whatever the master account can do does not guarantee its access to the other
+address accounts.
+So in this case, yes, we have access to monitor one account, the master accounts, but we are not
+monitoring the other accounts.
+So this is just wrong.
+It would be very possible if we had a role in the other accounts as well, but we don't.
+So right now this is an incomplete answer.
+Next, invite the accounts of the third party monitoring solution to join the organization and enable
+all features.
+So we have an organization now and we need to enable all features.
+So what this gives us is service control policies.
+It gives us a way, for example, to have consolidated billing, all these kind of things, but it does
+not give us read only access into all the other accounts.
+So organization, remember, is a way for you to organize your.
+Helps with organizational units to apply service control policies, to consolidate billing, to share
+reserved instances for cost saving.
+But it does not give you read only access into all the other accounts.
+There is still very much independence.
+And so as such, this insert just does not work.
+So let's look at the options to see if it's correct.
+Creates an alias cloud formation template that defines a new I am role for the third party monitoring
+solution.
+With the accounts of the third party listed in the trust policy, create the email across all linked
+account by using a stack set.
+So this looks good.
+So we have our accounts and we're going to use cloud formation stack sets to deploy the same stack into
+all of the accounts.
+So what is the stack going to deploy?
+It's going to deploy a I am role and that will give us read only access within the account.
+And that role has a trust.
+And that trust allows the third party monitoring solution to assume the role thanks to the trust.
+So here we have managed to create a role into every single account that we wanted to monitor, and that
+role was deployed thanks to a cloud formation text, which shows the way to deploy a cloud formation
+stack across many accounts and many regions.
+Obviously the roles are not region specific, so we don't need to specify a region in this in this instance.
+But stack sets do allow you to also deploy across many regions and many accounts.
+So this is a great solution.
+This is the standard solution and recommended way in solution architecture to do these things.
+So this is the correct answer.
+And that's it for question two.
+I hope you liked it and I will see you in the next lecture.

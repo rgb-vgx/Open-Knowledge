@@ -1,0 +1,212 @@
+# 146. Athena and Glue, Costs, and Security
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356354
+# Caption: en_US (auto)
+
+Instructor: So, speaking of Glue,
+let's talk about how Athena integrates with AWS Glue
+to actually impart structure on your unstructured data in S3
+so that it can actually query it like a database.
+So again, let's do a little brief recap on how Glue works.
+You might have a Glue crawler populating
+the Glue data catalog for your S3 data
+that's looking at what's stored in S3
+and trying to extract columns
+and table definitions out of it for you.
+And you can use the Glue console
+to refine that definition as needed.
+So once you have a Glue data catalog published
+for your S3 data, Athena will see it automatically
+and it can build a table from it automatically as well.
+So anytime Athena sees something in your Glue data catalog
+in your account,
+it's going to make a table for that for you
+so you can query it just like you would
+any other SQL database.
+And it's not just Athena that can use
+that Glue data catalog either.
+It will allow any other analytics tool to visualize
+or analyze that data as well.
+For example, RDS, Redshift, Redshift Spectrum, EMR,
+any application that's compatible
+with an Apache Hive Metastore as well, because remember,
+the Glue Data Catalog can be used as a Hive Metastore too.
+But in this example,
+we're using it to expose that table definition
+to Amazon Athena.
+And with Athena integrated with AWS's Glue Data Catalog,
+that allows you to create a unified metadata repository
+across various services, crawl data to discover schemas,
+populate your catalog with new and modified table
+and partition definitions,
+and maintain schema versioning all under the hood,
+and Athena just sits on top of that
+and provides a SQL interface
+to that underlying Glue structure.
+Another feature of Athena is work groups
+and you definitely need to know what these are all about.
+Basically, it's the way, it's what it sounds like.
+You can organize users and teams,
+or even applications and workloads
+into different work groups and group them together.
+And you can use this to control the query access
+of a given work group,
+or to track costs by a given work group.
+So maybe you have a specific team of people
+that should only have access to specific types of queries,
+or limits on the queries that they can run, right?
+And you wanna track their costs individually
+to figure out what kind of bill they're running up
+for the organization.
+Work groups are integrated with IAM, CloudWatch, and SNS,
+so you can do things like have it notify you
+when limits are hit.
+And the way you use this
+is you can have your own data limits on each work group.
+So you can limit how much data queries can scan
+by work group.
+So if you wanna make sure that somebody in a given team
+isn't going to construct some wildly inefficient query
+that has this huge bill that results,
+you can limit that at the work group level.
+Each work group also has its own individual query history.
+So, if you wanna make sure that a specific team of people
+isn't seeing the queries that another team makes,
+you can break them up into work groups
+to make sure that each work group
+only sees its own query history.
+Work groups of course can also have their own IAM policies,
+because that's how you're going to manage their permissions
+and what they can see.
+And you can also have your own encryption settings
+on each work group as well.
+So it's a good way of organizing many people
+in an organization and limiting what they can do
+and giving them specific access permissions
+by using work groups in Athena.
+So just remember, Athena work groups are a thing.
+You can use them to limit the access
+of a given group of people,
+or to measure the cost that they're doing
+and to have limits on the amount of data
+that their queries can actually scan.
+The cost model is very simple
+because it is a serverless application.
+You just pay as you go for the activity
+that you actually consume.
+It charges you $5 currently per terabyte scanned,
+which is pretty generous.
+Important to remember that successful
+or canceled queries do count toward that scanned
+and number there.
+You do get charged for those,
+but any failed queries are not charged.
+So any successful or canceled queries you'll be billed for.
+Failed queries, however, are free.
+There's also no charge for any DDL operations,
+such as CEEATE, ALTER, or DROP.
+Those are free as well.
+Now, a very important point
+is that if you want to save money using Athena,
+it can save you a lot of money by converting your data
+to a columnar format like we talked about
+with ORC and Parquet.
+So not only does that give you better performance
+for applications that are typically querying
+on a small number of columns,
+it can also save you 30 to 90% in terms of money as well.
+That's because it allows Athena
+to selectively read only the required columns
+when doing a query and processing your data.
+So if you're only accessing certain columns
+from your queries by having a column or format,
+you're reducing the amount of data
+that you actually have to scan with Athena.
+And remember, you are charged by terabyte scans.
+So by reducing that scanning, you win.
+So remember, Athena works best with columnar formats.
+It can save you a lot of money
+and give you better performance as well.
+Examples of columnar formats include ORC and Parquet.
+All right, and in addition to Athena, of course,
+Glue and S3 have their own charges as well.
+Athena just sits on top of Glue to get the table definition
+for your S3 data and your data's still being stored in S3.
+So there are separate charges for Glue and S3
+in addition to using Athena as well.
+Also, I should point out that partitioning your data
+can also help Athena to reduce costs as well.
+So if you do have your data structured in S3
+in different partitions,
+such as by date or hour or something,
+queries that are restricted to that given partition
+will also scan less data as well.
+So in addition to using a columnar format,
+partitioning your data within S3 can also save you money
+with Athena as well.
+Let's talk about security, too.
+That's always important with Athena.
+It offers many different ways
+of securing your Athena traffic.
+One is through access control,
+who can actually get to Athena
+and query your information in the first place.
+And you can use IAM, access control lists,
+and S3 bucket policies to restrict access
+to that information.
+The IAM policies that are relevant here
+are the AmazonAthenaFullAccess
+and AWSQuicksightAthenaAccess policies.
+You can also encrypt your results
+if you are sensitive about the results of your queries,
+and you can encrypt them at rest
+in a staging directory in S3.
+And that can be encrypted in several different ways.
+You can, again, these are important to remember, guys.
+So you can encrypt your S3 data results
+in server-side encryption using an S3-managed key
+that is called SSE-S3.
+You can also do server-side encryption
+of your results using a KMS key.
+That's called SSE-KMS,
+or you can encrypt them on the client side
+with a KMS key as well.
+That's called CSE-KMS.
+And depending on your security requirements,
+one or more of these may make sense.
+So think about how that data's flowing,
+where it's being stored, and how you want it to be secured.
+You can also have cross account access
+to find an S3 bucket policy.
+So it is possible for you to access Athena to a S3 bucket
+that is not owned by your account.
+If that other S3 bucket has a policy that grants access
+to your account,
+it's possible for an Athena console in one account
+to access a data lake stored in another account.
+You can set that up.
+As far as in transit security goes,
+you can use TLS, the Transport Layer Security,
+for all the traffic going between Athena and S3 as well.
+That can be set up too for in transit security with Athena.
+Always important to remember security aspects, guys,
+it's a huge part of the exam.
+Finally, let's talk about anti-patterns.
+Again, these come straight out of
+the AWS big data white paper of things they don't want you
+to use Athena for.
+One is for highly formatted reports or for visualization.
+At the end of the day, Athena is just a SQL query engine.
+If you wanna do nicely formatted stuff
+or visualizing things with charts and graphs,
+well, that's what QuickSight is for
+and we'll be getting to that shortly.
+Also, if you wanna be doing ETL, extract, transform,
+and load operations using Athena,
+that's generally not the best tool to use.
+Glue is an alternative there.
+And using Glue ETL instead,
+you can also do that with Apache Spark or what have you
+for larger scale tasks.
+So that's Athena in a nutshell.
+Let's go and play with it, shall we?

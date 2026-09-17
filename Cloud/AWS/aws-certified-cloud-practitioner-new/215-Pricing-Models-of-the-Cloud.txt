@@ -1,0 +1,261 @@
+# 215. Pricing Models of the Cloud
+# Section: Account Management, Billing & Support
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056378
+# Caption: en_US (manual)
+
+So now let's talk pricing models in AWS.
+AWS has four different pricing models.
+There is pay as you go where you pay for what you use.
+You remain agile because you can start and stop
+and delete resources whenever you want, responsive
+and you can scale to meet demands as demand happens.
+There's also a (indistinct) model
+where you save when you reserve.
+So this is to minimize risk and to get a predictable budget
+and to comply with long-term requirements.
+For example, we can do instance reservations for EC2,
+DynamoDB, ElastiCache, RDS, and Redshift.
+Also, you get to pay less by using more.
+You get volume based discounts,
+for example, on Amazon history.
+And as AWS grows their infrastructure,
+they will have some cost savings
+and they will pass them on to you.
+So AWS is very famous for doing cost reductions every month
+or every year, which is really good
+because as their infrastructure grow
+and more people use AWS, they have a volume and scale,
+and therefore they will pass on that economy
+of scale onto you to get discounts.
+So now let's talk about the free tier of AWS.
+So when you create a new AWS account, if it's completely new
+and you're a new user of AWS, you're going to get up
+to $200 in credits,
+and then you're going to choose
+between the free plan and the paid plan.
+So the free plan is going to expire in six months,
+or if you consume all the $200 in credits, that means
+that you're going to have no charges,
+but then your account is going to be automatically deleted.
+The paid plan is instead an account that is going
+to be charged after you consume all your credits,
+but you will be able to keep on
+using your account of course.
+So both these plans have the $200 in credits
+and then they have access to what's called
+the Always Free Services.
+So that means that some services offer no matter what,
+monthly free usage limits.
+For example, if you use Lambda,
+you get a million requests per month
+and 400,000 gigabyte seconds of compute per month
+for free, no matter what.
+And for the DynamoDB, you get 25 gigabytes of storage
+and 200 million requests per month for free, no matter what,
+and you can learn about it at this link.
+So now let's do a deep dive into the pricing
+for different services.
+For example, for EC2 with the on demand, you only charge for
+what you use, which is the number of instances as well
+as the instant configuration.
+What's the capacity number of CPU and ram?
+The region you're in, the operating system
+and the software you install on your EC2 instances,
+the instance type and instance size.
+And if you're using a load balancer, for example,
+how long the load balancer will run
+and the amount of data processed by your load balancer.
+Also, you can enable detailed monitoring on your EC2
+instance to get CloudWatch metrics every minute instead
+of every five minutes, and you would have
+to pay for that as well.
+So now let's talk about the different models
+for pricing on EC2.
+The first one is with on-demand instances,
+and you're going to have a minimum billing time
+of 60 seconds,
+and then you're going to pay per second for Linux
+and Windows or per hour for your other EC2 instances.
+But if you know you're going to use your instances
+for a long time, then you should use reserved instances
+and it's going to give you up to 75% discount compared
+to the on-demand price for the hourly rates.
+You need to commit for a long period of time, so either one
+or three year commitments, and you get more
+discounts if you pay early.
+So you can pay everything upfront
+and you get more discounts or partial upfront.
+So just a part of the total amount or no upfront,
+but this is going to give you a bit less discounts.
+You also have spot instances
+and you get up to 90% discounts compared
+to on demand hourly rates.
+And what this means that you're going to bid
+for unused capacity in the EC2 instances.
+And so because you use these unused capacity,
+you can get it at a very, very aggressive discount,
+but with spot instances, you run the risk
+of losing them in case someone is willing to pay a bit more
+for your spot instances.
+You can also have dedicated host,
+which can be on demand and can be reserved as well.
+And this is a tendency way of running EC2.
+This means that you are going to run alone on these hosts
+because they're dedicated to you.
+And finally, there's another component called savings plan,
+which is an alternative to all these things above,
+and I'm going to describe savings plans
+to you in a future lecture,
+so don't worry about it too much.
+Next we have Lambda and ECS again on the compute category.
+So Lambda, you pay per API call
+and you pay per duration
+of your Lambda functions times the number of the amount
+of RAM that you have assigned for your Lambda function.
+For ECS, you get an EC2 launch type model.
+That means that you don't get any fees for using ECS,
+but anytime you start an EC2 instance underlying your ECS
+cluster, then you'll have to pay for that EC2 instance.
+For Fargate, it's a little bit different
+because we don't manage EC2 instances
+and therefore we're going to pay for each container
+for the amount of CPU
+and memory that gets assigned for your container.
+Now let's talk about the pricing
+of the storage on Amazon S3.
+So as we saw, there are different storage classes
+that you need to know for the exam.
+We have S3 standard, S3 Infrequent Access, S3 One-Zone IA,
+S3 Intelligent Tiering, Glacier
+and Glacier Deep Archive.
+As well on S3, you're going to pay for the number
+and the size of the objects and the prices can be tiered.
+So the more volume you have, the more objects
+and the more big,
+and the bigger the objects are,
+the more discounts you're going to get.
+Then if you do requests in
+and out of Amazon S3, you're going
+to pay for these requests.
+You're also going to pay for any data transfer out
+of the S3 region.
+So sending data into S3 is free,
+but retrieving data from S3, you will have to pay something.
+If you use S3 transfer acceleration, it is also a cost
+that has to be incurred for it.
+And anytime you do a lifecycle transition
+between the storage classes defined above, then you're going
+to have to pay for it.
+A similar service is going to be EFS
+because EFS, you're going to pay per use.
+It will also have an infrequent access tier
+and lifecycle rules.
+A different way to do storage pricing is EBS.
+So with EBS, we're going
+to have pricing based on the volume
+type that we've provisioned.
+So the performance of that volume, then the size
+of the volume in gigabytes that you provision in advance,
+okay, you don't pay per use with EBS, you say, yes,
+I want a hundred gigabytes EBS volume,
+and you're going to pay for it regardless
+with your use it or not.
+Then the IOPS, so the performance of your volume.
+So if it's a general purpose SSD, it's included.
+But if it's provision IOPS, you're going to pay
+for the IOPS, you provision,
+and for magnetic the number of requests.
+Then you're going to pay for your EBS snapshots.
+So the more snapshots you get, the more you pay.
+So you're gonna get data costs per gigabyte
+of snapshot per month, and then data transfer.
+Any data transfer out of EBS is going to be paid
+and is going to be tiered for volume discounts.
+But anything you write into EBS inbound is going to be free.
+Now let's talk about database pricing, for example, for RDS.
+So it's a per hour billing,
+and based on the database you use,
+you have different pricing.
+So the engine type, the size, the memory class.
+Then for an RDS database, you can either have on demand
+as a purchase type or you can reserve an RDS database,
+which is a very smart thing to do, for example, for one
+or three years, and you can pay upfront for
+that RDS database.
+Then if you do RDS backups,
+you're gonna have to pay for those.
+But usually there is no charge for backup storage,
+up to 100% of your total database storage for a region.
+And in the experience of AWS, that means that all in all,
+the backup storage should be free.
+If your database is not all the way up to full.
+Then for RDS, you're going to pay obviously
+for the underlying storage in gigabytes per month based on
+the EBS volume that you provision for your RDS database.
+You're going to pay for the number of input
+and output requests per month.
+The deployment type, is it a single AZ or is it multi AZ?
+In which case you're gonna to pay for two RDS databases
+and as well as the data transfer.
+So any data transfer out of your database is going
+to be paid and tiered based on volume
+and any transfer into your database is free.
+Now let's talk about CloudFront.
+So CloudFront is A CDN, and it is global.
+So therefore the pricing is going to be different based on
+where the content is served from.
+So you have different pricing based on usually continents.
+So for example, America, Europe, South America, Japan,
+Australia, India, and so on.
+And this is in the table that you can see in the slide down.
+And then the more you're going
+to use CloudFront in a specific edge location,
+the more you're going to get discounts
+and you're going to get an aggregated bill
+for all the edge locations.
+You're going to pay for any data transfer out
+of CloudFront, but not for in, in is always free.
+Finally, you're going to get a paid bill based on the number
+of requests that are made into cloud fronts,
+they are counted, okay?
+So in AWS finally you need
+to understand the networking costs, which are, to be honest,
+very, very complicated.
+But I try to simplify it in the slide.
+So you have a region and we have two AZ,
+and say we have an EC2 instance in one AZ.
+Any traffic going inbound
+of your EC2 instance is going to be free.
+And then say you have another EC2 instance in the same AZ,
+if these two ECT instance talk together,
+then the traffic is free using the private IP.
+Now say you have another EC2 instance in another AZ,
+then if you use the public IP of the EC2 instances to talk
+to one another, then the traffic will have to go
+through the internet and you're going
+to pay two cents per gigabytes.
+But if you're using the private IP instead
+to make these EC2 instance talk to one another,
+then it's going to be one cents per gigabytes.
+So overall, I would recommend you always use the private IP
+if you can, to have communication
+between your EC2 instances.
+And if you happen to have EC2 instance in another region,
+then you're going to get a fee of 2 cents per gigabyte
+as an inter-region cost.
+Okay, so summary is that you should use a private IP instead
+of a public IP for good savings
+and better network performance.
+And then if possible, if you want to have the maximum amount
+of cost saving, use one availability zone,
+but you sacrifice obviously the high availability.
+So there's a trade off here between cost
+and high availability.
+So that's it for an overview of pricing on AWS.
+You won't be testing on the actual details of each service,
+but it's good for you to understand the reasoning
+behind cost in AWS
+because this is what the exam will test you on to understand
+how at a high level it costs to use some AWS services.
+So hope you like this and I will see you
+in the next lecture.

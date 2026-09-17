@@ -1,0 +1,191 @@
+# 288. Overview of Amazon Quicksight
+# Section: Management and Governance
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45287043
+# Caption: en_US (auto)
+
+Let's spend a little bit of time talking about Amazon QuickSight.
+Even though QuickSight is more technically a data analysis tool, it is explicitly covered in the machine
+learning exam.
+So we're going to spend some time on this.
+It is an analytics and visualization tool.
+And analytics and visualization are things you need to know about for the test.
+So what is QuickSight?
+Well, its official description is that it's a fast, easy, cloud powered business analytics service.
+That sounds wonderful, but doesn't really tell you much now, does it?
+Fundamentally, it's just an application that lets you very quickly and easily create dashboards and
+graphs and charts and reports based off of whatever data you're storing in AWS or elsewhere.
+And it does this very quickly and at scale.
+Something that's a little bit different about QuickSight is that it's aimed more toward end users,
+toward business people.
+So it's not really aimed toward developers.
+Think of it more as an application that allows all the employees in an organization to build visualizations,
+perform ad hoc analysis, get business insights from the data, and do it from any device that they
+have a browser or mobile device at any time.
+So it's not something where you need to be a developer and deal with the AWS dashboard or APIs or command
+line or anything like that.
+It's more of a higher level application interface for visualizing data that is stored pretty much anywhere.
+And due to that nature, of course, it is a serverless application.
+You don't need to think about the underlying implementation.
+You're just a user of an application here for creating various charts and graphs.
+It can connect to many different data sources, both inside and outside of Amazon, so it can connect
+to redshift.
+Obviously, that's an obvious application of where you might want to visualize data in a data warehouse
+hosted by Amazon.
+You can also put it on top of Aurora or RDS, and we'll see that more generally, you can put it on
+pretty much any database.
+Athena.
+That's a very common use case as well.
+Say you have a data lake in S3.
+You want to stack Athena on top of that through glue maybe.
+And you can use QuickSight to hit Athena and visualize the data in that data lake.
+Also, EC2 hosted databases.
+You can just run your own database in and EC2, and as long as it talks to standard language, you can
+talk to it.
+A file based you can talk directly to S3 data in a data lake.
+You can also talk to Excel data.
+Data stored in comma separated value or tab separated value format, or any of a variety of log formats
+as well.
+Also, there's ways of preparing the data ahead of time.
+Before you analyze or visualize it.
+You can change some of the stuff before visualizing it.
+Like let's say you select a CSV file as a data set, and you want to change the column names to something
+a little bit more pretty.
+You can do stuff like that.
+Change the field names.
+You can add in calculated fields, uh, use SQL queries on top of it, change data types, whatever
+you need to do.
+It also can work on top of AWS IoT, analytics, internet of things and data preparation, like we said,
+allows some limited ETL so you can actually do a little bit of transformation in the process of using
+QuickSight too.
+How does it work under the hood?
+Something called spice that's sort of a forced acronym for super fast parallel in-memory calculation
+Engine.
+That's its underlying engine for accelerating these queries.
+So oftentimes you're using QuickSight on top of a massive data store or data warehouse or data lake.
+It's got to get that those visualizations that you want really quickly and spices how it does it.
+The tricks it uses includes columnar storage in memory and machine code generation, and it uses that
+to accelerate your interactive queries on very large databases.
+That in-memory calculation is limited to ten gigabytes of memory per user.
+And of course, it's highly available and durable.
+Like everything in AWS, it's also highly scalable, up to hundreds of thousands of users at once.
+Some things you might use QuickSight for.
+It's intended for interactive, ad hoc exploration and visualization of data, so they make it easy
+to create charts and graphs and explore your data visually.
+And the idea is that if it's easy to do so, you can do that interactively and try to dig in and explore
+and slice and dice your data on the fly to gain some insights out of it.
+You can also use it for creating dashboards and KPI reports, and we'll see that it has a new paginated
+report feature as well to make that even more robust.
+You can analyze and visualize data from logs stored in S3, the databases you may have on premise any
+of the standard AWS database sources like RDS, redshift, Athena, and S3.
+SaaS applications.
+You can tie it to Salesforce, and anything that talks JDBC or ODBC is fair game as well.
+Tying this more directly into machine learning, it does have a new feature called Machine Learning
+Insights has a couple of cool features.
+One is called ML Powered Anomaly Detection.
+Under the hood, that's using Amazon's Random Cut Forest algorithm that they love so much.
+So you can use that for things like trying to detect anomalies in your sales data.
+Anomalies, anomalies in latency on your website, whatever it might be.
+If you need to identify, um, anomalies that might exist in your data and strip them out.
+It also has an ML powered forecasting feature as well, which also uses random cut force in order to
+automatically get rid of the anomalies in your data in making that forecast.
+You can use that to make forecasts with seasonality taken into account and any trends that automatically
+exclude outliers and impute missing values automatically as well.
+And again, this is made for non-technical users so they can very quickly and easily just say, hey
+QuickSight, make a forecast based on this data.
+QuickSight through Machine Learning Insights, will then do all the dirty work of figuring out how to
+massage and prepare the data to give you the best forecast.
+There's also something called auto narratives and machine learning insights, and that allows you to
+build rich dashboards with embedded narratives to tell the story of your data in plain language.
+So that's a kind of a way to cheat and turn the AI on to creating your dashboards for you.
+And you can use the one that it creates for you or just build on top of it.
+Of course, it doesn't always get it right on the first try.
+So if you do want to customize what it comes up with, you can do that as well.
+Now, as far as direct machine learning capabilities in QuickSight go, this is it.
+So if the exam asks you about other machine learning features or metrics as part of QuickSight.
+They don't exist yet.
+It's a trick question.
+So remember that relatively new feature in QuickSight is called QuickSight Q.
+Well, this is one more machine learning thing, but it's it's an add on.
+So it is machine learning powered.
+And it answers business questions with natural language processing.
+So with QuickSight Q instead of trying to figure out what SQL queries to write or, you know, trying
+to figure out how to drag and drop what field into your dashboard and how to construct charts by hand.
+You can just say things like, what are the top selling items in Florida?
+And that's offered as an add on for given regions.
+It does cost more, as we'll talk about in a bit.
+However, it doesn't just work out of the box.
+As you can imagine, somebody has to tell QuickSight.
+Q in this particular example, what column represents sales data?
+Right?
+It can't just magically figure that out on its own.
+So.
+So first of all, there is personal training offered on how to use it.
+And it's required in order to use QuickSight.
+Q so they don't just unleash it on you and hope for the best.
+They do give you some personal training on how to massage your data and prepare your data, and how
+to use QuickSight Q to get the best results.
+So not quite as intuitive as you might hope.
+You have to set up topics associated with data sets to get QuickSight Q working.
+Obviously, you need to make sure your data sets and fields are NLP friendly.
+If you're a column for sales, data is called Q 73 255.
+Um, that's not going to give the algorithm any help on how to know that represents sales data.
+So you need to make sure that your fields and data sets are named, uh, in English language stuff or
+whatever language you're using to make it NLP friendly.
+You also need to explicitly tell it how to handle dates.
+That needs to be defined up front as well.
+That's QuickSight.
+Q uh, the takeaway here is that it's natural language processing business questions on top of QuickSight.
+Another new feature in, uh, late 2022 is QuickSight Paginated Reports.
+These are highly formatted, multi-page reports designed to be printed for management.
+So here's an example of it here on the right may span many pages and you can build this on top of existing
+QuickSight dashboards as well, so you can take your set of dashboards you made in QuickSight, put
+them all together and make them pretty, and print out a regular report for management.
+This way.
+What do you not want to use QuickSight for?
+Well, it used to be that you would not use it for highly formatted canned reports, but the introduction
+of paginated reports makes that no longer true.
+I'm calling this out, however, because sometimes the exam does not keep up to date with the latest
+changes as quickly as we would like.
+So if you're taking the exam in late 20, in early 2023, mid 2023, I don't know if they've taken paginated
+reports into account yet, so you might want to keep that in the back of your head.
+If you see a question specifically about highly formatted canned reports in QuickSight.
+Used to be you could not do that, but now you can ETL it is not designed for ETL.
+Like we said, there are some limited ETL capabilities, but for doing, you know, hardcore ETL operations,
+you want to use glue for that.
+That's what glue is for.
+QuickSight can do some transformations, but really you want to use glue for the heavy lifting there.
+Quick note about security it offers MFA on your account.
+Obviously, like pretty much everything.
+VPC connectivity is possible.
+So you can add Amazon's QuickSight IP address range to your database instances.
+Security group rules to enable traffic flow into your VPC and database instances.
+Row level security.
+LRS is offered to enable QuickSight dataset owners to control access to data at row granularity, based
+on permissions associated with the user interacting with the data.
+So with LRS, QuickSight users only need to manage a single set of data and apply appropriate row level
+data set rules to it.
+Also, a relatively new feature in the enterprise edition of QuickSight is column level security as
+well.
+So in the enterprise edition only, you can also restrict users to specific fields of your data and
+not just specific rows.
+Private VPC access in QuickSight is also possible.
+That's made possible by the Elastic Network Interface or Eni, for secure private communication with
+data sources in a VPC.
+It also allows you to use AWS Direct Connect to create a secure private link with your on premises resources.
+User management.
+There's a few ways of handling that as well.
+Like we said, it's kind of an application that people use.
+So it's a website, basically a web app.
+And you need to control how people access that and have permission to view the underlying data within
+QuickSight.
+Also because you get charged per user.
+So you don't just want the whole world hitting your dashboards.
+That could get really expensive really quickly because you are charged by the user.
+Users are defined through IAM, like most things in AWS or through an email signup process you can do.
+So you could have QuickSight email the user to be part of QuickSight domain, and then you can decide
+to delete the user if you want to.
+And what to do with the orphaned resources when that happens in the end.
+There's also Saml based single sign on capabilities as well.
+Again, built on top of IAM and in the enterprise edition only.
+There's also integration with Active Directory possible as well.
+And everything has multifactor authentication of course, because that's just standard these days.

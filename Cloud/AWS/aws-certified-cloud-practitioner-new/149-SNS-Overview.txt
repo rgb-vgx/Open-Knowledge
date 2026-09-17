@@ -1,0 +1,52 @@
+# 149. SNS Overview
+# Section: Cloud Integrations
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056154
+# Caption: en_US (manual)
+
+Okay, so now let's talk about the second way
+we can decouple our application using SNS.
+So what if you want to send one message to many receivers?
+We can go the route of direct integration.
+For example, having a buying service
+sending an email notification,
+then talking to a fraud service,
+talking to a shipping service,
+and talking to the SQS Queue.
+But that would be quite complicated
+because we need to write four direct integrations.
+Instead, we can use something
+called a Pub/Sub type of integration
+in which we have an SNS Topic.
+And the buying service will be sending a message
+into our SNS Topic,
+and the topic automatically will be smart enough
+to send a notification via email to the fraud service,
+to the shipping service, and even to an SQS Queue.
+So this is the premise of SNS.
+SNS stands for Simple Notification Service,
+and the event publishers will only send messages
+to one SNS topic,
+and you can have as many event subscribers as you want
+to listen to the SNS topic notifications.
+Each subscriber to the topic will get all the messages.
+So this is different from SQS
+where the consumers were sharing the messages.
+In this example, each subscriber to the topic
+will get all the messages sent to the SNS topic.
+Each SNS topic can have
+more than 12 million subscriptions per topic.
+And also, we have a soft limit of 100,000 topic limits
+for each account.
+So SNS has many destinations.
+It can publish to many subscribers.
+And from the AWS target service from SNS,
+we have Amazon SQS, Lambda, and Amazon Data Firehose.
+But also we can send emails directly from SNS.
+We can send SMS and mobile notifications.
+And finally, we can send data directly into a HTTP
+or HTTPS Endpoint.
+So bottom line is, anytime in the exam you see notification,
+publish subscribe, subscribers, et cetera, et cetera,
+then think about Amazon SNS.
+Okay, this is it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

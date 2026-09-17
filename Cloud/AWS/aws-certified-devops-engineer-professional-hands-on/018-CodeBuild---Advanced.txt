@@ -1,0 +1,170 @@
+# 18. CodeBuild - Advanced
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858416
+# Caption: en_US (manual)
+
+Okay, so a few more things
+you need to know about CodeBuild.
+The first one is around Environment Variables.
+So we know that there are some variables
+in our CodeBuild project at runtime, but what are they?
+The first category is Default Environment Variables.
+As you can see, they're defined and provided by AWS
+for every of your build.
+And they include, for example, the AWS default region,
+the build ARN, the build ID, the build image,
+and a lot of metadata around your build.
+The second is Custom Environmental Variables.
+So they have two kinds.
+The first one are static
+and static are defined at build time.
+So you can say, for example, that this build is for
+the environment production or whatever
+and you can override them when you use
+the start-build API call if you need it to.
+The last kind is Dynamic Environment Variables.
+Here, we are pulling the value of the environment variable
+through the SSM Parameter Store or Secrets Manager.
+So this is an integration, for example,
+we have a secret value, we cannot pass it statically,
+but we can, for example, have CodeBuild retrieve the value
+of the secret directly from Secrets Manager at runtime.
+So what about security of CodeBuild?
+So CodeBuild has a service role,
+and this service role is used to access AWS resources
+on your behalf.
+So we assign a role and, for example,
+we can download code from CodeCommit.
+We can fetch parameters from the SSM Parameter Store
+or we can, for example, upload artifacts to S3 Buckets,
+all the things this service role can help us do,
+for example, is fetching secrets from Secrets Manager,
+storing logs and CloudWatch logs and much more.
+So on top of it, we have in-transit
+and at-rest data encryption for your cache, for your logs,
+et cetera, et cetera.
+And any build output artifact is going to be encrypted
+and that requires access to KMS.
+Okay, so what about build badges?
+So for example, we are in CodeCommit
+and we want to have a look at whether or not
+our pull request is passing or not.
+So here is an example where there's a comment
+on the CodeCommit pull request where the build is passing.
+And here is an example where the build is failing.
+So this passing and failing little image
+is called a Build Badge.
+So these badges are dynamically generated
+and they display the status of the latest build
+in CodeBuild.
+And so that can be accessed through a public URL
+for this build badge.
+And it's supported for CodeCommit, GitHub and BitBuckets.
+Now these badges are available at the branch level
+and so that means that if you are doing a new pull request
+on the specific branch,
+then you can have a CodeBuild related to that branch
+and then the build will display some information
+about the status of the branch itself.
+Now what about CodeBuild triggers?
+So how do we trigger a CodeBuild?
+So multiple ways, we can have CodeCommit push
+an event into EventBridge
+and that event may trigger directly CodeBuild.
+So there is an integration
+between EventBridge and CodeBuild.
+We can have CodeCommit as well
+push an event to EventBridge.
+We can then trigger Lambda function,
+do something a little bit more complicated
+and then from Lambda, use the API call to invoke CodeBuild.
+We can also, for example, use GitHub
+because CodeBuild can work at GitHub.
+In that case, GitHub will push an event
+into a Web Hook for CodeBuild
+and this web hook will trigger a CodeBuild build.
+So all these things are possible
+and the reason I'm telling you this is that
+because we have a architecture we can use
+to validate pull request in CodeCommits.
+So how do we do this?
+Well, for example, we say we have pull request
+in CodeCommit, so there is new proposed code changes,
+but we want to validate them.
+We want to test them before they get merged
+to make sure that the build is working.
+This allows us to ensure a high-level of code quality
+and avoid code conflicts and then as a result,
+we could also display the badge on your PR.
+So how does that work?
+Well, we have a CodeCommit repository with several branches
+and we want to merge development branch
+into production branch.
+So for this, we're going to create a pull request
+and then whenever that pull request is created
+or updated, then an event is going to be published
+into EventBridge.
+From there we can trigger a first Lambda function
+whose role is going to update the pull request
+with a comment saying that the test build has begun.
+And EventBridge as a second destination,
+which is going to be CodeBuild.
+So CodeBuild is going to be invoked on that specific PR
+and so it's going to check out the code, do a test,
+and then either the test are,
+and the build is successful or not.
+So that is going to be published to EventBridge
+which can then invoke Lambda function
+which knows how to parse these events.
+And then is going to update the pull request
+with a comment with the build outcome.
+And then we're good to go.
+We can actually merge that pull request
+if we're happy with it.
+So visually, here's an example of this architecture.
+So on the left hand side, we have a first comment
+in the bottom that says that the build has been started
+and then we have a second comment on the top
+saying that the build has been failing.
+And on top of it, we add the build batch
+to say it was failed.
+And on the other side, in case the pull request is passing,
+we have a comment saying
+that the CodeBuild is also passing, and so we're good to go.
+We know we can safely merge that pull request
+into our master branch.
+So CodeBuild is running a lot of tests
+and there's a way for you to get a visual test report
+directly from the CodeBuild UI.
+And so as such, this is called a report groups
+and test reports.
+And so as you can see in this UI,
+we have a 75% pass rate for the test rerun within CodeBuild.
+And so that gives us the idea of what is failing
+or what is not failing.
+We don't have to go through logs to determine this.
+So how do we go to create these test reports?
+Well, they contain details about the test
+that are run during builds.
+And so this could be any kind of test
+such as unit test, configuration test, and functional test.
+And you can create your test cases with any test framework
+that will create a report file,
+and then there is some format that CodeBuild can understand.
+So we have the JUnit XML, the NUnit XML, the NUnit3 XML.
+We have the Cucumber JSON, the TestNG XML,
+and the Visual Studio TRX.
+And so the idea is that whatever framework you use
+as long as the report is one of these formats,
+for example, the Cucumber JSON,
+then automatically, you can create a test reports
+directly in CodeBuild.
+So the way to do it is that in your buildspec.yml,
+which indicates how to function to your CodeBuild,
+then there's just a report group and you define
+where the files that represent your reports
+are located on your build
+and automatically they will surface back into CodeBuild,
+which is quite nice.
+Okay, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

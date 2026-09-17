@@ -1,0 +1,79 @@
+# 377. Cognito User Pools
+# Section: Cognito: Cognito User Pools, Cognito Identity Pools & Cognito Sync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731918
+# Caption: en_US (manual)
+
+So the first surveys we will see into Cognito
+is called Cognito User Pools, or CUP.
+And, this is a way to create a serverless database
+for your web and mobile application users.
+So, what is a serverless database?
+That means that your users can use, for example,
+a simple login, their username or their email,
+and a password combination,
+to connect into your applications.
+They can also obviously reset their passwords,
+we can, thanks to Cognito User Pools,
+do an email and phone number verification,
+we can enable multi-factor authentication for our users,
+and we are able to tell our users they can login
+with Google, Facebook, or even SAML,
+so this is called Federated Identities.
+So this is pretty much the thing you see
+when you go onto any other website,
+they ask you to register users,
+either create a username/password,
+or login Google, Facebook, or some other way.
+There is a feature that you can block users
+if their credentials are compromised elsewhere,
+so AWS scans the web for compromised credentials,
+and will let your user knows into Cognito User Pools,
+and then finally,
+and then finally, when your users log in
+with the Cognito User Pool, what they get back from the API
+is a JWT, so a JSON Web Token.
+So, in a diagram, what does our Cognito User Pool look like?
+Well, they're a database of users,
+so CUP will have its own internal database of users
+that we can see,
+and then our mobile applications
+and our web application can login
+against our Cognito User Pool,
+and when they are logged in,
+the CUP will return to our user,
+our mobile applications and our web applications,
+a JSON Web Token, JWT.
+As I said, we can also provide login with Amazon, or Google,
+or Facebook, facility into our Cognito User Pools,
+so we can do Federation
+through Third Party Identity Providers,
+and offer a social login through a social identity provider,
+so login with Google, login with Facebook.
+We can also integrate more specific
+identity providers with SAML, or even OpenID Connect,
+if you're identity provider supports OpenID Connect.
+So, that's for how CUP works at a high level,
+then let's talk about the integrations within AWS for CUP.
+So CUP integrates with the API Gateway
+and the Application Load Balancer natively,
+so for the API Gateway, we've seen how that works already,
+our users will authenticate with our Cognito User Pool,
+and retrieve the JSON Web Token from it,
+then they will pass the web token,
+the JSON Web Token, to the API Gateway,
+which will evaluate the Cognito Token
+and make sure that it is valid,
+and then, allowing us to access our backend,
+and this is how we provide authentication
+onto our API Gateway.
+But, very simply, we can also use
+an Application Load Balancer,
+so using Application Load Balancer Listeners and Rules,
+we are able to authenticate our users
+against Cognito User Pools, and then once done,
+we can forward our users to the backend in our Target Group,
+which could be EC2 instances, Lambda functions,
+or ECS containers.
+So that's it for high level of Cognito User Pools,
+now let's do a hands on in the next lecture,
+to practice and see how they work in details.

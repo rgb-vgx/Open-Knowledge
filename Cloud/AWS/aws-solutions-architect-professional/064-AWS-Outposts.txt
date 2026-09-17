@@ -1,0 +1,83 @@
+# 64. AWS Outposts
+# Section: Compute & Load Balancing
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34783418
+# Caption: en_US (manual)
+
+Okay, so now let's talk about
+an exciting development, which is called AWS Outposts.
+So what is hybrid cloud?
+Businesses that keep an on-premises infrastructure
+alongside a cloud infrastructure are called hybrid cloud.
+And when we have that,
+we have two ways of dealing with IT systems.
+We have one for the cloud of AWS, for example,
+using the console of AWS, the CLI, and the APIs from AWS.
+But also we have another one that is dedicated
+to on-premises infrastructure.
+And so that means two different types of skill sets,
+two different types of API and that may be complicated.
+So AWS said, okay, we do recognize
+that some companies will run a hybrid cloud,
+therefore let's create Outposts.
+And Outposts are server racks that offer
+the same AWS infrastructure services, API, and tools
+to build your own application on-premises,
+just like in the cloud.
+So what this means that they will come
+and set up and manage Outposts racks,
+which are servers, within your on-premises infrastructure.
+And then these servers come preloaded with the AWS services,
+but you can benefit them from on-premises.
+So as we can see now, on your corporate data center,
+you will have your Outposts racks directly set up by AWS.
+And this allows you to extend the AWS services directly
+onto your on-premises data centers,
+which is I think, revolutionary.
+But the difference between an EC2 instance running
+on the cloud, and an EC2 instance running
+in your own data center is that now you are responsible
+for the security, the physical security, of the rack itself,
+because that rack is within your own data center.
+So the benefits from using Outposts are many.
+First of all, you get low latency access
+to on-premises system.
+You get local data processing, so the data may actually
+never leave your on-premises system
+and never go to the cloud.
+Data residency, so again,
+it lives within your own data centers.
+It's easy, for example, to start a migration
+from on-premises to Outposts,
+and then when you're ready from Outposts to the cloud.
+It's a fully managed service,
+so AWS will manage the service for you.
+And with Outposts for now, you can launch a lot of services,
+such as Amazon EC2, Amazon EBS, Amazon S3, Amazon EKS,
+Amazon ECS, Amazon RDS, and Amazon EMR.
+So it's really a cool way to extend the cloud directly
+onto your own infrastructure on-premises system.
+And this is revolutionary.
+So let's take the example of Amazon S3 on AWS Outposts.
+So you use the S3 APIs to actually store
+and retrieve data locally on AWS Outposts.
+This way you keep your data close
+to your on-premises application
+and you reduce data transfers to AWS regions.
+So there is a specific storage class
+for Outposts on S3 called S3 Outposts.
+The default and encryption scheme for anything on Outposts
+is going to be SSE-S3.
+And so how is the data accessed from Outposts onto AWS?
+Well, you have S3 on Outposts and you can build
+an S3 access point on it.
+And then thanks to this, you can manage security,
+and make sure that an easy to instance in your VPC
+can access your S3 on Outposts through this S3 access point.
+The other option is to actually synchronize the data
+using the data sync service onto a cloud Amazon S3 bucket,
+where your instances can access the data
+directly from there.
+So these are the two options,
+and it's one example on how to use AWS Outposts.
+So that's it, I hope you liked it
+and I will see you in the next lecture.

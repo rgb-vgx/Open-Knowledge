@@ -1,0 +1,118 @@
+# 246. [SAA] AWS Backup Hands On
+# Section: Disaster Recovery
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516266
+# Caption: en_US (manual)
+
+Okay, so let's practice using AWS Backup.
+So I'm going to type AWS Backup into the search bar
+and open the Backup service.
+So we are going to create our first backup plan.
+So I'm going to click on Create Backup plan.
+And we have three options.
+Either we start with a template or we build a new plan,
+or we define a plan using JSON.
+So the simplest for us is to start with a template,
+and we can have different templates.
+For example, Daily-35day-Retention,
+Daily-Monthly-1yr-Retention, and so on.
+So let's go with Daily-Monthly-1yr-Retention,
+and I'll call it TestPlan.
+Next, we click at Backup rules.
+And you see we can have many Backup rules
+in our Backup rules.
+So we have two, we have daily Backups and monthly.
+So if I click on Daily Backup,
+as we can see, there's a rule name.
+The Backup vault is wherever the backup is going.
+So we can use a default one by AWS,
+or we can create our own new Backup vault if we wanted to.
+The Backup frequency, the Backup window, so when to start,
+which is 5:00 AM UTC, start within eight hours,
+or you can customize it if you want.
+Whether or not you want to transition to cold storage,
+never, after some days, weeks, months, or years.
+And the retention period of your backup,
+for example, this one is retained for five weeks.
+Then we can also copy these backups
+to a specific destination.
+For example, another region for disaster recovery purposes.
+So I'm going to save this backup rule.
+And for monthly while we get the similar thing,
+so it's going into the default Backup vault.
+It's monthly on day one of each month,
+and the rest looks the same.
+So we actually transition these ones to cold storage
+after one month, and then we retain them for one year.
+Okay, so we have these ready,
+and then I can just scroll down and click on create plan.
+So now our test plan is created
+and we need to assign resources to it.
+So I'm going to click on assign resources,
+and I will just call it TestAssignments.
+And so here for IAM role,
+we're going to use the default role,
+which is going to create a role for us
+with the correct permissions,
+or you can choose your own one,
+but let's go with default role, easy.
+And then for resource selection,
+we have two things we can do.
+Number one, we can include all resource types,
+or number two, we can include specific resource types.
+For example, if you wanted to just have a DynamoDB table,
+and then you could select the resource you want on there,
+you could do this.
+Or if you wanted to, you can have all tables.
+So it's one way of doing it.
+Or if you go with all resource types,
+usually we'd use this as a combination with tags.
+And so for tags you would say, well,
+if the key environment is equal to the value production,
+then do a backup.
+This would be the kind of use cases for backups,
+but you're free to do anything you want, of course.
+And then when you're done, you click on assign resources.
+And so just to make it very, very clear,
+if I went into EC2 and I were to create an EBS volume,
+and that volume would have, so for example, one gigabytes
+and then the key would be environment production.
+Then this would be automatically backed up by my Backup plan
+because it has the correct tags.
+So if we look at our volume right now,
+and we go into tags,
+as we can see has environment production,
+which corresponds to the tags that I've set up
+for my backup plan, okay?
+So this is the assignments right here.
+And we can have multiple assignments as well in here. Okay?
+And then that's it.
+The backup plan is going to run automatically,
+and then the backups are going to happen here
+in my Backup vaults, okay?
+The jobs are the jobs that are going to be scheduled
+and happening.
+So we have backup jobs, restore jobs
+and copy jobs if we wanted to.
+And then we can look at the settings.
+So the settings is around,
+do you want to have backup policies,
+cross account monitoring,
+cross account backups, and so on.
+But we've seen the basics of how backups work.
+And so that's it.
+I want to show you all this, okay?
+That's all you need to know.
+And I'm going to delete everything.
+So for that, please make sure to delete your EBS volume,
+or you could wait a day
+if you wanted to see if the backups work, obviously.
+And then when you're done,
+you take the assignments and you delete it.
+So type the name of the assignment in here,
+and then for the Daily Backup rules,
+you can delete them or delete directly the Backup plan.
+And for this, just enter the name of the backup plan
+and press delete.
+And that's it.
+We've seen backups.
+I hope you liked it, and I will see you in the next lecture.

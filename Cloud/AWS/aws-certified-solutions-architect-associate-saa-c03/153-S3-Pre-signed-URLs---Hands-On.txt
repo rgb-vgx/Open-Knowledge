@@ -1,0 +1,48 @@
+# 153. S3 Pre-signed URLs - Hands On
+# Section: Amazon S3 Security
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/23743384
+# Caption: en_US (manual)
+
+Okay, so let's demonstrate S3 pre-signed URL.
+And I'm just going to take
+one bucket that I know is not public.
+And so I click on my coffee.jpg for example,
+you can take whatever image you want.
+And so, let's have a look.
+So, we know that this image is private
+because if I go and click on my object URL right here,
+I get an access denied.
+So, this public URL right here
+is not working because my bucket is not public.
+But, I know that if I clicked on open right here,
+it's going to open a new tab
+and my image is still showing, why?
+Well, because the beginning is exactly the same as before,
+but then in here all the way,
+you have what's called a pre-signed URL.
+And so this URL was pre-signed with my credentials
+which allowed me to access this image.
+And so the idea is how do we generate
+pre-signed URLs for everyone?
+So two options, number one, you can use a CLI
+and the other option is now to do it
+from the console itself.
+So, if you click on object action,
+you can click on share a pre-signed URL.
+And now, it says that anyone can access the object
+with this URL until it expires,
+even if the bucket and object are private.
+So we're saying, "Hey, I want to have this image
+and I want to allow minutes or hours."
+So I will say, "Hey, it's going to be valid
+for the next five minutes."
+And then click on create pre-signed URL.
+Now it has been created and I can share this URL with anyone
+and they will be able to enter it, press Enter
+and voila, get access to your image.
+So, that's very handy if you want to share access
+to some files in your S3 bucket very quickly
+and then make sure that the URL expires
+for maximum security.
+Okay, that's it.
+I hope you liked it and I will see you in the next lecture.

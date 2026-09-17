@@ -1,0 +1,32 @@
+# 80. Amazon DocumentDB
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304610
+# Caption: en_US (auto)
+
+Narrator: Now let's talk about DocumentDB.
+So the same way we had Aurora as the way for AWS
+to implement a sort of big cloud native version
+of PostgreSQL and MySQL, we have DocumentDB,
+which is an Aura version for MongoDB.
+So MongoDB, if you don't know, that's the logo
+on the top right corner of your screen.
+It is another NoSQL database
+and you need to remember this for the exam.
+So DocumentDB is a no SQL database,
+and it's based on top of the MongoDB technology,
+so it's compatible with MongoDB.
+So MongoDB is used to store query and index JSON data,
+and you have the same similar deployment concept
+as Aurora with DocumentDB.
+So that means it's a fully managed database,
+it's highly available.
+Data is replicated across three availability zones,
+and DocumentDB storage automatically will grow in increments
+of 10 gigabytes.
+And DocumentDB has been engineered so it can scale
+to workloads with millions of requests per second.
+So at the exam, if you see anything related to MongoDB,
+think DocumentDB, or if you see anything related to
+NoSQL databases, think DocumentDB and also DynamoDB.
+That's it for this lecture, I hope you liked it
+and I will see you in the next lecture.

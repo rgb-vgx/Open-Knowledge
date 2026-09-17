@@ -1,0 +1,136 @@
+# 48. Amazon S3 - Storage Lens
+# Section: Storage
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/48736041
+# Caption: en_US (auto)
+
+Stephane: Next we have S3 storage lens,
+which is a service to help you understand, analyze,
+and optimize storage across your entire AWS organization.
+With this, you're going to discover anomalies,
+identify cost efficiencies,
+and you're going to apply protection best practices
+across your entire AWS organization.
+You're going to get 30-day usage and activity metrics.
+You can aggregate the data at the organization level
+or for specific accounts, regions, buckets,
+or even prefixes.
+You can create your own dashboard or use a default dashboard
+provided by the storage lens service.
+And finally, all these metrics,
+all these reports can be exported into an S3 bucket
+in the CSV or Parquet format.
+So to summarize,
+storage lens will take all these things into account,
+organization, accounts, region, buckets.
+Then you aggregate all this data into a report,
+which is going to help you with your analysis.
+And then finally, this can be sent for summary insights,
+data protection, cost-efficiency,
+which allows you to optimize your usage of Amazon S3.
+So when you use the S3 storage lens service,
+you have a default dashboard
+and the dashboard gives you summarized insights
+and trends for both the free and the advanced metrics.
+This default dashboard will show data
+across multiple regions and across multiple accounts.
+So you don't have to do anything special
+just to set up the filters.
+It is pre-configured by Amazon S3.
+You cannot delete the default dashboard,
+but you can disable it if you wanted to.
+So in this UI right here,
+you would select the region you want, the accounts you want,
+the buckets you want, storage classes, and so on,
+and this is a centralized configuration.
+And then once you have that,
+the dashboard right here gives you information
+such as, for example, the total storage, the objects count,
+the average object size,
+the number of buckets you have, accounts,
+and you can get detailed per accounts, or per region.
+So let's have a look at what kind of metrics
+are available into storage lens
+because this will help you understand if storage lens
+is a service you should be choosing for the exam.
+So you have summary metrics
+which give you general insights about your S3 storage.
+For example, StorageBytes, to know the size of your storage
+and object counts to know
+how many objects you have in your storage.
+So use cases for this is to identify, for example,
+the fastest growing or not used bucket and prefixes.
+Because if the StorageBytes remains the same,
+that means that no new objects have been added
+or same for ObjectCount.
+Then you have cost-optimization metrics.
+And they provide you insights to manage
+and optimize your storage cost.
+So they give you an information
+about the NoncurrentVersionStorageBytes.
+Meaning how many version objects that are not current,
+how much space they're actually taking,
+or IncompleteMultipartUploadStorageBytes
+to know if for example, you've had some incomplete uploads,
+how much space they take in your bucket
+and you can clean it.
+So the use cases will be, for example,
+to see which buckets have failed multipart uploads
+or which objects could be transitioned
+to lower cost storage classes.
+You have data protection metrics to provide insights
+for data protection features.
+So here, we have VersioningEnabledBucketCounts
+to make sure that all your buckets have been enabled
+with versioning and so on.
+MFADeleteEnabledBuckeCount, SSEKMSEnabledBucketCount,
+CrossReplicationRegionRulesCount, and so on.
+So the use cases are, for example, to identify the buckets
+which are not following your data protection best practices.
+You have access-management metrics to provide insights
+for S3 bucket ownership.
+So here's the name of the metric.
+And the use cases will be identify
+which object ownership settings your buckets currently use.
+You have event metrics to get insights
+for S3 event notifications
+and to know how many buckets have
+the S3 event notifications configured.
+You have performance metrics
+to get insights into S3 transfer acceleration
+and see how many buckets have
+S3 transfer acceleration enabled.
+And you have activity metrics
+such as information about AllRequests, GetRequests,
+PutRequests, the number of bytes downloaded, and so on.
+And finally, metrics around the HTTP status code
+such as 200OK, 403Forbidden, et cetera, et cetera,
+to understand the type of usage your buckets are getting.
+Now you have different kinds of metrics into storage lens,
+you have the free and the paid metrics.
+So the metrics selection can be done in the UI as well.
+But just as a summary, while the free metrics
+are automatically available to all customers,
+and it contains around 28 usage metrics
+and the data is available for queries for 14 days.
+Whereas for advanced metrics and recommendations,
+you get additional paid metrics and features
+such as the activity, the advanced cost optimization,
+the advanced data protection and status codes.
+And then you get also these metrics
+being published to CloudWatch.
+So you can access them without any additional charges.
+And then you can collect metrics at the prefix level
+within your S3 buckets.
+And finally, the data when you pay,
+is available for 15 months.
+So that's it for S3 storage lens.
+It's a very helpful service.
+You have to remember the difference between free and paid.
+You have to remember that the default dashboard
+has data across multiple accounts and multiple regions.
+And of course, the fact that storage lens
+covers your object storage,
+the fact that you can count how many objects are encrypted,
+and so on.
+So let's say for this lecture, I hope you liked it,
+and I will see you in the next lecture.

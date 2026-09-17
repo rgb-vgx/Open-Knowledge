@@ -1,0 +1,160 @@
+# 169. CloudFront Reports, Logs and Troubleshooting
+# Section: CloudFront
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27513988
+# Caption: en_US (manual)
+
+Okay, so let's talk
+about access logs for CloudFront.
+So the idea is that when you enable it,
+the same way you would do for an S3 bucket
+or for a load balancer for example, well,
+CloudFront is going to log every request made
+to your origin into a logging S3 bucket.
+The way it's going to work is that your people are,
+your users are going to access your website
+through the CloudFront URL, okay?
+And then each edge location around the world is
+going to send its log file, so the distribution log data,
+to a central S3 bucket that you have to define.
+Now, your S3 bucket is going to be a logging bucket,
+but it can be different,
+and it should be different, than your origin bucket,
+which is maybe where the content is originated from, okay?
+So there are two types of buckets in Amazon S3,
+your origin bucket that is linked
+to your platform distribution,
+and your logs bucket to send your log files to.
+And you could have a second website
+with a second platform distribution,
+do the exact same thing, okay?
+And send it out to your logs bucket.
+The idea is that you could separate your distribution
+by adding a prefix within your logs buckets.
+Finally, you can send these logs directly
+into CloudWatch Logs and Kinesis Data Firehose
+for further processing in real time.
+So CloudFront has a lot of reports, and it's possible
+to generate reports on cache statistics reports,
+popular object reports, top referrer reports,
+usage reports, and viewers reports.
+And to create these reports, CloudFront is going
+to use the data from the access logs,
+but you don't need to enable access logs to be sent into S3
+to have these reports being generated, okay?
+So no matter what, you will find these reports.
+And first one, troubleshooting.
+Well, CloudFront will cache the HTTP 400
+and 500 status codes returned by S3 or the origin server.
+So that means that if there isn't an unavailable file
+at the origin, then that response is going
+to be cached no matter what.
+So 4xx will indicate that the user doesn't have access
+to the underlying bucket, for example, 403,
+or that the user is requesting an object
+that is not existing, so 404, okay?
+And 5xx will indicate gateway issues.
+So let's have a look in the console
+to see where all these options are.
+So let's have a look at the logging setting
+for our CloudFront distribution.
+And for this, under Settings, I will click on Edit,
+and then scroll down,
+and I will have the standard logging options.
+So we can say on,
+and we can have a S3 buckets that we choose,
+for example, that you have created previously,
+so stephane-cloudfront-logs.
+And then you can have a log prefix, if you wanted to,
+to send the logs into the S3 buckets.
+And what's going to happen is that, if you go
+into this S3 CloudFront log,
+so I have already did create this before,
+so let me just put back the setting.
+So I will have this settings as saved right now
+and click on Save changes.
+So when logging is enabled, what's going to happen is
+that the objects are going
+to be logged into your S3 buckets,
+and then in your S3 bucket, you're going
+to get a lot of files, okay, corresponding
+to some important logging information
+regarding your distribution.
+So you can just get any of these files, download it,
+and then you would unzip it and look at the content.
+So if you have a look at this file, so we have the fields,
+so each column is going to be represented here, okay?
+So we have the date, the time.
+We get some information around that,
+there was GET request from this URL at this path right here.
+It was a 403, the results.
+It was from Mozilla, and so on.
+And so you get a lot of information
+around your request overall, okay?
+So this is a classic access log,
+and you could use a service like Athena
+to analyze this access log.
+Now let's have a look at the reports
+and analytics from some real distribution.
+So if I go to Cache statistics,
+and I choose a distribution that I have
+that actually is being used in a real world,
+we can have a look at the report, for example, of the number
+of requests in the past seven days.
+So we can have a look at, for example,
+that had 80,000 requests on this day on my distribution.
+And we can get a daily granularity or an hourly granularity
+to get more information around the patterns
+of how objects are being requested, okay?
+We can have some information around the cache hits
+versus the cache misses, and the errors.
+So the distribution.
+So as we can see, I average about 75, 80% of cache hits,
+and about, you know, less, I have 20%, 15%
+of cache misses, which is really good.
+So that means that my distribution is working correctly,
+and most of the content being served is coming
+from the cache.
+We can have a look at the bytes transferred to the viewers,
+so how much is transferred from the viewer directly
+from CloudFront or from the cache misses.
+And then we can get some information
+around the HTTP status codes we're getting.
+So whether or not we get some 2xx, 3xx, 4xx,
+and 5xx, and so on.
+Okay. Now let's look at popular objects.
+So this gives us some information
+around which objects have been popular in my cache
+and which ones have been hits or misses, and so on.
+Top referrers, which is giving me some information
+around which websites are sending data into my cache.
+Then we have usage, which is showing me the usage
+in terms of data transfer by protocol, so it's quite nice.
+That means that every day I get nine gigabytes
+or eight gigabytes of data being served over HTTPS.
+And none of it over HTTP, so that means
+that my distribution is only secure,
+and we can get some more information as well
+from the location, so where is the data flowing?
+Is it from CloudFront to users,
+or is it from CloudFront to your origin.
+And all the data, so just some information in here.
+And then viewers, which is giving me some information
+around which type of user I have.
+So desktop, bot, mobile, and so on.
+And then some trends that I get for these information,
+the web browsers that are accessing my distribution,
+the operating systems, as well as the location.
+So it gave me some information
+around which countries are accessing my distribution.
+And India, UK, and United States are the biggest locations
+from this distribution.
+And then finally, we can have a look at some monitoring
+associated with my distribution.
+So if I click on it and look at the distribution metrics,
+what we can see in here are going to be the sum
+of requests over time, the data transfers, the error rates,
+the 4xx error rates and the 5xx error rates,
+the latency to the origin, and the cache error rates, okay?
+So that's all you need to know for CloudFront reports,
+logging, and monitoring.
+I hope you liked it and I will see you in the next lecture.

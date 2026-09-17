@@ -1,0 +1,61 @@
+# 240. Amazon Managed Service for Apache Flink - Hands On
+# Section: Data & Analytics
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33907244
+# Caption: en_US (manual)
+
+So here I am in the Amazon Kinesis service.
+And I wanna show you just the options
+for Kinesis data analytics.
+So here it is.
+So we have two different kinds of things.
+You can either create a streaming application
+or go into the studio.
+The streaming application is actually just
+all leveraging app Apache Flink.
+This is the case analytics for Apache Flink.
+You choose a runtime version
+for Apache Flink that's supported
+and then you can have the application name.
+And then, at some point,
+you need to enter your production information.
+And this would create a streaming application
+that you can use on AWS.
+And so you would need to actually upload then
+your application here.
+As we see when we get there
+and we don't have any Apache Flink application available
+to us, because this is quite complex, right?
+Then you can run and you can even monitor it
+using the Apache Flink dashboard.
+So this service is to create Apache Flink applications.
+And actually, if you wanted to just do one of analysis
+you can open a studio notebook
+and this will just quickly create a notebook
+where you can start running your streaming applications
+again, leveraging Apache Flink.
+Okay. So this I will not do.
+And then where is the Apache,
+where is the Amazon Kinesis data analytics
+for SQL applications?
+Well, it's on the left hand side
+and this is where it would be.
+So you would find it under the SQL applications legacy
+and now they recommend that you use all the time
+Kinesis data analytics studio and Apache Flink?
+But if you wanted to, for example, read from
+Kinesis Data Firehose, you would create a SQL applications
+in the legacy form and you would enter actually
+the application name and it did create one.
+And then once you've define your application name,
+you can actually go to realtime analytics
+and write the kind of SQL you want to do
+for this application, okay?
+So it's just an overview.
+You don't need to know anything
+about Kinesis data analytics for this exam
+but I wanna show you the options,
+give you a quick introduction.
+And so you could visualize it as well on the console.
+So that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

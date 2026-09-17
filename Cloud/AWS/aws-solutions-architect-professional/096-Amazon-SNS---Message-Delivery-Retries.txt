@@ -1,0 +1,74 @@
+# 96. Amazon SNS - Message Delivery Retries
+# Section: Service Communication
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34783322
+# Caption: en_US (manual)
+
+So, let's do a deep dive
+on the Message Delivery Retries
+and SNS dead letter queues.
+So, when a message is delivered to an SNS subscriber,
+in case you have service side errors,
+a delivery policy is applied.
+So, it means if the endpoint that SNS
+is calling is having issues.
+And this is a table that makes it look
+like what is going to happen.
+So, if you look at the AWS manage endpoint, for example,
+can you firehose, lambda or SQS?
+Immediately, there's gonna be three times
+without delay or retry.
+So that's maybe the message will go through.
+If it doesn't go, then it goes
+into a pre backup phase
+where it's tried two times one second apart.
+Then it goes into a backup phase where it's tried 10 times
+with exponential backup from one second to 20 seconds.
+And then, if it doesn't work still,
+it goes into the past backup phase
+where it's tried 100,000 times 20 seconds apart.
+So the total attempts is over 100,015 times
+over the course of 23 days.
+So as you can see, there is a lot of retries
+for the manage endpoints of AWS.
+And there's another one for SMTP.
+But the idea here is that there is a delivery policy
+and retries are being made
+until a success happens, hopefully.
+In case you have an HTP endpoint
+that you set up as a subscriber to your SNS topic.
+Then you have support for custom policies.
+So, you may want to say
+what is the number of retry, the min delay, the max delay
+the backoff function, the throttle policy, and so on
+to really customize how SNS will retry for your backend
+because your backend may not like heavy load
+or a heavy number of retries.
+So this is the only kind of delivery mechanism
+that supports a custom delivery policy.
+That's very important for you to remember.
+Next, we have Dead Letter Queues.
+So, in case you have exhausted the delivery policy,
+then the messages that haven't been delivered
+are going to be discarded,
+unless we set a Dead Letter Queue.
+And the DLQ is dissimilar to what we have for SQS.
+So, DLQ are again, SQSQ queues or SQS FIFO queues,
+in case you use SNS FIFO.
+And they're attached to a subscription, not to a topic.
+So, let me make it clear.
+The SNS topic receives messages
+and we have two subscriptions.
+We have an email subscription and an HTTP subscription
+and we can see how these could have issues.
+For example, if my email server has issues,
+then you may have a problem
+or if your HTTP subscription has issue,
+again you can have problems.
+So, you can set up a Dead Letter Queue
+for your email subscription
+and you can set up another Dead Letter Queue
+for your HTTP subscription.
+This guaranteeing that you can process these messages
+that were not successful, in case that happens.
+Okay, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

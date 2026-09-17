@@ -1,0 +1,76 @@
+# 208. Lambda in VPC
+# Section: Serverless Overviews from a Solution Architect Perspective
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33878800
+# Caption: en_US (manual)
+
+Now let's talk
+about some networking fundamentals for Lambda.
+So by default, when you launch your functions
+they're launched outside of your own VPC.
+They're actually launched in an AWS own VPC.
+So you do not have access to resources within your VPC.
+So if you launch an RDS database, an ElastiCache Cache,
+or an internal load balancer
+then your Lambda function will not have access to it.
+So this is the default Lambda deployment.
+It will work if it needs to access any
+public API on the internet.
+It will work if it needs to access DynamoDB
+because DynamoDB is a public resource on the AWS cloud.
+But if you have a private RDS database,
+the connectivity will not be working.
+You know where this is getting to
+we need to actually launch your Lambda function in your VPC.
+So this is an option you can do
+and you need to specify therefore, your VPC ID,
+the subnets you want to launch in,
+and attach a security group to your Lambda function.
+Then your Lambda will have a elastic network interface
+in your subnets, and therefore it will be able to
+access your Amazon RDS, for example, running in your VPC.
+So this is how we launch a Lambda function
+in your private subnets.
+And therefore you will have private connectivity
+to anything in your VPC, which is good.
+So a major use case of Lambda in a VPC
+is to use Lambda with the RDS proxy.
+So again, we have an RDS database in a private subnet
+but we have our Lambda functions
+and they access it directly.
+But the problem is that
+if they access your RDS database directly
+it's going to be huge problem,
+because if you have many of the functions
+appearing and disappearing over time,
+then you may have too many open connections
+under high load on your RDS database
+and it will lead to timeouts and issues.
+So instead, what you would do is to launch an RDS proxy
+and this proxy was going to pull connection and connect
+with less connections into your RDS database instance.
+So your Lambda functions now connect to the RDS proxy
+which connects to the RDS database instance
+and you've solved your architectural problems.
+So three benefits of the RDS proxy is that number one
+it improves scalability
+by pulling and sharing database connections.
+Also, in case of a failover,
+this will improve the availability by reducing by 66%
+the failover time and preserving connections.
+This is for RDS and Aurora, of course.
+And also if you wanted to enforce IAM authentication
+you could enforce it at the RDS proxy level
+and store these details in secrets manager.
+So for this to work for the Lambda functions
+to connect to your RDS proxy,
+you need to launch your Lambda functions in your VPC,
+if that makes sense,
+because your RDS proxy is never publicly accessible.
+And therefore, if you launch your Lambda functions publicly
+you will have no network connectivity
+to your RDS proxy because it is never public.
+So if you understand this
+you will be able to solve one or two questions at the exam.
+Okay, that's it.
+I hope you liked it.
+And I will see you in the next lecture.

@@ -1,0 +1,67 @@
+# 150. AWS Storage Gateway - Overview
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904458
+# Caption: en_US (manual)
+
+So we've seen Amazon S3
+as a standalone service, but it is possible for you
+to use it in a hybrid cloud type of setting.
+So AWS wants you to bridge
+between your on-premises environment to AWS
+and that's called a hybrid cloud.
+So part of your infrastructure is going to be on-premises
+and the rest is going to be on the cloud.
+Why?
+Well, maybe because sometimes you have created,
+for example, your on-premises infrastructure first
+and you're doing a migration but it could be long
+so you can do a long cloud migration
+or for security requirements or compliance requirements,
+maybe it's your strategy to have part of it on the cloud
+and part of it on-premises.
+You have really different use cases
+for trying to have two different ways of doing IT.
+Some of it on-premises and some of it on the cloud.
+And Amazon S3, it's a proprietary storage technology,
+so this is not something like the EFS service
+or NFS protocol we saw from before
+that we can use directly on two servers on-premises.
+For exposing S3 data on-premises,
+you have to use something called a Storage Gateway.
+So if you wanted to summarize the storage options on AWS,
+the block storage would be EBS
+or an EC2 instance store.
+The file storage would be a network file system
+so Amazon EFS,
+and object storage would be Amazon S3 or Glacier.
+And where does the Storage Gateway fit in all this?
+Well, the Storage Gateway is going to be bridging
+your on-premises data and cloud data in AWS.
+So your hybrid storage will allow your on-premises systems
+to seamlessly use the cloud
+to extend the storage capability.
+So this can be used for disaster recovery,
+backup and restore or tiered storage.
+There are different types of Storage Gateway.
+There is a File Gateway, there is a Volume Gateway
+and a Tape Gateway.
+Now you don't need to know all these types
+going into the exam, okay?
+What you need to know is that the Storage Gateway
+allows you to bridge whatever happens on-premises
+directly into the AWS Cloud.
+So under the scene,
+the Storage Gateway will be using Amazon EBS,
+Amazon S3, and Glacier behind the scenes, okay?
+So from a certified cloud petitioner perspective,
+the Storage Gateway is a way for you
+to bridge your file systems and your storage on-premises
+into the cloud to leverage best of both worlds, okay?
+For if you were to do
+the AWS Certified Solutions Architect Associate course,
+you would need to understand Storage Gateway
+a little bit better, but I will save you this right now
+for the Certified Cloud Practitioner.
+Okay, that's it.
+I hope you liked it
+and I will see you in the next lecture.

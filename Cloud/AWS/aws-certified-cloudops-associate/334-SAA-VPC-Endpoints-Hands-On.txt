@@ -1,0 +1,151 @@
+# 334. [SAA] VPC Endpoints Hands On
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/28875456
+# Caption: en_US (manual)
+
+So let's go ahead,
+and practice using VPC endpoints.
+First what I wanna show you is that,
+and I'm going to stop this default VPCs instance,
+'cause we don't really need it.
+So I'm going to terminate that instance, and yes, be done.
+So if we go into our bastion host,
+which is also a public instance,
+we're going to connect to it.
+And then from this EC2 instance,
+I'm going to connect into my private EC2 instance,
+so again, this is the IP of my private EC2 instance,
+that we have here, so what we can do,
+is do the SSH command from within,
+so EC2 user at the IP, minus i demoKeyPair.pm.
+Okay, let's clear this.
+So now we want to access the S3, okay?
+So to access S3, what we need to do,
+is to create a role for this instance.
+Okay, so we're going to go under security,
+there's no IM role attached right now.
+So what I have to do is to right click,
+and then I will go into security,
+and then modify the IM role.
+We need to create a new role,
+and I will just create a quick role for EC2 instances,
+so, let's create a role.
+And this is for EC2 instances, next, permissions.
+And then for the policy that we have,
+we'll use the Amazon S3 read only access, okay?
+Tags, review, and then I'll call it
+DemoRoleEC2-S3ReadOnly, okay.
+Create role, and it has been created.
+So now back in it, I can refresh this page,
+and look at this demo role EC2 S3 read only, and save it.
+So invalid instance, I am providing, so here we go,
+it was just a little lag that we needed to wait for.
+Okay, so my private instance now as an IM role
+attached to it, so if I go back into here,
+and do AWS S3 LS.
+As we can see, we get the answer of our four buckets,
+of our accounts.
+So our instance is connected to the internet,
+and again, we can do curl google.com.
+And again, we get an answer, okay?
+So this is working, but now what I'm going to do,
+is under the route table of my private subnets,
+I'm going to edit the routes,
+and this one that was connecting to the internet
+through the NAT gateway, I'm going to remove it.
+So effectively what I'm going to do,
+what I'm doing right now,
+is that I'm preventing this instance right here,
+to access the internet.
+So if we do S3 LS, this is not working,
+and if we do curl google.com, this is not working either,
+so we've removed internet access from this EC2 instance,
+because we want to connect to Amazon S3 privately,
+through a VPC endpoint.
+So let's go ahead and create a VPC endpoint,
+so I will click on endpoints, not endpoint services,
+and then click on create endpoint.
+And here I can choose the type of endpoint I want.
+So I want an end point for an AWS service,
+and then we have a list of all the services,
+and the type of VPC endpoint we have.
+So we have either an interface type of endpoint,
+or if I type, for example, dynamodb in here,
+it is a gateway type of endpoint.
+So if we take a interface type of endpoint,
+I'll just take the first one I see.
+What I have to do is select a VPC
+in which this endpoint will be deployed.
+Then we need to make sure that DNS name is enabled,
+and for this we need to modify some VPC settings
+regarding DNS, but we have done that from before.
+And then we specify in which AZ will this endpoint
+be deployed, this interface endpoint be deployed.
+So you can say in these two subnets,
+because we're not with the third subnet,
+because we didn't create a subnet for this, for the last AZ.
+But anyway, you choose the end points you want,
+you choose the associated subnet ID with it,
+for example, it is going to be in private subnet A,
+and then private subnet B, of IPv4.
+And then you select a security group
+to attach to this endpoint,
+and this will define the security of how this endpoint
+is accessed from your other type of instances, okay?
+So the other option, instead of creating
+an interface endpoint, is to create a gateway endpoint.
+And for this we'll use Amazon S3.
+So as we can see, we have different kinds of endpoints,
+we have a gateway and interface,
+but to go through this example,
+the most common is going to be a gateway endpoint
+into Amazon S3.
+In which case we have to choose a VPC,
+the demo VPC, we have to choose then to update route table.
+And so therefore we're going to update
+the private route table, so that any request
+made within my private subnet in this route table,
+is going to be routed to this gateway endpoint.
+So we'll use full access for this gateway endpoint,
+and then click on create endpoint.
+So the endpoint has been created,
+and if you look at route tables,
+we can see that it is associated
+with my private route table.
+So we can verify that by going into the route tables,
+in my private route table,
+look at the routes and then edit them.
+As we can see we have this route right here
+that get added directly, and that means that some traffic
+is going to go directly into my VPC endpoint.
+So we're good to go, and we cannot delete it,
+because it's actually linked to the endpoint itself.
+And so now this is done,
+let's have a look at our bastion instance,
+and see if things work.
+So if I do curl and right now this is not working,
+I got disconnected, so let's go back into it,
+by going through the bastion host.
+then we SSH again, so we use the demo key pair,
+and then we add in the IP of our private instance,
+which is right here.
+Okay, now if you do curl google.com,
+as we can see, it still does not work,
+because we still have a route out to the internet.
+And if you do AWS S3 LS, it doesn't work either.
+And you may say, but we have a gateway endpoint,
+so it should work.
+Yes, actually this is because of a CLI problem.
+So what you have to do is that by default,
+the region of the CLI will be US East one,
+and so we need to edit it,
+and for this, we're gonna do AWS S3 LS,
+and then region is EU central one,
+or whatever region you are in when you do this hands on.
+Press center, and as you can see now,
+this traffic is redirected to the VPC endpoint of my region,
+and therefore I have the list of all the buckets
+on Amazon S3, even though my instance
+does not have internet access.
+So this is the whole power of VPC endpoints,
+I hope you liked it, and I will see you in the next lecture.

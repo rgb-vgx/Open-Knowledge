@@ -1,0 +1,60 @@
+# 322. VPC Peering
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528554
+# Caption: en_US (manual)
+
+So now let's talk about VPC Peering.
+So the idea is that we can create VPCs
+and in different regions, different accounts
+and we want to connect them together using the AWS network.
+Why we do this?
+Well, we wanna make them behave
+as if they were in the same network, okay?
+So it could be very specific.
+Maybe you could have VPC in other regions
+in other accounts, or even within your same accounts
+and you want to connect them.
+So in order for them not to connect, remember, I said,
+the VPC network CIDRs must be distant from each other
+because when we connect them together,
+if they have overlapping CIDRs,
+they will not be able to communicate.
+So, VPC peerings can happen between two VPCs
+and they're not transitive.
+That means that each VPC
+that wants to communicate with one another
+must have VPC peering enabled.
+So if you have a look at three VPCs right now, A, B, and C,
+then we can create a peering connection between A and B.
+And this is allowing you to connect them together.
+And we can create another peering connection
+between VPC B and C,
+and again, they can communicate together.
+But even though A and B, and B and C, are connected,
+you still need to enable a VPC peering connection
+between A and C, to have them communicate.
+This is very, very, very, very important.
+Finally, even though your VPC are peered with each other,
+you must also make sure that you update all the route tables
+in each VPC's subnets, to ensure that these two instances
+in different VPC, can communicate with each other.
+And we'll see this in the hands-on.
+So some good things to know about VPC peering.
+They can happen within your own accounts,
+but they can happen across accounts.
+So if you want to connect a VPC from one account A,
+to account B, you could, and also across regions.
+So this is very, very powerful.
+And you remember, in security groups,
+we can reference other security groups in it.
+While it's possible to also reference a security group
+from a peered VPC across accounts in the same region.
+And this is very powerful
+because we don't need to have the source
+as a CIDR on IP, we can also reference a security group.
+Extremely powerful.
+So back into our networking diagram.
+We're here and now we're going to add
+a VPC peering connection
+to connect our VPC to other VPCs.
+So that's it. I will see you in the next lecture.

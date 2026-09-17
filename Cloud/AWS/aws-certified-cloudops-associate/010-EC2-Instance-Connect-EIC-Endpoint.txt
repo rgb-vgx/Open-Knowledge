@@ -1,0 +1,46 @@
+# 10. EC2 Instance Connect (EIC) Endpoint
+# Section: EC2 for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218469
+# Caption: en_US (manual)
+
+So now let's talk
+about the EC2 Instance Connect endpoint.
+The idea is that you want to connect securely
+to private EC2 instances.
+That means that are EC2 instances
+that will live in private subnets within your VPC.
+So these instances are private
+because, as the definition says,
+they are not accessible directly from the internet.
+They can access the internet sometimes
+with a NAT gateway, for example,
+but you cannot access them from the internet.
+Yet, we want to SSH into them
+by using EC2 Instance Connect.
+So now there's a very nice solution,
+which is to create an EC2 Instance Connect endpoint.
+And through the EC2 Instance Connect endpoint service,
+we're going to be able to use the EC2 Instance Connect
+feature to connect directly to the instances.
+So that means our instances are also secure.
+They're still in a private subnet,
+but we get the benefits of the ability to do SSH
+into them through the EC2 institute
+Instance Connect feature.
+So that means that there is no internet gateway,
+no NAT gateway, and no internet required.
+So how does that work?
+Well, we create an EC2 Instance Connect endpoint,
+which has a security group attached to it,
+and we must allow outbound SSH traffic
+to the target instances.
+And then for the EC2 Instance Security Groups,
+they must allow inbound SSH traffic
+from the endpoint security group.
+Once these security groups are open,
+that means that we can make sure
+the instances can communicate
+to the EC2 Instance Connect endpoint,
+then we'll have the feature enabled.
+All right, that's it, I hope you liked it.
+And I will see you in the next lecture.

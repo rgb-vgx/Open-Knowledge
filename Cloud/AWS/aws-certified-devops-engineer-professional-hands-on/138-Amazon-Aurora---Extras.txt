@@ -1,0 +1,97 @@
+# 138. Amazon Aurora - Extras
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904162
+# Caption: en_US (manual)
+
+So let's have a look
+at a few more advanced concepts for Aurora.
+So first of all, we know that we have auto scaling
+for Aurora in terms of the storage,
+and so when we have instances of Aurora,
+we have one writer instance and many read replicas.
+So the writer instance is always accessible
+using the writer endpoint.
+The reason is that if the writer instance goes down,
+another Aurora instance may be promoted as the writer,
+and so therefore the writer endpoint would be updated.
+As for the reader endpoint, again it is updated based
+on how many we replicas you have.
+So say for example,
+you receive many requests and the load is spread
+between two Amazon Aurora reader instances.
+If the CPU usage goes up,
+we can set up replicas auto scaling,
+in which case two more replicas will be added
+and the reader endpoint will be automatically updated
+and extended to ta1ke into account these two new replicas.
+So bottom line is, here,
+what we need to remember is that the clients must connect
+to the writer endpoint to find the writer replica,
+and must connect to the reader endpoint
+to find the reader replicas.
+Aurora also has the concept of global databases.
+So you have two ways of doing it.
+Either you use the Aurora Cross Region Read replicas,
+and they're very helpful for disaster recovery
+and very simple to put in place,
+or you just use the feature named Aurora Global Database.
+That's recommended because one of the region will be defined
+as the primary region,
+which will take all the read and the write loads.
+And then you will have up to 10 secondary read-only regions,
+and the replication lag will be less than one second.
+You can also set up within each secondary region
+up to 16 read replicas,
+which is very helpful for decreasing latency.
+On top of it, in case of a disaster, you have an RTO
+of less than one minute by promoting another region,
+and on top of it, typical cross-region replication will take
+less than one second.
+So how does that work?
+Well, we have a primary region
+where the applications can do read and writes,
+and then we'll have a secondary regions
+where the replication will happen, and the applications
+on this database can only do read-only workload.
+So what happens when we have a failover
+for our global database?
+So say we have a global database
+and it turns out that we're going to store
+in the SSM parameter store, the Aurora writer endpoint.
+It's going to be truly helpful to understand
+to which database to connect to to write data.
+And it turns out
+that this writer endpoint is currently pointing
+to us-west-2, so this is the primary region for Aurora.
+But in case of failures, we need to be able
+to promote another region as a main,
+as a primary Aurora database.
+And so to get some kind of automation around it,
+we can have a lambda function
+that performs health checks against our Aurora database.
+In case they fail, then it will notify an SNS topic,
+which will send an email to an administrator.
+Maybe there's a manual part
+because maybe the maintenance is planned
+as therefore we want to have some downtime,
+but if we don't want to have some downtime,
+maybe we want to go ahead
+and manually update the parameter store
+to have a new writer endpoint
+and promote on top of it the other database
+to become the primary instance.
+And so therefore, we should also have some application logic
+to refresh the Aurora endpoint from the parameter store,
+but effectively we will have achieved a failover
+from one region to the other one.
+There's also a way for you to smartly use a mix
+of global Aurora databases and local ones.
+So you can have, definitely have this kind of architecture
+where you have your application accessing local data
+that are specific to the region in a local Aurora database,
+and then accessing global data sets
+from a global Aurora database.
+Just remember that again, one of these will be a writer
+and the other ones will be readers.
+And that's it, I hope you liked it,
+and I will see you in the next lecture.

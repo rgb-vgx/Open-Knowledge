@@ -1,0 +1,69 @@
+# 13. Summary of Identity & Federation
+# Section: Identity & Federation
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376366
+# Caption: en_US (manual)
+
+Okay, so we reached the end of this section
+and I wanna give you a quick summary.
+Now, I know this is quite a heavy section,
+but you need to know everything in it
+and this is why I like to start with it
+because if you're not confident,
+then at the end
+of this course, you can revisit the section
+and hopefully it should make a lot more sense to you.
+So let's summarize for Identity and Federation.
+So we have users and accounts
+that we can manage within AWS,
+but we can also create these accounts using a organizations.
+If we wanna go one step deeper,
+we can use Control Tower
+to set up securing compliant multi-accounts environments
+and using guardrails to prevent
+or to tag non-compliance of some accounts.
+We can do Federation in many ways.
+The first one and the older one is using SAML 2.0.
+But if you don't have SAML 2.0,
+then you can use a custom identity provider,
+a broker with GetFederation Token API for STS.
+And then we have IAM Identity Center to connect
+to multiple accounts within your organization
+and also to connect your SAML apps.
+If you want to do Web Identity Federation
+the old way you can,
+but it's not recommended
+or you can do it the new way using Cognito,
+that will allow you to also get new features
+such as Anonymous Mode and MFA.
+You can also use Directory Services
+to manage your Microsoft Active Directory.
+So we have Managed Microsoft AD as a standalone
+or we can set up a trust with the AD on premises.
+We'll have MFA, seamless join,
+and RDS integration.
+With AD Connector, that allows us
+to simply proxy request on premises
+or Simple AD to set up a standalone
+and cheap AD compatible with AWS.
+There's no MFA or no advanced capabilities.
+And finally, if you need to share all the resources within
+your accounts, then think of using
+the Resource Access Manager service or RAM.
+Okay, so to summarize this lecture,
+what you want to get out is that usually AWS
+will try to make you lean towards the more modern
+way of doing things.
+So SSO is always going to be preferred
+to doing Federation with SAML 2.0
+or Cognito is always going
+to be preferred than doing Raw Web Identity
+Federation and so on.
+So it's important for you to understand all the points in
+there because the options
+we'll talk about SAML 2.0 Federation,
+we'll talk about Web Identity Federation,
+but also we'll talk about Single Sign On or Cognito.
+And for you, it's super important to master these services
+to answer the question correctly, okay?
+So that's it for this lecture and this section.
+I hope you liked it and I will see you in the next lecture.

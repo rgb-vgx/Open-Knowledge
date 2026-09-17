@@ -1,0 +1,221 @@
+# 67. EBS & Local Instance Store
+# Section: Storage
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376494
+# Caption: en_US (manual)
+
+So now let's talk about EBS volumes
+and EC2 instance store.
+So first, EBS volumes are network drives.
+And you attach them to one instance at a time,
+except with a EBS multi-attached feature
+that I will show you very, very soon.
+So they're linked to a specific AZ,
+and if you wanted to transfer them between a different AZ,
+you need to first snapshot them,
+and then restore them into that other AZ.
+Your volumes can be resized, but only up,
+so you can increase the volume size
+without detaching the EBS volume first.
+You need to make sure also to leverage the EBS volume
+as much as you can to choose an EC2 instance type
+that is going to be EBS optimized
+to enjoy maximum throughputs.
+So in a diagram here, what it looks like,
+so we have one EC2 instance,
+it may have an EBS volume attached to it of 10 gigabytes
+and another EC2 instance
+that will have maybe two EBS volumes attached to it.
+Now for volume types, you have different types of volumes.
+For EBS, you have the gp2, gp3 family, and g means general.
+So general purpose SSD volumes
+that will balance a good price and performance
+and fits most workloads.
+But if you want extremely high performance,
+very high throughput, very low latency,
+then you need to look into the i family,
+so the io1 and io2 block express.
+If you have a need for a low-cost HDD
+that is going to be designed for frequently accessed
+and throughput-intensive workload, usually sequential reads,
+then st1 one is going to be a great choice.
+And if you want cold storage
+for less frequently accessed workloads,
+then sc1 one is going to be a good use case for you.
+The EBS volumes will have general characteristics,
+but they will be characterized in terms of size,
+throughputs, and IOPS, which is IO Operations Per Second.
+And when you're in doubt, of course,
+always look at the AWS documentation.
+In terms of boot volumes,
+which is where your operating system can be
+for your EC2 instances,
+then it can only be on gp2, gp3, or io1, io2.
+Okay, so now snapshots.
+So they're very helpful to transfer EBS volumes between AZ.
+And they're incremental,
+so you only backup the changed blocks behind the scene.
+Then the backups will use IO.
+And so that means that because the volume's going
+to be read by AWS,
+if you are running an application
+that is also handling a lot of read traffic,
+and you are on top of it doing a backup,
+then you may experience decreased performance.
+The snapshots are going to be stored in S3 in the backend,
+but you're not going to be getting direct access to them.
+And it's not necessary for you to detach a volume
+to do a snapshot, but it's recommended
+because if your volume is being actively used
+while you do a snapshot, you may get an inconsistent state.
+You can copy snapshots across AZ, yes, for sure
+and again, restore snapshots, sorry, across AZ of course,
+but you can also copy snapshots across region
+for disaster recovery purposes.
+So it's a really good practice to snapshot, for example,
+data in one region
+and then copy it to another region in case you wanted
+to restore the data for disaster recovery purposes.
+Now it's also possible for you
+to make Amazon machine images from your snapshots
+using the AMI feature.
+And this is very common, for example,
+if you bootstrap an application
+and then make an AMI out of it.
+Now when you restore an EBS volume, especially large ones,
+then you need to prewarm them.
+That means you need to read all the blocks
+to have the maximum performance.
+And to do so, you have two ways of doing it.
+The first one is using a newer feature of AWS
+because that was a very popular request.
+It's called the Fast Snapshot Restore, which is FSR feature.
+And the idea is that this feature is going
+to read your EBS snapshot entirely and then give it to you.
+This way, when you restore it, it's going to be prewarmed.
+But if you wanted to do it the old way,
+then you need to just attach this restored EBS volume
+to your EC2 instance, and then you would issue the fio
+or dd command directly from within the EC2 instance
+to read the entire volume.
+Next, there is a service within EBS
+called Amazon Data Lifecycle Manager,
+which is used to automate the creation,
+retention, and deletion of EBS snapshots and EBS-backed AMI.
+So it's a way for you to schedule backups,
+do cross account snapshot copies automatically,
+or to delete outdated backups using a policy.
+Use resource tags to identify the resources you want
+to back up, for example, EC2 instances or EBS volumes.
+And so here is an example.
+We can tag an EBS volume
+with environment prod to make sure
+that it automatically gets backed up
+by Amazon Data Lifecycle Manager,
+or we can tag directly an EC2 instance
+with this environment prod,
+and then the instance itself will be,
+and its EBS volumes will be backed up.
+So it goes into Data Lifecycle Manager,
+and we can create snapshots and AMIs out of it.
+It cannot be used to manage snapshots
+or AMIs created outside of DLM.
+So everything has to be contained
+within Data Lifecycle Manager,
+and it cannot be used to manage instance-store backed AMIs.
+So a question you may have is what is the difference
+between Amazon Data Lifecycle Manager and AWS backup?
+So you use Data Lifecycle Manager when you want
+to automate the creation, retention,
+and deletion of EBS snapshots,
+whereas you're going to use AWS backups
+to manage and monitor backups
+across all the AWS services you use,
+including EBS volumes, from a single place.
+So it's about scope, and it's about ease of management.
+Talking about EBS volumes, we have also EBS encryption.
+So there is an account level setting to encrypt your volumes
+because by default, new EBS volumes are not encrypted.
+But if you turn on this setting,
+then automatically new EBS volumes
+and snapshots are going to be encrypted.
+So in the UI, it looks like this.
+There is a EC2 dashboard setting, and when you set it,
+you can always encrypt new EBS volumes.
+Just so you know, this setting,
+even though it's an account level setting,
+needs to be enabled on the per-region basis.
+Now there's a feature called EBS multi-attach,
+and it's only available for the io1 and io2 family,
+which goes against what I told you,
+but it gives you the ability to attach the same EBS volumes
+to multiple EC2 instances in the same AZ.
+And each instance will have full read
+and write permissions on the volume.
+So it's only for a specific kind of applications.
+For example, the ones
+that need higher application availability, for example,
+Teradata that has a native support for this feature
+or applications that must manage concurrent write operations
+for this very specific use case as well.
+Now the file system is a little bit different.
+It's not going to be XFS or EX4 and so on.
+It's going to be a file system that's cluster aware,
+and it's not the kind of things you deal with every day.
+So it's a very unique feature for very unique use cases,
+but you need to know that it exists.
+And so the architecture looks like, well,
+you have one, for example, io2 volume
+with a multi-attach feature,
+and it can be attached to multiple EC2 instances at a time.
+Now when you consider your local EC2 instance store,
+this one is not a network disc,
+it is a physical disc that is going to be attached
+to the physical server where your EC2 is.
+And while we do this,
+well, you get very, very high IOPS
+because well, the disc is attached to your EC2 instance.
+Now what you get on the right-hand side,
+for example, for the i3 family is a lot of write IOPS
+and a lot of read IOPS as you can see.
+Now the disc can vary in size, and this is just indicative,
+it can obviously increase over time,
+but the disc can go up to, for example, 7.5 terabytes.
+And if you strip them, so if you have them in parallel,
+you can reach, for example, 60 terabytes.
+And so you get a lot of IOPS.
+It is still a block storage just like EBS, okay?
+But it is a physical device, not a network device.
+And it cannot be increased in size.
+And in case your EC2 instance fails or gets shut down,
+you will lose your data
+because it is a physical disc attached to your EC2 instance.
+So if you compare EC2 instance store and EBS volumes,
+while the instance store is physically attached
+to the machine, it is considered ephemeral storage,
+whereas the EBS is a network drive,
+which is considered a persistent kind of storage.
+Now the pros of using the EC2 instance store is
+that you get a lot better IO performance.
+So the EBS gp2, for example,
+will have a max IOPS of 16,000,
+io1, 64,000,
+and io2 Block Express, 256,000.
+But we saw that the instance store
+can have IOPS in the millions.
+Now it's going to be very good if you want to have a buffer,
+a cache, scratch data, or temporary content.
+Remember it is ephemeral storage.
+And in case you reboot your EC2 instance,
+your data will survive.
+But if you happen to stop
+or terminate your EC2 instance,
+then all the data on the EC2 instance store
+is going to be lost.
+And that means that you need to manage the data.
+So you need to back up the data automatically to make sure
+that if you want to keep it, you have a mechanism to do so.
+And because it is an EC2 instance store,
+and it's a physical storage, you cannot resize it.
+Whereas for EBS volumes, of course you could resize it.
+Okay, so that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,161 @@
+# 55. Elastic Load Balancing (ELB) Overview
+# Section: AWS Fundamentals: ELB + ASG
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851240
+# Caption: en_US (manual)
+
+Now let's learn about load balancing.
+And a question you may have is what is load balancing?
+Well, a load balancer is going to be a server
+or a set of servers that will forward traffic
+that is received to multiple backend
+or downstream EC2 instances or servers.
+So the idea is that for example,
+we have three EC2 instances
+and they're going to be
+fronted by an elastic load balancer,
+which is a set of servers behind the scenes.
+Now, what happens when you have, for example,
+three users directly connecting into
+your elastic load balancer?
+Well, the first one is going to have its
+load being sent in one backend EC2 instance
+and because there's load balancing well,
+if another user is connecting to your elastic load balancer,
+then it will be sent to another EC2 instance.
+And then finally,
+while if a third user is connecting to
+your elastic load balancer,
+that user will again be load balance
+and sense to the third EC2 instance.
+So the idea is that the more users you have,
+the more the load is going to be balanced across
+EC2 instances.
+But the idea is that your users do not know
+which backend instances they're connected to.
+They just know that they have to connect to your
+elastic load balancer,
+which gives them one end point of connectivity only.
+Now,
+why should you use a load balancer
+where you spread the load across
+multiple downstream instances,
+you're going to expose a single point of access
+to your applications as I just said.
+You're going to seamlessly handle failures
+of downstream instances
+because the load balancer will have
+some health check mechanisms
+and can understand to which instances
+and cannot send traffic to.
+You can do health checks on your instances.
+You can provide SSL termination.
+So if you have HTTPS encrypted traffic for you websites,
+you can enforce stickiness with cookies,
+high availability across zones
+and separate public traffic,
+from private traffic on your cloud.
+And we'll explore these concepts obviously in a deeper dive.
+So the elastic load balancer is a managed load balancer
+as such.
+AWS will be managing it,
+and we'll guarantees that it will be working no matter what.
+AWS we'll take care of upgrades, maintenance
+and high availability.
+And it will provide you a few configuration knobs to tweak
+the behavior of the load balancer.
+The idea is that using an elastic load balancer is a
+no-brainer
+because it will cost you less
+than setting up your own load balancer.
+And also if you had to manage your own load balancer,
+it will be a nightmare from a scalability perspective.
+So also the load balancer is integrated with so many AWS
+offerings and services.
+The idea is that it can be integrated with of course,
+EC2 instances,
+but also we'll see later on with the scaling groups,
+Amazon ECS, Certificate Manager, CloudWatch, Route 53,
+WAF Global Accelerator, and most likely more over time.
+So the idea is that the load balancer is a no-brainer
+when it comes to load balancing on AWS.
+Now I mentioned health checks.
+So health checks is a way for your elastic load balancer
+to verify whether or not an EC2 instance
+is properly working,
+because if it's not working properly,
+then we don't want to send any traffic to that instance.
+So they're crucial for load balancers
+and they are done by using
+a port and a routes to check the health button.
+So for example, in this example,
+I have the protocol being HDP,
+the port being 4567
+and the end points to be slash health
+because maybe this route is an easy way
+from an application perspective to
+check the health of my application.
+And if the EC2 instance does not respond
+with an okay response,
+which is usually the 200 status code of HDP,
+then the instance will be marked as unhealthy.
+And the elastic load balancer will not send traffic
+to that instance.
+Okay,
+so now you have four kinds of managed load balancers on AWS.
+You have the classic load balancer,
+which are called older generation or V1, which is from 2009,
+and it's called CLB.
+Now, it's compatible with HTTP, HTTPS, TCP, SSL,
+or security CP.
+And overall AWS not want you to use
+that load balancer anymore.
+So it is going to be shown as deprecated within the console,
+but still available to use.
+Then we have newer generations load balancer.
+So we have the application load balancer
+from 2016 or so-called ALB.
+And this one supports HTTP, HTTPS and web socket protocol.
+Then we have the network load balancer from 2017,
+which supports the TCP, TLS, security CP and UDP protocols.
+And then finally we have the gateway load balancer from 2020
+GWLB, which operates at the network layer,
+so there are three and the IP protocol.
+So overall it is definitely recommended for you to use
+the newer generation load balancers
+as they provide more features.
+And some load balancers can be set up as internal,
+so private and private access for the network
+or external public load balancers,
+for example, for your websites and public applications.
+Finally, you need to understand the security
+around the load balancers.
+So the users can access your load balancer from anywhere
+using HTTP or HTTPS.
+And therefore the security group rule is going to look like
+something like this,
+where the port range is going to be 80 or 443.
+And the source is going to be 0.0.0.0/0,
+which means anywhere.
+And so we allow the users to connect to our load balancer,
+but then the cool thing is that EC2 instances
+should only allow traffic coming directly
+from the load balancer.
+And therefore the security group rule of your EC2 instances
+is going to look a little bit different.
+So it's going to allow HTTP traffic on port 80
+and the source of it is not going to be an IP range
+is going to be a security group.
+So we're going to link the security group
+of the EC2 instance,
+to the security group of the load balancer.
+And effectively what this will do is that it will say
+that the EC2 instance is only allowing traffic
+if the traffic originates from the load balancer,
+which is an enhanced security mechanism.
+So that's, it's for the overview of load balancers.
+I hope you liked it.
+And obviously in this section,
+we're going to discuss a lot more around
+classic application load balancers
+and network load balancers
+So I will see you in the next lecture.

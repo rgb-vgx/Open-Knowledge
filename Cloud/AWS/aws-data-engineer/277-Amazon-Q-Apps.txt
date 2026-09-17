@@ -1,0 +1,26 @@
+# 277. Amazon Q Apps
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/54320857
+# Caption: en_US (manual)
+
+So now let's talk about Amazon Q Apps.
+Q Apps are part of Q Business
+and the idea is that you can create Gen AI-powered apps
+without coding by only using natural language.
+So we have a web UI called Amazon Q Apps Creator
+and in there you can specify a prompt
+to describe the type of app you want to have
+and again, this app is going to be based
+on your company data.
+So you're going to say, "Hey, I want to do this kind of app"
+and, automatically, Amazon Q App is going to generate
+for you a web application where we can,
+for example, upload a document
+and then upload prompts and so on
+and our users can use this app,
+so it really makes it super easy for anyone in your company
+to create an app based on your company's internal data,
+as well as leveraging plugins,
+so anyone can create a very quick app
+without using developers and that's the idea
+behind Amazon Q Apps.

@@ -1,0 +1,86 @@
+# 347. On-Premises Strategies with AWS
+# Section: Disaster Recovery & Migrations
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078453
+# Caption: en_US (manual)
+
+Okay, so yet another theoretical lecture,
+but I still want to mention it
+because I think it's extremely important
+going to the exam.
+You need to know about the services that AWS offers
+at a very, very high level,
+but just hear about them once
+to do on-premise strategy with the cloud.
+So, we have the ability to download
+the Amazon Linux 2 AMI as a virtual machine,
+and it will be in the ISO format.
+And you can load this ISO image
+into the common software used to create VMs.
+That includes VMware, KVM,
+Virtual Box, which is Oracle VM,
+or Microsoft Hyper V.
+And this would allow you to run Amazon Linux 2
+on your on-premise infrastructure directly using that VM.
+That means that you can make it work
+with some user data and so on.
+So, quite cool to think about.
+Then, we have a feature called VM Import/Export,
+and what this allows you to do
+is to migrate your existing VMs and applications
+into EC2 directly using this feature.
+And you can also create a,
+for example, a disaster recovery repository strategy
+if you had a lot of on-premise VMs,
+but you wanted to back them up into the cloud.
+And because it's called import and export,
+you can export back the VMs from EC2
+to your on-premise environment if you wanted to.
+Now, for AWS Application Discovery Service,
+well, this is a service that allows you
+to gather information about your on-premise servers
+and plan a migration.
+This is very high level,
+but it does give you some server utilization information
+and dependency mappings,
+and that could be quite helpful
+when you want to do a massive migration
+from on-premise to the cloud.
+Finally, you can track all that migration
+using the AWS Migration Hub.
+Then, we have AWS Database Migration Service, or DMS,
+which allows you to replicate from on-premise to AWS,
+AWS to AWS, or AWS to on-premise for your database.
+This is quite nice,
+because if you had a MySQL
+or a PostgreSQL database running on premise
+and you wanted to start moving your workload into AWS,
+you could use DMS to replicate the database in the meantime.
+And when you're ready,
+you can fully transition to using AWS only.
+And the nice thing about it
+is it works with various database technologies.
+That includes Oracle, MySQL, DynamoDB, et cetera,
+and allows you to do some really fancy use cases,
+for example, migrate data from MySQL into DynamoDB, okay?
+And finally, you have the AWS Application Migration Service,
+or MGN,
+which is used for incremental replication
+of on-premises live servers to AWS.
+So, at a high level, you may be like,
+"Oh, this is a lot of services."
+Just remember the names at a high level.
+So, Linux 2 on on-premise is possible.
+We can do VM import and export for on-premise and EC2.
+We can have migration services,
+such as Application Discovery Service,
+AWS Migration Hub,
+Database Migration Service
+and Server Migration Service,
+DMS and SMS.
+And just remember those at a high level, that's it,
+just so you can see,
+if you see the name in the question,
+then you're not taken by surprise, okay?
+You know that all these things have to relate to on-premise.
+Okay, well, that's for this short theory lecture.
+I will see you in the next lecture.

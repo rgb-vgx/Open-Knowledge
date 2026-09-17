@@ -1,0 +1,126 @@
+# 70. Amazon DynamoDB - Streams
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304580
+# Caption: en_US (auto)
+
+Stephane: So, let's have a look at DynamoDB Streams.
+So, Streams are an ordered list of item-level modifications
+such as create, update,
+and delete that are happening within a table.
+So, whenever you will insert an item,
+or modify it, or delete it,
+then that modification would be visible in the stream
+and the stream will represent
+the list of all the modifications
+over time in your table.
+So, stream records can be sent to multiple places such
+as Kinesis data Streams.
+So, you can send a DynamoDB stream into Kinesis
+and then whatever you want with it.
+You can also use a Lambda function to read directly
+from your DynamoDB Streams,
+or you can use the Kinesis client library applications
+to read directly as well from a DynamoDB Stream.
+The data retention within a DynamoDB Stream is up
+to 24 hours, so you need to make sure to either persist
+it somewhere like Kinesis data stream
+where you can have a longer retention,
+or use whatever Lambda,
+or KCL application to persist it somewhere more durable.
+The use cases for using DynamoDB Streams is to react
+to changes in real time happening in your DynamoDB tables.
+For example, having a flow to send a welcome email
+to your users, to do analytics,
+to transform the stream
+and create derivative tables in DynamoDB,
+or to send data to OpenSearch for indexing
+and give search capabilities on top of DynamoDB.
+Or if you wanted to implement global tables
+and cross-region replication, you would need to have Streams
+in the first place.
+So, if we look at the architecture of DynamoDB Streams,
+we have our application, which does create, update,
+and delete operations on our table,
+and any of these changes is going to appear
+in a DynamoDB Stream.
+So from there, KDC Data Stream can be a receiver
+of your DynamoDB Stream,
+and because we're using KDC Data Streams,
+then we can have KDC Data Firehose as a result,
+and then maybe send it to Amazon Redshift
+to perform some analytics queries on top
+of your data in DynamoDB,
+or Sending to Amazon S3 for archival of all these changes
+in case we need to,
+or sending it to open search service, okay,
+to index it and to create a search capability on top
+of your DynamoDB table.
+The cool thing about this architecture
+is that it's pretty much everything is managed by AWS.
+If you wanted to add your own custom logic,
+you could use a processing layer in which you would create
+either a Kinesis client library app, maybe running on EC2,
+or a Lambda function that would be reading
+from DynamoDB Streams,
+and from this, you can implement any sort of logic you want.
+So, for example, you can have messaging
+or send notifications using Amazon SNS.
+You could do some filtering, transformation,
+and then reinsert the data into a DynamoDB table.
+Or, for example, you can also use Lambda to send data
+into OpenSearch if you wanted to, okay.
+So, this gives you a different kind of architecture
+and all the possibilities that open up
+by using DynamoDB Streams.
+So, if we consider the stream, then what do we have?
+In the stream, we have the ability to choose the information
+that will be appearing in it.
+So, you can, for example, have only the keys,
+and it will just show you a list of all the key attributes
+that have been modified.
+New image, which represents the new item after
+it was modified.
+Old image, which represents the entire item,
+but as it appears before it was modified.
+And if you wanted to get the full information,
+you can get new and old images,
+which gives you both the new and the old image of the item.
+And therefore, you can see which changes have happened.
+Now, DynamoDB Streams are made of shards,
+just like Kinesis Data Streams,
+so they're very, very similar,
+and this is why the Kinesis client library works
+against both DynamoDB Streams and Kinesis Data Streams.
+So, the cool thing about DynamoDB Streams, though,
+is that we don't have to provision any kind of shards.
+This is done automatically by AWS,
+so it is really a hands-off approach.
+Now, if you enable DynamoDB Stream, just so you know,
+the records are not going to be retroactively populated
+in the stream after enabling it.
+Okay, this is an exam trick.
+So, once you enable the stream,
+only then will you receive these updates based
+on the changes that are appearing in your DynamoDB table.
+Finally, let's have a look at how DynamoDB Streams
+and Lambda work.
+So, for this, we need to define an event source mapping
+to read from a DynamoDB Stream,
+and then you need to ensure that the Lambda function
+has the appropriate permissions
+to pull from the DynamoDB Stream,
+and then the Lambda function will be invoked synchronously.
+So let's take an example,
+the table goes into a DynamoDB Stream,
+the Lambda function will have an event source mapping,
+which is an internal process,
+that will be pulling the DynamoDB Stream
+and retrieving records in batches from the DynamoDB Stream,
+and when some records are passed on
+to the event source mapping,
+then the event source mapping
+will invoke your lambda function synchronously
+with a batch of records from your DynamoDB Stream, okay?
+So, that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture for some hands-on.

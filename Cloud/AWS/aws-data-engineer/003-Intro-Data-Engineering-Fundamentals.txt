@@ -1,0 +1,37 @@
+# 3. Intro: Data Engineering Fundamentals
+# Section: Data Engineering Fundamentals
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332166
+# Caption: en_US (auto)
+
+-: Let's get started.
+This first section is going to be a little bit different
+than what you normally see in AWS certification courses,
+because we're not going to focus on AWS at all here.
+The exam guide for the data engineering exam
+calls out several concepts that aren't AWS specific,
+but are more about data engineering in general,
+so it makes sense to review
+the data engineering fundamentals
+that the exam expects you to know
+before we dive into the specific AWS services
+that help you realize them.
+There's a lot more to data engineering
+than what we're gonna cover in this section.
+I'm only focusing on the concepts
+that are explicitly mentioned in the exam guide,
+so those are gonna be important to review.
+Remember, the exam assumes that you have a few years
+of actual data engineering experience,
+and no course can replace real-world experience entirely.
+I'm assuming you at least know what data engineering is.
+If you don't, then you're gonna find this course
+and the exam quite challenging.
+With that all said, let's jump in and review
+some of the data engineering fundamentals you need,
+the higher level knowledge required
+above AWS-specific knowledge.
+Things like data structures, data modeling,
+sampling techniques, using Git,
+and a review of the SQL to transform and query your data.
+After this section,
+we'll begin our deep dives of the AWS services involved.

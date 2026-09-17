@@ -1,0 +1,100 @@
+# 377. State of Learning Checkpoint - AWS Certified CloudOps Engineer Associate
+# Section: Preparing for the Exam + Practice Exam - AWS Certified CloudOps Engineer
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516574
+# Caption: en_US (manual)
+
+So congratulations
+on making it this far in the course.
+Now let's look at the certifications page
+to see how far we've gone on our learning journey.
+So here I am on the certified CSOPs Administrator
+Associate certification page.
+And what you can do is that you can scroll down
+and as you can see, as of March 28th, 2023,
+there is no exam labs until further notice.
+So if you have seen somewhere on the internet
+that there is an exam lab, this is not the case anymore.
+And in case the exam labs do come back,
+I will update this lecture
+or you can tell me to update this lecture.
+Okay, so let's have a look at a few things.
+So first of all, let's look at the exam guide
+and then in your own time you can have a look
+at the sample questions, they're great.
+So you have questions
+and at the bottom of it you can have a look at the answers
+and know why they are or they're not the correct answers.
+Now if we look at this exam guide right here,
+so this is for the SOA-C02 exam
+and is going to validate your ability
+to look at workloads from the well architected framework
+to perform tasks using the console or the CLI,
+to look at logs to have security controls,
+apply networking concepts and so on.
+So your ideal description is
+that you should have at least one year of experience
+with deployment management,
+networking and security on AWS.
+But if you have done the course,
+you should have gained this experience,
+especially if you practiced in the hands-on alongside me.
+So all the knowledge
+for general IT is taught in this course.
+And then for the recommended risk knowledge of fully,
+I do teach you it, but I always get feedback from the
+students that they pass the exam
+after working and practicing.
+So this is perfect.
+Just so you know, there are some tests that are scope
+for the target candidates such as
+distributed architectures doing CI/CD pipelines and so on.
+So the exam content is only questions.
+Okay, so we have multiple choice and multiple response.
+So multiple choice, you have one correct response
+out of four answers.
+So three or wrong, one is correct,
+and multiple responses that you have, two or more correct.
+And the exam will ask you
+how many answers should be correct.
+So say select two or select three.
+If you don't reply correctly to the question,
+you are not penalized.
+So you need to just answer all the questions.
+There are no more labs.
+You have 50 scored questions and 15 unscored questions,
+but you do not know which ones are which
+and the exam time is 130 minutes.
+So here, just describe the exam labs part
+because it's not relevant for now.
+And then the result is that you're scored out of
+between 100 and 1,000 and the passing score is 720.
+Now if you look at the content outline, I invite you
+to look at each of the domains
+and make sure that you are comfortable
+with all these things such as monitoring, reliability,
+you have deployments,
+security and compliance
+and networking and content delivery
+and cost and performance optimization.
+In the appendix you have the in-scope
+AWS services and features.
+So this is a very long list
+and if there is something
+that I don't treat specifically in the course
+is because I haven't heard from anyone
+that it is actually at the exam.
+So the exam guide is always wider than the exam itself.
+Of course if something does appear at the exam
+and is not dealt with in the course, please reach out to me
+and I will make sure to create a lecture on it.
+This is how I proceed and it's been very successful so far.
+Still you have the in-scope services
+and the out of scope services
+and hopefully that should give you more confidence.
+So I hope you liked it.
+I hope you are going to train with the sample questions
+and so on for your exam.
+But so far if you've practiced alongside me in the course,
+you should be quite ready for it.
+Alright, that's it. I hope you liked it
+and I will see you in the next lecture.

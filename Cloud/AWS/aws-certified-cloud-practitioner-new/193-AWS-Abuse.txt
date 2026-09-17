@@ -1,0 +1,32 @@
+# 193. AWS Abuse
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/24682626
+# Caption: en_US (manual)
+
+Okay, so just a quick note on AWS abuse
+which is something that can come up in the exam.
+So in case you are suspecting some resources
+in AWS, for example, some IPs
+or some institute instances that are used
+for abusive or illegal purposes,
+then you can report it to AWS.
+And so these kind of abusive and prohibited behaviors
+are going to be around spam, so for example,
+you receive undesired emails from IPs owned by AWS,
+websites and forums spammed by AWS resources,
+port scanning, for example, someone is trying a port scan
+from AWS which is not accepted,
+a DDoS attack, intrusion attempts,
+so someone is trying to logging onto your resources,
+or for example, someone that hosts questionable
+or copyrighted content
+and so therefore it's illegal content hosted on AWS,
+you can also contact the abuse team.
+And finally distributing malware is also prohibited.
+So you cannot host malware on AWS obviously, right?
+So in case you suspect any of these activities,
+what you should be doing is to contact the abuse team.
+So there is either an online form
+or you can just send them an email at abuse@amazonaws.com
+and that's all you need to know for this in the exam.
+Okay, that's it. I will see you in the next lecture.

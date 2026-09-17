@@ -1,0 +1,294 @@
+# 48. Amazon ECS - Elastic Container Service
+# Section: Compute & Load Balancing
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376446
+# Caption: en_US (manual)
+
+So now let's talk about Amazon ECS.
+And first, what is Docker?
+Because Docker is at the center of ECS.
+Docker is a software development platform
+used to deploy apps.
+And apps are going to be packaged in containers.
+And these containers have the specificity
+that they can be run on any operating systems.
+So apps will run in the same way,
+regardless of where they're run.
+That means that any machine can run Docker container,
+there will be no compatibility issues,
+and you will have predictable behavior.
+That means less work.
+They're easier to maintain,
+and it works with any language,
+any operating system and any technology.
+Thanks to this, we can control how much memory
+and CPU will be allocated to each container.
+And then that allows our container
+to use just the right amount of resources.
+These containers can be scaled
+up and down very quickly within seconds.
+Thanks to the Docker management system.
+There are therefore for writing applications,
+more efficient than virtual machines.
+So Docker container management
+on AWS can take several forms.
+We need a container measurement platform.
+So we have either ECS,
+which is the Amazon Elastic Container Service,
+which is Amazon's own container platform.
+Or we can use EKS,
+which is Amazon Elastic Kubernetes Service.
+And this is Amazon's managed version of Kubernetes.
+And Kubernetes is an open source software
+that's widely accepted for managing Docker containers.
+And then we have Fargate,
+which is Amazon's own serverless container platform.
+And it works equally well with ECS and EKS.
+So let's do a deep dive into ECS.
+So ECS, the use cases are to run microservices,
+for example, to run multiple Docker container
+on the same machine,
+or to have service discovery features
+to enhance communication between these microservices.
+We have a direct integration of ECS containers
+with the Application Load Balancer
+and the Network Load Balancer.
+We have Auto Scaling capabilities.
+It's also very helpful if you wanted to run batch processing
+or schedule task.
+So you can schedule ECS task to run on-demand
+on reserves or on spot instances.
+And then ECS is also very helpful
+when you migrate to the cloud
+because you first Dockerize your applications running
+on premises,
+and then you move these Docker containers to run
+on Amazon ECS.
+So, concepts you need to know for Amazon ECS,
+but hopeful this is not new.
+So we have an ECS cluster,
+which is a logical grouping of EC2 instances.
+We have an ECS service,
+which defines how many tasks should run
+and how they should be run.
+We have the task definition,
+which defines what is the JSON form
+of the definition of the task to allow
+and to tell ECS how to run a Docker container.
+So it could be, what is the image name?
+How much CPU, how much RAM, et cetera, et cetera.
+The ECS task itself is an instance
+of a task definition running within a service.
+And the ECS task is actually running Docker containers.
+And then you have the ECS IAM roles.
+So you have two types of roles.
+You have the EC2 instance profile
+that is used by the EC2 instance
+that will be managed by the ECS cluster.
+So this EC2 instance is going to make API calls
+to the ECS service, send logs, et cetera, et cetera.
+But then for each ECS task,
+we can attach an ECS task IAM role,
+which allows each task to have a specific role.
+And these roles are allowing these task to make API calls
+to Amazon S3, DynamoDB, and so on.
+So if we look at all it in a diagram,
+we have a cluster here, we have an EC2 instance,
+and we run a service-A.
+Now, to run the service-A,
+we need to first provide a task definition.
+And when this task definition is instantiated,
+then we're going to get containers running
+on the EC2 instance for that specific service.
+So it's possible for you
+to scale the number of EC2 instances you have.
+So we can add one here and one there.
+And then the service may place also ECS tasks
+onto these EC2 instances.
+Well, because we have multiple EC2 instances,
+we can have as well an Auto Scaling group
+that will manage these EC2 instances.
+And to make sure that these are part of an ECS cluster,
+we need to define an EC2 instance profile
+that will be allowing our EC2 instances to be registered
+to the ECS service,
+and also send logs to the CloudWatch logs service.
+Now, in case my services
+and my task within my services need to access, for example,
+on these three buckets,
+then we need to make sure to provide the task IAM role
+for my task within my service.
+And if you wanted to have a second service
+within your ECS customer, you could,
+and as well as a third and a fifth, et cetera, et cetera.
+And so each service will have different tasks
+and it will be replaced all
+along your available EC2 instances
+if there is space for them.
+So then Amazon ECS has a great integration
+with an Application Load Balancer.
+So for this, it's called the dynamic port mapping feature,
+which allows us to run multiple instances
+of the same application, same Docker container,
+on the same EC2 instance.
+And the ALB, even though each container
+will have a different mapping port,
+is able to find the right port on your EC2 instance
+and map it to the load balancer.
+So let's have an example.
+So we have an ECS cluster running one service
+and we have four tasks across two EC2 instances.
+And so as we can see,
+each EC2 instance has two of the same task.
+Now, we have users accessing our application
+through our load balancer, okay?
+And so each ECS task is going to get a different port.
+So the first ECS task going to get this port
+and the Application Load Balancer is smart enough
+to find this port,
+thanks to the dynamic port mapping feature.
+Then the second ECS task is going to get a different port,
+but the ALB is smart enough to find it as well.
+And so on.
+So even though the port is not stable
+across all my ECS tasks,
+because the service of ECS is mapped to the ALB,
+this dynamic port mapping future comes in
+and then the ports are mapped gratefully.
+So in terms of use cases,
+well, you get increased resiliency
+because even if you're running on one EC2 instance,
+you can have multiple Docker containers running on it.
+You're going to also maximize the utilization
+of your CPU and your cores on your EC2 instance.
+And if you wanna perform rolling upgrades, you can do it,
+because now you have many Docker containers, ECS tasks,
+on the one instance,
+and therefore, you can take them down one by one
+without impacting your overall app uptime.
+Okay. So we've seen ECS with EC2 instances.
+And so we have to provide EC2 instances ahead of time
+to run ECS tasks on them.
+But it is possible for you to launch Docker containers
+on Fargate.
+And with Fargate, we do not provision the infrastructure,
+there are no EC2 instances to manage.
+Instead it's all serverless.
+We don't even know or see
+that there are some background hardware.
+So how does that work?
+Well, the Fargate service runs on ECS
+and you can submit Docker containers to a Fargate service.
+And the ECS tasks other than Fargate,
+are going to be created automatically
+without you having you think about EC2 instances at all.
+So you just create task definitions
+and then you specify how much CPU and RAM you need per task,
+and then they will be created for you.
+And if you need to scale,
+just increase the number of tasks.
+Simple, you don't need to manage any EC2 instances
+in the backend,
+which makes it a very convenient way
+of running ECS services.
+Now, in terms of security and networking.
+So you can inject secrets
+and configuration as environment variables
+into the running Docker containers.
+So there is deep integration
+with the SSM Parameter Store
+and the Secrets Manager service.
+And you also need to know about the different ways
+to do networking on ECS tasks.
+So the first one is none,
+which gives no network connectivity at all to your task.
+No port mappings.
+Bridge will use Docker's virtual container-based network.
+Host will just bypass Docker network,
+and will use the underlying host network interface.
+And then AWSVPC, which is a special one,
+is going to make sure that every ECS task launched
+on the instance will get their own elastic network interface
+and their own private IP address.
+And it's going to give you simplified networking,
+enhanced security, security groups,
+monitoring VPC Flow Logs,
+and then it is going to be the default mode
+for Fargate tasks.
+Okay. Next, for Amazon ECS, we have Service Auto Scaling.
+So this allows you to automatically increase or decrease
+the desired number of tasks of your service.
+And so for it in the backend,
+the ECS service is going to leverage to Amazon,
+the AWS Application Auto Scaling Service.
+So other general facts,
+CPU and RAM are tracked as metrics in CloudWatch
+at the ECS service level.
+And so therefore we can set up target tracking
+to scale based on the target value
+of a specific CloudWatch metric,
+or we can set step scaling,
+or we can set up schedule scaling, and so on.
+Just like you would do for an ASG,
+but this time for an ECS service.
+So even though you can auto scale your ECS service
+at the test level and it works really great,
+if that ECS service is not running on Fargate
+but it is running instead on EC2 instances,
+then you should make sure
+you also auto scale your EC2 instances
+to add more capacity to your ECS cluster.
+Therefore, Fargate auto scaling is much easier to set up
+because is serverless
+and we don't need to think about the underlying resources
+to run your auto scaling.
+Okay, next we have spot instances.
+So spot instances work on ECS.
+So for ECS classic, the EC2 launch type,
+then we can have underlying EC2 instances
+as spot instances managed by an ASG.
+And in case the spot instances are going to be removed,
+then they may go into draining mode,
+which is going to remove the running tasks
+and move them over to other instances.
+So it's good for cost savings,
+but it can impact reliability
+because we are using spot instances.
+For the Fargate type,
+we can also specify a minimum number of on-demand instances
+within Fargate, so on-demand tasks.
+But we can also add tasks using Fargate Spot
+for cost saving,
+even though we know that, again,
+because there are spot instances,
+they can be reclaimed by AWS.
+So regardless of on-demand or spot,
+Fargate is going to scale really easily
+and well based on the load you give it.
+Finally, to store these Docker images,
+we have Amazon ECR, which is the elastic container registry.
+So to store and manage Docker images on AWS,
+you have a private registry repository.
+So for your own accounts.
+But also public repo in case you wanted
+to share some images publicly.
+And so your repo is going to have multiple Docker images.
+Then in case an ECS cluster needs to pull that image
+onto EC2 instances,
+then thanks to the IAM role of the EC2 instance.
+They can pull images from the ECR repository,
+and run them as ECS task.
+So we have deep integration with ECR and ECS
+and there is access control through IAM.
+So in case you get permission errors,
+then it should be an IAM policy issue.
+Now it's possible for you to pull obviously images
+from repository A or repository B.
+Okay.
+And the ECR is really cool
+because it supports image vulnerability scanning,
+versioning, image tags, and image life cycle.
+Okay. So that's a lot on ECS.
+I know, but this is necessary for the exam.
+Hopefully by now you should know everything.
+I hope you liked it,
+and I will see you in the next lecture.

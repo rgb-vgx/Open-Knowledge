@@ -1,0 +1,40 @@
+# 174. Catastrophic Forgetting
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57863587
+# Caption: en_US (auto)
+
+So, a very real problem you need to be aware of is something called catastrophic forgetting
+when you're fine-tuning a model.
+If you don't take care during fine-tuning, you can end up making your model better at
+something at the expense of everything else, and that's not a good thing.
+So, you need to know some techniques for avoiding that.
+As an example here, let's say that I have a really good model that has not been fine-tuned
+yet and it's great at coding and some basic legal tasks and it can follow instructions
+and it has good general reasoning capabilities as well.
+A lot of this came maybe from post-training or stuff that was specifically in the training
+data set, right?
+But if I then try to take that general purpose model and do heavy fine-tuning for a specific
+narrow field like legal expertise, for example, that might come at the cost of everything else.
+So, if I do too much fine-tuning on that narrow legal data, I might end up degrading my capabilities
+for reasoning, coding, instruction following, and other topics, and you don't want that.
+Now, this is most likely to happen when the new data you're fine-tuning on is very narrow
+in scope or very different from the original data.
+So, if you have a model that's about something and you're trying to fine-tune it for something
+else entirely, that's when this can become a big issue.
+The way to fix this is to mix in general data, not just the data that you're fine-tuning on.
+If you're fine-tuning an Amazon Nova model, they have something called data mixing that
+is specifically for this purpose.
+You can also just not be quite so aggressive on the fine-tuning.
+So, do it with a modest learning rate.
+Do it with a modest number of epochs.
+Just try not to push it too hard in that specific direction.
+Otherwise, you might lose those other capabilities and experience catastrophic forgetting.
+And remember, when you're evaluating your new model, don't just evaluate it on the new task.
+It's very tempting to say, I'm fine-tuning this model on legal expertise, and I'm going
+to evaluate how good it is on legal expertise, but you also need to evaluate what it could
+do before and make sure that you did not give that up in the process, assuming it's important to you.
+So, don't just evaluate what you're training it on.
+Also test on the general capabilities that you don't want to lose.
+And an exam tip, make sure that when you're doing customization of models through fine-tuning
+or anything else, you are improving the target task without breaking everything else.
+When that happens, we call that catastrophic forgetting.

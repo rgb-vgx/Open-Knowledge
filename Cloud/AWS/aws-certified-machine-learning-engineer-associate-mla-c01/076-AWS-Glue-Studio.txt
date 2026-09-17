@@ -1,0 +1,104 @@
+# 76. AWS Glue Studio
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285265
+# Caption: en_US (auto)
+
+There are a few new features in AWS glue.
+They seem to be investing a lot in this feature right now, so not sure you're going to see this on
+the exam quite yet, but you probably will soon.
+So one of these new features is called AWS Glue Studio.
+And basically it's a visual interface for defining and creating ETL workflows.
+So it allows you to create these more complex workflows where you might have multiple things happening
+in parallel from the same source, or maybe different sources being processed in parallel in different
+ways.
+But it lets you set up these complex jobs in a visual manner, and often without writing any code.
+So it offers you this visual job editor that I'll show you in a moment, that allows you to create directed
+acyclic graphs for complex workflows like this.
+And the sources of that currently can can include S3 or Kinesis or Kafka or any JDBC source as well.
+You can then graphically set up transforms of that data in the Glue Studio UI.
+So you can do transformations, you can sample the data, you can join tables together and a few other
+things as well.
+And then you can take the output of that transform and send it to S3 or the Glue data catalog.
+It also supports partitioning out of the box.
+So if you do have partitioned data, it will automatically take advantage of that and accelerate itself
+accordingly.
+Also, it offers a visual job dashboard that lets you visualize the status of your glue ETL jobs and
+how they're running, what's running, how long they've been taking.
+So that can be useful for quick troubleshooting and making sure that your jobs are running as expected.
+Let's dive in and show you how it actually works.
+So let me give you a little bit of a quick tour here of Glue Studio.
+It's a little bit hard to find these days because in some places they call it Glue Studio and other
+places they call it visual ETL.
+You can get there a couple of ways.
+One would be from this go to ETL jobs button here, or from the little sidebar here.
+It's under visual ETL under ETL jobs.
+And you can see now we're calling Glue Studio again.
+Let's click on the visual ETL button just to give you a little bit of a tour here.
+And you can see that the list of sources has grown considerably over time.
+So it's not just glue, Data catalog, S3, Kinesis, and Kafka, pretty much any data source you can
+imagine, even if it's outside of Amazon, is fair game.
+So.
+So any external database, MySQL, Microsoft SQL, whatever you can imagine, even snowflake, Google
+BigQuery, you know, things from competing vendors, even Azure, uh, MongoDB, zoom, third party
+tools like QuickBooks or LinkedIn.
+I mean, I think even Salesforce PayPal is in here somewhere.
+The list goes on.
+So pretty much any data you can imagine is fair game for Glue Studio.
+So we start off by adding a node for a source.
+Let's just keep it simple and say it's something that I have in S3.
+Just click on that node for the data source and tell it where it is.
+So I'll just pick one of the data sources that we had from earlier in the course under order logs.
+Order logs Sundog soft.
+So that's where that data is coming in.
+And now if we look at the output schema it will tell me what that data looks like okay.
+So now we can do stuff to transform that data.
+Let's go ahead and click on that and click on plus and add a transform node.
+And you can see there's many many different things you can do here as well.
+So we can do changing the schema SQL queries, uh, filters, droppings, things.
+There should be even some capabilities for writing your own custom code somewhere.
+Yeah, there it is.
+Custom transform.
+But let's do something simple and just change the schema, which lets you do a lot of common things.
+So let's say I just want to drop the description field, uh, change the year to an integer.
+Change the date to an integer.
+You know, whatever you want to do.
+I'm just just playing around here and that would do what you expect.
+So click on that.
+And you can also look at the output schema there as well to make sure it did what you said.
+The description is gone year and day are now an integer.
+And let's also apply a filter to that.
+So let's do a transform filter.
+And we could say for example add a condition.
+Let's say we want to filter everything out where the year is less than 2001.
+It's just that simple.
+All right.
+And click on that.
+And you can see the output schema is the same.
+We just filtered out some data and now we can put that somewhere.
+So let's click on plus again and add a target.
+And let's just dump that in S3 as well.
+Again, you can see that there's many other places you can send this to, including snowflake, BigQuery,
+Azure.
+They don't care.
+So pretty amazing.
+But let's just pick another S3 bucket.
+And then I could specify what bucket I want to put that in right.
+And by the way it doesn't have to be linear like this.
+So this is actually a directed acyclic graph.
+So you could have things happening in parallel alongside each other.
+I could click back up here and do that filter in parallel instead of after that transform node if I
+wanted to.
+So you can have these more complicated structures where processing is happening in parallel to make
+it even more efficient.
+If that makes sense for what you're doing.
+It doesn't have to be linear like this.
+All right.
+So that's Glue Studio just to kind of show you what it is and what it can do.
+Let's go back to the previous page.
+And from here you can monitor your existing jobs and see what they're doing.
+Last time you changed them and everything else.
+And they also have some examples you can look at as well.
+So that's Glue Studio.
+You know I think they're kind of pushing people more toward data Wrangler these days.
+But it's still there for you.
+Also known as visual ETL.

@@ -1,0 +1,184 @@
+# 102. AWS Batch
+# Section: Data Engineering
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376602
+# Caption: en_US (manual)
+
+So now let's talk about AWS Batch.
+So you can run your Batch jobs as Docker images,
+and you have two options to run them.
+Either you choose a managed compute environment
+in which you're going to either dynamically provision
+your instances using EC2 and Spot Instances in the VPC,
+or you choose to rely on AWS Fargate,
+which is a full serverless offering,
+or you choose an unmanaged compute environment
+in which you provision yourself the ECS cluster
+or the EKS cluster.
+Then you're going to define the optimal quantity
+and type based on your volume
+and requirements for your Batch jobs,
+and you're going to only pay
+for the underlying resources used.
+Batch itself is a service that you don't pay for.
+For example, using Batch, you can do Batch processing
+of images, or you can run thousands of concurrent jobs.
+You can schedule these Batch jobs
+by using Amazon EventBridge,
+or you can orchestrate them using AWS Step Functions.
+So let's look at a possible solution architecture
+for creating, for example, some thumbnails
+out of images from Amazon S3.
+So in Batch, we're going to create a Batch job
+and it's going to be managed by ECS,
+and it could be either instance EC2 instances,
+Spot Instances, so as a Spot Fleet,
+or using Fargate in the serverless fashion.
+Now, as a user, we want to upload files into Amazon S3,
+they're going to be images.
+Now, how do we go from Amazon S3 to triggering a Batch job?
+Well, two options.
+Number one, we can use the Amazon S3 event notifications
+and trigger a Lambda function.
+The Lambda function can do an API call
+using the AWS SDK to start a Batch job.
+Option number two, we can push an event directly
+from Amazon S3 into Amazon EventBridge
+because EventBridge can directly also read
+these Amazon S3 event notifications.
+And EventBridge has a direct integration with Amazon ECS.
+So the benefit of the step
+is that you have more filtering capability
+as part of Amazon EventBridge,
+and you have a serverless offering
+because you don't need to manage any kind of code.
+EventBridge knows how to invoke AWS Batch.
+Okay, so once the Batch job is invoked,
+what's going to happen?
+Well, a Docker image is going to be pulled
+by your Batch job from Amazon ECR, for example,
+and then your code will run.
+So your code may need to retrieve the file
+from Amazon S3 using an API call.
+So you need to make sure that this job
+has a correct IAM role, of course.
+And then once the file is retrieved,
+it's going to be processed and sent
+to the target Amazon S3 bucket destination.
+And then finally, maybe we can insert some metadata
+into Amazon DynamoDB.
+So for all these things, you need to make sure
+that the IAM role is correct.
+So what is the difference between Lambda and Batch?
+Well, Lambda gives you a time limit.
+You have limited runtime,
+so you get access to the built-in runtimes,
+or you can get special container Docker images
+built specifically for AWS Lambda,
+but not all kind of Docker images.
+Lambda gives you temporary disk space,
+but in a limited fashion, and Lambda is serverless.
+Whereas Batch, well, you have no time limits.
+So you can have a Batch job as long as you want.
+You can have any runtime as long as this package
+has any kind of Docker image.
+So you have more flexibility here as well.
+It's going to rely on EBS
+or the instance store for disk space,
+or it relies on EC2 instances
+that can be directly managed by AWS.
+Or if you wanna go serverless, it relies on Fargate.
+So now let's talk
+about these compute environments in details.
+So the first one is a managed compute environment.
+And in this case, AWS Batch will manage the capacity
+and the instance types within your environment.
+And you can choose between On-Demand or Spot Instances,
+and you can set a maximum price for Spot Instances.
+So that means that with this,
+we don't need to worry too much about the capacity.
+It is Amazon's job to scale that capacity for us,
+and we hopefully get good pricing as well.
+So this is of a more managed alternative,
+and therefore, it's called a managed compute environment.
+All the instances are going to be launched
+within your own VPC.
+So you need to make sure that if you launch your instances
+in your own private subnets,
+it needs to have access to the ECS service.
+And so that means either you have a NAT gateway
+or a NAT instance to get access to the ECS service
+for the public route, or you need to create a VPC endpoint
+for your ECS service to access it privately.
+Next, we have the unmanaged compute environment
+for EC2, ECS, and EKS in which you're going to control
+and manage your own compute resources,
+provisioning, and scaling.
+Okay, so let's have a look
+into the managed compute environment in details
+because that is the important one.
+So what do we have?
+Well, we have Batch and we set how many min
+or max vCPU we want to have in our compute environment
+and if you want Spot Instances.
+And for example, the spot instances will launch m5.large,
+c5.xlarge, r5.2xlarge.
+So this doesn't matter really the type
+of instance that gets launched.
+What really matters is how many min and max vCPU we've set.
+And then we'll have all our instances
+summed up together for the vCPU,
+and we'll see if that fits
+our Batch managed compute environments.
+So then we have a Batch Job Queue,
+and this is how the jobs are being distributed
+to our EC2 instances
+that will be running the Docker containers.
+And so to send a job to AWS Batch,
+the one thing you have to do is to use the SDK
+to add a job to the job queue.
+But this is something you can do with Lambda, obviously,
+or CloudWatch events can do this for loop
+or step function can do this for you as well.
+And then finally, in case you have many, many jobs
+in the Batch Job Queue, you can set up autoscaling,
+so through the managed compute environment,
+to automatically create new Spot Instances
+or new On-Demand instances to respond
+to the increase or decrease in jobs.
+So you have a really good, well-fitted environment
+based on the size of your job queue.
+Okay, finally, I said that one Batch job
+usually equates to one EC2 instance.
+That's not the case when you have a multi-node mode.
+So this is a newer mode called multi-node,
+and this is good ones.
+You want to do large scale high performance computing, HPC.
+And so in this case, you're going to leverage multiple EC2
+or ECS instances at the same time to run your job.
+So it's really good when you have tightly coupled workloads
+and you need to have multiple instances at the same time
+to share that workload to process it faster.
+So this represents a single job
+and you specify how many nodes to create for that one job.
+And so you're going to have one main node
+that will manage all the other nodes,
+and the other nodes are going to be called child nodes.
+So it does not work with Spot Instances for now,
+and it works better if your EC2 launch mode
+is in the placement group cluster
+because you're going to get enhanced networking out of it.
+So very important, multi-node does not work
+with Spot Instances, and it's better to use
+a cluster mode for placement group.
+So we have a placement group of cluster mode.
+That means that everything is going to be on the same rack
+within the same availability zone,
+and Batch is going to submit a multi-node job.
+And so there's going to be one EC2 main instance
+that will be launched, and that EC2 instance
+will launch and manage other EC2 instances
+within your multi-node job to perform the job,
+and then everything will be shut down.
+So that's all you need to know for Batch.
+Hopefully, that was very helpful and new knowledge for you,
+and I will see you in the next lecture.

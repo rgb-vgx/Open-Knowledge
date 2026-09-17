@@ -1,0 +1,66 @@
+# 109. SageMaker Input Modes
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285395
+# Caption: en_US (auto)
+
+Let's go into some depth on Sagemaker's input modes for how you get that data into SageMaker.
+This very well could turn up in the exam.
+So there are different choices here in how you feed your data in and when you're dealing with massive
+amounts of data.
+This can be important, right?
+You need to think about how quickly you can get that data into your training instances, and whether
+or not you need to actually have space on those training instances to contain all of that data.
+Right.
+So if you have a massive data set, you don't necessarily want to have to copy that entire data set
+from one point to another to perform training on it, because, well, that's going to involve a lot
+of redundant storage.
+And the speed of transferring that data is going to affect the speed of your training.
+You've got to wait for that data to get there, potentially before you can start training.
+And the default mode of S3 file mode has all those problems.
+So that will just copy your training data from S3 to some local directory in the Docker container for
+your training model.
+In SageMaker, it's simple, so if you're dealing with a small amount of data, then it's a great way
+to get started.
+But again, important limitations there.
+You have to wait for that copy to happen.
+And you have to have enough space on your Docker container to actually hold that data.
+So that can definitely be limiting.
+If you have a massive data set you're dealing with.
+There's also something called S3 Fast File mode.
+And this is kind of what's in style for a lot of applications now.
+It's similar to what we call pipe mode where it's not actually copying the data, it's just streaming
+it from the S3 source.
+So this allows you to train without waiting for that data to be downloaded first.
+So that can speed up the training time because you don't have to wait for that copy.
+Right.
+And you also don't need to have space for all that data necessarily either.
+And this is actually a little bit different than pipe mode because it can do random access.
+It works best if you're accessing data sequentially, but it can actually randomly access your data
+as well.
+So that's why this is kind of the preferred mode over pipe mode right now.
+Pipe mode is still there though, so if you just need to stream data from S3 sequentially, that's still
+there for you.
+If you want something simpler, but it's mostly replaced by fast file mode these days.
+Another thing to talk about is Amazon S3 express one zone.
+Not necessarily an input mode of itself, but something you can use with input mode.
+So it works with file, fast file and pipe modes that we've talked about.
+It's just a very high performance storage class that only exists in one availability zone.
+So if you don't need redundancy for that data necessarily, you got it backed up somewhere else.
+By using S3 express one zone, you can speed up that performance even further for getting that data
+into your training instances.
+So that's an option for you for accelerating things.
+Data can also come from Amazon FSX for lustre.
+So if you're doing something really massive and you need to scale up to hundreds of gigabytes of throughput
+and millions of IOPs and still have low latency, uh, Amazon FSX for lustre is probably going to be
+your choice.
+So if you're training a large language model with massive amounts of data, that's going to be your
+go to, um, it is limited to a single availability zone, just like S3 express one zone, and it also
+requires use of a VPC.
+Finally, there's Amazon EFS.
+That's always an option as well.
+So if your data is already in EFS, you can just suck it in from there as well to your training instance.
+That does require a VPC as well.
+So those are the input modes for SageMaker.
+The different ways of getting your data in there.
+And it is important to know how they differ and how you might choose them and what the benefits of them
+are.

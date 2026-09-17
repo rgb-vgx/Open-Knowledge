@@ -1,0 +1,56 @@
+# 339. API Gateway Usage Plans & API Keys
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731644
+# Caption: en_US (manual)
+
+So we have now created our API
+and it is time to make it available for our customers
+and we may wanna charge them some money for it.
+So for this, there is a concept of usage plans and API keys.
+So the way it works that we create a usage plan
+in which we define who can access one
+or more API stages and method, how much
+and how fast they can access them,
+and which API keys are linked
+to this usage plan to identify the clients
+and meter their access.
+Then we can also configure throttling limits.
+So how fast the users can target our API,
+and quotas in case we just wanna say, for example,
+that only 10,000 requests a month can be done
+on our API before you need to pay some more.
+And then we can create API keys.
+These are just string to distribute
+to your customers and they look like this.
+And these API keys allow your customers
+to securely use your API gateway
+and authenticate their requests.
+And you can use this in conjunction with the usage plan
+to control access.
+And if you enable any throttling limits,
+it is applied at the API key level.
+Overall, the quota limits is the overall number of requests.
+So by using the usage plan and the API keys
+we're able to really monitor,
+offer our API and limit it for our customers.
+So what's the order
+in which you create an API key and a usage plan?
+So in order to configure a usage plan,
+you need to remember it.
+You need to first create one or more API
+and then configure the methods that will require an API key
+and then deploy the API to your stages.
+Then you will generate or import API keys
+to distribute to your application developers.
+So they're your customers who will be using your API.
+And then you create a usage plan
+with the desired throttle and quota limits.
+And finally, you need to associate the API stages
+and API keys with the usage plan.
+And that's what we'll do in this lecture.
+And the last step, if you forget it,
+then things will not work.
+Finally, the callers of the API must supply an API key
+in the x-api-key header request into the API.
+So that's it.
+I hope you liked it and I will see you in the next lecture.

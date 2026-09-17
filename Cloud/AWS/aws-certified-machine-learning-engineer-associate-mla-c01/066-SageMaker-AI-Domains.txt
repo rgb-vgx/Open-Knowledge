@@ -1,0 +1,56 @@
+# 66. SageMaker AI Domains
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/49341111
+# Caption: en_US (auto)
+
+So before you can do anything in SageMaker, I that's what it's called now by the way SageMaker I you
+need to create what's called a domain.
+And everything you do within SageMaker is within the umbrella of this domain that you create.
+So what is a domain.
+Well you can see on this diagram on the right here it consists of a bunch of stuff.
+One the main thing is a EFS volume that's shared throughout the entire domain.
+So the SageMaker domain will carve up that EFS volume among your different users and the shared resources.
+But under the hood, there's this one EFS volume that's associated with that domain.
+It also has a list of authorized users that are allowed to access that domain and the stuff within it.
+And it also has a bunch of configuration settings associated at the domain level, such as various policy
+settings and also VPC settings, which we'll talk about in more depth shortly.
+So under a domain you can also have user profiles.
+And a user profile is basically the concept of a user, a person that's using a SageMaker domain.
+And anything that's user centric in the UI is going to be tied to a user profile within that domain.
+Now, those user profiles in turn own personal applications.
+So as a user within a SageMaker domain, you might spin up a SageMaker studio instance to do stuff,
+you know, train your models, deploy your models, whatever it might be.
+You have your own private EFS directory as part of your user profile, so you don't necessarily have
+to share everything you're doing.
+You have some private workspace there that's carved out of that EFS volume as well within its own private
+directory.
+But you also have shared resources that you can use across other users within the domain.
+So you can also share your training data, share your notebooks, whatever you want to do.
+And on the topic of sharing, you also have shared spaces within the SageMaker domain.
+This gives you access to a shared EFS directory where you can share information back and forth between
+users.
+And there's also a communal IDE application associated with SageMaker as well, SageMaker studio, that
+can be used across all the users within your domain.
+One of the finer points of using SageMaker AI domain is how VPCs are associated with it.
+So when you create a SageMaker domain, by default it will have two VPCs associated with it.
+One is going to be tied to the external internet.
+So if you need to access data on the internet or deploy data to the internet, it will go through that
+VPC.
+There's that VPC by the way is managed by SageMaker I you don't have to set that up.
+It will do it for you.
+However, you do have to have your own VPC as well.
+And that's going to be used for any encrypted traffic to your own EFS volume that's managed by SageMaker.
+So for your private data that's going to be managed through your VPC that you need to specify.
+And as part of that VPC specification, you need to also specify the subnets within it.
+And generally you want to have all of them and also any security groups that you want associated with
+that VPC.
+Now you don't have to go with that default configuration.
+You can change that to only go through your VPC.
+Now you can also cut out that entire left side of the diagram there by selecting VPC.
+Only when you create your domain.
+By doing that, all the traffic will go through your VPC, and you can have finer level control over
+what that VPC is allowed to access.
+So that's the SageMaker AI domain in a nutshell.
+Basically an organizational unit of all the stuff you're doing within SageMaker.
+It encompasses all of your users, all of your applications, your shared workspaces, and also the
+network architecture underneath it.

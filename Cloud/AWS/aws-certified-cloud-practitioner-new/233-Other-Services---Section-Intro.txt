@@ -1,0 +1,27 @@
+# 233. Other Services - Section Intro
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/24695692
+# Caption: en_US (manual)
+
+So welcome to this section,
+which is other AWS list services.
+So the idea in this section is that I'm going to give you
+an overview of other services that I couldn't group
+with the other ones, and they're services
+that students did report to me as sometimes
+but rarely appearing on your AWS exam.
+So I wanna keep this section short.
+So the lectures are going to be very short
+and brief and most likely without any hands-on, okay?
+And there's going to be no summary lecture
+at the end of this section, so I can keep things flexible
+and keep on adding services to the section
+in case I hear feedback from students.
+It's going to be very easy.
+It's one service and one definition, so don't stress
+if you don't understand the service directly.
+Just remember the definition,
+and you should be all set for your exam.
+So that it.
+Hope you like this lecture,
+and I will see you in the next lecture.

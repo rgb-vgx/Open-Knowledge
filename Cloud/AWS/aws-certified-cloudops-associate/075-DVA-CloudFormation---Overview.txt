@@ -1,0 +1,135 @@
+# 75. [DVA] CloudFormation - Overview
+# Section: CloudFormation for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/12905198
+# Caption: en_US (manual)
+
+So now let's learn about AWS CloudFormation,
+which is one of my personal favorite services in AWS.
+So CloudFormation is a way for you to outline
+your AWS infrastructure for any resources for this
+using just code.
+For example, in a CloudFormation template,
+you're going to say, I want a security group.
+I want two EC2 instances
+that are going to be using the security group.
+I want Elastic IPs for these EC2 instances.
+I want an S3 bucket.
+I want a load balancer in front of these EC2 instances.
+And then by declaring what you want by just saying,
+hey, all these things should exist
+and they should be linked together, automatically,
+CloudFormation will create them for you in the right order
+with the exact configuration that you specify.
+So this removes any need of doing manual configuration
+and manual work, and all the things is provisioned
+through CloudFormation.
+So a CloudFormation template is going to be some code,
+and the code will involve in a declarative way
+what you want your infrastructure to be composed of.
+And then we'll be able to visualize this infrastructure
+using Infrastructure Composer
+to see how the components relate to each other
+in CloudFormation.
+So why should you use AWS CloudFormation?
+Well, first, it is your infrastructure as code.
+That means that no resources are being manually created,
+which is going to be excellent for control.
+And all the code that makes up
+these CloudFormation templates can be used
+for version control, for example, using Git.
+Also, any changes to your infrastructure
+is going to be reviewed through code changes.
+In terms of cost,
+well, all the resources within your CloudFormation stack
+is going to be tagged with an identifier
+so you can easily see how much a CloudFormation stack
+is going to cost you.
+And we can also estimate the cost of resources
+from your CloudFormation templates.
+And finally, you can have saving strategy.
+For example, in your development environment,
+you could automate the deletion of the templates at 5:00 PM
+and recreate them automatically at 8:00 AM in a safe matter
+because everything is automated.
+For productivity,
+this is amazing because you have the ability to destroy
+and recreate an infrastructure on the cloud on the fly.
+And this is really leveraging the whole power of the cloud,
+which is to just create and delete things
+and only pay as you go.
+You also have automated generation of diagrams
+for your template, which is very good
+for your architecture diagrams
+and its declarative programming.
+So you don't need to figure out the order of the creation
+of the resources and the orchestration of things.
+All these things are done by CloudFormation for you.
+There's also a separation of concern.
+You can create many CloudFormation stacks
+for many applications and many layers.
+For example, you may want to have stacks
+for your network and your VPCs.
+You may want to have stacks for your applications and so on.
+Finally, you don't reinvent the wheel
+because you can leverage existing templates on the web
+and the documentation
+to quickly write your CloudFormation templates.
+Now, how does CloudFormation work?
+Well, your templates must be uploaded in Amazon S3
+and then referenced from CloudFormation.
+So you upload it, and then from CloudFormation
+you reference it and a stack will be created.
+And what is a CloudFormation stack?
+Well, it is made of AWS resources,
+and it could be any kind of things you can create on AWS.
+If you wanted to update a template,
+you cannot edit the previous one.
+What we have to do is to re-upload
+a new version of the template to AWS
+and then update your stack.
+Now, your stacks are identified by a name within the region,
+and if you delete a CloudFormation stack,
+every single artifact and resource
+that was created by CloudFormation will be deleted.
+Now, how do we deploy CloudFormation templates?
+Well, there is the manual way
+in which we're going to use something
+like Infrastructure Composer
+or a code editor to directly create
+our CloudFormation templates, and then we use the console
+to input the parameters and so on.
+And we'll do this method mostly in this course
+for learning purposes, or you can go the automated way.
+So you're going to edit your templates in a YAML file,
+and then you use the CLI to deploy the templates,
+or you use a continuous delivery tool
+to this automatically on the cloud.
+And it's recommended if you want to fully automate your flow
+to deploying CloudFormation templates.
+Now, the building blocks of CloudFormation.
+So your template is made of different components,
+and we'll have a look at them in detail,
+so don't be overwhelmed by this,
+but we have the AWSTemplateFormatVersion,
+which defines the version of how to read the templates.
+This is for internal purposes from AWS.
+The description, which is the comments about the templates,
+the resources, which is the actual only mandatory section
+in CloudFormation, which is going to define
+all the AWS resources that are declared in the templates,
+the parameters,
+which are the dynamic inputs for your templates,
+the mappings, the static variables for your templates,
+and we'll see the differences
+between parameters and mappings,
+the outputs to get references to what has been created
+in your templates,
+conditionals, which are a list of conditions
+to perform resource creation,
+and we'll have a few template helpers
+such as references and functions.
+But don't worry.
+We'll have a look at all of this
+and code examples in this section, so don't worry.
+So that's it for an introduction to CloudFormation.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,134 @@
+# 76. [DVA] Step Functions - Overview
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869434
+# Caption: en_US (manual)
+
+Now let's discuss AWS step functions.
+So step functions allow you
+to model a workflow as state machines
+and you have one state machine per workflow.
+So this could be used if you want
+to have an order fulfillment or data processing,
+a web application or any workflow you want.
+The idea is that you will define
+what happens and what happens next,
+and then what happens based on some condition
+and so on to define a workflow.
+So as you can see on the right hand side,
+there's a visual workflow.
+We start and we have an example,
+is it yes or no?
+If it's no, then you go to the end.
+If it's yes, then you wait three seconds.
+Then you say, "Hello" and "World,"
+you compile the result into "Hello World"
+and you go into end.
+So we'll be going through hands-on to make it specific
+but the idea is that you define a workflow in JSON
+and this JSON allows you to get
+a visualization of the workflow
+and then it gets executed visually,
+and then we can see the history of the execution itself.
+So the idea is that every little step
+in the workflow is going to be, for example,
+a Lambda function or inserting data into DynamoDB
+or a specific ECS task,
+and the step function is going to be
+the thing that orchestrates this workflow for you.
+To start a workflow, you can use an SDK API call,
+you can use API gateway, you can use CloudWatch Events
+or Amazon EventBridge, they're the same thing,
+or you can launch, obviously,
+a step function manually from the console,
+as we will be doing it in the hands-on.
+So step functions have a bunch of boxes
+as you see on the right hand side
+and these boxes are called tasks.
+And so the task state is used to do some work
+in your state machine.
+So the task state could be invoking a Lambda function
+or it could be invoking a Batch job
+or running an ECS task and wait for it to complete
+or to insert an item directly
+from step functions into the DynamoDB
+or to publish a message into SNS or SQS
+or even to launch another step function workflow.
+All these things can be defined in a task state,
+or a task could also be running one activity
+and that activity could be an EC2 machine
+or an Amazon ECS task or on-premises server
+that is going to be pulling for some work
+from step functions to do the work
+and then send back the results to the step function.
+The idea is that here, we are more free in terms of that,
+the app server is not invoked by the step function,
+the step function at the app server
+is actually pulling for step functions
+to find activities and work to do.
+Which is more similar to how
+a service called SWF worked in AWS.
+So I wanna make this super concrete.
+So let's say we want to define a task state
+to invoke a Lambda function.
+So we're going to define a JSON
+and as you can see, the name is "Invoke Lambda function,"
+the type is task and the resource is Lambda function invoke.
+Then the parameters is the function name,
+so we specify the function name,
+and we pass it on input payload to our Lambda function.
+Then we say next, to go to the next state, and the time out,
+to see if our Lambda function is timing out.
+So what can be states in step functions?
+We could have this Choice State,
+to test for a condition to send it to a branch
+or the default branch.
+It could be a Fail or Succeed State,
+to stop executing the step function workflow
+with a success or a failure.
+It could be a Pass State,
+simply to pass the input to the output
+or to inject some fixed data without performing some work.
+It could be a Wait State, to provide a delay
+for a certain amount of time
+or until a specified date and time.
+It could be a Map State, to dynamically iterate steps,
+or a Parallel State to begin parallel branches of execution.
+What you need to remember from the exam perspective
+is most likely going to be the parallel states.
+So, and the task state
+that I showed you from before, obviously.
+So I wanna show you what happens visually.
+So we have a execution workflow and this is a workflow.
+So we submit a job.
+We wait for X seconds.
+We get the job status.
+Is the job complete?
+Yes or no, if not wait again, and so there's a loop.
+And when the job is complete,
+either you get the final job status
+because you completed successfully
+or if the job failed,
+then you maybe go and deal with that failure,
+and all of this go to the end.
+So as the execution is started,
+we're going to start, submit a job.
+We're gonna wait for X seconds
+and the blue is whatever is in progress.
+Then it goes into several loops
+and then the job status is done,
+and then we get the final job status and we go to the end,
+and this gives us a visual aspect of our step functions.
+So the step function is really is here
+to orchestrate whatever work you need to do,
+to define how your state machine is going to look like.
+What your workflow is going to look like,
+and I know that right now, this may be,
+what the hell is this talking about?
+This is very confusing.
+I can do all of that in just one Lambda function to program,
+but I will show you in the next lecture,
+a hands-on on step functions.
+It should make a lot more sense,
+and then I will show you the whole power of state functions
+in the further lecture by talking about error handling.
+So I will see you in the next lecture for the hands-on.

@@ -1,0 +1,70 @@
+# 92. Redshift Resizing
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356046
+# Caption: en_US (auto)
+
+Instructor: So what if concurrency scaling isn't enough
+and you need to actually resize your cluster on the fly,
+you need to add more capacity to it?
+Well, there's a few ways of doing that,
+and you need to understand the difference between them.
+So one is called elastic resize.
+You can use this to quickly add or remove nodes
+of the same type.
+So if you're happy with the type of nodes,
+the type of EC2 instances
+that are running your Redshift cluster,
+you can add more or remove them using elastic resize.
+With elastic resize,
+your cluster will only be down for a few minutes
+while it adds that capacity,
+and it tries to actually keep those connections open
+across the downtime as well,
+so you might not even drop any queries,
+it might just keep that connection held open
+and let it resume
+once that added capacity is in place on your cluster.
+Now, one limit of elastic resize is that for certain dc2
+and ra3 node types, you're limited to either doubling
+or halving the size of that cluster.
+You don't really need to remember
+what the specific types are for the exam,
+but for certain types, that is what you need to do,
+you can only double or halve them.
+If you need to do something a little bit more involved,
+then you need to go back to what's called classic resize,
+and that allows you to actually change the node types
+and/or the number of nodes.
+The thing with classic resize
+is that if you're actually changing the node types,
+it could take hours or even days
+for your cluster to become writeable again.
+So your cluster will be in a read-only state
+for the entire period of time
+that it takes to provision that new hardware
+and swap it out in your cluster.
+That can be a very lengthy experience.
+So you wanna use elastic resize when you can,
+but if you need to change your node type,
+you have to use classic resize.
+That's the main difference there.
+One technique for dealing with things
+in that classic resize scenario
+is to use what's called snapshot, restore, resize.
+And this is a strategy for keeping your cluster available
+during a classic resize operation.
+So if you do need to change your node type
+or you need to add a amount of capacity
+that elastic resize won't allow you to do,
+what you can do is use a snapshot command
+to make a copy of your cluster,
+and then resize that new cluster.
+So your data's still going to the old cluster
+while your new cluster is being resized
+and going through the classic resize process.
+Once your new cluster is finally done,
+you can then shift your traffic
+to that new cluster that's been created.
+So snapshot, restore, then resize is a way of migrating
+from one cluster to another using classic resize
+to minimize downtime.

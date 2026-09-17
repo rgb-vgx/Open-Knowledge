@@ -1,0 +1,148 @@
+# 60. Reinforcement Learning
+# Section: Artificial Intelligence (AI) & Machine Learning (ML)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886629
+# Caption: en_US (manual)
+
+So now let's talk
+about reinforcement learning.
+So the idea, for example,
+here we have a maze
+and we're trying to train an AI to find the exit of a maze.
+So reinforcement learning is a type of machine learning
+where an agent is going to learn
+and make decision by performing action in an environment
+and maximize what's called cumulative reward.
+So we're going to define what is a reward.
+So the key concepts here is that you have the agent,
+that's the little robot right here,
+that's the learner or decision maker.
+The environment is the maze,
+that's the external system
+that the agent is interacting with.
+And the action is the choices made by the agents.
+So in the setting of a maze, for example,
+is to go up, to go left, to go right, to go down.
+The reward is the type of feedback
+that the environment is going to provide
+based on the agent's action.
+For example, for this maze,
+we're going to assign numbers.
+We're going to give -1 as a reward,
+so negative 1,
+whenever the robot walks somewhere and there is no wall,
+it's just a normal place to walk to, so it's good.
+We're gonna give it -10
+if the robot is walking into a wall.
+And we're going to to give it +100
+if the robot is able to find the exit.
+So, of course, because the robot wants to maximize rewards
+and it needs to find the shortest path to the exit.
+And the longest it takes to find the path,
+the more points it will lose.
+And of course, if it walks into a wall,
+it's going to lose points even faster,
+so we're going to teach the robot not to walk into walls.
+The state is also the current situation of the environment,
+what it looks like and what is available.
+And the policy is a strategy used by the agent
+to determine what action to take based on the state.
+And the idea is that the robot
+is going to do many, many, many simulations
+and over time it's going to get better
+because it's going to learn from its mistake
+by maximizing the reward function.
+So here we go, so here is the learning process.
+The agent is going to have a look at the environment
+and the current state.
+It was going to select an action
+based on the strategy, the policy.
+So, for example, go up, go down,
+go left, go right, and so on.
+And then the transition
+is going to transition the environment.
+And then the environment
+is going to transition into a new state
+and provide a reward to the agent,
+so it could be -1, -10, +100 in our previous example.
+Then the environment will be in a new state,
+and then the agent is going to update its policy
+once it has figured out the exit
+to improve future decisions.
+And so we go again in this learning process
+over and over and over again
+until the agent will run maybe a thousand
+or a million simulations,
+and then the agent will have learned
+how to properly navigate the maze.
+So here the goal of the agent
+really is to maximize the cumulative reward over time.
+So here, how it looks for example for our little maze.
+So here we have to train the robot
+over time to navigate this maze.
+So the steps is at the first
+the robot is going to observe its position,
+that's the state.
+Then it's going to choose a direction to move in,
+that's the action.
+And then it's going to receive reward,
+it's going to be -1 to take a step,
+10 to hit a wall,
+and +100 if going to the exits.
+And then over time,
+of course, the robot is going to first move randomly,
+but at some point it will find the exits.
+And then once it's found the exit,
+it's going to update its policy
+based on what it has learned from its movement
+and then try again.
+And over time the robot will learn
+to navigate the maze more efficiently.
+There is a cool YouTube channel
+that I would recommend for you to watch called AI Warehouse.
+And the idea is that this person
+trains AI based on reinforcement learning
+based on different factors,
+and you actually see the AI visually getting better
+at doing some kind of actions.
+So let me just show you an extract,
+but I invite you to watch this video if you're curious.
+So here we have the AI in this video
+and the AI is moving randomly
+and learning how to navigate the environment.
+And it's going to gain points if it hits the green
+little of things on the floor.
+And so over time,
+it's going to get better to learn how to jump,
+to learn how to go to the green thing.
+And you can see,
+there are many, many different iterations
+being done in this video,
+and over time it's going to learn how to move.
+And so it's quite interesting
+because well after many, many iterations,
+as you can see, it's able to find the exits
+and move on to the next puzzle.
+And over time, of course,
+things are getting more complicated for the AI,
+which is going to keep on learning
+what it can and cannot do.
+And it's a very interesting video
+because you can really visually see
+how the AI is getting better after so many iterations,
+and that is the whole process of reinforcement learning
+explained in a visual way.
+So what is reinforcement learning used for?
+Well, it's used for gaming
+to teach an AI to play very complex games,
+such as chess and go,
+or robotics to teach robots how to navigate
+and manipulate objects in a dynamic environment,
+for finance, for portfolio management,
+and training strategies
+for healthcare to optimize treatment plans,
+and for autonomous vehicles,
+for path planning and decision-making.
+So that's it for reinforcement earning.
+I hope now you understand what it means.
+I hope you liked it,
+and I will see you in the next lecture.

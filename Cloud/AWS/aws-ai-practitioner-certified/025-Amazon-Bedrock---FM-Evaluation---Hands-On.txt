@@ -1,0 +1,117 @@
+# 25. Amazon Bedrock - FM Evaluation - Hands On
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886377
+# Caption: en_US (manual)
+
+So now let's have a look at model evaluation.
+And, for this, on the bottom-left,
+under Inference and Assessment,
+you will find Evaluations.
+Collapse this panel.
+And so, we have two kinds of evaluation for the models,
+we have the Automatic kind and the Human kind.
+And within Automatic, we have two approaches,
+we have the Programmatic
+to just have a model and metrics we're going to select,
+or Model as a judge
+where a model will actually be the judge
+of the output itself,
+so it's using models to judge models.
+And the human,
+well, you can either get the AWS Managed work team
+to evaluate the responses from up to two models for you,
+or you can Bring your own team
+to do the exact same approach.
+So let's see how we can create a model evaluation.
+So we'll create an Automatic Programmatic evaluation.
+And, here, the important thing is that we select a model,
+for example, we want to evaluate this model,
+and then we evaluate a task type,
+so do we want to have a look at General text generation
+or Text summarization or Q&amp;A or whatever.
+So once you select a General task,
+a task type, for example, General task generation,
+you have several metrics that you can judge.
+Here we have Toxicity,
+here we have Accuracy, and here we have Robustness.
+And so, here, we can choose a prompt dataset
+that our model right here is going to be evaluated against.
+And then some metrics around Toxicity
+are going to be computed automatically.
+So we can use either the built-in datasets
+or bring our own prompt dataset right here.
+And so, we can generate metrics automatically
+for all these things.
+And then, finally,
+all the results are going to be stored in Amazon S3,
+and you'll need a permission, of course,
+to store these results in Amazon S3.
+So that's one way of doing things.
+If you're trying to do it with Model as a judge,
+first we need to choose a model
+that will perform the evaluation.
+So, as you can see, we have less models available to us.
+So, for example, we can choose Claude 3.5 Sonnet
+to do and to be the evaluator model,
+the model that's going to generate
+the evaluation metrics itself,
+and then what we want to evaluate.
+So either we want to have a look at the Bedrock models,
+and you can choose whatever model,
+just like before you had for you to perform your evaluation,
+or, if you wanted to,
+you can bring your own inference responses from a model
+that lives outside of Bedrock,
+and just want to make sure that the evaluator model
+is going to give you his results, metric results,
+on your model that sits outside of Bedrock.
+So, for example, say you want to use Nova Pro,
+that's the one we're going to evaluate.
+And then we have the metrics we want to evaluate for.
+So each metrics will have different costs,
+for example, Helpfulness, or Faithfulness,
+or stuff like this.
+And then, again, Datasets and Permissions.
+And then, this time, so as we said,
+a model is going to evaluate the results of another model,
+and that's the particularity of this one,
+but I like it,
+because some things can be judged only by a human-touch,
+and this is why now we have the Human factor.
+So this is using the human
+to be the judge of the models themselves.
+So we can create this one, for example,
+just to see the option.
+So we have a managed team
+that's going to start the evaluation for us.
+So we need to provide a lot of number,
+a lot of information, actually.
+So I'm going to cancel this
+and just do Bring your own workforce.
+And so, here, what do we want to do?
+We want to evaluate, again, one of these models,
+so Nova Pro,
+and what task you want to evaluate?
+And, actually, before I go here,
+you can evaluate up to two models.
+So you can have this model, Nova Pro, for example,
+you want to compare it to Claude 3.5 Sonnet,
+and that's it.
+So you have two models now that are gonna be compared
+as well as part of this evaluation.
+And then a Task type.
+So, again, General, Text summarization, et cetera,
+or a Custom task, if you wanted to.
+And for each of these tasks,
+what metrics do you want to evaluate?
+So it's the same inputs as before,
+but this time, real humans.
+This is gonna be your humans, your work team,
+but it could be also a work team by AWS
+is going to be the one saying,
+"Well, this model or that model is performing better,
+and this is how much I rate this model's performance.
+So that's it.
+You've seen how you can evaluate a model in Amazon Bedrock.
+I hope you liked it,
+and I will see you in the next lecture.

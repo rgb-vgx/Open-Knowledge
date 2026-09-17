@@ -1,0 +1,154 @@
+# 230. What is DNS?
+# Section: Networking and Content Delivery
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40306896
+# Caption: en_US (auto)
+
+Instructor: Okay, so before we talk about Route 53,
+we have to talk about what is a DNS.
+So this is a basic level lecture,
+but at least it will help you understand how DNS works.
+And this is something you've been using
+behind the scenes every day,
+but you don't know about it exactly.
+So let's have a look.
+So a DNS is a domain name system and what it will do is that
+it will translate human friendly host names
+into the target server IP addresses.
+For example, when you type in your web browser,
+www.google.com,
+it will in the end give you back an IP address.
+And this is this IP address
+that your web browser will be able to access
+behind the scenes and get some data back from Google.
+So the DNS is the backbone of the internet.
+It is a way for you to understand
+how to translate these URLs, these host names into IPs.
+So there is a hierarchical naming structure for DNS,
+and the idea is that at the root
+of www.Google.com for example, there is the .com,
+but then there is example.com, which is a bit more precise
+than www.example.com or api.example.com.
+So all of these are going to be the hierarchy
+of your domain names.
+Next, we need to define a little bit of terminology
+regarding your DNS.
+So there is a domain registrar.
+This is where you're going to register your domain names,
+and they could be Amazon Route 53,
+or it could be GoDaddy
+or any other domain registrar you can find online.
+Then you have DNS records and they have a different types,
+and we'll have a look at them in details in this section.
+So it could be A, quadruple A, CNAME, NS,
+et cetera, et cetera.
+Don't worry, we'll see those in details in this section.
+A zone file, which contains all the DNS records.
+So this is how to match these host names
+to IPs or addresses.
+Name servers is servers
+that will actually resolve the DNS queries.
+And we'll have a look at them as well in the section.
+Top level domains, which is .com, .us, .in, .gov,
+.org, et cetera, et cetera.
+Second level domain, which is amazon.com and google.com.
+So you can see there are two words in between a dot.
+And so if we take a look for example at this FQDN
+so fully qualified domain name,
+we have http://api.www.example.com., okay?
+So the last dot at the end is called the root,
+and it's the root of all the domain names.
+Then the .com so.com is your TLD.
+So that's your top level domain.
+The example.com is going to be your second level domain.
+Then we have www.example.com.
+That's your subdomain.
+api.www.example.com is your FQDN,
+your fully qualified domain name,
+HTP is going to be your protocol.
+And all these things together is going to be your URL.
+So now that we know a little bit of terminology,
+let's have a look at how DNS works.
+So we have a web server,
+and let's say for example that we have an IP,
+it's a public IP, it could be an EC2 instance, for example,
+and the public IP is 9.10.11.12
+and we want to be able to access this
+using the example.com domain name.
+So we're going to register this example.com domain name
+on one other servers for the DNS,
+but let's see how the computer
+or your web browser can access it and can get that response.
+So your web browser is going to want to access example.com,
+and to do so, it's going to ask its local DNS server
+hey, do you know what example.com is?
+Now this local DNS server is usually assigned
+and managed by your company
+or assigned by your internet service provider dynamically.
+And if the local DNS server
+has never seen this query before,
+what it's going to do
+is first ask the root DNS server managed
+by the I C A N N, the ICANN organization,
+and it's going to say, hey, do you know what's example.com?
+Which is the first server that's going to be asked,
+and the root DNS server is going to say,
+I've never seen it, but I know .com.
+So .com is NS, so it's an NS record named server
+and go see 1.2.3.4 this public IP.
+So this is saying to the local DNS,
+hey, I don't have this answer,
+but I'm getting you a little bit closer to your answer
+because I know the .com domain
+and the .com domain name server has this IP 1.2.3.4.
+So the local DNS server saying, okay, good.
+Now I'm going to ask the top level domain.
+So the .com domain server at 1.2.3.4.
+I'm going to ask for the answer of my query.
+So this is another domain managed by I A N A, the IANA
+and the example.com okay, is going to be asked again
+to this DNS server.
+So do you know about example.com
+and the DNS server is gonna say, hey,
+I don't know about example but I do know about example.com.
+I don't know the answer to your query right away,
+I don't know which record it is,
+but there is a server called example.com that I know about,
+which is at 5.6.7.8.
+That's a public IP that you should ask the answer
+to my quote to your question.
+So the local DNS server is then going to go
+to our final server,
+which is the sublevel domain DNS server.
+And this is a server that is going to be managed
+by your domain registrar.
+So it could be, for example, Amazon Route 53 and so on.
+So the DNS server is gonna say,
+hey, do you know about example.com?
+And the DNS server will have an entry, for example.com,
+and so it will say, hey, yes, of course I know example.com,
+and it turns out that example.com,
+I know that it's an a record and that the result
+of it is the IP 9.10.11.12.
+So the DNS server now knows the answer
+by recursively asking DNS servers
+and finding the most specific one,
+and then it says, okay, hey, yes, I'm going to cache
+that answer right away
+because I want to be able to, if someone is asking me again,
+for example.com, I want
+to get right right away, give them the answer.
+So it's going to send back the answer
+into your web browser and your browser knows the answer
+And using this IP address then is going to be able
+to access your web server.
+So this is how DNS works.
+So you've been using DNS
+behind the scenes all along all your life.
+For example, when you access www.google.com,
+you're using DNS or any websites,
+but now we see how the DNS queries work.
+So this is just some background knowledge
+because now we're going to go into Route 53
+and learn how to manage a DNS server on our own.
+So I hope you liked it,
+and I will see you in the next lecture.

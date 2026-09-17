@@ -1,0 +1,227 @@
+# 45. Managed Service for Apache Flink - Hands On
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/52769147
+# Caption: en_US (auto)
+
+Hey, Frank.
+Here, let's take a look at managed service for Apache Flink.
+I'm just going to give you kind of a tour of their built in demo here, to give you a feel of what it
+can do and what it's all about.
+Now, before you dive in yourself, I do want to warn you, this is not free.
+There is no free tier component of this thing.
+So you can see down here in the pricing section, the Kinesis processing units involved cost money.
+The storage costs money, backups cost money, it all costs money.
+And this is also one of those services in AWS where if you're not careful to shut it down in just the
+right way, you're going to have ongoing expenses from Kinesis Streams that are running in the background
+and CloudFormation stacks that are running in the background.
+So it is very easy to end up with a surprise bill at the end of the month if you're not careful here,
+so I would recommend just watching the video instead of following along hands on if you do want to avoid
+being charged any money.
+But if you're brave and you're careful, go ahead.
+So let's get started.
+Here you can see there's two options.
+You can have a streaming application.
+So if you have a bit of Flink code that you wrote offline in an IDE or something, that is how you would
+go about uploading the jar file of that code and actually running that within the Amazon managed service
+for Apache Flink.
+Studio notebooks are also a newer option there.
+You can actually just query your data using a notebook interface as well.
+For this demo I'm going to stick with streaming applications though.
+But notebooks are a choice, so remember that.
+Let's go ahead and create a streaming application.
+And you can see you have some choices here.
+You can create them from scratch and do it the hard way.
+Or you can use a blueprint and kind of cheat and do it the easy way.
+So if you're doing it from scratch, you can see you can specify all this stuff.
+You'll have the ability to configure it however you want, call it whatever you want, and set up all
+sorts of stuff for how you're actually going to deploy this information.
+But under a blueprint, it's a lot simpler.
+It just gives you something that's ready to go that you can just modify.
+So if you do have a common use case, we're going to go with a blueprint.
+And you can see there's a couple that are built in here right now.
+By default it takes you to the newer one for doing vector embeddings.
+That's very useful for creating embedding vectors for generative AI purposes.
+So so without getting into the whole world of retrieval, augmented generation and knowledge bases and
+bedrock and all that stuff.
+Suffice it to say, one application of this would be to stream in data and then store them in a data
+store that can be used for generative AI purposes very quickly.
+We're not going to do that, though.
+We're going to go with the other one here.
+That's a little bit easier to wrap your head around at this point in the course.
+And that's just going to be real time data processing using Kinesis Data Stream.
+So in this choice here I'm choosing that blueprint instead.
+That's going to take me from data streams to my managed service for Apache Flink and then ultimately
+into an Amazon S3 destination.
+So this is all stuff we can wrap our heads around at this point in the course.
+You can see here you can change the application name if you want to.
+We are just deploying the built in demo here.
+So I'm just going to let it do its thing here and deploy those names with whatever it wants.
+And you can see that under the hood it's going to select Flink version 1.2.
+The data stream is going to set up is Flink demo, whatever that is stream.
+I'm sure your numbers will be different.
+And it's going to dump it into an S3 bucket called that, which again for you will be slightly different.
+All right.
+So let's go ahead and deploy the blueprint.
+Whoop.
+And now you can see that it's kicked off cloud formation to actually do that.
+And there's a couple of different stacks being created here.
+One is the bootstrap stack.
+And then there's the actual demo stack itself.
+We can click off to this to monitor its progress.
+And that will take us off to cloud formation.
+And we can wait for that to be done.
+So this will take a few minutes.
+I will come back when these two stacks are complete.
+All right.
+Those stacks have completed.
+You can see I now have two of them, the bootstrap stack and the actual demo stack itself.
+Let's click on the top one there for the actual stack.
+And let's see what we got here.
+If we click on the demo stack and go to resources we can see what it actually made.
+So we got some log groups.
+The log stream.
+We got a Kinesis stream that's the source of that data.
+And we also have our managed service for Apache Flink MSF application running as well.
+So cool.
+It's doing something.
+So let's go back to our Flink page here.
+And you can see here it's throwing thrown us right into where we can look at the actual S3 bucket associated
+with this application.
+Let's go ahead and open that up.
+So that took us to the actual jar file itself.
+Let me go up one level to see what else is in this bucket.
+So yeah, that's the jar file that I created for this demo.
+And if you wanted to have your own data processing application that you wrote yourself, this is where
+you would put it.
+So that jar file is the actual Flink code that managed service for Apache Flink is wrapping and running
+on top of.
+And also you can see that we have a folder here for the output data.
+Let's go ahead and explore that as well.
+And we have multiple parts potentially in this case we just have these two parts for this particular
+timestamp.
+Let's go ahead and explore one of them.
+So basically as the state is streaming in it's being split up into chunks just like you would expect.
+And from here, if you wanted to explore that data and kind of see what's in within it, you could go
+to Object Actions and go to query with S3 select.
+However they are deprecating S3 select, so I'm not going to go there.
+The right way to do it these days would be using Athena or something like that to actually query this
+data interactively.
+So but trust me, there's valid data in there.
+Now if we go back to our Flink page here, let's go up a level to our application.
+And you can see from the dashboard here that our demo is running right now.
+That means we have a stream running a Kinesis data stream, as well as managed service for Apache Flink
+dumping into S3.
+This all costs money, remember?
+So um, if you are following along, make sure you don't quit prematurely.
+And if we click into that, we can explore this a little bit more deeply.
+Let's go down here.
+We can see information about its status when it was updated and what not.
+And more interestingly, if we go down to the bottom here, we have some monitoring data that we can
+look at.
+So we can actually take a look at its CPU utilization, uh, any failures that might be happening.
+A lot of data here about how it's actually running within CloudWatch metrics.
+Of course, you can also explore the logs directly if you're so inclined and need to do some troubleshooting.
+Right now, there's no data there yet if you go to snapshots, you can actually have a snapshot to back
+up the application state.
+If you need to get back to an earlier state at some later point.
+Configuration is where things get interesting.
+So here you can actually set up all the runtime properties and where the destination is for the data
+that is going into S3 or what have you.
+I'm not going to go into details here, but this is where you would tweak everything to meet your needs.
+Also, you can have tags associated with it if you wanted to, and you can have versioning support as
+well.
+And there's a new operations tab too here as well.
+Just giving you sort of a peek at what's been going on at an operational level.
+So we did start our application.
+And if you wanted to click into that event you could do so and get more information about it.
+So that's the dashboard there.
+Also if you want to get into the code you can link off to GitHub here to see the actual code that it's
+running.
+If you wanted to build on that or extend it or change it.
+So here is the built in Flink application that goes from Kinesis Data Streams to S3.
+So if you want to learn more about what's going on under the hood there and maybe build that and extend
+upon it.
+This is where you would go.
+So you know the actual code is going to live in here.
+And of course, you could go ahead and take a copy of that, branch it off to whatever you want with
+it and make it fit your own needs.
+So this is just a starting point for you to begin with.
+Let's go back to Flink and go back up to our actual demo application here.
+Another thing to look at is the Apache Flink dashboard.
+So if you are familiar with Apache Flink UI as opposed to AWS, that is an option for you as well.
+We can click through to that and see some interesting stuff.
+All right.
+So there's our one job that's running.
+You can see that it is currently running.
+It's been running for about nine minutes now.
+Let's go ahead and drill into that.
+And from here we can get some slightly more useful information I think.
+So you can see graphically here what's going on.
+We have our Kinesis data Stream source going into our S3 file sync writer through Flink.
+And we can actually see some interesting stats down here.
+So we can see that it's actually processed already 10,000 records Presumably that was what was in our
+demo data set there, amounting to 516kB of total data.
+So if you did want to drill more into the Flink UI for what's going on, that is available to you as
+well as part of MSF, and that is pretty cool.
+All right.
+Let's go ahead and get out of that.
+So that's managed Apache Flink in a nutshell.
+We do need to be careful to shut everything down though.
+Or else we will be charged money forever until we do so.
+So from this dashboard screen here we can go to actions and go ahead and stop this application.
+We definitely want to do that.
+However that is not enough.
+So even though I've stopped my Flink demo application here, I still have that Kinesis data stream running.
+So let's go ahead and click on that for example, just to drive home the point.
+And if we go to data streams you can see that we do in fact still have this stream.
+And that is going to cost me money for as long as it's running, even if I'm not using it.
+So it's not enough just to stop it.
+We have to go back here and well, is it actually done stopping yet?
+it.
+Let's let it finish first.
+So I'll come back when that's done.
+All right.
+That took about a minute, but it did successfully stop eventually.
+And now we want to actually go to actions and delete the whole dang thing.
+Now if you were rolling your own system here from scratch, this is where you would delete the entire
+application.
+You would click on to delete only and then type in delete.
+However, this is warning us that in fact there is other stuff that needs to be deleted as well.
+So we actually need to go to both of these CloudFormation stacks and delete both of them in their entirety.
+So let's go ahead and do that.
+Let's start with the first one.
+And I'm going to go ahead and delete that.
+And also on the other stack that was created as well.
+Delete that too.
+And let's wait for that deletion to complete.
+And then we'll double check that nothing is left over.
+All right.
+My stacks are now gone.
+So let's go back to Kinesis and make sure that data stream is gone.
+It's not, folks.
+Yeesh, I warned you.
+So go ahead and make sure we delete that explicitly, or else that's going to go ahead and bill you
+forever.
+You can see that it's very easy to get into a state with AWS where you have surprise billing going on.
+You got to be careful, guys.
+All right.
+Delete.
+And that should get rid of that.
+Let's go back to Flink and see if we actually got rid of our application.
+All right.
+That did successfully get removed.
+All right.
+There's also still the S3 bucket that might still be around.
+But hey that doesn't really cost you anything or pretty minimal if it is.
+So I think we're in good shape here.
+So we made sure to delete those CloudFormation stacks.
+We deleted our Kinesis stream, which is most important.
+Let me make sure that's gone.
+Yep.
+Deleted.
+And we are back to normal.
+All right.
+That is managed service for Apache Flink in action for you.
+A little bit of a brief tour of their demo application.
+But again in the real world you might supply your own code to perform your own data transformations
+or just use their notebook interface to do it even more easily.

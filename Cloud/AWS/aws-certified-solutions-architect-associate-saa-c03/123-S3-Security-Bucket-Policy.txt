@@ -1,0 +1,122 @@
+# 123. S3 Security: Bucket Policy
+# Section: Amazon S3 Introduction
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528320
+# Caption: en_US (manual)
+
+So now let's talk about Amazon S3-Security.
+The first part is User-Based.
+So as a user you can have IAM policies that you
+and this IAM policy is going to authorize
+which API calls should be allowed for a specific IAM user.
+You can also have Resource-Based Security.
+So this is new.
+We can use what's called S3 Bucket policies
+and there are bucket wide rules
+that you can assign directly from the S3 console.
+And this will allow, for example, a specific user to come in
+or allow a user from another account,
+this is called cross-account
+to access your S3 Buckets.
+This is also how we'll make our S3 Buckets public
+as I will show you in a minute.
+Next, you have the Object Access Control List or ACL,
+they're finer grain security and they can be disabled.
+And if you need to go
+at the Bucket level, you can have Buckets ACL
+which is way less common also can be disabled.
+And the most common way now to do security
+on an Amazon S3 Bucket is to use Bucket policies.
+So in which situation can an IAM principle
+can access an S3 object?
+Well, if the IAM permissions allow it
+or if the resource policies allows it
+and that there is no explicit deny in the action,
+then the IAM principle can access the S3 object
+on the specified API call.
+So we'll have a look at these use cases in a minute.
+Finally, another way to do security on Amazon S3
+is to encrypt the objects using encryption keys.
+So what does S3 Bucket policy actually look like?
+Because this is the focus of S3-Security for us.
+So they are JSON based policies and they look like this.
+So this is JSON documents and it's quite easy to read.
+So the first thing is that you have a resource block
+and the resource tells the policy
+what buckets and object this policy applies on.
+And in here we can see that this applies to every object
+within the example Bucket,
+this is what the star is for.
+Next we have the effect.
+So Allow or Deny, and what do we Allow or Deny?
+Well, we Deny actions.
+So we have a set of APIs we can either Allow or Deny
+and in this example, the action we Allow is GetObject.
+So this allows anyone thanks to the principle,
+the principle presents the account or the user
+to apply the policy to so principle is star.
+So, here we allow anyone with a star to GetObject,
+so to retrieve an object from my example Bucket
+with a start, that means any object within it.
+So therefore this S3 Bucket, is setting public reads
+on all objects inside my Buckets.
+So we can use an S3 Bucket policy
+to grant public access to the Bucket
+as the one shown on the right hand side
+or to force objects to be encrypted at upload
+or to grant access to another account.
+So let's have a look at the situation.
+So here is a Bucket Policy for Public Access.
+So we have a user, it's on the worldwide web
+it's a website visitor
+and he wants to access files within our S3 Buckets.
+So we'll attach an S3 Bucket policy
+that allows public access.
+This is the one you've seen in the previous slide.
+And once this Bucket policy is attached to the S3 Bucket
+then we can access any objects within it.
+That's what we'll see in the hands-on.
+But another way to do it
+is that if you have a user within your account,
+so it's an IAM user
+and that user wants to access Amazon S3,
+then we can assign IAM permissions
+to that user through a policy.
+And therefore because the policy allows access
+to the S3 Buckets
+then the user can access our S3 Buckets right now.
+If we have an EC2 instance and want to give access
+from the EC2 instance into the S3 Buckets,
+we've seen that IAM users are not appropriate.
+We need to use IAM roles instead.
+So we create an EC2 instance role
+with the correct IAM permissions
+and that EC2 instance will be able to access
+the Amazon S3 Buckets.
+More advanced,
+if we want to allow Cross-Account Access,
+then we must use the Bucket Policy.
+So we have an IAM user in another AWS account
+and we create an S3 Bucket policy
+that allows Cross-Account Access for that specific IAM user
+and therefore the IAM user will be able to make API calls
+into our S3 Buckets.
+Other security settings you need to know about
+is that there is the Bucket settings
+for Block Public Access.
+So this is what we set to own when we created the Buckets
+and these settings were invented by AWS
+as a extra layer of security to prevent company data leaks.
+So even though you would set an S3 Bucket policy
+that would make it public,
+if these settings are enabled,
+the Bucket will never be public.
+So this is to prevent data leaks.
+So if you know that your Bucket should never be public,
+then leave these settings on
+and you have this level of security
+against people who would set the wrong S3 Bucket policy.
+And if you know that none
+of your S3 Buckets ever should be public,
+then you can set this at the account level.
+Okay, so that's it for S3-Security.
+Now let's go in the hands-on to practice.

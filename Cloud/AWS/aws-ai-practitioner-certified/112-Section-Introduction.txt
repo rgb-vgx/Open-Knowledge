@@ -1,0 +1,28 @@
+# 112. Section Introduction
+# Section: AWS Security Services & More
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45375567
+# Caption: en_US (manual)
+
+So welcome to this section
+in which we discuss mostly AWS Services related to security,
+but also a few others.
+So we'll have lectures usually from other courses
+that I created before for concepts
+that I think may be relevant to the exam.
+But these questions remain at a very high level.
+And if the lecture is mentioning a service
+that hasn't been mentioned in the course, don't worry,
+it's because these lectures have been cherry picked
+to be included in this course.
+So what should you know then out of this section?
+Well, it's only important
+for you to understand the service definition
+and the essence of what the service does.
+The exam questions that will be asking concepts
+about these services will be very simple
+and definitely not in-depth.
+So I included all need to know
+to get a good review of these services
+and I will hope you will like
+these lectures and benefits from them.
+So happy learning and I will see you in the next lecture.

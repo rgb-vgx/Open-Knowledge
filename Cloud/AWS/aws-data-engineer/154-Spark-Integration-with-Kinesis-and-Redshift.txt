@@ -1,0 +1,106 @@
+# 154. Spark Integration with Kinesis and Redshift
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356490
+# Caption: en_US (auto)
+
+Instructor: Let's talk about Spark streaming
+in a little bit more depth.
+So Spark applications, like we said,
+usually use something called a dataset in their code
+to refer to your data.
+And a dataset is treated very much like a database table.
+With Spark streaming,
+and structured streaming in particular,
+you can basically picture your streaming data
+as a database table that just keeps on growing forever.
+So as new data is received by the stream,
+it just keeps adding more and more rows
+to that virtual database table in the form of a dataset.
+So you can query this data using windows of time.
+And if we look at this example here,
+what this code is doing is saying,
+let's monitor all the stuff that's being thrown
+into a logs bucket in S3.
+And this action with a one-hour window over time
+means that we're gonna be continually
+counting up the records being received in that bucket
+over the previous one hour.
+And then we're gonna turn around and write those counts
+using JDBC into some external MySQL database.
+So the amount of code you have to write
+for something like this is actually pretty trivial.
+And that's kind of the power of Spark streaming
+and structured streaming in particular.
+Yes you have to write code,
+but generally it's very simple code,
+and you can rely on Spark to manage all the dirty work
+of making sure that you're getting your stream data reliably
+and distributing the processing of that stream
+across your entire cluster reliably.
+You just focus on the logic of what you want to do,
+while Spark streaming takes care of all the nasty bits
+of making sure it's happening in a reliable manner.
+You can also integrate Spark streaming with Amazon Kinesis.
+And I mean there's nothing really magical
+about integrating Spark streaming with any other system,
+because it's all code, right?
+And with code, you can do anything.
+So it turns out somebody
+has written a library for Spark streaming
+built on top of the Kinesis client library
+to allow Spark streaming to import data
+from Amazon Kinesis data streams.
+And you just have to plug in that library
+and code against it.
+And you can treat Kinesis as any other stream of data
+coming into a data set in Spark structured streaming.
+So for example, you might have some Kinesis producers,
+say a bunch of EC2 hosts generating logs
+that are pumping data into a Kinesis data stream.
+You can then integrate that
+using the Spark dataset integration code
+as any other dataset coming into Spark streaming
+and process it across the entire cluster on EMR
+using Apache Spark.
+You can also integrate Spark with Redshift.
+We haven't talked about Redshift yet,
+but basically, it's a massive distributed data warehouse
+that's offered by AWS.
+And like there's a Spark Kinesis package,
+there is also a Spark Redshift package,
+and that allows Spark to treat datasets from Redshift
+just like any other SQL database.
+So it just makes Redshift
+look like any other SQL data source to Apache Spark.
+And again, you can use the power of Apache Spark
+across your entire EMR cluster
+to transform and process that data in any way you want
+in a highly distributed and scalable manner.
+So that's a good way for doing ETL on Redshift
+using Apache Spark, for example.
+Imagine if you will,
+that we have say a bunch of airline flight data
+residing in a huge data lake that's stored in Amazon S3.
+I could, for example, deploy Amazon Redshift Spectrum
+on top of that data in S3,
+which will provide me with a SQL interface
+on top of that data that lives in S3.
+Now using the Spark Redshift package,
+I can then spin up an Apache Spark cluster on Amazon EMR,
+and use that to perform ETL on that data
+that's residing in S3 through Amazon Redshift,
+because Redshift just looks like any other SQL data source
+to Apache Spark.
+So by integrating Redshift with Spark,
+I can distribute the processing
+of that huge data set sitting in S3,
+and maybe turn around and put that processed data
+back into another Amazon Redshift table
+for further processing.
+Maybe I'm doing something like preparing that data
+for some machine learning algorithm
+that's gonna be used down the road,
+and that machine learning algorithm
+can use that prepared and transformed data
+in that new Redshift table
+that I've produced from my Spark job.

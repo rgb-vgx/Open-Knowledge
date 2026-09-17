@@ -1,0 +1,33 @@
+# 376. Cognito Overview
+# Section: Cognito: Cognito User Pools, Cognito Identity Pools & Cognito Sync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731882
+# Caption: en_US (manual)
+
+So now let's talk about Amazon Cognito.
+And the goal of it is to give user an identity to interact
+with a web and mobile application.
+So these users usually sit outside of our AWS account,
+hence the name Cognito, because it gives an identity
+to users that we don't know about yet.
+So we have two kind of sub-services within Cognito.
+We have the Cognito User Pool,
+and this provides a sign-in functionality for app users
+and has really good intuition
+with API Gateway and the Application Load Balancer.
+And we have the Cognito Identity Pool
+used to be called Federated Identity.
+And this is to actually provide temporary AWS credentials
+to users that are registered with our application,
+so that they can access some resources of AWS directly.
+And there is a good integration
+as we'll see with Cognito User Pools.
+So if you are asking yourself
+don't we already have users in IAM?
+The answer is yes, you do.
+But Cognito is gonna be for your web
+and mobile application users, which sits outside of AWS.
+So look for the keywords such as hundreds of users
+or mobile users, or authentication
+with whatever mechanisms such as SAML and so on.
+Okay, that's it.
+I hope you liked it and I will see you in the next lecture.

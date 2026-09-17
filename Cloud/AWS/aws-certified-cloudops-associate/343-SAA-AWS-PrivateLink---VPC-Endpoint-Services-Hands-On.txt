@@ -1,0 +1,35 @@
+# 343. [SAA] AWS PrivateLink - VPC Endpoint Services Hands On
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/28875482
+# Caption: en_US (manual)
+
+So let's go on the left hand side
+under endpoint services to create a private link
+for one of our services.
+So if we do so, we have to name it
+which was a log-end user type.
+So, you will choose network
+and then you will need to specify a network load balancer
+in here that you have created from before.
+So once the NLB is created,
+then you can specify additional settings for your endpoint
+whether or not you want acceptance.
+And then the supported IP you want for that private link.
+IPv4 or IPv6.
+So we can't do this right now
+but we would have here an endpoint service connected
+to our network balancer.
+And then to link it to your VPC, you would go on Endpoint.
+You would create an endpoint.
+And this time, instead of choosing AWS services as the type
+of the endpoint, you would use a other endpoint services
+and you would type the service name
+you would've obtained from the previous step.
+Then you would deploy this in the VPC.
+For example, the demo VPC and voila.
+You would have a private connection from one service
+in another VPC to your own VPC privately
+without either going to the public internet, okay?
+That's it for this lecture, very theoretical
+but I wanted to show you the options.
+I hope you liked it, and I will see you in the next lecture.

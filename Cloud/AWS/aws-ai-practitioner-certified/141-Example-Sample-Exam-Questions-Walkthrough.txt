@@ -1,0 +1,316 @@
+# 141. Example Sample Exam Questions Walkthrough
+# Section: Preparing for the Exam + Practice Exam - AWS Certified AI Practitioner
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45381089
+# Caption: en_US (manual)
+
+So in this lecture,
+I'm going to show you sample questions,
+the official ones, and how I would answer them,
+and why I would answer them in this way.
+So it's good if you've never seen a test from AWS
+to see those with me
+because I tell you how to think about these questions,
+and I can really save you the day of the exam.
+So click on this link, and let's go.
+So you're going to answer 20 questions
+and I suggest you do this in your own time.
+The questions order is random.
+So the order I have is different from yours.
+So I suggest, go for the 20 questions, try,
+and then if you're interested, watch me how I do it.
+So here we have the inference options
+of SageMaker from the lowest latency to the highest latency.
+So AWS has a very good tendency to have keywords as lowest,
+highest, cost-effective, these kind of things.
+So you need to look for those.
+This is an ordering question.
+So we need to choose which one is the lowest latency
+and which one is the highest.
+So real time inference is definitely the lowest,
+then we have asynchronous inference
+and then batch transform.
+So it's something to learn about,
+but batch transform can be big.
+It could be like many, many different files.
+So it could take some time.
+So we confirm and say it looks good.
+So as you can see, real time is up
+to 60 seconds processing time.
+Asynchronous is up to one hour,
+and then batch is for offline processing.
+To me, this is not a great question
+because sometimes batch can be quicker than asynchronous,
+but this is the way this is on AWS for now.
+So here, a travel company wants
+to use a pre-trained GenAI model
+to turn background images for marketing materials.
+So we don't have any expertise,
+and we don't want to customize and host them all.
+So this is very important because it tells you we want
+to use a managed service, okay?
+To generate images.
+So you can either proceed by elimination
+because you know that JumpStart is not.
+Recognition is not, sorry, and Personalized is not,
+which leaves you with Bedrock and SageMaker.
+Now, both have the ability to create machine learning models
+and create background images,
+but here the determining factor is gonna be around
+that we don't want to customize and host the model,
+and so therefore we want to use a fully managed service,
+and this is Amazon Bedrock.
+SageMaker would be used if you wanted
+to actually customize the model to your needs
+because you have more control in SageMaker.
+Okay, so next we want to increase the consistency
+and quality of LLN responses by providing the model
+with access to external source of knowledge,
+and we want the least development effort.
+So again, this is kind of the keyword
+that we need to look at for least development efforts.
+So definitely we want
+to access external sources of knowledge.
+So in-context learning and prompt engineering are not good,
+which leaves us with fine tuning and RAG,
+and again, to choose between the two,
+what is providing us the least development efforts?
+Definitely this one because with fine tuning,
+we need to create the data, send it to the model,
+validate the model and so on.
+Whereas this is very easy to set up if you remember.
+Okay, so what is the FM in the context of GenAI?
+So here we look at the definitions
+and very quickly we see
+that it's a large general purpose model.
+So this is a definition. (chuckles)
+There's no trick here.
+So let's confirm this.
+Okay, here we are deploying a solution
+to enhance a knowledge base with semantic search capability,
+and we want to integrate it with Amazon Bedrock.
+So which company can use to secure access to Amazon Bedrock?
+So this is a distractor
+because they're telling you about some context,
+but this is enough.
+Which service can be used
+to secure access to Amazon Bedrock?
+So in AWS, anything that is around securing access
+to a service is always centrally managed
+through AWS Identity and Access Management,
+or IAM, always, always, always.
+So then some of the questions, as you can see,
+they can be distracting.
+They're talking about semantic search capabilities.
+So you're thinking about RAG.
+You're thinking about vector databases, but no, no, no.
+This is the question.
+This is around securing access to Amazon Bedrock.
+Okay, so we wanna record API calls
+that are made to Amazon Bedrock.
+Again, for me it's enough recording API calls
+and having logs of who made it, when and so on.
+There's one service in AWS that does it.
+It's this CloudTrail,
+and you need to know it absolutely 100%.
+Okay, so we need to customize the FM
+by using proprietor datasets
+instead of using pre-trained FM.
+What are the trade offs of customizing the FM?
+So we are customizing the foundational model.
+So it doesn't give us higher latency,
+definitely higher costs
+because we saw that we need to train the model,
+and this costs us some money.
+Definitely doesn't reduce accuracy, and hallucination,
+no, they're not increased.
+They actually decrease
+because we have our own dataset.
+So now it's a decreased hallucination.
+So definitely higher implementation complexity
+because now you need to provide your own dataset,
+have machine learning engineers
+to have everything set up and so on.
+So yeah, still good.
+Okay, so now we need to select
+the correct services for these questions.
+So between Guardrails for Amazon Bedrock
+and AWS Identity and Access Management.
+So implement identity verification
+and resource-level access control.
+This is IAM in AWS for anywhere.
+Set policies to avoid specific topics
+in GenAI applications.
+So this is peculiar to a service.
+So definitely Guardrails for Bedrock.
+Filter harmful contents is also for Bedrock.
+Define users and permissions to access Amazon Bedrock.
+So here they're trying to trick you
+because they talk about Amazon Bedrock,
+but this is about the user roles and permissions.
+So this is definitely IAM,
+and then monitor, analyze user inputs
+to ensure compliance with safety policy.
+This is an application-level concern.
+So Guardrails for Amazon Bedrock.
+Okay, so here we talk about assessing the security posture
+for the vulnerabilities in Amazon EC2 and ECR.
+So this is a weird one because it talk
+about AI applications,
+but the question is really not about AI.
+It's about assessing risks
+for Amazon EC2 instances and ECR containers,
+and so therefore there's one service that does it,
+which is going to be Amazon Inspector.
+That's a definition of Inspector.
+So this is a question that's more about AWS
+and less about AI for sure.
+It's just about knowing what Inspector is.
+You don't even need
+to know what EC2 (laughs) is or ECR is.
+That's the kind of basic questions you get
+at the exam sometimes.
+So let's confirm this.
+Now we want to use GenAI
+to create product descriptions on its websites.
+What are some limitations of GenAI?
+So yes, that's definitely true.
+So it might produce biased and inappropriate content,
+but let's look at the rest.
+We can definitely handle large volumes of data.
+So this one is not correct.
+We can definitely generate multiple languages.
+So this one is not correct, and GenAI definitely understand
+and incorporate product specification details.
+That's what makes them so powerful.
+So the issue is the first one for sure.
+We can proceed by intuition or elimination.
+So this is a case study,
+and we have three questions on this one case study.
+So here we have insights from diverse data sources,
+and we want to improve business operations.
+We have audio from call centers,
+text feedback from customers,
+product images and scanned documents.
+So that's some context.
+Now the question is which combination of steps will help us
+identify new products categories based on historic images?
+So we have historic images.
+So we definitely have like training model
+in Amazon Recognition,
+and to train the model in Amazon Recognition,
+we see that we need to provide labeled images.
+This is a requirement because we're going
+to identify new product categories this way.
+So this is the one.
+They're tricking you with unlabeled historic images,
+but definitely labeled, if you remember,
+and because they have like two
+of the similar answer either unlabeled or labeled,
+it tells you that one of these two is correct,
+and then we have an option
+of choosing Textract, Recognition or Comprehend,
+and again, we just need to proceed by elimination,
+but Recognition is the correct service for this for sure.
+Okay, so what service can detect texts
+and handwriting from invoices
+that are stored in PNG formats?
+So this is Textract to detect text and handwriting.
+As you can see, this question
+is not even related to the case study.
+So be careful about this.
+Sometimes the question is enough on its own.
+Which solution will improve transcription accuracy
+for domain-specific speech?
+So we're talking about transcription.
+So it's going to be transcribed,
+and as you can see, we have two answers about Transcribe
+and the rest about Lex and Translate.
+So intuitively, these ones are not correct,
+and one of these two is going to be correct.
+Now, is it batch or is it custom language?
+And because we have a domain-specific speech,
+we need to have a custom language, and we're good to go.
+Now, what is a valid format
+for instruction-based fine tuning?
+So this is something you need to know.
+So this is a labeled data,
+and they have to be prompt-response text pairs,
+but all of this, of course, is seen in the course.
+So you have a high accuracy on data, training data,
+but low accuracy on testing data.
+So what is it between all of these?
+So again, you need to remember the definition,
+but this is overfitting.
+So now we have SageMaker for ML models,
+and we want to create a record of model information.
+So we have the uses, risk rating,
+trading details and evaluation results.
+So which SageMaker feature will help us?
+This is not role managers.
+This is for access control, model dashboards,
+to see all the dashboards, all the models.
+Model Monitor is to see the quality of models,
+and if you get alarms.
+So Model Cards, it is in that definition of it.
+So you can see, the exam is pretty straightforward.
+So now we want to access the performance of assess
+for a text generation foundation model.
+So which technique will help us?
+So here we're talking about a metric.
+So reinforcement learning
+and fine tuning are out of the question,
+but then we have F1 score and ROUGE,
+and so remember what we saw.
+F1 score is going to be used
+for binary classification models,
+and ROUGE is going to be used
+for looking at texts from a text generation purpose.
+So this question is not asking you
+about ROUGE versus BLEU versus VERT score.
+It's really asking you
+to find the difference between concepts
+that are very, very different.
+So this is why don't worry too much if you can't
+differentiate ROUGE versus BLEU versus VERT score.
+Okay, so we want to evaluate credit contracts adhere
+to compliance rules, and you want
+to reduce the human efforts,
+and we want to an open source of a foundation model.
+So open source is none of these three.
+So this is definitely JumpStart for sure.
+So here I used elimination.
+Now I want to generate personalized product descriptions,
+and how do we do it with the least operational efforts?
+So here we have a few-shot prompting with examples
+of well-written product descriptions, which I like.
+Zero shot with no examples,
+probably doesn't give us good personalized descriptions.
+Fine tuning is going to work if we have the description
+as fine tuning, but is it the least operational effort?
+No, because it requires us to create this dataset
+and send it to the model and so on,
+and then continue pre-training as well would work,
+but again, too much effort.
+So here, few-shot prompting
+as a prompt engineering technique
+with examples will do the work.
+Here we have.
+We're going to select two.
+So two is important keyword to look at,
+and so we want to increase the number
+of variables in the training datasets
+and modify the behavior of the algorithm.
+So it's asking you two questions.
+So to increase the number of variables,
+we need to do what's called feature engineering,
+and to modify the behavior of the algorithm,
+this is about the hyperparameter tuning.
+So be careful here
+because two questions, two answers, and that's it.
+100% correct, but, (chuckles) of course, I did it before,
+but really shows you that the course is up to date
+and hopefully you understand now how
+to possibly have a few tips
+and tricks to answer the exam questions.
+So I hope you liked it,
+and I will see you in the next lecture.

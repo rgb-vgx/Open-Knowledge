@@ -1,0 +1,39 @@
+# 165. VPC Overview
+# Section: VPC & Networking
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056240
+# Caption: en_US (manual)
+
+Welcome to the section on VPC.
+So VPC stands for virtual private cloud and this is going
+to be just a small crash course.
+VPC is quite complicated to be honest and this is something
+you should know in-depth if you are going for the AWS
+Certified Solutions Architect Associate certification
+or the AWS Certified SysOps Administrator
+Associate certification.
+At the AWS Certified Cloud Practitioner level
+there need to know about a few about a few concepts
+but at a high level and what they're used for.
+So this includes VPC, Subnets, Internet Gateways,
+and NAT Gateways, Security Groups, Network ALC or NACL,
+and VPC Flow Logs, VPC Peering and VPC Endpoints,
+Site to Site VPN and Direct Connect,
+and finally Transit Gateway.
+I'm going to give you an overview of all these things.
+This represents less than one or two questions
+at your CCP exam.
+And then we'll have a look at the default VPC
+created by default by AWS for you.
+This is going to be our hands-on.
+We're not going to create our VPC from scratch.
+At the end of this section there is a summary lecture
+to explain what each of these services lined up above do
+and what they are.
+And it's okay if you don't understand it all.
+Hopefully that summary lecture should do it for you.
+And don't worry, the exam is quite high-level on VPC
+so if you pay attention to this lecture
+and this section closely, you should be good to go.
+Okay, that's it.
+I hope you're excited and I will see you
+in the next lecture.

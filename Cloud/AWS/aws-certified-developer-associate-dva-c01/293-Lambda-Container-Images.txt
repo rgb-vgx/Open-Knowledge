@@ -1,0 +1,115 @@
+# 293. Lambda Container Images
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26101836
+# Caption: en_US (manual)
+
+So I told you that Lambda was supporting
+container images and this is a new feature.
+And this allows to deploy Lambda Function as a container
+of images up to 10 gigabytes from ECR
+which allows you to pack complex dependencies
+and large dependencies in a container.
+So Docker is very famous to allow you to help
+to put your application code, the dependencies,
+and the data sets it needs all together
+on top of a base image.
+And that base image must implement the Lambda Runtime API.
+So the idea is that to make it seemingly simple,
+Lambda runs a virtual machine, the container.
+And so you use the base image of that container,
+you add on your application code and your dependencies
+and you pack this as an image that Lambda can run
+because this base image implements the Lambda Runtime API.
+And this allows you to run your containers onto Lambda,
+but it's not any Docker container.
+The base image must implement the Lambda Runtime API.
+So these base images exist for multiple languages.
+For example, Python, Node.js, Java, .NET, Go and Ruby.
+But you can create your own Lambda base image
+as long as you implement the Lambda Runtime API.
+And for the specification of this,
+you can look in the documentation.
+It's quite complicated.
+Then this also allows you to test your containers locally
+using the Lambda Runtime Interface Emulator.
+And if you have your Lambda Functions as containers,
+this allows you to get a unified workflow
+to publish your apps.
+That means that no matter if it's a container for
+ECS or a container for Lambda,
+you can build and publish your containers
+the same way and send them into Amazon ECR,
+and then from Amazon ECR,
+deploy your containers onto Lambda.
+So what does a Lambda container image look like?
+Well, here's an example
+where we can build from the base images provided by AWS.
+Number one, we choose an image that implements
+the Lambda Runtime API,
+and this is from amazon/aws-lambda-nodejs version 12.
+Then we copy our application code and file.
+So we copy the app.js package.json file
+and all the data onto our container.
+Then we install the dependencies we need in the container.
+So we run npm install.
+And finally, we say which function to run
+when the Lambda Function is invoked.
+So we say command app.lambdaHandler.
+And that's all you need to do.
+This Docker image, because it is made from the base image
+of Lambda for Node.js 12
+will be able to be run on Lambda Functions.
+And so that's quite magical, but that's amazing
+because you don't need to worry too much
+about your dependencies,
+compiling it correctly and so on.
+As long as the Docker container is made correctly
+from the correct base image,
+it will be able to run on Lambda,
+which is a great alternative to, for example,
+compiling your own Lambda layers if you needed to.
+So let's look at best practices
+when using Lambda container images.
+So first, you can optimize your container images.
+The number one thing to do is to use the AWS
+provided base images, which is built on Amazon Linux 2.
+And the reason we want to use this is that
+these base images are already cached by the Lamba service,
+and so if you use them,
+then the Lambda service has to pull less information
+out of your containers.
+Also, you should use multi-stage builds.
+So the idea is that you can
+do whatever is the most complicated things
+to build your code in preliminary large images
+and then the output of your build
+is that you only copy the artifacts you need
+and you create a new final container image
+where you discard all the preliminary steps.
+Therefore, the final image is going to be much smaller
+and much more simple.
+You can also build your image in different layers
+and the layers are from stable to frequently changing.
+The idea is that the things that changes the most
+should be at the end of your build phase,
+and the things that changes less,
+such as for example
+installing base packages on your image
+should be as early as possible.
+And finally, you should use a single repository
+for functions with large layers.
+The idea is that if you have large layers
+and they're all in the same repo,
+then ECR will have more facility
+to compare these layers together
+and this will avoid you from uploading and storing
+duplicates of these layers.
+Finally, one of the best use cases
+for Lambda container images
+is if you want to upload a very large Lambda Function
+of up to 10 gigabytes.
+Then instead of having some code pushed to Lambda as is,
+you can create a very large container image
+and use that as the basis for your Lambda Function.
+Okay, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

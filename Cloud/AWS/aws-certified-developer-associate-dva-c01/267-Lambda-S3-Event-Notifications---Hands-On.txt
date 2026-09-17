@@ -1,0 +1,105 @@
+# 267. Lambda & S3 Event Notifications - Hands On
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26623368
+# Caption: en_US (manual)
+
+Okay so let's create a new function and this function is
+going to be called Lambda S3 because it will be
+invoked whenever an object is inserted into an S3 bucket.
+So for this I will choose python 3.8 as my runtime.
+And I will go ahead and create this function.
+On the side I'm going to go into the S3 service, and I will
+create a bucket that will invoke my Lambda function.
+So to do so I'm gonna go into S3
+And once you create a bucket and call it demo S3 event
+Stephane.
+and make sure I'm in the same region
+of my bucket as my Lambda functions
+So Ireland for both
+then I will just scroll down and click on create Buckets.
+Okay So I'm gonna go into my buckets, which has
+been created right now and on the properties Then
+I'm gonna go and scroll
+down and I want to find
+the event notification properties
+because we want this S3 bucket to invoke my Lambda function.
+So for this I'm going to create an event notification
+and it's called invoke Lambda
+And then for prefix we'll have it all
+Suffix we'll have it all
+And then for event types
+we'll choose all objects create events
+scroll down.
+And for destination we have the choice
+between Lambda SNS and SQS, but we'll choose Lambda
+and we'll choose it from the Lambda functions we available
+So Lambda S3.
+and we'll save the changes
+And now this is successfully completed.
+So this event notification is enabled to send data
+into Ireland function.
+So for this, we can just refresh this Lambda function
+page right here, and we can see now on the left hand side
+that S3 is invoking our Lambda function.
+So let's just modify our Lambda function
+to do a little bit more So instead of this
+I'm just going to print
+the events to see what is being sent
+into it on the function
+and deploy it.
+Okay, perfect.
+So one last thing.
+How does this S3 buckets Invoker on the function?
+Well, you should know by now, but if we go
+into configuration and then we look at the permissions
+which are right here
+and we scroll
+down and look at the resource based policy where
+we can see that there's a policy statements right here
+which says that Lambda S3 can invoke our functions.
+So If I click on this statement ID right here
+we have the policy, or I can click
+on view policy document to view the entire JSON
+which allows our S3 buckets demo as for events
+Stephane to invoke Ireland function, Lambda S3.
+Okay, perfect.
+So the last thing is
+that we need to test that this integration is working.
+So let's go into our S3 management console
+and we're going to upload a file into our buckets.
+So I'll add a file and I'll choose the coffee.jpeg file
+that have from before from the code, from the S3 folder.
+So I'm going to just upload this file
+and the upload has succeeded.
+so now what's going to happen is
+that this should trigger an event into my Lambda function
+and to see whether or not this has worked, then we go
+into monitor and we're going to click on view logs
+in CloudWatch
+to get directed directly into CloudWatch logs.
+And we can see one log stream right here
+and this corresponds
+to this invocation that was made by S3
+And so if we have a look here
+we can see that the event source is AWS S3.
+We can look at the region, we can look
+at the objects where it did put events, and who made it.
+And also we can have information around the bucket name
+which is demo S3 events Stephane and as well
+as the air into the bucket and for the objects for key
+we have coffee.jpeg we have the size and the E tag.
+And so all this information right here is enough
+for our Lambda function to do in the code
+and S3 that get object API code
+thanks to the events
+and then get the actual object that was uploaded
+into the S3 buckets and therefore do some processing on it.
+Okay.
+And that's it
+for another type of asynchronous invocation by now
+you've seen a lot of asynchronous notifications in Lambda
+but hopefully these make sense now
+and you've seen as well, how resource policy works.
+So that's it for this section.
+I hope you liked it.
+And I will see you in the next lecture.

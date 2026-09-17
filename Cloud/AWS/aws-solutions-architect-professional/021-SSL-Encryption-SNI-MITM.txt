@@ -1,0 +1,203 @@
+# 21. SSL Encryption, SNI & MITM
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376386
+# Caption: en_US (manual)
+
+So here is a lecture about how SSL works,
+and how to protect yourself against
+Man-in-the-Middle attacks.
+Please do not skip this lecture
+even if you know SSL.
+I will go over the basics but trust me,
+there'll be some new content for you.
+So, SSL refers to Secure Socket Layer,
+and it's used to encrypt connections.
+And TLS refers to Transport Layer Security,
+which is a newer version of that protocol.
+And nowadays, even though it's almost only TLS certificates,
+people still refer, including me, of it as SSL.
+So if you hear me say SSL,
+I meant TLS, and it's just everyone does that.
+So don't get mad at me.
+So public SSL certificates are issued
+by something called the Certificate Authority.
+And you have many public Certificate Authorities,
+such as Comodo, Symantec, GoDaddy, GlobalSign,
+Digicert, Letsencrypt, and so on.
+And when a certificate is issued to you,
+it has an expiration date that you will set,
+and then you must renew it
+before it expires to keep your service up and running.
+So, how does SSL encryption work?
+Well, you have a client and a server
+and they need to talk to one another using a secure channel.
+So they need to use SSL encryption.
+The thing is, using asymmetric encryption,
+which is the basis of SSL, is very, very expensive.
+And by expensive, we mean expensive in terms of CPU cycles.
+So the least expensive type
+of encryption is symmetric encryption, it's much cheaper.
+But SSL is only for asymmetric.
+So the idea is that during the asymmetric handshake,
+which is the first connection
+between the client and the server,
+they're going to use an exchange, a symmetric key
+that it will commonly share for this communication.
+And from that point forward,
+they will only use the symmetric key to talk to one another.
+So in this case, the asymmetric encryption of SSL
+is just used for the handshake,
+and then it's all symmetrical.
+So, how does that work in detail?
+The client says, hello, here is my cipher suits
+and here is a random thing.
+And the server responds, okay, here is my server random,
+and here is my SSL certificate.
+The client will verify the authenticity
+of the SSL certificate by looking
+up if it's correctly computed.
+And then if it is,
+it will send a master symmetric key that has been generated
+and sent, and they will be encrypted using
+the key that it has received.
+And the idea here is that,
+this secret will be able to be retrieved
+by the server and decrypted.
+And in case the client also has an SSL certificate,
+it will send it at this moment.
+So it's possible to have a two-way certificate
+where the client will find it gets to the server,
+and the server to the client.
+And then using the master key of the server,
+the private, using the private key,
+the master symmetric generated key
+by the client will be decrypted.
+And we will have a secure connection.
+That is going to be symmetrical this time,
+in place between the client and the server.
+You don't need to know all these details.
+The exam will not test you on this, but I want to
+make sure you understand how these handshake works,
+at least at a high level.
+So you get an idea of how SSL works, just for your knowledge
+because I think as a Solution Architect Professional,
+if you don't know how SSL works,
+that's a bit worrying, okay?
+But the exam will not test you
+on this exact, this exact knowledge.
+Definitely not, but, something it may test you on is,
+SSL, SNI, for Server Name Indication.
+So the idea is that SNI, will solve the problem
+of loading multiple SSL certificates
+onto one web server only.
+And that will allow you to serve multiple websites
+from that one web server.
+It's a newer kind of protocol.
+And so it requires the clients to indicate which
+host name it's trying to connect to,
+during this initial SSL handshake that we solved.
+And then the server will find the correct certificate,
+or it will return a default one if it doesn't find one.
+And so this works for the ALB and the NLB,
+which are the newer generation load balancers,
+and CloudFront.
+It does not work for your Classic Load Balancer,
+which is older gen.
+Very important to note.
+So we have our ALB,
+and it needs to be connected to two target group,
+which are connected to different host names.
+The first one is www.mycorp.com.
+And the second one is Domain1.example.com.
+So we're going to load two SSL certificates onto our ALB,
+but it could be more.
+And so one SSL certificate
+will correspond to the first target group,
+and the other one to the second target group.
+The idea now is that,
+a client who has SNI compatibility says, hey,
+I would like to connect to www.mycorp.com.
+And the ALB, because it has SNI enabled,
+will use the SSL, the correct SSL certificate,
+and then it will redirect it to the correct target group.
+And we'll have an encrypted connection.
+But in case we ask for obviously another domain,
+then the ALB will be smart enough to get the other
+SSL certificate and connect to the right target group.
+So SNI is extremely important.
+As soon as you have multiple SSL certificates.
+If you have a CLB, it doesn't work.
+So Classic Load Balancer, and it doesn't work with SNI.
+Then we cannot use one CLB behind multiple applications.
+You would need to have multiple CLB for multiple target,
+for multiple ASG, in order to get this architecture working.
+Okay.
+And next, extremely important, how to protect yourself
+against SSL Man-in-the-Middle attacks.
+So, how does it look like?
+We have the Good Server we're trying to reach,
+and our user is trying to talk to it,
+but there's a Pirate Server in between.
+And because it's HTTP, right now,
+it can intercept the packets and change them at will.
+And so it's in the middle
+and it can see the secrets and so on.
+It's really, really bad.
+So this is never happening
+on the web because there's almost no more HTTP available.
+But if you do have HTTP on the web,
+be very careful because you are public,
+you can be a target of Man-in-the-Middle attacks.
+So now the good way is to use HTTPS.
+So we have the same kind of architecture,
+but this time the Pirate Server will try to
+send a fake SSL certificate to the user.
+By decrypting the packets from the Good Server,
+and re encrypting them, and maybe changing them.
+And so if the user is not infected, it's going to detect
+it's a fake SSL certificate,
+and not react to it and just say, okay,
+I'm not communicating with that Pirate Server.
+But in case the Pirate Server did manage to get
+onto the user's machine,
+and make the pirate certificate trustable by the user.
+Then the user will say, oh,
+this looks like, it's a certificate I trust.
+And the Pirate Server has successfully done a
+Man-in-the-Middle attack.
+So how do we prevent a Man-in-the-Middle attack?
+Number one is,
+do not use public-facing HTTP servers, use HTTPS.
+That means that you leverage SSL and TLS certificates.
+And that means that the content is encrypted
+between your clients and your servers.
+That doesn't prevent the second vector of attack which is,
+to have a DNS attack.
+So if you're using a DNS, that has DNSSEC enabled,
+that means that, the DNS is going to be protected
+against the type of attacks as well.
+Why?
+Well, when a DNS server is hacked,
+or is possible for a pirate server to forge a DNS response,
+and to send your clients to the wrong target server.
+But you can protect against that
+by having your domain name configured with DNSSEC.
+So Amazon Route 53 supports DNSSEC for domain registration.
+And, as of December 2020,
+it also supports DNS security, DNSSEC,
+for DNS service itself using KMS.
+So both domain registration, and the DNS service,
+are now DNSSEC compliant on Route 53.
+You could alternatively run a custom DNS server on EC2,
+for example.
+One of them could be Bind, which is the most popular,
+but you have other ones which is dnsmasq,
+KnotDNS, or PowerDNS.
+And configure DNSSEC directly
+on your custom institute instance.
+But right now, there's a change,
+and Amazon Route 53 supports DNSSEC out of the box,
+as of December 2020, that used to not be the case.
+All right, that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

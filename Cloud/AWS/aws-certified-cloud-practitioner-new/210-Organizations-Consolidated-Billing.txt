@@ -1,0 +1,81 @@
+# 210. Organizations Consolidated Billing
+# Section: Account Management, Billing & Support
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/29102368
+# Caption: en_US (manual)
+
+So, let's talk about Consolidated Billing
+for AWS Organization.
+So, when you enable this setting,
+this provides you two things.
+Number one, and I'll describe it in a second.
+It gives you the combined usage,
+that means that you can combine all the usage
+of all accounts together to do two things.
+Number one, you're going to share the volume pricing.
+For example, in Amazon history,
+if you go over maybe five terabytes of data,
+then the next service is going to be cheaper.
+Well, obviously if you combine
+all your accounts together,
+if every account is using one terabyte of data
+and you have six accounts,
+then altogether they will be benefiting
+from the discount pricing.
+So, the combined usage is very important,
+and also,
+there are some Reserved Instances
+or Savings Plan discounts on one account.
+They can be shared across all accounts
+again to maximize the discounts
+and the savings,
+and I will show you how in a second.
+The other advantage that it gives you,
+One Bill.
+So, get one bill for all the accounts
+in the organization,
+which really can help
+your accounting departments
+and allow you not to be restricted
+in how many accounts you can create for AWS.
+So, let's take an example of
+Reserved Instance Sharing.
+So we have an organization with two accounts
+and in the first one, account A,
+there is no Reserved Instances,
+and account B,
+there are five reserved EC2 instances.
+Now, let's assume that we are within one AZ
+because Reserve Instances are at the AZ level
+and we have nine EC2 instances.
+As you can see,
+three are launched in account B,
+and six are launched in account A.
+Now, what is going to happen?
+Well,
+if we have five EC2 Reserved Instances on account B,
+then the three EC2 instances
+obviously are going to be reserved,
+but because we have enabled Reserved Instances sharing,
+then two instances in account A
+will also benefit from Reserved Instances pricing
+and therefore rebuking cost savings.
+So, at the end of the day,
+we have five Reserved Instances
+and four not Reserved Instances in this use case
+even though Susan in account B
+only launched three EC2 instances
+out of the five that were reserved.
+Okay?
+So, you really need to understand this
+because the exam will test you on the shared volume pricing,
+so shared volume discounts
+and how to share and what it means
+to share Reserved Instances,
+and finally, the Reserved Instances discount sharing
+can be turned off for any accounts in the organization,
+including the management accounts,
+the main accounts of your organization.
+Okay.
+That's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

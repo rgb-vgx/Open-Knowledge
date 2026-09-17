@@ -1,0 +1,55 @@
+# 144. Leveraging the AWS Global Infrastructure Summary
+# Section: Leveraging the AWS Global Infrastructure
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20260650
+# Caption: en_US (manual)
+
+Okay.
+So let's summarize what we've learned regarding
+Global Applications in AWS.
+First, we've seen the global DNS Route 53,
+and this is a great way for you to route users,
+to the closer to deployment with the least latency
+and is going to be very helpful as well
+when we define disaster recovery strategies.
+So we showed how to create records
+and how to have them point from
+host name to IP for example.
+We've seen a global content delivery network,
+CDN CloudFront,
+and we've actually hooked it up to Amazon S3.
+So the idea is that we were able to replicate
+part of our application data into some AWS Edge Locations
+and this allowed us to decrease latency.
+And on top of it,
+we were able to cache the common request in CloudFront,
+which gives us improve user experience
+and decreased latency.
+Next, we have the S3 transfer acceleration
+that actually is going to allow us to accelerate
+global uploads and downloads into Amazon S3
+and also leverages the Edge Locations of AWS.
+Google Accelerator, yet again,
+leverages these Edge Locations, the global network,
+and this gives us an improved global application
+availability and performance.
+Next we've seen Outposts.
+So this is more of how to extend our whole infrastructure.
+So Outposts allow us to deploy these Outposts Racks
+into our own data center to extend some AWS services.
+So here we have the Cloud of AWS within our data center
+on premises.
+We have WaveLength and this is to bring in
+services to the Edge thanks to the 5G networks
+and give us ultra low latency application.
+And finally, Local Zones.
+Local Zones are allowing us to bring resources of AWS
+to just compute database storage closer to your users,
+for example, in Boston, Dallas, Miami, Chicago, and so on.
+And this is going to be really, really good
+when you have a latency sensitive application
+that needs to have a very, very fast local access
+in a specific region of the United States or the World.
+But for now just the US.
+Okay, so that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

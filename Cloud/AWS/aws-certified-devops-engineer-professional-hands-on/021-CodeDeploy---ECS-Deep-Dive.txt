@@ -1,0 +1,135 @@
+# 21. CodeDeploy - ECS Deep Dive
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858454
+# Caption: en_US (manual)
+
+So now let's do a deeper dive
+into how CodeDeploy works with the ECS platform.
+So with the ECS platform,
+we can automatically handle the deployment
+of a new ECS task definition into an ECS service.
+So this only supports blue/green
+and your service must be connected to a load balancer.
+So for CodeDeploy to work, in this case,
+the ECS task definition
+and the new container images
+that you associate with this new task definition
+must be already created.
+So you as a developer, have the responsibility, for example,
+to push a new container image into ECR.
+Then you will create a new ECS task definition revision.
+And this revision must reference
+the new image you have created in ECR.
+So then you're good.
+And then you create a appspec.yml file
+that is going to reference this new ECS task definition
+you have created from before.
+And also specify some load balancer information if need be.
+So this appspec.yml file that you've created
+must be placed into an S3 bucket
+and from there, we can invoke CodeDeploy.
+We reference which appspec.yml file we want to run,
+so CodeDeploy will know how to run it.
+It will know which ECS task definition to deploy
+and then it will deploy a new set of ECS tasks
+onto your ECS cluster.
+And when done, it will delete the old ECS tasks.
+So in this instance, as you can see,
+the CodeDeploy agent is not required
+because everything is handled
+by the ECS service and CodeDeploy.
+So what you need to remember out of this
+is that the appspec.yml is your responsibility to create
+and it references a new ECS task definition revision
+that you must also create yourself.
+So if you wanted to automate everything
+from the pushing code to deploying on the ECS cluster,
+of course, we could use a deployment pipeline.
+So we'll use CodePipeline,
+will which have a code repository in CodeCommit.
+Then we'll have a CodeBuild step
+and CodeBuild will do three things.
+Number one, it will build a Docker image
+and this Docker image will be pushed into ECR.
+Then it will create and register
+a new ECS task definition revision on the ECS service.
+And finally, it will create an appspec.yml file,
+and this appspec.yml file is going to reference
+the new ECS task definition.
+So this is what a simple appspec.yml file looks like.
+As you can see under properties, there is task definition
+where we have the ARN of the new ECS task definition
+has been created as well as load balancer info
+such as the container name and the container port.
+Then when all of this is done,
+we can have the CodeDeploy step
+in which we reference as an input artifact the appspec.yml,
+and then CodeDeploy will know how to deploy
+and shift the traffic from our ECS cluster
+to register a new ECS tasks and delete the old ones.
+So in this case, we have still the responsibility
+to create all the task definitions and so on,
+but all of this is automated thanks to CodePipeline.
+Now let's see how fast we deploy from v1 to v2.
+So the load balancer has the responsibility
+to redirect traffic from the two target groups,
+but we have different strategies.
+We have canary, linear, or all at once.
+So for the ECS Linear strategy, we have for example,
+10% every one minute or 10% every three minutes.
+That means that over time,
+every one minute there will be 10 more percent added
+onto the new target group
+and removed from the old target group.
+We have the canary strategy,
+for example, ECS Canary, 10%, 5 or 15 minutes
+in which we are going to send 10% of the traffic
+for 15 minutes to the new target group.
+And if everything goes well,
+we shift all the remaining traffic after this
+to the new target group.
+And then we have ECS All At Once
+to just shift all at once from the v1
+to the v2 target group.
+There is also for you the possibility to define
+a second listener on your load balancer
+called the Test Listener
+that is going to just send some test traffic
+to your new target group
+before the main production listener
+is redirecting all the traffic.
+So we'll see this in a second with the deployment hooks.
+So the hooks this time on ECS, they cannot be scripts,
+they are Lambda function
+and they're executed once per deployments.
+So we have the before install hook,
+then we have install and install is basically
+the ECS service creating the new ECS task,
+thanks to the new ECS task definition.
+And then we have the after install.
+So for example here, we can run a Lambda function
+called ValidateAfterInstall.
+So we're going to invoke a specific Lambda function
+that is going to make sure, for example,
+that our new task group is working as expected.
+Then we have the test traffic.
+So if we've defined a test listener,
+then we can send some test traffic to this new target group.
+And then we can verify with a new hook
+with a new Lambda function that, for example,
+everything is working on these ECS tasks.
+For example, we can run a Lambda function
+to make sure that the new instances did indeed
+correctly handle the test traffic.
+So this could be health checks.
+Then we have the before allow traffic.
+So this is before we allow traffic,
+the whole production traffic to be shifted.
+Then we have the allow traffic where
+the production traffic is shifted.
+And finally, once everything is shifted,
+we can run another Lambda function called AfterAllowTraffic,
+where we can observe if the new ECS task
+is actually handling the traffic really well.
+So that's it for ECS deployments, I hope you liked it
+and I will see you in the next lecture.

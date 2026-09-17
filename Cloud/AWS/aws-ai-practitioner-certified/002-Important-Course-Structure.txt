@@ -1,0 +1,99 @@
+# 2. Important: Course Structure
+# Section: Artificial Intelligence & Course Introduction
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44879475
+# Caption: en_US (manual)
+
+Hello, and welcome
+to the AWS Certified AI Practitioner course.
+My name is Stephane Maarek,
+and I will be your instructor for this course.
+So I just need about five minutes of attention
+just to make sure we are on the same page,
+and then we will get started with this course.
+So we are going to prepare for a certification from AWS
+called the AWS Certified AI Practitioner.
+And the exam code is a AIF-C01.
+So this is an AI-focused certification.
+It's less focused on the AWS Cloud itself.
+So if you're looking for a course
+on the AWS Cloud itself,
+this is not the one.
+You may want to do Certified Cloud Practitioner
+or Certified Solutions Architect Associate.
+In this course, having basic IT knowledge
+is going to be very helpful.
+We are going to cover over 20 AWS AI services.
+And if you're a beginner on AWS and IT,
+you are welcome,
+but take your time, it's not a race,
+and you may have to look up a few things.
+I'll do my best to explain everything,
+but sometimes that basic, basic knowledge I don't offer.
+So this course is about learning by doing.
+That means that you're going to have both theory lectures
+and hands-on.
+And I try to have as many diagrams as possible
+and visuals to help you learn.
+So I want to make sure that you exactly understand
+what this course is and isn't.
+So this is not a course on how to use ChatGPT.
+This is not a course on how to use other AI tools,
+such as how to create images
+or how to generate music.
+And this is not a course
+on all the AI tools that exist out there.
+This is also not a course on how to use
+the AWS Cloud properly.
+For this, I really invite you
+to look at the AWS Certified Cloud Practitioner course
+or the AWS Certified Solutions Architect Associate course.
+So what this course is though
+is that it's intended for IT professionals
+who want to learn about AI
+and to do a deep dive
+on all the AI services
+that are offered by AWS.
+So the goal of this course
+is really to help you pass
+what I call a technical certification
+that is administered by AWS.
+So hopefully we are on the same page
+and you are in the right place.
+If you feel that this is not the course
+you were looking for,
+no worries, just ask for a refund
+on the Udemy user interface
+and you'll be good to go.
+So about me, well, I'm Stephane,
+and I have over 11 AWS certifications.
+I've worked with AWS for many, many years.
+I've built websites, apps,
+streaming platforms,
+and I've been teaching AWS
+for now over seven or eight years.
+So that includes certifications
+or specified services,
+such as CloudFormation, Lambda and EC2.
+I've taught millions of students
+and almost got a million reviews.
+So you should be in good hands.
+You can connect with me on LinkedIn
+where you can follow me,
+on Instagram as well, Medium,
+Twitter and GitHub.
+So you are getting an AWS Certification
+and there are different levels to it,
+so we are on the foundational level,
+and so we have the Cloud Practitioner Foundational
+and we have the AI Practitioner Foundational level.
+This is what we're doing right now.
+You also have Associate level,
+they are more advanced type of certifications.
+Then you have Professional,
+they're even more advanced.
+And Specialty, where you specialize in a specific area.
+Right now we are at the Foundational level,
+which is the start,
+and you get a really good overview
+about the AWS Cloud,
+as well as the AI services on AWS.

@@ -1,0 +1,47 @@
+# 228. Security Token Service (STS) Overview
+# Section: Advanced Identity
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/26623546
+# Caption: en_US (manual)
+
+So there is a service we've been using
+behind the scenes without really knowing it.
+And it's at the center of AWS.
+It's called AWS STS for security token service.
+This enables you
+to create temporary, limited privileges credentials
+to access your AWS resources.
+That means that you get short-term credentials,
+just like your access key and your secret access key,
+but you can configure your expiration period.
+So the user, for example, has access to a role
+and then wants to leverage that role.
+So what it's going to do is that it's going
+to assume the role using an STS API call.
+It will talk to the STS service,
+and the result of this API call will be STS sending us back
+some temporary security credentials,
+and they look just like an access key, security key
+as well as a session key,
+which is going to be limited in time.
+And using these three credentials,
+we're going to access our AWS resources
+and using the (mumbles) role we just assumed.
+So the idea is that the use cases can be multiple.
+Number one they would be identity federation.
+For example, to manage their identities in external systems
+and provide them with STS tokens to access AWS resources
+or for IAM roles, access for cross or same account access,
+which is the exact example I showed you
+on the right hand side.
+Or finally, when we used it behind the scenes
+in the course is that when we provide an IAM role
+to our EC2 instances.
+Behind the scene there's a script
+that actually refreshes the EC2 credentials,
+using the security token service in the backhand.
+So that's it.
+Anytime from an example perspective that you see,
+you need to create temporary, limited privileges credentials
+to AWS (mumbles) STS.
+That's it.
+I will see you in the next lecture.

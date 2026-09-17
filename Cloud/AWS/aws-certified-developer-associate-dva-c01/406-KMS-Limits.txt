@@ -1,0 +1,75 @@
+# 406. KMS Limits
+# Section: AWS Security & Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM & STS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19732262
+# Caption: en_US (manual)
+
+So, KMS is an inner service
+and therefore there are some request quotas.
+But KMS is extremely important.
+So in case you will exceed a request quota of KMS
+for encryption or decryption, for example,
+you will get a ThrottlingException.
+That will look something like this.
+It will say, "Status Code: 400; Error Code:
+ThrottlingException;" you are exceeding the right
+at which you can call KMS.
+So to respond to such and exception,
+we already know this,
+we can use exponential backoff,
+which means you can backoff and retry with an
+exponential time in between each calls.
+But KMS has something very specific to it.
+Each cryptographic operation,
+so all of them decrypt and crypt and so on,
+they all share a quota.
+That means that any service that makes request
+on our behalf, for example,
+AWS S3 that uses SSE-KMS data encryption.
+Every time AWS will use that key for us,
+then it will be part of that quota.
+So we share a quota across our account for each
+region across all cryptographic operations.
+So that means that if we use our key too much,
+then we will get a ThrottlingException.
+So what can we do to solve it?
+Well, number one, if we're using the GenerateDataKey
+API then we can use DEK cachings.
+So cache the data encryption key locally
+so that we reduce the number of API calls done
+onto AWS and that is a feature
+of the encryption ID kit itself.
+The other thing we can do is to generate a request quota
+increase in case we are indeed going over that limit
+way too many times.
+And so, for this, we can request a quota increase through
+either an API call or by opening a ticket
+with the AWS support.
+So what you want to remember here,
+is that there's two ways to go with that quota.
+So as I said, all these operations will share
+the same quota so should you decrypt, encrypt,
+GenerateDataKey, GenerateRandom, etc., etc.
+All these things are called cryptographic operations
+and they share the same quota.
+So depends on the region you're in to know
+what the quota value is.
+But so for the symmetric CMK quota
+you have 5,500 shared but in some regions you have
+up to 10,000, so shared across all this API called.
+And in other regions you have 30,000 per second,
+again, across all these API calls.
+So if you somehow reach that limit,
+then you need to make a service limit increase
+to increase that shared quota
+for all the cryptographic operations.
+So that's it.
+So the three ways to deal with a KMS Throttling
+is number one, exponential backoff
+that is, if it's transient.
+Number two, to reduce the API calls into KMS is to use
+the envelope encryption SDK on top of
+the data encryption key caching feature.
+And finally, number three,
+is to simply request a limit increase from AWS.
+So that's it.
+I will see you in the next lecture.

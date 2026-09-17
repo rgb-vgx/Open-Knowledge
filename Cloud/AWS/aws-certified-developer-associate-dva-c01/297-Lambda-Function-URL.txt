@@ -1,0 +1,102 @@
+# 297. Lambda Function URL
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527778
+# Caption: en_US (manual)
+
+So now let's talk about Lambda function URL.
+What if you wanted to just expose your Lambda function
+as an HTTP endpoint without having to go through the hassle
+of using API Gateway or an application balancer?
+Well, you can use function URL,
+and this gives you a unique URL endpoint
+that will never change
+for your Lambda function, which looks like this.
+And it supports IPv4 and IPv6.
+So your Lambda function,
+once you publish it as a function URL,
+you will be able to access it and perform HTTPS requests
+to it using web browser, using the command line,
+using Postman or really any HTTP clients.
+Now, this function URL can only be accessed
+through the public internet only.
+If you're trying to access it privately
+and want a private URL, this is not going to work.
+Now, in case you are accessing this function URL
+from a different domain,
+you can use CORS configuration as we'll see.
+And for security,
+we have resource-based policies to manage access
+to our Lambda function URL.
+This can be applied to any function alias
+or to your latest version of your function
+but you cannot apply it to specific function versions.
+You can create and configure it using the console
+or the API.
+And if you need throttling
+because you want your Lambda function
+to only run up to a specific amount,
+you can use the reserved concurrency feature of Lambda
+to control how much a Lambda function can run.
+Now, for the URL security, how does it work?
+Well, we have resource-based policies
+and this gets attached to your Lambda function
+and this is going to be able to say which other accounts
+or specific IP ranges for CIDR or IAM principals
+can access our Lambda function URL.
+And for CORS,
+this is similar to what we've seen in Amazon S3.
+So if you call your Lambda function URL
+from a different domain,
+then you must have CORS security in place.
+So in this example, our S3 bucket is fronted by CloudFront
+to which we have a custom URL as example.com.
+But the API is hosted as a Lambda function URL,
+which is api.example.com.
+Because the domains are different,
+you need to set the CORS setting
+on your Lambda function URL to make things work.
+Now, for security.
+So if you set AuthType NONE, then this allows public
+and unauthenticated access to your Lambda function,
+which is cool.
+And then the resource-based policy is what's going
+to determine there are not a request is going to be allowed
+on your function.
+And so you must grant public access as the resource policy.
+So here what I have is allow principal star
+for InvokeFunctionUrl, and then this allows people to go
+through the internet and access our Lambda function
+as a Lambda function URL.
+If you set AuthType to be AWS_IAM,
+then IAM is going to be used
+to authenticate and authorize request
+to your Lambda function.
+And so both the principal identity-based policy
+and the resource-based policies are going to be evaluated.
+And so you need to make sure
+that between these two things,
+there is a lambda:InvokeFunctionUrl permission.
+Now, if we are within the same account,
+then if the identity-based policy
+or the resource-based policy allows this API call
+and you're good to go.
+This is very similar to S3 buckets.
+But if you're doing cross accounts,
+you need have both the identity policy
+and the resource-based policy as allow.
+So here in this example, on account A,
+I've attached a resource-based policy,
+and if you look at the principal part of it,
+this actually authorizes the role
+in account B to access my Lambda function
+but that's not enough
+because we are in a cross account setting.
+The IAM role of account B
+must also have an identity-based policy
+that allows to invoke the Lambda function URL
+of the other accounts.
+When these things are both in place, then security works
+and the IAM role can use the Lambda function URL
+of account A.
+Okay, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

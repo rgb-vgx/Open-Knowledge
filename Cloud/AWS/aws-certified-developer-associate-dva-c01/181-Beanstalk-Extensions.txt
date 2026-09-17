@@ -1,0 +1,97 @@
+# 181. Beanstalk Extensions
+# Section: AWS Elastic Beanstalk
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19729922
+# Caption: en_US (manual)
+
+Okay, so now let's talk about
+Elastic Beanstalk Extensions.
+So, when we create a zip file
+it contains your code that must be deployed
+to Elastic Beanstalk, but we can also add EB extensions.
+So, all the parameters that we set in the UI
+can also be configured with code, using files,
+and these are the EB extensions.
+So, the requirements that all these configuration files
+must be in the .ebextensions/ directory
+in the root of your source code.
+Okay, so it has to be in a directory called .ebextensions/.
+It must be in the YAML or JSON formats.
+And even though it is in YAML or JSON format,
+the extension of that file must end with .config.
+For example, logging.config, okay?
+It has to end with .config.
+You are able to modify some defaults
+using the options_settings document,
+and we'll see this in a second.
+And you have the ability to add resources
+using the EB extensions, such as RDS, ElastiCache, DynamoDB
+and all the other things that you cannot necessarily set
+through the Elastic Beanstalk console.
+So, by the way,
+anything that is managed by the EB extensions
+gets deleted if the environment goes away.
+So that means that if you create, for example,
+an ElastiCache as part of your Elastic Beanstalk environment
+and then you delete your Elastic Beanstalk environment,
+then your ElastiCache will go away as well.
+So, let's go in the hands-on
+to see how we can play with these EB extension files.
+Okay, so here I am in my code directory.
+And so, I've created a nodejs-v3-ebextensions directory,
+and within it I created a .ebextensions directory,
+and placed an environment-variables.config.
+So, as we can see, this file ends with a .config,
+and is placed within the .ebextensions directory.
+And you have to do these two things for it to work.
+Then the language, I can set it to YAML,
+to show you some proper formatting.
+So, even though it's a .config file
+we can have a YMAL formatting.
+And so, what did I say?
+This is all the stuff I already told you.
+And so here we set option_settings,
+and I have the documentation reference
+for this option settings.
+So, here we set
+the AWS Elastic Beanstalk application environment variables,
+and here we can define the environment variables.
+We can have the DB_URL to be equal to this URL,
+and the DB_USER to have, for example, the value of username.
+So, here it's just an example.
+We're not using these in our application,
+but if we wanted to connect, for example,
+to an external RDS database,
+maybe a Postgres RDS database,
+then we will need to set up environment variables,
+and we will set up this way, with an ebextension,
+and we'll define the value of these right here.
+So, this is good.
+So, what I've done is that I've already zipped this
+into the nodejs-V3-ebextensions.zip file.
+So, let's go into our dev environment,
+because this is going to be faster
+to perform an update there.
+We're going to upload and deploy,
+and this time I will choose my nodejs-V3-ebextension
+and the version it was going to be,
+MyApplication-EBExtensionsDemo,
+and click on Deploy.
+And so, this new version is going to be deployed
+directly to my single EC2 instance,
+which should be rather quick,
+but I'm going to pause the video until this is done.
+So, my environment update is now done.
+And let's verify
+that the EBextensions file have been applied.
+For this, let's go into Configuration, you scroll down,
+and then here under Environment properties,
+we can find the DB_URL and DB_USER
+that have been set directly, not from me in the console,
+but from the files deployed
+as part of this application version.
+So, we can really start to see the power of the EB files,
+the EB config files of the EB extensions.
+So, I hope that makes sense for you,
+and we just crashed the surface,
+but that's enough for the exam.
+I hope you liked it, and I will see you in the next lecture.

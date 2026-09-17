@@ -1,0 +1,45 @@
+# 174. Amazon MSK - Connect
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305654
+# Caption: en_US (auto)
+
+Narrator: So here is a feature
+about MSK called MSK Connect.
+The idea is that in the Kafka world,
+you have something called Kafka Connect,
+and Kafka Connect is a framework to take data from Kafka
+and put it somewhere else,
+or (indistinct) to take data from somewhere else
+and put it in Kafka.
+And when you use a Kafka Connect framework in MSK,
+what you can do is to use MSK Connect, which is going
+to give you a managed Kafka Connect workers on AWS
+with auto-scaling capabilities.
+That means that you can deploy the infrastructure
+of Kafka Connect on MSK Connect,
+and then you can deploy any Kafka Connect connector
+to the MSK Connect as a plugin.
+And so these plugins can be, for example,
+sending data into Amazon S3, Amazon Redshift,
+Amazon OpenSearch, Debezium, and so on.
+And so here's an example.
+You have the MSK cluster up and running.
+Then you're going
+to create your MSK Connect workers,
+thanks to the MSK Connect service,
+and you will deploy the plugin,
+being the Amazon S3 Kafka connector.
+And then the Connect workers are going
+to pull the topic data from your MSK cluster,
+and then the data will be written to Amazon S3 as a result.
+And we haven't managed any infrastructure.
+It's all done by MSK Connect
+and it is just configuration on our end.
+So there's a pricing.
+Here's an example.
+You pay 11 cents per worker per hour.
+And of course, the more data you have,
+the more workers you're going to need.
+So that's it for MSK Connect.
+Just introduction in case you see it in the exam.
+I hope you liked it and I will see you in the next lecture.

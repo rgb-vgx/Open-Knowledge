@@ -1,0 +1,92 @@
+# 124. K-Means Clustering in SageMaker
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285551
+# Caption: en_US (auto)
+
+Up next, K means another very common machine learning algorithm out there, and SageMaker provides
+it as well.
+And again, they take it to the next level.
+So what's K means all about.
+Well it's an unsupervised clustering technique.
+It's important to remember that KNN typically.
+And it's important to remember that KNN was technically a supervised technique where we're learning
+from the labels of the training data there and getting the nearest neighbors from those labels, right.
+K means, however, is unsupervised.
+So basically it's just going to take a look at your data and try to divide it up into ways that make
+sense in the feature space.
+The way it works is it divides your data into k groups.
+That's where the k and k means comes from, where each member of a group is as similar as possible to
+each other.
+So it's trying to find, you know, where these clusters are centered in your feature space and how
+to divide those clusters up.
+So it's up to you to define what similar means.
+How do I actually measure how similar two points are to each other?
+Often that's just a Euclidean distance in the space of normalized features.
+But you can make it whatever you want Really.
+So what SageMaker brings to the table is web scale.
+K means clustering.
+Doing this at large scale can be challenging because we have to look at every single data point in there
+and figure it out.
+So SageMaker brings to the table a way of doing this at very large scale.
+The training input.
+You need a training channel obviously to actually, you know, analyze your data.
+But since it is unsupervised the test channel is optional.
+That's only going to be used for measuring your results against some test data set that you might have.
+Now, when you do training and testing in SageMaker, you can specify how it's interoperating with S3.
+So for training you want to be using the sharded by S3 key flag when you're actually doing the training.
+And while you're testing you would want to use fully replicated.
+So this is just saying I'm actually going to copy all of my data from S3 to every single training node
+or not.
+In the case of training in this case, you don't want to copy everything over.
+If you want to scale better, you want to shard that data by the S3 key.
+So if you're going to be using multiple machines for training, that allows it to be a lot more efficient.
+The format itself can be either record I, o protobuf or CSV, and you can use file and pipe mode in
+either case.
+So how does K-means work under the hood?
+Well, we start off just like we would with regular K-means.
+We map every observation to n dimensional space, where n is the number of features.
+So you can picture this multi-dimensional space where every dimension is a feature.
+And we're basically measuring how similar observations are based on their distance in that dimensional
+space.
+The job of K-means is just to optimize the center of where those k clusters are, and we actually can
+specify in SageMaker extra cluster centers, which will further improve the accuracy.
+So the actual number of clusters that we want to end up with is little k.
+Here.
+The actual number of clusters that we end up working with big k is k times x, where k is the number
+of clusters we want to end up with.
+X is the extra cluster centers term.
+And we're actually going to be working with big K here, which is a larger set of clusters initially
+that we reduce down to the number that we want when we're done.
+So that's one little twist that SageMaker puts on things.
+It's actually using more clusters at the beginning of the process, and trying to consolidate that down
+to the number of clusters you want over time.
+Another extension that it has in the actual algorithm is the process of determining the initial cluster
+centers.
+So standard k means would just have you pick those initial cluster centers at random.
+But that can result in your clusters being too close together potentially.
+So to avoid that problem it's using something called k means++.
+In all k Means++ does is try to make those initial cluster centers as far apart as possible.
+So that makes the training work a little bit better.
+So we iterate over that training data, trying to calculate better and better cluster centers at each
+pass.
+At the same time, we're trying to reduce the clusters from big K, which takes those extra cluster
+centers into account down to little K, which is the actual number that we want to end up with for the
+number of clusters.
+If we're using k means++, it's specifically using something called Lloyd's method to do that reduction
+Important hyperparameters obviously k.
+Choosing the right value of k is tricky.
+Um.
+Often people use what's called the elbow method.
+So you plot the within cluster sum of squares as a function of k, and just try to find the point where
+larger values of k aren't really producing any benefit and go with that.
+You want to optimize for how tight your clusters are.
+That's what within cluster sum of squares is measuring.
+Also, you want to look at the mini batch size extra centre factor.
+That's that x parameter and the init method which will be the random or K-means plus plus as ways of
+tuning your k means model in SageMaker.
+For instance types.
+They do recommend CPUs for training here, although you can use a GPU instance if you want to.
+If you do use a GPU instance, remember only one GPU per instance may be used, so they recommend using
+a ML G418 Xlarge.
+In particular, if you want to use GPU acceleration for training for training or inference.
+They also support P-2s, P-3s, G4 and G4 instance types.

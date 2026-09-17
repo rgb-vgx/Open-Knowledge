@@ -1,0 +1,74 @@
+# 138. S3 Transfer Acceleration
+# Section: Leveraging the AWS Global Infrastructure
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056132
+# Caption: en_US (manual)
+
+So as we know S3 Buckets
+are linked to only one region
+and so sometimes you are looking
+to transfer files from all around the world
+into one specific S3 buckets.
+And there is a way to speed up the transfer
+using S3 transfer acceleration.
+The way it works is that
+your file is for example
+being uploaded from the United States
+into this war bucket in Australia.
+And so what we'll do is that
+we'll upload the file into a edge location
+that is going to be very close to a user in the USA
+and then using the internal network.
+The education will transfer the file
+to the S3 Buckets in Australia
+in a more reliable and fast connection.
+So this is the basics of how S3 transfer acceleration works.
+And this is only used when you want to upload
+or download a file from this bucket.
+That is far away from you.
+The cool thing is that
+we can test the tool and see how effective it is for us.
+Using this URL so let's have a go.
+So I am on the URL address.
+I had in the slide
+and as we can see it is going to run some tests
+of the speed connection.
+If I did a direct upload into an Amazon S3 bucket
+in U.S. east one
+or if I use an S3 accelerated transfer upload
+and so we'll see the difference
+and how much performance gain we gain
+if we are uploading the data
+in two different S3 buckets around the world.
+And so to give you an idea
+I am recording this from Europe
+and so Northern Virginia is a bit far away from me
+and so I expect the transfer acceleration
+to be a bit faster.
+But again my internet is really good
+so it really depends on where you are located
+and the type of Internet you have
+to see if transfer acceleration
+is worth it for you or not.
+So as we can see for Virginia
+using a S3 transfer acceleration
+is about 13 percent faster
+and this will also do the test in all the other regions.
+So we have San Francisco, Oregon, Dublin, Frankfurt,
+Tokyo, Seoul, Mumbai, Ohio, Canada and so on.
+So I wait for the test to be over
+and get back to you with the results
+so if we look at the results
+of these S3 transfer acceleration
+I can see that I am faster in San Francisco,
+Oregon, Dublin I'm actually faster pretty much everywhere.
+So this is for us a way to tell us that
+S3 transfer acceleration
+is a really really good way
+to speed up the downloads into Amazon history
+and the upload as well.
+And so it would be something you would be using
+if you had a global application
+that needs to upload files
+into a specific Amazon S3 bucket.
+So hope you liked it
+and I will see you in the next lecture.

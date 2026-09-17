@@ -1,0 +1,32 @@
+# 295. AWS Budgets
+# Section: Management and Governance
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45357173
+# Caption: en_US (manual)
+
+You would use AWS Budgets
+if you wanted to create a budget based on actual charges
+or future estimated charges
+and send alarms whenever your cost will exceed your budgets.
+So you have four types of budgets you can set
+in the budget console.
+You can use usage, cost, reservation and savings plan,
+and we'll see them in a second.
+In case of signing a budget for a reserve instance,
+you can track utilization of your reserve instances overall
+and it supports RIs for different services
+such as EC2, ElastiCache, RDS, and Redshift.
+You can set up to five notifications per budgets
+and you can filter your budget by many different options
+such as service, linked account, tag, purchase options,
+and so on.
+So that means that you get a lot of options,
+actually the same as Cost Explorer,
+and so that makes budgets something that is going
+to be a lot more granular, a lot more flexible
+when it comes to tracking your cost
+and setting up alarms than, for example,
+your billing alarms.
+So the first two budgets are going to be free
+and then you're going to pay 2 cents per day per budget.
+So now let's go have a look in the console
+to see how budgets work.

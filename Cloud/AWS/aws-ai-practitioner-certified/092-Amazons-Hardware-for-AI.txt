@@ -1,0 +1,113 @@
+# 92. Amazon's Hardware for AI
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887747
+# Caption: en_US (manual)
+
+So now let's talk about Amazon EC2.
+So Amazon EC2 is actually one of the most popular offering
+from AWS and it means Elastic Compute Cloud.
+This is where you get your servers,
+your infrastructure as a service.
+So normally, in an AWS course,
+we talk a lot about Amazon EC2
+but from an AI perspective, Amazon EC2 is not as relevant
+because we use a lot of managed services on AWS
+to perform AI.
+Still, I want to give you an overview of Amazon EC2
+and an aspect of it that can come up in the exam.
+So Amazon EC2 is basically renting virtual machines
+or servers in the cloud
+but you can also attach disk space to these servers
+so you have what's called EBS drives
+and you don't need to remember all the terminology here.
+I just wanna give you the overview
+and I will tell you at the end of the section
+what is important.
+But you can start, you can attach virtual drives,
+their EBS drives,
+you can distribute traffic to your Amazon EC2 instances
+through what's called load balancers, ELB.
+Then you can scale the service automatically
+using auto-scaling groups, ASG,
+and if you wanna go deep into Amazon EC2,
+take any other AWS courses from me
+and I promise you, you will see it at length.
+So, but knowing how EC2 works is really fundamental
+to understanding how the cloud works.
+So once you have your virtual server
+then you can configure the operating system.
+You can have Linux, Windows or Mac OS.
+You can define how much compute and cores you want, the CPU,
+how much random access memory you want or RAM
+and how much storage space.
+So it could be network attached
+or it could be hardware and so on.
+So as you can see, you're pretty much,
+if I want to simplify it as much as possible,
+you're pretty much creating a virtual computer
+on which you define what you want on it
+and how powerful you want it to be.
+You can also define how fast you want the network
+to be on your server, if you want a public IP
+and if you're exposing the server,
+of course you can have firewall rules
+that are called security groups.
+Finally, to configure your virtual server at launch,
+you can use something called the EC2 User Data.
+So I know it's a lot of information I just dumped on you.
+You don't need to remember any of it.
+I just wanted to give you an overview.
+It's basically a virtual server that you have in the cloud
+that you can configure it on so many levels.
+But now let's talk about AI
+and how it's related to Amazon EC2.
+So when you create an Amazon EC2 instance,
+you have to select what's called an instance type
+and there are some EC2 instances
+that are going to be based on GPU.
+So GPU is graphical processing unit.
+And remember, they're the very good processors
+that allow you to perform machine learning.
+And so you have called like EC2 families, for example,
+the P family or the G family that have very good GPUs
+and of course they may be desirable from an AI perspective.
+So if you take an EC2 instance of type P3,
+P4, P5 or G3 and so on, just get untangled, G6
+then of course you're going to have good GPUs
+and they're great for machine learning
+but AWS went one level further
+and they created something called AWS Trainium
+and they are machine learning chips that are used
+to actually perform deep learning on big models.
+We're talking about a hundred billion plus parameters.
+So the Trn1 instance, so it's an EC2 instance of type Trn1,
+for example will have 16 Trainium accelerators
+and so when you start training models
+directly on these visual servers,
+you're going to get a 50% cost reduction
+as advertised by AWS.
+So you would use these servers to train the models
+if you don't wanna use SageMaker for example
+or you can also use these servers to serve the models.
+And so for this, you would use AWS Inferentia
+and this is a machine learning chip built again by AWS
+and it's going to give you inference
+at very high performance and low cost.
+So we have Inf1 or Inf2 instances for EC2
+and they're going to be powered by AWS Inferentia
+and the idea is that if you use these chips,
+you're going to get up to four times the throughput
+you would get on a normal GPU based instance
+and up to 70% cost reduction.
+So something that can also appear in the exam
+is that the Trainium and Inferentia instances
+have the lowest environmental footprint.
+That's because they are the most efficient.
+So from an exam perspective,
+remember that EC2 instances are virtual servers
+and they can be of different types.
+You have GPU based types
+and you have also the ones based on AWS Trainium
+and AWS Inferentia and that's it, you'll be good to go.
+So I hope you liked it
+and I will see you in the next lecture.

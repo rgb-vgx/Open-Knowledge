@@ -1,0 +1,42 @@
+# 158. CloudFront - Real Time Logs
+# Section: CloudFront
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36528004
+# Caption: en_US (manual)
+
+So here is a short lecture
+on real-time logs in CloudFront.
+So it's possible for you to get all the requests
+that are received by CloudFront to be sent in real time
+to a Kinesis Data Stream.
+The goal of this is, for example, to monitor, analyze,
+and take actions based on content delivery performance.
+So just to give you an overview,
+the users are going to do a lot of requests into CloudFront
+and then if you enable the real-time logs,
+all these requests are going to be logged into
+a Kinesis Data Stream.
+And then, for example,
+you can use a Lambda function to process these records
+from your Kinesis Data Stream.
+If you need to do near real-time processing,
+you will do the exact same first part,
+because CloudFront can only send to Kinesis Data Stream,
+but then you would use Kinesis Data Firehose
+to process these records by batches
+and maybe send them into Amazon S3 or Open Search,
+or whatever destination you may have in mind.
+So this allows you to choose, as well, the sampling rate,
+which is the percentage of the request you want to receive
+in your Kinesis Data Stream.
+Because if you have a very high traffic type of API
+or endpoint, you may not want to have all requests in there,
+just a sample.
+And also, you can specify which fields
+and which cache behaviors or path patterns
+you want to have access to in your Kinesis Data Stream.
+So for example, you say, "Hey, I only wanna have
+(indistinct) slash images type of cache behavior,
+because I just wanna see the request done
+to this path specifically."
+Okay, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

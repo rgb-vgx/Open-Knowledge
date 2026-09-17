@@ -1,0 +1,129 @@
+# 345. [SAA] Transit Gateway
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/28875496
+# Caption: en_US (manual)
+
+Okay, so if we look at
+common network topologies in AWS
+it can become quite complicated.
+For example, you have many VPC
+and you want to peer them together,
+then you want to establish some VPN connections
+and direct connect,
+and then you have a direct connect gateway to connect
+to multiple VPC at a time, and this can become
+very, very complicated in terms of network topology.
+So, AWS came up with the transit gateway
+to solve that problem, and you're going to have
+a transitive peering connection between thousands of VPC,
+your on-premises data center, your site-to-site VPN,
+direct connects in a hub-and-spoke star connection.
+So let's have a diagram.
+We have transit gateway in the center
+and you can connect multiple VPCs through
+the transit gateway.
+So in this example, we don't need to peer the VPCs together,
+they are connected transitively through the transit gateway.
+So in this example, all the VPCs can talk to each other.
+But also, you can connect a direct connect gateway
+to the transit gateway,
+so it shows you have a direct connect connection
+directly in to many different VPC.
+Or if you are preferring site-to-site VPN
+and VPN connections, you can connect your customer gateway
+and your VPN connection into your transit gateway.
+Again, one more time, giving you access to all these VPC
+as part of the transit gateway.
+So this really solves some network problems.
+It's a regional resource and it can work cross-region,
+and you can share your transit gateway across accounts
+by using the resource access manager.
+You can also peer transit gateways across region.
+So, how do you define who can talk to what?
+Well, you need to create route tables
+for your transit gateway to limit which VPC
+can talk to another, which connection have access
+to each other and so on.
+So, you get full control over the routing of all the traffic
+within the transit gateway to give you network security.
+So, as I said, it works with direct connect gateway
+and VPN connections, and it is the only service in AWS
+that supports IP multicast, so if you see IP multicast
+at the exam, just know that it is transit gateway
+you have to use.
+So, another use case for transit gateway is to increase
+the bandwidth of your site-to-site VPN connection
+using ECMP.
+So, it's quite technical but the question can come up
+in the exam.
+So, ECMP means equal-cost multi-path routing.
+It's a routing strategy to allow to forward a packet
+over multiple best path.
+And the use case, as I said, is to create
+multiple site-to-site VPN connections
+to increase the bandwidth of your connection
+to AWS using a site-to-site VPN.
+So, let's take this example where we have a transit gateway
+and we have four VPCs attached to our transit gateway,
+and we have a corporate data center that is connected
+using site-to-site VPN to a transit gateway.
+So when you establish a site-to-site VPN connection
+there are actually two tunnels, one going forward
+and one going back.
+When you are connecting such a VPN into a VPC directly,
+both of these tunnels are used as part of one connections,
+but when using the transit gateway
+two tunnels can be used at a time,
+so this is why you see two lines in this diagram.
+But with transit gateway,
+you can have multiple site-to-site VPN
+so you can create a second site-to-site VPN attachment
+and into your transit gateway,
+so this creates four tunnels.
+And so, when you have four tunnels of site-to-site VPN,
+you are increasing the throughput of your connection
+which is something you cannot do if you were to connect
+your corporate data center directly into a VPC.
+So, if you do a VPN to a virtual private gateway,
+you get one tunnel, in fact one connection into one VPC,
+and this connection gives you 1.25 Gbps
+as the maximum throughput, and you are limited.
+And in this case, a VPN connection is made of two tunnels.
+But if you are using a VPN into a transit gateway,
+you get one site-to-site VPN into many VPC
+because they're all connected transitively
+to the same transit gateway.
+And also, one site-to-site VPN connection
+gives you 2.5 Gbps thanks to ECMP,
+because the two tunnels are going to be used
+through that strategy.
+But also, you can add more site-to-site VPN connections
+into transit gateway, for example two or three,
+to double or triple your throughputs
+through ECMP.
+So this is an exam question you need to know.
+Obviously when you do the setup,
+you're going to have to pay for each GB of data
+going through the transit gateway,
+so there's an added cost to this performance optimization.
+Finally, you can share your direct connect connection
+between multiple accounts, again, using the transit gateway.
+How do we do this?
+Well, we're going to establish a direct connect connection
+between your corporate data center
+and a direct connect location,
+and then we're going to set up a transit gateway
+into both VPCs in two different accounts, okay?
+So this is something we can do with the transit gateway.
+And then, we connect the direct connect location
+into direct connect gateway and connect that gateway
+into the transit gateway.
+And what this just allowed us to do is to share
+a direct connect connection between multiple accounts
+and multiple VPC, which is very handy
+thanks to the transit gateway.
+Okay?
+So all these sort of architectures can come up in the exam
+so make sure you're familiar with understanding
+how they work, and that's it for me,
+I will see you in the next lecture.

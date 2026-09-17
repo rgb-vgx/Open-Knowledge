@@ -1,0 +1,136 @@
+# 32. Amazon Bedrock - Agents
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45375129
+# Caption: en_US (manual)
+
+So now let's talk about
+Amazon Bedrock Agents.
+So the agent is going to be a very smart thing
+that is going to act a little bit like a human.
+The idea is that instead of just asking questions
+to a model, now the model is going to be able
+to start thinking a little bit
+and to perform various multi-step tasks.
+And these tasks may have an impact on our own databases
+or our own infrastructure.
+So the agent can actually create infrastructure,
+it can deploy applications,
+and can do operations on our systems.
+So here now, the agent doesn't just provide us information.
+It also starts to think and act.
+So for example, it's going to look at tasks,
+and then it's going to perform the task in the correct order
+and ensure that the correct information is passed
+within the task
+even if we haven't programmed the agent to do so.
+So what we do is that we are going to create
+what's called action groups,
+and the agents are going to be configured
+to understand what these action groups do
+and what they mean.
+And then automatically the agent will be able to integrate
+with other systems, services, databases, and API
+to exchange data or to initiate action.
+And also if you need to get some information
+out of your systems in terms of unlabeled data,
+it can look at RAG
+to retrieve the information when necessary.
+So that sounds a little bit magical,
+but I will show you exactly how that works.
+So in Amazon Bedrock, you would go and create an agent
+and you are defining what the agent is responsible for.
+So for example, you are an agent responsible
+for accessing purchase history for our customers
+as well as recommendations into what they can purchase next.
+And you are responsible for placing new orders.
+So the agent knows that it can do all these things.
+So if the user is asking something for the agent
+or the model to do one of these things, Bedrock is smart.
+It's gonna say, well, this agent probably
+is going to be responsible for these actions.
+Then the agent knows about a few action groups.
+So for example, we have defined an API,
+it's a way to interface with our system,
+and we have, for example, defined get recent purchases
+or get recommended purchases or get purchase details
+and then a specific purchase ID.
+So all these things are known to the agent
+in terms of what is the expected input for these APIs,
+and what do these APIs do,
+what is the documentation around it?
+And all this is provided thanks to an open API schema.
+And so when done well the agent can invoke these
+and behind the scenes, of course,
+interact with our backend systems,
+for example, make changes to our database.
+The other way to set up an action group
+is to use Lambda functions.
+So Lambda functions are a way to run
+a little bit of code in AWS
+without provisioning infrastructure.
+So the Lambda functions again can be used to be created
+and place an order through a Lambda function.
+And so it could use the same database or a new database.
+But the idea is that I wanted to show here
+that the agent can interact either with an external API
+or with Lambda functions on your AWS accounts.
+And finally it has access to knowledge bases
+that we define, of course.
+And so for example, say we have a knowledge base
+around our company shipping policy
+and return policy, et cetera, et cetera.
+So we could those.
+And so if the user is asking something
+about the return policy for an order it's about to do,
+the agent is smart enough to also provide that to the user.
+So the agents are very smart, and they know what to access
+and then automatically will know how to do it.
+So how does that work behind the scenes?
+Well, say we have a task,
+and we give this task to a Bedrock agent.
+Now the agent is going to look at the prompt.
+He's going to look at all the conversation history,
+look at all the actions available,
+as well as the knowledge bases.
+What are these structures and what is the task?
+And it's going to take all this information together
+and send it to a Generative AI model
+backed by Amazon Bedrock and say, please tell me
+how you would proceed to perform these actions
+given all this information.
+So it's using the chain of thought.
+Chain of thought means that the output of the Bedrock model
+is going to be a list of steps.
+So step one, you need to do this.
+Step two, do this,
+step three, do this, and step N, last step, do that.
+And so the steps are going to be executed by the agent,
+and say, first one, call an API.
+Call on this action group and get the results.
+Step two, do it again.
+Step three, call another API, et cetera, et cetera.
+Maybe it could be a search into a knowledge base,
+and they get the results and so on.
+But so the agent is going to work
+and do all these things for us
+thanks to the steps that were generated
+by the Bedrock model, which is amazing.
+And then the final result is return to the Bedrock agent.
+The Bedrock agent then sends the tasks
+and the results to another Bedrock model.
+And the Bedrock model is going to synthesize everything
+and give a final response to our user
+and will get the final response.
+So this is all happening behind the scenes.
+Of course us, we just use the agent,
+and the agent does stuff
+and automatically we see the final response.
+But Bedrock is really nice
+because you actually have something called tracing
+on your agent,
+and this allows you to see the list of steps
+that were done by the agent.
+So you can debug in case you don't like a way
+an agent performed something.
+So that's it for Amazon Bedrock Agents.
+I hope you liked it, and I will see you in the next lecture.

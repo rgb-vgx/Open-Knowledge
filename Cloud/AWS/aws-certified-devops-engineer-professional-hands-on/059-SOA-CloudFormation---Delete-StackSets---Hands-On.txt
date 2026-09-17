@@ -1,0 +1,72 @@
+# 59. [SOA] CloudFormation - Delete StackSets - Hands On
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/42314498
+# Caption: en_US (manual)
+
+Okay, so we'll go ahead
+with deletions of stacks within our stack set.
+So, I wanna you two option.
+To delete this stack set,
+you first need to delete all the stacks
+within your stack sets.
+So, we have two options to delete the instances.
+For example, say,
+"I wanted to detach this stack right here
+in eu-central1,
+because I wanna keep it,
+regardless of whether or not I delete my stack sets."
+So, to do so, I'm going to Actions
+and then I will delete stacks from the stack sets.
+I will paste the account number and it will say,
+"Hey for this region.
+For the Frankfurt region,
+you're going to delete the stack from the stack set,
+but I want you to actually retain the stack."
+So, the idea is that is going to remove this stack
+from the stack sets,
+but the stack will still exist in my account.
+So, let's verify that.
+Currently, we have three stacks in my accounts,
+but if I do Next
+and then Submit,
+what's going to happen in this operation
+is that it will detach this stack from the stack set.
+So, if I refresh this while the stack is still here,
+but now, if I go under Stack instances,
+we can see that it is not managed.
+And we should see it right now.
+Yeah. There are only two stacks.
+So, it is not managed anymore by my stack sets.
+Very, very nice.
+Then if I wanted to delete really everything.
+I could do Actions
+and then delete stack from stack sets.
+So, same account number,
+and I will add all regions,
+and it will say, "You can do it in parallel."
+And this time I will choose to delete the stack.
+So, I will not enable this button right here.
+Click on Next.
+Submit.
+And now this is actually going to go through the deletion
+of the underlying stacks in CloudFormation StackSets.
+So, this can take a little bit of time to run, obviously,
+because now we are actually deleting the stacks.
+Now that all my stack instances are gone
+from my stack set,
+what I can do is Action.
+Delete StackSet.
+Press Yes.
+And we're good to go.
+If you wanted to truly clean up again
+you also need to delete all the execution roles
+you have created from before.
+So, let's delete this stack set
+that was just detached from my stack sets.
+And then I can delete all the execution roles
+that we created from before,
+as well as the admin role.
+And this is good to go.
+Now we have a full cleanup of stack sets,
+and I hope you liked this lecture.
+And I will see you in the next lecture.

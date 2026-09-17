@@ -1,0 +1,143 @@
+# 66. Hyperparameters
+# Section: Artificial Intelligence (AI) & Machine Learning (ML)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45796455
+# Caption: en_US (manual)
+
+I also want to mention
+hyperparameter tuning in greater details.
+So, what is a hyperparameter?
+Well, it's the settings that define the model structure
+and the learning algorithm and process.
+So, it sets before the training begins.
+And different types of hyperparameters
+could be, for example: learning rate, batch size,
+number of epochs, and regularization.
+So, what does that mean?
+Learning rate is how fast
+you want the model to incorporate new data.
+Batch size is how many data points to consider at a time.
+Number of epochs is how many times
+you want to iterate on your model
+until you say you've converged to a good result.
+And regularization, to see how flexible the model should be.
+And so, these parameters
+don't have anything to do with your data,
+it's just about the algorithm you're using
+to train your model.
+And so therefore, you can do hyperparameter tuning
+because to have the best model performance,
+to optimize it,
+it's also a matter of finding
+the best hyperparameter values.
+And so by doing tuning,
+we're going to improve the model accuracy,
+reduce overfitting, and enhance generalization.
+So, how to do it?
+Well, you have several algorithms.
+For example, grid search or random search,
+or you can use services
+such as SageMaker Automatic Model Tuning, AMT,
+we'll see this again in this course
+to perform hyperparameter training,
+but it is a very important part
+of a machine learning project.
+So let's learn about the important hyperparameters
+that can come up at the exam
+so that you know if they're correct or not for answer.
+So we have the learning rate
+and this represents how large or small
+the steps are going to be
+when you update the model's weight during training.
+So if you have a higher learning rate, that means
+that your model is going to have a faster conversions,
+but there is a risk of you to overshoot the optimal solution
+because, well, you're going too fast for learning.
+And if you have a lower learning rate,
+it may be more precise
+and have the conversions to the optimal solution,
+but it may be slower.
+So, it's up to you to, of course, tune this hyperparameter.
+The batch size is how many training examples are used
+to update the model's weight during one iteration.
+So if you have a smaller batch size,
+it can lead to a more stable learning experience,
+but require more time to compute.
+And if you have a larger batch size,
+then it may be faster to go through your model,
+but it may lead to less stable updates.
+And for a number of epochs,
+this is to how many times the model
+is going to be iterating
+over the entire training dataset.
+So in the machine learning process,
+you're going to go many, many times
+over your entire dataset.
+We don't know with what batch has yet
+or with what learning rate,
+but number of epochs represent how many times
+you will go over the entire dataset.
+So if you have too few epochs,
+you will have underfitting.
+And if you have too many,
+you may cause overfitting
+because you're trying really, really hard
+to fit the data to the dataset you have
+by going many, many times over.
+You also have the regularization hyperparameter.
+So to make it super simple,
+it's to adjust the balance
+between a simple and a complex model.
+And the idea and what you should know for the exam
+is that if you want to reduce overfitting,
+then you need to increase the amount of regularization
+in your model.
+So these hyperparameters
+have no right or wrong type of answers.
+It's more about understanding what they are impacting
+and what they can lead to.
+And, of course, the role of a machine learning engineer,
+for example, or a data scientist,
+will be to tune and optimize these hyperparameters.
+So, what happens if you have overfitting?
+Well, overfitting is when the model is going to give you
+great predictions for the training datasets,
+but not for new data in production.
+So it can occur due to many things.
+For example, if your training data size is too small
+and does not represent all the possible values,
+then you will have overfitting.
+Or if you train for too long,
+so for too many epochs
+on a single sample set of data,
+again, this may lead to overfitting.
+Or if the model complexity is very high,
+it's going to actually learn not just from the features
+that are the most important,
+but also from the noise within the training data,
+and therefore, again, doing overfitting.
+So, how can you prevent overfitting?
+Well, a very easy way is for you to increase
+the training data size.
+That means that you're going to have a dataset
+that is going to be much more representative
+of all the possible values for your production data.
+Also, early stopping of the training of the model.
+So doing more epochs
+is not going to help with overfitting,
+opposite direction instead.
+And if you don't have enough diversity in your datasets,
+you may want to do data augmentation.
+And, again, we can adjust the hyperparameters,
+but you cannot add new hyperparameters.
+There are things fixed in time.
+So we have the learning rate,
+the batch size and the epochs,
+and we can try adjusting them.
+But usually, it's not the primary answer.
+The best answer is going to be to increase
+the training data size.
+Finally, you can try ensembling to combine multiple models
+to get more accurate results.
+Okay, so that's it for this lecture.
+I hope you liked it
+and I will see you in the next lecture.

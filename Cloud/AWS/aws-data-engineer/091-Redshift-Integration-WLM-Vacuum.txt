@@ -1,0 +1,293 @@
+# 91. Redshift Integration / WLM / Vacuum
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356044
+# Caption: en_US (auto)
+
+How does Redshift integrate
+with other AWS services?
+Well, let's go through a few of them.
+So Amazon S3, you can use parallel processing
+to export your data from Amazon Redshift data
+to multiple data files on S3.
+And, of course, you can also import data from S3
+or even sit on top of it using Amazon Redshift.
+Amazon DynamoDB, so by using the copy command,
+you can also load a Redshift table
+with data from a single Amazon DynamoDB table.
+So it's possible to import data from DynamoDB into Redshift
+using the copy command as well.
+On EMR hosts or EC2 instances,
+you can import data using SSH.
+So again, via the copy command,
+you can load data from one or more remote hosts,
+such as EMR clusters
+or whatever you're running on EC2 for that matter.
+And finally, the AWS Database Migration Service or DMS
+can migrate your data into Amazon Redshift for you,
+or at least help you with the process.
+So the database migration service
+is a whole big topic of its own.
+Basically it's a set of tools
+that allow you to migrate data
+from some existing data warehouse into Amazon Redshift.
+And often there's a lot more to that than you might imagine.
+One more thing, Redshift can also communicate with AWS Glue
+for Apache Spark.
+Under the hood, it uses S3 and copy commands
+to move data back and forth,
+but you can read and write to Redshift tables
+through AWS Glue as well.
+You will also need to at least know
+what Redshift Workload Management is, WLM for short.
+It's a way to help users prioritize workloads
+so that short, fast running queries
+are not stuck behind long running slow queries.
+The way it works is by creating query queues at runtime
+according to service classes.
+And configuration parameters for various types of queues
+are defined by those service classes.
+Now, you can modify the WLM configuration
+to create separate queues for long running queries
+and for short running queries,
+thereby improving system performance and user experience.
+You can set all this up
+using the Amazon Redshift Management Console,
+the Amazon Redshift Command Line Interface,
+or the Amazon Redshift API.
+The topic of scaling and tuning your Redshift cluster
+comes up a lot in the exam as well.
+One feature you need to know about
+is called concurrency scaling.
+This feature allows you to automatically add
+cluster capacity to handle sudden increases
+in concurrent read queries.
+So if you have very bursty access to your Redshift cluster
+where you have these sudden floods of read queries
+that come in from outside,
+concurrency scaling can automatically scale up
+your cluster to handle it.
+It can support virtually unlimited
+concurrent users and queries this way.
+It just keeps on adding more and more capacity as needed
+as your read queries increase in volume.
+And you can use workload management queues,
+which we'll talk about again very shortly,
+to manage which queries are sent
+to the concurrency scaling cluster.
+So you can manage
+through what queue you assign your queries to,
+which ones can actually take advantage
+of concurrency scaling and which ones do not.
+This can allow you to, for example,
+segregate those read queries
+that you think might be bursty in nature
+or vary in time and their frequency,
+and use that to automatically scale out the capacity
+for that specific query.
+That kinda reduces the risk of, you know,
+inadvertently adding a bunch of capacity
+for some offline job
+that doesn't really need to run fast necessarily.
+So you can pick and choose which queries
+take advantage of concurrency scaling.
+Obviously it's not free,
+so, you know, you wanna give some thought
+as to which queries can actually have this capability
+of just automatically adding
+more and more capacity as needed.
+Workload management, WLM,
+comes in a couple of different flavors.
+One is called automatic workload management.
+So with automatic workload management,
+you can define up to eight different queues
+that are managed for you.
+And by default, you have five queues
+that have an even memory allocation between them,
+but you can change that obviously if you need to.
+So the idea is that if you have a bunch of large queries
+going into a queue,
+like big hash joins or something like that,
+the concurrency will be lowered
+on that queue automatically for you.
+And if you have a bunch of small queries going into a queue,
+like inserts or scans or simple aggregations,
+the concurrency level on that queue might be raised.
+Concurrency is just
+how many queries can I run at once, right?
+So larger queries obviously need more capacity.
+You want perhaps lower concurrency on those
+so that they get more resources,
+whereas small queries can get away with fewer resources
+and you can run more of them at once.
+By separating these queries into their own queues,
+we can take better advantage of the hardware that we have.
+So each automatic workload query queue
+can be configured in a bunch of different ways.
+One thing you can do is set a priority value,
+that just defines the relative importance of queries
+within a workload.
+You can also set concurrency scaling mode.
+So basically that's what we talked about before
+with concurrency scaling.
+This is where you can say, I want this particular queue
+to have access to a concurrency scaling cluster
+and have the ability to automatically add
+more and more resources,
+more and more servers under the hood
+to handle the capacity that that queue needs.
+That costs money, obviously,
+so you wanna think carefully
+about whether or not that's enabled.
+You can also assign a set of user groups to a queue,
+and you can do that by specifying a user group name
+or by using wildcards.
+So when a member of a listed user group runs a query,
+that query will automatically run
+within the corresponding queue.
+So you can assign queues to query queues based on users.
+You can also set up a query group. All that is is a label.
+So basically at runtime,
+you can assign a query group label to a series of queries,
+and that will define which queue that query goes into.
+So basically, a tag,
+a label that's assigned to the query itself
+can define which queue it goes to.
+You can also set up query monitoring rules.
+These are pretty cool.
+They allow you to define metric-based performance boundaries
+for workload management queues.
+And you can specify what action to take
+when a query goes beyond those boundaries.
+So for example, you might have a queue
+dedicated to short running queries,
+and you might have a query monitoring rule
+that aborts those queries
+if they run for more than 60 seconds.
+So that way you can enforce that your short query queue
+is actually handling short queries.
+And if something goes wrong with one of those queries,
+it's not gonna hold up all the other queries in that queue.
+So a very useful tool there.
+You can also do things
+like kick queries off to a different queue
+if it violates some query monitoring rule.
+The other flavor of WLM is manual workload management,
+and by default, this comes with one queue
+with a concurrency level of five.
+Again, concurrency level is how many queries
+can I run at once within this queue.
+In addition, there is a super user queue
+with a concurrency level of one.
+This is a queue that's intended for administrative queries
+that are happening that always must run no matter what.
+You can define up to eight manual queues
+and you can have a concurrency level on a queue up to 50.
+Each of those queues allows you to define
+whether or not the concurrency scaling cluster
+is available to it, whether it can automatically,
+you know, add more capacity to that queue.
+You can also set a manual concurrency level to that queue,
+defining how many queries
+I wanna be able to run at once within it.
+You can assign user groups to it
+and query groups like we talked about before
+with automatic queues,
+just allowing you to automatically route queries to a queue
+based on what user is running it
+or what query label has been attached to the query.
+You can also define the memory allocated to a given queue,
+the timeout value for running a query within that queue.
+And again, any query monitoring rules that you might have.
+You can also enable what's called query queue hopping.
+So if you have a query that times out within a given queue,
+you can configure things to have it hop to the next queue
+and try it again on a different queue
+that might have a higher timeout
+or more resources available to it.
+One more thing to talk about here
+is short query acceleration or SQA.
+The idea here is to automatically prioritize
+short running queries over longer running queries.
+The short queries will run in their own dedicated space
+so they don't end up waiting in a queue
+behind longer queries.
+So this can be used in place of workload management queues
+if you just want to accelerate short queries.
+It can work with CREATE TABLE AS statements. Remember that.
+And also read-only queries or SELECT statements.
+So these are both candidates for short query acceleration.
+It can automatically run those in their own space
+so that they don't get stuck behind longer analytic queries.
+And it works by using machine learning. Pretty cool.
+So it actually tries to predict a query's execution time
+using machine learning algorithms automatically.
+So it can kinda guess based on the query itself
+how long it might take,
+and figure out whether or not that should go
+into the dedicated space for short queries or not.
+And you can configure
+how many seconds you consider to be short.
+So that's one dial
+that you have on short query acceleration.
+So remember, short query acceleration
+is an alternative to WLM workload management
+if all you want to do is accelerate short queries
+and make sure that they don't get stuck
+behind longer queries.
+And it can work with CREATE TABLE AS statements
+or read-only SELECT statements.
+Finally, you need to know
+what the VACUUM command does with Redshift.
+VACUUM is the command used
+to recover space from deleted rows
+and to restore the sort order.
+So basically it cleans up your table.
+There are four different types of commands.
+The first one is VACUUM FULL.
+This is the default VACUUM operation.
+It will resort all of the rows
+and reclaim space from deleted rows.
+There is also VACUUM DELETE ONLY,
+which is the same as a full VACUUM,
+except that it skips the sorting part.
+So it's just reclaiming deleted row space
+and not actually trying re-sort it.
+You can also do a VACUUM SORT ONLY,
+which will re-sort the table, but not reclaim disk space.
+And finally, there's VACUUM REINDEX
+that's used for re-initializing interleaved indexes.
+Remember we talked about the different sort keys
+you can have, one of them being interleaved.
+So REINDEX will reanalyze the distribution
+of the values in the table sort key columns,
+and then perform a full VACUUM operation after that.
+And lastly, let's talk about the anti-patterns for Redshift.
+This also comes straight out of the AWS Big Data White Paper
+of things they do not want you to use Redshift for.
+One is for small datasets.
+So remember, Redshift's strength is that it is massive
+and highly scalable.
+If you just have a small tiny table that you wanna store,
+RDS might be a better choice for that.
+OLTP, again, they cannot stress enough
+that Redshift is made for analytic queries for OLAP.
+If you need to do transactional very fast queries,
+you wanna be using RDS or DynamoDB instead.
+And they're also listing unstructured data for me,
+which is kinda strange
+because Redshift's spectrum kind of exists
+to let you query unstructured data in S3.
+But if you do need to do some ETL,
+you should do that first with EMR or Glue ETL
+or something like that first.
+And it is not appropriate for storing blob data,
+meaning large binary files.
+If you do need to store large binary files
+in your data warehouse,
+it's best to just store references to those files
+where they reside in S3 and not the files themselves.
+Whew, so that's a lot about Redshift,
+but again, you do need a lot of depth
+for Redshift for the exam.
+It will be well worth your while to understand
+and remember everything in these slides.

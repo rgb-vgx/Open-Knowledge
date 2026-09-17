@@ -1,0 +1,28 @@
+# 185. Beanstalk Cleanup
+# Section: AWS Elastic Beanstalk
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19729954
+# Caption: en_US (manual)
+
+So let's go ahead and clean up everything
+because we have two instances running at the same time.
+We have load balancers,
+and this is just going to cost us money
+if we leave it running for a while,
+and so therefore, what I'm going to do
+is just to delete everything.
+Very simply, go to the application level,
+find the application, do action, delete application,
+and then it's going to delete my application,
+so I just need to reenter the name.
+This will delete all the underlying environments,
+so behind the scenes for everything to be deleted,
+well, the CloudFormation stacks that were deployed
+are now in delete in progress,
+and so everything that has been created by CloudFormation,
+including the load balancers, the auto scaling groups,
+the security groups, et cetera, et cetera, et cetera,
+is going to be deleted,
+which is the beauty of using CloudFormation under the hood.
+So that's it for this lecture.
+Once you're done with this, nothing else will delete.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,133 @@
+# 39. Amazon S3 - Performance
+# Section: Storage
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40285966
+# Caption: en_US (auto)
+
+Instructor: But we have to talk
+about the S3 baseline performance.
+So by default, Amazon S3 automatically scales
+to a very, very high number of requests
+and has very, very low latency,
+between 100 and 200 milliseconds,
+to get the first byte out of S3.
+So this is quite fast.
+And in terms of how many requests per second you can get,
+you can get 3500 PUT, COPY, POST,
+DELETE per second per prefix
+or 5500 GET, HEAD requests per second
+per prefix in a bucket.
+So this is something you can get on the website
+and I think it's not very clear,
+so I'll explain to you what per second per prefix means,
+but what that means of all
+is really, really high performance.
+And there's no limits to the number
+of prefixes in your bucket.
+So let's take an example of four objects named file
+and let's analyze the prefix for that object.
+The first one is in your bucket, in folder one,
+sub-folder one/file.
+In this case, the prefix is going to be anything
+between the bucket and the file.
+So in this case, it is /folder1/sub1.
+So that means that for this file, in this prefix,
+you can get 3500 PUT and 5500 GETs per second.
+Now, if we have another folder,
+one and then sub2,
+the prefix is anything between bucket and file,
+so /folder1/sub2 and so we get also 3500 PUTs
+and 5500 GETs for that one prefix.
+And so on, so if I have one and two,
+we have different prefixes.
+And so it's easy now to understand what a prefix is
+and so it's easy to understand the rule
+of 3500 PUT and 5500 GETs per second per prefix in a bucket.
+So that means that if you spreads reads
+across all the four prefixes above evenly,
+you can achieve 22000 requests per second for HEAD and GET.
+Now, let's talk about S3 performance,
+how we can optimize it.
+The first one is multi-part upload.
+So it is recommended to use multi-part upload
+for files that are over 100 megabytes
+and it must be used for files that are five gigabytes.
+And what multi-part upload does,
+is that is parallelize uploads
+and that will help us speed up the transfers
+to maximize the bandwidth.
+So as a diagram, it always makes more sense.
+So we have a big file
+and we want to upload that file into Amazon S3.
+We will divide in parts, so smaller chunks of that files.
+And each of these parts will be uploaded
+in parallel to Amazon S3.
+In Amazon S3, once all the parts have been uploaded,
+it's smart enough to put them together
+back into the big file.
+Okay, very important.
+Now we have S3 Transfer Acceleration,
+which is for upload and download,
+and it is to increase the transfer speed
+by transferring a file an AWS edge location,
+which will forward then the data
+to the S3 bucket in the target region.
+So edge locations, there are more than regions.
+There are about over 200 edge locations today
+and it's growing.
+And let me show you in the graph what that means.
+And that, our Transfer Acceleration
+is compatible with multi-part upload.
+So let's have a look.
+We have a file in the United State of America
+and we want to upload it to an S3 bucket in Australia.
+So what this will do, is that we will upload that file
+through an edge location in the United States,
+which should be very, very quick,
+and that will be using the public internet.
+And then from that edge location,
+to the Amazon S3 bucket in Australia,
+the edge location will transfer it
+over the fast, private AWS network.
+So this is called transfer acceleration,
+because we minimized the amount
+of public internet that we go through
+and we maximized the amount of private AWS network
+that we go through.
+So transfer acceleration is a great way
+to speed up transfers.
+Okay, now how about getting files?
+How about reading the file in the most efficient way?
+We have something called an S3 Byte-Range Fetches.
+And so it is to parallelize GETs
+by getting specific byte ranges for your files.
+So it's also in case you have a failure
+to get a specific byte range,
+then you can retry a smaller byte range
+and you have better resilience in case of failures.
+So it can be used to speed up downloads this time.
+So this time, we have a file in S3.
+It's really, really big and this is the file.
+Maybe you want to request the first part,
+which is the first few bytes of a file,
+then the second part, and then the end part.
+So we request all these parts
+as specific byte range fetches,
+that's why it's called byte range,
+because we only request a specific range of the file.
+And all these requests can be made in parallel.
+So the idea is that we can parallelize the GETs
+and speeds up the downloads.
+The second use case is to only retrieve
+a partial amount of the file.
+For example, if you know that the first 50 bytes
+of the file in S3 are a header
+and give you some information about the file,
+then you can just issue a header request,
+so byte range request for the headers
+using the first, say, 50 bytes
+and you would get that information very quickly.
+All right, so that's it for S3 performance.
+We've seen how to speed up uploads, downloads,
+we've seen the baseline performance.
+So make sure you know going into the exam
+and I will see you in the next lecture.

@@ -1,0 +1,151 @@
+# 10. Common Data Sources and Data Formats
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45284709
+# Caption: en_US (auto)
+
+Let's talk about different sources of data and the formats that it might come in.
+This is a little bit less high level, so I would expect the exam to expect you to know this stuff,
+even though it's not necessarily AWS specific.
+One data source might be a JDBC connection.
+So maybe you have some external database out there that you need to extract data from.
+JDBC might be one interface, one common interface for accessing and querying that data as you need.
+Stands for Java Database Connectivity.
+The nice thing about JDBC is that it's platform independent because it is based on Java, right?
+It's also language dependent because, well, it's based on Java.
+So the good thing about Java is that you can run it on pretty much any device you can think of.
+The bad part is that it does require you to be using the Java language to access that data.
+So if you're building an extraction tool in Java, then JDBC makes a whole lot of sense.
+However, if you don't if you're not in Java, you'll need some sort of intermediary layer instead.
+And that might be ODBC Open database connectivity.
+It is platform dependent because you need specific drivers to access your databases with ODBC, but
+it is language independent because it is not just built exclusively on Java.
+Now you'll find that in practice, most data extraction tools will support both JDBC and ODBC interfaces.
+It's just that that that support will be at a layer that's a little bit lower and hidden from you.
+Right.
+So we just need to know what those stand for and what they what their differences are.
+You might also just be sucking in data from raw log files.
+You know, maybe you're just writing out logs to S3 and you need to ingest that as is.
+That's okay.
+You might have some sort of an API to an external system.
+So maybe instead of JDBC or ODBC, there's some other interface, some application programming interface
+that you can hit from your extraction application to access the information that you need.
+Also, you might have streams of data coming in.
+So there's a lot of stuff that you can deal with streaming information.
+Kafka.
+Kinesis.
+We'll talk about that in more depth.
+But some data sources will provide you streams of data in real time as it's received, and you just
+need to have the right software to ingest those streams and do stuff with it.
+Some common data formats.
+This is important stuff, folks.
+CSV.
+You probably already know what that one is a comma separated value file.
+Basically it's a text based format.
+It's human readable.
+That's the key here where data is in a tabular form, where every line of data corresponds to a row
+of data, and the values within are separated by commas.
+Now, it doesn't necessarily have to be a comma.
+Your delimiter can be pretty much anything.
+Using commas can get complicated if you have commas within the data itself, right?
+So then you have to figure out, oh, what are my rules for escaping this data and quoting it and whatnot.
+So you sometimes see CSV files where the delimiter delimiter is not a comma.
+It might be a pipe or a tab or something else.
+Right.
+That's okay.
+You know, you might call it a CSV file if it's separated by a tab.
+But same idea When do you use this stuff?
+Mostly appropriate for small to medium sized data sets because it is not encoded.
+It's human readable, right?
+So it's not the most efficient way to store information, but it is easy to read.
+It's also a pretty common denominator for different systems.
+So pretty much anything can handle a CSV file.
+So if you need to interchange your data between different systems, a CSV is a pretty good choice for
+a lingua franca, if you will, a way of transforming that data between anything.
+And if you do want it to be human readable and editable, CSV has a huge advantage there, right?
+So it's very easy to just open up a CSV file in a text editor, read it, understand what's in there,
+and maybe even modify it directly without having to decode and encode it along the way.
+It's also useful for importing and exporting data from databases or spreadsheets.
+Again, the implication of a spreadsheet is it's probably not that much data.
+So a CSV is fine.
+Typically you see this used in databases that are SQL based.
+If you're ingesting data into a SQL database Microsoft Excel is makes it very easy to import Csvs and
+export Csvs.
+Pandas, if you're using a python notebook, can handle Csvs quite easily.
+R and many ETL tools as well.
+There's also JSON, JavaScript Object notation.
+You see this a lot more often.
+You see this in the world of application development for passing data between back end services and
+front end websites, but more generally, it's a lightweight, text based and human readable data interchange
+format that represents structured or semi-structured data based on key value pairs.
+So the main difference here is that it can be semi-structured.
+It's still human readable, just like a CSV file.
+But you can have different kinds of information on different rows, right?
+So because everything is tagged into key value pairs, you can have different key value pairs within
+each row.
+And that's okay with JSON.
+So this is, like I said, more commonly used between a web server and a web client as a way of exchanging
+information.
+It's kind of the default standard for that.
+Also for configurations and settings files for software applications, you'll see that in JSON format
+quite a bit.
+And also just for use cases where you need a flexible schema or maybe nested data structures.
+That's not something you can do easily with CSV, but with JSON you can have, you know, more layers
+of structure within each row, which is kind of a cool thing.
+You see this in web browsers.
+Um, it's supported widely in many programming languages JavaScript, Python, Java, uh, RESTful APIs
+and also NoSQL databases.
+So if you need to store semi-structured data, maybe this is the format that you're storing that semi-structured
+in in your underlying database, like MongoDB is a good fit for this sort of data.
+Let's also talk about Avro.
+So we're getting out of the world of human readable information here.
+Avro is a binary format, and this stores both the data and its schema, allowing it to be processed
+later with different systems without needing the original systems context.
+So it's a little package of both the data and its it's schema that's in binary format to make it nice
+and compact.
+Appropriate for big data and real time processing systems, its binary nature means that it's making
+more efficient use of the data of the bits that it has.
+If your schema is going to change, if your data structure might change over time, that might be a
+good reason for encoding the schema itself along with the data.
+If your schema does not change, then you're kind of wasting some space by encoding that schema alongside
+the data every time, right?
+So the real use case here is if that schema might change.
+And you need to tie that schema closely to the data that it's attached to.
+It is also good for efficient serialization for data transport between systems.
+So if you need to push data from point A to point B, encoding and decoding it from Avro might be an
+efficient way to do so.
+Again, because it is binary in nature, and because that information on how to decode it is baked into
+the format itself.
+Apache Kafka, Apache Spark, Apache Flink, and Hadoop are examples of systems that deal with Avro
+format quite easily.
+And we'll talk about all of those systems in depth later on.
+Parquet.
+This one comes up a lot.
+This is what we call a columnar storage format.
+So because it is storing data by columns instead of rows, it's optimized for analytics where your queries
+might only be looking at specific columns of information and not everything that's in a row.
+Right.
+So we're kind of flipping things on its head there.
+We're storing the information by its columns because I know that when I'm querying this data, I'm probably
+only going to be interested in specific columns and not the entire row.
+So that's an optimization for analytics, which is why parquet is a very important part of a data analytics
+platform.
+This allows for efficient compression and encoding, again, because columns tend to be of the same
+format.
+Right.
+So that allows us to compress it even better.
+This is useful again for analyzing large data sets within analytics engines.
+The use cases where reading specific columns instead of entire records is beneficial So again, you
+know, think about situations where you might have a lot of features, a lot of columns on each row,
+but a specific use case, a specific analysis only needs a very small subset of those columns.
+That's where parquet becomes very powerful.
+It's also useful for storing data on distributed systems, because I can split things out based on the
+columns that are being queried.
+So maybe I store some columns on different servers, right?
+This can be a very important optimization where I'm trying to minimize I o overhead or storage overhead
+based on what I'm trying to do.
+So examples that use parquet Hadoop again, Apache Spark again, Apache Hive, Apache Impala and Redshift
+Spectrum, which is a very important piece of the data engineering and data analytics world on AWS.
+So parquet remember that one.
+If you have a use case where you have lots of columns, but maybe you don't need to analyze them all.
+Parquet is a very efficient way of storing that information, querying that information, and also distributing
+the processing of that information based on the columns.

@@ -1,0 +1,116 @@
+# 135. Cloud Migration Strategies - The 7Rs
+# Section: Migration
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376658
+# Caption: en_US (manual)
+
+Okay, so now let's discuss
+cloud migration strategies, and there is a blog on the AWS
+that describe the seven Rs of cloud migration.
+Now there's a very complex diagram.
+We're going to go over it in time, not the diagram itself,
+but the concepts behind the diagram.
+What I would recommend you to do is
+to actually read the blog if you can,
+after this lecture, just to get a better understanding
+of cloud migration,
+if that's something you're interested into.
+But let's go over the seven Rs
+because the exam may ask you which strategy you use.
+So you want to migrate to the cloud,
+and the first strategy is to actually retire.
+What does that mean?
+That means you turn off things you don't need.
+So for example, you have some services
+and you actually don't need to migrate them,
+so you turn them off.
+It helps to also reduce the service areas for attacks
+because you have more security, because you have
+less services active.
+You save costs because you retire services, maybe 10 to 20%,
+and you focus your attention on resources
+that must be maintained.
+The second option is to retain.
+So that means that you actually don't do a cloud migration,
+which is still a decision in your cloud migration strategy.
+And you may want to just retain the resource on premises,
+for example, because of security, data compliance,
+performance, and unresolved dependencies,
+or because maybe there is no business value to migrate
+or it's too complicated.
+Next, we have relocate.
+So relocate is actually to move your app from on-premises
+to its cloud version,
+or move EC2 instances to a different VPC,
+a different account, or a different AWS region.
+So for example, you have servers
+that you manage on-premises using VMware software-defined
+data centers, so SSDC, and you just want to keep the same
+but use now VMware cloud on AWS,
+you just relocate, but nothing has changed.
+Then there is rehost for lift and shift.
+So these are very simple migrations,
+and what you do is that you rehost your application on AWS.
+So that can be your applications,
+your databases, and your data.
+You're going to migrate your machines.
+That could be physical, virtual, or servers
+or another cloud into AWS cloud.
+So here you don't do any kind of cloud optimization.
+The application stays as is,
+but you leverage the cloud resources.
+And so possibly, by using the cloud resources,
+you could save as much as 30% on cost.
+And some services, for example, the
+AWS application migration service,
+allow you to just do that, the lift and shift.
+That means you take your application
+and you just put it on the cloud.
+Next, we have replatform for lift and reshape.
+So as an example, you want to migrate your database
+into RDS, or you want to migrate your application
+to Elastic Beanstalk.
+So here you don't change the core architecture
+of your application, but you're going
+to leverage some cloud optimizations,
+and you're going to save time and money
+by moving to fully-managed service or a serverless service.
+For example, for a database,
+instead of just moving it from a server on premises to EC2,
+you move it to RDS,
+and RDS is going to give you a lot of benefits
+around backups, around resiliency,
+around high availability, and so on.
+So your application hasn't changed,
+but now you're using managed services.
+Then we have repurchase for drop and shop.
+So you move to a different product
+while moving to the cloud.
+For example, you want to move to a software
+as a service platform, SaaS.
+It's expensive in the short term, but very quick to deploy.
+For example, you move your CRM
+to the managed version on salesforce.com
+or your HR to Workday or your CMS to Drupal.
+So instead of having everything on-premises,
+now you leverage SaaS platforms.
+And finally, we have refactor and re-architect.
+So here you want to move your application to the cloud,
+but you are re-imagining how the application is going
+to be architected using Cloud Native features.
+So the reason you may want to do this is
+because you actually want to use the cloud
+to improve the scalability, the performance, security,
+and agility of your application.
+You may also want to break up your monolithic application
+into microservices.
+So this is where you're going to have the most amount
+of effort, but usually the most amount of payoff
+from a leveraging the cloud capabilities.
+So for example, you move your application
+to a serverless architecture,
+or you're going to use Amazon S3
+to store some data and so on.
+So that's it.
+I hope now the seven Rs in the cloud migration
+strategy makes sense.
+I hope you liked it, and I will see you in the next lecture.

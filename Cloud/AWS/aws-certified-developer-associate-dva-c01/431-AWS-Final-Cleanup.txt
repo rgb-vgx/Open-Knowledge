@@ -1,0 +1,92 @@
+# 431. AWS Final Cleanup
+# Section: AWS Final Cleanup
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851498
+# Caption: en_US (manual)
+
+So now we are done with all the hands on,
+and congratulations, this is a lot of things we just saw.
+What we need to do now is to just clean up
+our entire AWS so we don't overpay,
+and it's always best practice to clean up.
+So for you, you need to be a bit methodical.
+You need to go over the regions you've been into,
+so for me it's been Paris
+and it's been US East, North Virginia
+And what I have to do is go over all the services
+and see what we've used or not.
+I think that was a great time as well,
+to figure out and looked at what you've learned,
+so let's go by one by one.
+EC2 for sure you should look at it,
+and make sure you delete any remaining instances
+of the scaling group load balancers that you have.
+Lamda, we need to delete all the Lamda functions,
+they don't cost you anything if they stay there
+but it's always best practice to clean up after yourself.
+Beanstalking lets you make sure you remove
+all of your applications you've created,
+as well as the environments.
+S3 you need to look at your buckets,
+make sure you don't have any left over buckets
+or files too big.
+You're not going to pay for S3, again it's for a free tier,
+but it's always good to clean up.
+RDS, delete your database recruited,
+DynamoDB makes sure you delete
+all your tables, indexes, etc.
+And make sure that your total capacity
+does not go over 10, other wise after 10 RCU and 10 WCU
+are going to go over budget and start paying for DynamoDB.
+In terms of migration, we haven't used it.
+For VPC you can go in Route 53 and delete
+things which you have there.
+Remember you've paid for the main maybe,
+so you won't be able to get your money back for this.
+API Gateway, make sure you remove
+all the API's we've created.
+I believe there were three API's.
+In terms of developer tools, we've seen codebit,
+CodeCommit, CodeBuild, CodeDeploy and CodePipeline,
+so all these things can be removed
+and you should look at it.
+CloudWatch should set multiple alarms, events,
+dashboards, so make sure you clean that up.
+CloudFormation is great, because to just
+clean up CloudFormation you click on a CloudFormation
+stack, right click, delete, and you're done.
+Then in terms of Systems Manager,
+we have created some few parameters,
+so we can also remove them from there.
+We haven't seen any Media Services nor Machine Learning
+nor Analytics.
+Oh yes, we've seen Kinesis, I don't know why
+they've put it in Analytics,
+but we've definitely seen Kinesis,
+so make sure you delete any Kinesis stream you have,
+they are very expensive and there are none in the free tier.
+In terms of security, we have Cognito we've used,
+and we've also used IAM, although I would suggest
+you delete IAM stuff last,
+because everything depends on IAM.
+We haven't used any Mobile Services nor AR.
+In terms of Application Intregation,
+we've definitely used SNS and SQS,
+and here you can just see quickly,
+Step Function, SWF as well, you can go ahead
+and play with those if you wanted to.
+And that's it in terms of all these things
+we haven't seen on the right side.
+But what we've seen is, I think, an impressive
+overview of all the tools from AWS.
+Obviously there is a ton we have left out,
+but they are not included in the exam,
+which is good enough for us.
+So make sure you clean up after yourself,
+go in there, delete everything you've created,
+just so you have no surprises.
+And then make sure you do it in a region you're in
+for me it's Paris and I'm going to
+have to do it in North Virginia as well.
+So that's it.
+I hope you enjoyed it
+and I will see you in the next lecture.

@@ -1,0 +1,73 @@
+# 89. [SOA] SSM Session Manager
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869538
+# Caption: en_US (manual)
+
+So now let's talk about SSM session manager,
+which is a way for you to start a secure shell environment
+on your EC2 instances and on-premises servers,
+but you access it through the console,
+the CLI or the session manager SDK,
+and the real power of session manager is that you do not
+need to get direct SSH access into your instances. Okay.
+Neither using a bastion host or SSH key.
+So this is different from the SSH traditional SSH,
+or even the EC2 instance connect
+that is in the backend using SSH. Okay.
+So how does that work?
+Where are EC2 instance is running the SSM agents
+and is having the right permissions to be registered
+with this SSM service.
+And so our user is going to connect to the session manager
+service with a correct IAM permission, of course.
+And then the session manager will be able to execute
+commands on our EC2 instance.
+So it's using the same mechanism if you want,
+as the run commands, the service feature. Okay.
+But this time,
+the session manager is used to just have a common shell
+against our EC2 instance.
+The cool thing is that it supports Linux, macOS and windows.
+Okay. And all the connections, your instances,
+and the executed commands are going to be logged.
+So you can have them being sent to Amazon S3 or
+CloudWatch Logs.
+And the idea is that you have more control
+and more security.
+When someone does an SSH command into an EC2 instance,
+you do not have the history of all the commands
+that will run, and so less security, less compliance.
+And CloudTrail can also be used to intercept
+the StartSession events,
+which is when session and measure is being used to start a
+session onto your EC2 instance. For example, again,
+for some automation, compliance and alerting.
+So session manager requires IAM permissions,
+and this is allowing you to control which users or groups
+can access session manager and which instances,
+and you can use tags to restrict access
+to only specific EC2 instances.
+So in this example,
+this is an IAM policy that allows you
+to connect to any instance,
+as long as the resource type of environment is named dev.
+So you also need access to SSM and write to S3 and
+write to CloudWatch to allow you to send the Log there.
+And optionally,
+you can restrict even restrict commands that the user
+can run in a session.
+if you wanted to go deep down the security route.
+So just for you to understand, using SSH,
+well we have to open up our security group and our user with
+specific IP address as a session to our instance and do
+whatever he wants there, but using session manager,
+we don't need any inbound rules. Okay.
+You just need the instance with the SSM agents
+and the right IAM role,
+and then a user with a correct IAM permission
+can use session manager to run commands against
+our EC2 instance.
+All the data of the session is going to be logged
+or could be logged into Amazon S3 or CloudWatch logs.
+So it's quite a cool service. I hope you liked it.
+And I will see you in the next lecture to do some hands-on.

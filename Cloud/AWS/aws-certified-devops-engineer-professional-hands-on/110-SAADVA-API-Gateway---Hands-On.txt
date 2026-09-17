@@ -1,0 +1,252 @@
+# 110. [SAA/DVA] API Gateway - Hands On
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37903854
+# Caption: en_US (manual)
+
+So let's open API Gateway
+and we are in the API Gateway console.
+So as you can see in here,
+I have option of choosing an API type.
+So we have HTTP, APIs, we have WebSocket API,
+REST API, which are public or private,
+and so as such, we will only deal with a REST API for now.
+So we can try out new console by clicking on this
+and this is going to be the default very soon.
+So please make sure to have that.
+And then you choose REST API, and then you build it.
+So when you build an API, a REST API
+you have several options.
+You can create a new API, you can import one
+from an open API definition file.
+So where it's says file and just import
+and API's created for you.
+You can clone an existing API
+or you can start from the example API.
+For us, we were going to start from a new API
+and the name is going to be MyFirstAPI.
+Now as you see for the API endpoint type,
+we have three options.
+We have Regional, Edge-optimized, or Private.
+So Regional is going to be deployed in one region.
+Edge-optimized is going to be deployed
+in many different regions,
+but it's at the edge that is going to be deployed.
+And then one, the API will still live in one region.
+Or private is just private not exposed to the web.
+To keep things simple right now
+I'm going to choose regional API type.
+So let me create the API.
+And here we are.
+So now we are here,
+we are going to create our first method in this API.
+So for this, you click on create method here
+and then we choose the method type.
+So it could be any of these HTTP verbs
+but we're going to do a GET just to get a page.
+And then you have to choose the integration type.
+So you can see we have five options.
+We have Lambda function, HTTP, Mock, AWS service
+and VPC link.
+And the one we'll be testing is Lambda function.
+But I want to show you that we can also integrate
+with any service in any region.
+So we choose a region and then we choose a service.
+And what it does that you can expose
+some of your AWS services
+as an API through API Gateway.
+So we're going to keep things simple
+and use Lambda functions in this one.
+And so we need to choose a Lambda function
+but for this of course we need to create it.
+So let's go in Lambda and create our function
+that is going to react to this API gateway.
+So create a function and I call this one
+api-gateway-route-gets.
+And this is perfect.
+And then the framework I'll use at the runtime
+is going to be Python 3.11
+but whatever Python 3 or Python should work.
+So this is perfect.
+Let's go and create this function.
+And while this is creating,
+I wanna show you the code we're going to use.
+So I am in my code, in my folder
+and there's lambda-code.py.
+And this is the entire code we're going to copy to Lambda.
+And so the idea is that this is a very simple
+in the function which responds to an event
+with some context and says, "Hey,
+the body's going to be hello from Lambda.
+It's going to be returned as the body."
+The status code is 200.
+And then the headers is Content-Type application/json,
+to let our web browser know
+that we get back a JSON response.
+So I'm going to copy this entire code.
+Scroll down and paste it here.
+So we're going to deploy this function.
+So I'm going to click on Deploy to deploy this function,
+and we can also test it.
+So for example, I can create a test event called DemoTest.
+And then we just send this event, we save it
+and then we click on Test.
+And as you can see, the result is hello from Lambda
+with status code 200.
+So everything is working fine right now and this is perfect.
+And what I'm going to do now is to integrate,
+this Lambda function to my API gateway.
+So back in here, I'm going to copy the function ARN,
+go to my API gateway, and then just click and paste the ARN.
+Perfect.
+So now we have the Lambda function integrated
+and because we want to see the full requests being passed
+to Lambda and being sent back from Lambda,
+you're going to take Lambda proxy integration.
+Now for timeout, as you can see,
+even though a Lambda function can have a long timeout,
+for example, five minutes or 15 minutes,
+API Gateway has a limited timeout
+and the default is 29 seconds.
+You can customize it and have it less than 29 seconds
+but the default timeout is 29 seconds regardless
+of how long your Lambda function takes to execute.
+So let's create this method
+and this is going to automatically grant API gateway,
+the right to invoke our Lambda function.
+So if I go back here and refresh this page,
+as you can see now our API gateway
+can invoke our Lambda function
+and we can verify this by going into the configuration
+and then permissions.
+And if we have a look at the resource-based
+policy statement, this one, and we click on View policy,
+it turns out that my API gateway
+is allowed to invoke my Lambda function
+if the source API is the one from my API gateway
+being route GET.
+So this is the stuff that happens behind the scenes on AWS
+to allow the API gateway to invoke our Lambda function.
+So we know that everything is done
+from a security perspective.
+So now we can have a look at our API gateway.
+So the client for this one method sends a request
+and we can have a look at the request itself here.
+So all the settings are here, it's done integration
+with Lambda, and so it's a Lambda type of integration
+with proxy enabled.
+Then the Lambda itself is this function.
+We can click on it and get back to our function.
+Then the response is proxy integration.
+That means that it will, the API gateway will parse
+what is being sent by the Lambda and interpret it.
+And then the method response is what we have here.
+We could modify it if you wanted to,
+but we're looking for application/json.
+So let's test out this API.
+So for this on the bottom right there is a test
+and you can specify some query strings or some headers
+but we don't specify anything.
+Just click on Test.
+And the test is, hey,
+the response body is hello from Lambda.
+So you can see from the API gateway, the status is 200.
+That comes right from our code right here
+which says status is 200.
+We also have the response body, hello from Lambda, again,
+was defined in our code right here,
+body equals json.dumps.
+And then hello from Lambda.
+And finally the content type is JSON,
+and that is retrieved as part of the response headers
+being content type JSON.
+On top of it from the test,
+we can have a look at the execution log
+from the API gateway, which is really nice,
+which is also when you wanna debug and see what's happening.
+A very nice way of doing so.
+So we have done our first execution
+of an API gateway on top of a Lambda function.
+So now let's actually debug this
+and see what is being sent to our Lambda function.
+So I'm going to do print event,
+and then I'm going to deploy this,
+and we are going to invoke now our Lambda function again
+from our API gateway.
+So we're going to run a new test,
+which still says hello from Lambda, but this time
+we are printing the events.
+So if we go to the CloudWatch logs
+we should be able to find it.
+So let's go into monitoring
+and then look at CloudWatch logs.
+We're going to find the latest log stream, this one.
+And here we have our log.
+And we can see here that this was the printed event
+that was received from API Gateway.
+So some information you have in here, for example,
+the resource which is slash, the path slash,
+the method which is GET, and then you get headers
+and then you get query string parameters and so on.
+So a lot of information is passed on
+by the API gateway to our Lambda function.
+And our Lambda function can use this information
+to forge a response and send it back to the API gateway.
+So now we can go ahead and actually create a new resource.
+So this time we're going to have the resource by doing this
+and the resource name is going to be houses.
+So let's create this resource.
+And now we have the /houses path that I just opened.
+And in /houses, I'm going to create a method.
+It's going to be a GET again for Lambda function
+of proxy integration.
+And I need to create my Lambda function.
+So let's do this quickly, I'm going to copy this
+and then create a function.
+And it's not root yet, it's houses yet now.
+The runtime is still going to be Python.
+And let's create this function.
+Yet again, I'm going to just copy this code.
+And so instead of hello from Lambda,
+we're going to change the message to be hello from,
+and then something with houses.
+So my function is now created.
+We're going to copy this
+and it's going to be hello from my pretty house.
+Okay, we're going to deploy this.
+So now we have deployed the function.
+I'm going to copy the function ARN
+and paste it in here.
+And create this method.
+And so now we have /houses that has the GET method.
+I can test this.
+So let's test it and click on Test.
+And as you can see, I get a 200 hello from my pretty house.
+And so far it's pretty cool.
+We have the root, GET and we have the houses, GET,
+which invoke two different Lambda functions.
+But we want to be able to access this from a web browser,
+not just testing it from the API Gateway UI.
+So let's click on Deploy API, and we need to select a stage.
+So it's going to be a new stage, and the name is dev,
+we'll have a look at it later.
+Let's deploy this.
+And now that we've deployed this API, there's an invoke URL.
+So I'm going to copy this URL
+and then I'm going to paste it in my web browser.
+And as you can see when I go to /dev,
+it says hello from Lambda.
+So this is just Firefox doing a pretty print
+but you get hello from Lambda.
+And if I go to /houses
+then I get hello from my pretty house.
+So this API has two Lambda functions replying to me.
+And if I do something wrong, if I do /wrong
+then I'm getting error message
+such as message missing authentication token.
+So here we go.
+We have deployed our API to API Gateway
+and this is pretty cool
+because, well, we have two Lambda functions
+behind the scenes actually replying to it.
+And that's it for our basics role on API Gateway.
+I hope you liked it, and I will see you in the next lecture.

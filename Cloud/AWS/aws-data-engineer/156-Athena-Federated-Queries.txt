@@ -1,0 +1,91 @@
+# 156. Athena Federated Queries
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/48188045
+# Caption: en_US (auto)
+
+Instructor: Something I don't recall
+seeing on the beta exam,
+but reportedly is showing up quite a bit
+on the final exam in 2025 is Athena Federated Queries.
+So pay attention folks!
+It's no longer the case that Athena only talks to S3.
+Through these data source connectors,
+you're able to talk to other sources as well.
+These are just little bits of code that run on Lambda
+that allow other data sources to be compatible
+with Amazon Athena.
+And there's a very long list of these data sources
+that are available.
+Within the AWS ecosystem, we have ones for CloudWatch,
+DynamoDB, DocumentDB, RDS and OpenSearch.
+Also any SQL database that talks JDBC, it's also fair game.
+There's a data source connector for that as well.
+And if there's something really unusual,
+you can write your own custom connector as well
+to glue that data source to Athena.
+There's also a long list
+of third party data sources out there as well.
+So if you have data that's hosted on Cloudera
+or Hortonworks, an HBase database,
+Kafka and Oracle database, Snowflake,
+Teradata, and lots more.
+There are data source connectors available
+for those as well.
+So Athena can connect to pretty much anything these days.
+A little bit more detail on it.
+Athena also supports views on federated data sources.
+Now the information for those views is stored in AWS glue
+and not the underlying data source itself.
+You can also use AWS Secrets Manager
+to manage the credentials for these external data sources.
+The only catch there is that you need to configure
+a VPC private endpoint for AWS Secrets Manager
+for Athena to be able to use that
+with your external data source.
+Also, speaking of glue,
+some connectors can be integrated with AWS glue itself.
+By doing so, you can enable fine-grained access control
+through lake formation,
+and some of the connectors that support that
+are the ones for Redshift, BigQuery, DynamoDB, snowflake,
+and MySQL and more too.
+Kind of funny that, you know,
+Google supported data sources are also available there too.
+You can also do cross account federated queries.
+So if you need to do a query across multiple accounts,
+that is also possible.
+It's just a matter of setting up the appropriate permissions
+in IAM and the details aren't important.
+You just need to know you can do that.
+Also, there's something called Passthrough Queries.
+This allows you to use the native query language
+of the data source that's under the hoods.
+So if your underlying data source
+has its own query language,
+you can pass that query through down beneath it
+to make it maybe perform a little bit more efficiently
+and take advantage of any capabilities
+that data source may have
+before returning that data back to Athena.
+A little example on the right here.
+So this is just what these syntax would look like
+for Query in CloudWatch through a data connector.
+Just look at that From Clause.
+There you can see that we have it
+pretty much looking like a table, my CloudWatch catalog,
+and then we have DOT and then in quotes
+some extra information that you might need to pass on
+to that data source.
+So in this case we're saying,
+we want to query the CloudWatch logs
+that are in this particular directory.
+So the syntax is pretty simple actually for doing this.
+Also, keep in mind that some connectors may be used
+as Spark DSV2 data sources as well.
+I'm not gonna get into the details of that,
+but again, just know it's a possibility.
+So some of these data source connectors can also be used
+to make these data sources
+look like Spark data sources as well.
+That's Athena Federated queries.
+Just remember they exist and what they can do.

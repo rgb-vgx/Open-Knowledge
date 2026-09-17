@@ -1,0 +1,208 @@
+# 199. Amazon EKS - Hands On
+# Section: Containers on AWS: ECS, Fargate, ECR & EKS
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33907130
+# Caption: en_US (manual)
+
+So I want to show you
+how to use the EKS service.
+You don't have to follow my hands-on,
+it's just for you to get an idea of how this works
+and how this gets configured
+so you have a better understanding of the service,
+but we're not going to use it
+and it may cost you money to do so,
+so just look at what I'm doing.
+Of course, if you want to, you can follow along.
+So we are in the EKS console
+and we're going to create a cluster.
+So here we have two options, the quick configuration
+or the custom configuration to choose more options.
+So let's go over custom configuration
+and we'll have a look at all the options quickly.
+So let's scroll down.
+And now we have the EKS Auto Mode, which is new.
+We're going to use it, this is going to make sure that
+when a new pod,
+so a new task, cannot fit onto existing nodes,
+EKS will automatically create a new node for us.
+That means that we have the infrastructure
+that is managed by EKS, which is great.
+So I'll call this one DemoEKSCluster.
+Then there is a cluster role. So this is very important.
+We currently don't have a role for this cluster.
+So you click on create recommended role,
+and this is going to automatically create the role
+we need for this cluster.
+So then it needs to also have these managed policy
+or equivalent to use EKS Auto Mode.
+So I guess this is not created out of the box for us.
+So in permission policies we would add policy,
+attach policies, and then we would look for EKS,
+and then we would need to match this.
+So EKS block storage, cluster policy, compute policy,
+and then load balancing and networking,
+load balancing and networking.
+Add permissions.
+And now we have the proper permissions to this role.
+Let's refresh this. No more error message.
+The Kubernetes version, we're good to go.
+Standard support, yes.
+We don't need to enable a higher scaling tier.
+Auto Mode is going to say
+what we choose the node pools to choose from.
+So general purpose and system.
+Node IAM role,
+this is the IAM role needed for the nodes
+to be registered with the cluster.
+So there's a role here, but it's not the right one.
+So we need to create a recommended role
+called AmazonEKSAutoNodeRole.
+It has the default policies right here.
+Let's create this role.
+And no error message. So we're good here.
+Let's remove these notifications.
+Then we have the cluster access.
+So we allow cluster administrator access
+for your IAM principal
+to make things easy.
+We don't need to change anything here.
+We don't need to look at encryption right now.
+This is a way for you
+to shift traffic across AZs in case there's a problem in AZ.
+So for now we'll disable it, but we can enable it after.
+This is just a way for you to have a better
+disaster recovery protection.
+Let's click on next. Networking is more interesting.
+So you choose the VPC to launch your EKS resources in
+as well as subnets where to launch your resources.
+So here are three subnets that are public.
+You could add security groups if you wanted to,
+but right now we don't need to.
+Choose the type of IP you want to use.
+IPv4 is fine.
+Then how to access the cluster.
+Is it public, public and private or just private?
+We'll use public and private.
+Next you have all the metrics.
+So you have metrics
+that are gonna go directly in CloudWatch,
+but also you can have Prometheus if you wanted to.
+To set these up.
+You have network monitoring, control plane logs.
+So all these things are Kubernetes specific.
+Again, I just wanna show you the options,
+but you can see you can also send all the logs
+into CloudWatch logs for these things if you need to.
+So it's quite a lot of options when you
+configure your EKS cluster.
+You can also add add-ons for your cluster.
+This is Kubernetes-related knowledge, so I will not do it,
+but as you can see, you have lots of options around DNS,
+around SageMaker, around EFS and so on.
+So it's great.
+And then you also have community add-ons
+if you want around all these things.
+So let's scroll down.
+And then you have third party marketplace add-ons
+if you wanted to.
+Let's click on next, then this how you configure an add-on
+and then you review everything and you scroll down
+and create your cluster.
+So if you're a Kubernetes expert, you would know
+that it's difficult to set up your own Kubernetes cluster,
+but thanks to AWS, it's managed
+and it has the resources created for you behind the scenes
+and you make sure that the cluster is properly configured.
+So my EKS cluster is now created
+and I wanna show you a few things.
+First of all, under resources,
+you have access to the resources within Kubernetes.
+So you have your pods in here, you have your replica sets,
+your deployments, your stateful sets and so on.
+So all these things are Kubernetes specific,
+but you can see them directly from the UI
+of the EKS service, which is very handy.
+Under compute, this is where you're going to see your nodes.
+So this is a c6g.large
+that has been created thanks to the Auto Mode.
+So you can see it's a pretty large instance
+and you would pay a lot of money
+if you were to do this on your account.
+So don't have to follow this hands-on
+if you don't want to, of course.
+But this is the built-in node pool.
+So this is managed by EKS Auto Mode.
+But if you scroll down, you have two options.
+You have node groups and fargate profiles.
+So I'll just show you how to create a node group
+if you needed to.
+This is a way for you to create a set of EC2 instances
+that will be managed by an auto scaling group.
+So I call this one DemoNodeGroup.
+You need to select a role.
+So I click on create recommended role.
+I scroll down
+and the policies have been selected for me already,
+so I don't need to do anything.
+Click on next and I'll call this one NodeGroupRoleEKS.
+As you can see, these four policies
+have been added automatically.
+So it's perfect.
+And we create this role.
+So now we get this role name, we enter it,
+refresh and enter it.
+Here we go.
+Next we can, for example, use a launch template.
+So this is to indicate how our EC2 instances
+are going to be launched within our auto scaling group.
+So you would go ahead and create a launch template,
+and this is all the information we already know
+around the AMIs, around the instance type that we want
+and so on.
+So we've seen this before,
+so I'm not going to go over it right now.
+Then click on next.
+So here you choose the AMI type, the capacity,
+the instance types, the disc size,
+then the minimum and maximum size
+for your auto scaling group,
+whether or not you want to use a warm pool.
+I mean all these things are auto scaling group specific.
+And enable node repairs in case you have an issue.
+Then you specify networking. So where to launch these nodes.
+And then you would go ahead and create this.
+And this is going to create its own auto scaling group.
+And so after a bit I can see that
+two nodes are appearing under this node group.
+And actually if I go into the EC2 console,
+within my instances, I can see that I have,
+this is my management instance, the c6 large,
+and this is the two t3.medium instances.
+And so if I go on the left hand side
+under auto scaling groups,
+we can see that this auto scaling group
+was created by EKS
+and contains the configuration we just did.
+So we can see how EKS is now managing my node group.
+So I go back to resources, we would have a computes,
+we would have a similar type of configuration
+for fargate profiles in which we define
+how to launch pods directly on fargates managed by EKS.
+So I'm not gonna do this, but you get the idea.
+Under add-ons, I just wanna show you something.
+So you can click on get on more add-ons,
+and you can look at something called the EBS CSI driver.
+And if you add it as well as the EFS CSI driver,
+this would allow you to use EBS volumes
+or Amazon EFS file systems within your cluster.
+And this is something that is important to know,
+but I won't do this right now.
+So that's it, I just wanted to show you
+how to configure your cluster.
+Now I will delete it.
+So to do so, I need to make sure
+I first delete my node groups and the cluster,
+so I'm going do this offline.
+But you get the idea of how EKS works now in AWS.
+So I hope you liked it
+and I will see you in the next lecture.

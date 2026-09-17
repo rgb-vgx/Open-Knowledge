@@ -1,0 +1,219 @@
+# 6. Identity Federation & Cognito
+# Section: Identity & Federation
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376334
+# Caption: en_US (manual)
+
+Okay, so now let's discuss
+Identity Federation in AWS.
+So the idea is that you want to give users
+that sit outside of AWS permissions to access
+your AWS resources in your accounts.
+And the idea is that because the users already exist
+within your corporate directory,
+then you don't want to create specific IAM users for them
+because you'd like to do user management outside of AWS.
+So this is why we need Identity Federation.
+So the use cases is, for example,
+your corporation has its own identity system,
+for example, Active Directory,
+or you have a web and mobile application
+that needs to access AWS resources.
+And so this is where we need Identity Federation.
+So at its core, here's what it looks like.
+So the user wants to access AWS,
+and we have an identity provider.
+First, and this will not be represented
+on any following graphs, but just on this one,
+obviously you need to set up
+a trust relationship between AWS
+and the identity provider to tell AWS that it's fine
+to get an identity from this one provider.
+Then the user will perform a login
+onto this identity provider,
+will receive back credentials for AWS,
+and will access AWS using these temporary credentials.
+So Identity Federation can have multiple flavors.
+It could be SAML 2.0, a custom identity broker,
+Web Identity Federation with or without Amazon Cognito,
+and then IAM Identity Center.
+So I'm going to discuss the first three,
+single sign-on will have its own lecture,
+and this is the more recent generation
+of Identity Federation,
+but still from an example perspective,
+you need to know about all of them.
+So let's go ahead with SAML 2.0 Federation.
+So SAML 2.0 stands for Security Assertion Markup Language,
+and it's an open standard used
+by many identity providers such as ADFS.
+It supports integration with Microsoft Active Directory,
+which is nice, or any SAML 2.0-compatible IDP,
+which is identity provider with AWS.
+Using this, we can access the console, the CLI,
+or any API using temporary credentials.
+So we don't need to create IAM users
+for each of the employees in your ADFS.
+And you need, for example, of course to set up a trust
+between IAM and your SAML 2.0 identity providers both ways.
+So under the hood we'll use an API
+called AssumeRoleWithSAML, comes from the STS service,
+and that will give us temporary credentials
+using SAML assertion.
+So as I said,
+SAML 2.0 Federation is the old way of doing things.
+And now IAM Identity Center
+is the new managed way
+and simpler way of doing things,
+yet we still have to learn about SAML 2.0 Federation.
+So the best way to understand this is
+to go through a diagram.
+So we have our corporation where our identity provider sits,
+and AWS, and our user wants to access an S3 bucket.
+Now inside of our corporation,
+we'll have a portal or identity provider,
+and the user will make an authentication request to the IDP.
+The IDP will verify the request through an identity store,
+for example, LDAP-based,
+and then it will return a SAML assertion
+if the login is successful.
+So this SAML assertion is the proof
+that the user is who they claim to be,
+and therefore with this SAML assertion,
+the user can call the STS service
+with AssumeRoleWithSAML API,
+and STS will verify the assertion,
+make sure that yes, it is the one that is trusted,
+and then say, "Okay, here are some temporary
+security credentials for you."
+And the user will be able to access the AWS APIs
+using that mechanism.
+It is very similar if the user
+wants to access the console of AWS.
+So very similar setup.
+So we still have the IDP and the LDAP identity-based store.
+We have the authentication loop, as I said from before,
+but this time we post to AWS sign-in
+in this endpoint with slash SAML.
+And what this will return is
+that it will return security credentials
+through the STS service,
+and this will return a special URL,
+the sign-in URL for the AWS console.
+And this URL will be used by the user
+to be redirected into the AWS management console.
+And from there on, everything is good.
+So these two flows are very similar
+because they use the same SAML 2.0 Federation.
+Now if we have ADFS, it's something you may have.
+Well, this is the exact same mechanism as before.
+The only difference is that on the left hand side,
+we have the Microsoft Active Directory Federation Services
+on the top left, and then on the bottom right,
+where the user sits, is Active directory itself, okay?
+So this is for you to understand
+what is the difference between the IDP, so ADFS,
+and the directory itself, which is Active Directory.
+Okay, more complicated and definitely older
+is that if your identity provider is not compatible
+with SAML 2.0,
+then you need to use a custom identity broker.
+So let's say we want to access AWS services
+and the management console,
+and we have our corporation identity provider,
+we'll have a custom identity broker.
+Now the user will login to the identity broker,
+which will verify the login itself,
+but then the identity broker will be the one to authenticate
+and request temporary credentials from AWS.
+So this time, there is no AWS API that can be used.
+So therefore the custom identity broker has admin power
+and can request temporary credentials directly
+from the STS service,
+which will be returning these credentials themselves.
+Now that means that the identity broker is responsible
+and must determine the appropriate IAM role for that user.
+So it pushes the management
+of the users into the identity broker itself.
+Then the only way for it to work is to use the AssumeRole
+or GetFederationToken API from STS directly
+from the custom identity broker.
+So once the security credentials are retrieved,
+then they're passed on to the user,
+and the user can access the APIs of AWS
+or be redirected to the management console.
+So again, these are the old ways of doing things.
+SSO will come up later in this course.
+Now with web identity federation, we have two flavors,
+we have without Cognito and with Cognito.
+So without Cognito is not recommended by AWS anymore.
+You're recommended to use Cognito instead,
+but still you need to know about it.
+So what is Web Identity Federation?
+So this time we have an untrusted environment.
+So before, it was our corporation, so we knew the clients,
+but in this case, we have AWS Cloud,
+and we want to access services from our client directly,
+but we are going to authenticate
+with a third party identity provider.
+It could be Amazon, Google, Facebook,
+or any OpenID Connect-compatible IDP.
+So this obviously will be set up with AWS
+as a trust mechanism.
+And so the flow is that the client will log in into the IDP,
+the third party IDP,
+and then the web identity token
+is going to be shared back with the clients.
+The client will use a special STS API
+called the AssumeRoleWithWebIdentity API.
+And then by trading that token,
+it will receive
+temporary security security credentials for AWS.
+These credentials will be used
+to access AWS resources directly.
+So this is the old way without Cognito.
+With Cognito, it's a little bit more secure and more simple.
+So it's preferred over Web Identity Federation
+because here in Cognito,
+we can create IAM roles
+with the least privilege needed,
+and then we just need to build the trust
+between the OIDC IdP and AWS.
+So now we have the Cognito service,
+the client still authenticates
+to a third party identity provider, gets a token back,
+but then the token is exchanged with Amazon Cognito,
+which will return a Cognito token.
+That Cognito token can be exchanged with STS
+to receive temporary security credentials for AWS.
+And then the client will be able
+to access the AWS resources directly.
+So why should we use this mechanism with Cognito?
+Well, Cognito will support anonymous users, which is a plus.
+It will support MFA, and it will have data synchronization.
+So in that instance,
+Amazon Cognito operates at what's called
+a token vending machine
+because it exchanges token for credentials.
+Okay, so when we have Web Identity Federation,
+can we restrict IAM policies?
+The answer is yes, you can use an IAM policy variable.
+And so here is an example of a policy that allows the user
+to only list a bucket with a prefix as the user ID,
+and also to get, update,
+and put objects in with that specific prefix.
+So the idea is that when you have a Web Identity Federation,
+you can use some special variables.
+For example, going to identity.amazon.com:sub
+or amazon.com:user_id and so on
+to restrict your IAM policies with conditions
+and make sure that the users really have
+the restrictions they need, okay?
+So that's it for Identity Federation.
+These are the old ways, obviously,
+except when we're using Cognito.
+And we'll see SSO in the future lecture.
+So I hope you liked this,
+and I will strongly suggest
+you revisit this lecture one more time before the exam
+and it should all make sense,
+and I will see you in the next lecture.

@@ -1,0 +1,124 @@
+# 198. Amazon Managed Workflows for Apache Airflow (Amazon MWAA)
+# Section: Application Integration
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40394518
+# Caption: en_US (auto)
+
+Instructor: Apache Airflow
+is a popular workflow management solution,
+and Amazon has support for that as well
+in the form of Amazon Managed Workflows for Apache Airflow.
+It's basically a managed,
+hosted environment for Apache Airflow.
+Apache Airflow is a batch oriented workflow tool
+and it can develop, schedule, and monitor your workflows
+and control the flow of your data
+and your data engineering pipeline.
+The thing is though, you define them using Python code,
+so it's not gonna be using some drag and drop,
+graphical user interface to define these workflows.
+You have to actually write Python code to set them up.
+And what that Python code needs to do
+is create what's called a Directed Acyclic Graph
+or a D-A-G, DAG for short.
+Kind of the same way that Apache Spark works, right?
+What Amazon NWAA brings to the table
+is a managed service for Apache Airflow,
+so you still have to write the code for it
+and figure out how it gets configured,
+but you don't have to deal with maintaining
+or installing the service itself.
+So it's just a way to run Airflow a little bit more easily.
+So if you do have a more complex workflow
+or you need to do some sort of complex coordination with ETL
+or maybe preparing machine learning data,
+this might be something you'd want to do in Python
+and Apache Airflow could be a good fit for that.
+Here's a very simple example of it.
+So let's say for example
+here we're creating a couple of tasks.
+One is called Hello, which is just calling out
+to the Bash operator to run on the Bash console.
+Echo hello and then we have another thing called Airflow,
+which is just a function that just prints the word Airflow.
+We then set a dependency between those two tasks.
+We say hello >> airflow,
+and that creates that dependency in Python.
+And then, once we do that, Airflow will not only make sure
+that that does what it needs to do
+on whatever schedule you want,
+it can also create a pretty little visualization
+of that workflow as well,
+which you see in that diagram here.
+You see down the bottom we have hello
+that points to Airflow as the next step
+and surrounding that, you can see all the information
+about how often it's run, what its schedule is,
+things like that.
+So it has this nice little web interface you can use
+to visualize what it's doing and to control the scheduling
+but the actual Directed Acyclic Graphs
+of what it actually does
+is something you have to write Python code for.
+Now remember, the exam will never ask you to write code,
+so don't get too hung up on the syntax here,
+you just have to understand you create DAGS
+with Python using Airflow.
+So how does this integrate with Amazon?
+So your Directed Acyclic Graphs,
+the Python code that actually creates these workflows
+get uploaded into S3 and then that gets loaded
+into Amazon managed workflows for Apache Airflow
+where Airflow takes it from there.
+You can also zip that Python code together
+with any required plugins or other dependencies
+that code might have.
+So it all stays self-contained within S3.
+Once MWAA picks it up, it will orchestrate that
+and schedule everything that you need
+that's defined by each Directed Acyclic Graph.
+That's hard to say.
+MWAA runs within A VPC, you should have it deployed
+to at least two availability zones for redundancy purposes.
+You can also hook it up to both private and public endpoints
+that are managed via IAM and this is going to control
+the access to the Airflow web server.
+Remember that scene we saw on the previous slide
+where you have that nice little UI
+where visualizing these workflows and scheduling them.
+If you want access to that outside of your VPC,
+you'll need a public endpoint to do that.
+It automatically scales.
+So under the hood, there are airflow workers
+making it all happen.
+The nice thing about MWAA is that it will automatically
+scale those up, up to any limits you might define
+to control costs.
+Integrating this with other services.
+So MWAA just relies on open source integrations
+to other Amazon services,
+but there's a lot of them out there.
+So you can tie MWAA into Athena and AWS Batch,
+CloudWatch, DynamoDB, DataSync, EMR, Fargate,
+EKS, Kinesis, Glue, Lambda, Redshift, SQS, SNS,
+SageMaker S3 and more.
+And obviously, all the security services you might need
+to access those services like AWS Secrets Manager.
+The schedulers and workers themselves
+are implemented within AWS Fargate containers.
+And here's a little quick peek
+at the underlying architecture here.
+Basically, there are two VPCs under the hood with MWAA.
+There's a customer VPC that contains all the schedulers
+and workers and those are talking out
+to the services that you're working with from those DAG.
+So that can go out and talk to CloudWatch, S3, SQS,
+whatever you need.
+And then through VPC endpoints, it's also communicating
+with a metadata database, restoring those workflows,
+and also the Airflow web server,
+which is your user interface for visualizing
+and scheduling these workflows.
+So again, if you don't have a public network interface,
+there's no way to access that web server from the outside,
+but if you are within that service VPC,
+you can still get it from there.

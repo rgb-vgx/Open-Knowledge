@@ -1,0 +1,69 @@
+# 163. Blue-Green Architectures
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904660
+# Caption: en_US (manual)
+
+So now let's talk
+about the different ways you can achieve blue-green on AWS.
+So let's take an example of an ALB,
+and you have a listener, and two target groups.
+So you have the blue target group,
+currently receiving requests,
+and you can actually add a green target group
+to the same listener and actually spread out
+the request between the blue and the green target group.
+So you can switch all the traffic at once,
+if you wanted to by switching target groups,
+swapping them, or if you wanted to assign weights
+to the target group, you could as well, for example
+put 90% on your blue, 10% on your green
+and then if the green target group behaves properly,
+slowly or all at once, switch all traffic.
+The advantage of using this technique is
+that the ALB is responsible for redirecting request
+and so you can switch all the traffic at once
+from the target group blue to the one that is green.
+If you decide to use a different architecture,
+where you have one ALB per target group, then
+you must be able to switch from one ALB to the next ALB.
+And for this, we need to use a DNS.
+And so Route 53 is helpful and you can switch using the DNS
+from one ALB to the next ALB.
+But this is something that happens
+over time because your clients actually cache the result
+of your DNS query.
+And so the DNS switch is not as immediate.
+You don't have as much control over it.
+You cannot do all at once at any point of time.
+You have to slowly and gradually wait for your clients
+to refresh their DNS record to use the new ALB.
+So it's a little bit slower, but that works.
+If we are using API gateway,
+there are different strategies as well.
+So we have a production stage connected to a
+v1 Lambda function.
+And so currently all the client request
+into your API gateway go through that stage.
+But we can deploy a canary stage, a green stage
+which is going to be connected, for example
+to the v2 version of your Lambda function.
+And then what's going to happen is
+that the clients internally will be redirected
+to the canary stage to send a little bit of traffic to it.
+And if we're happy with the canary stage,
+then we can promote it as well.
+So the benefit of this is that we are in full control
+of the network traffic and we can switch all traffic
+at once from prod to the canary whenever we want to.
+The alternative is to use a Lambda alias.
+So in that case, we only have one stage
+in the API gateway and it's not changing,
+but instead the Lambda alias is pointing
+to the v1 version of your Lambda function.
+But we can deploy a v2
+and control how fast and how much we switch traffic
+from v1 to v2 on the alias.
+No changes required to your API gateway
+and no changes required to your clients.
+Okay, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

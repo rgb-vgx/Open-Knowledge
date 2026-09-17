@@ -1,0 +1,57 @@
+# 97. Amazon Polly - Hands On
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45381367
+# Caption: en_US (manual)
+
+So now let's have a look at Amazon Polly.
+So let's click on try Polly.
+As you can see, I can do text to speech
+and have different engines.
+So we have the generative, which is producing
+the most expressive and adaptive speech using gen AI,
+long form to have longer content,
+neural, which is more human-like than standard,
+or standard, and so you get to choose whatever you want
+and you can try it out.
+For example, we have this info text, hi, I'm Ruth.
+I can read any text for you.
+Test it out!
+So let's listen to it.
+Hi, I'm Ruth.
+I can read any text for you.
+Test it out!
+So you see,
+this sounds pretty good and natural.
+We can try something else, so hi, I'm Stephane,
+and I'm teaching AWS, it's awesome!
+And let's try this for the long form, for example,
+and I'm gonna give myself a male voice,
+the voice of Gregory.
+Hi, I'm Stephane and I'm teaching AWS, it's awesome!
+Okay, and so we can see
+that this works really well, but let's use SSML.
+So we are going to use a markup language
+and for example, we want to test it on this,
+but I'm going to just have a break here.
+So I'm teaching and I think this should work
+or let's copy this into SSML, here we go.
+I'm teaching &lt;break&gt; AWS, and so this should make
+a little pause here because we have provided
+some markup information.
+So let's try it out.
+And yeah, of course I need to add the &lt;speak&gt;
+at the beginning, and then the &lt;speak&gt; like this at the end,
+and then for break, I need to add like this.
+Okay, so now it's gonna say, hopefully add a pause,
+here we go.
+Hi, I'm Stephane and I'm teaching AWS, it's awesome!
+You see there was a pause
+between teaching and AWS.
+So you can experiment, but this is a pretty natural
+service to use and you can look at the additional settings
+to customize pronunciation.
+For example, if I wanted my name to be pronounced correctly,
+I could probably use this,
+or to have different output format for your speech.
+Okay, that's it, I hope you liked Amazon Polly,
+and I will see you in the next lecture!

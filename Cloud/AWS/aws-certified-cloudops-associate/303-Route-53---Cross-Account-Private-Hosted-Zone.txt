@@ -1,0 +1,25 @@
+# 303. Route 53 - Cross-Account Private Hosted Zone
+# Section: Networking - Route 53
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53217763
+# Caption: en_US (manual)
+
+So, a very quick lecture
+on cross-account private hosted zone.
+So, you can associate your private hosted zone,
+so a zone for a private DNS in Route 53
+with a VPC in another account.
+So, here is your hosted zone in account A,
+and what you're going to do is
+that you're going to create
+a VPC association authorization from the account A.
+For example, using this CLI command right here.
+And then on the account B on the VPC,
+you can then create the VPC association
+like you normally would and it would automatically allow it,
+because you have created
+an authorization on the first account.
+Just one little thing to know,
+but this can come up in the exam.
+All right, that's it.
+I hope you liked it,
+and I will see you in the next lecture.

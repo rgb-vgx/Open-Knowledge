@@ -1,0 +1,66 @@
+# 90. Amazon Comprehend Medical & Transcribe Medical - Hands On
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887731
+# Caption: en_US (manual)
+
+So let's practice
+just using the Comprehend Medical service very quickly,
+just to show you the capability.
+We're not gonna spend too much time on it.
+But you click on launch realtime analysis
+and it gives you an input text,
+which is some doctor's notes.
+So we have a patient to be an 87-year-old woman.
+And because this is doctor's notes,
+it could be very compressed.
+So, "PT is 87 YO."
+So you see it could be very complicated
+to understand and to analyze.
+And then for the meds, again,
+we have PO, so we don't know what that means, PO QHS.
+So these are like specific doctor related notes.
+And then you click on analyze,
+and Comprehend Medical
+is going to comprehend exactly what is happening,
+and to give you the entities.
+For example, 87 is the age,
+women is a gender
+and profession is a high school teacher, and so on.
+So there are a lot of concepts that are linked together,
+for example, the symptom is overlapping with today.
+So it knows the relations as well
+of all these things together,
+which would allow you to build your own application
+down the road.
+So we know that, for example,
+this dosage is related to this brand name.
+And PO is the root or the mode
+that's again related to this brand name.
+So this is very interesting,
+definitely just doctor related stuff.
+But all of this can be extracted
+based on different levels of insights.
+Honestly, I'm not gonna go through all of this
+because this is way beyond the idea of this course.
+But you understand that now,
+using Comprehend Medical,
+you can analyze medical texts.
+And if you want to look at Transcribe Medical,
+it's actually within the Transcribed UI.
+So you click on it,
+and then on the left hand side,
+you have Amazon Transcribe Medical.
+And this is real time transcription for medical discussions.
+So I'm not a doctor,
+I'm a teacher of AWS,
+so I'm not going to be able to say many interesting things,
+but for example, I would say,
+"I have a cough and I think maybe it's COVID-19."
+And actually it's a cough, not a cuff.
+But anyways, I can't really speak English for as a doctor.
+But anyway, here we go.
+It's been transcribed for me.
+And you get the idea behind Amazon Transcribe Medical.
+So that's it, a very short lecture,
+but I hope you liked it,
+and I will see you in the next lecture.

@@ -1,0 +1,117 @@
+# 139. Scenarios for Security
+# Section: AWS Security Services & More
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45796349
+# Caption: en_US (manual)
+
+So here are a few security scenarios
+that can come up in the exam.
+For example, Amazon Bedrock must access
+an encrypted S3 bucket.
+So, for example, say we want to customize a model,
+we wanna fine tune it,
+so therefore we must access custom model data
+that is going to be stored in Amazon S3.
+But Amazon S3 has different levels
+of security and encryption
+and for example, we can encrypt Amazon S3 with KMS,
+which is key management service
+and so we define a KMS key
+and automatically then Amazon S3
+will know to encrypt the data
+with the SSE-KMS type of encryption
+and so all the data is going to be encrypted onto Amazon S3.
+I'm keeping it as simple as possible on this one.
+So how can we make Amazon Bedrock
+access the encrypted data on Amazon S3?
+Well, Bedrock have the ability to have IM Roles
+and so we can assign an IAM Role to the customization job,
+the fine tuning job,
+and we need to make sure that the IM Role
+has access number one to Amazon S3
+to allow Amazon Bedrock to access our data in Amazon S3.
+But because our data is encrypted,
+we must also give access from the IM Role to the KMS key
+with the decrypt permission.
+And so therefore, because now our Bedrock job
+will have an IAM Role that allows both access to Amazon S3
+and to decrypt the data on it
+because it has access to the key,
+then we should be able to pull the data out of S3
+and use it for our customized model.
+So this is an exam question that can come up.
+Also, for example, we've seen this before,
+but we deploy a SageMaker model in your VPC
+and we want to access data on Amazon S3
+but all of this privately.
+Well the SageMaker resources such as, for example,
+notebooks or training jobs or hosted endpoints
+can be in our VPC and so therefore,
+if we want to access everything privately,
+we need to use a VPC endpoint for Amazon S3,
+which may have a security with a security group,
+this is network security,
+and also may have an endpoint policy.
+This is a way for you to regulate access
+through IAM permissions to your VPC endpoints
+and finally, your SageMaker notebooks or jobs
+or hosted endpoints may have access to an IAM Role,
+which allows access to the VPC endpoint itself.
+So a lot of moving pieces for security,
+but we should remember out of it
+is that always IAM Roles are used
+to access specific AWS resources
+and also VPC endpoints are used
+to access privately some AWS services.
+So the same song now.
+So we have an application in a private subnet
+and Bedrock has a model and we want to access it privately.
+Again, we have a VPC endpoint for Amazon Bedrock
+using PrivateLink with again,
+Security Group and Endpoint Policy
+and if everything is set up correctly,
+then our application should be able
+to access our Bedrock model
+directly through this VPC Endpoints.
+Also, how do we have Bedrock access analysis
+with CloudTrail?
+So here is a common exam scenario
+in which we want to be able to see if users are authorized
+or not to access Bedrock
+and if they're trying to access Bedrock
+if they're unauthorized.
+So first the good use case.
+So we have Bedrock, we have a user and CloudTrail
+and the user has the correct permissions
+to access Amazon Bedrock.
+It's going to use the Amazon Bedrock service
+and for example, we go on the custom models page
+and automatically we're going to invoke,
+behind the scenes, the list custom models API.
+So Amazon Bedrock is going to send every single API call
+it receives to CloudTrail as a CloudTrail event
+and so here the Bedrock list custom models API
+is going to be sent to CloudTrail,
+which is going to generate an event
+and so we'll see that the user A
+did try to invoke successfully the list custom models API.
+Now what happens if user B does not have access
+to Amazon Bedrock?
+So it tries to do the exact same thing.
+It goes on the Bedrock console
+and automatically the web browser
+will invoke the list Customs Model API and it's been denied
+because we don't have the correct IM permissions.
+But still Amazon Bedrock is still going to send
+a CloudTrail event into Amazon CloudTrail
+in which we will see that the user B has been denied
+the Bedrock list custom models API.
+And so therefore, CloudTrail is used to get a list
+of all the API calls made into Bedrock
+regardless if they've been accepted or not
+and it's a good way for you to see which users
+are trying to gain access to Bedrock
+by using Amazon CloudTrail and analyzing
+the denied access for specific APIs.
+So that's it for this lecture, I hope you liked it
+and I hope security makes a lot more sense now in AWS
+and I will see you in the next lecture.

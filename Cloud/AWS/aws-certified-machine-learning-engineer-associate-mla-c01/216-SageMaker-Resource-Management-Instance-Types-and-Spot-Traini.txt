@@ -1,0 +1,51 @@
+# 216. SageMaker Resource Management: Instance Types and Spot Training
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45286805
+# Caption: en_US (auto)
+
+Let's delve into the world of resource management with SageMaker, making sure that you're using just
+the right amount of computing power for your given algorithms.
+So when it comes to choosing an instance type for a given machine learning problem, we talked about
+this a lot back in the modeling section because it kind of made sense to cover it all together for each
+individual algorithm there.
+Technically though, that is an operations concern.
+But because we spent so much time on that under modeling, that's why this particular operations section
+of the course is kind of short.
+We've already talked about a lot of it already.
+However, there are some general tips and tricks here that you can apply.
+Generally speaking, if you have an algorithm that relies on deep learning, that will pretty much always
+benefit from GPU instance types.
+And these days that would either be a P3 or most likely a G4, an instance type for training purposes.
+However, inference is usually less demanding, and you can often get away with something a little bit
+more lightweight there and cheaper, like a compute instance or a C5.
+Is the the going one.
+Right now these days, and sometimes the general purpose ones, like an M5, are a good fit for training.
+If you have an algorithm that is not a deep learning instance, right?
+So if you have some algorithm that cannot be accelerated on a GPU, usually you're going to be going
+toward a M5 or something like that.
+GPU instances can be really pricey, so only use them when they make sense.
+However, it still might be more cost effective to have a single machine with multiple GPUs than many
+CPU instances that could do the same amount of work.
+So even though an individual GPU instance may cost more, you're going to get more mileage out of it.
+Let's also talk about managed spot training.
+One cool thing you can do to reduce your costs is using EC2 spot instances for your training, and this
+can actually save up to 90% over using on demand instances.
+So if you really care about saving money and you have a very large and expensive training job, maybe
+you're a training a machine translation model, for example, that can be a very expensive thing to
+do.
+You could use spot instances to do that training and save a lot of money potentially.
+The catch, of course there is a catch is that your spot instances can be interrupted at any time,
+so you need to make sure you're using checkpoints to S3 so that your training can pick up where it left
+off in case you're training.
+Instances are in fact interrupted in that case.
+So that does make things a little bit more complicated, but it can save a lot of money.
+So it could be time well spent for particularly involved training jobs.
+And also this can come at the cost of increasing your training time as well.
+So if you need to wait for a spot instance to become available and that could be a very long wait,
+right?
+You have to sit around and wait for that resource to become available before your training can actually
+commence.
+But if what you care about the most is saving money, this can be a way to save a lot of money at the
+expense of using a little bit more complexity and setting up S3 checkpoints, and at the expense of
+time, because you have to wait for those resources for those spot instances to become available.
+Aethes.

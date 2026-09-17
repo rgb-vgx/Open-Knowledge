@@ -1,0 +1,65 @@
+# 88. Amazon Augmented AI - Hands On
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887691
+# Caption: en_US (manual)
+
+So let's have a look at Amazon Augmented AI.
+So let's type augmented AI here.
+We click on it and we are taken into the SageMaker console.
+So this is part of Amazon SageMaker right now.
+So here, we can get human review workflow
+for very common machine learning use cases such as
+content moderation or text extraction from documents.
+So we can review predictions made from Amazon Rekognition
+and Amazon Textract or your own models
+if you wanted to with a custom task.
+So let's create a human review workflow,
+and I wanna show you the task types.
+So we have different ones.
+We have Textract to review key-value pair extraction
+or Rekognition to do image moderation
+or Custom to have your own custom workflow.
+So here with image moderation, this is to review
+any unsafe content such as
+very explicit adult content or violent content.
+So we want humans to review this
+and make sure that the predictions
+made by Amazon Rekognition are correct.
+So here we need to say at the bottom,
+what are the conditions to invoke a human review
+on Amazon Rekognition through Amazon Augmented AI?
+So here we're saying, hey, if the label has
+a low confidence score, for example, zero to 50,
+then send it to Amazon Augmented AI.
+Or you can also randomly send a sample of all images
+and their labels for humans to review.
+For example, let's say 5% of our images are going to be sent
+to Amazon Augmented AI for review no matter what.
+So then you have a worker task template creation and design.
+And so this is where you're going to explain
+what you want the workers to do.
+And here we say, please review the images
+and all applicable categories.
+And they will have to check if they see some nudity,
+if they see some sexual activity,
+if they see just like stuff that
+could be considered offensive or violent.
+So, I will not do the full description of
+what goes on in here, but it's a lot to read.
+And then the workers, so who will review this kind of work?
+It could be Amazon Mechanical Turk workers.
+You have over half a million independent contractors
+that will be doing this work for you.
+And you set a price for a task, for example,
+1.20 cents or 2.40 cents or whatever you want,
+all the way up to $1 per task.
+So you set the price you want.
+Or it could be a private team.
+It's a team of your own employees that can do
+this kind of review, or vendors where you go
+and go through the AWS Marketplace
+to find third-party vendors that will provide you
+with humans specializing in these kind of services.
+And that's it.
+So you've seen how to use Amazon Augmented AI.
+I hope you liked it, and I will see you in the next lecture.

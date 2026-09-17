@@ -1,0 +1,94 @@
+# 101. Amazon MSK
+# Section: Data Engineering
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34791238
+# Caption: en_US (manual)
+
+Another analytics service you will see
+is Amazon Managed Streaming for Apache Kafka,
+also called Amazon MSK.
+And what is Kafka?
+Well, Kafka is an alternative to Amazon Kinesis.
+Kafka and Kinesis both allow you to stream data.
+So, MSK is the ability to get
+a fully-managed Kafka cluster on AWS.
+And it allows you to create, update
+and delete clusters on the fly.
+And MSK is going to create and manage Kafka broker nodes
+and Zookeeper broker nodes in your cluster for you
+and you deploy the cluster in your VPC, across multiple AZ,
+up to three for high availability.
+You also have automatic recovery from common Kafka failures
+and the data is stored on EBS volumes
+for as long as you want.
+So, from personal experience,
+I know it's very difficult to set up Apache Kafka
+and the fact you can just do one click
+and then deploy Kafka on AWS is great
+and this is the Amazon MSK service.
+So on top of it, you have the option to use MSK Serverless.
+And this is that you run Apache Kafka on MSK,
+but this time you don't provision servers,
+you don't manage capacity,
+automatically MSK will provision resources
+and scale, compute and storage for you.
+So what is Apache Kafka then?
+Apache Kafka is a way for you to stream data
+and a Kafka cluster is made of multiple brokers
+and then you will have producers that will produce data
+and so they will have to ingest data from places,
+such as Kinesis, IoT RDS, et cetera, et cetera,
+and they will send the data directly
+into a Kafka topic that is going to be fully replicated
+into other brokers.
+Now, this Kafka topic is having real-time streaming
+of data and consumers will pull from the topic
+to consume the data itself
+and then your consumer can do whatever he wants,
+process it or send it to various destinations,
+such as EMR, S3, SageMaker, Kinesis and RDS.
+So the idea is that Kafka is quite similar to Kinesis,
+but there are differences to look out for.
+So what are the differences between Kinesis Data Streams
+and Amazon MSK?
+Well, in Kinesis Data Streams,
+you have one megabyte message limit,
+which is the default in Amazon MSK,
+but you can configure it for a higher message retention.
+For example, 10 megabytes.
+You can have Data Streams with Shards
+in Kinesis Data Streams or in MSK,
+it's called Kafka Topics with Partitions,
+but the concept are sort of similar.
+To scale Kinesis Data Stream,
+you need to do Shard Splitting and to scale it down Merging.
+But in Amazon MSK to scale a topic,
+you can only add partitions.
+You cannot remove partitions.
+You have in-flight encryption for Kinesis data streams
+and then you have either plain text
+or TLS in-flight encryption for MSK.
+You get at-risk encryption for both of these clusters
+and, in the exam level, this is enough.
+Just so you know, a few differences.
+And also for Amazon MSK, you can keep data
+for as long as you want, you can go over one year,
+as long as you pay for the underlying EBS storage,
+you're good to go.
+So to produce to MSK you need to create a Kafka Producer
+and then to consume from MSK, you have multiple options.
+The first one is to use Kinesis Data Analytics
+for Apache Flink.
+So you want a Flink Application
+and you make it read it directly from the MSK cluster.
+You can use Glue as well to do streaming ETL jobs
+and they're powered by, the time, Apache Spark Streaming.
+You can use Lambda functions to directly have Amazon MSK
+as an event source or you can write your own Kafka consumer
+and you can make it run on whatever platform you want,
+for example, your Amazon EC2 instances,
+or an ECS cluster or an EKS cluster.
+And once you know this,
+you know pretty much everything there is to know
+for Amazon MSK at the exam.
+So I hope you liked it
+and I will see you in the next lecture.

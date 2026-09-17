@@ -1,0 +1,48 @@
+# 239. Amazon Managed Service for Apache Flink
+# Section: Data & Analytics
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33907238
+# Caption: en_US (manual)
+
+Now let's talk
+about the Amazon Managed Service for Apache Flink.
+It used to be called Kinesis Data Analytics
+for Apache Flink, but since then it has been renamed
+to just Managed Service for Apache Flink.
+So Flink, what is Flink?
+Well, it's a framework, and usually use the Java, SQL,
+or Scala languages.
+So it's a framework used for processing data streams
+in real time.
+So you have Amazon Managed Service for Apache Flink
+on the right hand side,
+and then you can read data from Kinesis Data Streams,
+or even Amazon MSK, which is Apache Kafka,
+which is also a service for real-time data streams.
+But it's not an AWS service, it's a managed service
+for something called Apache Kafka.
+All right, so you can,
+thanks to the Amazon Managed Service for Apache Flink,
+you can run any Apache Flink application
+on the managed cluster on AWS.
+That means that AWS is going to provision for you
+the compute resources,
+is going to give you access to parallel computation
+and automatic scaling.
+On top of it,
+AWS is going to manage your application backups,
+which are going to be implemented
+as checkpoints and snapshots.
+And then you can use any sort
+of Apache Flink supported programming features
+to transform your data.
+So you're really free around the type
+of transformations you want to do on your streams.
+And as you should know, Flink can read from, yes,
+Kinesis Data Streams,
+but it cannot read from Amazon Data Firehose,
+and that could be an exam trick.
+All right, so that's all you should know
+for Amazon Managed Service for Apache Flink.
+Remember, it's only used for processing data streams.
+And that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

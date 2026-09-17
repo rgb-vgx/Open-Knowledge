@@ -1,0 +1,133 @@
+# 146. [SAA] AWS DMS - Hands On
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904390
+# Caption: en_US (manual)
+
+So now let's have a look at AWS DMS.
+So you click on get started,
+and this gives you just an overview page
+of what you can do with DMS,
+but the real magic happens on the left-hand side.
+So this can change, but the idea remains the same.
+You can do a discovery and assessment
+in which you're going to create a data collector,
+find databases, analyze inventory,
+and then use the recommendations.
+You can convert or move to managed,
+so the idea is that you convert a schema
+using the DMS Schema Conversion tool.
+Then you move your data into AWS
+and you move to a managed service,
+or you can migrate or replicate data.
+And here, we choose the end points,
+we're gonna see this in a second.
+We create a provision instance
+and we create a task for the replication.
+You see that for some of these options,
+we have Provisioned or Serverless
+for the migration of the replication.
+And here to convert a database,
+we have this schema conversion.
+Or if we don't convert the schema,
+we have a homogeneous data migration.
+So this is just to give you an overview of DMS,
+but the real magic happens on left-hand side.
+So here you're going to go into Endpoints
+and we're going to look at it.
+So first of all, this is how to move data.
+So it could be from source to target,
+and so you must create an endpoint
+for the source and the target.
+So the idea is that I will create an endpoint,
+and here you choose whatever you want.
+So you enter an identifier,
+and then you have to choose the source engine.
+So you have all these options for the source engines.
+For example, you choose Amazon Aurora MySQL.
+And then you have to enter
+all the information about the endpoint.
+We cannot do this
+because we don't have an Aurora database ready,
+but you get the idea.
+Finally, you have the option for some databases
+to test the endpoint connection.
+This is optional, but at least you're able to see
+whether or not your replication instance,
+that we'll create in a second,
+can connect to your source.
+So you have the same type of idea with target
+in which you say what you want DMS to write to.
+And again, you need to choose a target engine
+amongst the list.
+And you enter some configuration.
+For example, if you choose DynamoDB right here,
+you enter a service role access, endpoint setting,
+wizard, editor, and so on,
+and then test again the connection to the endpoint.
+So you get a lot of information as well
+when you choose an endpoint on the right-hand side
+around what to do and the best practices.
+So once you've created two endpoints,
+you can create a replication task.
+And so you have two options.
+For this task, you can either create
+a replication instance,
+and here you create a replication instance
+by actually creating a physical server.
+So here, we can choose the size of the server,
+as you can see.
+For the bigger replication task,
+you may want to choose a bigger server.
+And you can click here to estimate
+the instance class and storage.
+And then you can configure it.
+You say whether or not you want high availability,
+the networking type,
+you apply a subnet group,
+you will apply security groups and so on,
+and then you have an instance.
+Or optionally, you can use serverless.
+And so if it's serverless,
+then you don't need to provision an instance.
+So here, when you go to Provisioned instances,
+it's not to do serverless, it's to do the opposites.
+So when you go to tasks, here we go,
+you can create a task,
+and you're going to specify the source database endpoint
+that we've created from before,
+the target database endpoint that we've created after,
+and then the task mode.
+So if it's provisioned,
+we need to select the provisioned instance
+that we'll have created from before,
+or if it's serverless,
+then DMS will automatically adjust
+the level of compute needed
+for your migration error application task,
+and we don't need to select the type of instance we need.
+So this is an easier option, I would say.
+Now you choose the test types.
+So you want to migrate data once,
+do you want to migrate and replicate?
+Which means a full load
+and then anytime the source data changes,
+you're going to replicate these changes,
+it's called CDC.
+Or do you want to just do the replication?
+And then for how long?
+And then once you've done that,
+based on what your source and your target is,
+you can specify some settings and so on
+for some logging, some connectivity,
+how to do it, so it's quite a complete service.
+To go deep into setting a replication, it takes time.
+But from this overview,
+what I want to show you is that you have the idea
+behind all the steps needed to set up DMS
+and migrate a database
+from one source engine to a target engine,
+and with two options,
+serverless or provisioned instances.
+So that's it for this lecture,
+I hope you liked it,
+and I will see you in the next lecture.

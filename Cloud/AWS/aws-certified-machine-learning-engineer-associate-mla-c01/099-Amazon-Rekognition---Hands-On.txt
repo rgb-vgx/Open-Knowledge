@@ -1,0 +1,72 @@
+# 99. Amazon Rekognition - Hands On
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45816139
+# Caption: en_US (manual)
+
+So let's have a look at the capabilities
+of Amazon recognition.
+The first one is around label detection.
+So here we provide a picture,
+and we're able to have object detections.
+For example, this is a building, this is a person,
+this is a skateboard, and here we have cars.
+And within the cars, we even have wheels.
+So all these things are detected.
+And on top of it, we have results
+that are giving us some extra information such as a road,
+a street, transportation, and so on
+with the confidence score on the right hand side.
+So this is very handy, and you can do this as well
+on the other sample image and see that we define,
+we detect a tower here and so on.
+And you could have custom labels if you wanted to have
+your own labels for the own objects in your dataset
+that you wanted to recognize.
+Okay, next, we have image properties.
+So it's to find some information around an image.
+For example, this one, we can get the dominant colors,
+the image quality, the foreground properties,
+and background properties.
+For image moderation, we can have a look
+at whether or not some images should be authorized,
+if they're authorized or not.
+So it would be blurred, for example,
+based on the moderation labels that it detects.
+Obviously, these images are fine so far.
+Facial analysis, so we can have a look at facial attributes.
+So this looks like a face, and it appears to be female.
+We get an age range, we get some smiling attributes
+and appears to be happy and so on.
+We get facial comparison,
+where we can look if two people are very similar,
+and these people are very similar.
+But if you take Bezos and that person,
+they are not similar.
+Face liveness, so this is for your camera.
+Celebrity recognition.
+So here, we have Jeff Bezos.
+And here, we have Andy Jassy.
+And text in image.
+So to recognize some text in images,
+which is helpful to extract it.
+So it has a similar use case of text tracks,
+but of course here, this is a different methodology.
+So here, "It's Monday but keep smiling."
+Super good.
+And finally, personal protective equipment detection
+to see if face covers, head covers, and hand covers
+are appearing in images, which is a very specific use case.
+So remember that modern recognition
+is around really analysis of images
+and has several capabilities.
+And you can also build your own custom moderation
+type of detection if you wanted to detect
+specific use cases for your business
+and your own custom labels as well
+if you wanted to extend the labels to things
+that are more relevant to your business,
+and you can train the recognition model
+just by adding your own sample data sets.
+So that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

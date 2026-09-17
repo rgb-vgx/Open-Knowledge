@@ -1,0 +1,27 @@
+# 233. [CCP] AWS Control Tower Overview
+# Section: AWS Account Management
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516154
+# Caption: en_US (manual)
+
+Now let's talk about AWS Control Tower.
+So it is for you an easy way to set up and govern
+a secure and compliant, multi account, AWS environment
+based on best practices.
+So instead of doing everything manually
+creating an organization and so on
+and then applying security practices,
+we have Control Tower where you can, with a few clicks,
+creates a multi account, AWS environment.
+The benefits is that you can automate the setup
+of your environments in a few clicks.
+You can automate ongoing policy management using guardrails.
+You can detect the policy violations and remediate them.
+You can monitor your compliance
+through an interactive dashboard
+and Control Tower is running on top of organizations.
+That means that it will automatically set up organizations
+for you to organize your accounts.
+And it will implement STP service control policies
+to make sure that the guardrails are operating effectively.
+Okay, so I'll go see you in the next lecture
+for a demo of Control Tower.

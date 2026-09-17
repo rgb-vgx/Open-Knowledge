@@ -1,0 +1,234 @@
+# 17. [DVA] CodeBuild - Hands On Part 2
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858412
+# Caption: en_US (manual)
+
+So now let's go ahead and fix that error
+by creating a buildspec.yaml file.
+So in my GitHub repository I'm going to add a file
+and we can create a new file directly from GitHub,
+which is very convenient and the file is buildspec.yaml.
+And then what I'm going to do
+is I'm going to paste the content of the file.
+So in your CodeBuild you have a buildspec.yaml file.
+Just take it all, copy and paste it.
+So let's have a look at it.
+So we have version 0.2, we have install,
+and then we say, we want nodejs latest.
+It's going to use the latest runtime of Node.js.
+And then I'm going to echo a lot of things
+to show you where we are in our build phase.
+So the first command is installing something.
+This is in the installs phase.
+Then in the pre_build phase,
+we're going to say we are in the pre_build phase.
+Then in build, we're gonna have multiple commands again.
+So we are in the build block, we will run some test,
+and here, we have a grep command
+and it says, grep - Fq "Congratulations" index.html.
+So this is going to return successfully
+if the words congratulations can be found in index.html.
+So this is actually our test,
+this is our test phase right here.
+And so if this test passes,
+then the build is going to be successful,
+else is going to fail.
+So as long as congratulations is in the index.html file,
+which is going to test
+that this text is still in our webpage.
+Okay, and then post build_commands.
+We are in the post_build phase.
+So we're good to go.
+Let's commit these changes.
+And I say, created buildspec.yaml.
+This is pretty much the same as the commit message.
+We commit directly into the main branch
+and now we have a new commit being made.
+So this is great.
+And now if we go into CodeBuild and look at it,
+as you can see,
+automatically a new build was being triggered.
+This is because there is a web hook
+between GitHub and CodeBuild.
+And so as you can see, GitHub Hook shot said
+that as soon as a push happened into my GitHub repository,
+then a build was being triggered on CodeBuild.
+So I can just click on this build now
+and wait for it to happen,
+and let's look at the output right after.
+Okay, so my build status is now succeeded
+and if I go to phase details,
+I can see that all these things are successful.
+And so we can see all the phases.
+So submitted, queued, provisioning, download_source,
+install, pre_build, build, post_build,
+upload_artifacts, finalizing, and completed.
+So it's a lot of different phases
+that you can look at and do things on.
+But we can have a look at the build logs themselves
+to better understand what happens.
+So if you click on View entire Log,
+this is going to take you directly
+into the CloudWatch log console
+where you can do all the log lines for your logs.
+I'm going to just visualize it in here
+because I think it looks a little bit nice.
+So we have CodeBuild on demand and then we download source.
+Their source is going to be downloaded directly from GitHub.
+So this is where GitHub is being downloaded.
+And then we have here, echo installing Node.js version 20.
+So this is the latest version right now
+that there is on this image.
+So we're good.
+Then we go into the yaml file and we say that,
+"Okay, there are four phases found in this yaml file.
+We have INSTALL 1 command, PRE_BUILD 1 command,
+BUILD 3 commands, POST_BUILD 1 command.
+Okay, so we're good, we're scrolling down.
+Next we go into the phase install
+and we echo the command installing something.
+So we get installing something.
+Then we are on echo, we are in the pre_build phase.
+So we are now in the pre_build phase, of course.
+Then we have the actual build phase.
+So we have the first echo, the second echo,
+and then we have this command to do the grep
+on congratulations on index.html.
+And this is passing,
+this is where we get phase complete build succeeded.
+And then we go into the post_build phase
+and then everything is good and we are in successful.
+So super important to look at it from this UI
+or from CloudWatch in case there are any issues.
+Okay, so we've done this,
+but now we want to integrate this into CodePipeline.
+So first, what I'm going to do
+is I'm going to my Build project.
+I'm going to edit it.
+And here on the Primary source webhook events,
+I'm going to just remove it.
+So right now, this was being built
+every time we pushed things to GitHub,
+but now we're going to have CodePipeline
+trigger CodeBuild itself.
+So we don't need that Primary source webhook event anymore.
+So I'm just going to update the project from here.
+So now if you push to your GitHub repo,
+nothing is going to happen to CodeBuild.
+But if we go into CodePipeline now
+and look at our pipeline,
+we're going to click on MyFirstPipeline
+and we're going to edit it.
+So here, we're going to change the way it's flowing.
+So we have the source,
+but instead of deploying directly into Dev,
+we want to first test it.
+So I'm going to have a stage name named TestCode.
+We're going to add it.
+And then in the action group,
+I'm going to choose an action name.
+So CodeBuildTest,
+and the action provider is going to be CodeBuild.
+The region is going to be the same.
+Input artifact's going to be SourceArtifact.
+The project name is MyFirstBuild.
+So this is the CodeBuild project we have created.
+We don't need to do anything with environmental variables.
+We need to have a single build.
+And then I will call this one OutputOfTest
+for the output artifacts.
+Let's click on Done and let's click on Done.
+So now what's going to happen
+is that our source is first going to go into this CodeBuild
+and then going to go into Deploy,
+and then finally DeployToProd.
+Okay, so this is good
+because now we're going to test our pipeline.
+Okay, so our pipeline is all good right now,
+so we are going to run it and see what happens.
+So let's go into our file, my-nodejs-app,
+and then we go under index.html.
+We're going to edit this file.
+And instead of congratulations as the text
+which is here, I'm going to say, horrible.
+Here we go. And we commit the change.
+So now we say, updated from congratulations to horrible,
+because we don't want to have the test passed,
+so we need to remove congratulations.
+So we're going to commit this directly into the main branch
+and save this, which should trigger a pipeline run.
+So let's wait for GitHub and this UI to be integrated,
+and I may have to refresh this to see it.
+Okay, so this already succeeded, right, just now.
+And now we are in the TestCode.
+And so as you can see, CodeBuild is now running,
+and if I go into CodeBuild
+and Build History, for example,
+up, as you can see, my build is in progress.
+And the submitter now wasn't GitHub, it was CodePipeline.
+So CodePipeline is the submitter of this build,
+and now the build is in progress
+and we go through the same type of setup as we had before.
+But now under the phase details,
+we're going to see that as soon as we test our project,
+things should fail.
+As you can see now, my build status is failed.
+And if we look at it,
+yes, from the pre_build phase to the build phase,
+there was an error,
+and this error was when running this command
+grep-Fq Congratulations.
+So this is good because if we go now into CodePipeline,
+we can see that this has failed.
+And so therefore, this has never gone into the next phase.
+Okay, you see the last one was seven minutes ago,
+so it never went into the next phase.
+And so our changes have not been deployed
+into either prod or let me...
+This is end. Yes.
+So Dev, if I refresh it, as you can see,
+it still says congratulations
+and not horrible as I edited it.
+But we can edit our file again to fix things
+and see if that works.
+So instead of horrible,
+we're going to have congratulations, CodeBuild.
+And we still have the congratulations work so this is good,
+but we've added CodeBuild.
+So let's save this and commit.
+And now yet again, as you can see,
+the source is in progress.
+So we have a new pipeline execution.
+So this is the whole power of CI/CD you see right here
+where everything is automated.
+We just update the code and the pipeline runs itself,
+and then automatically
+the test will run themselves and so on.
+So we are now in the test phase under CodeBuild.
+And if you click on View details...
+Oops, if you click on View details right here,
+you can also see the logs from here.
+And now CodeBuild is going to pass.
+So let's wait a little bit.
+Okay, so this is successful.
+So let's go here and we're going to see that now
+if I refresh this page,
+we're still...
+Let's going to build history.
+Here we go.
+Yes, so it succeeded. Perfect.
+So everything was good now.
+And so in our pipeline, now we are in the deploy phase.
+And now these changes are going to be deployed
+into our Beanstalk environments.
+So let's click on here to go into Elastic Beanstalk,
+and this is my end environment.
+And now if I refresh, I get congratulations, CodeBuild.
+And you can see now my change was pushed into Dev,
+and now I would need to have a manual approval
+to go into prod.
+But that's perfect.
+We've seen how CodeBuild works
+and is integrated with co-pipeline.
+You're starting to get a feeling for CI/CD I hope now.
+I hope you liked it, and I will see you in the next lecture.

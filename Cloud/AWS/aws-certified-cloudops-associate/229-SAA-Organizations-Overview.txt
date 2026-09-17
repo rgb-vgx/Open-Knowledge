@@ -1,0 +1,161 @@
+# 229. [SAA] Organizations Overview
+# Section: AWS Account Management
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/13116992
+# Caption: en_US (manual)
+
+So now let's talk about AWS Organizations.
+So it's a global service
+and it allows you to manage multiple AWS accounts
+at the same time.
+So you create an organization
+and the main account in your organization
+is called the management account,
+while the other accounts that join the organization
+or that are created from the organizations
+are called member accounts.
+And remember, accounts can only be part of one organization.
+The cool thing about organization
+is that the billing is consolidated
+across all the accounts.
+So you have a single payment method
+on the management account
+and then it will be paying for all the organization's cost.
+But because you have an organization
+and it's all part of one big family,
+then you get pricing benefits from aggregated usage.
+So if you use a lot EC2 or if you use a lot Amazon S3
+across all your accounts,
+then you will get big discounts,
+because it will summarize and sum up
+all the usage across all the accounts.
+You can also share reserved instances
+and saving plans discounts across accounts.
+So if a reserved instance is unused in one account,
+another account can benefit from it
+and therefor the discounts apply
+across the entire organization,
+which is really good for cost savings.
+Now, there's also an API
+to automate the account creation
+from within the organization.
+So you can create accounts very easily
+using an organization.
+So how does that work?
+So we have what's called a root organizational unit, or OU,
+and this is the outermost OU of your accounts
+and then within it sits the management account.
+Then you can create sub-OUs,
+so you can create for example an OU for the dev accounts
+and then you can create member accounts within the dev OU
+or you can create OU for a prod account
+and also add member accounts there,
+but you can be as free as you want.
+You can create within the prod OU,
+an OU for your HR member accounts
+and an OU for your finance member accounts.
+So you can organize it the way you want.
+So you have different examples for your OUs.
+So you can organize by business units,
+so you have for example,
+the management account and then the sales,
+retail and finance OU
+and then different accounts within each OU.
+Or you can have an OU by environment,
+so for example, one OU for prod,
+one OU for test, one OU for dev
+and within each OU, some accounts.
+Or project-based, so you can have an OU per project
+within an account, within each project.
+And you can mix and match.
+You're really free to do whatever you want.
+So what are the advantages of using organizations?
+Well, thanks to having multiple accounts,
+you can have better security
+versus having one account with multiple VPC,
+because accounts are more separated than VPCs.
+You can also enforce tagging standards
+for billing purposes
+and you can in one go, enable CloudTrail
+for all your accounts
+and send all the logs into a central S3 account,
+or we can also send CloudWatch logs
+to a central logging account
+and we can establish cross account roles
+for admin purposes automatically.
+So we can administer all the other accounts
+from the management account.
+So these are big advantages.
+Also, there's a big security advantage.
+We can define service control policies, or SCP,
+and it's an IAM policy applied to specific OUs or accounts
+and this allows you to restrict
+what the users and roles all of them can do
+within the accounts.
+The SCPs apply to everything
+but to the management account,
+which will forever have full admin power,
+otherwise you could do a mistake
+and never come back from it.
+So the SCP have the specificity
+that if you need to compute what is happening
+on this specific account,
+you need to make sure that each OU, including the root,
+has an explicit allow along the way
+to allow a specific action.
+This will be very clear in this example.
+So let's take for example, a root OU
+and we apply full AWS access underneath.
+So the management account is under the root OU
+and then we have more OU,
+the Sandbox, the workload, test and prod,
+with accounts within the OUs.
+So if we apply an SCP,
+which is deny Athena on the management account,
+what is happening to the management account?
+Well, the management account can do anything,
+because there's a role that says that no SCP
+ever apply to the management account.
+This is a safety, because of course,
+if you lock yourself out of your management account,
+this would be terrible.
+So remember, the management account
+can do anything, no matter what.
+But let's say for example,
+we apply on the Sandbox OU
+a full AWS access plus deny S3.
+So as you can see, here we still need
+to apply full AWS access
+to give allow to everything explicitly,
+because if we didn't have full AWS access,
+then nothing would be allowed within that OU.
+So explicit allows are needed every single way.
+And on account A, say, we will also do
+apply full AWS access and deny EC2,
+then account A can do anything,
+because it has full AWS access on the root OU
+and on the Sandbox OU and on the account itself,
+but because we have two explicit denies,
+we have one deny S3 from the Sandbox
+and one deny EC2 from the account itself,
+then it cannot access Amazon S3 or Amazon EC2.
+For accounts B and C,
+because it don't have a specific SCP attached to them,
+then they can do anything except accessing Amazon S3,
+because you have an explicit deny
+coming from the Sandbox OU.
+Next, if we apply full AWS access to the workloads OU
+and we also apply an allow EC2 SCP to the test OU
+then account D can only access EC2
+and if we look at the prod OU
+and accounts E and F within it, well, we must first apply
+the full AWS access SCP to the prod OU
+and then accounts E and F can do anything.
+So here are some examples for SCPs.
+This is the first one is a blocking of a specific service.
+So first, we allow all actions
+and then we deny DynamoDB or on the allow list,
+here, we allow EC2 and CloudWatch,
+but we don't allow anything else.
+So those are some examples of SCPs.
+So that's it for this lecture, I hope you liked it
+and I will see you in the next lecture.

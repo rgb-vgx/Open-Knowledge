@@ -1,0 +1,142 @@
+# 24. [DVA] CodeArtifact - Overview
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858624
+# Caption: en_US (manual)
+
+Okay, so now let's discuss CodeArtifact.
+So the idea is that when you build software,
+you use other software that your own software depends on.
+This is called code dependencies.
+And every time you build software
+it's very common to push the software into a repository,
+and then other software can build onto it.
+So there is this whole dependencies,
+and this whole dependencies web
+is called artifact management.
+So traditionally, when you use artifacts
+you set up your own artifact management system,
+and the idea is that it could be quite complicated.
+So using CodeArtifact, you get a secure, scalable,
+cost-effective artifact management system
+for software development.
+And CodeArtifact has more than this.
+I'll show you this in the diagram,
+but it has integration
+with common dependency measuring tools
+such as Maven, Gradle, npm, yarn, twine, pip, and NuGet.
+And the idea is that using CodeArtifact,
+both developers and CodeBuild can retrieve the dependencies
+straight from CodeArtifact within your AWS cloud.
+So let's do a diagram is going to be much clearer.
+So with CodeArtifact,
+all your artifacts live within your VPC, within AWS.
+Sometimes if you use other artifact management systems
+they could be third parties outside of AWS,
+or if you deploy your own artifact measurement system
+they could live on these two instances, for example.
+In which case, yes, of course it will be within your VPC.
+So with CodeArtifact, you're going to define domains,
+and each domain is just a set of repositories.
+Now, as a developer, the cool thing is
+that you can tell the developers, hey,
+you need to, for example, for your JavaScript developers
+run the npm command to fetch dependencies
+for your JavaScript packages to CodeArtifact.
+And CodeArtifact is going to be a proxy
+for public artifact repositories.
+So instead of having your JavaScript developers
+actually directly reach into
+the public artifact repo themselves,
+they're going to reach to CodeArtifact,
+which is going to be wired to public artifact repositories
+and the request will be proxied.
+Why will you do this, well for two reasons,
+number one, network security.
+So your JavaScript developers
+only interact with CodeArtifact,
+and CodeArtifact will proxy the request to the public repo.
+But also as the dependencies are being fetched,
+they're going to be cached into CodeArtifact itself.
+Which means that even if the dependency disappears
+from the public artifact repository,
+you will still have your own copy within CodeArtifact.
+Which is good to make sure that your code
+can always be built in the future.
+Now this works for not just JavaScript,
+but also for Python with pip.
+It works for .net with NuGet and Java with Maven.
+Okay? So all these things can be proxied
+from CodeArtifact into this own repositories.
+But the second thing you can do is obviously
+push your own artifacts.
+And so your IT leader or your developers can publish
+and approve packages to be pushed into other repositories
+within CodeArtifact.
+That means that all your artifacts will live
+in one place in your VPC.
+And everything will just depend on everything,
+all the code that's already within your CodeArtifact,
+artifact management system.
+And if developers can get
+all these artifacts out of CodeArtifact,
+then of course CodeBuild can also too.
+And it is that now CodeBuild
+instead of fetching from public repositories,
+can also fetch all this information
+directly from CodeArtifact.
+Next, how does CodeArtifact changes
+trigger some stuff downstream in AWS?
+So we will see this service in detail later on,
+but CodeArtifact events such as when a package is created
+or modified or deleted will emit events
+into what's called EventBridge.
+And EventBridge is like a repository of events within AWS.
+And from EventBridge, you can pretty much integrate
+and trigger many different AWS services,
+such as Lambda functions, Step functions, SNS, SQS.
+And if none of these terms mean anything to you by now,
+that's okay.
+We will see these later on in this course.
+And also, for example, CodePipeline.
+So it is possible for CodeArtifact
+to trigger CodePipeline through EventBridge,
+whenever a package version for example is updated.
+And so why would we wanna do this?
+Well, for example, CodePipeline could have CodeCommit
+so that we know that the dependency has been updated.
+Then triggering CodeBuild to rebuild your application
+with the updated dependency maybe for security reasons.
+And then finally deploy the new application
+to your production environment using CodeDeploy.
+So this could be a nice automated way
+to build a full automated pipeline
+that ensures that you always have the latest dependencies
+in your code within your builds.
+So any artifact repository within your accounts
+can be easily accessed by your users of your accounts
+or your roles with your accounts with an IAM policy.
+But if you want to authorize another account,
+and users and roles of that account to access CodeArtifact
+then you need to use a resource policy.
+So when you grant someone access
+to a CodeArtifact repository,
+what's going to happen is that you
+either give them access to all packages or none of them.
+You cannot say only access these packages.
+So when you authorize another account to access your repo
+you authorize, for example, Bob in Account B
+to access all packages within that specific repo.
+And to give access to Bob to your accounts,
+what you can do is use a resource policy in which
+you authorize, for example, Bob of the other
+accounts to read the packages in your code artifact repo.
+And this cannot be done without a resource policy
+but it's just something you need to know
+for one question at the exam.
+But this is a recurring topic in AWS.
+Whenever you need cross account access
+sometimes, most of the times, resource policies
+are going to be the way to go.
+Okay, so that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

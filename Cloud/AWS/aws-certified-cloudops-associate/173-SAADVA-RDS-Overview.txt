@@ -1,0 +1,99 @@
+# 173. [SAA/DVA] RDS Overview
+# Section: Databases for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27514014
+# Caption: en_US (manual)
+
+So let's get started
+with an overview of AWS RDS.
+RDS stands for Relational Database Service,
+and what it means is that
+it's a managed database service for database
+that use SQL as a query language.
+So SQL is a structured language to a query database.
+It's very well-adapted and it's running on many engines.
+So it allows you to create databases,
+the RDS service in the cloud,
+and these databases will be managed by AWS
+and you get a lot of benefits from it.
+So what types of database engine are managed by AWS?
+Well, the first one is PostgreSQL.
+Then we have MySQL, MariaDB, Oracle,
+Microsoft SQL Server, IBM DB2,
+and Aurora, which is a proprietary database from AWS
+that we'll study in depth.
+So you have to remember the types of engines
+that are supported by Amazon RDS.
+So why would we use RDS
+versus deploying our own database service
+on top of, say, an EC2 instance?
+Because this is possible.
+Well, RDS is a managed service
+and as such, AWS provides a lot of services
+on top of just giving us a database.
+For example, the provisioning
+of the database is fully automated,
+and so is the underlying operating system patching.
+There is continuous backups being made
+and you are able to restore to a specific timestamp.
+It's called Point in Time Restore.
+You can also have monitoring dashboards
+to view the performance of your database.
+You can have read replicas,
+and we have a dedicated lecture
+on read replicas in this course.
+To improve read performance, you can set up a multi AZ,
+and so we do have also sections on multi AZ
+that will be helpful for disaster recovery.
+You have maintenance windows for the upgrades,
+and you have scaling public capabilities,
+both vertical, by increasing the instance-type type,
+and horizontal by adding read replicas.
+Filing the storage is backed by EBS,
+so this is something we already know,
+but the only thing we do not have
+is we cannot SSH into the instances, the RDS instances.
+So because this is a managed service,
+AWS provides us a service,
+and we don't have access to the underlying EC2 instance.
+But this is not too bad,
+because we get all these things
+that we would have to set up on our own
+if we wanted to deploy our own database engine on EC2.
+So here is one feature that can come up in the exam,
+and is around RDS Storage Auto Scaling.
+So the idea is that when you create an RDS database,
+you need to say how much storage you want,
+for example, you want 20 gigabytes of storage,
+but say you are using your database a lot,
+and you're about to run out of free space,
+then with this feature enabled,
+the RDS Storage Auto Scaling,
+RDS will detect that
+and will scale automatically the storage for you,
+so you don't have to do any kind of operations,
+such as taking down database to increase the storage.
+So the idea is that your application
+does a lot of read and writes to your RDS database,
+and then automatically
+with some threshold we'll see in a second.
+Then the storage can autoscale,
+and that is a feature of RDS.
+That is a very, very nice feature.
+So, this always meant to make you avoid
+the operation of scaling manually your database storage.
+For this, you need to set a maximum storage threshold,
+so maximum limits for how much you want the storage to grow,
+'cause you don't want it to grow infinitely maybe.
+And you can automatically modify storage
+if the free storage is less than 10%
+of what has been allocated
+and the low-storage has been lasting
+for more than five minutes
+and six hours have passed since the last modification.
+If that's the case,
+then the storage will auto increase when you enable it.
+This is very helpful for applications
+that have an unpredictable workload
+and this supports all database engines for RDS.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

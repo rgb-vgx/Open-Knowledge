@@ -1,0 +1,146 @@
+# 399. AWS Directory Services
+# Section: Advanced Identity
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19732182
+# Caption: en_US (manual)
+
+Okay. So now let's talk
+about Microsoft active directory and AWS directory services.
+So in case you don't know what Microsoft AD is,
+it is a software that is found
+on any windows server with AD domain services.
+And it's a database of objects
+and you objects can be user accounts
+computers, printers, file, share security groups.
+So all your users manage
+within your entire Microsoft ecosystem
+on premise is going to be managed
+by Microsoft active directory.
+And there's going to be a centralized security management.
+You can create account, assigned permissions and so on.
+And all the objects will be organized into a tree.
+And a group of tree is called a forest,
+that's just for some terminology.
+So, let's take an example.
+We have a domain controller
+and we're going to create an account on it.
+We create an account.
+Username is "John" and the password is "password".
+And the idea is that all the other windows machines we have
+within our network are going to be connected
+to the domain controller so that,
+if we're using the John password
+on the first machine, is going to look it
+up in the controller and say, yes, we have that login
+and then allow you to log in from that machine.
+So all these machines are going to be connected
+to your domain controller, and that allows you to
+have the users accessible on any single machine.
+So that's the whole idea
+behind active directory in a very, very high level.
+Now we have AWS directory services, which is to
+provide you a way to create an active directory on AWS.
+And we have three flavors on it.
+We don't have to do a deep dive on them
+but you have to understand the differences
+between these three flavors.
+The first one is AWS, manage Microsoft AD to
+create your own active directory in AWS.
+And you can manage users locally
+and it supports multifactor authentication.
+The idea is that with this standalone active directory
+you can also create a trust connection with your on
+premise AD, where you have your own users there as well.
+And what that means is that your AD in here, for example,
+can be trusted with the on premise AD.
+So AWS trust the on-premise AD and on-premise AD trust AWS.
+And so that means that if your users authenticate it
+to the rights, use an account that is not managed by AWS,
+It can go and look
+up the accounts into the on-premise active directory.
+And, similarly, if an on-premise directory user goes
+and authenticate to your
+on premise AD using the a AWS accounts,
+it can be trusted to go and look it up.
+So here our users are going to be shared
+between our on-premise active directory and AWS.
+Okay. A little bit complicated.
+I know if you're new to this, but hopefully it makes sense.
+The AD connector is a little bit different.
+This is a direct gateway proxy to redirect to on-premise AD
+and it supports MFA, if you need multifactor authentication
+And the users are solely managed into the on-premise AD.
+So here is the example.
+In this example, our AD connector is just acting as a proxy.
+So if the users to you authenticate
+with our AD connector, it's going to proxy the request back
+to our on-premise AD and look it up.
+So the idea here is that, in the first case
+with Microsoft manage Microsoft AD, we have users sitting
+in AWS manage AD and users sitting in on-premise AD.
+Whereas, with AD connector,
+as the name indicates, it connects
+the proxies, the queries, the, the connection request back
+to our on-premise active directory
+and the only place where we can manage users is going to be
+on the on-premise AD.
+Finally, you have simple AD
+and it's an AD compatible managed directory on AWS.
+It doesn't use Microsoft directory.
+And it cannot be joined with a non-premise active directory.
+So, the idea is that if you don't have an on-premise
+AD and you need an active directory for your AWS cloud,
+then you can have just a simple AD as a standalone thing.
+And the idea here is that, using active directory,
+you can create easy two instances that are going
+to be running windows.
+And these windows instances can join the domain
+controllers for your network and share all the
+logins and the credentials and so on.
+So this is why we want to have a directory in AWS to have
+a directory closer to your EC2 instances running windows.
+And hopefully that makes sense.
+Now the exam should ask you some very
+very high level question saying we want to proxy
+our users to on-premise and therefore you need AD connector
+or we want to manage our users on the cloud in
+AWS and have MFA
+and therefore you need AWS manage AD
+or we just want the simple AD
+and we don't have any on-premise stuff.
+In this case, you want a simple AD.
+So if you go to the console and type directory service,
+we can see the different options offered to us.
+I'll just go through them at a high level
+because they can be complicated to set up individually.
+But so we have four options
+and actually the fourth one is Amazon Cognito User Pool
+which is redirecting you to the Cognito service,
+so that don't count this into directory services.
+So we have AWS manage Microsoft AD where
+we can have an active directory
+that's going to be integrated
+with AWS cloud and can have a trust relationship
+with your on-premise directory and to set it up
+you can see it's two additions
+the standard edition up to 30,000 objects
+or the enterprise edition up to 500,000 objects.
+So a lot more.
+And then you need to set it up and then won't go
+over the setup because this is more AD specific
+and you don't need to know this for the exam.
+This next one is simple AD,
+which is going to be a standalone managed directory that is,
+has a active directory compatible API
+but it cannot be connected to your
+on-premise active directory.
+Or AD connector,
+which is a proxy for redirecting directory request
+to your existing Microsoft active directory on premise
+and is designed for you have two levels.
+You have a connector for up to 500 users
+or you have a connector for up to 5,000 users.
+Okay. So remember the first one supports MFA.
+The second one is just standalone and AD connector
+is a proxy.
+All right, that's it for this lecture.
+I will see you in the next lecture.

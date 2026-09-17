@@ -1,0 +1,65 @@
+# 86. Amazon Mechanical Turk
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887683
+# Caption: en_US (manual)
+
+So now let's talk about Amazon Mechanical Turk.
+So this is the original Mechanical Turk
+in the 1770 year.
+This was created by an inventor,
+and this was an actual robot that was playing chess
+in front of people, but it was an illusion, of course,
+because there were no robots in that time.
+And that robot was cleverly operated by someone
+inside that was playing chess.
+And with some mapping, the robot was moving.
+But thanks to an illusion,
+no one could see that there was an operator inside.
+So this is the thing that the service got named after.
+And the idea is that Amazon Mechanical Turk
+is a crowdsourcing marketplace
+to perform simple human tasks.
+So the idea is that you have access
+to a distributed virtual workforce.
+So you give tasks to it, and behind the scenes,
+humans are going to do these tasks,
+but these tasks can be very simple and very cheap.
+For example, say you have a data set of 10 million images
+and you want to label these images,
+then you're going to create a task on Mechanical Turk
+and actual humans, all around the world,
+will go ahead and tag those images,
+and you can set a reward per image.
+For example, if you set 10 cents per image,
+then tagging all these images will cost you
+a million dollars.
+But of course, it's up to you to set the pricing and so on.
+But the idea is that you have access to a very,
+very big workforce that is really eager to work
+on these kind of tasks.
+So the use cases for Amazon Mechanical Turk
+is image classification, data collection,
+business processing, anything that is going to be simple
+and easily and can easily be distributed to many,
+many people at a time.
+So why do we want a Amazon Mechanical Turk
+from an AI perspective?
+Well, of course, to label your images,
+to review recommendations, and so on,
+it can be very, very helpful.
+So there is deep integration between Amazon Mechanical Turk
+and Amazon A2I, or a SageMaker Ground Truth and so on.
+So here's an example of what a worker looks like
+when they go on Amazon Mechanical Turk.
+So here, as you can see, they see a lot
+of different jobs that they can do.
+The reward for each job that they have to do, for example,
+filling an Excel spreadsheet and so on.
+Then they can accept the work and work on it.
+So, if you set the right reward,
+and the job is fast enough, then you will get a lot
+of people working on your job very quickly.
+So that's it for Amazon Mechanical Turk.
+It's a service that allows you to access many humans
+at a time.
+I hope you liked it and I will see you in the next lecture.

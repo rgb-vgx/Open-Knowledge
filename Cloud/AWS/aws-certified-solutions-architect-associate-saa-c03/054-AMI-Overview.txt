@@ -1,0 +1,66 @@
+# 54. AMI Overview
+# Section: EC2 Instance Storage
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098280
+# Caption: en_US (manual)
+
+Now let's talk about
+what powers our EC2 instances which is an AMI,
+so AMI stands for Amazon machine image
+and they represent a customization of an EC2 instance.
+So you can use AMIs you created by AWS
+or you can customize it into your own and what is in an AMI?
+Well we have our own software configuration,
+we can define and set up the operating system,
+we can set up any monitoring tool
+and if we create our own AMI
+we're going to get a faster boot time and configuration time
+because all the software that we want to install
+onto our EC2 instance
+is going to be prepackaged through the AMI.
+So we have to build our own AMIs
+and they can be built for a specific region
+and then they can be copied across region
+if we wanted to use it
+and leverage the AWS global infrastructure.
+So we can launch EC2 instances from different kind of AMIs.
+What we've been doing so far in this course
+is to use a public AMI and these are provided by AWS.
+So the Amazon Linux 2 AMI is a very popular AMI for AWS
+and it was provided by AWS themselves
+but we can create our own AMI
+then therefore you have to make and maintain them yourself
+there are tools obviously to automate this
+but this is a task that you have to do as a cloud user
+or finally you can launch an EC2 instance
+from an AWS Marketplace AMI
+which is an AMI that has been made by someone else
+and potentially sold by someone else
+so it is quite common to have vendors on AWS
+to create their own AMIs or their own software
+with a nice configuration and so on
+and then they will sell it through the marketplace AMI
+for you to buy it and to save some time.
+And even you as a user you could create a business
+of selling AMIs on the AWS marketplace,
+this is something that some businesses do.
+Okay so the AMI process from an EC2 instance,
+how does it work?
+Well we'll start an EC2 instance and we'll customize it.
+Then we will stop the instance
+to make sure the data integrity is correct,
+then we can build an AMI from it
+so this will also create EBS snapshots behind the scenes
+and then finally we can launch instances from other AMIs
+so this is what we'll be doing
+in the demo and the next lecture.
+So we have US-EAST-1A,
+and we can create the same instance as US-EAST-1B,
+so the process is we launch the instance in US-EAST-1A,
+we're going to customize it
+then we're going to create an AMI from it
+this will be our custom AMI.
+And then in US-EAST-1B
+we will be able to launch from that AMI
+and we'll effectively create a copy of our EC2 instance.
+So I hope you're excited
+and I will see you in the next lecture.

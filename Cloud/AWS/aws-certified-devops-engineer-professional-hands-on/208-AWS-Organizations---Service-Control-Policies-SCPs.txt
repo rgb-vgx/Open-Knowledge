@@ -1,0 +1,89 @@
+# 208. AWS Organizations - Service Control Policies (SCPs)
+# Section: Domain 6: Security and Compliance
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37935812
+# Caption: en_US (manual)
+
+So now let's talk about
+service control policies or SCP.
+So here you can define allowlist or blocklist
+for specific IAM actions on your organization
+for your accounts.
+And this applies either at the OU level
+or the account level.
+Any SCP you apply
+to your management accounts actually is disregarded
+because you want to keep your management account safe
+from any kind of lockout.
+The SCPs is going to be applied to all the users
+and the roles in the account, including the root user.
+And the SCP does not affect any service-linked roles.
+That means that these services, those service-linked role,
+they enable other services
+on AWS to integrate with organization
+and therefore that's why they can't be restricted by SCPs.
+So SCPs are special.
+And for something to be allowed within organizations,
+you need to make sure that every SCP along the way
+from the root to each OU,
+down to the specific target account,
+will have an explicit allow.
+And I will show you this in the next slide as an example.
+So the use cases for SCP is
+to restrict access to certain services.
+For example, hey, you cannot use EMR,
+or to enforce PCI compliance
+by explicitly disabling some services in AWS.
+This will be very clear in this example.
+So let's take, for example, a Roots OU.
+And we apply full AWS access underneath.
+So the management account is under the root OU
+and then we have more OU, the sandbox, the workload test
+and prod with accounts within the OUs.
+So if we apply an SCP,
+which is deny Athena on the management account,
+what is happening to the management account?
+Well, the management account can do anything
+because there's a rule that says that no SCP ever apply
+to the management account.
+This is a safety because, of course, if you lock yourself
+out of your management account, this would be terrible.
+So remember, the management accounts can do anything
+no matter what.
+But let's say, for example,
+we apply on the sandbox OU a full AWS Access
+plus deny S3.
+So as you can see here, we still need
+to apply full AWS access to give allow
+to everything explicitly
+because if we didn't have full AWS access,
+then nothing would be allowed within that OU.
+So explicit allows are needed every single way.
+And on account A, say, we also do apply full AWS access
+and deny EC2.
+Then account A can do anything
+because it has full AWS access on the root OU
+and on the sandbox OU and on the account itself.
+But because we have two explicit denies,
+we have one deny S3 from the sandbox
+and one deny EC2 from the account itself,
+then it cannot access Amazon S3 or Amazon EC2.
+For account B and C, because it don't have
+specific SCP attached to them,
+then they can do anything except accessing Amazon S3
+because you have an explicit deny
+coming from the sandbox OU.
+Next, if we apply full AWS access to the workloads OU,
+and we also apply
+and allow EC2 SCP to the test OU,
+then account D can only access EC2.
+And if we look at the prod OU and accounts E and F
+within it, well, we must first apply the full AWS access SCP
+to the prod OU and then accounts E and F can do anything.
+So here are some examples for SCPs.
+This is the first one is a blocking of a specific service.
+So first we allow all actions and then we deny dynamo DB
+or on the allow list here we allow EC2 and cloud watch,
+but we don't allow anything else.
+So those are some examples of SCPs.
+So that's it for this lecture,
+I hope you liked it and I will see you in the next lecture.

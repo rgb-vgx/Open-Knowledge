@@ -1,0 +1,56 @@
+# 72. Auto Scaling Overview
+# Section: EC2 High Availability and Scalability
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27513044
+# Caption: en_US (manual)
+
+So are the backbone of Auto Scaling
+is the AWS Auto Scaling Service.
+So it's going to be available for all the
+scalable resources in AWS.
+So Auto Scaling groups obviously to allow you
+to launch or terminate EC2 instances.
+But also Spot Fleet requests,
+to launch or terminate instances
+from a Spot Fleet request itself.
+And to automatically replace instances that get interrupted
+for price or capacity reasons.
+You have Amazon ECS that will be leveraging Auto Scaling
+to adjust the ECS service desired count up and down.
+DynamoDB tables for your tables or your global
+secondary indexes to adjust the WCU and RCU.
+So write capacity units and read capacity units over time.
+And Aurora will be using Auto Scanning as well
+for Dynamic Read Replica Auto Scaling, okay?
+And obviously, maybe other services as well
+will be added over time to the Auto Scaling service in AWS.
+So we have Scaling Plans and it can be dynamic scaling.
+We start knowing it already to track a target itself.
+So without dynamic scaling,
+you have the same capacity over time.
+But with dynamic scaling,
+you start adjusting the capacity over time.
+And so you stabilize the utilization of your service itself.
+So you can optimize for availability in which case
+40% of your research utilization will be the target.
+You can balance, and so this will be about 50% utilization.
+Or if you want to optimize for cost,
+then you will have 70% of resource utilization.
+But obviously the closer you get to 100%,
+the less efficient your scaling is going to be
+because you're going to reach a performance bottleneck.
+And obviously you can choose your own metric
+and your own target value
+if you didn't want to follow the recommendations
+provided by AWS.
+And options for dynamic scaling is to disable scale-in.
+So that means you can only scale out, but not scale-in.
+You can specify the cool-down period,
+as well as the warmup time for the ASG.
+And opposite to dynamic scaling is predictive scaling.
+So we know this already.
+So with predictive scaling, the idea is that
+you're going to analyze the historical loads
+using a machine learning algorithm done by AWS for you,
+and then a forecast will be generated
+and then scheduling extras will be taken automatically
+based on that forecast.

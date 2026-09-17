@@ -1,0 +1,83 @@
+# 307. DynamoDB Basic APIs - Hands On
+# Section: AWS Serverless: DynamoDB
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11937092
+# Caption: en_US (manual)
+
+So let's have a look
+at these data API calls we can do.
+So, if I go on my table, as we can see right now,
+we're in the 'Scan' and we can select a table,
+and then we click on 'Run'.
+So, 'Scan' is going to scan the entire table
+and, obviously, going to return many items to us.
+If we wanted to create an item,
+what we could do is specific user ID,
+so Alice, four, five, six.
+Then, we specify a timestamp,
+so let me just do this one very quickly.
+And then, T
+zero five, zero six, and your zero.
+Here we go.
+Okay, and then some contents for it.
+Alice blog, okay.
+Now, let's create this item.
+So, this was a put item.
+Why, because we have sent a new item into DynamoDB,
+and we specified user id post timestamp,
+and this was new, so it got created.
+If you want to look at update item,
+what I can do is 'Actions' and then 'Edits'.
+And then, we'll just edit one specific attribute,
+so I did Alice blog edited,
+and click on save change and behind the scenes,
+this is going to do an updates item API call.
+So, we have seen updates.
+Now let's look at gets,
+so if I click on this one, for example,
+and I will go into the 'Item editor'.
+Well, behind the scenes, by clicking on this row,
+on this item, I was able to retrieve the content
+of this item and so this was a get_item that was done.
+So, this is good.
+Now, we can do obviously batch actions,
+so we can do 'Actions' and then 'Delete Items',
+which should be a batch delete item.
+Okay, so batch writes and then batch deletes.
+But, if you wanted to delete everything in the table,
+you could do 'Scan' and a batch delete,
+but this would not be very efficient.
+The other way to do it would be to simply drop the table,
+and be done.
+Now, finally, let's have a look at 'Scan' and 'Query'.
+So, scan really gives you all the tables you have,
+and then you can apply a filter if you wanted it to,
+but this is done client side for this filter,
+so this will be filtered in your web browser,
+not in DynamoDB directly.
+Or, you can do a query.
+And, a query is very helpful because we can specify
+a specific user ID.
+For example, John, one, two, three,
+and then click on 'Run'.
+And, this gives us all the items of John one, two, three.
+But, also, we could have a query and specify a condition
+on the post timestamp, which is a sort key.
+So we can have equal to, less than equal to,
+greater than, between, and begins with.
+So, if you want to know all the posts after,
+say 2021-11,
+and click on 'Run',
+we will only get one return item.
+But, then, if we do 21, 2021-09, we get two items back.
+So, as we can see, the query here is only done on user ID
+and post timestamp.
+We don't have to,
+we cannot query on the content or search from the content.
+We could filter on the content if we wanted to, afterwards,
+but this will be done client side.
+So, this really shows you the power of using partition keys,
+such as a hash key and a sort key, okay?
+So that's it, we've seen all the APIs of DynamoDB.
+Now, let's just do a scan and retrieve all the data.
+So, I hope you liked this lecture
+and I will see you in the next lecture.

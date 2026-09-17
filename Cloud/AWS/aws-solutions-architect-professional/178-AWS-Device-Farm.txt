@@ -1,0 +1,39 @@
+# 178. AWS Device Farm
+# Section: Other Services
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376714
+# Caption: en_US (manual)
+
+Another service is AWS Device Farm,
+and just need to know it at a high level.
+But the idea is that, say you are running a big application
+that you published on the app store or the IOS store.
+Then you want to test that application across many devices
+to make sure it works on all these devices.
+So Device Farm is going to be an application testing service
+for your mobile and even your web application.
+And the cool thing is that you're going to have this test
+run across real browsers and real mobile devices,
+and all these tests are going to
+be fully automated using a framework.
+The idea is by testing across real devices
+would be browsers or mobile devices,
+you're going to be able to improve the quality
+of the web and your mobile apps
+by making sure it runs correctly
+on all the devices you want.
+And in case it doesn't run correctly,
+then you can generate automatically videos and logs
+to document the issues that have been encountered.
+And then even better, you can remotely log-in
+to devices for enhanced debugging.
+So this is what device farm looks like,
+as you can see, it found some issues,
+already you can see it very found some issues
+on the Nexus 6 and an LG G Flex 2,
+and it tells you what has been going wrong.
+And so you can look into this failure, for these two devices
+and understand why the test has passed on say an SCG device
+but hasn't passed on your Motorola or your LG device.
+And that's it.
+That's the whole idea behind AWS Device Farm.
+I will see you in the next lecture.

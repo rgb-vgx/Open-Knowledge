@@ -1,0 +1,192 @@
+# 293. [SAA/DVA] Routing Policy - Traffic Flow & Geoproximity Hands On
+# Section: Networking - Route 53
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/28391468
+# Caption: en_US (manual)
+
+So, let's have a look into a way
+we can build these complex geoproximity records
+using a feature called Traffic Flow.
+This is not just applying to geoproximity,
+but applies to everything.
+So, the idea is that we have a UI, a visual editor,
+that allows us to manage complex routing decision trees.
+So, this is the UI we'll have,
+and in there we can specify different rules.
+We'll have a play with it.
+Though the idea is that instead of writing the records
+one by one in your DNS management system in Route 53
+we're going to just manage all of them visually.
+And the cool thing about it is that it's going to be saved
+as a Traffic Flow Policy,
+and it can be versioned,
+it can be applied to different hosted zones,
+and we can easily change them
+and apply them in our hosted zones.
+So, let's have a look in the hands-on right now
+to see how we can do it.
+Okay, so let's go ahead.
+We're gonna go on the left-hand side panel,
+and you will find Traffic policies.
+So, in here we get the UI,
+we can create a Traffic Policy.
+And I'll call this one DemoGeoPolicy, and click on Next.
+So, here we have a starting point,
+and the starting point is you have to specify
+the type of record you want to create.
+Is it an A, AAAA, CNAME, etcetera, etcetera,
+and it gives you a detail about what each record is.
+So, we'll have an A record,
+and here we have to connect to a specific rule.
+And as you can see, we can get Weighted rule,
+Failover rule, Geolocation rule, Latency rule,
+Multivalue, Geoproximity, or just an endpoint.
+So, if you wanted to specify something very simple,
+for example an A into an endpoint,
+you could say the A record will point to this value
+one, two, three, four, five, six, seven, right?
+And this would be the record itself,
+a very, very simple record.
+But obviously we can create more complicated policies.
+So, we can connect to a Weighted rule,
+and here we can specify multiple weights.
+So, we say a weight of 10 goes to, and then again,
+we could have some advanced records, for example,
+a Failover and so on.
+So, we can get some really complicated stuff.
+And when you're ready you can say endpoint,
+and specify the value of the IPv4 that you want.
+So, obviously we're not going to build
+something as complicated.
+As you can see, on the Weighted rule for example
+we can add another weight, and so on, and so on.
+And so, all of it is visual,
+and it really allows us to make sense
+of what is happening within Route 53.
+So, we are not going to create a Weighted rule though,
+we are going to create a Geoproximity rule.
+And we can show the map as well to have a visual feedback
+of what we're trying to do.
+So, here we have to enter the first region,
+and then we can have the second region.
+So, now for the first endpoint location
+you can enter custom coordinates, or you can, for example,
+have one of these regions of AWS available to you.
+So, we're going to use the ones we have created from before.
+So, we'll choose US-East-1,
+and then we have to specify a bias.
+And then I will move the map a little bit to the left,
+I will just remove it for now.
+And then this record right here is going to connect
+to a new endpoint,
+and the value of it
+is going to be my US-East-1 EC2 instance.
+So, I will paste the value, and we're good to go.
+For now we'll leave the bias as zero.
+Then for the second region we can enter some coordinates.
+So, we can say for example Singapore,
+which was AP Southeast 1.
+And let's do it, Singapore, again, here we go.
+And then this is going to connect to a new endpoint,
+and that endpoint has to be my IP address of AP-Southeast-1.
+Press Enter, and we're good to go.
+So, now that we have created this policy
+let's have a look at the map.
+So, for this I will click on Show Map.
+And so, this geoproximity map is going to show me,
+based on the input I have right now,
+which users are going to go to which instance.
+So, if you're on that side of the world,
+the blue side of the world,
+as you can see there's a line dividing
+the blue and the orange side of the world,
+then you're going to go to my first instance.
+If you're on the second side of the world
+you're gonna go to my second instance.
+And if we change the bias,
+so if we increase the bias for example
+of my instance in here, so we put a bias of 34,
+this is going to increase the surface of the world
+that is going to be redirected
+to my instance in North America.
+If I decrease the bias to something negative
+it's going to do the opposite thing.
+It's going to center more of the traffic
+onto my instance number two.
+So, we can really play it and really have a visual aspect,
+and the cool thing is that we can consider
+more than two instances.
+Of course, we can add another geoproximity location,
+and for the details we're going to say
+this is in Frankfurt.
+And then we're going to have, as you can see now, a new map.
+And again, you can play with the bias,
+and see how the bias is going to impact
+your geoproximity map.
+And so, this Frankfurt, we're going to have it
+to a new endpoint.
+And we'll have the EU-Central-1 in here, paste it,
+and then Create traffic policy.
+So, we've done this one,
+and now we need to deploy this
+traffic policy with policy records.
+So, for this I will just deploy this one
+into the hosted zone, stephanetheteacher.com,
+and we can set that, this policy record name
+is going to be proximity.stephanetheteacher.com.
+And we can specify a TTL.
+And very importantly,
+the pricing per month is $50 per month,
+so to just create this policy record
+you will pay $50 per month.
+It's prorated obviously for how long you keep it,
+but if you want to remain within the free tier and,
+you shouldn't create it obviously.
+So, I'll just create it just to show you what it means,
+and I will delete it right after.
+But this is not necessary for you to go
+all the way, obviously.
+So, let's create this policy record.
+As you can see now, the policy versions are here.
+So, we can edit this policy if we wanted to,
+and edit this and deploy it as a new version.
+And from there we can see the records that have been created
+with this DemoGeoPolicy.
+And so, if we have a look again at the map
+we can demonstrate how this works.
+So, let's click on this Geoproximity rule in here,
+so let's edit this as a new version, Next,
+and then click on this map.
+So, as we can see, if I'm in Europe, like I'm in France,
+I will be able to connect to this instance,
+if I'm in Brazil I will connect to that instance,
+and if I am in, for example, India, again,
+I will connect to that region.
+So, we'll verify this in a second by testing the record.
+So, let's cancel and wait for this to be created.
+So, the policy record has been applied.
+As you can see, the version used is number one.
+So, if I connect from where I am, I'm in Europe right now,
+I will get the EU-Central-1,
+and so, which is perfect.
+If I go to Brazil, for example, zed, and refresh my page,
+and then it should be connecting to my American instance.
+So, let's verify this in a second.
+Yes, and finally, if I connect to something in Asia,
+so let's change this.
+Let's go to Thailand, for example,
+and then refresh, I'm gonna get my AP-Southeast-1b instance.
+So, this is perfect.
+And if we go back into Route 53 now and refresh this
+you can see if I go to Filter and type proximity
+the record itself, this proximity record,
+is directly routing to a traffic policy record, okay?
+And the only way I can edit this record
+is if I click on Edit right here,
+and this will take me directly
+into the traffic policy UI, okay?
+So, that's it for this lecture.
+I'm just going to save some money, obviously,
+and delete this policy record right now
+so it doesn't cost me $50 a month.
+And I hope you liked this lecture.
+I will see you in the next lecture.

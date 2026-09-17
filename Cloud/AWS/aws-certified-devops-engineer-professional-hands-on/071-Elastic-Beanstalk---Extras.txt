@@ -1,0 +1,70 @@
+# 71. Elastic Beanstalk - Extras
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869134
+# Caption: en_US (manual)
+
+So a few extra concepts on Beanstalk.
+So the first one is the difference
+between a web server type of deployment
+and a worker environment type of deployment.
+So web server makes sense
+when you are trying to serve webpages,
+but say your application performs tasks
+that are long to complete
+and they may not fit into the web server thing,
+so you may want to move them
+into a dedicated worker environment,
+and that's called decoupling.
+We decouple your application into two tiers.
+One tier is for serving webpages,
+and the other tier is to do long tasks,
+such as processing a video,
+or generating a zip file, et cetera, et cetera.
+You can also define periodic tasks in a cron.yaml file
+that allows your worker environment
+to perform these tasks once in a while.
+So here is an example.
+In the Web Tier,
+we're going to have a load balancer
+as well as an auto scaling group of EC2 instances.
+And if there's a request, for example,
+to process a video, that request is going to be offloaded
+into an SQS Queue so that the queue has the request itself.
+And then the worker tier that we have deployed
+into Beanstalk is just an autoscaling group
+that is continuously pulling that SQS Queue for work.
+And whenever there is a video to process
+or a zip file to generate, then we can do that
+in the worker tier and not affect the speed of our web tier.
+So this is the whole idea.
+And both these tiers,
+the web tier and the worker tier
+can be managed from within Elastic Beanstalk.
+The other thing is around Beanstalk notifications.
+So Beanstalk does emit quite a few notifications
+in EventBridge, so you can react to the following events.
+You can react to environment operation status,
+such as create, update, and terminate.
+We can have other resources status,
+such as whenever ASG, ELB and EC2 instances
+are created and deleted.
+You can have a managed update status,
+such as whenever the Elastic Beanstalk
+updates its own platform.
+Has it started?
+Has it failed? And so on.
+And environment health status.
+So this is the one I want to show you an architecture.
+So for example, we can have a look
+at whenever the environment status degrades
+into either a warning or a severe status, which is bad.
+In that case, we can use EventBridge
+to trigger an SNS notification
+and send emails to administrators,
+or invoke a Lambda function that
+will send a message into Slack
+or whatever discussion channels
+you have in your company.
+All right, so that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

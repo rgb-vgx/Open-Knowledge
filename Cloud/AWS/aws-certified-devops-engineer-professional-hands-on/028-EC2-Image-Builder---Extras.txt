@@ -1,0 +1,49 @@
+# 28. EC2 Image Builder - Extras
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858662
+# Caption: en_US (manual)
+
+So a few extra concepts
+on the EC2 image builder service.
+The first thing is that you can share the images,
+the recipes, and the components that you create
+within EC2 image builder using RAM.
+So RAM is resource access manager
+and this allows you to share a lot of things
+throughout different accounts
+or throughout your organization.
+So say you have two accounts
+and you are actually building images AMIs
+with the EC2 image builder service.
+So we can use RAM to automatically share them
+and accept them, okay into other accounts.
+But once done, this is done forever.
+And so once the AMI is available for usage in accounts B
+then EC2 instances can be launched from it.
+So remember using RAM, you can share images, recipes
+and components from the EC2 image builder service.
+What about tracking the latest AMI?
+So we have a will to always store the latest AMI ID
+that has been built using the EC2 image builder
+in the SSM parameter store.
+The reason we do that is, for example
+we have a weekly build that has the latest security fixes.
+Then want to make sure that everyone in our organization
+is aware of what is the latest AMI ID for that image.
+So let's take an example, automatically, a new AMI
+is created every week because we have a weekly build.
+Then this will create a notification into SNS
+from which we can invoke Lambda
+and Lambda can be used to actually store the AMI ID
+into the SSM parameter store.
+From there, our users can just go into the parameter store
+to find the latest AMI ID.
+Or if you're using CloudFormation to actually
+create EC2 instances
+you can make sure to reference the AMI ID
+as a dynamic reference from the SSM parameter store.
+Therefore, anytime someone will use CloudFormation
+you have the guarantee that the latest AMI ID
+is going to be used.
+Okay. So that's it for this lecture, I hope you liked it
+and I will see you in the next lecture.

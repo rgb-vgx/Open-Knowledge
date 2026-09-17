@@ -1,0 +1,89 @@
+# 350. [SAA] Egress Only Internet Gateway
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/13222012
+# Caption: en_US (manual)
+
+And now let's talk about
+egress-only internet gateways.
+So they're used only for IPv6 traffic,
+and they're similar to a NAT gateway,
+but for IPv6.
+So NAT gateway is IPv4,
+but egress-only internet gateway is for IPv6.
+So what do they do?
+Well, they allow instances in your VPC outbound connections
+over IPv6 while preventing the internet
+to initiate an IPv6 connection to your instances.
+And to do so, you must update your route tables.
+So let's have an example.
+We have the internet,
+our VPC with a public subnet or private subnet.
+And so this EC2 instance can access
+the internet through the internet gateway
+and can also have the internet initiate a connection
+to the instance using IPv6,
+because it's connected to the internet gateway
+and it's in the public subnet.
+Now we don't want that.
+What we want is just outbound connections.
+So let's consider an EC2 instance in a private subnet,
+so it doesn't have an internet gateway,
+that makes the subnet private.
+And we're going to create an egress-only internet gateway.
+So what's going to happen is that now
+the EC2 instance in the private subnet
+will be able to access the internet over IPv6
+through the egress-only internet gateway,
+but the internet will not be able to initiate
+a connection from the internet to the EC2 instance.
+So to summarize, here is a diagram
+of how IPv6 routing works.
+So let's consider a VPC with IPv6.
+We have a public subnet, we have a private subnet,
+so they both have IPv4 and IPv6 obviously in them.
+And so again, if we consider a web server
+accessing the internet,
+it can do it over IPv4 and IPv6 through an internet gateway.
+And so the route table for your public subnet
+is going to have the first line to be local
+for the local IPv4 and the local IPv6 traffic.
+Okay, these are within the CIDRs of your subnets
+or your VPC,
+and then anything else,
+so 0.0.0/0, this is the everything IPv4,
+and the ::/0 is the everything IPv6,
+go through the internet gateway,
+which allows your web server to access the internet.
+So this should make sense.
+And this is how we enable IPv6 and IPv4 both ways
+in a public subnet.
+But if you consider a private subnet,
+your server again has a private IPv4 and also an IPv6.
+And so how do we make sure that this server
+can access the internet, but not be accessed?
+Well, you know already that for IPv4
+we need to use a NAT gateway.
+So the server connects to the NAT gateway, okay,
+and the NAT gateway then connects to the internet gateway
+and then accesses the internet over IPv4.
+And for IPv6, we know we need to use
+an egress-only internet gateway.
+So IPv6, the server connects
+to the egress-only internet gateway
+to the internet over IPv6.
+Now your route table looks a little bit different.
+Again, the first two lines are the same,
+but then your NAT gateway ID is a target for 0.0.0.0/0.
+So this is all IPs' IPv4.
+And then the fourth line is ::/0,
+which represents a target
+to the egress-only internet gateway,
+because this is a target for the IPv6 type of traffic, okay?
+So this should make sense.
+And then if you have this in mind,
+then you understand exactly the difference
+between an internet gateway, a NAT gateway,
+and an egress-only internet gateway.
+So that's it.
+I hope you liked it.
+And I will see you in the next lecture.

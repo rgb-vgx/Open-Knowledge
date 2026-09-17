@@ -1,0 +1,148 @@
+# 208. Organizations Overview
+# Section: Account Management, Billing & Support
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056424
+# Caption: en_US (manual)
+
+Now let's tackle a long section
+on Account Management, Billing and Support.
+And we will be starting with AWS Organizations.
+So it's a very simple service, it's a global service,
+and the idea is that by creating an organization,
+you are able to manage multiple AWS accounts.
+The main account is going to be called the Master Account
+and all the other ones will be called Child Accounts.
+The cost benefits you get from using an organization
+is that you get Consolidated Billing.
+That means that all the accounts will be paid
+by just the Master Account,
+and so you will have one long bill at the end.
+So you don't need to set up a payment method
+for all the other accounts.
+The other thing is that you get pricing benefits
+from aggregated usage.
+So when you use a lot EC2
+or when you use a lot S3,
+you get a discount because you've used that a lot.
+And so if you have multiple accounts,
+you could lose that volume.
+But with an organization,
+because the billing is consolidated,
+the aggregated usage is as well consolidated,
+and that means that you get more discounts.
+Also, if you're using Reserved Instances,
+they're shared across all the accounts
+to make sure that if one account does not use
+a Reserve Instance, another one can,
+and again, maximize the cost savings.
+There's an API that is available
+to automate AWS account creation to do so automatically,
+which is very helpful.
+For example, if you had some processes
+to create an account programmatically for someone
+for as example a Sandbox Accounts.
+And then finally you can restrict account privileges
+using a Service Control Policy or SCP,
+and that is a common exam question.
+So all the things highlighted in bold in this slide
+are going to be common exam questions.
+Now I'm gonna go a bit deeper on organization.
+So you can have a Multi Account Strategy in AWS.
+That means that you wanna create accounts, for example,
+per department, per cost center, per environment,
+for example, dev/test/and prod
+based on regulatory restrictions.
+For example, if you don't want a service
+to be used in an account, you can use an SCP.
+Or if you want to isolate the resources better,
+you could have different VPC in different accounts.
+And it's also very good
+to have separate per-account service limits
+and also isolated accounts for logging.
+So all these could be multi-account strategies,
+it's really up to each organization to choose
+what type of accounts they want.
+So the idea is that you have two options,
+you can use Multi Accounts or One Account and Multiple VPC.
+That is a trade off,
+I personally like the Multi Account better.
+You can use tagging standards
+across all the accounts for billing purposes.
+And we'll see billing in depth in the section.
+And you should enable CloudTrail on all the accounts,
+send the logs to a central S3 accounts.
+And also as well for the CloudWatch Logs,
+you should send them all to a central logging accounts.
+So how can you organize your accounts?
+Well, you can organize them by Business Units, for example,
+with a Master Account.
+And then we have the Sales OU,
+we have the Retail OU and the Finance OU.
+And within each OU, so each Organizational Unit,
+you'll have multiple accounts
+or you can organize them by environment, production,
+development and tests.
+Or we can have them Project-based,
+for example, Project-1, Project-2, Project-3,
+or a mix of all these things.
+Okay, so an organization looks like this.
+The Root OU contains everything,
+it contains the Master Accounts,
+and then you can create different OU.
+So the Dev OU maybe with the two accounts in it,
+the Prod OU with two accounts in it.
+And within the Prod OU, you can also have different OU.
+So a Finance OU and an HR OU with their respective accounts.
+Hope that makes sense.
+There is something called a Service Control Policy or SCP.
+It allows you to whitelist or blacklist IAM actions
+applied at the OU or Account Level,
+but it doesn't apply to the Master Account.
+The SCPs have no effects on the Master Account.
+So the SCPs, we'll see an example very shortly.
+They can be applied to only the Users
+and the Roles of the Account, including a Root.
+So if you apply an SCP onto your account within an OU
+and you say you cannot use EC2,
+even an admin within an account cannot use EC2.
+But the SCP does not apply to service-linked roles.
+So this is the service roles that other services use
+to integrate with organizations.
+Okay, SCP must have an explicit Allow to allow things.
+So by default it does not allow anything.
+And so use cases for SCP,
+and this is what the exam will test you on,
+would be to restrict access to certain services.
+For example, you're saying,
+"Okay, in my production accounts, you cannot use EMR
+or to enforce PCI Compliance
+by explicitly disabling services that are not compliant
+with PCI yet in AWS."
+So let's take an example at what it looks like.
+An SCP looks just like a IAM Policy.
+So this is Allow all actions.
+So we allow STAR on STAR.
+So do you say you can do anything but DenyDynamoDB.
+And we're saying the effect is Deny on DynamoDB Star
+for any resource.
+Another strategy would be to whitelist
+only a certain type of services.
+So we're saying allow EC2 star
+and CloudWatch star on Resource Star,
+but any other services but EC2 and CloudWatch,
+cannot be usable.
+If you don't know exactly what this means,
+you want more examples,
+there's a link right here that takes you
+to the documentation and shows you different
+OUs and SCPs you can have.
+So that's it for Organizations.
+I hope you liked it.
+And in the next lecture,
+I'm going to do an optional walkthrough organization.
+It's a bit more complicated,
+so I would just recommend if you just want to,
+to just watch me do,
+and see how I use Organization to demonstrate the creation
+of accounts and to demonstrate as well the use of SCP.
+So I hope you liked this,
+and I will see you in the next lecture.

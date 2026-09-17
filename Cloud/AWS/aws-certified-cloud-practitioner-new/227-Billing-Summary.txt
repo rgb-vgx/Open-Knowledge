@@ -1,0 +1,37 @@
+# 227. Billing Summary
+# Section: Account Management, Billing & Support
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20118378
+# Caption: en_US (manual)
+
+So here's a quick summary on billing
+and costing tools in AWS.
+So the first one is compute optimizer,
+which allows you to get recommendation
+on resource configurations in order to reduce cost.
+The second one is the pricing calculator,
+which is allowing you to estimate
+the cost of services on AWS.
+The billing dashboard gives you a high level overview.
+Your cost allocation tags allow you to tag resources
+to create detailed reports with your own tags as a filter.
+Cost and usage reports
+give you the most comprehensive billing data sets.
+Cost explorer allows you to get your current usage
+in a detailed manner as well as forecast usage
+months in advance.
+And billing alarms, in US East 1, they live.
+They allow you to track your overall
+and per service billing.
+But if you want to get more advanced, you can use budgets,
+which allows you to track usage, cost,
+reserved instances, and get alerts in real time.
+We get savings plan, and they're an easy way for you
+to save on your bill based on long-term usage of AWS
+by committing a specific dollar amount.
+Cost anomaly detection helps you detect unusual spends
+using machine learning, and service quotas
+helps you get notified whenever you're reaching
+a service limit threshold and increase these limits
+directly from this console.
+Okay, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

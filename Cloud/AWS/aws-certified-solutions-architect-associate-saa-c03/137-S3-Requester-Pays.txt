@@ -1,0 +1,45 @@
+# 137. S3 Requester Pays
+# Section: Advanced Amazon S3
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26099260
+# Caption: en_US (manual)
+
+So here is a feature that you may get tested on
+at the exam.
+And this is called S3 Requester Pays.
+And the name is quite obvious.
+So, in general, from what we've seen,
+the bucket owners will pay for all of the Amazon S3 storage
+and also the data-transfer costs associated
+with their buckets.
+So let's take an example.
+We have a set of buckets,
+we're storing some objects in it,
+and then a requester, so, a user will download a file
+from our bucket.
+And then what happens is that
+the networking cost is also being billed
+to the owner of the bucket and the objects, okay?
+But, in case you are having a lot of heavy files
+and some of the customers want to download them,
+maybe you want to enable Requester Pays buckets.
+And in that case, the requester will pay
+instead of the bucket owner
+for the data download of the objects.
+So let's take an example again.
+The owner still will pay for the storage costs
+of the objects within the bucket,
+but now the requester will download the object
+and the requester will be the one paying
+for the networking costs associated with that download.
+The idea is that this is very helpful if you want to
+start sharing large data sets with other accounts.
+And for it to do so,
+the requester must not be anonymous, okay?
+The requester must be authenticated
+in AWS because when it is authenticated with AWS,
+then AWS knows to bill the requester of that request
+for that specific download of the object, okay?
+So that's it, just a feature to remember.
+It can come up in the exam in a scenario.
+I hope you liked it,
+and I will see you in the next lecture.

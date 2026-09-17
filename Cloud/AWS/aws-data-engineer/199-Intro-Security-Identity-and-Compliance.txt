@@ -1,0 +1,30 @@
+# 199. Intro: Security, Identity, and Compliance
+# Section: Security, Identity, and Compliance
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332256
+# Caption: en_US (auto)
+
+-: Security is an important part of every certification,
+and data engineering is no exception.
+Perhaps more so here
+because handling personally identifiable information
+and other sensitive data may be part of your job.
+If you don't handle it appropriately, well,
+you might have not have that job for very long.
+Data security and governance does take up 18%
+of the scored content on the data engineering exam,
+so don't just skim through this section.
+I'll kick it off with a review
+of the principle of least privilege
+that should be applied as you create your IAM policies
+and touch on some specific scenarios
+the exam guide calls out.
+Stefan will cover most of it,
+including IAM in depth, Amazon KMS,
+AWS Secrets Manager,
+AWS Web Application Firewall, AWS Shield,
+and a deep dive on how security services integrate
+with the other services we've covered here.
+Pay particular attention to Amazon Macie
+and how it integrates with EventBridge,
+as that's a particularly relevant security topic
+in the context of data engineering.

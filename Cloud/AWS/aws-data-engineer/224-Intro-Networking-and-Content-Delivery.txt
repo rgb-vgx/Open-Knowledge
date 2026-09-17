@@ -1,0 +1,23 @@
+# 224. Intro: Networking and Content Delivery
+# Section: Networking and Content Delivery
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332268
+# Caption: en_US (auto)
+
+-: VPCs are a part of security solutions as much
+as they are a networking topic.
+In this next section on networking
+and content delivery is where we'll cover them in depth.
+Amazon's VPCs and AWS Private Link are important tools
+in keeping your data secure as well as the systems you build
+around that data.
+Exposing data to the outside world at scale
+is also something the exam guide calls out,
+although its relevance to data engineering
+is a little bit tenuous if you ask me.
+Nevertheless, we'll cover Amazon Route 53
+and the basics of DNS as well as Amazon CloudFront
+to ensure you're covered for the exam.
+As always, we'll wrap up with a quiz
+to practice applying these technologies
+to real world problems.
+Stefan is taking the lead on this section, let's dive in.

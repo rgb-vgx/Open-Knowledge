@@ -1,0 +1,28 @@
+# 81. S3 Encryption
+# Section: Amazon S3
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/29102298
+# Caption: en_US (manual)
+
+So you might have one question
+on S3 encryption at the exam,
+so here is a high level review of what that means.
+The first one is server-side encryption,
+so it is by default whenever you create a bucket
+or whenever you upload an object, it will be encrypted.
+What is server-side encryption?
+Well, the user uploads an object into Amazon S3,
+and then that object when it arrives in the bucket
+is going to be encrypted by Amazon S3 for security purposes.
+The idea is that the server is doing the encryption,
+and therefore we call this server-side encryption.
+On the opposite, we have client-side encryption.
+This is when the user will actually take the file,
+will encrypt it before uploading it,
+so the lock is done by the user,
+and then put it in the bucket.
+And that's called client-side encryption.
+And both models exist in AWS,
+but by default you should know
+that server-side encryption is always on.
+All right, that's it.
+I hope you liked it and I will see you in the next lecture.

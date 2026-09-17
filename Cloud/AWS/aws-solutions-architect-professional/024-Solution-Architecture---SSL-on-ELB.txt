@@ -1,0 +1,89 @@
+# 24. Solution Architecture - SSL on ELB
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376404
+# Caption: en_US (manual)
+
+Let's discuss some solution architecture
+when using SSL with a Load Balancer.
+So we have this classic architecture
+where we have an Auto Scaling group,
+and maybe an Application Load Balancer
+that has an SSL certificate loaded onto it,
+thanks to ACM.
+So our users are able to access our Load Balancer
+using HTTPS, and then our Load Balancer can be set up
+to talk to our EC2 instances using HTTP.
+That is something very simple, scalable,
+it works really well,
+it's classic,
+but sometimes you may want to set up
+SSL directly on your web server EC2 instances.
+Here is an example.
+We have an NLB and we have an Auto Scaling group
+and we just have TCP connection to the NLB
+but we've decided
+to perform the HTTPS
+at the EC2 instance level
+for various reasons
+but this is the way it happens.
+So you need to have an HTTPS connection happening
+from your EC2 instances,
+and for it to work
+you need to retrieve these SSL certificates
+onto these EC2 instances
+for them to become an HTTPS web server,
+and so for this something you can be doing for example,
+is using user data scripts at EC2 boot time
+to retrieve certificates from the SSM Parameter Store
+and then load them onto your EC2 instances,
+and obviously to retrieve these SSL certificates
+they will need to be proper IAM role set up
+for your EC2 instances,
+and that would work,
+and your EC2 instances
+would be able to provide HTTPS back to your users,
+and that would work really well,
+but performing SSL encryption and decryption can use up
+some valuable CPU resources on your EC2 instances.
+On top of it,
+you have to extract the SSL certificates
+out of your SSM Parameter Store
+and that may be some what of a risk problem
+if someone was able to SSH into your EC2 instances.
+So something you can do though,
+is using CloudHSM to do SSL offloading.
+So we have the same architecture,
+the users talk to the NLB
+which forwards to TCP traffic to your EC2 instances
+which are in fact HTTPS,
+and so for to perform the actual SSL encryption,
+you can offload it to CloudHSM using SSL acceleration,
+and that's supported by a NGINX, Apache Web servers
+and IIS for windows server,
+and the idea is that
+the CloudHSM device in the backend
+will be the one performing the SSL acceleration
+or offloading for your EC2 instances,
+and that will save up some valuable resources
+for your EC2 instances.
+So that's a very classic solution architecture as well.
+Extra level of security
+is that the SSL private key
+will never leave the HSM device,
+and so it's extra secure.
+The only way to make this work
+is to set up a cryptographic user,
+so CU, on the CloudHSM device
+and make sure your EC2 instances can use up that user
+and work with that user be stored,
+or for example you can store the user name and password
+on the SSM Parameter Store.
+So you're quite,
+you can have so many ways of doing this architecture
+but using the CloudHSM-SSL Offloading
+is one of the most secure
+and one of the most handy as well.
+So this is probably something new for you,
+and I wanted to show it to you.
+So that's it for this lecture.
+I will see you in the next lecture.

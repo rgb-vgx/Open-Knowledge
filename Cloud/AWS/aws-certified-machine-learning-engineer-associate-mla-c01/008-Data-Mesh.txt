@@ -1,0 +1,53 @@
+# 8. Data Mesh
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45337673
+# Caption: en_US (auto)
+
+Let's touch on a more recent buzzword in the world of data engineering, and that's a data mesh.
+The exam might expect you to know what this term means, at least, if not in more depth.
+It's not really about technology so much.
+It's more about organization and the management and how you structure, access and ownership of data
+within a larger organization.
+So it's more about governance and organization than actual technologies.
+The idea, though, is that individual teams own their own data.
+So if a given team or department or whatever it is in your organization is an expert in a certain type
+of data, or they collect that data or that's their responsibility, they are responsible for maintaining
+that data and also offering it as a data product to other organizations, other teams, other departments
+within the larger organization.
+So it's sort of a decentralized world where data is owned by the teams that know the most about that
+data.
+But there's some central organizing principles on how that data is accessed and governed.
+Right now, outside of each data domain, which might be a specific team that owns a specific set of
+data products, there might be use cases around the organization that need to tap into that data.
+So maybe there's someone outside of that specific team that needs to do an analysis that involves data
+products from multiple data domains.
+That is a use case that might connect within multiple data domains to the data products that are offered
+by those domains.
+So people with a use case for a data analysis problem don't need to go and hit the raw data for everything.
+They can just hit these data products that are exposed by individual data domains.
+This is sometimes called domain based data management.
+It's not too surprising that this has caught on and gotten some traction within Amazon because, well,
+this is how Amazon itself has been structured internally.
+For as long as I remember.
+They've always had this decentralized approach where they have a set of governing principles, but individual
+teams own their own stuff for the most part.
+However, you do need to have federated governance with central standards.
+So each one of these domains is responsible for maintaining the integrity and security of that data
+and making sure that access controls are in place as appropriate by applying central standards to it
+And also Amazon of course, loves this concept because AWS is a good solution for implementing a data
+mesh, right?
+So you can imagine using something like lake formation to organize how this data is actually managed
+and stored and accessed, and also to manage the permissions to that different data from different groups.
+Right.
+And maybe AWS glue is used as a centralized data catalog so people can see what data products are out
+there.
+It also calls for self-service tooling and infrastructure.
+So it it assumes that these different domains are not left to fend for themselves entirely, that there
+is some sort of infrastructure in place for them to build these data products on top of.
+And again, that's where AWS might come in.
+Data lakes, data warehouses, S3 glue, lake formation, whatever it might be, could be a part of
+a data mesh.
+But a data mesh is more about the data management paradigm.
+You know, the higher level concerns about who owns the data, who maintains it, how is that accessed?
+How is that distributed throughout a larger organization?
+It does not prescribe a specific technology or architecture, but AWS could be one of them.

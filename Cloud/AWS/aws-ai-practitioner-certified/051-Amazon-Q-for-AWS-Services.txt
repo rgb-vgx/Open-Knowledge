@@ -1,0 +1,88 @@
+# 51. Amazon Q for AWS Services
+# Section: Amazon Q - Deep Dive
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45796557
+# Caption: en_US (manual)
+
+So Amazon Q is a layer of intelligence
+that is slowly starting to be included
+in other AWS services,
+and so they can come up with the exam.
+So the first one is Amazon Q for QuickSight.
+So what is Amazon QuickSight?
+Well, Amazon QuickSight is a way for you
+to create dashboards and to visualize your data.
+And so when you do this in Amazon QuickSight,
+it's drag and drop.
+You select your accesses and so on.
+But you can also now use Amazon Q.
+And with Amazon Q, you just upload your dataset
+and then you ask natural language questions to your data
+and automatically, graphs can be generated.
+For example, in the graph here, I have sales by city
+and product as a map,
+and automatically, the map is created
+with the correct measures and so on, which is very helpful.
+So now to create our dashboards in QuickSight,
+we can just use Amazon Q and dictate what we want.
+So we can get executive summaries of your data.
+You can ask and answer questions about your data,
+and you can generate and edit visuals for your dashboards.
+We have Amazon Q for EC2. So what is EC2?
+Well, EC2 instances are virtual servers
+that you can start in AWS and they are very important.
+Amazon Q for EC2 helps you choose which EC2 instance type
+you're going to need for your workload.
+So for example, I asked, "Hey, I have a web service
+and I would like to run it to serve 1,000 users.
+Which EC2 instance type do you recommend?"
+And the recommended instance types are M7g and C7g,
+and we get the information why.
+We can also keep on talking to Amazon Q
+to add more requirements and get a better understanding
+if these requirements fit the EC2 instance type selected
+or if we need to change.
+So it's a dialog
+and we'll see Amazon EC2 instances geared for AI
+and ML workloads later on in this course.
+You also have Amazon Q for AWS Chatbot.
+So AWS Chatbot is a way for you to deploy a chatbot
+from AWS in a chat application, for example, Slack
+or Microsoft Teams.
+And this chatbot knows about your AWS accounts,
+so you can even ask it to run commands for you, and it will.
+So it's a way for you to never leave your chat application
+and still use AWS.
+So thanks to this AWS chatbot, you can troubleshoot issues
+or receive notifications for alarms, have security findings,
+billing alerts, or even create support requests directly
+from the chats.
+And how is Amazon Q integrated with it?
+Well, we can directly access Amazon Q
+through the AWS Chatbot.
+And so this will accelerate you to understand services,
+to troubleshoot issues or identify remediation paths.
+Amazon Q Developer can also help with Glue.
+So what is Glue? Glue is a ETL service.
+So that means extract, transform, and load.
+And it's used to move data across places on your cloud
+and from databases or storage options.
+So you may not know what Glue is
+or know how Glue works, but you may wanna use it
+and so Amazon Q can be very helpful in that instance.
+So you can chat to answer general questions about Glue
+and provide links to documentation.
+You can also generate code for AWS Glue,
+so you can generate code
+or answer questions about specific ETL scripts
+that you find in Glue.
+And finally, in case you have errors in your Glue jobs,
+Amazon Q Developer has been trained
+to understand these errors,
+and provide you step-by-step instructions to root cause
+and resolve your issues.
+So that's it for Amazon Q for other services.
+I will keep on adding this lecture
+if there are new services that come up.
+But so far, so good. You should be good for the exam.
+All right, I hope you liked it
+and I will see you in the next lecture.

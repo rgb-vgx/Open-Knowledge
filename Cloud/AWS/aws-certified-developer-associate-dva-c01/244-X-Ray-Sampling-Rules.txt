@@ -1,0 +1,57 @@
+# 244. X-Ray: Sampling Rules
+# Section: AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrail
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730096
+# Caption: en_US (manual)
+
+So let me show you where in CloudWatch
+you can set up the sampling rules.
+So for the X-Ray traces,
+you go on the left-hand side to settings
+and then you have traces under CloudWatch settings.
+And you can, for example,
+have encryption rules, group rules, and sampling rules.
+So we're going to look at sampling rules.
+We're going to view the settings.
+And so as you can see, there is a default rule right now
+that has a priority of 10,000.
+And say that you have one request per second,
+then five fixed percent fixed rate,
+and the matching criteria is everything.
+So you can edit it and for example,
+change the reservoir size
+and the fixed rate if you wanted to.
+It will still match all the request
+because this cannot be edited.
+This is a default rule, okay?
+The only thing you can change is the limits
+but you can actually create your own sampling rule.
+So if I click on create sampling rule,
+I can call this one DemoSampling.
+And here we can set the priority,
+so it's between one and 9,999.
+And so the lowest has the highest priority.
+So if I said 5,000, this will have a higher priority
+than the default rule, and that makes sense.
+And here we can set the reservoir size,
+so the number of maximum requests to sample per second.
+So for example, maximum one and a fixed rate of 100%,
+for example, if you wanted to.
+It's really up to you to set these limits
+how you wanna go.
+But the more interesting thing
+is that if you wanted to just target a specific service,
+you would enter the service name, for example, MYSERVICE.
+And if you wanted to only get, for example, a POST request,
+you could specify this as well,
+as well as specify a URL path so you can really,
+for example, sample every request that is being made
+to this service on POST and get the traces for that.
+And the cool thing
+is that once you create this sampling rule,
+then automatically, you don't need
+to restart your daemons of X-Ray.
+They will take these rules into account
+and then you will start seeing the effect
+of those directly into the X-Ray console.
+So that's it for this lecture.
+I hope you liked and I will see you in the next lecture.

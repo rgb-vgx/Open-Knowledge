@@ -1,0 +1,63 @@
+# 166. IP Addresses in AWS
+# Section: VPC & Networking
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/36566084
+# Caption: en_US (manual)
+
+So before we learn about VPCs in AWS,
+let's learn about IP addresses in AWS.
+So you have the IPvfour protocol,
+that's the one you're most used to, I guess,
+which is 4.3 billion addresses.
+And the public IPv4s are IP addresses
+that can be used on the internet,
+and that allows whatever is the IP
+to be publicly reachable from anywhere.
+So if you create an EC2 instance,
+we've seen that it gets a public IPv4.
+And what's going to happen is that if you stop the instance,
+the IPv4 is going to be released.
+And if you start it again,
+then it's going to get a new public IP address at launch.
+So this is a behavior we've seen in this course.
+Now we've also seen the private IPv4.
+So this time this is an IPv4 in the form, for example
+of 192.168.1.1.
+And this is an IP that can only be used on a private network
+such as your internal AWS VPC.
+And so these are not publicly accessible.
+So if you try this on your web browser,
+you can only access IPS within your own network.
+So the private IPv4 is going to be the same
+for your entire EC2 instance lifetime,
+even if you stop and restart the instance.
+Now there is an Elastic IP in AWS,
+it's a way for you to get a fixed public IPv4 address
+into an EC2 instance.
+That means that if you stop the instance
+and start the instance again,
+it will have the same public IPv4,
+which can be desirable.
+But of course, if you leave the instance stopped
+for a long time, then this Elastic IP is used for nothing.
+Now in terms of pricing, every single public IPv4
+on AWS is going to be charged at $0.005 per hour.
+This is including the Elastic IP
+and the normal public IPv4.
+So that means that AWS is trying to get you
+to use something else than public IPv4,
+which is IPv6.
+And so IPv6 is the newer internet protocol version,
+and you have a lot more addresses,
+so 3.4 10 times at the power 38 addresses.
+So that means you have 38 zeros in there,
+so it's a lot more addresses.
+And every IP address in this range in IPv6 in AWS
+is going to be public.
+There is no private range for IPv6.
+And so this is what an IPv6 IP address looks like,
+and they are free in AWS.
+So that means that if you want to expose some services
+for free from an IP standpoint on the internet,
+you must use IPv6.
+So that's it for IP addresses in AWS.
+I hope you liked it, and I will see you in the next lecture.

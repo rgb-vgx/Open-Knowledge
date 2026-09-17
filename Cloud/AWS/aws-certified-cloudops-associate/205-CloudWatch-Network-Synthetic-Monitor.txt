@@ -1,0 +1,30 @@
+# 205. CloudWatch Network Synthetic Monitor
+# Section: Monitoring, Auditing and Performance
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218197
+# Caption: en_US (manual)
+
+So now let's talk
+about CloudWatch Network Synthetic Monitor.
+So the idea is that you have connected your cloud
+to your on-premises corporate data center
+through Direct Connect or a VPN connection,
+and you want to detect network issues
+between your data center and AWS.
+That is precisely what this Network Synthetic Monitor
+is doing.
+So you're going to identify
+any type of network performance degradation,
+such as packet loss, latency, or jitter.
+You don't need to install any agents.
+It will test ICMP or TCP traffic
+on IPv4 on-premises traffic
+through your Direct Connect
+or your site-to-site VPN connection.
+So all the metrics and the results are going to be published
+to CloudWatch Metrics so you can take proper action.
+The idea is that it's a way for you to ensure
+that the connection you established
+between your data center and AWS is working as expected
+and you get that information in real time.
+So that's it. I hope you liked it.
+And I will see you in the next lecture.

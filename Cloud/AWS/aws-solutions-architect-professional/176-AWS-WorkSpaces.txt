@@ -1,0 +1,151 @@
+# 176. AWS WorkSpaces
+# Section: Other Services
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376710
+# Caption: en_US (manual)
+
+So workspaces is going to give you a
+managed secure Cloud desktop.
+This is a great way to eliminate management
+of on-premise VDI.
+And VDI means virtual desktop infrastructure.
+The idea with workspaces is that,
+for example you want to get access to
+Windows machine on the cloud
+and you want to get into it,
+then you would use workspaces to create
+that virtual desktop.
+That is going to be a Windows
+and then you will get into that Windows,
+and you can operate your desktop from there.
+You can even pay per hour, which is on demand pricing
+or have a monthly subscription for unlimited usage.
+It's going to be secure, encrypted
+and get Network isolation.
+It is integrated with Microsoft Active Directory
+so all your machines can join your directory domain
+if you needed to.
+The user are going to get into a virtual desktop
+and that could be Linux or Windows.
+And then securely,
+this virtual desktop can access, for example
+your corporate data center or can access your virtual cloud.
+So there's a good way, for example,
+to give you reserves access to an environment you trust,
+where you know the network security is going to be optimal.
+Now, workspaces has something called
+Workspaces Application Manager or WAM
+and this is important you know.
+So this is to deploy and manage applications
+as visualized application containers.
+The idea is that you're going to containerize
+this application
+and deploy them onto all your workspaces.
+You can provision them at scale,
+and you keep the application updated using WAM.
+This is different from Windows updates.
+So Workspaces Applications manager is just for applications
+whereas Windows updates is going to be
+well for the updates of your Windows machine.
+So by default, Amazon workspaces are configured
+to install software updates and by default,
+any workspace that you create that has Windows installed,
+will also have Windows update turned on.
+And then you have full control over how often
+you want Windows update to run,
+but it runs during maintenance windows.
+So during this maintenance windows,
+the updates are going to be installed
+and you define the maintenance window that you want.
+So you have always on workspaces, and by default
+the maintenance window is going to be between midnight
+and 4:00 AM on Sunday morning,
+or we get auto stop workspaces,
+which are the workspaces that stop
+when the users don't use them.
+And in this case, the users don't use them often enough,
+then these workspaces are automatically started once a month
+to install the windows updates,
+whereas for always on,
+well, because the workspaces always on
+this is for sure going to happen between midnight
+and 4:00 AM on Sunday mornings.
+Finally, you can also define a manual maintenance window
+and you define your windows,
+the instances of workspace will be offline for a moment
+for your users,
+and you can perform the maintenance you want
+on these workspaces.
+Next we have cross region redirection for Amazon workspaces.
+So the idea is that we want to run workspaces directories
+in multiple regions.
+So we have a primary region and then we have
+a failover region.
+So the idea is that
+when the users connect into the primary region,
+the workspace directory is going to be connected,
+for example, to AWS Managed Microsoft AD
+to store these users
+and allow them to open sessions on workspaces.
+And if you want to have a failover region,
+what you need to create is you need to create
+an AD connector in that failover region.
+So why an AD connector
+and not a multi-region managed Microsoft AD?
+Well, the documentation says that right now
+the multi-region manage Microsoft AD is not supported.
+So you have to use an AD connector.
+So now we have two regions
+and we need to set up connection aliases.
+So you sub condition aliases
+and then you create a record in Route 53.
+And this record is for desktop.example.com,
+and it's a text kind of record with type failover.
+So the idea now is that
+your workspace is going to have a connection alias
+in the primary region and a connection alias
+in the secondary region, the failover region.
+And we point both of them into
+the Route 53 text record for deskstop.example.com.
+And that means that if the primary region is up,
+then when users enter the desktop.example.com to connect
+to workspaces, the text record is going to be corresponding
+to the one of the region that is primary,
+and then if we set up a health check and an alarm
+to failover to the secondary region,
+then in case we have failover,
+then Route 53 will respond to desktop.example.com
+for a text record,
+to the region code of the failover region.
+Therefore, our users can correctly connect
+to the primary region and in case
+connect to the secondary region.
+Now, when they connect to one region or the other one,
+the user data is not persistent
+because the user data is region specific
+and the workspaces are region specific.
+And so therefore, if you wanted to have data being shared
+between the two regions that the users actually don't see
+that they're being failed over to another region
+then you can use, for example, Amazon workDocs,
+which is going to give you persistence for the user data.
+Another thing you need to know for Amazon workspaces
+is IP access control groups
+which is very simple.
+It's basically security groups for Amazon workspaces.
+So it's a list of IP addresses and CIDR address ranges
+that users are authorized to connect from.
+So for example, if you have a corporate data center
+and you have a user
+and has a public IP from a CIDR that's owned
+by the data center from a public CIDR,
+then you can set up an IP access control group
+to make sure that only this CIDR is allowed to access your
+workspace directory,
+and therefore your users to use workspaces.
+So it's an extra security, just like security groups.
+In case your users are accessing workspaces
+through a VPN or a NAT.
+Then of course the IP access control group
+must allow the public IP of the VPN or the NAT connection.
+Okay, so that's it for workspaces,
+I hope you liked it and I will see you in the next lecture.

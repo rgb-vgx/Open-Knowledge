@@ -1,0 +1,38 @@
+# 314. [SAA] Internet Gateways & Route Tables
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/13221972
+# Caption: en_US (manual)
+
+Okay so now we're going to see how we can get
+internet access into our subnets
+because right now we don't know what a Public Subnet is
+and what a Private Subnet is, and currently,
+both our subnets do not have internet access.
+So an Internet Gateway will allow resources
+in a VPC to connect to the internet,
+and it could be EC2 instances allowing the functions
+and so on.
+It will scale horizontally
+and it's highly available and redundant.
+So it's a really nice managed resource
+and it must be created separately from a VPC.
+Now one VPC can only be attached to one Internet Gateway
+and vice versa and Internet Gateways on their own
+do not allow internet access.
+We must also edit the Route Tables to make it work.
+So we'll see this in a second.
+So currently we have a VPC.
+We have two subnets in one EC,
+so I didn't represent the other two subnets
+to make this diagram as simple as possible.
+We're going to create an Internet Gateway in this VPC,
+and this enough will not give internet access
+to our subnets.
+What we need to do is to also edit the Route Tables.
+So we'll create a Public EC2 Instance in our Public Subnet
+and then we will have to edit a Route Table so that
+the EC2 Instance can connect to the Router,
+then connect to the Internet Gateway,
+and then from the Internet Gateway connect to the internet.
+So let's have a look at how we can do this
+in the next lecture.

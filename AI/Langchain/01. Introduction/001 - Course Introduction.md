@@ -1,117 +1,55 @@
+# 🚀 Chào mừng bạn đến với Khóa học LangChain: Xây dựng AI Agent với LangChain & LangGraph (Phiên bản Mới Nhất!)
+
+**Tác giả:** Eden Marcus
+
+**Chuyên mục:** Trí tuệ nhân tạo (AI) / Khóa học
+
+Xin chào mọi người, mình là Eden đây! 👋
+
+Chào mừng các bạn đến với khóa học **"Phát triển AI Agent được trợ lực bởi LLM với LangChain và LangGraph"**. Bạn đang đọc (và xem) phiên bản thứ 3 của khóa học này.
+
+Với tốc độ phát triển chóng mặt của LangChain, mình đã quyết định **quay lại toàn bộ khóa học một lần nữa**! Mục tiêu lớn nhất là để mang đến cho bạn những nội dung cập nhật và mới mẻ nhất. Hơn thế nữa, việc làm mới lại nội dung cũng cho phép mình tích hợp rất nhiều những phản hồi và góp ý từ chính các bạn học viên, giúp khóa học ngày một hoàn thiện hơn.
+
+Đây là bài viết/video giới thiệu tổng quan, vì vậy mong bạn **đừng bỏ qua nhé**, có rất nhiều thông tin quan trọng ở ngay bên dưới đấy!
+
 ---
-title: 'Bài 001 — Giới Thiệu Khóa Học'
-course: 'langchain'
-lesson: 1
-status: edited-verified
-source: '001 - Course Introduction.md'
-verified_date: '2026-09-17'
-langchain_version: '1.x'
-categories:
-- AI
-tags: []
-doc_refs:
-- 'https://docs.langchain.com/oss/python/langchain/overview'
-- 'https://docs.langchain.com/oss/python/langchain/agents'
+
+### 🎉 Cột mốc đáng tự hào và Những nâng cấp đột phá
+
+Đầu tiên, mình vô cùng hào hứng khi được đồng hành cùng các bạn. Tính đến nay, khóa học này đã chào đón **hơn 200.000 học viên** và nhận về **hơn 40.000 lượt đánh giá**. Tuy nhiên, điều quan trọng nhất đối với mình là được lắng nghe phản hồi của các bạn để liên tục cải tiến.
+
+Trong phiên bản thu hình hoàn toàn mới này, mình đã mang đến những nâng cấp "đáng đồng tiền bát gạo":
+
+* **Sắp xếp lại lộ trình:** Các bài giảng được cấu trúc lại logic và dễ theo dõi hơn.
+* **Tăng cường ví dụ thực tế:** Thêm nhiều bài toán thực tế kết hợp với các cuộc thảo luận chuyên sâu về **Bảo mật (Security)** và **Triển khai môi trường thực tế (Production)**.
+* **Cập nhật code mới nhất:** Toàn bộ mã nguồn đã được nâng cấp để tương thích hoàn toàn với phiên bản LangChain mới và tuyệt vời nhất: **v1.0** (và dự kiến sẽ hoạt động tốt với cả v1.1, 1.2,...).
+* **Chia sẻ Best Practices:** Bổ sung các "tiêu chuẩn vàng" khi làm việc với LangChain, giúp code của bạn trở nên mạnh mẽ (robust), dễ sử dụng (usable) và dễ lắp ghép mở rộng (composable) hơn.
+
 ---
 
-# Bài 001 — Giới Thiệu Khóa Học
+### 👨‍💻 Đôi nét về bản thân mình
 
-> Biên soạn từ transcript "001 - Course Introduction.md".
->
-> Đã đối chiếu với docs ngày 2026-09-17 (LangChain 1.x).
+Trước khi bắt đầu hành trình này, mình muốn giới thiệu một chút về bản thân. Mình xuất thân là một lập trình viên Backend. Trong nhiều năm, mình chủ yếu làm việc tại các công ty về an ninh mạng (cybersecurity).
 
-## Mục tiêu bài học
+Và bạn biết gì không? **Trước năm 2023, mình có đúng 0% kinh nghiệm về Machine Learning (Học máy).**
 
-Sau bài này bạn có thể:
+Thế nhưng, khi làn sóng Generative AI (AI tạo sinh) và các Mô hình ngôn ngữ lớn (LLM) bùng nổ vào năm 2023, mình đã ngay lập tức "lên tàu". Từ chỗ tò mò, mình đã trở thành một "fan cứng" và là người ủng hộ nhiệt thành của LangChain. Mình đã tham gia sâu vào hệ sinh thái này và đóng góp cho các gói mã nguồn mở (open-source) ngay từ những ngày đầu tiên.
 
-- Nêu được bối cảnh khóa học: iteration thứ ba, cập nhật theo LangChain 1.0.
-- Giải thích vì sao khóa học được quay lại: feedback học viên, ví dụ real-world, production và security.
-- Mô tả background của giảng viên Eden và góc nhìn AI engineer không cần PhD ML.
-- Định vị được LangChain trong vai trò commoditizing machine learning.
+Được chứng kiến sự chuyển mình kỳ diệu của framework này, đối với mình, LangChain hiện tại chính là **lựa chọn hàng đầu** khi xây dựng bất kỳ ứng dụng AI nào.
 
-## 1. Chào mừng và bối cảnh khóa học
+Hiện tại, mình đang là:
 
-Giảng viên Eden Marcus chào mừng học viên tới khóa "LangChain course developer LLM-powered agents with LangChain and LangGraph". Điểm quan trọng ông nhấn mạnh ngay:
+* Một diễn giả đại chúng, thường xuyên chia sẻ về việc phát triển các ứng dụng LLM.
+* **Đại sứ chính thức của LangChain (Official LangChain Ambassador).**
 
-> Đây là iteration / edition thứ ba của khóa học, quay lại toàn bộ để khớp với những thay đổi của LangChain.
+Mình có một niềm tin mãnh liệt rằng, LangChain đã đóng một vai trò to lớn trong việc "bình dân hóa" (commoditizing) Machine Learning. Nó biến một lĩnh vực đầy tính hàn lâm trở nên dễ tiếp cận hơn đối với những người như mình – những lập trình viên không có bằng Tiến sĩ (PhD) và cũng chẳng có kinh nghiệm chuyên môn về ML trước đó.
 
-Lý do refilm không chỉ vì version mới mà còn vì feedback: hơn 200,000 students và hơn 40,000 reviews đã được tích hợp để reorganize lectures, thêm real-world examples, thêm thảo luận về security và production, thêm sections và lectures mới.
+---
 
-## 2. Cam kết version: LangChain 1.0
+### 🌟 Kỷ nguyên của Kỹ sư AI (AI Engineer)
 
-Transcript nêu rõ:
+Ở thời điểm hiện tại, mình tự hào nhận bản thân là một **AI Engineer**. Đây là một chức danh công việc hoàn toàn mới và chúng ta sẽ cùng nhau bàn luận sâu hơn về khái niệm thú vị này trong suốt khóa học.
 
-- Toàn bộ code được cập nhật để match LangChain latest and greatest version 1.0.
-- Giảng viên nói "it should match the following versions of 1.1, 1.2, but we'll wait and see".
+Đó là tất cả cho phần giới thiệu ngày hôm nay! Hy vọng bạn đã có một cái nhìn rõ ràng hơn về hành trình tuyệt vời mà chúng ta sắp sửa bước vào.
 
-Kèm theo là best practices của LangChain để code robust, usable và composable hơn. Đây là lời hứa bảo trì: nếu API đổi, video và code GitHub sẽ được update.
-
-## 3. Giới thiệu giảng viên Eden
-
-| Thông tin | Nội dung trong transcript |
-|---|---|
-| Tên | Eden, backend development background nhiều năm, chủ yếu ở cybersecurity companies |
-| Xuất phát ML | Trước 2023 có zero machine learning experience |
-| Bước ngoặt | Nhảy lên generative AI train khi LLM xuất hiện năm 2023 |
-| Vai trò cộng đồng | Heavily involved với LangChain ecosystem và open source package từ đầu, official LangChain ambassador, public speaker về LLM applications |
-| Quan điểm | LangChain là go-to framework khi building applications; nó commoditizing machine learning để người không PhD, không ML background vẫn build được |
-| Title hiện tại | Tự coi mình là AI engineer — khái niệm sẽ bàn thêm trong khóa học |
-
-Cách ví von của giảng viên được giữ nguyên: ông coi LangChain đã chứng kiến "amazing transformation" và có vai trò lớn trong việc phổ cập ML cho người như ông.
-
-## Đối chiếu với tài liệu mới nhất
-
-| Nội dung trong transcript | Hiện nay (docs 1.x) | Kết luận | Nguồn |
-|---|---|---|---|
-| Khóa học khớp LangChain 1.0, tiến tới 1.1/1.2 | Docs hiện tại tổ chức theo `docs.langchain.com/oss/python/langchain`, pattern trung tâm là Agent = Model + Harness với `create_agent` | Vẫn đúng | [LangChain overview](https://docs.langchain.com/oss/python/langchain/overview) |
-| LangChain là go-to framework cho LLM applications (agents, RAG) | Overview vẫn định vị LangChain cho agents và RAG workflows, kèm LangGraph orchestration và observability | Vẫn đúng | [LangChain overview](https://docs.langchain.com/oss/python/langchain/overview) |
-| Best practices để code robust, usable, composable | Docs agents nhấn mạnh scaffold minimal, highly configurable với model, tools, prompt, middleware | Vẫn đúng | [LangChain agents](https://docs.langchain.com/oss/python/langchain/agents) |
-
-Code cập nhật (nếu có): không có — bài này không chứa code.
-
-## Tóm tắt một trang
-
-| Vấn đề ↔ Giải pháp (phiên bản mới) | |
-|---|---|
-| Khóa học cũ nhanh lỗi thời theo LangChain | Refilm iteration thứ ba khớp LangChain 1.x, cam kết update theo minor versions |
-| Học viên sợ lý thuyết ML nặng | Tiếp cận AI engineer: dùng models as black box qua LangChain, không cần PhD |
-| Thiếu ví dụ thực tế và production | Bổ sung real-world examples, security, production, best practices composable |
-| Chưa rõ học gì tiếp theo | Lộ trình: agents + RAG, kèm LangGraph và LangSmith trong hệ sinh thái |
-
-**Một câu chốt:** Đây là bản quay mới nhất khớp LangChain 1.x, lấy feedback 200.000 học viên làm nền để dạy developer không cần ML background vẫn build được LLM applications.
-
-## Câu hỏi tự kiểm tra
-
-1. Vì sao giảng viên phải refilm khóa học tới lần thứ ba?
-2. Cam kết version của khóa học là gì?
-3. Background của Eden trước 2023 là gì và điều đó truyền thông điệp gì?
-4. "Commoditizing machine learning" nghĩa là gì trong bài này?
-5. Hai bổ sung lớn ngoài code update là gì?
-
-<details><summary><b>Xem đáp án</b></summary>
-
-**1. Vì sao refilm lần thứ ba?**
-
-Vì LangChain thay đổi nhanh và để tích hợp feedback học viên: reorganize lectures, thêm ví dụ real-world, security, production, sections mới và update toàn bộ code khớp LangChain 1.0.
-
-**2. Cam kết version?**
-
-Code trong video khớp LangChain 1.0 và được kỳ vọng tương thích các minor tiếp theo kiểu 1.1, 1.2; nếu có breaking changes giảng viên sẽ update course và repo.
-
-**3. Background của Eden?**
-
-Backend developer nhiều năm trong cybersecurity companies, zero ML experience trước 2023, nhảy vào GenAI khi LLM ra đời. Thông điệp: developer thuần vẫn trở thành AI engineer được nhờ LangChain.
-
-**4. Commoditizing machine learning?**
-
-Biến ML từ thứ cần PhD thành commodity mà developer thường cũng dùng được, LangChain là accelerator chính của quá trình đó.
-
-**5. Hai bổ sung lớn?**
-
-Thêm real-world examples kèm thảo luận security/production, và thêm best practices để code robust, usable, composable hơn.
-
-</details>
-
-## Bước tiếp theo
-
-Bài 002 — *Mục Tiêu Khóa Học* — phân biệt agents và RAG applications cùng prerequisites Python, Git, virtual environment.
+Hãy thắt dây an toàn và hẹn gặp lại các bạn ở bài học tiếp theo nhé! 🚀

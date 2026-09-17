@@ -1,0 +1,92 @@
+# 275. STS & Cross Account Access
+# Section: Identity
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516446
+# Caption: en_US (manual)
+
+So now let's talk about AWS STS
+which is a security service at the backbone of all of AWS.
+So it's called a Security Token Service
+and it allows to grant limited
+and temporary access to AWS resources.
+So you have tech tokens
+and they can be valid up for to one hour or more
+and they must be refreshed when they're invalid.
+So when you want to get these tokens
+you must first issue an API call into the STS service.
+So when you assume a role, for example,
+this is an STS AssumeRole API call.
+What's going to happen is that you assume a role
+within your accounts for enhanced security so that
+you have credentials that will be invalidated after a while,
+or you can assume a role
+in a Cross Account Access type of setting,
+to assume a role in a target account
+to perform actions there.
+So AssumeRole gives you credentials
+and then they will be expired at some point.
+So you need to AssumeRole when credentials expire.
+You can also AssumeRoleWithSAML.
+So that means that your users are logged in with SAML
+and then you extend that SAML token to get credentials
+from STS, you first must configure
+of course, STS, to be able to exchange
+and verify these SAML tokens.
+You can also do AssumeRoleWithWebIdentity.
+So this way when the users are identified
+with an identity provider such as Facebook Login
+Google Dot login, or anything OIDC compatible,
+and then they're going to exchange these credentials
+for, again, credentials of STS.
+They're gonna be temporary.
+And now this API call is sort of deprecated
+and AWS is going to recommend
+for you to use Cognito instead.
+You also have GetSessionToken.
+So this is when you're doing MFA
+from a user or an account root user
+and you want to get actual credentials
+after having logged in with MFA.
+So when you're using STS to assume a role,
+you must first define an IAM role
+within your account or cross account,
+and then you define which principles
+can access this IAM role.
+Then you're going to use the STS service,
+to retrieve credentials,
+and then impersonate the IAM role you have access to,
+for example, using the AssumeRole API.
+So again, as I said, you have temporary credentials.
+So if you have a look here, for example
+a user wants to access a role in the same
+or another account is going to do AssumeRole API to STS.
+Of course he must be authorized to perform that API call.
+Then STS is going to look at the permissions,
+and then say, "Okay, you're good to go."
+Here are some temporary credentials,
+and then these credentials are going to be used,
+and we will have assumed the role,
+Thanks to these credentials.
+So if we have a look at Cross-Account Access with STS,
+let's say we have a Dev account and a Prod account
+and we have an S3 bucket in Prod
+that we want to access from IAM users in a group in Dev.
+So the first thing we have to do is to create an IAM role
+in the production account
+And this IAM role is going to have access to the S3 buckets.
+Next, we grant in the IAM group permissions,
+to assume the UpdateApp IAM role from the other accounts.
+So we're going to be able to assume this role
+and then we're going to get back STS Role Credentials.
+And then these credentials will allow us
+to access the bucket in the target accounts.
+So this IAM role,
+that we define in the production accounts,
+must also of course,
+authorize the development accounts to assume it.
+And so if you have an IAM group of testers
+that are not authorized to assume this role
+then they cannot access your production account.
+So you've seen the process of using STS to
+assume a role and get temporary credentials.
+So I hope you liked it
+and I will see you in the next lecture.

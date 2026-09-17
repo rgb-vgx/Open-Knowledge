@@ -1,0 +1,32 @@
+# 238. Next Steps - AWS Certified DevOps Engineer Professional
+# Section: Course Wrap-up
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/16349676
+# Caption: en_US (auto)
+
+Okay.
+So you're almost ready for your exam.
+So congratulations on finishing this course.
+So you have covered all the domains in this exam, so really, really congratulations.
+Hopefully you'll learn a lot of new things.
+Make sure you revisit the lectures and practice as much as possible.
+Okay.
+If you don't understand something or something looks unclear, please go back to the lecture as much
+as you can.
+There is a good extra resource you can do, which is the exam readiness course which is available for
+free online at training.
+And here's a URL and another good resource to do is to read the DevOps blog.
+So in this course, we have used a lot of these blogs as a guideline because obviously the exam is getting
+a lot inspired by these blogs.
+So having a look at these blogs, reading them, understanding the kind of architectures that as a DevOps
+you have to create and enable on AWS is extremely helpful to making sure that you have a good preparation
+for your exam.
+So just two final notes that the DevOps exam is extremely hard.
+I find it really, really hard myself and will test your experience.
+So this is not something you can fake.
+And this is why I have made this course to be all hands on.
+Okay, as much as I can.
+So practice, practice, practice.
+If you just sit back and watch this course and not don't do anything, maybe you won't learn as much.
+So try to practice alongside with me, make sure you understand exactly what I'm doing because practice
+is what the exam will test you on.
+So on this code, register for the exam and I wish you the best of luck.

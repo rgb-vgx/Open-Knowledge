@@ -1,0 +1,109 @@
+# 278. Lambda Monitoring & X-Ray Tracing - Hands On
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26623390
+# Caption: en_US (manual)
+
+Okay so let's have a look at
+monitoring and tracing.
+So for this let's open the Lambda S3 function
+and we're going to the monitor tab of it
+and under metrics, we can get some information
+around how many times our Lambda function was being invoked,
+how long the invocation was lasting,
+the error counts and success rates.
+As we can see, some of it is green.
+So that means that at some point it was doing successes
+and then it became red.
+So it became an error.
+So this is because we're testing both two destinations
+for successes and errors.
+So this is really good to monitor this graph over time
+when you have a Lambda function in production.
+The throttle, so in case we are going
+over our Lambda limits, the Async delivery failures.
+If the function doesn't get the chance
+to process the events.
+The iterator age, in case we're reading from a stream
+and concurrent execution to get the level of concurrency
+of our Lambda function.
+Right now we only have one because we don't
+invoke it that much
+but in case you have a high volume Lambda function
+then the concurrency, concurrent execution
+is going to go way higher, okay.
+So CloudWatch metrics are great for Lambda functions.
+We've seen extensively the CloudWatch logs
+for our Lambda functions.
+So we know that whenever our Lambda functions gets invoked
+then we're going to get a log stream.
+And in this log streams
+we're going to be able to get all the logs of our Lambda
+functions, including for example, the request ID,
+whenever we log into the consult
+as well as the end of the request ID whenever it happened,
+and a reports to get some information
+around how long the function was lasting,
+how much we got billed for it, the memory size,
+the max memory used, and the init duration
+if it's relevant for your Lambda function.
+Okay. Last thing you may want to look at
+is going to be around x-ray.
+So if we go into configuration,
+and then we go into monitoring and operation tools
+and click on edit
+then we have the option to obviously have CloudWatch logs
+which is enabled by default.
+Now we also get x-ray and by enabling this
+the Lambda function will be logging its traces
+into AWS x-ray.
+So again, the permissions were not found
+for Lambda to write into x-ray
+but the console will attempt to fix this
+by adding the execution role directly.
+So let's click on save,
+and now this is enabled.
+And so to make sure that this is working,
+if we go into permissions, open the Lambda role,
+actually it's right here.
+In terms of resource summary, we can see
+we have access to CloudWatch logs.
+SQS I'm not exactly sure.
+Oh yes, Because of destinations
+and x-ray because we want to be able to put
+trace segments and to put telemetry reports.
+So now this Lambda function is
+going to be writing into x-ray.
+And so if we go into the S3 buckets in here
+and I'm going to upload an object, for example,
+I'm going to upload my error.HTML file and click on upload.
+Actually the Lambda function was failing.
+So let's just return.
+Instead, let's make it return success and deploy it.
+And we're going to upload a new file into our S3
+bracket as well.
+So let's close this, upload a new file, add file
+and it will add, whatever index with fetch,
+just a different file every time.
+I could also re-upload the same file actually
+but this is fine.
+Okay. So I've uploaded all these files.
+So my Lambda function is going to process these files
+and hopefully we should see the traces
+in x-ray after a bit of time.
+So let's open the x-ray console
+And getting our service map.
+So this took maybe five minutes
+but as we can see the clients invoking
+our Lambda function and then the service does not great.
+And then they Lambda function, if stuff was being invoked,
+we get some information around the fact
+that sometimes there was having errors
+and sometimes it was green.
+So green and orange, because sometimes it was having errors
+and sometimes it was working
+but we get the idea that now our Lambda function
+is appearing within our x-ray consult.
+And so this is the whole power
+of the integration between Lambda and x-ray.
+So I hope you liked it
+and I will see you in the next lecture.

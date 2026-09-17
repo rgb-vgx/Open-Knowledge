@@ -1,0 +1,65 @@
+# 161. X-Ray Overview
+# Section: Cloud Monitoring
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056232
+# Caption: en_US (manual)
+
+Now, let's talk about another service
+that's called AWS X-Ray.
+So, when by default some people do debugging in productions,
+so, when your application is actually deployed,
+the good old way, you would test locally,
+then you would add log statements anywhere.
+Maybe look into how it logs,
+then you would re-deploy in production,
+and the see if you can find the problem this way.
+And the problem is that we have logs
+from different services and different applications.
+Doing log analysis it is very hard
+because we have to combine everything.
+So, if you have one application
+that's called a big monolith, so, one giant application,
+it's sort of easy to do debugging.
+But if you have distributed services
+they're connected through SQS queues,
+SNS topics, they're decoupled and so on,
+it becomes really, really hard to trace
+and see what is happening within your system.
+So, you have no common view of your entire architecture.
+But to solve that problem,
+you can use AWS X-Ray.
+So, with X-Ray, you're going to be able
+to do a tracing and get visual analysis of your application.
+So, X-Ray, once you enable it on your services,
+then you'll get a full picture
+of what is happening for each service.
+And see where they're failing, their performance,
+and in case one request goes wrong,
+you will be able to visualize it
+directly into the X-Ray console.
+So, the X-Ray advantages,
+is to do troubleshooting of the performance
+through the bottlenecks,
+or to understand the dependencies
+in a microservice architecture,
+because they're all connected
+as you saw in the previous graph.
+We can pinpoint a service issue with tracing.
+We can review a specific request behavior,
+and find the errors and exceptions for that request.
+We can know if we're meeting or not
+our service-level agreement, or SLA,
+meaning are we replying on time for all the requests.
+And if we're being throttled,
+if we're being slowed down,
+where is it happening, in which service?
+And finally, what or which users
+are going to be impacted by these outages.
+So, X-Ray really is great when you see,
+distributed tracing, troubleshooting,
+and you want to have a service graph.
+That's it, it's a more complicated service to use,
+so, I will not do any hands-on.
+But you get a high level of review
+that will be enough for the exam.
+So, hope you liked this lecture,
+and I will see you in the next lecture.

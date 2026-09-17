@@ -1,0 +1,158 @@
+# 264. AWS Ecosystem
+# Section: AWS Architecting & Ecosystem
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056488
+# Caption: en_US (manual)
+
+So now let's talk about the ecosystem around AWS.
+So there are lots of free resources
+you can use online to learn.
+For example, there is the blog of AWS,
+which is very helpful to get new feature release,
+as well as in-depth article
+around how to do a specific use case.
+The community forums are also a great way to engage
+with other builders.
+There is the white paper and guide section,
+which is very helpful to learn in depth
+around a specific area of AWS.
+And then you have the solutions library,
+which is to be called Quick Starts,
+which gives you vetted technology solutions for the cloud.
+For example, if you want to implement live streaming on AWS,
+you would just find it on the solutions website.
+So let me show you.
+So here I am on this Solutions Library website.
+And as you can see, I can scroll down
+and look at popular solutions
+and I will just take the first one,
+but you can take whichever you want,
+which is live streaming on AWS.
+And we scroll down, we see what is the solution,
+what are the pros and cons.
+Then we have an architecture diagram
+on this one and that one,
+so we can choose the one we want.
+And then if you wanted to implement it, you can for example,
+click here to launch it in the console.
+And this takes you directly into CloudFormation
+to actually go ahead and create this stack
+based on the specific URL.
+So it just a very good way to get started easily
+with some architectures and some solutions
+that are going to be very scalable and vetted by AWS.
+So all of these free resources are available
+to you at no cost.
+But then there is support by AWS.
+So we've seen different level of supports.
+So on developer, we get business hour email
+and access to cloud support associates.
+We get general guidance of less than 24 hours
+and system impaired of less than 12 hours.
+If we are in the business subscription,
+then we're going to get 24/7 phone supports,
+email and chat access to cloud support engineers,
+so one level up.
+In case your production system is down,
+you get ,sorry for impaired,
+you get less than four hours.
+And for production system down,
+you get less than one hour of reply time.
+And for enterprise, which is the most expensive tier,
+you get access to
+a dedicated technical account manager or TAM.
+You get concierge support team to help you with billing
+and account best practices.
+And in case your business system is down,
+then it's going to be less than 15 minutes
+before you get a reply from the support of AWS,
+which is very handy.
+So again, remember the different levels of support
+as part of the ecosystem.
+Okay, next we have the Marketplace.
+So I just talked about it briefly in the EC2 section,
+but it is going to be a digital catalog
+with thousands of software listing
+from independent software vendors, which are third party.
+For example, on the Marketplace,
+you can buy a custom AMI for someone
+that was customized with some OS, some firewalls
+or some technical solutions.
+You can also buy CloudFormation templates
+that are going to be production ready.
+You could buy software
+as a service directly from the Marketplace.
+You can buy containers,
+and if you buy through the Marketplace,
+the advantage that it goes directly into your bill of AWS,
+so it's only to source a new vendor.
+Then you can sell your own solutions on the Marketplace
+if you want to become a marketplace seller.
+So as we can see, a Marketplace can be very easy,
+and we've seen it in the beginning of the course
+regarding the AMIs.
+Next, we have training from AWS.
+So we have two sorts of training given directly
+by AWS that can be digital, so online,
+or classroom training with in-person or virtual.
+There's also private training
+if you want to organize a training session
+for your organization.
+And then there is dedicated training
+and certification program for the US government,
+and a training and certification program for the enterprise.
+So that's for the training that AWS can give you.
+Then we have AWS Academy to help universities teach AWS,
+so that people when they get their university degree,
+they also know how to use the cloud.
+And then obviously not sponsored training by AWS,
+but you get your obviously favorite teacher online,
+that is me, teaching you about certifications
+and more on AWS.
+Okay, so this is for the options
+of training that you can get.
+Then you're going to get professional services
+and the partner network.
+So there is a team called
+the AWS Professional Services Organization.
+It's a global team of expert that can help you with AWS.
+They will work alongside your team,
+so your people handling AWS
+and a chosen member of the APN.
+APN stands for AWS Partner Network.
+It's a network of people
+that AWS knows are good with the cloud.
+So we have the technology partners,
+so the APN technology partners
+that will be providing hardware connectivity and software.
+So they will be more helping you on the infrastructure side,
+whereas the consulting partners on APN
+are going to be professional services firm
+that will help you build on AWS.
+Next, we have the APN training partners
+who can help you learn AWS.
+They will be training partners
+that will be able to deliver the AWS training
+that I've told users this from the slide before.
+And then we have the Competency Program,
+which are given to the APN partners
+who have demonstrated technical proficiency
+and proven customer success in specialized solution areas.
+And then finally, one last thing, the Navigate Program
+to help partners become better partners
+to train the partners.
+So I know this is a very long lecture on the AWS ecosystem,
+but at the exam you'll get one
+or two questions on finding the right service
+or the right tool for the ecosystem.
+And so for you, it's really, really important
+to remember all the things I just said.
+Thankfully, it makes sense.
+The names are most likely going to be obvious,
+once you know and once you've seen them once.
+So I would recommend just trying to memorize those.
+We're going to help you with a quiz in this sections.
+But again, feel free to revisit this lecture
+before your exam to give yourself a small refresher.
+So that's it.
+I hope you liked it,
+and I will see you in the next lecture.

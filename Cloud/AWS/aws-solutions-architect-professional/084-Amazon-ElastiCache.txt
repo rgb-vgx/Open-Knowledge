@@ -1,0 +1,151 @@
+# 84. Amazon ElastiCache
+# Section: Caching
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376542
+# Caption: en_US (manual)
+
+Hey and welcome to this lecture on ElastiCache.
+So in this lecture, I'm not going to teach you
+anything groundbreaking,
+but we are going to see a few solution architecture,
+and also learn the difference between Redis and Memcached,
+because this is something you may have to choose
+between at the exam.
+So the same way we have RDS
+to get manager international databases,
+we get ElastiCache to get and manage Redis or Memcached.
+And they're different technologies for caching.
+Caches are in-memory databases
+that have really high performance and really low latency,
+and they help reduce load off of databases
+for read intensive workloads.
+So the idea is that anything that is frequently queried
+or very expensive to compute,
+you would cache it into an ElastiCache database,
+so Redis or Memcached.
+And then the database itself
+will achieve a lot less queries.
+They also help you make your application stateless.
+So if you have session stores, all these kind of things,
+ElastiCache is a great place to have this data in.
+Now because this is a managed service,
+AWS will take care of all the OS maintenance,
+the patching, any optimization,
+set up, configuration, monitoring, failure,
+recovery, and backups.
+You do have to set up your own settings,
+and you do have to set up your own security groups
+to get access to ElastiCache.
+But overall this is a managed service.
+So we get all the things we already know from AWS.
+Overall using ElastiCache does involve
+heavy application code changes.
+This is not something that you get for free.
+So even though you do set up a Redis or a Memcached,
+your application code itself
+has to be refactored to use ElastiCache.
+So this is something you have to take into account
+when answering a question in the exam.
+Next, so ElastiCachee can be used at a DB Cache.
+So the idea is that we have our application,
+ElastiCache and for example, a database such as Amazon RDS.
+And the application when they're refactored,
+will query ElastiCache and if not available,
+they will get the data from RDS and store in ElastiCache.
+That is one caging strategy.
+So it's called lazy loading.
+So if we get a cache hit, that's perfect,
+we get the data back from ElastiCache.
+Otherwise, if you have a Cache miss
+because the data is not in ElastiCache,
+then we're going to read it from the database,
+and then write it to Cache.
+This helps relieve any kind of load
+in RDS in case there is some hot keys
+or something that reads very, very often.
+And you must have a cache invalidation strategy
+to make sure that only the most current data
+is used in there.
+Otherwise there will be a consistency problem
+between the state of your cache and the state of RDS.
+And this is a big problem in notifications.
+This is very hard problem to solve.
+Okay, the second thing can use ElastiCache for is
+to be a user session store.
+So say you have your application,
+and they're on two different EC2 instances.
+And your users, they're accessing it
+through a load announcer,
+but you haven't enabled session stickiness.
+It's possible that your users are talking to
+any of the applications.
+Now, what the application will do is
+that they will write the session data back into ElastiCache,
+such as if your users hits another EC2 instance
+of your application,
+then your application can retrieve
+the session from ElastiCache.
+And know who the user is if it's logged in,
+it's state, and that kind of things.
+And so we have this way achieved statelessness
+in our solution architecture regardless of
+if we hit one application or another.
+And that is a very common pattern for using ElastiCache
+to have user session store.
+Okay, so finally, we need to understand the difference
+between Redis and Memcached.
+'Cause it may be something we have to choose on at the exam.
+So Redis is going to have a feature
+of multi AZ with Auto-Failover.
+So it is highly available.
+There is some standby active,
+and you can recover from a failure of an AZ.
+So that makes it a very good choice
+based on some situations.
+And you can create Read Replicas to scale reads
+and have high availability.
+So this looks a lot like RDS.
+Redis RDS nano technique maybe that works for you.
+Okay, are the features that it's persistent the data.
+So that means that if you enable
+the append only file feature, AOF,
+you can get back your data after losing your cluster.
+So it is possible for you to have backup
+and restore features, and that is extremely important.
+So this looks a lot like a real database
+from RDS that we're used to do.
+So if you look at Redis, think Redis are replication.
+So we have two Redis instances
+and some replication happening between them.
+So what you need to remember out of Redis is
+that it's highly available.
+There's some replication, some backup,
+all that kind of things.
+Memcached is another strategy.
+In this case, when you have multiple nodes in Memcached,
+this is not for replication of data,
+this is for partitioning and data sharding.
+It's not a persistent cache that mean
+that if you lose the cache then you lose your data.
+So it's really just for temporary persist transient data.
+You have backup and restore features
+for the serverless version of Memcached,
+not the self-managed version.
+And it's a multi-threaded architecture.
+So when you look at Memcached,
+this is maybe not something that's gonna be Multi AZ
+in the same way Redis is.
+The way you should look at Memcached is sharding.
+So that means that some data will go
+onto one Memcached node.
+Some data will go onto another Memcached node.
+And this way your data is sharded across multiple
+instances of Memcached.
+And if you lose one node of Memcached,
+then you lose all the data on that node,
+even though the other nodes may
+still may still be operational.
+Okay, so that's it.
+Hope that makes sense for the differences between
+Redis and Memcached and ElistiCache role.
+I hope you like this lecture,
+and I will see you in the next lecture.

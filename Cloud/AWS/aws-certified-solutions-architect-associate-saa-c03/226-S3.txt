@@ -1,0 +1,69 @@
+# 226. S3
+# Section: Databases in AWS
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13672438
+# Caption: en_US (manual)
+
+So now let's do a summary
+of Amazon S3 from a database perspective.
+So S3 is a key-value store for objects,
+and it's great when you want to store big objects.
+It's not great to store many small objects.
+So Amazon S3 is serverless. You have infinite scaling.
+The maximum object size is 50 terabytes
+and you can version objects over time.
+You have different storage tiers.
+So you have S3 Standard, Infrequent Access, Intelligent,
+and you have Glacier,
+and if you want to transition between the tiers,
+you can use lifecycle policies.
+Some important features need to know about are versioning,
+encryption, replication, multifactor authentication deletes,
+MFA deletes, and access logs.
+In terms of security, you have IAM security,
+but you can also have bucket policies
+on top of your S3 buckets,
+you have ACL, you have access points for Amazon S3,
+then you have S3 Object Lambdas
+to modify objects before they are sent to the applications,
+you have cores, and you have the concept
+of object lock or vault lock for Glacier,
+which you need to know about in depth.
+In terms of encryption mechanisms, we have different ones.
+We have SSE-S3, SSE-KMS
+where you can bring your own KMS key,
+you have SSE-C, you can do client-site encryption,
+you have TLS encryption in transit,
+and you can set a default encryption scheme
+for your S3 buckets.
+And if you wanted to operate on all the files
+in Amazon S3 buckets at a time,
+you can use S3 Batch to do batch operations.
+And this is very helpful, for example,
+when you want to encrypt unencrypted objects
+on an existing Amazon S3 bucket
+or when you want to copy existing files
+from one bucket to another
+before enabling S3 replication.
+And to create this list of files,
+you can use S3 inventory, for example.
+In terms of performance improvements on Amazon S3,
+you can use a multi-part upload to upload files
+in the parallel way,
+you can have S3 Transfer Acceleration
+to transfer S3 files faster
+from one region to another region,
+and S3 Select to only retrieve the data you need
+out of Amazon S3.
+For automation, you can use S3 Event Notifications.
+That has interfaces with SNS, SQS, Lambda, and EventBridge.
+And this allows you to, for example, react to events
+where new objects are created on your Amazon S3 buckets.
+So the use cases for Amazon S3 are around static files.
+It's going to be a key-value store for huge files
+or website hosting.
+So hopefully I'm not teaching you anything new here.
+And if you have any doubts on any of these features,
+and they can all appear at the exam,
+then I would suggest you go back to the Amazon S3 section.
+Okay, that's it, I hope you liked it,
+and I will see you in the next lecture.

@@ -1,0 +1,74 @@
+# 180. Beanstalk Lifecycle Policy Overview + Hands On
+# Section: AWS Elastic Beanstalk
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19729906
+# Caption: en_US (manual)
+
+So Beanstalk can store, at most,
+1000 application versions inside of your account.
+And so if you don't remove old versions,
+you will not be able
+to deploy your Beanstalk applications anymore.
+And so what you need to do
+is to phase out old application versions
+and to do so you can use a Beanstalk lifecycle policy.
+This lifecycle policy will send hands-on,
+can be based on time to remove older versions
+or it can be based on space
+when you have too many versions
+you just phase out the old ones.
+The versions obviously, that are currently used
+by your environments will not be deleted,
+even though they're old or are using too much space.
+And you also have the option not to delete the source bundle
+of your application in Amazon S3,
+in order to prevent data loss
+which can be very helpful if you want to prevent
+and you want to restore these versions later on.
+Right now, the lifecycle policy just can just remove them
+from the Beanstalk interface.
+So let's go in the hands-on to see how this works.
+So now we're going to demo lifecycle policy.
+So I go to application versions under MyApplication
+and we can find the MyApplication-blue
+that we deployed before,
+and we know that which label is deployed
+from which source and to which location.
+So first let's have a look at the source.
+If I click on source, this is actually going to download it.
+So I'm going to go instead
+into Amazon S3 and show you what this is about.
+So I am in S3 right here
+and I'm going to type Beanstalk and go to the region.
+I'm in EU Central-1.
+And as we can see, this bucket was created
+by Beanstalk to hold all my application versions
+for my applications.
+And so this blue version has been uploaded
+to Beanstock right here
+and so all the application versions are going to remain
+in Amazon S3.
+But they're going to be registered
+in Beanstalk and we can control how many of them they are.
+So if you go into settings,
+you can activate a application lifecycle policy
+and if you activate it,
+you can either limit the application versions by counts
+and saying you want a maximum of 200 application versions
+or you can limit it by age and say, I only want the 180 days
+of versions that have been used.
+Of course, if your version is actually used,
+it's not going to be deleted.
+But if it's not used, and not compliant
+with this lifecycle rule, it will be deleted.
+Now, it will be deleted from Beanstalk,
+but what happens to it in Amazon S3?
+Well, we have two options,
+either we retain the source bundle in Amazon S3,
+which is good for if you wanted to do some kind
+of recovery or delete the source bundle from S3.
+And finally, what role allows you to perform this deletion?
+And so here we have the AWS Elastic Beanstalk service role.
+So that's it for this lecture.
+We've seen lifecycle policies
+and the backing S3 bucket of Elastic Beanstalk.
+I hope you liked it and I will see you in the next lecture.

@@ -1,0 +1,132 @@
+# 253. AWS WhitePapers Well-Architected Framework
+# Section: AWS Architecting & Ecosystem
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056474
+# Caption: en_US (manual)
+
+Into this section on architecting on AWS
+and the AWS ecosystem.
+So first we're going to talk about
+the well architected framework
+and the general guiding principles.
+So in the cloud, when you want to have a good architecture
+you need to stop guessing your capacity needs.
+Instead, you should use auto scaling
+and scale the based on what the actual demand
+on your system is going to be.
+You should also test your system at production scale.
+In the cloud
+you can create as many resources as you want
+very, very quickly.
+And as such there is no reason why,
+for example, for one hour
+you couldn't test a system at production scale.
+This allows you in the future to make sure that your system
+is ready when you actually publish it to your customers.
+Now, it's also very important
+to automate to make architectural experimentation easier.
+So for this CloudFormation is very important
+because if you get infrastructure as code
+then you can easily create an architecture
+on different accounts and different regions.
+Also using platform as a service,
+such as Beanstalk could be very helpful
+to experiment quickly.
+You should also allow to make your architecture evolve.
+So you need to design based on changing requirements.
+That means that when you migrate a workload
+from on premises to the cloud,
+maybe at first you make it match one to one,
+but then you try to rethink
+how can I leverage the cloud better,
+making it serverless for example.
+Then drive architectures using data.
+It's not good to guess.
+It's good to look at what the actual usage is.
+What are the patterns?
+What are the queries?
+And then drive your architecture
+and use the right services based on what you actually need
+based on this data.
+Also improve through game days.
+So that means that you simulate applications
+for flash sale days, and this will stress your system.
+And by stressing your system
+you will know if you are doing well.
+So for example, I'll give you an example,
+Netflix they have something called the chaos monkey
+and it's a program that's in their EC2 environment
+goes ahead and terminates EC2 instance at random
+in production.
+And they see thanks to this chaos monkey
+if they are ready for failures
+if they're ready for big spikes,
+if they're ready for errors.
+So it's super important
+to think that now you are in the cloud,
+you have new capabilities.
+So you need to start you need to start thinking
+like you are using the cloud.
+So the design principles
+when using the cloud and the best practices.
+The first one is to be scalable.
+So we've seen the vertical scalability
+and the horizontal scalability
+also because we can easily create and remove servers.
+We have disposable resources.
+So your servers should be easily disposable
+and easily configured.
+If you put too much configuration onto a server
+and somehow that server, if lost
+will be losing its resource as well
+you will need to have maybe three days of work again
+to reconfigure that server
+if you haven't done things properly.
+In the cloud everything is supposed to be disposable
+including your infrastructure.
+And so you need to make sure to back up your data
+you need to make sure that you back up your configuration
+and that you have ways to very, very quickly
+reconfigure your entire architecture.
+Automation.
+So these are guided by the principles of serverless,
+infrastructure as a service, auto scaling and so on.
+Loose coupling, which is very important.
+So when you have an application at first,
+(mumbles) it's called a monolith.
+That means it's an application that can do everything.
+And over time, the more you add onto the application
+the bigger it becomes.
+And because it's a monolith
+it could be difficult to maintain and difficult to scale.
+Instead, you should break it down into smaller
+loosely coupled components so that maybe they will be linked
+through SNS or SQS or by other means.
+And the idea is that a change or a failure in one component
+should not cascade to the other components
+because in the cloud, again
+things can fail and you need to be prepared for failure.
+Finally, think in services, not servers.
+So you could just use EC2 but it's not recommended.
+EC2 would be to translate whatever you have on premises
+in the cloud but think in terms of services
+what managed services can you use databases, serverless
+et cetera, that can make your life a lot easier.
+So this is where the well architect framework
+which is made of six pillars comes in.
+The first one is operational excellence.
+The second one is security.
+The third one, reliability,
+the fourth one performance efficiency,
+fifth one cost optimization and six one sustainability.
+And the idea is that by acting with these six pillars
+you are having good architecture on AWS.
+So they're not something you want to balance
+and compromise between them or trade offs,
+they're actually a synergy.
+So for example, when you prove your operational excellence
+you're probably also improving your cost optimization.
+So the next six lectures are all about
+doing a deep dive into all of these
+to understand what they mean in AWS.
+I hope you're excited
+and I will see you in the next lecture.

@@ -1,0 +1,24 @@
+# 185. Intro: Application Integration
+# Section: Application Integration
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332240
+# Caption: en_US (auto)
+
+-: Application integration is a very important piece
+of creating a data engineering pipeline.
+There's not a crazy amount of information you need
+to study here, but it's very important to internalize
+how Amazon Event Bridge, Amazon App Flow
+and AWS step functions fit into your data pipelines
+and automating your ETL flow.
+Stefan will also cover Amazon's Simple Queue service
+and Amazon's Simple Notification service as part
+of this section, and I'll pop in to discuss a newer system,
+Amazon Managed Workflows for Apache Airflow
+or Amazon MWAA for short.
+It's part of what seems like a trend
+of Amazon offering fully managed environments
+for open source tools
+with some extra AWS integration added in.
+When you're done, you'll practice applying these tools
+to real-world problems with a short quiz.
+So let's dive in.

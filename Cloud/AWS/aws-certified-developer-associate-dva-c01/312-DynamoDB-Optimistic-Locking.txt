@@ -1,0 +1,54 @@
+# 312. DynamoDB Optimistic Locking
+# Section: AWS Serverless: DynamoDB
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/12203064
+# Caption: en_US (manual)
+
+So DynamoDB has a feature
+called Optimistic Locking.
+So the idea is that you can do
+Conditional Writes in DynamoDB.
+What does that mean?
+That means that you want to ensure that an item
+has not changed before update or delete it.
+So you're saying, Hey,
+I want to write this only if this condition is met
+and this is called Optimistic Locking.
+So the way it works
+is that we have an attribute on our items,
+which will act as a version number,
+and we will check an equality condition
+on this version number.
+So let's take an example.
+We have a DynamoDB table,
+and we have an item with a user ID, a first name
+and a version, which is one.
+Now two clients at the same time
+want to update this item
+because they think that the first name is wrong.
+So the client 1 is saying,
+Hey, I want to update this to name = John,
+only if version = 1.
+And the client 2 says, I want to update name = Lisa
+only if version = 1.
+What's going to happen is that's one of these requests,
+obviously, will make it to DynamoDB first.
+And so then DynamoDB will go ahead,
+and maybe it's the second one,
+will update the first name to Lisa.
+And will also update the version to 2, okay?
+Now what's going to happen out of this
+is that the client 1 updates will not go through
+because now that DynamoDB says,
+Hey, you told me I should do this update only if version = 1
+but it turns out that now my version is = to 2
+and therefore, the client will get a error message saying,
+Hey, you don't have the right data.
+And so therefore you should do a get
+and begin try to update if you want to.
+So this feature of Conditional Writes or Optimistic Locking
+is something that the exam will test you on.
+Okay?
+So it's just a short intro.
+It's not something I can demonstrate easily,
+but hope you like this lecture.
+And I will see you in the next lecture.

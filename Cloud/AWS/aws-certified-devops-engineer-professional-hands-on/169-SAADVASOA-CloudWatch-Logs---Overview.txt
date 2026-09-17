@@ -1,0 +1,144 @@
+# 169. [SAA/DVA/SOA] CloudWatch Logs - Overview
+# Section: Domain 4: Monitoring and Logging
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37908886
+# Caption: en_US (manual)
+
+So, now let's talk about CloudWatch Logs.
+So CloudWatch Logs is the perfect place
+to store your application logs in AWS.
+And to do so, you must first define log groups.
+They're whatever names you want,
+but usually they are representing one of your applications.
+Then within a log group, you will have multiple log streams,
+and they represent log instances within an application
+or specific log files or specific containers that you have
+as part of a cluster.
+Then you define your log expiration policy.
+So you can have the logs re being retained indefinitely
+to never expire, or you can choose to expire them
+from anywhere between one day to 10 years.
+It's also possible to send your CloudWatch Logs
+into various destinations.
+For example, to export them in batch into Amazon S3
+or to stream them into Kinesis Data Streams,
+Kinesis Data Firehose, AWS Lambda, Amazon OpenSearch.
+All the logs are encrypted by default,
+and you can set up your own KMS-based encryption
+with your own keys if you wanted to.
+So, now what kind of logs data goes into CloudWatch Logs?
+Now, what types of logs can go into CloudWatch Logs?
+Well, we can send the logs using the SDK
+or the CloudWatch Logs Agent
+or the CloudWatch Unified Agent.
+Now, the CloudWatch Unified Agents send logs to CloudWatch
+and so the CloudWatch Log Agent is now sort of deprecated.
+You have Elastic Beanstalk, which is used to collect logs
+from the application directly into CloudWatch.
+ECS will send the logs directly from the containers
+into CloudWatch.
+Lambda will send logs from the functions themselves.
+VPC Flow Logs will send logs specific
+to your VPC metadata network traffic.
+API Gateway will send all the requests made
+to the API Gateway into CloudWatch Logs.
+CloudTrail, you can send the logs directly
+based on the filter.
+And Route53 will log all the DNS queries made
+to its service.
+So, what if you wanted to query the logs in CloudWatch Logs?
+For this, you can use CloudWatch Logs Insights.
+So, it's a querying capability within CloudWatch Logs
+which allows you to write your query.
+You specify the timeframe you want to apply your query to
+and then automatically you're going to get a result
+as a visualization.
+And also, you can view the specific log lines
+that's made this visualization.
+This visualization can also be exported either
+as a result or added to a dashboard
+for being able to rerun it whenever you want.
+So this is very handy,
+and this will allow you to search and analyze log data
+within CloudWatch Logs.
+So there are lots of simple queries provided
+as part of the console for CloudWatch Logs Insights.
+For example, you can find the most 25 most recent events,
+or you can have a look
+at how many events had exceptions or errors in your logs,
+or you can look for a specific IP and so on.
+So, it provides a purpose-built query language.
+All the fields to allow you to build your queries
+are automatically detected from CloudWatch Logs,
+and then you can filter based on conditions.
+You can calculate aggregate statistics,
+you can sort events, limit the number of events, and so on.
+So as I said, you can save the queries
+and also add them to CloudWatch Dashboards.
+And you have the capability to query multiple log groups
+at a time, even if they are in different accounts.
+So remember, CloudWatch Logs Insights is a query engine,
+not a real-time engine.
+And so as such,
+it will only query historical data when you run the query.
+So as mentioned,
+CloudWatch Logs can be exported into several destinations.
+The first one is Amazon S3.
+So this is for a batch export to send all your logs
+into Amazon S3,
+and this export can take up to 12 hours to be completed.
+The API call to initiate this export is called
+CreateExportTask.
+So because this is a batch export,
+this is not real-time or near real-time.
+Instead, you must use the CloudWatch Logs subscription.
+So these allow you to get a real-time stream
+of these log events, and you can do processing and analysis.
+So, you can send this data into multiple places
+such as Kinesis Data Streams, Kinesis Data Firehose,
+or Lambda.
+And you can specify a subscription filter to say which kind
+of log events you want to be delivered to your destination.
+So, the subscription filter can send data
+into Kinesis Data Streams.
+This would be a great choice
+if you wanted to use, for example,
+the integration with Kinesis Data Firehose,
+Kinesis Data Analytics, or Amazon EC2, or Lambda.
+You can also directly send it into Kinesis Data Firehose.
+From there, you can send it in near real-time fashion
+into Amazon S3, or for example,
+the OpenSearch Service, or you have Lambda.
+So you can write your own custom Lambda function,
+or you can use a managed Lambda function that is
+sending data in real-time into the OpenSearch Service.
+On top of it, thanks to these subscription filters,
+it is possible for you to aggregate data
+from different CloudWatch Logs into different accounts
+and different regions into a common destination
+such as the Kinesis Data Stream in one specific accounts.
+And then Kinesis Data Firehose.
+And then in near real-time into Amazon S3.
+So that is very possible,
+and that is a way for you to perform log aggregation.
+So the nitty gritty of how this works is
+that you must use what's called destinations.
+So, let's say you have a sender account
+and the recipient accounts.
+So you create a CloudWatch Log subscription filter,
+and then this gets sent into a subscription destination,
+which is a virtual representant
+of the Kinesis Data Stream in the recipient accounts.
+Then you attach a destination access policy
+to allow the first account to actually send data
+into this destination.
+Then you create an IAM role in the recipient account,
+which has the permission to send records
+into your Kinesis Data Stream,
+and you make sure that this role can be assumed
+by the first account.
+And when you have all these things in place,
+then it is possible
+for you to send data from CloudWatch Logs
+in one account into a destination in another account.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

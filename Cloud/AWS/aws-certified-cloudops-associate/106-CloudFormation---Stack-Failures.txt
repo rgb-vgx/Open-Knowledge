@@ -1,0 +1,34 @@
+# 106. CloudFormation - Stack Failures
+# Section: CloudFormation for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218355
+# Caption: en_US (manual)
+
+Okay, so now let's discuss stack failures
+quickly in CloudFormation.
+So when you are creating a stack,
+there is a rollback behavior
+if the stack creation fails.
+And you can set it up, for example,
+using the CLI using an argument called on failure.
+But you can also set this in the console.
+So you have several options for on failure.
+You have on failure equals rollback. That's the default.
+You know when you've created a CloudFormation templates
+but it fails, everything is rolled back and deleted.
+You have on failure, do nothing.
+This is very helpful for troubleshooting.
+So that means that everything that has been created is kept
+and then the stack becomes in the CREATE_FAILED status.
+You can troubleshoot, you can look for example,
+on the EC2 instance,
+why the bootstrap script wasn't working
+or something like this.
+And then you can roll it back once you fixed
+your CloudFormation templates.
+Or you can do on failure equals delete
+and it deletes all resources and the stack.
+So the stack is just gone and everything disappears.
+So the exam may ask you about this parameter,
+especially for the do nothing option.
+All right, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

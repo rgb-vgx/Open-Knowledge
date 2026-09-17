@@ -1,0 +1,43 @@
+# 99. Athena Overview
+# Section: Databases & Analytics
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056008
+# Caption: en_US (manual)
+
+So now let's talk about Amazon Athena.
+Amazon Athena is a serverless query service
+to perform analytics against your objects
+stored in Amazon S3.
+So the idea is that you would use the SQL query language to
+create these files, but you don't need to load them.
+They just need to be in S3 and Athena will do the rest.
+So these files can be formatted in different ways,
+such as CSV, JSON, ORC, Avro, and Parquet
+and the Athena is built on the Presto engine,
+if you must know.
+Now, how does it work?
+So users will load it into Amazon S3,
+and then Amazon Athena will be used
+to query and analyze the data.
+Very, very simple.
+And then if you wanted to,
+you could have some reporting on top of Athena,
+such as using Amazon QuickSight.
+Now the pricing for Athena is around
+$5 per terabyte of data scanned.
+And if you use compressed
+or data stored in a columnar fashion,
+then you're going to have cost savings
+because there is less scan of the data being made.
+So the use cases of Athena are multiple,
+but anytime you see Business intelligence,
+analytics, or reporting,
+or to analyze Flow Logs in VPC or ELB Logs,
+or CloudTrail logs, or platform logs,
+all these kinds of logs in AWS,
+then Athena's going to be a really, really good option.
+So from an exam perspective,
+whenever you see serverless analyze data in S3
+use SQL, then think Amazon Athena.
+That's it.
+I hope you liked it.
+And I will see you in the next lecture.

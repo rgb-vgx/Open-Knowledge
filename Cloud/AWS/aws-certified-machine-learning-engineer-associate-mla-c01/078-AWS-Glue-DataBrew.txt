@@ -1,0 +1,53 @@
+# 78. AWS Glue DataBrew
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285287
+# Caption: en_US (auto)
+
+Let's talk about glue Databrew.
+This is definitely something you need to know in the field of data engineering, right?
+Because this is a visual data preparation tool.
+So it's another UI that you can use just for transforming data, doing the tea of your ETL.
+So very, very very relevant to this exam.
+It is a UI for pre-processing large data sets.
+Those data sets can come from S3 from a data warehouse or any database you want.
+The output, however, will go to S3 once it's been transformed by Databrew, and there are over 250
+ready made transformations that you can visually apply to that data.
+So you can just kind of drag and drop these things in Databrew and have it automatically transform your
+data in pretty much any way you can imagine.
+And I'm not going to go through all 250 of them.
+If you do want to go through the documentation on AWS's website and at least scan through them, it
+could hurt.
+You know, it's good to know what the capabilities are, but the short version is pretty much anything
+you can dream up is probably in there.
+You can create these recipes of transformations that can then be saved as jobs within a larger project.
+So if you have multiple transformations you want to apply to your data, you can create a recipe of
+those transformations and then save that off and apply that to different places, different projects,
+different data sets.
+Those recipes are made up of recipe actions.
+And if you go to that documentation for the transformations, you'll see those definitions of those
+recipe actions.
+So as an example here on the right this is a recipe action called nest to map.
+And this is used to take selected columns and convert them to key value pairs.
+So instead of individual columns that might convert it into a JSON document that has these key value
+mappings between those columns and their values.
+So I don't know why you'd want to do that, but you can do that.
+And you can also optionally remove the source columns that you combined into that map as well as part
+of it.
+So that's what's going on here in the parameters.
+We're specifying what source columns we want to nest.
+So we're going to take the age the weight kilogram and height centimeter columns.
+We're going to put them into a new single column called column name, where it's just going to be stored
+as this JSON based map that will say, for example, age equals 53 weight, kilograms equals 100 height
+centimeters equals, you know, 500, whatever it is.
+Right?
+You can tell I don't really deal with the metric system because I'm sure those numbers make no sense.
+And then we also say remove source columns.
+So the original age weight and height columns will be deleted as part of that nest to map transform.
+You can also define data quality rules as part of Databrew as well to kind of make sure that your data
+makes sense as you go along.
+And you can also create data sets with custom SQL from Redshift and Snowflake as part of Databrew as
+well.
+From a security standpoint, Databrew does integrate with KMS using customer master keys only.
+It of course uses SSL in transit, and you can use IAM to restrict who can do what.
+As with most services and also as with most services, it integrates with CloudWatch and CloudTrail
+for alarming and governance and all that good stuff.

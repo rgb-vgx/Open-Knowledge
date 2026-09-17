@@ -1,0 +1,129 @@
+# 22. Amazon Bedrock - Foundation Model (FM) - Hands On
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886347
+# Caption: en_US (manual)
+
+Okay, so let's go back into our providers
+and do a little deeper dive.
+So as we can see,
+different companies and providers
+will offer different models,
+and the models will have different capabilities.
+So for example, if you choose Anthropic or Amazon
+or DeepSeek, or for example, Stability AI,
+you have different capabilities.
+So you're not supposed to understand
+which model can be used for what.
+And this is not what the exam will ask you,
+but it will ask you to understand
+what the model can and cannot perform.
+For example, if you're looking at a Claude 3.5 Haiku,
+this one, it's a good model for all these things,
+for text, mainly for text, right?
+But if you look at a model, for example,
+you look at the model from Amazon
+and you look at Nova Reel,
+this model is going to be used
+for text to video or image to video.
+So this is important because different models
+have different capabilities,
+but in terms of which model is better,
+this is not asked for you from the exam, of course.
+Okay, so now let's compare models.
+So we can go into Chat and Text playground.
+And you're going to open the compare mode on the top right;
+and we'll select a model from Amazon,
+for example, Nova Micro,
+and we'll select a model from Anthropic,
+for example, Claude 3.5 Sonnet.
+Okay, so you close this configuration window,
+and now we have the two models side by side.
+And as we can see, first thing is that we can see
+that Nova Micro does not support image upload.
+So if you upload an image, it's going to be ignored.
+So it's very important because, well,
+each model will have different capability,
+and this one is more pricey
+but also has the ability to look at images.
+So based on your use case,
+you will be able to figure out
+which model is the most appropriate.
+Now, if you ask the question, for example,
+what are the top AWS services,
+and you run it,
+each model is going to give you a specific answer.
+So here is the model Nova Micro
+that answered in a specific way,
+and it said EC2, S3, RDS, SageMaker,
+Lambda, VPC, EKS and so on.
+And here we have a list as well on Claude 3.5 Sonnet,
+which is a much longer list:
+we have 20 items and here we have 11.
+So as you can see, the the formatting
+and the way the information is presented
+is very different based on these models.
+And you can also compare the performance.
+So this model was seven input tokens,
+512 output token, and it took this long;
+and this model was 15 input tokens, 393 output token,
+and it took this long.
+So it took about four times as long.
+So when you compare models,
+it's important to compare the quality of the outputs
+as well as the cost and time it took to get you this output.
+If you have something very simple,
+such as what is the capital of France,
+and you run this, I'm getting too many requests,
+but here we have the capital of France is Paris,
+and we get a long answer.
+And here we'll have another answer,
+here we go, with different formatting.
+So again, it's up to you to choose
+what formatting you like most,
+and if you like the extra information or not,
+if you want a shorter answer or not.
+And of course you can control all of these things.
+But it's important for you to see the type of models
+and the comparison between them.
+We can also have a look at customized models.
+To do so, on the left-hand side, click on Custom models.
+So here we have different things.
+We have three techniques:
+we have the reinforcement fine-tuning technique,
+we have the supervised fine-tuning, and distillation.
+And so for reinforcement learning,
+this is for complex multistep reasoning task.
+And you're going to have to select a model, add input data,
+and also add a reward function.
+For supervised fine-tuning.
+this is a way to adapt pretrained models
+to specific tasks using labeled data
+to improve the performance in specific domains.
+And distillation is a way for you
+to create a smaller, faster model
+by using a larger model;
+and this larger model is going to train
+the specialized student model.
+So different options in here, depending on the use case.
+But right now let me have a look at the option
+for supervised fine-tuning.
+So you click on Create
+and you click on Supervise fine-tuning job.
+And here you have to select a base model
+that you wish to customize.
+So for example, we can use Nova 2 Lite and apply this.
+And then you have to set up the hyperparameters,
+so how to train your datasets.
+So this is more like machine learning techniques,
+so I won't go over them too much.
+Then where is your input data? In Amazon S3.
+And where is the output data
+to store the validation results, metrics,
+logs, and training data.
+And then finally, you need to enter a service role name.
+And this will allow you to create a new custom model
+based on everything you have provided.
+So that's it.
+That's it for custom models.
+So I hope you liked it,
+and I will see you in the next lecture.

@@ -1,0 +1,199 @@
+# 171. Kinesis Data Analytics / Amazon Managed Service for Apache Flink (MSAF)
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40394464
+# Caption: en_US (auto)
+
+Person: Let's talk a bit about Kinesis Data Analytics,
+which is being supplanted by something called
+Managed Service for Apache Flink.
+It's just a way of querying streams of data
+and processing those streams along the way.
+So historically, we have something called
+Amazon Kinesis Data Analytics, and that would ingest data
+from Kinesis Data Streams or Kinesis Data Firehose,
+perform some sort of transformation on it
+as the stream's being received,
+and then, feed that transform data into some analytics tools
+or some downstream destination, right?
+So it's basically a way of doing streaming ETL.
+Now, these days, all that's left of it is called
+Kinesis Data Analytics for SQL Applications,
+and this allows us to apply SQL operations
+to that stream as it goes through.
+And I wouldn't be surprised
+if this gets deprecated really soon,
+so I'm not too sure I would expect to see this on the exam
+because I think it's on its last legs,
+but the way it worked conceptually was this,
+so you could have data coming in from a data stream
+or data firehose, and you could also have
+what's called reference tables that are hosted in S3,
+that's kind of a way of doing a really inexpensive join,
+I'll talk about that more in a second.
+But anyway, you can apply these SQL transformations
+from Kinesis Data Analytics for SQL on that input stream,
+so you just give it a SQL command
+and it will apply that as data is received
+and spit that back out to your output streams
+and also to an error stream if you want, as well.
+That output stream, which can be Kinesis Data Streams
+or our data firehose, can then go on
+to be stored in Amazon S3,
+or to be queried by something like Amazon Redshift.
+Now, that reference table thing
+is kind of an important thing.
+It's basically a way to have quick lookups, right?
+So for example, let's say I wanna look up the city
+associated with a zip code,
+I might have that mapping just stored in S3,
+which is a very simple and inexpensive way
+of providing that data to my SQL query.
+I would just use a join command within that query
+to reference that external reference table
+that's just sitting in S3.
+So we can also pair Kinesis Data Analytics
+with Lambda functions, it doesn't just have to go
+to a stream directly, you can also send it to Lambda,
+which gives you even more flexibility for post-processing.
+I can aggregate rows together,
+I can translate it to another format,
+I can transform the data further and enrich it,
+I can even encrypt it if I want to,
+and I can also talk to other services
+and other destinations,
+so that allows me not just to talk to things
+like S3 and Redshift, I could also go to DynamoDB, Aurora,
+SNS, SQS, CloudWatch, whatever Lambda can talk to,
+which is pretty much everything.
+These days, however, the hotness
+is Managed Service for Apache Flink,
+and this has kind of a long history with AWS.
+Originally, this was called Kinesis Data Analytics for Java,
+then they renamed it to Kinesis Data Analytics
+for Apache Flink, which is what it's called now.
+Under the hood though, Kinesis Data Analytics
+always used Apache Flink,
+so they're kind of just being more transparent
+with what it's doing, and instead of presenting it
+as sort of a unique tool, they're saying,
+"Well, what we're giving you is just a managed environment
+for an open-source tool that's integrated with AWS,"
+that's kind of the the trend with AWS these days.
+And it's no longer restricted to Java,
+it now supports Python and Scala too.
+Flink, by the way, is just a framework
+for processing data streams,
+which is why it was always the underlying technology
+for Kinesis Data Analytics,
+they're just not hiding that anymore, basically.
+So Managed Service for Apache Flink
+integrates Flink with AWS,
+so instead of using SQL, like we saw earlier,
+you can develop your entire...
+Your own entire Flink application from scratch
+and load that into Managed Service for Apache Flink from S3,
+so basically, you develop a Flink application
+that does whatever you want to your streaming data,
+you load that application into S3, and then, you say,
+"Hey, Managed Service for Apache Flink,
+here's my Flink application in S3,
+go load it up and host it for me,
+you deal with managing that service so I don't have to."
+And in addition to the DataStream API
+for dealing with streaming data,
+there's also a Table API for SQL access,
+so that's why I think the data analytics for SQL
+is probably going bye-bye,
+because you can do the same thing with Apache Flink
+using that Table API instead of the DataStream API.
+How's this look conceptually?
+Yeah, it's serverless, obviously,
+because it's managed, right?
+That goes without saying.
+So we have what's called Flink Sources,
+and in the context of AWS,
+that might be a Kinesis data-stream coming in,
+or it might be Amazon Managed Streaming for Apache Kafka
+coming in as well, if you have Kafka coming in as a source.
+That gets piped into the Managed Service for Apache Flink,
+where our actual Flink application is doing something,
+in this case, using the DataStream API
+to operate on Kinesis or MSK,
+and again, that actual application is loaded in through S3.
+Once your application does whatever it needs to do,
+it can go on and talk to other Amazon services,
+these are Flink Sinks, that might be S3,
+Kinesis Data Streams or Kinesis Data Firehose
+for outputting that transformed streaming data.
+Let's talk a little bit more broadly
+about Apache Flink and how it works,
+'cause the exam might expect you
+to have a little bit of depth on that.
+So at a high level, they have things called connectors
+within Flink, and these are just ways of,
+well, doing what it says, you know, connecting Flink
+to various data sources and to places
+where you want to send streams of data to.
+From Java, you can create a connector
+from the "flink-connector-kinesis" library,
+that's a handy resource for you,
+and that comes with a library of Table API connectors
+that are included as part of Flink,
+so that includes ways of easily connecting the data sources
+from Kafka, DynamoDB, Firehose,
+Kinesis, MongoDB, Opensearch,
+and anything that talks to JDBC,
+along with a bunch of more obscure sources as well,
+but mostly, they make it easy for you,
+and as for connecting to other sources,
+there's also a custom "sink" connector you can write,
+so as long as you have an SDK for it,
+you can still connect Flink to it,
+even if it's not built into the Table API connectors,
+so for example, over on the AWS blog,
+they have this example they wrote up
+of using Flink within this application
+that puts stuff into Amazon Timestream
+from a Kinesis data-stream, and you can see Flink
+in kind of the top of the middle there of this workflow,
+so what's going on there is that they have a connector
+that they're using from Java,
+from the "flink-connector-kinesis" Library,
+to talk to Kinesis Data Streams to get that input coming in,
+they are then writing some code to transform that,
+we'll talk about that in a second,
+and then, they're using a custom "sink"
+to talk to Amazon Timestream and put the data in there,
+even though there's no built-in connector for that in Flink.
+Now, how does it do that transformation?
+Well, the...
+Flink also comes with a bunch of operators
+you can use within your code
+that's used to transform one or more data-streams
+into a new data-stream,
+and the operators they give you
+are pretty similar to Apache Spark or MapReduce,
+so they have ways of mapping one set of data to another,
+doing a "flatMap," filtering data as it goes through,
+reducing data down based on some key,
+doing sliding windows for streams
+and doing joint operations
+as that stream data comes through.
+There are also operators for physical partitioning,
+splitting up how your data is stored,
+and also for task chaining,
+if you want to chain different operations together,
+so that's Flink at a high level.
+Some common use-cases, streaming ETL,
+you know, we talked about that already,
+if you wanna do that extraction,
+transforming and loading on the fly as data's received,
+a Flink application can do that for you.
+You can also use it for continuous metric generation,
+so if I want to monitor a stream of data
+and keep a real-time tally of how things are going,
+that might be another application of it.
+Responsive analytics, kind of the same idea,
+so, you know, if I want real-time analytics
+of who's hitting my website or whatever,
+that might be a way of implementing that as well.

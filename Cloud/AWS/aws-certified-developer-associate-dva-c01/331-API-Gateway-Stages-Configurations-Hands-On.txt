@@ -1,0 +1,41 @@
+# 331. API Gateway Stages Configurations Hands On
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731632
+# Caption: en_US (manual)
+
+So let's have a look at
+all the configuration options for your stage.
+So if you click on Stage details Edit,
+you can change the stage description.
+You can decide to have a cache,
+so it could be an API cache
+to cache the requests and the responses,
+and so therefore you need to configure it over time.
+Throttling, if you want to have a number
+of rate and burst requests per second to your API.
+And if you want to have firewall configuration
+and client certificate to verify
+that the requests are from API Gateway.
+Next, we have logging and tracing.
+So you can set up logging tracing with CloudWatch Logs,
+for example, finding errors only or info logs
+or full request and response logs
+in case you need to debug everything,
+but this may display sensitive data.
+Detailed metrics or not,
+custom access logging if you wanted to,
+and extra tracing to have full integration
+between the API Gateway and X-Ray service.
+We also have stage variables as we saw before.
+Deployment history to see
+how many times you've deployed to your stage.
+Documentation history in case you do manage documentation
+for your API.
+Canary, we'll see canary in a few lectures.
+And then tags where we can tag this stage itself.
+So that's it for all the configuration options
+for your stage.
+There are some that we'll see in detail
+in the future lectures so that we'll keep this one short.
+I hope you liked it,
+and I will see you in the next lecture.

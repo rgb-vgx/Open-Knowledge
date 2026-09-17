@@ -1,0 +1,143 @@
+# 44. EC2 Placement Groups
+# Section: EC2 - Solutions Architect Associate Level
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528080
+# Caption: en_US (manual)
+
+So now, let's talk about placement groups.
+Placement groups are a little bit more advanced,
+and we wanna use them once,
+we want to have control over how our EC2 instances
+are going to be placed within the AWS infrastructure.
+So that strategy can be defined
+using these placement groups.
+So we don't get direct interaction with the hardware of AWS,
+but we let AWS know how we would like our EC2 instance
+to be placed compared to one another.
+So when you create a placement group,
+you have three strategies available for you.
+You have the cluster placement group in which your instances
+will be grouped together in a low-latency hardware setup
+within a single availability zone.
+This is going to give you high performance but high risk.
+We'll see this in details in a second.
+Spread means that your instances
+are going to be spread across different hardware,
+and there is a restriction on this.
+That means you can only have seven EC2 instance
+per placement group that spread per AZ.
+So you would use a spread placement group
+when you have critical applications.
+Finally, the last one is a new kind
+of placement group that is really helpful.
+It's called partition.
+It's similar to the spread,
+meaning that you want to spread your instances,
+but here, they're spread across many different partitions.
+And these partitions rely on different sets of racks
+of hardware within an AZ.
+What does that mean is that they're still spread,
+but they're not isolated one from another failure,
+but a partition should be isolated
+from another partition of failure.
+The idea with this is that you can scale to hundreds
+of EC2 instances per group, and that allows you
+to run applications such as Hadoop,
+Cassandra, or Kafka.
+Now, let's have a look into each
+of these placement groups in details.
+So next, we have the cluster placement group,
+and all your EC2 instances are going to be
+in the same availability zone.
+So why do we do this?
+Well, this particular placement group
+gives you great networking.
+So you have around 10 gigabits per second
+of bandwidth between all these instances
+that will have enhanced networking enabled.
+And so you get low latency, high throughput network.
+And the idea is that out of this,
+you can get great performance
+for any kind of computational job.
+So a drawback of using this architecture
+is that if your availability zone fails,
+then all the instances will fail at the same time.
+But usually, for use case, this is fine.
+So the use cases for this kind of placement group
+are big data jobs that need to complete very fast
+with very high networking
+or applications that need extremely low latency
+and high throughput network
+between each instance of your application.
+Now, spread is the complete opposite.
+In spread, we want to minimize the failure risk.
+And so in this case, when we ask for spread placement group,
+all the EC2 instances are going to be located
+on different hardware.
+So as you can see here, we have three AZ,
+and we have six EC2, and each EC2 instance
+is on a different hardware.
+So what does that mean?
+Well, what we get is that we can span across multiple AZ,
+and there is a reduced risk of simultaneous failure.
+Why?
+Well, because if my hardware one fails,
+I'm pretty sure my hardware two will not fail.
+And so we've separated the risk
+of my two instances in the Us-east-1a
+to fail at the same time.
+And so that's the benefit from it.
+The con is that from this configuration,
+we're limited to seven instances per AZ per placement group.
+So there is a limit to how big your placement group can be.
+And so you need to have application
+that's gonna be of good size but not too big.
+The use case would be an application that needs to maximize
+high availability and reduce the risk.
+And in general, for critical applications
+where your instance failures must be isolated
+from one another.
+Remember, here, we have a limitation
+of seven instances per AZ per placement group.
+Now, for the partition placement group,
+we can have instances spread across partitions
+in multiple available T-zones.
+So we can have up to seven partitions per AZ.
+So in this example, we have partition one
+and partition two in us-east-1a
+and partition three in us-east-1b.
+And on each partition, you can have many EC2 instances.
+So in the first one have four,
+and the second one have four,
+and the third one have four as well.
+So why do we use a partition placement group?
+Well, each partition represents a rack in AWS.
+And so by having many partitions, you're making sure
+that your instances are distributed
+across many hardware racks, and so therefore,
+they're safe from a rack failure from one another.
+So you can have up to seven partitions per AZ,
+and these partitions can span
+across multiple availability zones in the same region.
+You can get up to hundreds of EC2 instances with the setup.
+So this is a difference
+versus the spread type of placement group.
+And as I said, the instances in the partition
+do not share the same hardware physical rack
+with the instances in the other partitions,
+and therefore, each partition is isolated from failure.
+So that means that, yes, if one goes down,
+if partition goes down, the partition number two,
+then partition number one should be fine.
+And to know which partition these EC2 instances are on,
+there is an option to access this information
+with using the metadata service.
+So when would you use a partition placement group?
+Well, when you have an application
+that it can be partition aware to distribute the data
+and your servers across partitions.
+And usually, the use cases
+are going to be big data applications
+which are partition aware, such as using HDFS,
+HBase, Cassandra, and Apache Kafka.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

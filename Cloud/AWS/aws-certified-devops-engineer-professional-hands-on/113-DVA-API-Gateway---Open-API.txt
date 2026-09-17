@@ -1,0 +1,65 @@
+# 113. [DVA] API Gateway - Open API
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37903890
+# Caption: en_US (manual)
+
+So the API Gateway has a tight integration
+with the OpenAPI specification.
+So what is the OpenAPI specification?
+Well, it's a very common way to define REST APIs
+and the API definition itself is code.
+So what you can do is that you create
+this specification using the OpenAPI model 3.0
+and then you import that into the API gateway.
+So you define the methods, the method request,
+the integration request, the method response,
+as well as any AWS extension
+that you can set up for the API gateway.
+And you can set up every single option
+of these extensions directly from within the API spec.
+Similarly, instead of importing stuff into the API Gateway,
+you can take an existing API in the API Gateway
+and export it as an OpenAPI spec.
+Why?
+Well, because this specification can be used
+to, for example, generate client code.
+So these OpenAPI specifications can either be written
+in YAML or JSON, and then when you use them
+you can generate client SDKs as I've just mentioned.
+So on top of having a one-to-one mapping
+between the API Gateway and the OpenAPI spec
+you can use the OpenAPI spec to perform request validation
+within your API gateway.
+So the idea is that,
+instead of just sending a payload as is to your backend,
+API Gateway can verify if it corresponds to a proper schema.
+And so in case it doesn't correspond
+to the correct validation,
+the caller gets directly a 400 error
+and that reduces unnecessary call to the backend.
+So you can check whether or not the request parameters
+are in the URI, the query strings,
+you can test for headers that are present or not,
+and that they're non-blank.
+And then you can also have a look whether or not
+the payload adheres to a specified JSON Schema model
+for the method.
+So all now you can just verify
+that your backend will not have any issues
+with parsing and using that payload.
+So how do we do this?
+Well, we set up an OpenAPI definitions file,
+and in it we have an x-amazon-apigateway-request-validator.
+And here we can define what we want to validate,
+the body, the parameters on all methods, on some methods,
+and so on.
+So you can enable params-only validator
+on all API methods, or you can, for example,
+enable all validators on just a POST /validation method,
+or whatever method you want.
+So you're really free to verify whatever you want
+on your API.
+So hopefully that makes sense.
+Hopefully you see the power
+of using OpenAPI with the API Gateway.
+I hope you liked it, and I will see you in the next lecture.

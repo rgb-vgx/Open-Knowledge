@@ -1,0 +1,33 @@
+# 180. AWS Firewall Manager
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/41562782
+# Caption: en_US (manual)
+
+So now let's talk about AWS Firewall Manager.
+So it's a service that's very simple.
+It allows you to manage all the security rules
+in all the accounts of your AWS Organization
+in a central place.
+So from an exam perspective, you're going
+to usually get the question on VPC Security Groups.
+So if you see a question
+around managing your VPC Security Groups
+across multiple accounts in an organization,
+think no more than the AWS Firewall Manager.
+Now, I want to tell you a bit more about it.
+So on top of managing VPC Security Groups,
+you can also manage WAF rules, AWS Shield Advanced rules,
+as well as AWS Network Firewall and their other services.
+But from an exam perspective,
+I think the most important one
+is going to be the Security Groups.
+Now, whenever you apply these rules in Firewall Manager,
+they're going to be applied
+to all the current and future accounts
+and for all the resources
+as they are being created in these accounts,
+really allowing you to have the certainty
+that the rules are managed
+across all accounts at any point of time.
+All right, so that's it.
+I hope you liked it, and I will see you in the next lecture.

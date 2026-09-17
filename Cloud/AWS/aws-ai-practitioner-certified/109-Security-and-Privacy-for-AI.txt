@@ -1,0 +1,154 @@
+# 109. Security and Privacy for AI
+# Section: AI Challenges and Responsibilities
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887843
+# Caption: en_US (manual)
+
+So now let's talk about security
+and privacy for AI systems.
+So the first area is threat detection.
+For example, you want to be able to detect
+when fake content is being generated
+or when data is being manipulated
+or when attacks are being automated.
+So you can deploy an AI based threat detection system
+to protect your AI system.
+You can also analyze the network traffic, the user behavior,
+or other relevant data sources.
+You can also do vulnerability managements.
+So in your AI systems, you may be using software
+and the software may have bugs
+or the model may have weaknesses,
+and so you need to conduct regular security assessments,
+penetration testing and code reviews,
+as well as having strong processes in place
+for patch management and update processes
+in case some softwares are fixed by third parties.
+Next, you need to have infrastructure protection.
+So if you're on the cloud,
+you need to secure the cloud computing platform,
+but also the edge devices,
+so the devices that are out there in the world
+and your data stores.
+You need to implement access control.
+You need to have network segmentation
+to protect your network
+and to encrypt your data to prevent someone stealing it.
+And you must ensure that you can withstand systems failure.
+Okay, next, we have prompt injections.
+So we've seen those, but we need to make sure that we are
+aware of manipulated prompts
+to generate malicious or undesirable content,
+and so we need to implement guardrails
+such as prompt filtering, sanitization, and validation.
+So here's an example of a prompt injection
+where we ask a SQL payload to confirm a vulnerability,
+but the model is saying, no, I cannot do this
+because it will be helping you gain unauthorized access
+or perform illegal activities
+and the model is bound by ethical boundaries.
+But then we're trying to work around it
+and saying that now we are doing a use case
+where someone else must be writing something
+and testing something,
+and then well, the model starts giving us
+actual examples of how we can do it
+and then start giving us the code.
+So we need to be very careful about these things.
+We need to have data encryption,
+so making sure the data is encrypted at rest and in transit,
+and also managing the encryption key properly
+so that to make sure they're protected
+against any kind of unauthorized access.
+So this is for the security.
+Now, how about monitoring our AI systems?
+So we need to monitor the performance metrics,
+such as the model accuracy,
+so how many positive predictions we're doing, the precision,
+how precise are our positive predictions?
+The recall.
+How many are actually said to be positive,
+but actually not positive?
+And then we have some metrics such as the F1 score,
+which is the average of the precision and the recall.
+And we need to look at latency, which is a time taken
+by the model to make a prediction.
+You also need to monitor your infrastructure
+to catch bottlenecks and failures.
+So that means having a look at your compute resources,
+so your CPU and GPU usage,
+your network performance, your storage,
+your system logs, and so on.
+And also you need to account for bias and fairness,
+compliance and responsible ai.
+So in AWS, we have the shared responsibility model.
+So AWS is going to be responsible
+of the security of the cloud.
+That means protecting its own infrastructure
+such as the hardware, the software, the facilities,
+and the networking that are backing all the AWS services.
+So the security of Amazon Bedrock,
+SageMaker, Amazon S3, et cetera,
+is the responsibility of AWS,
+but you are responsible of your own security in the cloud.
+That means that if you're using Amazon Bedrock,
+you are responsible for data management,
+for doing access controls,
+for setting up the guardrails, et cetera, et cetera,
+and also to encrypt the application data.
+And some controls are being shared.
+For example, patch management, configuration management,
+awareness and training.
+And this is all summarized in a diagram
+called the share responsibility model diagram,
+where you can see what AWS is responsible for
+and what you are responsible for as well.
+Now, let's talk about the best practices
+to perform secure data engineering.
+So first of all, you need to assess data quality.
+You need to make sure your data is complete.
+That means you have diverse
+and comprehensive range of scenarios.
+You need to make sure it's accurate,
+so you have accurate up to date and representative data,
+and you need to assess timeliness
+such as the age of the data in a data store.
+You need to look at consistency to maintain coherence
+and consistency in the data lifecycle.
+You need to do data profiling and monitoring,
+and as well perform data lineage.
+Then you have privacy enhancing technologies.
+So for example, you may want to do data masking
+to mask some fields or data obfuscation
+to minimize the risk of data breaches.
+You also want to use encryption
+and sometimes tokenization to protect data
+during processing and during its usage.
+Then we have data access control.
+So we need to make sure we have
+a comprehensive data governance framework
+with clear policies.
+We need to set up role-based access control
+to make sure your users have access
+to only what they need based on their role,
+and also fine-grained permissions
+to restrict access in a very, very concise and clear way.
+You can implement security mechanisms such as single sign-on
+or multifactor authentication,
+or use identity and access management solutions
+for your users.
+You need also to have a look at all data access activities.
+So we need to monitor them and log them.
+And also for the access rights,
+you need to regularly review them
+and update them based on the least privileged principles,
+which means that someone must have access
+to the least amount of systems to only do its required job.
+You need to look finally at data integrity.
+So making sure that the data is complete, consistent
+and free from errors and inconsistencies,
+you need to have robust data backup and recovery strategies.
+You must maintain data lineage and have audit trails,
+and you must monitor and test the data integrity controls
+to ensure effectiveness.
+So that's it, we've learned about security in ai.
+I hope you liked it, and I will see you in the next lecture.

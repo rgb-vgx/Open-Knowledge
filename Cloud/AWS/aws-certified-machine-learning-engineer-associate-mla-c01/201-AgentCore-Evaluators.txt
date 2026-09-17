@@ -1,0 +1,352 @@
+# 201. AgentCore Evaluators
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865813
+# Caption: en_US (auto)
+
+Another pillar of trust, if you will, with agents
+is evaluating the agents.
+How do we know that it's actually doing the right thing?
+If we are measuring that, we can have more confidence
+that it's actually behaving the way that we expect.
+And that again is important for the adoption of AI agents.
+You gotta trust them.
+So evaluations are a way to automatically assess
+how well your agent is performing tasks,
+handling edge cases,
+maintaining consistency in its performance.
+It integrates with a bunch of different frameworks.
+So whether you're writing in strands or land graph
+or integrating with open telemetry or open inference,
+agent core evaluations can tap into that
+and actually measure the performance
+of your system as a whole.
+The way it works is that
+once it actually does that evaluation,
+it dumps the results into CloudWatch
+behind agent core observability insights.
+So from the same place where you would go
+for agent core observability,
+you can dig into CloudWatch and take a look at the results
+of your agent core evaluations.
+And you can also do all the usual CloudWatch stuff there.
+So you can set up automatic alerts and alarms
+if things exceed a certain threshold
+on the things that you're evaluating.
+Also a note that might seem like kind of a fine point,
+but it is important if you're dealing with,
+you know, regulations around data residency.
+Evaluations do automatically use cross region inference.
+So it will automatically select the optimal region
+for actually processing these evaluations.
+That means that even though the data itself
+will remain resident to where the request was made from,
+that data is gonna be shipped around
+all over the place potentially.
+So it may be transmitted and even processed in other regions.
+It will be encrypted all the way along,
+but do keep that in mind.
+There's no way to turn that off.
+If you're using evaluations,
+it could be shipping your data around to other regions.
+And for some settings that might not be acceptable.
+So something to keep in mind.
+So here's an example of what the actual visualizations
+of these evaluations would look like in CloudWatch.
+So you can see at the top here,
+they have things broken down
+in terms of the actual individual configuration metrics
+that you've set up.
+You have evaluations that can apply at the session level,
+at the trace level, or at the span level.
+We'll talk about that a little bit more in a bit.
+And in this particular dashboard,
+we're actually monitoring five different evaluations.
+In this case, we're monitoring faithfulness,
+helpfulness, correctness, harmfulness, and stereotyping.
+So those bottom two are basically safety things.
+Are we actually saying things that are harmful
+or stereotypical and measuring that as well.
+So again, this is all part of CloudWatch.
+So you could automatically put alarms
+and alerts on these things to let you know
+if all of a sudden your agent
+is doing really horrible things or not.
+Let's talk about some of the built-in evaluations
+like the ones we just saw.
+And these are all provided as prompt templates, by the way.
+So it is possible to extend these
+and modify them with your own custom evaluations too.
+One is correctness.
+Just is it factually correct what your agent is saying?
+And that's just comparing what its output was
+compared to some known ground truth
+that you're measuring it against.
+Helpfulness, from the user standpoint,
+are users actually saying,
+hey, yeah, this was a helpful response or not.
+Conciseness, am I giving you the information that you need
+in as few words as possible?
+You know, am I conveying the information that I need
+but not in an overly verbose way?
+How well did I follow the instructions
+that I was given as part of the agent?
+How faithful is the response?
+Is it supported by relevant context or relevant sources?
+Can I back up what I'm saying
+with where that information came from?
+Response relevance,
+and that means relevance to the user query.
+So is what you responded relevant
+to what the user asked for?
+Coherence, is there a logical structure
+behind what came out of that agent?
+Refusal, is it being evasive?
+Is it refusing to do things that it should?
+Goal success rate, pretty easy to measure that.
+If you have a specific goal for your agent,
+is it hitting it or not?
+Is it creating, you know, code that runs, for example.
+Tool selection and parameter accuracy.
+So that's measuring the accuracy
+of selecting the right tool for a given job
+and also the right parameters within that tool.
+Harmfulness and stereotyping we just looked at.
+So again, you know,
+wanna make sure that we're not saying things
+that are, well, socially bad, right? And by the way,
+these evaluations don't have to apply to everything.
+These can get expensive, right?
+So every one of these is gonna be using another LLM
+to evaluate the output of your agentic system.
+And those tokens add up.
+So you might wanna limit this by filters
+to apply those evaluations
+only to certain types of calls to your agent.
+And you can also set up a sampling rate
+so you don't have to actually test every single one.
+You can do 5% of them or whatever you wanna do.
+You can also have custom evaluators.
+So if you wanna do something
+that's a little bit different,
+you can just specify whatever your model
+you want to use as a judge and configure it.
+You know, and it is a kind of a better practice
+to maybe choose a model different
+than the one you're using in your agent
+to get sort of a different perspective on how it's doing.
+You give it a prompt that defines the evaluator,
+and you can see here in this example on the right. At the bottom,
+you'll always have this conversation history placeholder
+and assistant response placeholder
+that's giving the evaluator all the context
+of the actual conversation that went on
+within the actual agent that you're trying to measure.
+And then you just say in plain text
+how you wanna actually define this evaluation metric.
+You can start from scratch,
+or you can start from an existing built-in one
+and just expand that.
+And you'll see that there's a way
+to actually pull that up very easily
+if there's a similar existing built-in evaluation
+that you just wanna sort of change a little bit.
+You can also define scales after doing this step.
+So if you want to map ranges of results,
+you know, maybe there are different numerical measures
+of whatever it is you're trying to evaluate,
+and you wanna just map that to like good, better, okay,
+unacceptable labels like that,
+you can define those labels as scales later on.
+You can also define the level
+that you want this evaluation to perform at.
+That can be at the session level,
+looking at the entire session
+that your agent's being used within.
+It can be at the level of a trace.
+You know, every time you do a trace,
+apply the evaluation at that point.
+Or you can actually apply it at the tool call level
+and evaluate your system every time a tool is called.
+And again, you can limit that
+to a filtered sample of those tool calls
+or just a random sample of those tool calls as well
+to keep it under control.
+Let's take a quick look at the UI
+and see how it actually works.
+Real quick tour of the UI here for evaluations.
+And again, this will change, of course, over time,
+but as of this recording, this is what it looks like.
+So from the Asian Core dashboard here,
+you should see under Assess an Evaluations option here now.
+And this is going to warn you again
+that this does use cross-region inference.
+So it is gonna be transmitting data securely
+across different regions.
+That may or may not be okay given your local regulations.
+So you have this little how it works thing
+that kind of walks you through the whole process here.
+You can create a new evaluation configuration.
+And if you just want to use a built-in off-the-shelf one,
+all you have to do is give it a name,
+make that whatever you want.
+And if you want to actually enable that
+as soon as you're done,
+you can check that box to make it apply right away.
+You can also give it a description if you want to
+and give it a timeout value.
+So five minutes seems pretty conservative
+if the evaluation takes longer than that.
+It's probably using more resources than you really want.
+So you can add a data source.
+That can either be an agent endpoint,
+which is usually gonna be your choice.
+Also, you can apply these to CloudWatch log groups.
+You can actually use this outside of AgentCore entirely.
+So if you have data going into CloudWatch
+from some other agent that's external to AgentCore,
+you can even apply evaluations to that as well
+by selecting that option and just saying,
+hey, here's my logs that I want you to evaluate.
+However, you're usually gonna be using this
+within the context of an AgentCore agent, right?
+So that's usually gonna be your choice.
+I don't have any agents currently defined
+in this particular account,
+but if you did want to apply that to a specific one,
+this is where you would choose it.
+And furthermore, you would select an endpoint
+associated with that agent
+that you want to apply your evaluations to.
+All right, then you select which ones you want to measure.
+So again, these are the ones we talked about before.
+You can use any of these built-in evaluators
+and you can create custom ones as well.
+So let's say that I want to measure correctness.
+Am I actually telling the truth or not?
+And then you can actually do any of these other ones too.
+So they've kind of broken these up
+into different categories
+where you have response quality metrics
+like correctness, helpfulness, conciseness,
+the usual stuff.
+Also task completion metrics like their goal success rate,
+component level metrics.
+So that would be things like tool selection accuracy
+and tool parameter accuracy.
+Am I choosing the right tool for the job?
+And am I choosing the right parameters within that tool?
+And then safety metrics,
+harmfulness or stereotyping are the current options there.
+If you had custom evaluators defined already,
+you could choose those here as well.
+Right now I don't have any defined yet,
+but I'll show you where to do that.
+And again, you can select a subset
+of your actual tool calls to sample here.
+You can add a filter
+and say that I only want to look at evaluations
+for some given property that is equal, not equal to,
+greater than, whatever it is to some value
+and maybe restrict my evaluations
+to things that I know might be problematic that way.
+Also, I can set up a sampling rate.
+So anywhere from 0.01% to 100%,
+again, just to keep the cost down,
+maybe a random sample is all you need
+to kind of keep an eye on things.
+And here's the real challenge here,
+making sure that this evaluation system
+does have permissions through IAM
+for anything that it might need to access.
+You can say create and use a new service role.
+So automatically that will do the right thing by default
+more often than not.
+Once you have that done,
+you can create your evaluation configuration
+and then you are good to go.
+If you did select that option to automatically apply it,
+you'd be pretty much done.
+Now, if you did want to create a custom evaluator,
+you can do that here.
+And again, you can just start from an existing template here
+so you don't have to start from scratch.
+So you can say load a template.
+This one's the template for faithfulness.
+Let's change that to, I don't know, refusal.
+That should be pretty straightforward.
+You can see that they all have this conversation history
+and assistant turn at the bottom there
+that gives the evaluator the context that it needs
+about what the agent has actually been doing, right?
+And here we just have in plain old text
+how we're defining this evaluator.
+So you're an AI assistant trained to judge
+whether a response refuses to address the prompt request
+and a little bit more detail there
+about what the actual criteria are,
+but it is just plain English.
+So nothing too fancy there.
+If you did want to customize that though, you can, right?
+So you're making your own custom evaluator here,
+maybe using this as a starting point,
+but maybe I want to be a little bit more specific
+about what counts as a refusal here
+and changing that to suit my own needs
+or additional data that I might have
+that the default one doesn't have.
+You will need to choose a model
+to apply that evaluator to as well.
+And you can see, this is like using Olama or something.
+Wide variety of models to choose from.
+Usually a good idea to use a different model
+than the one you're actually running the agent with
+to get sort of a second opinion as to how it's doing.
+And of course, Amazon would love it if you used Nova Pro
+or whatever their latest model might be from Amazon.
+But again, more important to use a different model
+than what you're actually using for the agent itself.
+Once you do select that model though,
+you can get selected to change the temperature,
+change the top P if you want to
+to actually affect its actual randomness and diversity.
+You can set maximum output tokens
+to make sure you have some control
+on the cost there as well.
+Set custom stop sequences.
+Not sure why you'd really want to do that,
+but again, you just standard configuration settings
+for a foundation model there. And that's it.
+Once you do that, you can also define the scale types.
+So in this case, it's binary zero or one.
+So if this comes back as zero,
+I'm gonna say the label is no.
+One means the label yes.
+Other different types of evaluations
+might be a little bit more nuanced.
+So let's try something a little bit more non-binary, right?
+Faithfulness, for example.
+That should be more of a range.
+And you can see here that they're actually setting
+those scales as zero to 25% would mean not at all,
+25 to 50% not generally, so on and so forth.
+So this is just mapping scales or ranges of values there
+to a set of discrete labels
+that you can then monitor in CloudWatch.
+And again, you can apply this to the session level,
+the entire conversation session, to individual traces,
+or to every tool call as well.
+Obviously, if I'm measuring the appropriateness
+of tool parameters, I probably wanna look at tool calls.
+Once you're done, you can create that custom evaluator,
+and then you can go back to evaluators
+and actually apply that to a given agent.
+Once you have that set up,
+the results will be in Agent Core Observability
+within CloudWatch, and that's just a handy-dandy link there.
+Again, I don't have anything here to actually show you,
+but just a little handy backdoor to getting to that point.
+But this is where you would find the visualization
+of your evaluation.
+So under Gen-AI Observability, Bedrock,
+Agent Core is where that would live.
+And that is evaluations in a nutshell with Agent Core.

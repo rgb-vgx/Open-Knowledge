@@ -1,0 +1,125 @@
+# 194. CloudWatch Dashboards
+# Section: Monitoring, Auditing and Performance
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27515848
+# Caption: en_US (manual)
+
+Now that we have metrics it's possible for us
+to present them into a CloudWatch dashboard.
+So it is very easy.
+You can access to your key metrics and your alarms
+and the dashboards are going to be global.
+So they're going to be across many regions
+and you can include graphs from different accounts in AWS
+or different regions.
+And this is very important from an exam perspective.
+You can have metrics from US east one and then EUS one,
+and then AP Southeast two in the same CloudWatch dashboard.
+You can change the time zone and the time range
+on the dashboard,
+you can set up automatic refresh,
+and you can share the dashboard with people
+who do not have an account in AWS.
+The pricing is very easy.
+You'll get three dashboards up to 50 metrics for free,
+and then you're going
+to pay $3 per dashboard per month afterwards.
+So let's go ahead and see how we can create a dashboard.
+So let's go ahead and have a look at our dashboards.
+So right, currently we have zero custom dashboards,
+but we can create an automatic dashboard based
+on a specific service.
+So you could create, for example,
+an auto-scaling dashboard,
+and this would create already a pre-configured dashboard
+for you, which you can filter by resource group.
+For example, DevGroup, FinanceGroup, ProdGoup
+and we had created these groups from before.
+And then this would show you all the metrics
+that AWS thinks is relevant
+for your auto scaling group, okay?
+But this is,
+these are your automatic dashboards.
+What you can do instead
+is you can create a custom dashboard.
+So if you go to dashboard and then create a dashboard,
+you can create a demo dashboard.
+Now in here, you can add many different things.
+You can add a line, a stacked area, a number, some texts,
+some logs table, alarm status, and so on
+so lots of different widgets that you can use
+within your dashboard.
+So for now I'll use a number and I'll use a number, why?
+Because we pushed a custom metric in my namespace
+and then we choose this number.
+And this is going to show you the size of my buffer.
+So this is quite handy and it will create this widget.
+So remember this number was pushed using the put
+metric data API code that we used from before
+from the documentation in this CLI.
+So here we have this number and it's pretty cool,
+but for example,
+you wanted to add another widget or you can have,
+for example, a line and a metric,
+and then you choose a metric.
+For example, again,
+you see two and you get your per instance metric
+and you get your CPU credit balance, and you can add it.
+Now, we don't have any information right now
+in this dashboard because, well,
+we don't have any EC2 instances is running.
+And so therefore this credit balance
+for that EC2 instance is not happening
+to be populated, okay?
+But you could go back in time again
+and display one month of data.
+And this would show you a little bit of information
+and you can zoom in.
+And as you can see, as I zoom in, well,
+the buffer did not show any data
+because during that timeframe that I'm zooming in right now,
+well, the buffer that was a custom metric
+did not have any data.
+So you can definitely have a look at CloudWatch dashboards.
+And the cool thing is that all the metrics
+and all the widgets that you're sharing side to side
+are going to be shown during the exact same timeframe.
+So you can get a more complete information around the story
+of your metrics as you go and explore your dashboard, okay?
+So right now I can just display the last one hour
+and I can just save this dashboard,
+and then we'll be good to go.
+So we can say, hey,
+show me the last 180 minutes and she should be good to go.
+Okay.
+So now you can also do something else for your dashboard.
+I told you dashboards are global.
+So therefore you can add a widget
+and you can add a line again, okay?
+A metric.
+But this time, as you can see,
+the metric can be chosen from any specific regions.
+So right now we're in Frankfurt,
+but if you go to US east one,
+you could find some metrics around US east one.
+For example, some storage metrics of a bucket,
+and you can get the buckets sized bites and plot that
+or the number of metrics, a number of objects, for example,
+and add this directly.
+So this metric right here comes from US east one.
+Even though there is no data available.
+So not very, very interesting, but as you can see,
+metrics can come from different regions
+in the same CloudWatch dashboard, which is quite handy.
+Okay.
+And then when you're done with the dashboard,
+make sure you save your dashboard
+to have it saved and therefore all
+the changes you've done are going to be permanent, okay?
+So let's say for CloudWatch dashboard,
+just remember multiple accounts, multiple regions,
+that's very important.
+And you can show multiple widgets just by clicking
+on the add widget button,
+including for your custom metrics, okay?
+So hope that was helpful.
+And I will see you in the next lecture.

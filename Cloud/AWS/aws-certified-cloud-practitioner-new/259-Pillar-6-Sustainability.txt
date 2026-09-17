@@ -1,0 +1,58 @@
+# 259. Pillar 6: Sustainability
+# Section: AWS Architecting & Ecosystem
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/31712754
+# Caption: en_US (manual)
+
+So, let's talk about the actual last pillar
+in the well architecture framework, which is sustainability.
+It's a new pillar.
+So, this pillar focuses on minimizing
+the environmental impact of running cloud workloads.
+So the idea is that you want to understand
+your impact, establish performance indicators,
+evaluate improvements,
+make sure you reach sustainability goals.
+So, find these long terms and find your ROI.
+Maximize the utilization of your services
+because you wanna be energy efficient
+and obviously be environmental conscious.
+You want to anticipate
+and adopt new more efficient hardware over time
+because AWS does some optimizations to their infrastructure
+and if you use their newer stuff,
+then you are being more efficient.
+Use manage services where possible
+because you share the infrastructure with many people
+and therefore you are in a better space for sustainability.
+And reduce the downstream impact of your cloud workloads.
+So, reduce the amount of energy
+or resources required for your services
+and your need for your customers
+to constantly upgrade their devices.
+So, some services that help with sustainability in AWS,
+for example, EC2 Auto Scaling
+or Serverless Offerings such as Lambda or Fargate.
+And you want to get basically use
+the right amount of compute for your task.
+Cost Explorer; Graviton 2,
+EC2T type of instances and Spot Instances.
+All of them allow you to make sure you're energy efficient
+when using the capacity compute of AWS,
+and spot instances will allow you to use spare capacity,
+which will be wasted otherwise.
+Then some tiering storage,
+so EFS-IA, Amazon S3 Glacier, Cold HDD for EBS volumes
+all allow you to optimize your cost regarding storage.
+Like is all your data needing to be hot,
+these kind of questions.
+Then S3 Lifecycle Configurations
+S3 Intelligent Tiering
+to make sure your data is in the right tier
+as well as Amazon Data Lifecycle Manager.
+And finally, databases can help you,
+so Read Local, Write Global.
+So think about RDS Read Replicas,
+Aurora Global Databases,
+DynamoDB Global Tables or using CloudFronts.
+Okay. That's it for this lecture, I hope you liked it.
+And I will see you in the next lecture.

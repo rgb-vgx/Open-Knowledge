@@ -1,0 +1,68 @@
+# 159. CloudFront - ALB/EC2 as an Origin
+# Section: CloudFront & AWS Global Accelerator
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/34844034
+# Caption: en_US (manual)
+
+So how can we connect CloudFront
+to an application load balancer
+or an EC2 instance as an origin?
+So we have two ways, and this is the better way
+and the newer way.
+It's called using VPC origins.
+And it allows you to deliver content directly from
+applications that are hosted
+in your private subnets in your VPC.
+And everything can remain private.
+You don't need to expose any of this to the internet.
+So that means we can deliver traffic
+to private application balancers,
+network load balancers, and EC2 instances.
+So how does that work?
+Well, we're going to create a CloudFront distribution,
+which has a bunch of edge locations, and our users are going
+to access CloudFront this way.
+But then from CloudFront, we're going to create a VPC origin
+and connect this VPC origin to our backend.
+So it could be, again, an ALB, an NLB or an EC2 instance.
+And then CloudFront will do the link through the VPC origin
+to direct traffic to your private subnets and applications.
+And from a network perspective, this is one
+of the most secure way of doing your setup
+because, well, your applications are still hosted privately,
+internally, and then you choose what to expose
+through CloudFront, which is very handy.
+If you wanted to use a public network,
+this was the previous method
+before the VPC origin feature existed.
+And I still wanna show it to you
+because it's good to understand what was done before.
+You had to have an EC2 instance that was public.
+And so therefore you had a list of edge locations
+with their public IPs.
+And you use this link to find the list
+of all the CloudFront IPs
+and you would make sure to change the security group
+to allow all these public IPs
+of the edge location into your EC2 instance.
+So it would be public,
+but only restricted to the edge locations.
+And the same goes for
+if you had an application load balancer,
+again, it should have been public,
+but your EC2 instances could have been private.
+And then just have private network between your ALB
+and your EC2 instances through the use of security group.
+And again, you must make sure that your
+ALB has a security group
+that allows all the public IPs coming from CloudFront.
+So it's a bit more tedious
+because number one, you need to find these public IPs
+and change the security group.
+And on top of it, well, there is a risk
+that if someone changes the security group of your ALB
+or your EC2 instance, then your instance is public
+to more than just your CloudFront distribution.
+But this was the old way.
+Now the new better way is to use, of course, VPC origins.
+All right, so that's it in this lecture.
+I hope you liked it and I will see you in the next lecture.

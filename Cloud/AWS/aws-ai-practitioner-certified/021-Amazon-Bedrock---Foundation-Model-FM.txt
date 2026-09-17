@@ -1,0 +1,127 @@
+# 21. Amazon Bedrock - Foundation Model (FM)
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44886343
+# Caption: en_US (manual)
+
+So now let's talk
+about the different options we have
+for base foundation models.
+So we have to choose based on a lot of different factors.
+In the end, it's going to come down to the model types,
+the performance requirements you have,
+the capabilities of the model,
+the constraints you have,
+the compliance you need, and so on.
+Also, some models may provide you
+different levels of customization.
+Some models may be smaller, others bigger.
+They could be different levels for inference,
+so how to basically get an output of the model.
+You may have different licensing agreements.
+You may have different requirements on context windows,
+so how much data you can send it to a foundation model,
+as well as latency,
+so how fast a model will come back to you with an answer.
+You may also have different factors,
+such as is the model multimodal?
+Which means that it can take a wide combination
+of types of inputs,
+for example, audio, text, and video together,
+and also give you various types of outputs,
+for example, again, images, audio, video, text,
+but all together at the same time.
+So there's no clear answer.
+Of course, it's up for you to test,
+but there is something called Amazon Titan,
+and because this is an AWS certification we're studying for,
+I believe Amazon Titan is going to appear at the exam.
+So what is Amazon Titan?
+Well, it is the high-performing foundation model
+directly from AWS.
+So you have different levels of Amazon Titan,
+but it can do images, text,
+and you also have multimodal choices,
+all via the same API you have on Amazon Bedrock.
+As well, it can be customized with your own data,
+so you can fine-tune Amazon Titan,
+and that can be very handy.
+Also, for example, to make a decision on a model,
+usually, the smaller models
+are going to be more cost-effective,
+but they usually know less things.
+So it's a bunch of balancing acts,
+really, based on what your business needs is on.
+So let's have a look at four models
+to see if we can understand a little bit
+how our process would go into.
+So we have Amazon Titan,
+and we're going to compare Amazon Titan Text Express.
+We have, and I'll call it Llama, but it may be Yama,
+Llama-2, which is some model out of Meta.
+We have Claude out of from Entropic,
+and then we have Stability AI,
+which created something called Stable Diffusion.
+So first of all,
+the last model is for image generation only.
+So if you want just image,
+maybe the last model can build for you.
+But, like, for the other ones,
+you have different kinds of capabilities.
+So if we look at features, for example,
+well, Amazon Titan can do text,
+and it can do it in 100-plus languages.
+Llama-2 can do large-scale tasks, dialogue, and in English.
+And Claude can have also text generation and also language.
+So it comes down to testing
+how the model reacts to your inputs.
+And one thing that may be very important
+is the number of tokens you can have
+as an input to the model.
+So Amazon, we have 8K tokens.
+Llama-2, we have 4K tokens,
+and Claude, we have 200K tokens.
+So that means that on Claude,
+you can send a lot more words into your context windows.
+And so Claude will have more memory
+and will be able to intake a bigger input,
+which may be very important.
+For example, you may want to send a big context window
+when you're dealing with a big code base
+or when you have to read an entire book
+and ask questions about that book.
+Then maybe Claude is going to be a better fit.
+So the use cases really depends on the models,
+but to be fair, all these models start to look the same
+and have the same kind of capabilities.
+They're all converging towards the same thing.
+So it's down to mainly testing.
+But so Amazon Titan is going to be around content creation,
+classification, and education.
+Llama-2 is going to be around tech generation
+and customer service.
+Claude could be for analysis,
+forecasting, and document comparison.
+This is mainly due to the fact it has higher number of token
+as an input,
+and Stability AI is going to be for image creation,
+for advertising, media, and so on.
+And so pricing can be a big factor again.
+So here, the pricing is given
+for 1,000 tokens given to the model.
+So as you can see, Amazon Titan Text Express is very cheap.
+It's much cheaper than Llama-2,
+and Llama-2 is much cheaper than Claude.
+So again, this could be a big one
+because, obviously, the more expensive models
+may give you better answers,
+but sometimes the less expensive models
+can still give you good answers,
+but they're going to be a lot more cost-effective.
+And as well for Stability AI
+based on the image you generate,
+it may cost you as well some money.
+So be conscious
+because you can very, very quickly accumulate
+a lot of costs with AI.
+So I hope you liked it,
+and I will see you in the next lecture.

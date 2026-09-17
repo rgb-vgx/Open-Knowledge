@@ -1,0 +1,87 @@
+# 89. Amazon Comprehend
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45356799
+# Caption: en_US (manual)
+
+So now let's talk about Amazon Comprehend.
+So Amazon Comprehend is used for natural language processing
+or NLP, and it's a fully managed and serverless service.
+So it's going to use machine learning to find insights
+and relationship in your text.
+So it's going to understand the language of the text,
+it is going to be able to extract key phrases, places,
+people, brands, or events.
+And it will try to understand how positive
+or negative the text is.
+It is going to analyze text using tokenization
+and also part of speech if you need to.
+And it will organize a collection of text file by topics.
+So some use cases you have around comprehend is going
+to analyze, for example, customer interactions such
+as emails to find what is going to lead to a positive
+or a negative experience,
+or create a group articles by topics
+that Comprehend will uncover itself.
+So Comprehend is a service we'll have a hands-on in a
+moment, but we have the option
+to have advanced settings such as custom classification.
+So here we define how we want Comprehend
+to categorize the documents for ourselves,
+so we define them.
+So for example, we have a bunch
+of customer emails and we provide several kind
+of categories based on the type of customer request,
+for example, support requests or billing requests,
+or complaints and so on.
+And it supports many different types of documents such
+as text, PDF, Word images.
+And so we're going to create train data,
+put it in Amazon S3,
+and then feed it into Amazon Comprehend, which is going
+to build and train internally a custom classifier.
+And then whenever a document arrives or an email
+or whatever you want, then the custom classifier is going
+to say, well, this looks like a complaint document
+and you've defined what complaint looked like.
+So we can use the custom classification
+with real time analysis,
+or a synchronous analysis,
+to have multiple documents in the batch way
+or just asynchronous for big ones.
+One of Comprehend's main out of the box capability is
+to do named entity recognition or NER.
+So it's to extract predefined general purpose entities like
+people, places, organization, dates,
+and other standard categories from text.
+So here is an example text,
+and as you can see a lot of it is underlined.
+So thanks to named entity recognition, we can recognize
+that Zhang Wei is a person, John is a person,
+Any Company Financial Services LLC is an organization,
+and for example, July the 31st is a date.
+So all these things are capabilities out
+of the box from Comprehend called named entity recognition.
+So we also have the option to make Comprehend,
+recognize custom entities.
+So here we want to analyze the text for specific terms
+and noun based phrases.
+For example, you have a document
+and you want to be able
+to consistently extract the policy numbers
+or phrases that imply a customer escalation
+or anything related to your business really.
+So again, you're going to train the model
+with a list of the entities you're looking for
+and documents that contain them.
+So you give examples to Comprehend
+and then a custom entity recognizer is going to be trained
+and then you can use it, for example, to look
+for policy numbers within your documents.
+This can be real time or asynchronous analysis.
+So that's it for Comprehend, just understand that is used
+for natural language processing and understanding,
+and you have the option to have custom classifications
+and custom entity recognition if you train the model
+on top of Comprehend.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

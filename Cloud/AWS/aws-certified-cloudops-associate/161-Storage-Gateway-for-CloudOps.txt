@@ -1,0 +1,99 @@
+# 161. Storage Gateway for CloudOps
+# Section: Advanced Storage Section
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27513936
+# Caption: en_US (manual)
+
+So here are some additional bits and pieces of information
+that could be helpful for the SysOps exam
+regarding the Storage Gateway.
+So the File Gateway is what is POSIX compliant,
+because it is a Linux file system.
+That means you get information around the
+metadata ownership, permissions,
+and timestamps stored in the object's metadata in S3.
+If you wanted to reboot your Storage Gateway VM
+for maintenance, you have two ways of doing it.
+If it's a File Gateway,
+you simply restart the Storage Gateway VM,
+but if it's a Volume or a Tape Gateway,
+you need to stop the Storage Gateway Service
+from the Console or from the VM local console
+or using the Storage Gateway API.
+Then you reboot the Storage Gateway VM,
+and then you start again the Storage Gateway Service,
+okay, using the API's or the Console.
+So this is something to know.
+Then around how to activate your Storage Gateway.
+So there are two ways to get an Activation Key
+for your Storage Gateway.
+The first way is to get you, it's using the Gateway VM CLI.
+And so when you start it,
+there is an option to just do 0: Get Activation Key,
+and you pass this Activation Key
+directly into the sort of Gateway Console.
+Or the older way of doing it is to make a web request
+directly into the Gateway VM on Port 80.
+And for this, you need to open the Port 80.
+So this is a diagram of how it looks like.
+So once the File Gateway has Port 80 open
+and you can access it from the Console,
+then you can activate it.
+Okay, two ways of doing it.
+And so Activation Failure is going to come up in the exam.
+So when would an Activation Failure happen?
+Well, for example, if using the second method,
+you need to make sure that the Gateway VM
+has the Port 80 opened,
+and then in case, and it's a very edge case,
+but you need to make sure that the Gateway VM
+also has the correct time
+and it's synchronizing its time automatically
+using a Network Time Protocol server.
+And this is to ensure that the File Gateway time
+is not too far off from the actual NTP server.
+So let's talk about the Volume Gateway Cache Mode.
+So in Cached mode,
+only the most recent data is stored on your
+Volume Gateway, Storage Gateway.
+And so you need to look at your cache efficiency.
+So the idea is that there is a metric in CloudWatch called
+the CacheHitPercent metric,
+and you want it to be super high
+because if you have a very high metric,
+for example 80%,
+that means your cache is efficient
+and that you're using it a lot and you get lower latency.
+If it's very low, then it could be a problem.
+And you also need to look at the CachePercentUsed okay,
+you don't want it to be too high.
+So you want your cache to be filled accordingly,
+but if it's too high,
+then you need to do something about it.
+So the second example,
+so there is a Cache Volume Gateway in your servers.
+And so when you have a Cache Hit,
+then your traffic stays within your Corporate Data Center.
+But if, it's a Cache Miss, sorry,
+then you need to get the data back from the S3 buckets,
+and that could be a bit longer.
+So obviously when cache,
+when the Volume Gateway is in cached mode,
+you need to make sure that you are efficient
+at using the cache.
+So in this example, in my diagram,
+the CacheHitPercent is going to be 30%.
+Okay?
+And so an option to increase the cache is going to be,
+the cache efficiency, is to create a larger cache disk.
+In this case, you need to clone the volume of,
+to a volume of larger size.
+So first take the cached volume and you clone it.
+And then you select the new disk as the cached volume
+on to the Volume Gateway.
+So it's a small operation,
+you need to clone the volume and then take the new volume
+and assign it as the cached volume for your Gateway.
+So that's it.
+A lot of details you need to know for this such exam
+but you have no choice around it.
+So remember those and I will see you in the next lecture.

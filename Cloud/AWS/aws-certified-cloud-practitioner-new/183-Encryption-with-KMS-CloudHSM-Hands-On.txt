@@ -1,0 +1,119 @@
+# 183. Encryption with KMS & CloudHSM Hands On
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/24692312
+# Caption: en_US (manual)
+
+Let's get to KMS.
+I will type KMS into the find services
+and we're getting into the key management service.
+As we can see, we have three types of keys.
+We have the customer managed keys, which you can create
+but they will cost you some money
+or you have the AWS manage keys
+and they're created for the services of AWS
+and the custom key store
+which is going to use a CloudHSM cluster
+that you need to create, own and manage.
+So using CloudHSM is expensive.
+So I'm not going to do this
+because this is not part of the feature,
+but as you can see we can get the option
+of using a custom key store.
+Now using the managed keys of AWS is interesting
+I wanna show you how it works.
+So for example, let's use the AWS/EBS key.
+So let's go into the EC2 console
+and we'll try to use that key.
+So in this example, I'm going to create a volume.
+So let me go on the volumes on the left hand side,
+I'm going to create a volume.
+It's going to be a one gigabyte volume
+and I'm going to encrypt this volume.
+Now I have an option either I choose a master key
+that is a default master key of AWS for the service
+which did response to the key right here, okay?
+Or I could use my own key
+but currently I don't have any keys.
+So the only option I have
+is to use this default AWS master key.
+So this is good, I wanna use this key
+and click on create volume.
+And now we have created an encrypted volume.
+So it is properly protected against for example,
+attacks if they're trying to decrypt it.
+Okay, so this is an example
+where this is a voluntary opt-in for the encryption.
+But if you remember, I said that for example,
+for CloudTrail or for Glacier S3
+encryption was enabled by default.
+So if I go into CloudTrail and try to use a demo-trail
+as we can see if we go into the encryption
+even though it says disabled here
+the encryption is actually enabled in the S3 buckets.
+So let's see, and have a look at the S3 bucket itself.
+So in S3, then we go to CloudTrail,
+go to EUS1, find this file.
+So I'll go down in my buckets.
+And if you look at this file right here,
+if you look at the property for the encryption
+it says encryption AES256,
+which means that this CloudTrail file,
+even though it said disabled here for the encryption,
+it actually was enabled in Amazon S3.
+I won't go over the details of why,
+but by default CloudTrail will encrypt all the files
+no matter what.
+Okay, so we've seen the services we need to opt-in
+for the encryption, then those that are enabled by default.
+And then finally, I want to show you
+about your customer managed keys.
+So it is possible for you to create a key.
+Now this will cost you some money.
+So if you don't want to have a key just watch me do.
+So it could be a symmetric key or an asymmetric key.
+I will keep it simple and use symmetric.
+And for the origin of the key
+we can generate it from KMS or we can have it external
+so we need to import our own key,
+or as I said we can have the key generated
+from a custom key store, which is CloudHSM.
+And in which case, all the encryption and the decryption
+will happen within CloudHSM.
+So for this, I'm going to create my own key, my own KMS key
+and then I can display an alias for that key.
+So I'll call it demokey, and then I'll click on next.
+Then you can define key administrators and key users
+which I will skip.
+So we'll just click on next and again, click on next, okay.
+And I will review this key policy.
+This looks good, I will finish it.
+And remember, this will cost you $1
+if you do this with this with me.
+So now I have my demokey and this key is enabled.
+Now I can do a key rotation.
+So if I go to key rotation, I can tick this box
+to make sure this key changes every year
+which is for enhanced security.
+And I can also leverage that key.
+So back into EBS, if I go and create a volume now
+and try to create another one gigabyte volume
+this time if I encrypt this volume,
+the master key can either be the default key managed by AWS
+for the service or we can use my demokey
+and use that for encrypting my EBS volume.
+So click and create volume.
+Here I am, I'm done.
+And now I have two volumes in here.
+They're both encrypted, but they're encrypted differently.
+So they're both encrypted
+but this time we are using our own key
+and in this one, we're using the key managed by AWS.
+Okay, so that's it for this lecture
+just a short introduction.
+Finally, if you just wanna clean up after yourself
+just make sure to delete these volumes.
+And if you have created a key,
+again it will cost you $1 a month
+but you can still do a disabling of the key
+and then schedule this key deletion.
+That's it for me, I will see you in the next lecture.

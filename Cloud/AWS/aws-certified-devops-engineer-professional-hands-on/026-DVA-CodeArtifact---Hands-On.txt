@@ -1,0 +1,163 @@
+# 26. [DVA] CodeArtifact - Hands On
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858632
+# Caption: en_US (manual)
+
+So let's practice using code artifacts.
+So to do so, I'm going to create a repository
+and I'll call this one Demo Repository.
+And optionally, we can select an upstream.
+So we want to pull packages from Python.
+So I will use this Python store.
+So I will click on next.
+And next we need to define a domain.
+So domain is where do we want to store the artifact data?
+All the repos, all the the packages data.
+So we choose our accounts
+and as you can see there's no domain in our accounts.
+And so therefore we need to create a domain.
+And this domain represents your company.
+So I want to name it, my-company.
+Additionally, for the domain
+where all the packages are going to be stored
+you need to specify a KMS key for encryption
+and I will just simply use the AWS managed key for this.
+I'll click on next.
+And as you can see what is being created now out of it
+is my demo repository,
+which will have one upstream repository called
+this pypi-store.
+And then out of it
+this upstream repository has one external connection
+to the public pypi store.
+Okay, so we're going to now create this repository.
+And if you go one level up
+now we see two repositories in here.
+We have the one that has an external connection
+which is the pypi store.
+It says here connected to a public repository.
+And then we have the demo repository that we have.
+Okay?
+As we can see, we have the pypi store
+as an upstream repo,
+and we could, for example
+edit the upstream repositories
+and add multiple ones if we wanted to.
+Okay. But how do we actually now
+leverage this demo repository.
+For this, we need to view the connection instruction,
+but let's go and open CloudShell in another tab
+because this is where we're going to be running
+our commands.
+So let's clear this.
+Okay, now let's go back into code artifact
+and view the connection instruction.
+We're going to use pip
+and we have two ways of doing it.
+The first one is that
+you can just use the CLI to configure pip for you.
+And if you try to run this command,
+I will show you right now
+I'll copy it and I will paste it in CloudShell.
+Because of a CloudShell bug or a code artifact bug,
+I'm not really sure which one it is
+but it says pip is not found.
+That's because actually pip3 is installed,
+but not pip.
+And this is just code artifact not
+being good at using pip3
+or CloudShell not installing pip,
+whichever it is.
+But this does not work for now.
+So what I'm going to do is the manual setup, which is good
+because we'll see as well how to manually set up this.
+So the first thing we have to do is to use code artifact
+to get an authorization token
+which is going to be authenticated to my domain,
+my domain owner, my region.
+And the idea is that we'll be able using this token
+to connect pip to it.
+So we'll export this
+and then if I do echo
+and then the actual code artifact token
+I can see this token has been generated.
+Now it's valid for 12 hours
+and after 12 hours it will have expired
+and I won't be able to connect
+to pip to my repository on code artifact
+therefore, we'll have to rerun this command.
+Now we can just run this pip conflict command
+which will not work until you actually modify the beginning
+of the command and use pip3.
+So we have pip3 config set,
+and now we are connecting
+to our code artifact repo automatically.
+So now if I do pip, install
+and response which is the name of a package,
+and press enter,
+and actually I do need to do pip3 install response.
+This is actually going to connect to code artifact
+and it's going to pull this response dependency from it.
+And of course, if this package depends on other things
+then it's going to download the rest as well
+which is why you see a lot of information in here.
+So now it's being installed and we're done very soon.
+And what we see now is that if you go to code artifacts,
+and then you refresh your packages, now you see
+as you can see all the packages that were pulled.
+So we have the response package
+but also any other package that response was depending upon.
+And this is inserted into my demo repository,
+but if I go into my other repo
+that has an external connection,
+as you can see, they're there as well.
+So because we keep one copy
+on the repo that has an external connection,
+and one copy on the repo that we connected to
+which is the demo repository.
+So if now if I click on response,
+I can see have version 0.5.0 which is the latest
+but I can for example, try to install another version.
+So I do == 0.4.0,
+and this is going to install
+a previous version of this package.
+And I go back to code artifact, I refresh this page
+and this can take a bit of time.
+Sometimes you have to wait 30 seconds,
+as you can see now
+I have version 0.5.0, and version 0.4.0
+now available within my demo repository
+which is pretty cool.
+So other things I want to show you is, for example
+around repository policy.
+So you can apply a repo policy at the repo level,
+and here we have the read-only access
+read and publish access or full access
+and we can choose the type of governance we want
+which will edit the policy,
+and then we can simply paste it in here to determine access.
+Other things I can do is go to my domain,
+click on it.
+As you can see, my company has two repos,
+but what I can do is I can apply a domain policy,
+and again here the example policies
+for contributor domain access
+or full domain access for an IAM principle
+or an organization.
+So this is very handy
+and we've basically seen how cloud artifact works.
+Now you can go ahead and create more repositories
+and then define which ones are the upstream of which,
+and then configure for example, Python pip
+to pull from them.
+And automatically, as you can see,
+dependencies will be stored in our repositories.
+So that's it.
+Now to just finish this hands on
+just take this repo and you delete it.
+You take the second repo and you delete it as well.
+And next, you take your domain
+and you can simply delete it and you're good to go.
+Okay, that's it for this lecture.
+I hope you liked it
+and I will see you in the next lecture.

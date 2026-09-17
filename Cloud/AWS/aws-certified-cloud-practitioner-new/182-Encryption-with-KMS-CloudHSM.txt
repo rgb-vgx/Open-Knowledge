@@ -1,0 +1,130 @@
+# 182. Encryption with KMS & CloudHSM
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056318
+# Caption: en_US (manual)
+
+Okay, so now let's talk about encryption.
+And we've seen encryption a little bit in this course,
+but now let's try to formalize what it means.
+So, there are two types of encryptions happening within AWS.
+You have encryption at rest and encryption in transit.
+So, data at rest means that the data
+is stored or archive on a physical device.
+So that could be a hard drive or like a hard disk.
+It could be an RDS instance because it's a database.
+It could be an S3 Glacier Deep Archive,
+or any kind of S3 buckets, actually.
+These kind of things, right?
+It's at rest because it's not moving.
+It's written somewhere.
+So, for example, we can have encrypted data
+at rest on an EFS network drive,
+or we can have encrypted data at rest on Amazon S3,
+but there's a second kind of encryption,
+which is in transit.
+In transit means that encryption while the data is being
+moved from one place to another.
+And so that means in motion.
+And so, for example, it says whenever you transfer data
+from your on-premises data centers to AWS
+or when you move from between an EC2 instance
+and a DymamoDB table, for example,
+because it's writing data or retrieving data,
+or, in this example, up there from EFS to Amazon S3.
+So, in transit means that data,
+the data is transferred on the network.
+And so there are two kinds of encryption.
+There's encryption at rest and encryption in transit.
+They use different techniques, okay?
+But ideally, because we want our data
+to be encrypted and protected all the time,
+we want to encrypt data in both states to protect it.
+For this, we leverage something called encryption keys.
+And I'm going to stop right there
+because you don't need to know how the encryption
+key works at the CCP level.
+But just so you know, that using these encryption keys,
+we can encrypt the data.
+That means that someone who does not have access
+to these encryption keys,
+even if they had access to our data,
+they could not decrypt it,
+and they could not read it, and therefore it's protected.
+So the encryption service at the center
+of AWS is called KMS, Key Management Service.
+So, anytime you hear encryption for a service,
+it's most likely going to be KMS.
+And so with KMS, we don't have access to the keys.
+AWS will manage the keys for us,
+and we just define who can access these keys.
+So there is an opt-in for encryption.
+So, for example, for your EBS volumes,
+you can choose to encrypt them with KMS.
+For S3 buckets, you also have the option
+to do server-side encryption of objects.
+For Redshift databases,
+you can do the encryption of your database.
+For RDS, the same thing.
+For EFS, you can encrypt your files.
+And there's also some services
+that have encryption automatically happen no matter what.
+For example, CloudTrail Logs, S3 Glacier,
+and Storage Gateway.
+The second service used
+to perform encryption is called CloudHSM.
+So, with KMS, it is AWS
+who manages the software for encryption.
+But with CloudHSM, AWS will just provision
+to us the encryption hardware,
+but we are managing the keys ourselves.
+So, a dedicated hardware for us is called an HSM module,
+so hardware security module,
+and it looks like this.
+And so with this aspect,
+AWS will give us the hardware in their infrastructure,
+but we manage our own encryption keys entirely, not AWS.
+And to make sure that no one can to have our keys
+by sneaking into the data center of AWS,
+the HSM device is tamper resistant.
+That means if someone tries to temper it, it will fail.
+And there is FIPS 140-2 Level 3 compliance,
+which is a security standard.
+So, CloudHSM, how does that work?
+Well, AWS will manage the hardware.
+So they will manage the device I just showed you,
+but we use the CloudHSM service
+with the CloudHSM clients to manage the keys.
+And obviously, the connection between our clients
+and CloudHSM is encrypted
+so that we can manage the keys securely.
+Okay, so what type of KMS keys do we have?
+We have the customer-managed key.
+This is a key that is created, managed,
+and used by the customer.
+So, you.
+And you can enable or disable a specific key.
+You can also define a key rotation policy.
+For example, you want a new key to be generated every year
+while, of course, the old key is preserved.
+You can also have the possibility to bring your own key.
+Then you have the AWS-managed keys.
+So, this time, it's created, managed,
+and used on the customer's behalf by AWS.
+So you're going to find it
+whenever an AWS service has some encryption managed by AWS,
+and the key name is aws/s3 or aws/ebs and so on.
+So whenever you see aws/, it's an AWS-managed key.
+Then we have AWS-owned keys.
+So it's a collection of keys that a service owns
+and manages to use in multiple accounts.
+So AWS can use these keys
+to protect some resources in your accounts,
+but you actually don't have any power to view the keys.
+And finally, you have the CloudHSM keys
+or custom key store,
+where the keys are generated
+from your own CloudHSM hardware device,
+and all the cryptographic operations
+will be performed within the CloudHSM cluster.
+So, that's it for encryption.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,182 @@
+# 39. SSM Inventory & State Manager
+# Section: Managing EC2 at Scale - Systems Manager (SSM)
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512816
+# Caption: en_US (manual)
+
+Now let's have a look
+at the inventory feature of SSM.
+So this is used to collect metadata
+from your managed instances,
+and it could be EC2 or On-premises.
+And the metadata can include many things
+such as the installed software,
+the OS drivers, some configurations.
+If you install updates and running services.
+It creates an inventory of what's happening
+on your managed instances.
+So you can view this data in the console of AWS,
+or you can store it for example,
+in S3 and you could query and analyze it using Athena
+for serverless.
+And QuickSight, if you want to build some dashboards
+around it.
+So you can specify the metadata collection interval,
+could be minutes, hours, and days.
+And then you could also gather all this data
+from multiple accounts into one account,
+and then you can query it from a central place.
+And finally, you can create a custom inventory
+if you wanted to, for example.
+The replication of each managed instance, if you wanted to.
+So let's have a look at how inventory works in the console.
+Okay, so on the left hand side, let's scroll down
+and let's find the inventory.
+So in here we are in inventory and as we can see
+the managed instances with inventory enabled
+are currently three disabled.
+So we need to enable inventory for my instances.
+So for this, I'm going to click here
+to enable inventory on all instances,
+and to set up this inventory request succeeded.
+I click on view details and I'm taken into state manager.
+And state manager is something that we'll see in a second.
+But it is a way for you to apply state
+to your different instances
+to make sure that they are all in the same state.
+And obviously the state we want our three instances to be in
+is in a state that allows us
+to gather the software inventory.
+So if you look at the targets,
+as we can see all the instance IDs are being applied
+to this state manager execution, okay?
+And if we look at the execution history right now,
+it is still pending, so I can click on it
+and as we can see,
+one managed instance currently has had the association
+of getting its inventory gathered,
+but the other two are still pending.
+Okay, so one is a success
+and I'm waiting for the other two to be done.
+And while this is happening,
+well, let's have a look at what state manager is.
+So state manager is used to automate the process
+of keeping your managed instances,
+in a state that you define.
+And a use case could be to bootstrap instances
+with software or to patch operating system
+and software updates on a schedule.
+And you have to create what's called an association.
+So you define the state that you want
+your instances to be in, for example, the one we just did
+is that we want the state of the instances
+that are to be monitored and gathered information
+by the inventory.
+And another example could be for example,
+that you must close the port 22, no matter what
+or that an antivirus must be installed
+on your EC2 instances.
+And then you specify a schedule
+at which this association and this configuration
+is going to be applied.
+And to what leverage a state manager,
+you use SSM documents and you create an association.
+For example, you can create a document
+to CloudWatch agent.
+So state manager is to ensure that your fleet of instances
+are all in a state that you desire.
+Now back in here, as we can see,
+my three managed instances are in the success state.
+So if I go back into systems manager
+on the left hand side have a look at my inventory,
+as we can see now,
+three instances have the inventory enabled for them,
+which is great.
+And now that we have a look at this
+where we can have a look, for example,
+at the instance coverage per type, okay?
+And more importantly, we can look at the top OS versions.
+So Amazon Linux 2 is used by three instances right now,
+we don't have any custom inventory types
+so this is not shown here.
+We can look at the top five applications
+because all my instances use the same AMI,
+it's not going to be very interesting,
+but we can see some applications installed on my instances.
+But imagine a fleet of so many different AMIs,
+thousands of EC2 instances,
+it's going to be very helpful for you to get an inventory
+of all of that, obviously.
+But more importantly, if I go up and look at the details,
+we can have a look at the detailed data
+so we can create inventory Resource Data Syncs, okay?
+For this, I will just call it DemoSync,
+and then we need to type a bucket name
+so to send the data into a single bucket.
+So I'll call it demo-ssm-inventory-stephane,
+and in this region, and then creates.
+So we need to first create this bucket.
+So let's go into Amazon S3, set up S3.
+Then I will go to my bucket, I will create a bucket,
+here's my bucket name, and then create this bucket.
+We're good to go, so now back here, I can create this
+and there's an access to that
+so we need to make sure that there is enough permissions
+for SSM to sync my data into my S3 bucket.
+And for this, we need to probably add a bucket policy.
+So let's find the the bucket policy right here,
+so this is an example of the policy itself.
+So we are going to copy this, okay?
+And now into my managed console,
+I'm going to have a look at my bucket I just created
+so demo-ssm-inventory-stephane,
+and for permissions under bucket policy,
+I will edit it and it will paste this policy.
+Now, I do you need to change a few things
+so I need to copy the name of my bucket right here
+and paste it instead of DOC-EXAMPLE-BUCKET in here,
+as well as in here.
+And as we allow bucket prefix, we don't have any
+so we'll remove this and then account ID equals
+and then I need to specify the account ID of my accounts,
+which is right here so I will paste my account ID,
+and we should be good to go.
+So I will delete this, delete this,
+and delete the last column, and now we're good to go
+in terms of permissions on my bucket policy.
+So let's save the changes
+and let's see if the error now fixed.
+So create and maybe let's make the permission
+a little bit more permissive.
+So keep on trying until this works, as they say.
+So I will just say that you're allowed to write anywhere
+and that probably helps me a little bit.
+So, okay let's save these changes.
+So now the permission is to allow the SSM service
+to put an object anywhere in my bucket,
+like in here it creates, and we're good to go.
+So the resource data sync was successfully created.
+So now we can look at this resource data sync itself,
+and this will be using in the backend Athena
+to query my data into my Amazon S3 bucket, okay?
+So we're waiting for Athena to run this query for me,
+and then I'll be able to see all the installed software
+on my EC2 instances.
+Okay, so this took about five minutes to populate.
+Okay, but now in the inventory type,
+I can have a look at AWS application,
+and this is going to show me a list of all the applications
+installed on my EC2 instances.
+For example, we can have a look at the version,
+the architecture, the summary, the package ID,
+the publisher, the release, that URL,
+as well as the name and so on.
+So you can do a lot of different things.
+And we see we have over eight, nine pages of the results.
+So it can be quite tricky.
+And if you wanted to run advanced queries,
+you could click here and this will take you into the Athena
+and in Athena you can run queries
+as you want on your inventory, okay?
+So that's it, we've seen state manager at a high level
+and we've seen inventory
+and I will see you in the next lecture.

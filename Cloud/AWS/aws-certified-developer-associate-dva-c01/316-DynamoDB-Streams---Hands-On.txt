@@ -1,0 +1,179 @@
+# 316. DynamoDB Streams - Hands On
+# Section: AWS Serverless: DynamoDB
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/28646620
+# Caption: en_US (manual)
+
+So let's get our users post table and
+on it we're going to enable, DynamoDB stream.
+So to do so let's go to exports and streams,
+and here we're going to have DynamoDB stream details,
+and we're going to enable it.
+Now we have the option to choose
+which type of view we want to have
+within our DynamoDB stream.
+And it can be key attributes, new image,
+all image or new and old images.
+So I'm going to keep the last option
+to get as much information as possible,
+and I will enable this stream.
+Okay, great.
+So now my stream is enabled and within it,
+as you can see, if I scroll down,
+there is the trigger.
+And the trigger, is what is this stream
+going to trigger?
+So we can create a trigger.
+And here we have a Lambda function that can be invoked
+every time your DynamoDB stream is updated.
+So to do so, well, let's go ahead
+and create a new function.
+Okay.
+And we can use a blueprint.
+And in here I can type DynamoDB,
+and we have DynamoDB process stream Python.
+Which is going to log all the updates
+made to a table.
+So this is good.
+Let's configure it
+and I'll call it Lambda demo, DynamoDB stream.
+Next, we're going to create a new role
+with basic Lambda permissions,
+and we'll make sure to edit this role,
+to add the permissions, to read from DynamoDB.
+Now for the DynamoDB triggers,
+we need to create the trigger.
+So is going to be the users post,
+which table was it?
+The users post table?
+Yes, indeed.
+And the batch size is 100.
+Okay.
+So this is how many records will read at a time.
+The batch window, if you wanted to
+gather records before invoking the functions,
+so to be more efficient.
+And the starting position.
+So do you want to read from the start or
+from the end of the stream, just in case
+the stream had been already created.
+So we're good.
+We enable the trigger.
+And as you can see, what it does is
+that it just prints the records
+that we get out of the stream,
+into the logs we'll be able to
+view this in CloudWatch logs.
+So now we have created the function,
+but we get an error, which is that
+the record or the function can not access
+our stream because we have missing IAM information.
+So we're going to fix this.
+So we click on our function
+and then under configuration,
+we're going to go under permissions,
+and this is the execution role.
+Now we have to click on this execution role
+and we're going to add the necessary permissions
+to read from DynamoDB.
+So we'll attach a policy
+and I will look for DynamoDB,
+and we'll have DynamoDB read only access
+because what we're doing is that we're
+actually reading from DynamoDB.
+So this is good.
+And this one
+is also good to read from DynamoDB.
+So we'll attach these two just in case,
+but this has meant for Lambda.
+So probably a little bit better.
+So let's attach this policy
+and to be honest, one of these is going to work.
+I'm trying to make this as simple as possible,
+which is why I'm not spending a lot of time on this.
+So let's refresh now this page,
+and it seems like we're good to go.
+So we have more actions on DynamoDB.
+So this is good.
+Okay.
+And now if we refresh this,
+we can choose this function
+and set the batch size in 100
+and we create this trigger.
+So now that means that my DynamoDB stream
+is going to trigger my Lambda function.
+And if I go back into my Lambda function
+and refresh this page,
+we can see the DynamoDB
+is indeed triggering my Lambda function.
+So this is an enabled type of integration
+with these settings.
+Okay, good.
+So next, what I'm going to do is just test it out.
+So we're going to go to our table
+and what I'm going to do is click on view items.
+And we're going to do a few things.
+For example, let's take this item,
+the second post of John, we're going to action,
+edit it, and then I'm going to modify.
+So I'm going to say a second post 'yay' edit.
+And click on save change.
+So this is good.
+And then we'll take Alice
+and we're going to do action
+and then duplicate.
+So it's going to create a new thing
+and I'm going to just add a bit more data
+as a new Alice blog
+and then create item.
+And then finally, we actually don't like this blog,
+so I'm going to delete it.
+So I'm going to do action and then delete items.
+And yes.
+Okay.
+So we've done three kinds of operations.
+We've had an update, a create and a delete.
+And so we went to do my Lambda function.
+My Lambda function executed this code,
+which was printing, so logging these events.
+And so what I need you to do is just go into
+CloudWatch logs and have a look at whether
+or not we saw these informational logs
+So let's click on view the logs in CloudWatch logs.
+And here we have some information around this log stream.
+And as you can see in this log stream
+you get a lot of information.
+Okay, so we get one line.
+So this was a modify
+and this was the DynamoDB records.
+So it gives you the key, the user ID,
+and as well as the new image.
+Okay.
+And the content,
+so we can see yes, a second post 'yay' edit.
+And we can also see the old image
+of what it was before.
+So that was like for one request,
+then we have an insert.
+And so again, we can see, the DynamoDB record in it.
+And then the new image and the, there is
+no old image because obviously we wasn't inserts.
+So there was nothing before.
+And then we get a remove.
+And again, this remove operation was logged.
+We have the old image, and obviously there
+is no new image because the thing was removed.
+Okay.
+So that's fairly easy.
+We just enable the stream
+and you went to Lambda function
+and the Lambda function was logging it,
+but this is the basis to have these
+kinds of integrations with DynamoDB streams.
+Okay.
+Lastly, please make sure to disable the trigger.
+So on the DynamoDB, you take this trigger
+and you disabled it or delete it,
+whatever you want, and you'll be good to go.
+So that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

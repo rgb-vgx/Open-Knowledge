@@ -1,0 +1,131 @@
+# 33. Security Groups Hands On
+# Section: EC2 Fundamentals
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26100860
+# Caption: en_US (manual)
+
+So we've launched our EC2 instance
+and now let's have a look at security groups.
+So we have a short idea of security groups
+by just clicking on security in here.
+And we get some overview
+of the security groups attached to our instance
+as well as the inbound rules and the outbound rules.
+But what I will do is
+that I will just access the more complete page
+of security groups from the left hand side menu.
+So under networking and security,
+you click on security group.
+And we can see so far
+that we have two security groups
+in our console so far.
+So the default security group that is created by default
+as well as the launch wizard one
+which is the first security group
+that was created when we created our EC2 instance.
+And so a security group has an ID.
+So an identifier, just like an EC2 instance has an ID.
+And then we can check the inbound rules.
+So the inbound rules are the rules that allows connectivity
+from the outside into the EC2 instance.
+And as we can see, we have two inbound rules in here.
+And the first one is of type SSH,
+which allows port 22 in our instance.
+And let me just click on edit inbound rules to see better.
+So set first one as SSH on port 22 from anywhere.
+So 000/0 is anywhere.
+And the second one is HTTP
+from port 80, again, anywhere.
+So this rule right here is what allowed us
+to access our web servers.
+So if you go back to the EC2 console,
+go to our instance
+and
+we were doing this IPv4 address.
+Okay, so we were opening it as an HTTP website.
+This worked thanks to this rule, port 80.
+Let's verify this.
+So if we delete this rule on port 80 and save the rules,
+as we can see now we only have port 22.
+So if I go back to this and refresh my page,
+now as we can see,
+there is an infinite loading screen right here
+on the top of my screen,
+which shows that well,
+indeed I don't have access to my EC2 instance.
+So here is a very important tip for you.
+Any time you see a timeout,
+okay, this is a timeout
+because it keeps on trying to connect
+but it doesn't succeed
+and then it will eventually fail, called a timeout.
+So if you see a timeout when trying to establish any kind
+of connection into your EC2 instances,
+for example, if you try to SSH into it,
+but there's a timeout,
+or if you try to do an HTTP query,
+but there's a timeout,
+or if you try to do anything with it
+and there is a timeout,
+this is 100% the cause
+of an EC2 security group.
+Okay, so in that case,
+go to your security group rules
+and make sure that they are correct,
+because if they're not correct,
+then you will get a timeout.
+So to fix this, we can add back a rule.
+We will do
+HTTP,
+which allows to get port 80
+in here automatically.
+And then from anywhere IPv6, IPv4, excuse me, right here,
+which allows this block right here.
+We save the rule.
+Now the rule is done.
+If I go back to my page and refresh
+as you can see, now it is fully working.
+So this inbound rule really did the trick.
+But we could add any sort of inbound rule.
+So we could define the port or the port range
+that we want to.
+So we could say, for example, any port we want,
+for example 443, which is HTTPS
+or choose directly from a dropdown here
+as a little shortcut the type of protocol you want.
+For example, HTTPS is 443 automatically.
+And then you can define where you want to allow from.
+So you have different CIDR blocks
+and we don't need them right now,
+or security groups or prefix list,
+but we'll get to see them later on,
+okay, in this course.
+For now, just know that you could have
+either a custom CIDR anywhere which adds this blog
+or if you want to, can select my IP
+to only allow access to your IP.
+But just be aware that if your IP changes,
+then you will get a timeout
+and will not be able to access your EC2 instance.
+Finally, one last bit of information.
+So we can have a look at outbound rules.
+So we allow all traffic on IPv4 to anywhere.
+So this allows our EC2 instance
+to get full internet connectivity anywhere.
+And something you should know,
+so we have two security groups right here
+default and launch wizard,
+and an EC2 instance
+can have many security groups attached to it.
+So it can attach one but two or three
+if you want maybe five security groups
+and the rules will just add on to each other.
+And also this security group we have created from default
+so for example, this launch wizard one can be attached
+to other EC2 instances.
+Okay, so you can attach
+as many security groups as you want
+as well as as many EC2 instances you want
+to one security group.
+That's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

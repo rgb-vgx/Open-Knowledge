@@ -1,0 +1,165 @@
+# 29. More GenAI Concepts
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45375103
+# Caption: en_US (manual)
+
+So now that we've seen Gen AI
+and how to use it,
+let's look at bigger concepts around Gen AI.
+More theoretical, but very important to understand,
+and the exam can ask you a few things about it.
+So first is the process of tokenization.
+It's the idea of converting raw text
+into a sequence of tokens.
+What does that mean? Well, here is a sentence.
+"Wow, learning AWS with Stephane Maarek is immensely fun,"
+and here, we have different ways
+of converting these words into tokens.
+So we can do word-based tokenization,
+and the text is going to be split into individual words,
+or we can have subword tokenization,
+and some words sometimes can be split, too,
+which is very helpful for long words,
+and for the model to have less number of tokens,
+because some tokens, for example,
+you say unacceptable is acceptable
+with U-N in the beginning, and so therefore,
+you just need to understand that un is a negative
+and acceptable is the token acceptable.
+Hopefully, that makes sense, so you can experiment
+at OpenAI website called Tokenizer, and I put the sentence,
+"Wow, learning with Stephane is immensely fun!"
+As you can see, the "wow" was a token.
+The comma itself is a token as well.
+"Learning AWS with Steph," and so Stephane was split in two,
+because probably Steph and Stephane are very close.
+Steph is just my diminutive,
+and ane is probably just the French way of having my name,
+so it was split.
+Maarek, right now, aare is being split as well,
+probably an error, but the model will figure this out
+as it goes, and then "is immensely fun,"
+all of these are tokens, and as well,
+the exclamation point is also a token.
+So tokenization is converting these words into tokens,
+because now each token has an ID,
+and it's much more easier to deal with ID
+than to deal with the raw text itself.
+So the context, we know is super important.
+This is the number of tokens
+that an LLM can consider when generating text,
+so different models have different context windows,
+and so the larger the context window,
+the more information and coherence.
+And so it's kind of a race now
+to have the greatest context window,
+because the more context window you have,
+the more information you can feed to your gen AI model.
+So if you look at GPT 4 Turbo, it's 128,000 tokens.
+Claude 2.1, 200,000 tokens,
+but for example, Google Gemini 1.5 Pro has 1 million tokens,
+and up to 10 million token
+in the context window in research.
+And that means that for 1 million token,
+you can have a one-hour video fed to your model
+or 11 hours of audio or over 30,000 lines of code
+or 700,000 words.
+So this is very important, because this really tells us
+that it's a very important factor.
+Now, when you have a large context window,
+obviously, you're going to get more benefit out of it,
+but it will require more memory and more processing power,
+of course, and therefore, it may cost a little more.
+So when you consider a model, the context window
+is going to be probably the first factor to consider,
+making sure that it fits your use case.
+Next, we have the concept of embeddings.
+So we've seen that a little bit with RAG,
+but now we're gonna go deep into how that works.
+So the idea is that you wanna create a vector,
+and a vector is an array of numerical values,
+so many numerical values, out of text, images, or audio.
+So for example, let's put some text,
+and we have, "the cat sat on the mat."
+So first, we're going to do tokenization,
+so each word in this example is going to be extracted,
+"the cat sat on the mat,"
+and then because we have tokenization,
+every word is going to be converted into a token ID.
+It's just a dictionary that says that the word "the"
+is 865 and so on.
+Next we're going to have an embeddings model,
+so this is where we're going to create a vector
+for each token, so as you can see here, the word "cats,"
+the token "cats," if I may say, is going to be converted
+to a vector of many values here, 0.025, and so on,
+and the word "the" is going to have its own vector,
+and the vectors can be very big.
+It could be 100 values if we wanted to,
+and all these vectors are going to be stored
+in a vector database.
+So why do we convert these tokens into vectors?
+Well, when we have vectors with a very high dimensionality,
+we can actually encode many features for one input token,
+so we can have the meaning of the word,
+we can have the synthetic role,
+the sentiment, if it's a positive or negative word,
+and so much more, and so the model is able
+to capture a lot of information about the word
+just by storing it into a high-dimensionality vector,
+and this is what's used for vector databases and RAG.
+Finally, because embeddings model can be easily searchable,
+thanks to nearest neighbor capability in vector databases,
+it is a very good way to use an embeddings model
+to power a search application,
+and that is something that can come up in the exam.
+So I will do my best to show you this,
+so words that have a semantic relationship,
+that means they're similar, will have similar embeddings.
+So if we take the token dog, puppy, cat, and houses,
+and we make a vector, say, with 100 dimension in them,
+so we have 100 numerical values
+for each and every word or token.
+And so of course, for us, it's very difficult as humans
+to visualize 100 dimensions.
+We're very good at two dimensions, it's a sheet of paper.
+Three dimensions, we're very good at
+because we can visualize things with our eyes
+in three dimensions, but 100 dimensions is very difficult,
+and so to visualize these things,
+sometimes we do what's called dimensionality reduction,
+so we reduce these 100 dimensions,
+for example, to two or three dimensions.
+So if we did it, for example,
+we would see something like this.
+And in this two-dimension diagram,
+we see that it looks like a puppy and a dog are related,
+yes, because a puppy is a small dog,
+and it looks like the cat is not too far away from a dog.
+Well, that's because it's an animal,
+but house is very different,
+so it's going to be far away on that diagram.
+So of course, with two dimensions,
+we don't capture any kind of subtleness,
+but when we have 100 dimensions,
+we can really say which words relate to each other and why.
+Another way to visualize a high-dimension vector
+is to use colors, so for example, we use color embedding
+and say each combination of numbers is gonna make a color,
+and visually, we can see, for example,
+in this very simplified one, that the puppy and the dog,
+they're very similar because they're very similar colors,
+but house is very different.
+And so intuitively, we can say that, yes,
+there is a semantic relationship between tokens
+with similar embeddings, and that's why we use them,
+and that's why, once we have them in a vector database,
+we can then do a similarity search on the vector database,
+so we give a dog and automatically,
+we'll be able to pull out all the tokens
+that have a similar embedding as the dog, and that's it.
+So that's it for more concepts on Gen AI,
+but they appear in the exam,
+so hopefully now you understand them.
+You'll be all good, then.
+I hope you liked it, and I will see you in the next lecture.

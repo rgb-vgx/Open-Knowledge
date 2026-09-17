@@ -1,0 +1,272 @@
+# 88. RDS
+# Section: Databases
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376562
+# Caption: en_US (manual)
+
+Okay, so now let's talk about RDS.
+So RDS is going to be small at the exam.
+We just need to know how many engines there are.
+So by now, hopefully, you should know them.
+So there's PostgreSQL, MySQL, MariaDB,
+IBM DB2, Oracle, and Microsoft SQL Server.
+It's a managed database.
+You need to provision the servers though.
+You choose like the instance type,
+and then you get a bunch of things out of it:
+automated backups, patching, monitoring, and so on.
+You usually launch your RDS database in a VPC,
+in a private subnet,
+and then you control access to your database
+using security groups.
+And remember, when we have a Lambda function
+who wants to access our RDS database,
+we have to launch it into a private VPC subnet
+so that it has communication with our RDS database.
+The storage is on EBS volumes,
+and you can increase the volume size automatically
+thanks to auto-scaling.
+For backups,
+you get automated with point-in-time recoveries,
+and the backups will expire,
+and the snapshots are very similar,
+but they're manual,
+in which case you can take a backup,
+and have it in point-of-time
+for how many years you want.
+And it's possible for you to take these snapshots,
+and copy them across regions,
+which is very helpful
+when you want to have disaster recovery.
+RDS also publishes a bunch of events
+about what's happening to your database.
+So you can get an SNS topic
+that will contain all the events for your RDS.
+It's called RDS event notifications.
+And this could be for operations, for outages,
+for when the backups are beginning, et cetera, et cetera.
+So here's another concept that you should know by now.
+There's Multi-AZ,
+in which you have a standby instance for failover
+in case there's an outage.
+So we have a Master RDS Database, in one availability zone,
+and it's going to be synchronously replicated
+to another standby instance,
+in another AZ, so, AZ B.
+Your application only accesses your RDS database
+through one DNS name,
+and that DNS name will change automatically
+in case of a failover.
+And so that means that your standby database is
+never accessed by your application,
+only your master database is,
+and there will be reads and writes happening directly,
+solely onto the master instance.
+So here, multi AZ is really for recovery in case of outage.
+It's a backup database.
+It's a standby database,
+but our application never uses it.
+And if we wanted to scale the reads,
+then we would use read replicas.
+So these read replicas are going
+to be asynchronous replication,
+so we have eventual consistency,
+and they can be created cross-region.
+So it's possible to use replica
+to reduce the latencies in different regions in AWS.
+So your RDS instance will have an asynchronous replication
+into another RDS read replica,
+and then, again, same region or different region.
+And then your application can do reads and writes
+into your main RDS database,
+but can also do reads-only onto your read replica.
+This is why it's called a read replica.
+So once you have read replicas,
+you may want to actually distribute
+the reads of your application.
+And to remove some application logic,
+we're going to use Route 53.
+So using Route 53,
+what's going to happen is
+that you can create a weighted record set, okay?
+And, in this example,
+I set the weight of every read replica endpoint to 25%,
+but we can set it to whatever we want.
+But if all your read replicas are having
+the same specifications,
+then it's a good idea to set the same weight.
+And we can also enable health checks within Amazon Route 53,
+so that if an RDS replica is having issues,
+we don't include it in our record.
+And, therefore,
+whenever an application is going to make a request
+to Route 53,
+and imagine we have a thousand applications doing this,
+then each of them is going to be spread 25% on each replica.
+In terms of security,
+KMS encryption is available
+for your underlying EBS volume and snapshots.
+You get transparent data inscription, TDE,
+for Oracle and SQL Server.
+You get SSL encryption to RDS
+for your database in-flight calls,
+and it's possible to enforce it.
+IAM authentication works for MySQL, PostgreSQL, and MariaDB.
+And authorization,
+even though you're authenticated with IAM,
+still happens within RDS.
+So you still need to define
+what your users can and cannot do
+inside of your RDS database.
+IAM cannot help you with that.
+You can create an encrypted RDS snapshot
+from an unencrypted RDS snapshot.
+So that means that you can encrypt an unencrypted database
+through the process of snapshotting.
+And CloudTrail, as a general reminder,
+cannot be used to track queries made within RDS.
+So if we do a deeper dive into RDS IAM authentication,
+it's available for MariaDB, MySQL, and PostgreSQL.
+And, in case you use IAM authentication,
+you do not need a passport.
+You just get an authentication token
+that you obtain by using the RDS API calls.
+You should know that this token has a lifetime
+of 15 minutes,
+but it's only used to connect through database,
+then you're good to go.
+If you want to reconnect,
+you would need to get a new authentication token.
+So does that work?
+Well, for example, let's say we have an EC2 instance
+with the proper IAM role,
+that allows us to get an off token from the RDS service
+by doing an API call to AWS.
+Then, using this off token on an SSL encrypted connection,
+we can connect to the database,
+and, of course, security groups must be properly configured.
+So the benefits of this,
+that, A, you only get SSL encrypted traffic,
+then you have IAM to centrally manage the users
+instead of managing them from within the database.
+And you can leverage IAM roles,
+and EC2 instance profiles,
+for a very easy integration.
+So next we have the RDS specificity for Oracle.
+And I wish you didn't have to learn them
+because it's quite boring,
+but you have to,
+and they can come up at the exam
+for one or two questions.
+So let's talk about backups.
+So you have two ways of backing up an Oracle database.
+You have RDS Backups,
+and then it's something else called Oracle RMAN.
+So RDS Backups are used to back up, and restore,
+to Amazon RDS for Oracle,
+whereas Oracle RMAN, Recovery Manager,
+are to backup up and restore to non-RDS.
+Okay, RDS is not supported.
+So a graph will help.
+RDS backups obviously must be backups
+of your RDS Database Instances,
+and then they can only be restored
+into an RDS Database Instance.
+Whereas, again, RMAN works for RDS Database Instance,
+in terms of, yes, you can back it up,
+but then the restore only happens
+for an external Oracle database.
+It does not happen for an RDS database instance.
+So the flow is database instance,
+RDS Database Instance of Oracle,
+to RDS Backup, to RDS Database Instance of Oracle,
+or RDS Database Instance of Oracle, to RMAN Backup,
+to Amazon S3, to an external Oracle database
+that is living outside of RDS.
+Now, there's nothing called Real Applications Cluster.
+So RAC.
+RDS for Oracle does not support RAC.
+It could be an exam trick.
+RAC can only be working on Oracle on EC2 instances
+because you have full control of Oracle
+when you set it up on an EC2 instance.
+Oracle does support TDE,
+to encrypt data before it's written into storage.
+And DMS works on Oracle RDS.
+So you can do an Oracle database on-premises
+that you wanna replicate into the Cloud.
+For this, you just use DMS
+to replicate and migrate the data,
+from the Oracle Database on-premises to the Cloud.
+And there are some other exam tips you need to know for RDS
+for MySQL.
+So you can use the native MySQL dump tool
+to migrate the MySQL RDS database
+into a non-RDS MySQL database.
+For this,
+this external non-RDS database can be either on-premises,
+in your data center,
+or you can run it on your own,
+for example, on an Amazon EC2 Instance.
+So you have the RDS MySQL Database Instance in your Cloud,
+and then the target may be, for example, on-premises.
+And, simply, you will use, as a DB admin,
+the MySQL dump tool to export it,
+import the data back into where you want it to go.
+Then you start a replication mechanism
+between the two databases to synchronize the data.
+And then, once the replication is done,
+you stop it, and you stop the source database.
+Another feature for RDS is to use the RDS Proxy,
+for example, with Lambda functions.
+So when you use Lambda functions with the RDS,
+they open, and maintain, a database connection.
+But sometimes having too many Lambdas can result
+in a "TooManyConnections" exception.
+So thanks to the RDS Proxy,
+you no longer need code
+that will handle cleaning up idle connections
+and managing connection pool.
+You just connect to the proxy and you're good to go.
+So this proxy supports IAM authentication,
+or database authentication,
+as well as auto-scaling.
+So the idea is that you deploy a proxy,
+and this proxy has to be deployed in a private subnet,
+because it cannot be publicly accessible.
+And this proxy is linked, for example,
+to your Aurora database cluster.
+Now your Lambda functions are also going
+to be deployed within your VPC
+to get connectivity to your RDS Proxy.
+And now as a result,
+all the connections to your number of database are pooled
+through the RDS Proxy.
+And that's it,
+that solves the problem of too many connections exception.
+Finally, one solution architecture we've already seen,
+which is how to do a cross-region failure with RDS,
+would be to check the database health,
+either using a instance, for example,
+that has a slash health DB route to check,
+or a CloudWatch Alarm.
+These things would be checked by Route 53 Health Checks,
+that would be linked to a CloudWatch Alarm,
+and that would trigger a CloudWatch Event.
+And this CloudWatch Event would trigger a Lambda function,
+whose role would be to update a Route 53 DNS,
+for the database,
+and also promote a read replica
+that is maybe in another region.
+For example, us-west-2.
+We have a cross-region replication in this instance,
+and then we have effectively created
+a cross-region failover architecture.
+So this is something very common
+that you should know for RDS,
+but we already seen this in details.
+And that's it.
+RDS really is a high level launch
+you need to know for the exam,
+but you should know enough by now.
+So that's it,
+and I will see you in the next lecture.

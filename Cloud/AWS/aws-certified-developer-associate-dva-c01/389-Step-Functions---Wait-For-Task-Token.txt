@@ -1,0 +1,64 @@
+# 389. Step Functions - Wait For Task Token
+# Section: Other Serverless: Step Functions & AppSync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527756
+# Caption: en_US (manual)
+
+So let's talk
+about a step function feature called wait for task token.
+So the idea is that you have your step functions
+and you have your execution workflow
+but then you want to wait for a task token to be returned
+because you're waiting for something external.
+So you may be waiting for another AWS service
+to do its thing or human approval
+or a third-party integration or to call legacy systems.
+And so to do so, you're going to,
+in your task in step functions,
+append the .waitForTaskToken to the resource field.
+And this is going to tell step functions to wait
+for a specific task token to be returned
+before the execution can move on.
+So for example,
+here we have a resource named sqs:sendMessage
+and then we waitForTaskToken.
+I will show you in the very next slide how that works.
+So the task is going to be paused
+until it's going to receive a task token back
+with either a SendTaskSuccess if everything works
+or a SendTaskFailure API call.
+So let's take an example of a workflow.
+We start, we're going to check the client credits
+and this actually relies on an external service.
+So what do we do?
+We are going to call SQS with a task token.
+So we'll use the waitForTaskToken in the resource
+and then we pass in the input,
+of course, to the SQS queue in the message.
+But also, we're going to pass the task token
+so that the receiving application knows
+how to call back then step functions.
+So then your SQS queues may be pulled
+by whatever application you may have.
+It could be Lambda functions, it could be ECS,
+it could be EC2, it could be a third-party server.
+It could be whatever you want, right?
+But you're going to process the message.
+And then, of course,
+you're going to get the message input body
+but also, you're going to get the task token.
+And then if it's successful or a failure,
+you're going to use a SendTaskSuccess API call
+in which you're going to pass the outputs of the processing
+but also the task token that was passed initially
+to your SQS queue.
+And then once the step function workflow receives
+that API call with the correct task token
+and the correct output, then you can go on and, for example,
+do the rest of your workflow.
+But the benefit of this is that we were able to rely
+upon an external system to perform some processing
+before we got back into our step functions workflow.
+And this is how you can integrate
+with any kind of external mechanism.
+So that's it for this lecture
+I hope you liked it and I will see you in the next lecture.

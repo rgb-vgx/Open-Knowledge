@@ -1,0 +1,33 @@
+# 288. AWS CodeBuild
+# Section: Developer Tools
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40308558
+# Caption: en_US (auto)
+
+Instructor: Now, let's talk about
+another service called CodeBuild.
+So the name is extremely explicit.
+It allows you to build your code in the cloud.
+So what does that mean?
+That means that the source code is going to be compiled,
+the tests are going to be run,
+and then the output of which is going to produce packages.
+And these packages are going to be ready to be deployed,
+for example, by CodeDeploy onto servers
+so that your application can run.
+So as a diagram, what does it look like?
+Well, say your code is in CodeCommit.
+CodeBuild is going to retrieve this code from CodeCommit,
+run some scripts that you have to define, build your code
+and then you will have ready to deploy artifacts.
+So why would you use CodeBuild?
+Well, it's fully managed and serverless.
+It's continuously scalable and highly available, and secure.
+And with pay as you go pricing, that means that you only pay
+for the time your code is being built.
+There are no servers to manage
+and that means that you can really worry about just coding,
+and making sure that a service within AWS will take its time
+to build your code every single time
+you push a code update into your CodeCommit repository.
+So that's it, very simple, I hope you liked it
+and I will see you in the next lecture.

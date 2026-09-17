@@ -1,0 +1,124 @@
+# 156. CloudFront Signed URL - Key Groups + Hands On
+# Section: CloudFront
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26101650
+# Caption: en_US (manual)
+
+So now let's discuss
+how we can generate keys to sign the URLs with CloudFront.
+And there are two types of signers
+and the new recommended way is to use a trusted key group.
+And the idea is that I'll show you the hands-on in a second.
+We can leverage the APIs to create and rotate these keys.
+And we can leverage IAM for API security
+around the management of these key group and the API key,
+the public keys in this key group.
+The other method that was originally supported
+in the first one that existed
+was to use an account that contains a CloudFront key pair.
+But for this, to manage this key pair,
+we need to use the root account credentials
+as well as the AWS console, which is not recommended
+because you shouldn't use the root account for this.
+And also you cannot automate anything
+because there are no APIs
+to manage this platform key pair.
+So the recommended way now is users trusted key group.
+So just so you know.
+So we can create one or more trusted key group
+in our CloudFront distribution.
+Then we generate our own public and private key.
+The private key will be used by your applications.
+For example, your EC2 instances to sign your URLs.
+Whereas the public key that is going to be
+uploaded by CloudFront
+will be used to verify the signature of these URLs.
+So let me just show you in the interface,
+the console where these options are.
+So let's have a look at key managements for CloudFront.
+And on the left hand side,
+I have public keys and key groups.
+So let me click on public keys.
+So the idea is that we want to generate an RSA key,
+so a private key and a public key,
+and the private key will go on my EC2 instances
+and the public key will go on CloudFront.
+And this will allow my EC2 instances
+to use the platform API, to create signed URLs.
+So first we need to generate this key.
+So I will type in generates RSA key online,
+2,048 bit.
+Let's take the first website for example.
+I'm going to choose a key size of 2,048 bits.
+This is very important.
+And generate these new keys.
+And I need to wait about three seconds for me at least.
+And so we have a private key part and a public key part.
+So the private key is what would be
+used by your EC2 instances to generate this URL.
+This is something you want to keep secret and keep private,
+and you would save it somewhere, securely.
+And that the public key can actually be regenerated
+from the private key if you ever needed to.
+But the public key is what we will send into CloudFront.
+So back into CloudFront for my public key,
+that will create a public key.
+Call this one demo key.
+And then for the key itself,
+I'm going to just paste what I have obtained
+as a public key from the websites.
+And now the public key has been successfully created.
+If you get any errors,
+just make sure that you are using a 2,048 bits.
+And if the first key doesn't work,
+just click on generate new keys one more time
+to generate a key of 2,048 bits.
+So now that we have our public key being created,
+what I can do is I can create a key group.
+And so I will create a demo key group.
+And in this group I can add up to five public keys.
+So I'll just add the one I just created.
+And that this key group
+is what will be referenced by CloudFront
+to allow our users, our CE2 instances, for example,
+to create signed URLs.
+So something to note is that I'm logged in
+as the root user of my account,
+but any IAM user with a sufficient permissions
+could create public keys and key groups within CloudFront.
+But I can also show you the old way of doing things
+for adding keys into CloudFront.
+So as you can see, I'm logged in as my root account
+and it's necessary.
+And let me go to the AWS management console
+and from here, click on my accounts
+and my security credentials.
+So this is something you're doing from your root accounts.
+And as you can see, there's a CloudFront key pair section.
+And this is how you would use CloudFront
+to create signed URLs the old way.
+The new recommended way is definitely to use
+what we've been showing before,
+which was using the key groups in CloudFront.
+But if you want to see how the old way was happening,
+we had to login using the root accounts.
+Then we would create a new key pair
+or upload our own key pair.
+So let's create a new key pair.
+Then we will download the private key file
+and then download the public key file
+and click on close.
+Now this key would be added
+and that we could make it active,
+inactive, or deleted if we wanted to.
+But this would apply to any CloudFront distributions
+and we will need to create,
+and to give these private keys to our EC2 instances.
+But this is not as secure,
+and this can only be done by the root account.
+So definitely from an exam perspective,
+the new way of doing things is absolutely
+to use the CloudFront service
+and the capability that allows any of the IAM user to do it,
+which is using public keys and key groups.
+So that's it for this section.
+I hope you liked it and I will see you in the next lecture.

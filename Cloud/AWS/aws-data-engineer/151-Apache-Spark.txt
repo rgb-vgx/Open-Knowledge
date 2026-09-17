@@ -1,0 +1,237 @@
+# 151. Apache Spark
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356418
+# Caption: en_US (auto)
+
+Instructor: So we've talked a lot about Apache Spark
+kind of in passing in the context of Glue ETL transforms,
+which uses Spark under the hood
+and in the larger context of EMR,
+which can run a Spark application
+hosted on your EMR cluster.
+So let's go into more depth about how it works.
+So Apache Spark is an open source
+distributed processing framework
+commonly used for big data workloads.
+And as you can see in this diagram,
+it sits alongside MapReduce as sort of a replacement
+for the analysis part of this stack.
+So thanks to YARN,
+we can swap out MapReduce for something better.
+MapReduce was great 10 years ago,
+but these days, Spark outperforms it by quite a bit.
+And that's because Spark has in-memory caching.
+It does most of its operations in memory
+instead of hitting disc or going across the network.
+And it also has a query execution optimizer.
+So we can actually look at a complicated SQL query
+and optimize that
+to make sure that you have this really optimal
+directed acyclic graph
+that runs your query in the most efficient manner possible.
+So it's not limited to the map and reduce paradigm.
+It can do more complex operations more efficiently.
+And it can really be orders of magnitude
+faster than MapReduce as a result of that.
+As a result, you really see Spark being used these days
+and not so much MapReduce.
+Spark can be written using Java, Scala, Python, or R.
+I'd say Python and Scala are the more popular choices there.
+Spark itself is written in Scala by the way.
+And the good thing about Spark is that
+you can really reuse your code
+across different applications.
+So because of its software architecture,
+everything, all these different modules
+have a common interface.
+So it's very easy to take the same snippet of code
+and use it for different kinds of applications,
+which saves you a lot of work.
+You can use it for batch processing,
+which is kind of where it all started.
+It's also possible to do interactive queries with Spark.
+It does expose a JDBC interface if you want to,
+so you can connect to it and just query it directly
+using Spark SQL.
+And it has real time analytics capabilities,
+machine learning capabilities through the MLLib library,
+and it can do graph processing as well through GraphX,
+and by graph processing, we don't mean charts and graphs,
+we mean information graphs,
+you know, like a social network, that kind of a graph.
+It also has Spark streaming and structured streaming,
+which allows us to process data in real time
+as it's received from a stream of data,
+and that integrates on EMR with Kinesis or Kafka.
+Now, Spark is not made for OLTP.
+It's not built
+for throwing thousands of transactions per second against it
+from some, you know, forward,
+you know, external facing website or something like that.
+It's an OLAP thing.
+It's meant for running longer lived queries
+that might take a few seconds or minutes
+or maybe even longer to complete.
+So it's really for analysis for OLAP applications,
+not for OLTP.
+Remember that.
+How does it work?
+Well, here's what the Spark architecture looks like.
+Spark applications are broken up into individual processes
+that run across your cluster.
+So at the heart of it all is a SparkContext
+called your driver program.
+This driver program coordinates all these other processes
+through your cluster manager,
+which might be Spark's own built-in cluster manager,
+or in the case of EMR or a Hadoop cluster, YARN,
+yet another resource negotiator,
+the cluster manager that's built into Hadoop.
+But you can run a standalone Spark cluster as well
+that doesn't depend on that.
+And then we have the executors
+that are doing all the grunt work.
+So the executors run all the computations
+and store the data associated with your job.
+And remember, in EMR, that might be running on a core node
+that has HDFS capability or a task node that does not.
+The SparkContext is responsible
+for sending application code to those executors
+and sending individual tasks to those executors to complete.
+Spark is made up of various components.
+So at the root of it all is Spark Core.
+This is the foundation of the platform.
+It's responsible for memory management,
+fault recovery, scheduling,
+distributing and monitoring jobs,
+interacting with your storage system,
+which might be HDFS or EMRFS or something else,
+and it also supports all the guts needed
+to talk to Java, Scala, Python, or our scripts.
+Under the hood at this low level,
+it uses something called
+the resilient distributed dataset, or RDD,
+but probably don't need to know that for the exam.
+On top of Spark Core are four main systems,
+one is Spark SQL,
+and this has evolved
+into really a fundamental piece of Spark these days.
+Spark SQL is a distributed query engine
+that provides low latency interactive queries
+up to 100 times faster than MapReduce.
+And it can support various data sources and formats
+like JDBC, ODBC, JSON, HDFS, Orc, Parquet, or HiveQL
+if you're gonna be querying Hive tables.
+But the important thing about Spark SQL
+is that it introduces what's called a dataset object,
+or in the world of Python, a data frame.
+And basically, this allows you to treat your data in Spark
+as a giant database table
+and query it just like it were one.
+So that's really the power of Spark SQL.
+It kind of gives us this SQL style interface
+to our underlying data on the EMR cluster.
+We also have Spark Streaming.
+Spark Streaming is a realtime solution
+leveraging Spark Core's fast scheduling capabilities
+to do streaming analytics.
+So it used to be that data was ingested in mini batches,
+but these days, with structured streaming,
+we can actually do realtime streaming
+and realtime processing of data using data sets.
+And, again, it's really cool that we can use the same code
+that we wrote for batch processing
+and adapt that to streaming very easily
+using the architecture of Spark.
+It improves your productivity
+because you can reuse that code very easily,
+and it supports data from sources like Kafka, Flume,
+or HDFS and ZeroMQ.
+It used to have built in support for Twitter,
+but that's more of an add-on thing these days.
+They kinda deprecated that.
+MLLib, very important feature there.
+It's a library of algorithms
+for doing machine learning on data at large scale.
+So they figured out a way to distribute the processing
+of various popular machine learning algorithms.
+Pretty much all the ones
+that you would need to use in practice
+are available for you, so that's really amazing.
+Regression, clustering, classification,
+collaborative filtering, pattern mining,
+it can do it all,
+and it can read from any data source
+that Spark can read from,
+HDFS, HBase, or anything Hadoop can talk to.
+So just like Spark itself,
+you can write your MLLib applications
+using Scala, Java, Python, or R,
+but it's really cool that we have a way, finally,
+of doing complex machine learning algorithms
+on massive data sets
+where you're not limited
+by the capability of a single machine.
+They've cracked the code
+on how to distribute that processing.
+Finally, we have GraphX.
+Again, that's a distributed graph processing framework
+built on top of Spark.
+It provides ETL, exploratory analysis,
+and iterative graph computation
+to allow you to interactively build
+and transform graph data structures at large scale.
+It's very flexible, but honestly, it's not very widely used.
+It's kind of fallen into disrepair lately in Spark,
+so you're not likely
+to see a whole lot about GraphX anywhere.
+It's been supplanted by third party solutions
+for the most part these days.
+Let's talk a little bit more about Spark Streaming
+and structured streaming in particular
+because this is a very exciting
+and widely used part of Spark these days.
+So Spark applications
+generally use what we call a data set within their code.
+And a data set is just basically a giant table of data.
+So you can just treat your data on your cluster
+like a giant database table.
+And we kinda have this sort of trend
+in the world of data analytics
+where SQL has become sort of the lingua franca
+of all these systems,
+so pretty much everything talks SQL these days.
+and with structured streaming, that's still the case.
+You know, you can basically treat your data
+as an unbounded table
+where new rows are getting added all the time
+from your data stream.
+So it's just that simple.
+You query it in the same way
+that you would query a batch process dataset,
+but with structured streaming,
+it just keeps on growing over time.
+Now, there are some extra features added to it
+to allow you to window those queries,
+so if you wanna restrict that
+to say the past one hour or whatever it is,
+you can do that.
+You know, you see here in this example here,
+we're reading in a stream of JSON data from S3
+in the logs directory there.
+We're grouping that by their action field,
+and we're establishing a window over the past one hour
+and just counting them up in this example.
+We then output that result through the JDBC interface
+to some MySQL database somewhere.
+So you can kinda get an appreciation
+of the power of structured streaming here.
+With just these two lines of code,
+we've said, go and monitor the logs
+coming into this S3 bucket in JSON format,
+add 'em up over the past one hour,
+and write the results every hour out through JDBC
+to an external MySQL database.
+So how cool is that?
+That's a very complicated operation
+with just two lines of code.

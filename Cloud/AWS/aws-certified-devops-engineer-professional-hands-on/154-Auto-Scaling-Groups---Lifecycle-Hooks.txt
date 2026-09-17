@@ -1,0 +1,67 @@
+# 154. Auto Scaling Groups - Lifecycle Hooks
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904508
+# Caption: en_US (manual)
+
+So now let's talk
+about Lifecycle Hooks in autoscaling groups.
+So by default, when you launch an instance
+it's in service right away in your autoscaling group
+but you can use Lifecycle Hooks to actually
+make sure you perform some work
+before you actually go in service.
+So when there is a scale out event
+you go into a pending state
+and then you go into the end service states
+but you can actually run a Lifecycle Hook
+so that you stay in pending until you complete some task.
+For example, you may want to leave some time
+for your instance to run some scripts.
+So you're going to go
+into the Lifecycle hook named Easy two Instance launching.
+You go into the pending wait states
+and then when you're done with these scripts
+you notify back the autoscaling group that you're done.
+The instance goes into the pending proceed state
+and then the instance is in service.
+So the idea here is that by using Hook
+we allow the instance to do whatever it wants
+and then proceed to in-service.
+You can also perform some actions when
+the instance is terminated.
+So instead of terminating the instance right away
+you may want to, for example
+pause the logs or pause the instances for troubleshooting.
+So upon initiating a termination
+the instance goes into the terminating states
+and then you can run a lifecycle hook
+for the EC2 instance terminating.
+So it will go into terminating weight
+you can do whatever you want, and then when you're done
+you notify the ASG that it can proceed with a termination
+upon which the instance will be terminated.
+So a use case
+for the termination lifecycle hook is to do cleanup
+or log extraction, or for example, the instance launching.
+You can do special health checks to make sure
+that the instance is ready to go in service.
+So to get access to these Lifecycle Hooks
+you can use EventBridge, SNS and SQS
+but EventBridge is definitely the most used.
+So the way it works is
+that any lifecycle event will trigger an event
+in EventBridge, and from there, for example
+you can invoke Lambda function, whatever automation you want
+so that you can deal with these lifecycle hooks.
+So let's take an example.
+The instance goes into terminating weight states
+so it's being terminated
+but we want to be able to collect the logs.
+So this event will happen to be in EventBridge.
+We can from there, invoke a systems manager run command
+which is going to collect the logs and for example
+send them to Amazon is free
+for analysis or send them to CloudWatch logs.
+And so that's it.
+You know what Lifecycle hooks are now.
+I hope you liked it and I will see you in the next lecture.

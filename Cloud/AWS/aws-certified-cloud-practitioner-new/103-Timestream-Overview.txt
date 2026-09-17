@@ -1,0 +1,31 @@
+# 103. Timestream Overview
+# Section: Databases & Analytics
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/41562770
+# Caption: en_US (manual)
+
+So now let's talk about Amazon Timestream.
+And, as there's a hint in the name, it is for time series.
+So it's a database that is fully managed, fast, scalable,
+and serverless for time series data.
+So what is time series data?
+Well, it's data that is evolving over time.
+So, for example, here on the vertical axis we have a number,
+and on the horizontal axis we have the year
+that is evolving from an older date to a newer date.
+And so because the date is evolving over time,
+we are talking about a time series datasets.
+So Timestream is just for that,
+and there's automatic scaling up and down
+based on capacity and the need of computes.
+You can store and analyze trillions
+of events per day in time series form.
+It's about a thousand times faster
+and one 1/10th of the cost of relational databases.
+On top of it, if you want to analyze
+the time series data in real time,
+you could have time series analytics function
+to find your pattern in your database.
+So, whenever at the exam you see time series data,
+think no more than Amazon Timestream.
+All right, that's it.
+I hope you liked it, and I will see you in the next lecture.

@@ -1,0 +1,77 @@
+# 196. Sample Question 9
+# Section: Exam Preparation
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/19143872
+# Caption: en_US (manual)
+
+Next question.
+So a company has deployed a multi-tier web application
+in the AWS Cloud.
+The application consists of the following tiers.
+We have a Windows-based web tier
+that is hosted on Amazon EC2 instances
+with Elastic IP addresses,
+with have a Linux-based application tier
+that is hosted on Amazon EC2 instances
+behind the ALB that uses path-based routing
+and then a MySQL database that runs
+on the Linux EC2 instance.
+So all the EC2 instances are using the Intel-based x86 CPUs
+and we need to modernize the infrastructure
+to achieve better performance.
+Overall, we want to also minimize the operational overhead
+of the application.
+So better performance, less overhead,
+and modernized infrastructure.
+So which actions should we do?
+So let's have a look at the options.
+So first of all, the architecture.
+We have the web tier with Windows Instances and elastic IPs.
+As you know, this is bad just to run elastic IPs
+on many EC2 instances for a tier.
+The application tier looks better
+because while we have an application load balancer
+connected to EC2 instances, so there's only one entry point
+into our application, which is great,
+and the database tier is you're using MySQL on EC2
+and we know that's horrible.
+We need to reuse a managed service
+to reduce our management overhead.
+So option one is to run the MySQL database
+on multiple EC2 instances just like that.
+So this is going to increase maybe our availability
+but also increase our headaches
+which is not what we want from this question.
+Then to migrate a MySQL database
+into an Amazon or Aurora Serverless
+so that's completely possible,
+Aurora as an API for MySQL
+and Aurora Serverless is a very fine database.
+It's actually serverless,
+so we have no management overhead
+and incredible performance.
+So this seems like a good choice.
+And then, migrates all EC2 instances types to Graviton2.
+While it turns out that we can do this,
+Graviton2 will provide us better performance
+because this is a newer kind of CPU architecture
+but this is not available at all for Windows Instances.
+So because we have the web tier using Windows Instances,
+then this is not an acceptable solution.
+But this would be if everything was using Linux.
+So the correct answer
+in this option group is going to be answer C.
+If we look at the option group two,
+we have the option to place the web tier instances
+behind an ALB, which will look like this.
+And the applicational balancer
+for sure works with any kind of web application.
+So we could definitely have Windows EC2 instances
+behind an ALB and this looks very modern and scalable,
+whereas, the option is to replace ALB
+for the app tier with a company managed load balancer.
+So I don't know what the company load balancer
+would look like, this is anti-pattern for AWS.
+This seems like a very actually easy answer to rule out.
+So, of course, in this example, the correct answer is B.
+And that's it for this question.
+I hope you liked it and I will see you in the next lecture.

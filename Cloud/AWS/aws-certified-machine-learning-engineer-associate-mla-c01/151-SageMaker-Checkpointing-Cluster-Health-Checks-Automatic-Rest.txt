@@ -1,0 +1,44 @@
+# 151. SageMaker Checkpointing, Cluster Health Checks, Automatic Restarts
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285823
+# Caption: en_US (auto)
+
+Another feature of SageMaker training you can enable is checkpointing.
+And this just creates snapshots during your training.
+So if something goes horribly wrong, it allows you to pick up where you left off if you need to from
+those checkpoints.
+And it's also useful for troubleshooting.
+So it gives you the ability to analyze your model at different points during the training process.
+So if you have a really large training job and something goes wrong, well, it can be hard to track
+that down, right?
+Because it's so large.
+So with checkpoints, you get to break that job down into smaller components that are easier to to debug
+and analyze.
+Hopefully it will automatically synchronize the state of your training with S3.
+So that goes back and forth from your local storage, from opt ML checkpoint to whatever S3 location
+you specify, and you can actually change that local checkpoint, uh, location as well, if you want
+to, to use it within your script, you would define checkpoint S3 URI to define where it gets synchronized
+to in S3, and also checkpoint local path.
+If you want to change opt ML checkpoint to something else within your SageMaker estimator, or if you're
+using the UI in the AWS console for SageMaker, there is a checkpoint configuration area within the
+Create Training Job dialog where you can just enter in that S3 location and the local path that you
+want to sync those checkpoints up in between.
+And that's checkpointing.
+Moving on.
+Let's also talk about cluster health checks and automatic restarts.
+These are things that's just kind of happen under the hood for you automatically if you're using an
+ML or MLP instance type.
+But it's good to know that this is there for you and keeping an eye out for you.
+What it does is replace any faulty instances for you automatically as you're going.
+So it runs GPU health checks on all of your instances.
+It also ensures the Nvidia Collective Communication Library, or Nccl, is working properly.
+Before you get started with your training, and also any SageMaker internal service errors that get
+thrown during your training will result in an automatic restart of your training job using this, uh,
+this system that will automatically replace any bad instances that crop up, restart the healthy ones,
+and then restart the entire job.
+Obviously that can get expensive, so hopefully that won't happen, but it is automatically keeping
+an eye out for failed hardware.
+And as you're training larger and larger models using more and more instances in the process, the likelihood
+of an instance going bad on you during the process does increase.
+So it's a good thing that it handles that for you automatically instead of making you deal with it the
+hard way.

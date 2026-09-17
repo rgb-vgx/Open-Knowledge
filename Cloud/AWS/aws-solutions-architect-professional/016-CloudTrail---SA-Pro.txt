@@ -1,0 +1,196 @@
+# 16. CloudTrail - SA Pro
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30990124
+# Caption: en_US (manual)
+
+Okay, so now let's discuss CloudTrail
+and some solution architectures that can be interesting
+with CloudTrail.
+So the first one is around
+how to deliver files from CloudTrail to S3
+and the type of use case that it opens up.
+So we have CloudTrail, and you can set up a dump
+of the CloudTrail files into S3 every five minutes.
+And so this encryption can be enabled.
+And by default it's going to be SSE-S3 encryption.
+But you can set up manually SSE-KMS
+for your CloudTrail files.
+You could set up a lifecycle policy on your S3 buckets
+to deliver files to the Glacier tier
+in case they're archives
+and you don't need to have them around for a long time
+or you just wanna archive them
+and make sure that if you need to access them
+you can wait maybe for 6, 12 hours
+before you analyze these.
+When a file is delivered into S3,
+you can leverage S3 events to notify either an SQS queue,
+an SNS topic, or a Lambda function.
+But you can also have CloudTrail deliver notifications
+directly into SNS.
+And from SNS you could invoke SQS or Lambda.
+So this gives you a bunch of different options
+you can have for this architecture.
+As you can see, there's not one way of doing things.
+But getting into thinking
+how these things fit together is the key
+to passing the Solutions Architect Professional exam.
+Okay, on top of it, you need to think
+about all the enhancements we can have from S3.
+So we can enable versioning to prevent accidental deletes.
+We can have MFA for delete protection.
+We can have S3 lifecycle policies, as I said,
+to move it to S3 IA or Glacier.
+You can have S3 object lock to make sure
+that the S3 buckets' objects are never deleted
+and will never be modified as well.
+So this could be very powerful.
+You can enable encryption such as SSE-S3 or SSE-KMS.
+And you can even have a feature
+to perform CloudTrail log file integrity validation
+that will verify that the files delivered
+in S3 are exactly as they should be
+and they have not been tempered with,
+they have not been modified.
+So this is getting interesting, right?
+Because from CloudTrail, in combining this
+with S3 and all these notifications,
+we can have a bunch of use case being opened up.
+So this is hopefully opening some stuff for you
+and helping you understand the kind of architectures
+we can be looking at going into the exam.
+Okay, another architecture now.
+CloudTrail can be multi-account and multi-region.
+So say we have two accounts, Account A and Account B.
+And we have a security account
+that we want to send the logs to.
+So we'll have CloudTrail in the first account
+and CloudTrail in the second account.
+And we'll set up an S3 bucket that will be holding the logs
+of all these CloudTrails.
+The thing is CloudTrail needs to be delivering
+these log files into the S3 buckets
+of the security account.
+And so the only way for us to do it is
+to define an S3 bucket policy.
+And the S3 bucket policy should allow CloudTrail
+to deliver files into S3.
+And the cool thing we have here is
+that the S3 bucket policy, first of all, is necessary
+and very simple to maintain for cross-account delivery.
+The second is that if Account A needs to access
+you know, the logs for the CloudTrail bucket
+we can create, for example, a cross-account role
+and assume the role in the security account.
+Or we can edit the bucket policy to allow reads
+from the Account A.
+So it's really up to you to see
+the kind of architectures then you need.
+But it's really interesting here to see
+that there's different options to provide the reads access
+to S3 based on the use case.
+And on top of it, we have demonstrated
+a good way to have a security account in the middle
+to keep all these CloudTrail logs into a secure place.
+And maybe the security account has a much tighter security
+for user management and so on.
+And so we have the certainty that these logs are safe
+and secure for a long time.
+Okay, so yet another solution architecture.
+Say you want to create alerts
+when certain API calls are done.
+So you have CloudTrail.
+And you can stream all these events into CloudWatch Logs.
+And then from CloudWatch Logs you can open up
+a bunch of use case.
+And one of the things you can do with CloudWatch logs is
+to create a metrics filter
+and then a CloudWatch alarm on top of it.
+And this filter will basically filter
+for the API call you're looking for.
+Maybe you're looking for a terminate instance.
+So you create metric filter for terminate instance.
+And then if that filter passes through
+then you would have the metric incremented by one.
+And maybe your CloudWatch alarm is set up to be triggered
+whenever the metric filter is equals to one,
+in which case the CloudWatch alarm can deliver
+to an SNS topic.
+And from that SNS topic, you could have a Lambda function.
+You could have an SQS queue.
+You could have multiple things.
+But this would be a way to create alerts for API calls.
+Now these log metric filters can be detecting also
+a high level of API happening.
+Doesn't have to be a specific API.
+So you can be counting the occurrences of a specific API,
+for example terminate EC2 instances
+or count the API calls per user
+or detect a high level of denied API calls.
+Maybe someone is trying to breach into your security.
+So it's not just for one API call
+you can be creating a metrics filter.
+And CloudWatch alarms is for counting them
+or detecting high level of unusual activity.
+Okay, so there is another feature
+of CloudTrail need to know about,
+which is the organizational trail.
+So if you have AWS organizations,
+for example, you have a management account,
+and then you have several OUs with other member accounts,
+then it is possible for you to set up
+a organizational trail directly in the management accounts.
+Okay, so it's very important for you to remember
+this trail is created in the management accounts
+and not in the children accounts,
+in the member accounts of your organization.
+Now what's happening is that once you create this trail
+then any events into all the member accounts will be
+monitored by this trail directly,
+which is very easy to understand.
+So that means that any accounts in the prod OU
+or the dev OU will be monitored.
+And from there, while you can send the information
+from a trail into an S3 bucket, that will be again
+in your management accounts.
+And this S3 bucket will contain
+a certain kind of organization,
+where as you see the suffix
+of the S3 prefix represents the account number
+that is being monitored by CloudTrail.
+So how can you react to events the fastest in CloudTrail?
+Well, first of all, any event in CloudTrail may take
+15 minutes to be delivered.
+So this is something to know.
+But anyways, so we have EventBridge.
+And this is cool because this can be triggered
+for any API call done within CloudTrail,
+which gives you by far the fastest, most reactive way
+to react to any events in CloudTrail.
+So you can have deep integration between them.
+Then we have CloudTrail Delivery in CloudWatch logs.
+So that means that all the events are going to be streamed
+in the CloudWatch Logs.
+And you can create a metric filter
+to analyze occurrences and detect anomalies.
+So this is when you wanna see
+if someone is trying too fast to log into your accounts,
+that kind of things that could be a trigger
+for maybe an attack.
+And you have CloudTrail Delivery in Amazon S3.
+So there the events are delivered every five minutes.
+And you have also the possibility to guarantee
+that the logs in S3 are having integrity
+with a hashing feature.
+You can deliver them cross-account.
+It's good for long-term storage and analytics.
+So based on use case you have,
+if you want to react to an event right away,
+it's EventBridge.
+If you want to count events,
+it's going to be CloudWatch Logs.
+And if you want to do analytics on all of them at scale,
+it's going to be Amazon S3.
+So that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

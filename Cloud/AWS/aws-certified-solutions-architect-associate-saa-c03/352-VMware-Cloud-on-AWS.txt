@@ -1,0 +1,45 @@
+# 352. VMware Cloud on AWS
+# Section: Disaster Recovery & Migrations
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33879128
+# Caption: en_US (manual)
+
+So now let's talk about VMware Cloud on AWS.
+So here's some context.
+When you have an on-premises data center,
+sometimes you would use the VMware Cloud
+to manage your own on-premise data center.
+So you have your vSphere-based environment
+and your VMs all managed from VMware Cloud.
+And consumers who have their own data center with VMware,
+they want to extend their data center capacity
+to also leverage the cloud and in particular,
+they want to leverage AWS.
+But they want to keep on managing everything,
+their own data center and the cloud,
+using the VMware Cloud software.
+So this is the idea behind VMware Cloud on AWS.
+Thanks to it you can extend
+your entire VMware Cloud infrastructure to also be on AWS
+and run vSphere, vSAN, NSX, and so on,
+which you don't have to know
+but they are VMware sub-services.
+So once you have this, what are the use cases?
+Well, the first thing is that now you can
+extend computing power from data center to the cloud
+or storage from the data center to the cloud,
+and therefore you can start migrating
+your VMware-based workloads to AWS.
+You can also run your production workloads
+across multiple data centers, and you can choose between
+private, public, or hybrid cloud environments.
+And finally, it gives you a disaster recovery strategy
+because now you can quickly go to the cloud
+using the same suite of software that you know.
+And because that now you are on the AWS cloud
+you can actually access the different AWS services
+and start leveraging them such as Amazon EC2,
+Amazon FSx, S3, RDS,
+Direct Connect, Redshift, and so on.
+So that's it.
+It's just a high level overview that you need to know.
+I hope you liked it, and I will see you in the next lecture.

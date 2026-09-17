@@ -1,0 +1,43 @@
+# 86. AWS Snowball Edge - Pricing
+# Section: Amazon S3
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/40425912
+# Caption: en_US (manual)
+
+Let's talk about Snowball Edge pricing.
+So you're going to pay for usage of the device,
+as well as data transfer out of AWS.
+So if you take data from AWS onto your Snowball Edge
+and then you receive it, then you're going to pay for this.
+But instead, if you put data onto your Snowball Edge
+and then put that data onto Amazon S3,
+it's going to be free.
+$0 per gigabytes.
+So putting data in Amazon S3 is free.
+Next, for the pricing of the device itself,
+so there's two levels.
+You have on-demand,
+where you have a one-time service fee per job,
+so you're going to pay something,
+but as part of the service fee,
+you're going to get 10 days of usage
+for the 80 terabytes Snowball Edge Storage Optimized
+or 15 days for the 210 terabytes.
+And then the shipping days are not included
+towards the 10 or 15 days limit.
+So shipping from it was to you or from you to AWS is free.
+And then just days of usage is counted
+per days after 10 or 15 days.
+Next, you have committed upfront
+where you pay in advance for monthly, one year,
+or three years usage of the Snowball Edge device.
+This is to do edge computing.
+And you get up to 62% of discounted pricing
+because you are committing upfront to a long-term usage.
+So that's it.
+From an exam perspective,
+I think we need to remember
+is that everything you have to pay for,
+except data into Amazon S3,
+which costs you $0 per gigabytes.
+Okay, that's it for this lecture, I hope you liked it.
+And I will see you in the next lecture.

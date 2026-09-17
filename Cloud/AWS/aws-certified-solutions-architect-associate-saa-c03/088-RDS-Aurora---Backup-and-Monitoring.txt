@@ -1,0 +1,135 @@
+# 88. RDS & Aurora - Backup and Monitoring
+# Section: AWS Fundamentals: RDS + Aurora + ElastiCache
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33878680
+# Caption: en_US (manual)
+
+So now let's talk about RDS Backup.
+So first of all, you have automated backups
+and what it means that this service, RDS service,
+will automatically do a daily full backup of the database
+during your database backup window.
+But on top of it, every five minutes
+there's going to be the transactions log being backed-up.
+That means that the earliest backup you have
+is five minutes before now.
+That means that from these automated backups
+you can restore to any point of time
+up until five minutes ago.
+And for the automated backup retention,
+you can say between one to 35 days of retention.
+And if you wanted to disable this feature
+you would set zero to disable automated backups.
+The second option is to do manual DB Snapshots,
+manual database snapshots.
+And these, as the name indicates,
+are manually triggered by the user.
+But the benefit of it
+is that this backup, that you do manually,
+you can retain it for as long as you want.
+So automated backups expire,
+whereas DB Snapshots that are manual
+can be retained for as long as you want.
+So here is a trick.
+When would you use backups, obviously, to back up your data,
+but also if you want to save some costs.
+So say for example, you have an RDS database
+and you know that you're going to use it only
+two hours per month.
+Instead of stopping the database in which, for example,
+you will still have to pay for the storage
+even though your database is stopped.
+What you can do is that after using it for two hours
+you do a snapshot and then you delete the original database.
+The snapshot is costing you way less
+than the actual storage of the RDS database.
+And when you're ready to use again the database
+you would restore the snapshot and use that.
+So it's a little trick and it can come up in the exam.
+Now for Aurora backups, it is actually quite similar.
+You have automated backups from one to 35 days
+but they cannot be disabled.
+So on RDS, they could be disabled, but not on Aurora.
+And you have a point-in-time recovery
+at any point of time in that timeframe,
+so you can recover to whatever you want.
+Now for manual DB Snapshots,
+they can also be manually triggered by the user
+and you retain them for as long as you want.
+So you can see Aurora and RDS Backups are quite similar.
+Now what about the restore options?
+The first thing is that you can restore an RDS or
+Aurora backup or snapshots, they're the same thing,
+into a new database.
+So anytime you restore an automated backup
+or a manual snapshot, then it will create a new database.
+The other option is that you can restore
+a MySQL RDS database from S3.
+And S3, we haven't seen it yet,
+it's a way to store objects in the cloud on AWS,
+it's a very popular service,
+And the idea is that you will create a backup
+of your on-premises database,
+and then you will place it onto Amazon S3,
+which is some object storage.
+And finally, there is the option in RDS
+to restore the backup file from Amazon S3
+onto a new RDS instance running MySQL.
+And if you wanted to, instead,
+restore to MySQL Aurora cluster,
+what you can do is that you take a backup again
+of your on-premises database, so externally,
+and then you used to use a software
+called Percona XtraBackup.
+It only works with this for now.
+Then the backup file of Percona XtraBackup
+goes onto Amazon S3.
+And from this you can restore the backup file
+onto a new Aurora cluster running MySQL.
+So the difference here is that for restoring into RDS MySQL
+you just need a backup of your database
+for restoring into Aurora MySQL.
+What you need to do is to do a backup using
+Percona Xtrabackup, and then from S3
+into your Aurora DB cluster.
+Okay, so those are restore options
+for either the snapshots or the database dumps
+onto Amazon S3.
+And finally, there's a last feature you need to know about
+called Aurora Database Cloning.
+So this allows you to create a new Aurora database cluster
+from an existing one.
+So say you have a production database in Aurora
+and you want to actually run test on it
+but you want to copy the data
+because your test application must be
+in a staging environment.
+Well, for this
+you're just going to clone your production Aurora database.
+It's going to give you a new database,
+and you can call it, for example,
+the Staging Aurora database.
+And it's going to be very quick.
+It's faster than doing a snapshot and restore.
+So why, while cloning uses the copy-on-write protocol,
+how does that work?
+Well, initially, when you create a database clone
+it's going to be using the same data volume
+as the original database cluster,
+which is going to be fast and efficient
+because you don't have any copying of data.
+And then as the updates are being made
+to the production Aurora database,
+or to the Staging Aurora database,
+then new additional storage is going to be allocated
+and data is going to be copied and separated.
+So that means you have the best of both worlds.
+So doing a database cloning is very fast and cost effective,
+and it's extremely useful to have a staging database
+from a production database
+without impacting the production database
+and without going through snapshot and restore features.
+Okay, that's it.
+We've seen all the options for backup and restore
+as well as cloning.
+I hope you liked it.
+And I will see you in the next lecture.

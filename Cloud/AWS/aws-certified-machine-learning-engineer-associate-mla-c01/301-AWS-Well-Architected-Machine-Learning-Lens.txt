@@ -1,0 +1,27 @@
+# 301. AWS Well-Architected Machine Learning Lens
+# Section: Machine Learning Best Practices
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45287173
+# Caption: en_US (auto)
+
+So that's a lot of best practices.
+I didn't make them up.
+Like I said, this all comes from the AWS Well-Architected machine learning lens that they offer in
+the AWS Well-Architected tool.
+These are all in a custom lens that's available there.
+A lens in the AWS Well-Architected tool is really just a JSON file that leads you through an interview
+about how you are using machine learning, and guides you in how you might do it better based on those
+best practices that we just spent a lot of time going through.
+And if you want more detail on that, go visit the associated whitepaper at this link here.
+And it will go into even more depth than I went through right now.
+It organizes all those best practices even more and gives you more depth and more information about
+what they all mean individually.
+And I do think this is probably important for the exam.
+If you go through these best practices and work backwards from them, working backwards being a very
+important thing in Amazon, right?
+It kind of points you toward the services and technologies you need to know to achieve those best practices.
+So we name drop a lot of services along the way in this section.
+And that's not an accident.
+Those are the services and features that you need to focus on for building a well-architected machine
+learning system.
+So consider this sort of the fundamental jumping off point of the technologies you need to understand
+for the Certified Machine Learning Engineer exam.

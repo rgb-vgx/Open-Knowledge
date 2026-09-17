@@ -1,0 +1,77 @@
+# 350. Application Migration Service (MGN)
+# Section: Disaster Recovery & Migrations
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33879110
+# Caption: en_US (manual)
+
+So there are two use cases
+when you move to the cloud.
+For example, you wanna start fresh
+and you wanna leverage the cloud directly.
+In this case, you don't need to do a migration.
+But if you have on-premises servers and data centers
+and you want to migrate to the cloud,
+then you need to plan your migration.
+And a way to do this is to plan your migration
+using the AWS Application Discovery Service.
+So the idea is that you're going to scan your servers,
+and going to gather information
+about the server utilization data and dependency mapping
+which are going to be important for your migrations
+so we can understand how to migrate
+and what to migrate first.
+So there are two types of migration you can do.
+One is called the Agentless Discovery using a Connector.
+And this gives you information around your virtual machines,
+your configuration, your performance history
+such as a CPU, memory, and disk usage.
+Or you can run an agent
+to do an Application Discovery Agent,
+and this gives you more updates
+and more information from within your virtual machines.
+For example, system configuration, performance,
+processes are running, and the details
+of all the network connections between your systems,
+which is good to get your dependency mapping.
+Now, all this results data can be viewed
+within another service called the AWS Migration Hub.
+So this Application Discovery Service
+really helps you to map out what you need to move
+and how they are interconnected.
+But then you actually need to move.
+And the simplest way to move from on-premises
+to AWS is using the AWS Application Migration Service,
+also called MGN.
+So this used to be called CloudEndure Migration,
+but now it's been replaced.
+And the idea is that using
+the AWS Application Migration Service, so MGN,
+you can do rehosting, also called lift-and-shift solution,
+in which you convert your physical, virtual,
+or other service on the other clouds to run natively on AWS.
+How does that work?
+Well, say you have a corporate data center
+with OS apps and databases, and they run on disks.
+What's going to happen is that you're going to run
+the Application Migration Service.
+And then the replication agent
+that you have to install on your data center
+is going to perform a continuous replication of your disks
+so that you have, for example, low-cost EC2 instances
+and EBS volumes that get this replication of data.
+Now, the day you're ready to perform a cut over,
+you can actually move from staging to production,
+and have a bigger EC2 instance of the size you want,
+as well as EBS volumes that match the performance you need.
+So the idea is that you replicate data,
+and then at some point, you do a cut over.
+And that is by far the simplest way of doing it.
+So this supports a wide range of platforms,
+operating systems, and databases.
+And this gives you minimal downtime,
+as well as reduced costs
+because, well, you don't need to hire complex engineers
+to do this.
+This is done automatically by this service.
+So that's it.
+I hope you liked it.
+And I will see you in the next lecture.

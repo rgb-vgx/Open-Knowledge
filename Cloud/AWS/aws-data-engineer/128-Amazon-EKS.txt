@@ -1,0 +1,104 @@
+# 128. Amazon EKS
+# Section: Containers
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305424
+# Caption: en_US (auto)
+
+Stephane: So let's talk about the other way
+to run containers onto AWS.
+And this is using Amazon EKS.
+So Amazon EKS stands for Amazon Elastic Kubernetes Service.
+So it is a way, as the name indicates,
+to launch and manage Kubernetes cluster onto AWS.
+So what is Kubernetes?
+Well, this is the blue logo you see
+in the top-right corner of the screen.
+Kubernetes is an open-source system
+for automatic deployments, scaling and management
+of containerized, usually Docker, applications.
+So it is an alternative to ECS, which has a similar goal,
+which is to run your containers,
+but a very different API.
+The idea is that ECS is definitely not open-source,
+whereas Kubernetes is open-source
+and used by many different cloud providers,
+which gives you some sort of standardization.
+So EKS supports two launch modes again.
+The EC2 launch mode
+if you want to deploy worker mode like EC2 instances,
+or the Fargate mode
+if you wanted to deploy serverless containers
+in an EKS cluster.
+So the use case for using EKS,
+is that your company,
+is already using Kubernetes on-premises,
+or already using Kubernetes in another cloud,
+or they just want to use the Kubernetes API
+and they want to use AWS to manage their Kubernetes cluster.
+Then they would use Amazon EKS.
+So again,
+Kubernetes from an exam perspective is cloud-agnostic.
+It can be used into any cloud,
+such as Azure, Google Cloud and so on.
+And so that means that if you are trying to migrate
+between clouds or your containers,
+using Amazon EKS may be a much more simple solution.
+So in terms of diagram, this is what it looks like.
+So we have a VPC, three AZ,
+separated into public subnets and private subnets.
+And so you would create EKS worker nodes.
+That would be EC2 instances, for example.
+And each of these nodes will be running EKS Pods.
+So they're very similar to ECS tasks.
+But from a naming perspective,
+anytime you see pods,
+it relates to Amazon Kubernetes, okay?
+So we have EKS Pods
+and they're running onto EKS nodes.
+And so these nodes can be managed by an auto-scaling group.
+Now very similarly to ECS,
+if we wanted to expose a EKS service
+on a Kubernetes service,
+we could set up a private load balancer,
+or a public load balancer to talk to the web.
+So let's summarize the different node types
+that exist for Amazon EKS.
+So you have the managed node groups
+and this is AWS
+that will create and manage nodes or EC2 instances for you.
+And these nodes are part of an auto-scaling group,
+managed by the EKS service itself.
+And you have support for On-Demand and Spot instances.
+You can also choose if you wanted to, to self-manage nodes.
+This is if you want
+to have more customizations and more control.
+So in that case, you need to create the nodes yourself.
+And then you need to register them to an EKS cluster
+and then you manage your own nodes as part of an ASG.
+You can still use the pre-built-Amazon-EKS-optimized AMI
+for this,
+which saves you a bit of time,
+or you can build your own AMI, which is more complicated.
+This supports as well the On-Demand and the Spot instances.
+And finally, if you don't want to see any nodes at all,
+then Amazon EKS, as I told you,
+supports the Fargate mode
+in which there is no maintenance required
+and no nodes are managed at all.
+You can just run containers on top of Amazon EKS.
+Now you can attach data volumes to your Amazon EKS cluster.
+For this,
+you need to specify a StorageClass manifest
+on your EKS cluster.
+And this leverages something,
+called the Container Storage Interface,
+CSI compliant driver.
+So keywords to look out for at the exam.
+And you have support for Amazon EBS.
+You have support for Amazon EFS.
+And this is the only type of storage class
+that works with Fargate.
+You have Amazon FSx for Lustre
+and Amazon FSx for NetApp ONTAP.
+So that's it for Amazon EKS.
+I hope you liked it
+and I will see you in the next lecture.

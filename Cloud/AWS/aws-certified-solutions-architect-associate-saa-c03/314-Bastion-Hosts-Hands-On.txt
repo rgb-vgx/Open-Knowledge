@@ -1,0 +1,128 @@
+# 314. Bastion Hosts Hands On
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/28874510
+# Caption: en_US (manual)
+
+So it turns out that this EC2 instance we've created
+in our public subnet could have a name and the name
+could be Bashian host.
+This is because we are able to SSH
+into this fashion host and
+from it, we'll be able to connect to an EC two instance
+in a private subnet.
+So to do so well, let's go ahead and create an EC two
+instance in a private subnet, but first, if you don't
+have a key pair, yet sometimes I reuse accounts
+or create new ones or transfusions.
+So I don't necessarily have key pairs.
+You can just enter a key pair.
+So I'll have a, a demo key pair right here, and then
+in the PM format.
+And then I will create my key pair.
+So I will save this file and this is going to be very handy
+for us to SSH into the EC two instance in my private subnet.
+So let's have a look at how we can do it.
+So now let's go into EC two instances
+And I'm going to launch an EC two instance.
+I will scroll down Amazon Linux 2, two micro.
+We will use the key pair named demo key pair we
+just created.
+And then for network settings, we will make sure to
+launch this into our demo VPC.
+And so far as subnet association.
+So we want to be into a private subnet, for example
+the private subnet a, and we're going to create
+a security group.
+I'm going to name it private SG because it is
+a private security group and we are going to allow SSH
+but actually not from anywhere from custom
+and this time it will choose a security group we
+have created from before, which is called a launch
+wizard one, which is not a great name.
+I'm going to rename it very, very soon
+but what it means that we allow SSH from the Bashian host.
+And this is how through a hub,
+through the Basian host, we're going to be able to SSH
+into this private instance.
+Okay, so this looks good.
+Now let's go ahead and actually launch that instance,
+and we are good to go.
+So here we have our private instance and because it is
+in a private sublet, as you know,
+we cannot use the EC two instance connect
+into it because that will not work.
+Okay. We will need to edit the root tables at
+the internet gateway, but that would make the subnet public.
+So what we have to do is to SSH
+through the Bashian host.
+Okay. So let's go ahead and see how we can do it.
+So we're going to connect into our Bashian host.
+So I will click on connect and then EC two instance connect.
+So effectively what we're doing is that we're
+doing SSH into our Bashian host.
+So you could use either EC two instance connect, or
+you know, your SSH command line through your terminal.
+And from this fashion host
+we wanna connect into our private instance.
+Now our private instance
+as we can see has a private IP four address.
+So this is what we need to do.
+So we need to do SSH easy two user at, and then
+the private IP, and then we need to specify a key pair.
+Okay. So yes, and this is not going to work
+because we haven't specified a key pair.
+So we need to actually create that key pair
+and then have it on my EC two instance.
+So what I'm doing is I'm going to have a VI or nano
+and then I'll call it demo key pair.pm
+and then I will have to paste the content
+of the key pair I just downloaded.
+So I open my file that PM with a text editor
+and then I paste exactly what I have in here,
+and I wanna make sure this is going to be good.
+So I think it's missing a new line right here.
+Okay. This looks good, actually.
+Let's see.
+And then exit and then save.
+Okay. So let's clear the screen.
+Let's just make sure that this has been properly saved.
+So this hopefully looks good.
+Let's see.
+I'm not too...I'm not a bit confused
+by the formatting, but let's see.
+And we need to make sure we change the permission.
+So I will change the permissions on this demo key profile.
+Okay. And now let's do this SSH command
+and minus I demo key pair.pm, and there's a pass rise
+and this is definitely an issue
+with the formatting of my files.
+So what I'm going to do is
+that I'm going to remove demo key pair.
+Yes. Please remove it.
+And I will use another text editor to see if that works.
+So VI demo, key pair that PM.
+And I'm gonna keep this on video
+because this is a super important to see what can go wrong.
+And in case you have these issues, then at least, you know
+so this looks a lot better.
+And then I will save this file.
+Okay. So now if we run the SSH command again, okay.
+This is unprotected so
+that we are needing to running the shma command.
+So here we go.
+And then with such again, and here we go.
+This has worked.
+So now we are SSH'd into my Amazon index
+two AMI in my private subnet.
+So this is really good.
+We went from the Bashian host into the private instance
+and this works, and this is quite cool.
+But now if we try to ping Google account
+as you can see, well, this doesn't work.
+The private EC two instance does not
+have internet access outgoing.
+And so we're going to see how to resolve this
+in the next lecture.
+But so far we've seen how to use Bashian host.
+So awesome.
+And I will see you in the next lecture.

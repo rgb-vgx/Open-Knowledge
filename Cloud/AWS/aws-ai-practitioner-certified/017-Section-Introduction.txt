@@ -1,0 +1,22 @@
+# 17. Section Introduction
+# Section: Amazon Bedrock and Generative AI (GenAI)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44977015
+# Caption: en_US (manual)
+
+So, in this section,
+we are going to learn about generative AI
+and Amazon Bedrock.
+So, actually nowadays, when you hear about AI,
+most people mean generative AI.
+That's because when ChatGPT came out,
+everyone was thinking about AI
+and how to interact with it with prompts in the chatbot.
+But AI is so much more.
+Still, in this section,
+we're gonna talk about generative AI,
+and Amazon Bedrock is the main service on AWS
+that does generative AI.
+This is actually one of the main topic of the exam
+and also one of the fastest growing AWS service.
+So I hope you're excited,
+and I will see you in this section.

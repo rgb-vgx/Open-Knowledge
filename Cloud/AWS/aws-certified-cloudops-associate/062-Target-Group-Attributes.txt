@@ -1,0 +1,136 @@
+# 62. Target Group Attributes
+# Section: EC2 High Availability and Scalability
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512938
+# Caption: en_US (manual)
+
+So let's have a look at all the options
+you can set on a target group because they're necessary
+to be known at the exam.
+So the first one is the deregistration delay,
+and this is a timeout you have specified in seconds,
+which is corresponding to the time the load balancer
+has to wait before deregistering a target.
+And we've seen this before.
+Then there is slow start, which is expressed in seconds.
+And I'll discuss in the next slide.
+There is the routing algorithm.
+So there's going to be three algorithms
+we'll have a look at in the next slide.
+So there's going to be Round Robin,
+Least Outstanding Request and then Flow Hash.
+Then there is the stickiness settings.
+So whether or not it's enabled, the type,
+which is application-based or duration-based,
+and then the cookie name, the duration in seconds
+in terms of that cookie name
+or for the ALB cookie, just the duration in seconds
+in terms of the expiration period.
+So now let's have a look at how slow start
+and the different routing algorithm works.
+So slow start is a way for you to send traffic gradually
+to an EC2 instance, because by default,
+whenever your target becomes online on your target group,
+it will receive its full share of requests.
+So it will start getting many, many requests at a time.
+And if you unable slow start mode,
+it gives a healthy target a bit of time to warm up
+before the load balancer sends a full share of requests.
+So the idea is that the load balancer will start at zero
+and it will linearly increase the number of requests
+that it sends to the target until the slow start mode
+is ended, and then it will have its full share.
+So here's an example.
+If you don't have slow start mode, all of a sudden,
+as soon as your EC2 instance is part of your target group
+is going to receive a full share of requests,
+which may overload the instance directly.
+But with slow start mode,
+there's going to be a gradual increase.
+So at first it will receive one request,
+then it will receive two requests,
+then it will receive three requests
+and so on up until the slow start is over
+and then the EC2 instance will be at full capacity.
+So there's a target where exit slow starts when the duration
+period elapses or the target becomes unhealthy.
+And if you want to disable slow start,
+which is the default setting,
+then you just set the slow start duration value to zero.
+Now let's have a look at routing algorithms
+for your request.
+So there's one called the least outstanding request,
+which is the next instance to receive the request
+is the instance that has the lowest number of pending
+or unfinished requests.
+So basically, the instance that is the least currently busy
+is the instance that will receive the next request,
+which makes sense, right?
+Because you want to make sure that if an instance
+has less requests than another,
+then maybe it has more capacity to receive these requests.
+So it's available for the ALB and the CLB.
+And so the idea is that the first request
+will go maybe to the first instance,
+the second request to the second
+and then the third request has to go to the third
+because the third instance right now
+doesn't have any requests,
+so it has the least outstanding request.
+So this is how it works.
+And then the fourth one may go again to the third instance
+if the third instance has the least outstanding request,
+maybe the third request was very, very quick to finish
+and so the fourth one went again
+to the third instance and so on, okay?
+Now for the Round Robin, this is a bit different.
+So the Round Robin is that the targets
+will have one after the other then next request,
+regardless of how many outstanding requests
+are available on your instance.
+And so this works for ALB and CLB.
+The idea is that number one will go to number one,
+number two will go to number two
+and number three will go to number one,
+and then number four will again go through the same cycle.
+So number one and so on.
+Then for the NLB, there's the flow hash request routing,
+which a target is selected based on the hashing
+of the protocol, source destination IP address,
+source destination ports, and TCP sequence number.
+That means that each TCP or UDP connection
+is going to be routed for a single target
+for the life of the connection,
+which is sort of the equivalent for the sticky sessions
+on the network load balancer.
+So very, very simply, whenever a user makes a request
+on EC2 instance, all the information I just said below
+is going to be hashed through a flow hash algorithm.
+And then thanks to this hash number, is going to route
+the same request from the same user to the same EC2 instance
+as long as the TCP connection is open, okay?
+And this is specificity of your NLB.
+So if you go into your target group action
+and then edit attributes,
+then we're going to see the deregistration delay, okay?
+We know this one, the slow start duration.
+So by default it's disabled but you can set it, for example,
+30 to start enabling it, okay?
+Up to 900 seconds, if you really want a slow start duration.
+But if you have this, as you can see,
+this attribute can now be combined with the least
+outstanding request algorithm.
+So we'll disable it.
+And if you do disabled it,
+then we have the least outstanding request algorithm, okay?
+That's available, so Round Robin is the default,
+but we can have this one, which is again
+to send the request to the EC2 instance
+that has the least amount of requests available.
+So the one that is the least busy right now.
+So that's pretty cool.
+And then finally, stickiness can be enabled or disabled.
+We've seen this before as well.
+So that's it, you've seen all the attributes
+for your target group.
+I hope you liked it.
+And I will see you in the next lecture.

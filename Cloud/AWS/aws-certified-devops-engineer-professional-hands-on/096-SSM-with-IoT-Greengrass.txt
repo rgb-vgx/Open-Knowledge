@@ -1,0 +1,47 @@
+# 96. SSM with IoT Greengrass
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869572
+# Caption: en_US (manual)
+
+So we've seen
+how to activate EC2 instances,
+how we can activate on-premises servers.
+But now, we can also activate IoT Greengrass Core devices.
+So these core devices are IoT things,
+and they can be managed using Systems Manager.
+For this, very simply, we must first install these SSM Agent
+onto the Greengrass Core devices
+and they will register themselves
+as a managed node in SSM with the MI prefix.
+Now, to install the SSM Agent, we can either do it manually,
+or we can deploy it as a Greengrass component,
+which is a pre-built software module
+that you directly deploy on your IoT devices.
+So once the SSM Agent is installed
+on your Greengrass Core device,
+you must define a Token Exchange Role.
+Now, Token Exchange Role is a fancy name
+for an IAM role for your IoT core device.
+So you attach a token exchange role
+and you make sure you add the permissions to communicate
+with Systems Manager, the same way you would do it
+for an EC2 instance, for example.
+This supports all SSM capabilities
+such as Patch Manager, Session Manager,
+Run Command, and so on.
+And then, thanks to the activation
+of your IoT devices with Systems Manager,
+you can easily update and maintain the operating system
+and the software updates across all your devices.
+So to summarize, your Greengrass Core device
+is an IoT thing.
+You're going to install the SSM Agent,
+maybe through a component
+and then you're going to define a token exchange role
+which is an IAM role for your core device.
+Then with the proper permissions,
+it's going to get registered with Systems Manager
+who must have also a service role
+to manage your core devices, and you're good to go.
+Okay, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

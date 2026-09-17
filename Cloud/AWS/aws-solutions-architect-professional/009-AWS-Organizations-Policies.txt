@@ -1,0 +1,254 @@
+# 9. AWS Organizations Policies
+# Section: Identity & Federation
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30990582
+# Caption: en_US (manual)
+
+So now let's talk
+about service control policies, or SCP.
+So here, you can define allowlist or blocklist
+for specific IAM actions on your organization
+for your accounts.
+And this applies either at the OU level
+or the Account level.
+Any SCP you apply to your management accounts
+actually is disregarded
+because you want to keep your management account safe
+from any kind of lockout.
+The SCPs is going to be applied to all the users
+and the roles in the account, including the root user.
+And the SCP does not affect any service-linked roles.
+That means that these services, those service-linked role,
+they enable other services on AWS
+to integrate with organization,
+and therefore that's why they can't be restricted by SCPs.
+So, SCPs are special.
+And for something to be allowed within organizations,
+you need to make sure that every SCP along the way
+from the root to each OU down
+to the specific target account will have an explicit allow.
+And I will show you this in the next slide as an example.
+So the use cases for SCP is
+to restrict access to certain services.
+For example, hey, you cannot use EMR,
+or to enforce PCI compliance
+by explicitly disabling some services in AWS.
+This will be very clear in this example.
+So let's take for example, a Root OU,
+and we apply FullAWSAccess underneath.
+So the management account is under the Root OU,
+and then we have more OU, the Sandbox, the Workload,
+Test, and Prod, with accounts within the OUs.
+So if we apply an SCP,
+which is Deny Athena on the management account,
+what is happening to the management account?
+Well, the management account can do anything
+because there's a rule that says that no SCP ever apply
+to the management account.
+This is a safety because of course if you lock yourself out
+of your management account, this would be terrible.
+So remember, the management accounts can do anything
+no matter what.
+But let's say for example,
+we apply on the Sandbox OU
+a FullAWSAccess plus Deny S3.
+So as you can see here, we still need
+to apply FullAWSAccess to apply
+to give allow to everything explicitly
+because if we didn't have full AWS access,
+then nothing would be allowed within that OU.
+So explicit allows are needed every single way.
+And on account A, say we also do apply
+FullAWSAccess and Deny EC2.
+Then account A can do anything
+because it has full AWS access on the Root OU
+and on the Sandbox OU and on the account itself.
+But because we have two explicit denies,
+we have one Deny S3 from the Sandbox
+and one Deny EC2 from the account itself,
+then it cannot access Amazon S3 or Amazon EC2.
+For Account B and C, because they don't have specific SCP
+attached to them, then they can do anything
+except accessing Amazon S3
+because you have an explicit deny coming
+from the Sandbox OU.
+Next, if we apply FullAWSAccess to the Workloads OU,
+and we also apply an Allow EC2 SCP to the Test OU,
+then Account D can only access EC2.
+And if we look at the Prod OU
+and Account E and F within it, well, we must first apply
+the FullAWSAccess SCP to the Prod OU,
+and then Account E and F can do anything.
+So here are some examples for SCPs.
+This is the first one is a blocking of a specific service.
+So first we allow all actions, and then we DenyDynamoDB,
+or on the allow list here, we allow EC2 and CloudWatch,
+but we don't allow anything else.
+So those are some examples of SCPs.
+So let's have a look at the IAM policy evaluation logic,
+because this diagram basically explains to you
+how you are authorized or not to do actions within AWS.
+And you don't need to know it by heart,
+but it should make sense to you.
+So we can see there's a whole flow,
+but at every step there is an evaluation.
+And so we're going to look at Deny evaluation.
+We're going to look at Organizations SCP,
+Resource-based policy, Identity-based policy,
+IAM permission boundaries,
+and then finally, Session policies
+to allow or deny a specific IAM action.
+So let's have a look in details to see how that works.
+So, we're going to look at all the possible policies
+in here, and if there's an explicit deny,
+then we know that it's going to be denied automatically.
+Then we look at the organization's SCP,
+and is there an allow?
+If yes, you go to next step.
+If not, then it's a deny because it's an implicit deny.
+Then we look at resource-based policy, for example,
+they can be applied to S3 buckets.
+They can be applied to SQS SQs and so on.
+And again, we have a look.
+Is there a resource-based policy?
+If so, is there an allow?
+Yes or no?
+Then we have identity-based policy.
+So we look again at whether
+or not there's an identity-based policy,
+whether or not there's an allow.
+And then we deny implicitly or go on to the next step.
+Then we look at IAM permission boundaries that we just saw.
+And then finally we look at session policies.
+I won't go over them, this is more related to STS.
+But what I want you to remember is
+that all these things are evaluated
+when making a specific IAM action, okay?
+And so only if all these things are allowing
+and working together or not denying specifically,
+then you will have a finalization allow,
+and you'll be able to do your action, okay?
+So it's just to give you a bit more overview,
+but hopefully you understand better
+how security works in AWS.
+So these IAM SCP policies can be used, for example,
+to restrict tags, okay?
+So, if you want to restrict specific tags on AWS resources,
+you can use the AWS TagKeys Condition Key.
+Now, this will allow you to validate the tag keys
+attached to your resource against the tag keys
+in the IAM policy.
+And this is something that comes up in the exam.
+So if we want to only allow an IAM user
+to create an EBS volume if it has the Env
+and the CostCenter tags,
+then the policy would look like this.
+So we have a match all keys, okay?
+So ForAllValues:StringEquals,
+TagKeys, Env, and CostCenter,
+and this means that we want absolutely
+both the Env and the CostCenter tags to be present
+in the EBS volume when we create it.
+And you have an option to also use the value called
+ForAnyValue, which means that at a minimum,
+you must have either of these tags.
+So, on the second example here in this slide,
+here, if the EBS volume is created with the Env
+but not the CostCenter, it's going to work, and vice versa
+because we have the ForAnyValue condition key, okay?
+So this can come up in exam,
+using the AWS Tag Keys condition key.
+Another example of SCP you can have is an SCP
+to deny an entire region using the condition
+named aws:RequestRegion.
+So the idea is that you would specify a Deny effect,
+and then you would say that the region
+where everything is denied could be eu-central-1
+and eu-west-1.
+You can specify different AWS services
+by specifying action, EC2 star, RDS star, and so on.
+And you can also have a bypass.
+For example, you can have ArnNotLike,
+so that two roles, for example, are allowed
+to bypass this SCP.
+So it can get quite complex,
+but the idea out of it is that SCP can be used
+to restrict member accounts to specific regions
+or from specific regions.
+Okay, so there's also a way of using SCPs
+to restrict creating resources
+that don't have the appropriate tags, okay?
+So, this is to prevent IAM users and roles
+for performing stuff that they can't do.
+For example, we can restrict launching an EC2 instance
+if it does not have the Project and CostCenter tags.
+So in this example, where the condition in your SCP
+is going to be a null for aws:RequestTag/Project, true.
+Okay, that means that you're going to, and this is a deny,
+So that means that it's going to deny any request
+that does not contain the Project tag in our EBS volume.
+And then in the second one, it is CostCenter as well, okay?
+So the first example was using IAM policies directly
+to say, yes, please use these tags.
+And in the second example that I showed you,
+this is for SCPs only.
+Next we have TAG policies.
+So, TAG policies are defined at the organization level,
+and they help you standardize tags
+across all resources in an organization.
+So this is used to ensure consistent tags,
+audit tag resources,
+maintain proper resource categorization, and so on.
+So you define tag keys and their allowed values,
+and this helps with Cost Allocation Tags,
+or if you wanted to do Attributes Access Control.
+And then any non-compliant tagging operations
+will be prevented, okay, on these specified services
+and resources.
+And you can also have a report that lists all the tags
+or non-compliant resources.
+And then if you want to look for non-compliant tags,
+then use Amazon EventBridge.
+So in this example, on the right hand side,
+for the Secrets Manager service,
+we can only have the key, CostCenter,
+to have the value 100 or 200.
+Another type of policy on organizations
+is called the AI Services Opt-out Policy.
+So, the backtrack of the context of this is
+that while the AI services in AWS may use your content
+that you're actually giving them to improve the Amazon AI
+or machine learning services.
+So for example, Amazon Lex, Amazon Comprehend, Amazon Polly,
+all of these services improve
+based on the data you give them.
+And so your data is used by AWS
+for improving the services,
+but you can opt out of having the content stored,
+used by AI services for improvements.
+And for this, you have to create an Opt-out policy,
+which will apply to all member accounts and all AWS regions.
+So you can opt out of all AI services using this,
+or you can opt out just for specific AWS services.
+For example, on the bottom right,
+I'm opting out of Rekognition and Amazon Lex.
+These policies can be attached
+to a Organization Root, specific OUs,
+or directly in individual member accounts.
+And then we have backup policies.
+So backup policies help you define backup plans
+using AWS Backup.
+And so we define these backup policies
+at the organization level with JSON documents
+and is going to give you granular control
+over the backing up the resources,
+such as the frequency, the time window,
+the backup region, et cetera, et cetera.
+These can be attached to the Organization Root OU
+or specific OU or an individual member account.
+It's an immutable backup plan,
+so they will appear in the member accounts
+within AWS Backups, but this is a view-only type of view
+that can only be managed within the management accounts
+of your organization.
+So that's it for all the policies on AWS organizations.
+I hope you liked it, and I will see you in the next lecture.

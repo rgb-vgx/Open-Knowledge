@@ -1,0 +1,148 @@
+# 112. CloudWatch
+# Section: Monitoring
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376620
+# Caption: en_US (manual)
+
+Okay, so next let's get into CloudWatch.
+So CloudWatch has been everywhere through our discussions,
+but now it's time we take a deeper look
+at CloudWatch in specifics.
+So the first part is CloudWatch Metrics.
+And we already know that all the AWS services
+many of them provide you CloudWatch Metrics out of the box.
+And for EC2 it's particular by default.
+The resolution is five minutes
+for EC2 standard monitoring.
+But you can enable detailed monitoring for EC2
+which gives you EC2 metrics every one minute.
+We know the EC2 metrics
+or CPU network disc in case you have an instant store.
+But we know that RAM is not a built-in metric.
+So if you want to get the memory usage
+of your EC2 instance out of your EC2
+you need to create a custom metric.
+Maybe use the CloudWatch unified agent to
+send that metric back into CloudWatch.
+Okay, in terms of custom metrics
+we can create them ourselves.
+The standard resolution of a custom metric is one minute
+but you can enable high resolution mode
+for your custom metric
+and get that down all the way to one second.
+Now the CloudWatch alarms can trigger three things
+and you need to remember it absolutely.
+So you can trigger an EC2 action.
+And your EC2 action can be to reboot, stop, terminate
+or recover your EC2 instance.
+You can have auto-scaling actions or SNS.
+And finally, alarm events can be intercepted
+by Amazon EventBridge, opening
+up many possible integrations for CloudWatch alarms.
+Finally, your CloudWatch dashboards can display metrics
+and alarms and can show the metrics of multiple regions.
+CloudWatch logs will get its own little discussion
+at the end of this lecture.
+Okay, so CloudWatch alarm, it's extremely important
+we understand the integrations.
+So the CloudWatch alarm can be set to do an EC2 action
+which is to stop, terminate, reboot, or recover.
+And so a very common use case
+is for you to monitor a critical EC2 instance.
+And with the CloudHSM alarm,
+if the status check of that instance fails
+then we will trigger a recover action
+to recover our EC2 instance
+which will keep its private IP, its public IP, and so on.
+Okay, other things is Auto Scaling.
+So we have an Auto Scaling group
+and we want to scale based on different CloudWatch alarms.
+This is a perfect use case.
+And finally, in case any alarm is triggered,
+we may want to have some emails being sent
+some alerting being done.
+And so SNS is a great way to do it.
+And from SNS, we can even send this
+to one or many SQS queues.
+We fan out or use a Lambda function to react to it.
+As I said, from CloudWatch alarm you can send events
+to Amazon EventBridge.
+So that means that you can enable any kind
+of integration you want from there.
+For example, you can send data into Kinesis
+or you can trigger a step function workflow
+or you can trigger a Lambda function as well.
+So as you can see, there's not only
+one way of doing things in AWS,
+and Amazon EventBridge really opens up a way to
+intercept any alarm in your accounts.
+Next, we have CloudWatch Synthetics Canary
+which is a way for you to run a script.
+And that script is going to monitor your APIs,
+your URLs on your websites.
+So you want to run some sort
+of health checks from within Synthetics Canary.
+And the idea is that the script is going to
+reproduce what your customers actually do
+with some code to find issues
+before your customers are actually impacted.
+And then based on these health checks, run regularly
+by CloudWatch, then you can check the availability
+and the latency of your endpoints,
+and you can store the load time data and the screenshots
+of the UI directly from within CloudWatch Synthetics Canary.
+So this is great to check your API against real workflow.
+So let's say we developed an API
+on an EC2 instance in US-East-1
+and the users are accessing our instance using Route 53.
+Then we're going to create a CloudWatch Synthetics Canary
+which is going to monitor our EC2 instance.
+For example, every one minute it's going to send an API call
+or a few API calls or execute a series of actions.
+Now if the EC2 instance does not
+respond well then we can see
+that one of our users may encounter the same problem,
+and therefore something is wrong with our application.
+So it doesn't detect, not only if our application is down
+but also if something is wrong with our application.
+Meaning if the answer provided by our app is erroneous
+in that case from CloudWatch Synthetics Canary
+you can trigger a CloudWatch alarm.
+And of course then you can talk to a Lambda function
+from the CloudWatch alarm, which could update
+the DNS record in Route 53 to link all traffic
+to a second EC2 instance, that may not be buggy.
+So these scripts that are running
+on CloudWatch Synthetic Canary
+can be written in Node.JS or Python.
+And from this you get access
+to Google Chrome browser that's had less,
+meaning that you don't actually get the UI
+you just have access directly to the API or Google Chrome.
+And this script can be run once or on the regular schedule.
+So it's actually a full blown test
+against your EC2 instances, or your applications,
+or your websites and APIs and so on.
+But with a dashboard and summary within CloudWatch,
+which is great.
+So of course to get you started
+on CloudWatch Synthetics Canary
+you have blueprints which allow you to, for example,
+run a heartbeat monitor to load a URL, store a screenshot,
+and then do an HTP archive file.
+Or API Canary to do basic test read,
+and also write functions
+for your REST APIs, or broken link checkers to check
+that if all the links inside of your URLs
+that you're testing are correct.
+Visual monitoring to compare,
+If a screenshot taken during a Canary is similar
+to a baseline screenshots.
+Canary recorder, which is used to
+actually record your own actions on the website,
+and then it will generate a script
+for that that you can run on CloudWatch Synthetics Recorder.
+Or the GUI Workflow Builder to verify
+that the actions taken on your webpage, for example,
+you can test a webpage with a login form using this.
+Okay, so that's it for CloudWatch,
+I hope you liked it and I will see you in the next lecture.

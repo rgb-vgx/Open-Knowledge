@@ -1,0 +1,174 @@
+# 173. Amazon MSK
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305652
+# Caption: en_US (auto)
+
+Instructor: Now, let's talk about MSK.
+Because MSK is starting to appear
+on the Data Analytics - Specialty exam,
+you don't need to know how to use Kafka.
+So because it's quite complicated actually to use Kafka,
+so there will be no hands-on on this,
+but you need to know how MSK works,
+what's the architecture, and the differences versus Kinesis.
+So Kafka is an alternative to Kinesis
+and there will be a lecture dedicated
+to Kafka versus Kinesis in the next lecture
+because the exam will mainly try to make you choose
+between Kafka and Kinesis based on some scenario.
+So what is Kafka though in MSK?
+So MSK is a fully managed Apache Kafka service on AWS
+which allows you to create,
+update, and delete Kafka clusters.
+And in that case, Amazon MSK will create and manage
+Kafka broker nodes and ZooKeeper nodes for you.
+You deploy your MSK cluster in your VPC.
+It's multi-AZ up to three for high availability.
+That is automatic recovery
+from common Apache Kafka failures.
+And the data is stored on EBS volumes.
+The idea is that MSK and a Kafka
+is a replacement for Kinesis where you have
+the same way your producers and your consumers of data,
+but the power of Kafka is that you can create
+some custom configurations for your cluster.
+For example, one that can come up in the exam
+is that by default, the message size
+is one megabyte in Apache Kafka,
+but you can configure Apache Kafka to be able
+to send and receive large messages, for example,
+up to 10 megabytes into your cluster
+after doing some custom configuration.
+And that is a big difference with Kinesis
+because Kinesis has a hard limit
+of one megabytes for the message size.
+Now, at a high level, you'll recognize the Kafka cluster
+architecture to be very similar to Kinesis.
+So now, we see what goes in your cluster.
+So you have brokers
+and they're called Apache Kafka brokers
+and data will be replicated within them.
+So in this example, I've shown you
+three brokers in your Kafka cluster.
+Now, producers can be your code
+and could be whatever you want.
+You can create producers to take data from Kinesis
+and put it in Kafka clusters
+or IoT or RDS, et cetera.
+So you just have to write some application
+to set some data and put it and send it
+into what's called a Kafka topic.
+Now, Kafka topics are replicated.
+So this is how your data is safe
+across multiple availability zones.
+And so once it's written
+to a Kafka topic and replicated,
+then consumers, which will be your code,
+will be pulling from your Kafka topics.
+And then consumers can do whatever they want.
+They can do some logics from processing
+or send the data into target data sources
+such as EMR, S3, SageMaker,
+Kinesis, RDS, et cetera, et cetera.
+So as you can see, it's quite similar to Kinesis,
+differences that the APIs are different,
+the tooling is different, and that Kafka
+is going to be way more configurable
+which will allow you to get around some Kinesis limits.
+So in terms of configuration,
+you choose a number of availability zones.
+So three is recommended or two.
+Then you choose the VPC and subnets.
+This is a private cluster.
+You choose the broker instance type.
+For example, in the m5.large EC2 instance,
+the number of brokers per AZ
+and you can add brokers over time.
+And this gives you, in the end,
+one ZooKeeper per availability zone
+and one Kafka broker per AZ.
+So in this example, or two per AZ, for example,
+in this example, so we have three ZooKeeper nodes
+and six Kafka brokers and three AZ in this example.
+Finally, you choose the size of your EBS volume
+between one gigabyte and 16 terabytes,
+which allows you to retain data for as long
+as you need based on the time requirements.
+Again, maybe giving you a little bit
+more flexibility versus Kinesis Data Streams.
+Okay, now, security is very important
+in Apache Kafka and you will be asked
+maybe one question about it at the exam.
+So let's take an example of a cluster with three brokers
+so we can get encryption in-flight
+between each brokers using TLS.
+So by default, it's enabled, but you can disable it
+if you wanted to for performance improvements.
+You also get optional TLS encryption in-flight
+between the clients and the broker.
+And again, by default, this is enabled,
+but you can disable it as well
+for performance reasons as well.
+You get at risk encryption
+for your EBS volume using KMS.
+So this is enabled.
+Now, for network security, you can attach
+security groups to your Kafka clients
+to ensure that network security is made
+between your brokers and your EC2 instance.
+And most importantly, it's going to be around
+authentication and authorization.
+And this is very important.
+So this allows you to define who can read
+and who can write to which topics in your Kafka cluster.
+And so there are three kinds
+of mechanisms today in Apache Kafka.
+The first one is called mutual TLS.
+So that means that TLS certificates are used
+for encryption, but also for authentication.
+So this is why I wrote mutual TLS
+(AuthN) for authentication.
+And in that case, when you use this mechanism,
+you have to use Kafka ACL,
+so access control list to do
+the authorization at the topic-level.
+And Kafka ACLs are a mechanism
+within your Kafka cluster.
+You can also use something called SASL/SCRAM,
+which is to make it very simple,
+username/password for authentication.
+And again, you would need to use Kafka ACLs
+for authorization or you can use IAM access control.
+And IAM access control allows you
+to do both the authentication
+and the authorization using IAM policies.
+So this is sort of what you get
+with Kinesis Data Streams.
+So this is something, again, you have to know
+going into the exam to do Kafka security.
+Okay, so the one thing you need to know though
+is that Kafka ACLs for mutual TLS and SASL/SCRAM
+cannot be managed using IAM policies.
+They have to be defined from within your Kafka cluster.
+Okay, so that's it for security.
+Next, we have monitoring.
+So we have CloudWatch metrics and get three level.
+We get basic monitoring to get cluster
+and broker level metrics.
+Enhanced monitoring to get more
+broker metrics or topic-level monitoring.
+So for each data stream within your cluster,
+and this allows you to get enhanced topic-level metrics.
+You get Prometheus for open-source monitoring
+which allows you to extract data directly
+using the JMX exporter or the Node Exporter
+using the Prometheus protocol.
+And broker log delivery can be done to CloudWatch logs,
+Amazon S3, or Kinesis Data Streams.
+So that's it for MSK.
+Just remember it as a drop-in replacement for Kinesis
+and a more configurable one.
+You need to remember the MSK security
+'cause it will be asked for you at the exam.
+And I will see you in the next lecture to talk
+about drop in replacement versus Amazon MSK.

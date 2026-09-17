@@ -1,0 +1,114 @@
+# 12. Data Sampling Techniques
+# Section: Data Engineering Fundamentals
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40393206
+# Caption: en_US (auto)
+
+Instructor: The exam guide
+makes mention of data sampling.
+So let's do a quick review.
+There's two main ones to know
+about and one is just random sampling.
+Now, the point of sampling, right,
+is to take a large data set and make a
+smaller one out of it.
+Maybe you just want to play around with it.
+Maybe you don't wanna incur the expense
+of dealing with this larger
+data set and you just want a sample data set that's smaller,
+but still representative of the original larger data set for
+analysis purposes.
+One way of doing that, is just randomly sampling from
+that data set, right?
+So, with random sampling, everything has an equal chance of being
+selected for your sample.
+You're just rolling the dice and seeing what you get.
+And that works fine if you're a sample is you know, all
+the same stuff, right?
+So if there's no different categories within that
+data that you care about, random
+sampling makes sense.
+However, sometimes it doesn't make sense,
+and that's where stratified sampling comes in.
+So imagine that you have a large data set, but you
+have different classifications
+within that data set that you care about,
+and you wanna make sure that your sample dataset is
+capturing examples from each one of those different
+categories, right?
+So, for example, maybe we have white things, black things and gray things that we wanna
+sample from, and if we just randomly sample,
+there's a chance that we'd get
+nothing but white things or nothing
+but gray things, or maybe white and gray things, but not enough black
+things, right?
+That's what this example here on
+the right's trying to show you.
+The idea here is that we divide our population into
+homogenous subgroups, you call them strata.
+So we take a look at those white things and black
+things and gray things, and
+we randomly sample from within each stratum.
+So that ensures that we have good representation
+from each subgroup.
+So we don't have to worry about missing an entire category
+of things within our original data sample.
+If we're doing stratified sampling,
+that enforces that we're getting representation from
+each one of these subgroups,
+which is very important these days.
+Other types of sampling techniques are systemic,
+cluster, convenience, and judgmental.
+I think systemic is the only one
+that you're probably likely to hear about.
+So, let's look at some examples in more depth.
+Again, random sampling.
+Let's say we have, you know, this
+collection of purchase information where they're
+represented by these little wallets, if
+you will.
+We're just gonna randomly pick three, right?
+So, out of this pile of data, we're gonna
+select those ones and color them red.
+That's gonna be our new sample.
+We just chose them all at random,
+there's no pattern
+there, there's no rhyme or reason to it, random sampling.
+Stratified sampling.
+Let's imagine that we wanna think instead
+about purchases of specific kinds of items.
+So, maybe we have people who bought books, we have
+people who bought music, you
+know, CDs or digital downloads,
+or we have people that bought home and garden items or
+apparel items.
+We wanna make sure that we have an even representation of each
+one of these categories in our sample dataset.
+So, maybe we say that we wanna select two from books, two from
+music, two from home and garden,
+and two from apparel.
+And even though that doesn't represent the actual ratio
+of these different types of things in our data
+set, it ensures that we have samples and sufficient coverage of each one of those
+data categories within our sample.
+Alright? Makes sense.
+So we've stratified our data here into
+the categories that we care
+about that we wanna
+make sure that we have equal representation for in our sample
+dataset, and we pull the required number of samples from each strata.
+That's stratified sampling.
+Finally, let's look at systemic sampling.
+The only difference here
+is that instead of just randomly sampling,
+we're saying something like, we're
+gonna pick every third item, right?
+So we have a systemic rule for sampling our data instead
+of just doing it on random.
+So, in this case, that's what we're doing.
+We're saying every third order,
+we're gonna select that one and take it.
+So 1, 2, 3, 1, 2, 3, 1, 2, 3, we get a red
+one on every third try.
+So that is an example of systemic sampling.
+So that's data sampling in a nutshell.
+Pretty simple but important to review for the exam.

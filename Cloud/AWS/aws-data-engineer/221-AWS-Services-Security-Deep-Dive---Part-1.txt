@@ -1,0 +1,151 @@
+# 221. AWS Services Security Deep Dive - Part 1
+# Section: Security, Identity, and Compliance
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40306666
+# Caption: en_US (auto)
+
+Instructor: So let's do a review of security
+in all the AWS services that we've seen so far.
+This is going to be long and boring,
+but trust me, pretty much needed for the exam,
+so let's get started.
+First, Kinesis is comprised of Kinesis Data Streams
+and Kinesis Data Streams has SSL endpoints,
+so we can use the HTPS protocol and do encryption in flight.
+That means sending the data to Kinesis securely.
+There's also KMS integration
+to provide server-side encryption
+and that gives us encryption at rest.
+And on top of it, we can do client-side encryption,
+but we must use our own encryption libraries.
+There's no support for it in the Kinesis service
+and we will need to use the KPL,
+the producer library, to do so,
+but we will need to also provide the encryption on our own.
+There is a supported interface
+for VPC endpoints/private link.
+That means that we can access the Kinesis service
+within our private EC2 instances privately.
+You can use KCL to read from Kinesis,
+but remember if you do use KCL to read from Kinesis streams,
+then you must also grant read and write access
+to a DynamoDB table.
+Why? Because that KCL will use that DynamoDB table
+to do checkpointing and sharing the work
+between different KCL instances.
+So remember that.
+Now for Kinesis Data Firehose where we attach IAM roles
+so we can deliver data to S3,
+Elasticsearch, Redshift, and Splunk,
+hopefully remember these four destinations,
+and on top of it, the entire delivery stream
+can be encrypted using KMS.
+That is server-side encryption.
+There's also support for VPC endpoints
+and private links to access privately.
+Finally, for Kinesis Data Analytics,
+we can attach an IAM role to it
+so you can read from the Kinesis Data Streams we need
+and reference the sources maybe for reference data
+and write an output to an output destination.
+For example, the output destination
+may be either a Kinesis Streams or a Kinesis Firehose.
+So that's it for all the security on Kinesis.
+Let's get to the next technology.
+The next technology is SQS.
+SQS will give us encryption in flight
+using the HTTPS endpoint,
+so we can transfer data through SQS securely.
+We'll also have server-side encryption using KMS.
+And you must set an IAM policy to allow the usage of SQS.
+There's also a second level of security we can set
+using SQS queue access policies
+and ensuring that our users
+do have access to the SQS service.
+This is very similar to say an S3 bucket policy.
+If you wanna do client-side encryption,
+as usual, you must do it manually
+and you must do it yourself.
+This is not something that's supported
+directly by the service
+and you get a VPC endpoint that is provided for an interface
+if you wanted to access the SQS service securely.
+All right, next.
+Next is AWS IoT.
+IoT has many different securities,
+I don't know if you remember, but the first one is policies.
+Basically we are going to create X.509 certificates
+or Cognitive identities into our devices.
+And using the IoT policies, we can control everything.
+We're able to revoke any device at any time.
+And the IoT policies are JSON documents
+just like IAM policies.
+They can be attached to groups instead of individual things,
+so we can basically group the things together
+and just manage groups policies instead of things policies.
+So that was for things security,
+but then we can get IAM policies
+to look at the access of the users, groups, or roles
+within the IoT service.
+So it can be IAM policies
+attached to user, group, and roles as I said.
+And then you can basically use that to control access
+to the IoT APIs at a high level.
+For example, creating a rule
+or creating a role action, that kind of stuff.
+And then you attach roles to the Rules Engine
+so that they can perform their actions.
+So if your Rules Engine action is sending data to Kinesis,
+you need to attach an IAM role to that rule basically
+so it can perform its action
+and send data actually to Kinesis.
+Okay, now S3, we've seen this so many times,
+the security of S3, but one more time,
+we get IAM policies, S3 bucket policies,
+Access Control Lists, encryption in flight using HTTPS,
+encryption at rest of many different kinds.
+We get server-side encryption, SSE-S3, SSE-KMS, SSE-C.
+We get client-side encryption
+such as Amazon S3 Encryption Clients.
+And then we get Versioning and MFA Delete
+basically to make sure
+the data doesn't get deleted by mistake.
+We can get CORS for protecting website
+and making sure only a few websites
+get access to our S3 bucket.
+We get VPC Endpoint
+that is provided through a gateway endpoint
+basically to access S3 securely from our private subnet.
+And we have Glacier, I just included Glacier in there,
+that has a bunch of stuff,
+but including these things called vault lock policies
+that are very helpful if you want to prevent deletes,
+for example, for regulatory reasons.
+And that's called also WORM policy, write once read many.
+Now let's talk about the security for DynamoDB.
+So the data is going to be encrypted in transit
+using TLS or HTTPS.
+And then all your DynamoDB tables
+are going to be encrypted at rest.
+It will be using KMS encryption for base tables
+and secondary indexes and you have three options.
+The first one is to use the default AWS owned key,
+which is free of charge.
+The second option is to use an AWS managed key,
+which is, for example, aws/dynamodb,
+which is going to incur some KMS charges.
+Or the last one is to have an AWS customer managed key,
+your own, okay,
+and you are also going to have KMS charges for it.
+Now all the access to DynamoDB tables,
+to the API, to DynamoDB DAX cluster,
+are always going to be authenticated
+and authorized using IAM policies.
+Now if you do enable DynamoDB Streams,
+they are also going to be encrypted
+with the same encryption mechanism as your DynamoDB table.
+And if you wanted to access your DynamoDB table privately,
+you could use a VPC endpoint,
+which is going to be provided through a gateway.
+So that's it for this lecture, I hope you liked it
+and I will see you in the second part
+for more security on other services.

@@ -1,0 +1,52 @@
+# 248. AWS Shield
+# Section: Security and Compliance for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218923
+# Caption: en_US (manual)
+
+So now let's talk about AWS Shields.
+And Shield is a service to protect yourself
+from DDoS attacks.
+What is DDoS?
+Well, it's a distributed denial of service.
+And the idea is that your infrastructure
+is going to suddenly receive many, many requests
+at the same time
+from a lot of computers all around the world.
+And so the goal of it is to overwhelm
+and overload your infrastructure.
+And this way your infrastructure cannot serve
+your real users
+and this is what it's called a distributed denial
+of service.
+So we can protect against it,
+so we have the AWS Shield Standard service.
+It's a free service,
+it's already activated for every customer of AWS
+and is going to give you protection from attacks
+such as the SYN or UDP floods or any reflection attack
+or other layer 3, or layer 4 attacks.
+And if you want to get advanced protection,
+you can use the AWS Shield Advanced service.
+So this is an optional DDoS mitigation service.
+It costs around 3,000 per month per organization.
+And the idea is that you're going to get protected
+against more sophisticated DDoS attacks
+on Amazon EC2, Elastic Load Balancing, Amazon CloudFront,
+the Global Accelerator and Route 53.
+It also gives you 24/7 access
+to the AWS DDoS response team.
+So in case you get attacked,
+you will have someone to help you
+and get you along the way.
+In case you are incurring higher fees
+because you are also being attacked,
+this Shield Advance protects you from these higher fees.
+And this Shield Advance has an automatic application layer,
+DDoS mitigation, and it's going to mean
+that it's automatically going to create and evaluate
+and deploy WAF rules to mitigate layer 7 attacks.
+So automatically your web application firewall
+will have rules to help you mitigate these attacks,
+DDoS attacks if they happen at the layer 7, which is great.
+So let's say for this lecture, I hope you liked it,
+and I will see you in the next lecture.

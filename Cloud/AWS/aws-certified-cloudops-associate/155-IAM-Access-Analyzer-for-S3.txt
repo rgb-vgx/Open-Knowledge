@@ -1,0 +1,32 @@
+# 155. IAM Access Analyzer for S3
+# Section: Amazon S3 Security
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53219033
+# Caption: en_US (manual)
+
+So, just a quick lecture
+on IAM Access Analyzer for Amazon S3,
+which is something that can come up
+in the exam in one question.
+So, what is this?
+Well, this is a monitoring feature
+for your Amazon S3 buckets to ensure
+that only the intended people have access
+to your S3 buckets.
+So, how does that work?
+Well, it's going to analyze your Bucket Policies,
+your S3 ACLs, your S3 Access Point Policies,
+and so on, and is going to surface to you
+which buckets are going to be publicly accessible,
+which buckets have been shared
+with other AWS accounts and so on.
+And the idea is that you can review this and say, okay,
+this is normal, this is expected, or this looks a bit
+as a security issue because I did not intend
+to share this bucket with these people,
+and therefore, you can take action.
+And this is powered by IAM Access Analyzer,
+which allows you to find out resources in your account
+that are shared with other entities.
+So, I hope that makes sense.
+I hope you like this lecture
+and I will see you in the next lecture.

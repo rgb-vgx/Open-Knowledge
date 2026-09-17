@@ -1,0 +1,124 @@
+# 55. AMI Hands On
+# Section: EC2 Instance Storage
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098284
+# Caption: en_US (manual)
+
+So let's go ahead and practice using AMX.
+For this, I'm going to launch an instance,
+and I'm going to go into this new experience.
+So I will scroll down.
+We'll choose Amazon Linux 2.
+I will scroll down again.
+We'll use the G2 micro.
+I will select the easy to draw as my key pair
+but it doesn't really matter.
+Then I will scroll down.
+I would edit the network settings
+and I will select an existing security group
+being my launch wizard one from before.
+Then we'll have the same storage and for advanced details,
+I will scroll down and I will go for user data,
+but this time you're going to copy everything,
+but the last line.
+So, in the first four lines, we actually install HTTPD
+which is the Apache web server.
+In the last line, we create an index file
+but right now we don't want to create an index file
+want to do everything but that to create an AMI out of it.
+So we just copy everything.
+Remember, the last line is the system CTL command.
+And then we launch our instance.
+So our instance is launched and what's going to happen is
+that the instance is going to launch that's right here.
+And then it's going to run
+through the EC two, using the script
+and it's going to install the Apache web server.
+So if I'm too quick
+and I try to open right now, this public IPV four
+and try to enter into it, as you can see, it doesn't work.
+I'll get a connection, error, refused and so on.
+I need to make sure I'm also using the HTTP protocol,
+of course, but it, it just won't work, right?
+Because you need to give it a bit of time.
+Even if it says 'running', you need to give it time
+for the EC two user data script to run for the first time.
+So this might take a minute.
+This might take two minutes.
+Okay. But don't be in a rush, just wait for it to be done.
+And then at some point when you refresh
+you will see the screen.
+So let me pause the video.
+And it took about two minutes, but now I have my test page
+and this is the basic page from the Apache web server.
+And therefore we are good to go.
+So what we're going to do out of it is we're going to
+create an AMI because we want to just save the state
+of our EC two instance and reuse that.
+So I right click and I will do image and templates
+and then I will create an image.
+So we'll call this one 'demo image'
+and we're going to create our own AMI.
+And then we have these settings right here.
+We'll just leave it as is.
+Go here and click on create image.
+So now what's going to happen is that
+an AMI is going to be created.
+So if I go to the left-hand side and click on AMI's,
+as we can see here, my demo AMI is registered.
+And right now the status is pending
+because it is being created.
+So what I need to do is to be a little bit patient and
+for it to go into the created state.
+So my Amazon AMI is now created.
+And what I can do now is I can launch instances
+from this AMI by clicking here.
+Or if you are in the instance creation page,
+we can launch instances.
+And this one is called 'From AMI'.
+And in here in the quick start
+we get access to the ones we know
+but you can also go into the 'my AMI's tab'.
+Okay. And you have the ones owned by me
+and you can choose the demo image that you just created
+from before.
+So in that case, you scroll down, you select
+to key pair or not, just up to you.
+Network settings, again,
+we edit them and we just select the existing launchers
+in one security group.
+And what I'm going to do is that in the advanced,
+at the very bottom, I'm going to enter some user data.
+So I copy the first three lines, okay.
+Which are starting with the hash.
+And then the last line, which is the echo on the new line.
+And so what we do is that we only just write a new file.
+So we don't need to reinstall HTTPD
+because this AMI already contains HTTPD
+which is why we will speed up in the boot up time.
+This is why you would create an AMI.
+So we launch an instance and now the instance is launched.
+So I can just click on it.
+This is the one from the AMI.
+I need to wait for it to be fully created.
+My instance from my AMI is now running.
+I take the public IP address
+and then I see the 'Hello World' from this.
+And as you can see, this was much quicker
+because we didn't have to install HTTPD again.
+So this is the whole power of AMI's.
+And you can imagine, well, it could be just more than that.
+It could be security software,
+a lot of prerequisite software, and so on,
+you install it, it maybe it takes two,
+three minutes to do it.
+Then you package it as an AMI,
+and then you just start from the AMI,
+maybe do some end customization at the end
+but you have a much faster boot-up.
+And you're good to go.
+So that's it for this demo.
+Now to get back from this
+what you do is that you take your two instances
+and you can terminate them.
+And that's it.
+I will see you in the next lecture.

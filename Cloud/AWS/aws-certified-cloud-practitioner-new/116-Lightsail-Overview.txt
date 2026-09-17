@@ -1,0 +1,64 @@
+# 116. Lightsail Overview
+# Section: Other Compute Services: ECS, Lambda, Batch, Lightsail
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20515562
+# Caption: en_US (manual)
+
+Amazon Lightsail is a bit of an oddball in AWS
+because it is kind of a stand-alone service.
+So with Lightsail,
+you can get virtual servers,
+storage,
+databases
+and networking in one place.
+It gives you low and predictable pricing.
+And so the reason people use Amazon Lightsail
+is that it is a much simpler alternative
+to using services
+that we've been learning
+such as EC2 RDS, ELB, EBS, Route53 and so on.
+So Lightsail really the intent of it from AWS
+is for people that have little cloud experience
+and don't want to learn
+how the services work intricately,
+for example,
+how their networking works,
+how the storage works,
+the server works etc.
+This is not something you would use
+your learning how AWS works properly
+but if you're someone with little
+to no cloud experience
+then Lightsail maybe a service for you.
+From Lightsail you can also set up some monitoring
+and notifications for your Lightsail resources
+and so use cases for Lightsail would be
+for example,
+if you want to deploy a very simple web application
+for example,
+if you have LAMP Stack, Nginx, MEAN, Node.js
+there's templates for that on Lightsail
+or if you have a very simple website,
+for example,
+if you have a WordPress and Magento,
+Plesk, Joomla
+all these kind of things can be deployed
+very easily on Lightsail.
+Finally, Lightsail is also great
+if you have development and test environments in AWS.
+There is a concept of high availability in Lightsail
+but there's no auto-scaling
+and there really are limited AWS integrations.
+So to summarize,
+Lightsail really is something
+that you wouldn't use today on your own
+but from an exam perspective
+if you see someone
+that has no cloud experience
+and need to get started quickly
+with a low and predictable pricing
+without configuring things much
+that will be Lightsail,
+otherwise Lightsail will almost
+always be a wrong answer.
+So I hope that was helpful
+and I will see you in the next lecture.

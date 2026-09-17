@@ -1,0 +1,175 @@
+# 278. IAM - Policy Evaluation Logic
+# Section: Identity and Access Management (IAM) - Advanced
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18630394
+# Caption: en_US (manual)
+
+Let's get into IAM Permission Boundaries.
+And so these permission boundaries
+are supported for users and roles
+and they're not available for groups, so remember this.
+And they're an advanced feature
+that allow you to define the maximum amount of permissions
+an IAM entity can get.
+So let's have an example.
+We have this IAM permission boundaries.
+It looks just like an IAM policy.
+So we're saying, allow everything on S3 CloudWatch and EC2.
+So we attach this, for example, to an IAM user
+and that's its permission boundaries.
+That means that it can only do things
+within S3 CloudWatch and EC2.
+And then you need to specify on top of things
+an IAM permission through policy.
+And so here, say we attach to the very same user,
+allow iam:CreateUser, resource *.
+So there is a boundary
+and there is an IAM policy with permissions.
+What is going to be the results permission in this case?
+Well, nothing, no permissions
+because the IAM policy
+is outside the IAM permission boundary.
+Therefore, our user is not allowed to create other IAM users
+because that is not in its IAM permission boundary.
+So I want to show you
+where IAM permission boundaries are created.
+So let's go create a user.
+I'm going to call the user John,
+and then I'm going to give him programmatic access.
+Next permissions.
+I will not set anything,
+and next Tags.
+Review, and Create user.
+So we have created John
+and we're going to set permission boundaries for John.
+So imagine John is a developer in our company
+and he needs to have certain permissions
+but we want to make sure that he has a permission boundary.
+So for this, we could assign a policy,
+for example, for John,
+so if I add permission and I say, "Hey, John,
+I'm going to attach to you AdministratorAccess."
+It seems like John can do everything right now.
+So John is a super user.
+But I'm also going to set a permission boundary on John.
+And I'm going say, okay, here is your boundary
+and this is an advanced feature.
+And I'm gonna say the only thing you can do, actually,
+John, is to have AmazonS3FullAccess.
+And so here, what I've been setting
+is a permission boundary for John.
+And so through this AWS S3 full access managed policy,
+even though John has an administrator access,
+when John logs in, the only thing he can do is to access S3
+because S3 is its boundary.
+So here we've seen that,
+even though there is a policy attached to John
+that gives him an administrator access,
+the boundary is actually going to be more restrictive.
+So IAM permission boundaries can be used
+in combinations of AWS Organizations SCP.
+So if look at this diagram,
+we have the effective permissions
+to be in the middle of your identity-based policy,
+so whatever is attached to your user or your group.
+The permission boundary, which by the way,
+only applies to a user or a role and not a group.
+And your organization SCP,
+which applies to every single IAM entity in your account.
+So in the middle lies what the users can do.
+So we can use permission boundaries for a few use cases.
+For example, to delegate responsibilities
+to non-administrators within their permission boundaries,
+for example to create new IAM users.
+Or to allow developers to self assign
+and manage their own permissions,
+while making sure they can't escalate their privileges,
+that means making themselves administrators.
+Or for example, restrict one very specific user
+inside yours organization
+instead of applying an entire SCP to your account
+and restricting everyone in your whole account.
+So let's have a look at the IAM Policy Evaluation Logic.
+Because this diagram basically explains to you
+how you are authorized, or not, to do actions within AWS.
+And you don't need to know by heart,
+but it should make sense to you.
+So we can see there's a whole flow,
+but at every step, there is an evaluation.
+And so we're going to look at Deny evaluation,
+we're going to look at Organizations SCP,
+Resource-based policy,
+Identity-based policy,
+IAM permission boundaries,
+and then finally, Session policies
+to allow or deny a specific IAM action.
+So let's have a look in details to see how that works.
+So we're going to look at all the possible policies in here.
+And if there is an explicit deny,
+then we know that it's going to be denied automatically.
+Then we look at the organizations SCP,
+and is there an allow?
+If yes, then go to next step.
+If not, then it's a deny because it's an implicit deny.
+Then we look at resource-based policy,
+for example, that can be applied to S3 buckets.
+They can be applied to SQS and so on.
+And again, we have a look,
+is there a resource-based policy?
+If so, is there an allow?
+Yes or no?
+Then we have identity-based policy.
+So we look, again, as whether or not
+there's an identity-based policy,
+whether or not there's an allow,
+and then we deny implicitly or go onto the next step.
+Then we look at IAM permission boundaries that we just saw.
+And then finally, we look at session policies
+that won't go over them, this is more related to SDS.
+But what I want you to remember is
+that all these things are evaluated
+when making a specific IAM action.
+And so, only if all these things are allowing
+and working together, or not denying specifically,
+then you will have a final decision allow,
+and you'll be able to do your action.
+So it's just to give you a bit more overview
+but hopefully you understand better
+how security works in AWS.
+So let's have a look at this policy
+and see what it can do to make it a bit more concrete.
+So we have sqs:*, Deny on resource *,
+and we have action, sqs:DeleteQueue, Allow on resource *.
+So first question is,
+can you perform sqs:CreateQueue?
+The answer is no, you cannot
+because there is a Deny star on SQS,
+and CreateQueue belongs to that block
+and there's a deny on it,
+so it's definitely going to be denied.
+Now, can you perform an sqs:DeleteQueue?
+So there's a deny on the top part
+and there's an allow on the bottom part
+and they conflict.
+There's a deny and allow.
+But what did I just tell you?
+I told you that as soon as you have an explicit deny,
+then the decision is going to be denied.
+So because there is an explicit deny on sqs:*,
+and sqs:DeleteQueue is within that sqs:*,
+then no matter what, even there's an allow here,
+this is going to be denied this action.
+So you cannot perform sqs:DeleteQueue,
+even though you have allowed it explicitly
+in the second block.
+So very important to know.
+And finally, can you perform ec2:DescribeInstances?
+So as we can see, there's nothing on EC2 in this thing.
+And this is an IAM policy.
+And so, because there is no explicit deny
+but also there's no explicit allow,
+then you cannot perform ec2:DescribeInstances
+with this IAM policy.
+All right, hope that makes sense.
+So that's it for this lecture.
+Hopefully you understand IAM better.
+And I will see you in the next lecture.

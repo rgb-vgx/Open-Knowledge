@@ -1,0 +1,28 @@
+# 30. AWS Amplify - Extras
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858674
+# Caption: en_US (manual)
+
+So some extra information around AWS Amplify.
+So you can connect CodeCommit
+and have one deployment in Amplify per branch in CodeCommit.
+So for example, if you have a CodeCommit repository
+with development and production branches
+and we actively push code to both of these
+we can connect them both to Amplify.
+So if you connect the development branch
+then Amplify is going to create a deployment for it
+and we can connect it to a custom domain,
+for example, dev.example.com.
+So that our users access the state of our development branch
+through dev.example.com.
+And then for production, we connect it as well to Amplify
+which is going to be deployed in its own custom domain.
+For example, example.com.
+And our users can access the production domain
+through example.com.
+So the idea is here we need to create one Amplify deployment
+per branch in CodeCommit
+and we can connect it to a custom domain in Route 53.
+Okay, so that's it for this lecture, I hope you liked it
+and I will see you in the next lecture.

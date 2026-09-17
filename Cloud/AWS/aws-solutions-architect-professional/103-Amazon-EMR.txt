@@ -1,0 +1,152 @@
+# 103. Amazon EMR
+# Section: Data Engineering
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376604
+# Caption: en_US (manual)
+
+Okay, so let's get into EMR.
+EMR stands for Elastic MapReduce,
+and they help you create Hadoop clusters
+to do Big Data in the AWS Cloud.
+The idea is that you would use EMR
+if you're doing a migration from on-premise,
+and many companies have an on-premise Hadoop cluster,
+and they wanna migrate these jobs onto AWS
+to take advantage of the Cloud.
+So usually it's about elasticity.
+So, the clusters can be made of hundreds of EC2 instances,
+so they give you a lot of scale to process data.
+But then as soon as you're done,
+you're more than welcome to shut down your EMR cluster
+and that saves you a lot of cost as well.
+So EMR is a natural fit
+to migrate your Hadoop clusters from on-premise onto AWS.
+EMR is going to be launched in the Big Data ecosystem.
+So it's going to be made of Apache Spark,
+HBase, Presto, Flink, Hive, et cetera, et cetera.
+The idea is that usually
+Hadoop clusters are quite complicated
+to create and configure,
+but with EMR, all the provisioning and the configuration
+of the EC2 instances is done for you.
+You just specify what you want and you get it very quickly.
+You also get auto-scaling capability with CloudWatch,
+and the use cases for EMR very classically
+is data processing, machine learning,
+web indexing, big data,
+basically anything you need to process at scale.
+Now, EMR has a few integrations you need to remember
+going into the exam.
+So EMR is launched within a VPC,
+and it is within a single availability zone.
+So you have your EC2 instances
+and they have EBS volumes
+and you can have many of that.
+And the EBS volumes are running something called HDFS
+for Hadoop Distributed File System,
+and that gives you temporary storage
+for your EC2 instances in your cluster.
+But if you want to have long-term retention of data,
+you need to use something called EMRFS,
+which has a native integration into S3,
+and S3 obviously is going to be
+a more durable type of storage because it is multi-AZ,
+and that gives you permanent storage
+and you can also define server-side encryption.
+So as we can see, any EBS volume is going to be
+high performance for temporary storage
+and for your computations,
+but as soon as you need to persist your data
+into something that's going to be multi-AZ,
+use EMRFS and S3.
+As you can see, everything is launched in your EMR cluster
+within a single-AZ because you get natural,
+better networking performance and lower cost.
+But obviously because it is within a single-AZ,
+in case you lose your AZ
+you would lose your data.
+Then we can run something like Apache Hive on EMR,
+and there is a module that has been developed for Hive
+to directly read data from a DynamoDB table.
+So in case you want to analyze all your DynamoDB table,
+you can do it so from EMR by using Hive.
+Okay, next, very important, you need to understand
+how you can optimize your cost in EMR.
+So Amazon EMR is made of clusters of EC2 instances
+and you have different kind of nodes.
+You have the master node,
+and the master node manages the cluster.
+It will coordinate and manage the health
+of all your other nodes
+and it must be long running.
+Then you have the core node.
+They're here to run tasks and also store data,
+and they must be long running as well.
+And then you have this task node,
+which is there just to run tasks
+and usually you can take spot instances for it,
+and using task node is optional.
+So the purchasing options really depends.
+If you have the on-demand EC2 instance type,
+then you're going to get reliable,
+predictable type of workloads
+and they will never be terminated.
+If you use reserved instances,
+and remember it's minimum one year of usage,
+then you're going to get big cost savings
+and EMR will automatically use
+your reserved instances if possible.
+And therefore, good candidates for reserved instances
+are going to be the master node
+because it must be long running,
+and also the core nodes.
+And regarding spot instances,
+well because they can be terminated,
+they're less reliable but they're cheaper.
+And so, a good way for you to leverage spot instances
+would be on Task Nodes.
+Finally, for EMR in terms of deployments,
+you can have either long-running clusters,
+which would make sense for than using reserved instances,
+or you can use transient temporary clusters
+to just do something
+and then tear it down once the analysis is done.
+Okay, next you have the instance configuration.
+So you have uniform instance groups,
+where you select a single instance type
+and purchasing option for each node.
+So in this example, you say,
+"Okay, the master needs to be on-demand or spot,
+the cores, I want two and to be on-demand or spot,
+and the task node, I want c4 xlarge, D22 xlarge,"
+that kind of things.
+And you say on-demand spot.
+So this is very helpful,
+and it's called a uniform instance group.
+A difference, the other type of EMR instance configuration
+is called an instance fleet,
+where you select a target capacity
+and you will mix instant types and purchasing options.
+So in this example, you're saying,
+"Okay, my master is going to be an on-demand.
+My core can be a bunch of different instances,
+and six of them needs to be on-demand
+and 10 of them needs to be spot.
+And same for my tasks."
+So you have more,
+it's a spot fleet basically for EMR.
+So that's how the best way to describe it.
+So it's just two purchasing options.
+The first one has auto-scaling,
+the second one does not have auto-scaling for now,
+but the idea is that on the left-hand side
+you choose the instance type in advance.
+And on the right-hand side,
+you just specify a mix of on-demand and spot fleet
+and a bunch of different instance types you can choose from.
+And EMR will provision that cluster for you.
+I don't think the exam will go into that level of details,
+but it's good for you to know as a solution architect
+that these two options are available.
+Okay, so that's all you need to know for EMR.
+I hope you like this lecture
+and I will see you in the next lecture.

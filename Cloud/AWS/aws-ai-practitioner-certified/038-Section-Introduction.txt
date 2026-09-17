@@ -1,0 +1,16 @@
+# 38. Section Introduction
+# Section: Prompt Engineering
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44977025
+# Caption: en_US (manual)
+
+So in this section we are going to learn
+about prompt engineering.
+Now, prompt engineering is very important
+because number one, well it's at the exam,
+but number two, the skills you're going to learn
+in this section can be applied to any LLMs out there.
+That means Chat GPT, or cloud or anything else.
+So therefore, mastering prompt engineering
+will get you far ahead in the AI race.
+So I hope you're excited.
+Let's learn prompt engineering together.

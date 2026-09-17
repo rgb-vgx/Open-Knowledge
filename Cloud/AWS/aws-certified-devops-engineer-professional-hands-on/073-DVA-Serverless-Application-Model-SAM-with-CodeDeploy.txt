@@ -1,0 +1,239 @@
+# 73. [DVA] Serverless Application Model (SAM) with CodeDeploy
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869152
+# Caption: en_US (manual)
+
+So here is something I promised you before.
+We are going to see how CodeDeploy
+is integrated with the SAM framework,
+and SAM will be using CodeDeploy
+to update our Lambda functions,
+and that will leverage the traffic shifting feature
+we've seen before using the aliases.
+We can also define pre and post-traffic hooks,
+Lambda functions to validate the deployments,
+and we can do an automated rollbacks with CloudWatch alarms.
+So in a diagram to remember to remind you,
+we had the Lambda alias that had v1 Lambda,
+and we're going to trigger a CodeDeploy deployment
+whether with a CICD or with a SAM framework,
+and then we want to update our alias into a v2.
+So CodeDeploy will be running some pre-traffic hook test
+using another Lambda function, and that's optional.
+Then it will do a traffic shifting with the alias,
+so according to your strategy,
+and then it will monitor a CloudWatch alarm,
+and that's also optional,
+to ensure everything goes well during the deployment,
+and then once the deployment is done
+and the traffic shifting is completely done,
+we can run a post-traffic hook Lambda function,
+this is again optional, to run some tests onto your alias,
+and if everything goes well,
+then your v1 function and your alias goes away
+and we're just ending up with the v2.
+So here is an example of the YAML file
+that you will have within SAM.
+So I want to just show you a couple of things.
+The first one is AutoPublishAlias.
+So this is helping SAM detect
+when new code is being deployed.
+In that case, a new Lambda function will be deployed
+as a new version with the latest code,
+and then automatically the alias will be updated
+to point to the updated version of the Lambda function,
+and in terms of how fast that happens,
+well, this is controlled by the DeploymentPreference,
+and so we have different types.
+We have the Canary type, the Linear type,
+and the AllAtOnce type,
+and they're basically CodeDeploy settings.
+So in this example, we have Canary10Percent10Minutes.
+Then we have alarms.
+What are the alarms that can trigger a rollback
+in your deployment?
+So it's a list of alarms we want to monitor just in case,
+for example, we have too many errors on the newer version,
+and hooks, which are Lambda functions
+that are going to be running pre-traffic shifting
+or post-traffic shifting,
+and they can be helpful to test your deployment
+and to run some customized code just in case you need to.
+So let's go ahead and practice this.
+So let's go ahead with SAM.
+We'll create a new application.
+So I've created a sam-codedeploy directory,
+and I'm going to go into this directory with my terminal.
+So I create a new terminal, and then I go into,
+so where are we?
+I'm going into the right directory.
+So I will go into the sam-codedeploy directory. Here I am.
+Then I'm going to initialize a new SAM application.
+So I will use Python 3.7, which is installed on my system.
+So I will use the quick start templates,
+name the project sam-app,
+and then in terms of the quick start,
+I want to use the Hello World Example.
+Press Enter, and here we go. We're done.
+Next, I go into the sam-app directory,
+and I'm going to run a sam build command,
+which is right here, to build my SAM application.
+So I will build it right now, and while we're at it,
+let's have a look at what this SAM app does.
+So there is a HelloWorldFunction,
+and there's our app.py, and it returns,
+let's see what it returns.
+It returns just a body saying "hello world."
+So this is a very simple application,
+and what I want to see more importantly
+is the SAM template.yaml.
+So if I scroll down on this SAM template,
+I can see it creates a Serverless::Function for me,
+and currently it outputs just this function as well,
+some ARN, and the name of the API that it uses, and so on.
+So this is great, but what I want to do
+is add a little bit of information
+around how to deploy this application with CodeDeploy.
+So to do so, I need to add a bit of YAML to this file,
+and so I can find this YAML
+into a codedeploy.yaml file that I've created
+which contains the necessary code for CodeDeploy
+to be integrated with my SAM framework.
+So I'm going to paste this,
+and you want to make sure that the AutoPublishAlias live
+is in line with your Events.
+So it is.
+So what this is going to do is say,
+"Okay, you're going to auto-publish an alias,
+and then you're going to do
+a Canary10Percent10Minutes deployment."
+So that means that every time we deploy into our alias,
+we're going to have two versions.
+One of them will have 10% of the traffic for 10 minutes,
+and if everything goes well after 10 minutes,
+it will switch to 100%,
+and this will be using CodeDeploy behind the scenes.
+So I'm going to rerun my sam build.
+So I'm going to go into my terminal
+and redo my sam build.
+So I'll do sam build,
+and then I will do something a bit better.
+I will just do a sam deploy --guided to deploy my function,
+and this will be even easier for me.
+So I'm going to do a sam deploy --guided,
+and this should make the steps even more simple.
+So here we go.
+It says samconfig not found, so I'll just say okay.
+The region I want to deploy to is eu-west-2.
+Do you want to show the changes before deploying?
+I'll say yes, I want to.
+Do you want to allow a SAM CLI IAM role credentials? Yes.
+Do you want to save these? Yes, and here we go.
+So it is creating the required resources,
+and it should prompt me to say yes or no
+before these resources are deployed.
+So I'm waiting a little bit here.
+So now my function is being deployed.
+The deployment is being initialized
+and a changeset is created in CloudFormation.
+So I'm just waiting for it to happen.
+So here, I can look at my changesets,
+and it shows everything that is going to be created,
+and I'm happy to, and there is a CodeDeployServiceRole
+that is going to be created for me as well.
+So this is exactly what I need, so I'll say yes,
+please go ahead and create all these things.
+Now I need to wait for the CloudFormation template
+to be fully created and I see all the changes streamed
+into my terminal.
+So my stack has been fully created.
+Now I can go into my management console,
+and I can go to Lambda and see if my Lambda function
+has been created.
+So if I go to Applications on the left-hand side,
+I can see my sam-app right now that has been created,
+and in here, we can look at Deployments,
+and right now, there has been a Lambda application
+that has been deployed with an alias.
+So let's have a look at this Lambda function.
+So for this, I'm gonna go into my Functions
+and try to find it.
+So it's called Hello World something.
+So I will try to find it a second ago.
+So if we look by last modified, here we go. We can find it.
+Here is my function, and so it's a SAM function,
+and if I go to Actions, I'm sorry, to Qualifiers,
+I can see I have a live alias which is at version 1.
+So this represents the latest version
+that has been deployed by Lambda function.
+So if I test this and I create a fake test event
+and create it and test it,
+now I can see that this has succeeded
+and just says "hello world."
+So this is my version 1 function on my alias live one,
+but now we want to use CodeDeploy.
+So let's go and edit our function.
+So we're going to hello_world, app.py,
+and I'll say "hello world v2."
+So this is an update of my function,
+and I'm going to repackage my function.
+So I will do sam build to build my function yet again,
+which will replace the application code,
+and then I can do sam deploy --guided,
+which should deploy my function.
+So I say yes, this is a stack name, this is a region.
+Yes, I want to see the changes before deploying,
+and yes again, and yes again.
+So everything is a yes.
+Now the deployment is initiating,
+and everything is being uploaded into CloudFormation.
+The changeset is yet again created,
+and I'll be able to see what will change before,
+and so as we can see here,
+there will be a modification of the alias.
+There will be a function being modified
+as well as a version being created.
+So everything looks good,
+and this should involve CodeDeploy, so I'll say yes,
+and now this is being applied into my CloudFormation,
+and so this is where the cool thing happened.
+I should be able to go into CodeDeploy
+and see the thing happening live.
+So if I look at this alias, refresh this page for my alias.
+Now I should be seeing at the very bottom
+that there is a version 1 and a version 2
+with weight 90 and 10.
+So this was done by my SAM CLI, but more importantly,
+let's go to CodeDeploy and see if CodeDeploy is functioning.
+So we're still looking at Deployments,
+and there is a blue/green deployment happening
+for Lambda right now.
+I click on this deployment ID,
+and I can see that the pre-deployment validation
+has succeeded because there was none.
+Then we can look at the CodeDeploy
+traffic shift in progress,
+so 90% on the original and 10% on the replacement,
+which represents this 90 and 10 from my alias.
+So this is running the traffic shift,
+and this will take about 10 minutes to do
+because we have deployed a LambdaCanary10Percent10Minutes
+deployment configuration, and so at the end of this,
+it's going to do a post-deployment validation,
+and then the entire traffic should be 100% on my version 2.
+So let me pause here and wait a little bit.
+Okay, so now everything has completed.
+The traffic shifting was successful.
+The post-deployment validation did not exist,
+so it was successful, and if we scroll down,
+we can see a breakdown of all the events that happened,
+and so if I go back to my alias and now refresh this page,
+what I should be seeing is
+that the entire alias being outdated.
+It is, yes.
+It's just alias pointing to version number 2,
+and so as such, we've done a canary deployment
+of our Lambda function using CodeDeploy
+and the SAM framework.
+That's it.
+Hope you liked it, and I will see you in the next lecture.

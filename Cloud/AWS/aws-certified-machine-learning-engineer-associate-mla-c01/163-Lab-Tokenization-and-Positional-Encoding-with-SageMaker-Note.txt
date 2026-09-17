@@ -1,0 +1,197 @@
+# 163. Lab: Tokenization and Positional Encoding with SageMaker Notebooks
+# Section: Generative AI Model Fundamentals
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285951
+# Caption: en_US (auto)
+
+So just to see some of this stuff in action, let's go on over to the AWS Management Console and spin
+up a SageMaker notebook, shall we?
+So let's head on over to Amazon SageMaker.
+And a couple of ways to do this.
+There's a new thing called Studio Lab.
+It's brand new as of this recording.
+But right now they don't really have a whole lot of hardware associated with it.
+It's basically Amazon's answer to Google Colab, where it's a free environment for experimentation.
+But the last time I tried it, first you had to, like, go through this whole, uh, application process
+to get access.
+And when I did get access, there wasn't any actual hardware available.
+So let's do this the the old fashioned way.
+Uh, we're going to go to notebook and notebook instances.
+This is not free by the way, but it will not cost too much because we're going to stick with a very
+inexpensive instance.
+For this.
+Let's create a notebook instance and we'll give it a name.
+How about Transformers.
+And let's stick with the T3 medium.
+That's a pretty cheap instance type, but do remember to shut this down when you're not using it though.
+It will sit there and rack up charges for as long as it's running, which you probably don't want.
+All right, the defaults here should more or less be okay.
+We're going to go ahead with the default permissions and encryption.
+All this other stuff is optional.
+Let's just go ahead and kick it off.
+We are spinning this up with Amazon Linux two and JupyterLab three.
+That should do the job.
+And now we just need to wait for that to become available.
+So we'll come back when that's done.
+All right.
+We're back after about five minutes.
+That is now in service.
+So let's go ahead and click on my Transformers notebook instance.
+And we can see that it's ready to go.
+Let's go ahead and open Jupyter.
+And we'll just wait to get redirected here.
+And we have a nice shiny new notebook here.
+So let's go ahead and import one from your course materials that will walk through some of the Transformers
+concepts that we've been talking about here.
+So I'm just going to hit the upload button here and navigate to where I downloaded the course materials.
+And from there let's select the Transformers ML course SageMaker Ipynb file and hit upload.
+And now we can click on it and start playing.
+Now since this is running on just a little CPU instance here, we're not going to be able to do any
+massive training, but we can use Transformers and break down some of the parts of it.
+So first of all, let's start off by installing what we need.
+We're going to be installing the Transformers package from Hugging Face.
+So let's briefly talk about what hugging face is.
+It's Huggingface Co by the way not calm.
+Don't get that confused.
+It's basically a giant repository of pre-trained models you can use.
+And they have a lot of transformer models as well, including things like GPT two and Gpt-j.
+Also, llama is available for you.
+Stable diffusion.
+They're all just sitting there waiting for you to play with.
+So, you know, you can actually work with these massive, large language models your own on your own
+and train them and fine tune them and use them however you want to, which is pretty darn cool.
+And it's also free, which is even cooler, you know, if you want to be able to save your models and
+offer them to other people, then you will need an account.
+But if you're just using it to mess around, it's totally free.
+So yay!
+And it's also free to import their Transformers package for Jupyter notebooks and allow us to play around
+with it there.
+It's also not just a repository.
+There's also a lot of good learning resources here as well, by the way.
+So when you go into the documentation for a given model, let's click on llama to be here.
+It tells you all sorts of stuff about it.
+And they also have a lot of learning resources.
+If you go to docs.
+You can learn all about Transformers here.
+And they even have a lot of tutorials and some of them are even video tutorials.
+So if you do want to dive deeper.
+Hugging face is a great resource.
+Back to our notebook though.
+Let's go ahead and shift enter to install the Transformers package itself.
+Note that I'm actually installing this from source from GitHub.
+That's because if you want to actually do fine tuning, you do need that source version installed.
+Otherwise you can just say pip install transformers for the stuff that we're going to be doing in this
+particular exercise.
+But let's go ahead and do this.
+Uh, from source here.
+It doesn't take too long.
+And it's automatically getting all the dependencies for that and installing it.
+Just wait for that to finish and we're done there.
+Now we're also going to install a bunch of other packages here JupyterLab, Ipywidgets, viz, Xformers,
+evaluate, and matplotlib.
+That's so we can actually visualize what's going on inside of this transformer.
+So let's go ahead and take care of that.
+Again, it will take a little bit of time for this all to install.
+All right.
+That took a few minutes but it finally finished up.
+And let's take a look at what it did here.
+We installed everything we asked for and it also installed PyTorch.
+Just a little note there.
+We're actually using the PyTorch framework and not TensorFlow and Keras here.
+PyTorch is become a little bit more trendy these days I think.
+All right.
+So now we're ready to rock and roll.
+We're going to import the Bert model and Bert tokenizer packages from the Transformers package from
+Hugging Face.
+And it's just that easy.
+Now Bert is a transformer that's built entirely on encoders, as opposed to GPT, which is built entirely
+on decoders.
+So a little bit of a different way of going about things that the transformer architecture level.
+But we're just going to be talking about tokenization and attention right now.
+And that works the same way no matter what kind of transformer we're talking about.
+So let's just load this up because I happen to have good visualization tools available for Bert.
+Let's kick that off.
+And that's going to go off to hugging face and import the models for Bert and also the tokenizer for
+Bert, so we can play with that directly.
+Down it comes and we're done.
+All right.
+So now we can take a look at an example of tokenization of a real phrase here.
+So back from our slides we had the example of I read a good novel where novel might mean a couple of
+different things, right, depending on the context.
+So the first step is to tokenize that our transformer model can't deal with words.
+It can only deal with numbers.
+So we first need to translate that sentence into a series of numbers that are numerical model can do
+stuff with.
+So let's see what that looks like.
+And you can see that it actually took I read a good novel and broke it up into these different tokens.
+I read a good novel.
+Notice that there are more tokens than there are words here.
+First of all, we're seeing 101 and 102 at the beginning and end here.
+Presumably that's those are special tokens that say, I'm starting to say something and I'm done saying
+something in between.
+I read a good novel.
+We still have one extra one.
+Remember that a word can consist of more than one token, so that's not too atypical to have more tokens
+than words.
+You know, we tend to use the phrases tokens and words interchangeably sometimes, but they really aren't
+interchangeable.
+A word can consist of more than one token, and we can also see the attention mask here that's built
+up for it as well.
+When we talked about attention and self-attention, there was this concept of using a mask to make sure
+that we're not looking ahead of ourselves, right, that we're only basing the attention on what we've
+seen so far up to that point.
+And attention masks is one way of doing that.
+So we can convert that back and see what those tokens really are by saying convert IDs to tokens.
+So I'm going to take back that list of tokens and convert them back to words.
+And you can see here that beginning CLS token special token and a Sep token at the end, like we said,
+there are special tokens to sort of indicate different events in the stream of texts.
+So I'm starting to say something.
+I'm done saying something.
+Maybe you should go and generate some text now.
+Right.
+And it turns out that the period is where that extra token came from.
+I read a good novel each to correspond to individual token IDs, but that period at the end is also
+its own token as well.
+So in this case, it's pretty straightforward.
+I'll talk a little bit about positional encoding as well here.
+So just a way to visualize what's going on here.
+So remember that when we're feeding stuff into a transformer we're not doing it one word at a time like
+we would have done with a recurrent neural network.
+It's actually processing everything in parallel.
+So how does the thing know where these words are in relation to each other within a sentence?
+Well, that's where positional encoding comes into play.
+Right.
+So we can see here that we're going to build up our own encode positions function here and do it from
+scratch just to visualize what that might look like.
+And we're actually overlaying a sine wave function and a cosine wave function within this matrix.
+And interleaving the two.
+This is how it's actually recommended to be implemented within the papers.
+So what does that look like?
+So the idea here is that because we're basing it on a sinusoidal wave and a cosine wave, these things
+just go on forever, right?
+There's no end to a sine wave.
+It just stretches on and on and on.
+And by looking at where we are within that sine wave, within one period of it, we can get an idea
+of where this word sits relative to the other words, at least within that period.
+So it's scalable.
+It's not, you know, entirely precise because it won't tell you where something is in a much longer
+sentence necessarily, but it works.
+So let's build up that positional matrix here.
+And again, all we're doing is saying that for a given position within a sentence, we're going to encode
+that as a sine wave and a cosine wave being interleaved together in this positional matrix.
+Now we can visualize that just using matplotlib.
+And we can see that it looks like this image here.
+So you can kind of see those sine and cosine waves working their way through there.
+If you sort of envision this going down further and coming back up later on, it would eventually repeat.
+But you can see for this particular sequence going up to, you know, say around 100 tokens or so,
+it does encode some information about where those tokens lie relative to other tokens, and it just
+works out better for the math for this to be interleaved with a cosine wave as well.
+All right.
+So that's positional encoding in a nutshell kind of a way to visualize it.
+Now if you do want to take a little break from the course here, I would remind you to go back to SageMaker
+and stop this notebook instance.
+If you're not going to be using it for a while.
+If you are going to plow through this section and keep on going, then by all means keep it up and running.
+But if you are going to stop, be sure to stop this notebook instance.
+Otherwise you will continue to be charged for it until you do stop it.
+Um, I don't want you to get a big surprise on your AWS bill at the end of the month, so do remember
+to stop this when you're not using it.

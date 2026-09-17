@@ -1,0 +1,27 @@
+# 107. CloudFormation - Stack-level Tags
+# Section: CloudFormation for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218347
+# Caption: en_US (manual)
+
+Another quick lecture
+on something you've seen and maybe you know,
+there are stack level tags.
+So there's tags that you associate
+with the CloudFormation stack.
+When you use the CloudFormation console at the end,
+you can configure any tags you want, so key value pairs,
+and you can also do this using the AWS CLI.
+The idea is that when you associate tags
+with a CloudFormation template,
+when you deploy it in the console, for example,
+these tags are going to be automatically propagated
+to any supported resource in the stacks.
+That means that if, for example, you have an EC2 instance
+that has tags, then the tags you apply
+to the CloudFormation templates through the console
+are also going to be applied to the EC2 instance and so on.
+That allows you to quickly find, for example,
+all the things associated with the CloudFormation templates
+directly by using a tag search in AWS.
+Alright, that's it. I hope you liked it.
+And I will see you in the next lecture.

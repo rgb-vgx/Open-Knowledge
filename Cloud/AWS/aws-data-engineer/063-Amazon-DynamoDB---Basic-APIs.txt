@@ -1,0 +1,199 @@
+# 63. Amazon DynamoDB - Basic APIs
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304552
+# Caption: en_US (manual)
+
+In the exam you will see
+the IPI calls of the DynamoDB referred by their name.
+So it's good for us to see them once.
+So if you want to write data, you have a few options.
+You have PutItem, and when you do a PutItem,
+it creates or fully replaces a new item
+that has the same Primary Key.
+It will consume write capacity units.
+And so the idea is that you wanna do a full replace
+or writing a new item.
+The second one is UpdateItem,
+which is a bit different than PutItem.
+This one will edit the existing items, attributes,
+or we'll add a new item if it does not exist.
+But the idea is that with UpdateItem,
+we only edit a few attributes, not every other attribute.
+So this is the difference between PutItem and UpdateItem.
+And we can use it with Atomic Counters that we'll see
+in this section as well.
+And then you have Conditional Writes,
+which is to accept a write/update/ delete
+only if a condition is met.
+And this is helping with concurrent access to items.
+And we'll see this as well in this section.
+To read data, we have a GetItem.
+And GetItem is very simple and easy to understand.
+You read based on the Primary Key and the Primary Key again,
+can be a HASH or a HASH+Range,
+so you have the two options.
+And you get two modes to read from.
+So you have the Eventually Consistent Read Mode
+or to have Strongly Consistent Read Modes,
+but you need to specify it.
+It will take more RCU
+and then maybe a little bit more latency.
+You can also specify a Projected Expression in your API.
+And this Projection Expression
+is going to help you receive only a few attributes
+out of the DynamoDB.
+Next we have the query.
+And the query is to return items
+based on a Key Condition Expression,
+which is a Partition Key, so it must be the equal operator.
+So you're saying, Hey, I want to query for John 123,
+and also optionally a Sort Key, and because you can sort,
+then you can have equal, less than, over than,
+begins, between and so on.
+Then you can specify a FilterExpression.
+And this is to add additional filtering
+after the query operation has been done,
+but before the data is returned to you.
+And this is to use with non-key attributes.
+So, you cannot use a FilterExpression
+with HASH or RANGE attributes.
+And what the query returns
+is going to be a list of items, obviously.
+And you have a limit of how many items you retrieve
+based on the limit query parameter.
+And either you're going to reach
+that limit of never items
+or you're going to get up to one Megabyte of data.
+But if you want to get, obviously, more data of your time,
+you can do pagination on the results,
+and ask for more and more and more.
+Now you can query a table,
+or a Local Secondary Index or a Global Secondary Indexes,
+and we'll see those in the next lectures as well.
+And finally, you have a Scan, so GetItem was for one item,
+then the query was for a specific Partition Key
+and a Sort Key.
+And Scan items is to read an entire table.
+And then if you wanted to, you could filter it, the data,
+but this is only done on the client side,
+so this is very inefficient.
+So Scan is to really export the entire table.
+And each Scan will return up to one megabyte of data,
+and if you want to keep on reading
+then you need to use pagination techniques.
+So that means page one, page two, page three, and so on.
+It will consume a lot of RCU
+because you are reading your entire table.
+And so therefore,
+if you want to not impact your normal operations
+you need to impact the Scan using a limit statement
+or to reduce the size of the result,
+and then pause a little bit.
+And if you wanted to, instead,
+consume a lot of RCUs and do a scan as fast as possible,
+then for faster performance, you would use a Parallel Scan.
+In this case, multiple workers that you define
+will scan multiple data segments at the same time,
+which will increase the throughput and RCU consumed.
+And, if you wanted to still have a Parallel Scan
+and limit its impact,
+you could use limit queries, limit conditions, and so on.
+And then scans can be used
+with ProjectionExpression and FilterExpression.
+So ProjectionExpression to only retrieve certain attributes,
+and FilterExpression to change stuff server side.
+Now if you need to delete data out of DynamoDB,
+you have the DeleteItem,
+which is used to delete an individual item.
+And then, you can also do a conditional delete,
+so delete this item only if money equals zero.
+And if you need to delete everything in your table,
+you have DeleteTable.
+So this is to delete a whole table and its item.
+And it's much quicker than doing a scan
+and then deleting each every single item on the table.
+Okay, DeleteTable, which will just drop everything.
+And this is something that can come up in the exam.
+If you wanted to just delete everything,
+do not do a scan, just use the DeleteTable API.
+Now for efficiency purposes,
+you can actually batch operations in DynamoDB.
+So, you save in latency and you get an efficiency
+by reducing the number of API calls you do to the database.
+And all the operations as part of a batch,
+are going to be applied in parallel by DynamoDB
+for better efficiency.
+So, because you have a batch of operations though,
+part of the batch can fail.
+In that case you will receive the failed items back,
+and you can retry only these failed items.
+So in the right mechanism you have BatchWriteItem,
+and this allows you to perform up to 25 PutItem
+and/or DeleteItem in one call.
+You have up to 16 megabytes of data written
+and still have the same limit of 400 kilobytes
+of data per item.
+And you cannot update item,
+you can only do PutItem or DeleteItem.
+Now, if you have items that were not able to be written
+for whatever reason,
+usually because of a lack of write capacity,
+then you will receive back
+something called UnprocessedItems,
+and then you can retry the items
+within the UnprocessedItems.
+So two options to process them correctly.
+Either you use an exponential backup strategy
+to keep on trying with longer and longer time
+until it succeeds,
+or if you consistently get these UnprocessedItems
+and scaling issues, then of course,
+you need to add write capacity units
+to allow your batch operations to complete efficiently.
+For batch GetItem,
+you will return items from one or more tables,
+and you can receive up to 100 items
+and up to 16 megabytes of data.
+And all these items are going to be retrieved in parallel
+to minimize latency.
+Again, if you are missing some items,
+it's because you may have some UnprocessedKeys
+because you have failed read operations
+because you don't have enough capacity.
+In which case, same idea,
+you use exponential backup to retry
+or you add read capacity units
+to increase your read capacity.
+Also, we have PartiQL.
+So we've seen that in DynamoDB
+we have specific API calls to do specific things,
+but sometimes all that you know,
+as a data engineer or whatever, as a developer, may be SQL.
+And so you can use SQL on DynamoDB by using PartiQL.
+So here you have a standard SQL query
+where you find the OrderID,
+and the Total from your Orders Table,
+and you have a filtering condition,
+and an ordering condition.
+And so, using PartiQL,
+you can do the exact same operations we saw before,
+which is to select, insert, update,
+and delete data in DynamoDB.
+But this time, instead of doing the DynamoDB specific APIs
+you can just use SQL.
+And you can run your queries
+across multiple DynamoDB tables,
+but you cannot do joins okay?
+You can just do the select, insert, update, and delete.
+Everything you can do with an API
+but then you use SQL for writing these calls.
+So you run PartiQL queries from the Management Console
+or from the NoSQL Workbench for DynamoDB,
+or from DynamoDB APIs, or from the CLI, or from the SDK.
+And the goal of it
+is really not to add new capabilities to DynamoDB
+because you have the same capabilities,
+but it's just to use SQL
+to write these API calls against DynamoDB.
+So hopefully that makes sense.
+I hope you liked it and I will see you in the next lecture.

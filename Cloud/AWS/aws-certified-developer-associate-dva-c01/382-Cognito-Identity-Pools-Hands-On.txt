@@ -1,0 +1,96 @@
+# 382. Cognito Identity Pools Hands On
+# Section: Cognito: Cognito User Pools, Cognito Identity Pools & Cognito Sync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731978
+# Caption: en_US (manual)
+
+So let's go ahead and practice
+using Cognito Identity Pool.
+So you go on the left to Cognito Identity
+and then you create an identity pool.
+So first of all, you choose whether or not you want
+authenticated access and/or guest access.
+So for authenticated access,
+we have to define what is the source of the authentication.
+So is it Amazon Cognito user pool,
+is it Facebook, Google, Apple, Amazon, Twitter,
+OIDC, SAML, or a custom developer provider.
+And so because we have created
+an Amazon Cognito user pool before,
+we can just safely choose this one.
+If we want to also have guest access,
+so that anyone can access our pool
+and get IAM credentials out of it,
+we can enable guest access.
+So let's click on next, we have enabled both.
+Next, we need to configure permissions
+and so we need to create an authenticated role.
+This is a role that is going to be assumed
+by the users who are authenticating into our identity pool.
+So I will call this one Cognito Identity Pool
+Authenticated Role Demo.
+And this role should contain the permissions
+that the user will have once they obtain access to AWS.
+So this is just minimal policy right now
+and we'll see how to add on roles after that,
+add on permissions after this.
+Next, for the guest role, again, we specify an IAM role,
+so this one is unauthenticated role demo
+and again, minimal permissions.
+So click on next.
+Next, because we have specified Amazon Cognito user pool
+as a source for login, we need to specify a pool ID
+as well as an app client ID,
+which we have created from before.
+Now for the role settings,
+do we want to use the default authenticator role
+we have created for this specific pool
+or do you wanna have a role with rules?
+So I can have different roles with different rules
+or choose a role based on some claims in tokens.
+So to keep things simple
+we'll use the default authenticated role.
+As you can see, you can be pretty specific
+about which users get which role,
+as well as some attributes for access control
+to map some attributes
+and to map them into IAM policies,
+for example, using the username and the client.
+So this is advanced, but all of this means is that
+the users logging in through your identity pool
+will have specific attributes that you can use
+in the IAM policies of the authenticator role
+to specify what they can and cannot access.
+So we'll click on next
+and then we'll just call this one Demo Identity Pool.
+And then we want the classic authentication or not,
+it doesn't really matter, we'll just leave this as default.
+So click on next and then create an identity pool.
+And now that we're done,
+we're going to click on identity pool.
+And so we have both authenticated and guest access
+into our pool.
+Now to get started, we need to set up an SDK
+and then integrate this into our code
+and then we authenticate a user thanks to the SDK
+and then we get the AWS credentials out of it.
+So this is not something I can demo to you right now,
+but what I want to show you and the important part of it
+is that if you go into IAM now,
+and then we're going to go and find the roles
+and you type in Cognito.
+So these two roles,
+the authenticated and unauthenticated roles,
+is what you should be able to actually
+modify to set the right policy
+for your users that will authenticate through this.
+So you can, for example, create an inline policy in here
+and choose a service, for example, Amazon s3
+and then you would say get read permissions for Amazon s3
+or whatever you want, you can also add policies
+and not inline policies.
+So that's it, once you've understood this,
+you basically understood the idea behind
+Cognito identity pools and I cannot demo more than this
+because this is what you get.
+So I hope you liked it
+and I will see you in the next lecture.

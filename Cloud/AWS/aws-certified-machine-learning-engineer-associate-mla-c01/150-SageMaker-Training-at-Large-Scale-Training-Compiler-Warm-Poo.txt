@@ -1,0 +1,76 @@
+# 150. SageMaker Training at Large Scale: Training Compiler, Warm Pools
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285803
+# Caption: en_US (auto)
+
+Let's talk about some of the more advanced SageMaker training techniques out there.
+And these are geared toward really large scale training applications, like training large language
+models where you're talking about billions of parameters, maybe even trillions of parameters.
+So if you need to scale things way, way, way, way up, if you're building the next generation AI,
+these are some ways you can do that on AWS.
+One tool that's being phased out is the SageMaker Training Compiler, but it does show up in AWS's training
+materials for this exam.
+So I'm going to cover it real quickly anyway.
+This is integrated into AWS deep learning containers.
+And if you're not, if you don't remember what a deep learning container is, it's just a pre-built
+Docker image that runs TensorFlow, PyTorch, or MXNet.
+But as you'll see, a lot of these tools are really specific to PyTorch these days.
+So I would choose PyTorch if I were you.
+You can't bring your own container and use the training compiler, but again, it's being phased out,
+so I wouldn't worry about it too much, but you should at least know what it is to use it.
+It's just a matter of saying compiler underscore config equals training compiler config within your
+estimator class.
+so easy peasy.
+It's already there for you in those Docker images for DLC, and that will compile and optimize your
+training jobs on the GPU instances for you automatically.
+So by doing that optimization for the hardware you're on, it can accelerate your training by up to
+50%.
+That sounds like a good thing.
+I don't know why they're getting rid of it.
+It will convert your models into hardware optimized instructions.
+So I mean, well, that's what a code optimizer does at the end of the day, right?
+It's been tested with hugging face transformers.
+Or bring your own model and it can optimize that as well.
+It is, however, incompatible with SageMaker distributed training libraries.
+And that might be why they're phasing out the training compiler, because they seem to be pushing people
+toward those distributed training libraries now, and we'll cover those in more depth very soon.
+If you are using the training compiler.
+Um, they haven't officially shut it down.
+They just said that they're not going to maintain it anymore.
+There's not going to be any more new versions, I guess.
+Uh, they must have been victims of some of their layoffs or something.
+But if you are using it, best practices are to ensure that you're using GPU instances such as the ML,
+P3, P4, G4, or G5 instance types.
+With PyTorch, you need to be using the PyTorch XLA models.
+Save function for it to work properly, and if you want to enable debugging, you can by just enabling
+the debug flag in the compiler underscore config parameters there that you set up in your estimator
+class.
+Unfortunately, like I said, it's no longer maintained, so it's pretty cool, but there will be no
+more new versions of it put out.
+Another technique for optimizing your training is something called warm pools.
+And the idea here is that if you're repeatedly training your model, you want to avoid all the overhead
+of reprovisioning all that infrastructure over and over and over again.
+So with a warm pool, you can say, when I'm done with my training pass, I want to hang on to that
+hardware for a little bit, just in case I want to use it again.
+So don't give it up right away.
+So if you're repeatedly training a model that can speed things up considerably because a lot of time
+is just spent provisioning the hardware that you need, right?
+To use that, all you need to do is specify a keepalive period in seconds in your training jobs, resource
+configuration.
+Or you can do it in the UI like I'll show you in a moment.
+It does, however require a service limit increase request.
+So you can't just do it.
+You have to ask for permission before you can actually turn this on.
+And it also, to further accelerate things, uses a persistent cache to store your data across those
+training jobs.
+So not only is it keeping your hardware around, it's also keeping your data around across those training
+jobs.
+So that reduces costs even further.
+So warm pools definitely a good thing to be using if you're going to be repeatedly training, but you
+do need to request permission for it with a service limit increase if you're training within the SageMaker
+UI, if you just go to SageMaker in the console and go to training jobs and say, create training job.
+Under those job settings, you'll see the resource configuration that Keepalive period is what's going
+to enable the use of warm pools.
+So if you just put something in there that'll say, yep, I want to hang on to that hardware for a little
+bit in between runs and hopefully enable you to reuse that hardware within the keepalive period that
+you specified.

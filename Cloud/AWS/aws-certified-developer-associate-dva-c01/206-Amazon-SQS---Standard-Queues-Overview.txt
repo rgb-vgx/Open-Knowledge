@@ -1,0 +1,267 @@
+# 206. Amazon SQS - Standard Queues Overview
+# Section: AWS Integration & Messaging: SQS, SNS & Kinesis
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851370
+# Caption: en_US (manual)
+
+So let's talk about SQS.
+And at the core of SQS is a queue
+because SQS is a simple queuing service.
+So we have an SQS queue
+and it's going to contain messages
+and to contain messages
+while something needs to send messages into our SQS queue
+and whatever sends a message
+into our SQS queue is called a producer.
+So it's possible for us to have one producer,
+but also have more.
+You can have multiple producers sending many messages
+into an SQS queue,
+and the message could be whatever you want.
+For example, it could be process this order
+or process this video.
+Whatever message you create goes into the queue.
+Then something needs to process the messages from the queue
+and receive them.
+And it's called consumers.
+So consumers will pull the messages from the queue.
+So that means that they will ask the queue,
+do you have any message for me?
+And the queue says, yes, here it is.
+And the consumer will pull these messages
+and get some information.
+And then with that message, it will process it
+and then delete it back from the queue.
+And you may have multiple consumers consuming messages
+from an SQS queue.
+So queuing service is here to be a buffer to decouple
+between your producers and your consumers.
+Now, SQS is a complicated service
+and we'll see it in depth,
+but the very first offering is called Amazon SQS
+for standard queues.
+And SQS, historically on AWS, it is the oldest offering.
+It was one of the first services on AWS.
+It's over 10 years old,
+so it's quite, quite set in stone about how it works.
+It's a fully managed service
+and it will be used to decouple applications.
+So anytime you see application decoupling in your exam,
+think about Amazon SQS.
+Now, why is SQS so special?
+Well, we get an unlimited throughput.
+That means you can send as many messages per second
+as you want,
+and the queue can have as many messages as you want as well.
+So there's no limit on throughput
+and no limit in the number of messages in the queue.
+Now each message is short-lived.
+What does that mean?
+That means that by default,
+the message will stay in the queue for four days.
+And the maximum amount of time
+that the message can be in a queue is 14 days.
+That means that as soon as you send a message to a queue,
+it has to be read by a consumer
+and deleted from the queue after being processed
+within that retention period.
+Otherwise it will be lost.
+Then we have low latency.
+So SQS means that that means that
+whenever you send a message or read a message from SQS,
+you will get a response very quickly,
+less than 10 milliseconds on publish and receive.
+And the messages in SQS, they have to be small,
+they have to be less than 1,024 kilobytes
+per message is sent.
+Now, SQS is a queuing service, as you can see,
+high throughput, high volume and so on.
+And so it is possible to have duplicates messages.
+That means that, for example,
+sometimes a message will be delivered twice.
+And so this is why it's called at least once delivery.
+And if you go ahead with writing an application,
+you need to take that into account.
+It can also have out of the order messages,
+which means it's best effort ordering.
+And we'll see there is another type of offering from SQS
+that can deal with that limitation.
+But we'll see this later on in this section.
+So let's go back to our message producers.
+So messages are sent into SQS by producers.
+And how do they, how does it happen?
+Well, the producers will send the messages to SQS
+using an SDK, software development kits,
+and the API to send a message to SQS
+is called SendMessage, very simple.
+Now, the message, it will be written,
+it will be persisted into the SQS queue
+until a consumer reads that message and deletes it,
+which signifies that the message has been processed.
+We know the retention.
+And so what's the use case for producing messages?
+For example, you want to process an order, for example,
+packet and then ship it to the sender.
+And so you wanna do this in your own time.
+So you will send a message into the SQS queue
+with maybe some information such as the order id,
+the customer id, and any attributes you may want,
+for example, the address and so on.
+And then your consumer, that is an application you write,
+will have to deal with that message itself.
+So again, to confirm,
+SQS standard held has unlimited throughputs.
+So we've seen about producers, very simple.
+Now let's look about consumers.
+So consumers, they are applications
+that you have to write with some code.
+And these applications can be running on EC2 instances,
+so your virtual servers on AWS,
+but also they can be running
+on your own on-premises servers if you wanted to,
+or we haven't seen it yet.
+But they can also be running on Lambda functions
+on AWS Lambda.
+We'll see in this course
+it is a serverless compute type of service.
+Well, this means that you can just read messages
+directly from Lambda as well.
+We'll see this later on this course.
+Do not worry.
+So going back to our simple use case about EC2 instances,
+our queue has a consumer
+and the consumer pulls for SQS for messages.
+And that means that the consumer will ask the queue,
+do you have messages from me?
+And the consumer may receive up to 10 messages at a time.
+So if there are messages in the SQS queue,
+it will receive a valid response saying,
+here are the messages that are waiting for you.
+Then the consumer, it's your code,
+has a responsibility to process these messages.
+For example, insert some orders into an RDS database.
+So you will go ahead and for each order,
+you will insert it into your RDS database,
+something that you have to write obviously with your code.
+And then because these messages have been processed,
+because they have been received
+and inserted into an Amazon RDS database,
+your consumer will go ahead and delete these messages
+from the queue using the delete message API.
+And this will guarantee that no other consumer
+will be able to see these messages,
+and therefore the message processing is complete.
+So now we can scale this up.
+We can have multiple consumers at a time.
+So SQS queue can have multiple consumers
+that will receive and process these messages in parallel.
+So here we are three on EC2 instances.
+And so each consumer will receive a different set
+of messages by calling the poll function.
+And so if somehow a message is not processed fast enough
+by consumer, it will be received by other consumers.
+And so this is why we have at least once delivery,
+and this is also why we have best effort message ordering.
+Now, as I said, when the consumers are done
+with the messages, they will have to delete them,
+otherwise other consumers will see these messages.
+And so what that means is that with SQS gueues,
+if we need to increase the throughputs
+because we have more messages,
+then we can add consumers and do horizontal scaling
+to improve the throughput of processing.
+And so if you remember what we said,
+this is a perfect use case for using SQS
+with your auto scaling groups or ASG.
+So what does that mean?
+Well, that means that your consumers will be running
+on EC2 instances inside of an auto scaling group,
+and they will be pulling for messages from the SQS queue.
+But now your auto scaling group has to be scaling
+on some kind of metric.
+And a metric that is available to us is the queue length.
+It's called approximate number of messages.
+It is a CloudWatch metric
+that's available on any SQS queue.
+And we could set up an alarm such as whenever
+the queue length go over a certain level,
+then please set up a CloudWatch alarm.
+And this alarm should increase the capacity
+of my auto scaling group by X amount.
+And this will guarantee that the more messages
+you have in your SQS queue,
+maybe because there's a surge of orders on your websites,
+the more easy two instances will be provided
+by your auto scaling group
+and you will accordingly process these messages
+at a higher throughput.
+So this is a very common integration
+that you will see in the exam.
+Now, SQS, again,
+the use case is to decouple between applications.
+So application tiers.
+So for example, let's take an example of an application
+that processes videos.
+We could have just one big application that call
+that's called the front end that will take the request
+and whenever a video needs to be processed,
+it will do the processing
+and then insert that into an S3 buckets.
+But the problem is that processing may be very,
+very long to do and it may just slow down your websites
+if you do this in the front end tier.
+So instead, you can decouple your application tier
+and say, wait a minute,
+the request of processing a file
+and the actual processing of a file
+can happen in two different applications.
+And therefore whenever you take a request to process a file,
+you will send a message into an SQS queue.
+Now when you do the request to process
+that file will be in the SQS queue,
+and you can create a second processing tier
+called the backend processing application
+that will be in its own auto scaling group
+to receive these messages, process these videos,
+and insert them into industry buckets.
+So as we can see here with this architecture,
+we can scale the front end accordingly
+and we can scale the backend accordingly as well,
+but independently.
+And because the SQS queue has unlimited throughput
+and it has unlimited number of messages
+in terms of the queue, then you are really safe.
+And this is a robust and scalable type of architecture.
+And also for your front end,
+you can use the optimal type of EC2 instances
+or architecture for your front end and for the backend,
+maybe if you're doing some video processing,
+you can use some EC2 instances that have a GPU,
+a graphical processing unit because you know
+that these type of instances will be optimal
+for doing this kind of workload.
+So this is the kind of architecture
+that will come up in the exam
+and that you're expected to know.
+And this is an amazing
+and tremendous use case for SQS queues.
+Finally, SQS security.
+So we have encryption in flight by sending
+and producing messages using the HTTPS API.
+We could add at-rest encryption using KMS keys.
+And if we wanted to, we can do client side encryption,
+but that means that the client has to perform
+the encryption and the decryption itself.
+It's not something that's supported by SQS out of the box.
+For access controls,
+IAM policies are going to be able to regulate access
+to the SQS API, but we also have SQS access policies,
+which are similar to S3 bucket policies,
+and they're very helpful when you want
+to do cross account access to SQS queue
+or when you want to allow other services such as SNS
+that we'll see very soon,
+or Amazon S3 to write to an SQS queue,
+for example, with S3 events.
+So that's it for SQS for an overview.
+I hope you liked it,
+and I will see you in the next lecture for some practice.

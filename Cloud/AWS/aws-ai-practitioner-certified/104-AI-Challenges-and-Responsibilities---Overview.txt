@@ -1,0 +1,58 @@
+# 104. AI Challenges and Responsibilities - Overview
+# Section: AI Challenges and Responsibilities
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887815
+# Caption: en_US (manual)
+
+So, now we're getting into a section
+that is a little less fun than the other ones.
+It's about responsible AI, security, governance,
+and compliance for AI solution.
+So this section is going to be mostly text-based.
+It's necessary that we go through it,
+because it is an important section,
+and a big part of the exam.
+But lemme tell you right now, this is not fun content.
+It's about responsibility, security, and so on.
+But let's go. I'll try to make it good.
+So first, let's talk about the overview of what we're going
+to see in this section in depth.
+So we have responsible AI.
+The idea is that with responsible AI,
+we want to make sure that the AI systems are going
+to be transparent and therefore trustworthy,
+so that your users trust the outcomes.
+You want to be mitigating potential risks
+and negative outcome.
+Throughout the AI lifecycle,
+you want to have responsible AI.
+So, that means from the design, the development,
+the deployment, the monitoring, and the evaluation.
+Next, we talk about security.
+So, we need to ensure that there is confidentiality,
+that there's integrity,
+and that the availability of your systems are maintained.
+And this applies to your data, your information assets,
+and your infrastructure.
+Next we have governance.
+And governance is here to ensure that we can add value
+and manage risk in the operation of the business
+by having clear policies, guidelines,
+and oversight mechanisms,
+and to ensure that all the systems will align with legal
+and regulatory requirements.
+The goal of it, of course, is to improve trust.
+And then we have compliance.
+So, compliance is to ensure the adherence to regulations
+and guidelines for sensitive domains
+such as healthcare, finance, and legal applications.
+So, responsible AI, security, governance,
+and compliance are distinct domains,
+but they have a lot of overlap in the way they act, behave,
+and try to improve your system.
+So, if you feel like I'm repeating myself a little bit
+in this section, this is normal,
+it's because there's a lot of overlap.
+Now what we're going to do is to have a look at each
+of these topics in greater details and learn about them.
+So I hope you liked it,
+and I will see you in the next lecture.

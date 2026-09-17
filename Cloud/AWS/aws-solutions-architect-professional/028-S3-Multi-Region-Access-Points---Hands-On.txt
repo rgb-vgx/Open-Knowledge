@@ -1,0 +1,98 @@
+# 28. S3 Multi-Region Access Points - Hands On
+# Section: Security
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/36231458
+# Caption: en_US (manual)
+
+So let's go ahead and create two buckets.
+So I'm gonna call this one my-global-app-stephane
+and then eu-central-1.
+And I'm just going to go all the way down
+and create these buckets.
+And then I'm going to create another bucket,
+I'll call this one my-global-app-stephane-us-east-1
+and I will choose another region being us-east-1.
+Okay, so the reason why I am doing this is
+that I want to have two buckets in two different regions
+that will hold the same data and it will be served
+by the same multi-region access point.
+So then let's go into Multi-Region Access Points,
+and here we can create our multi-region access points.
+So I'll call this one MyGlobalApp,
+and then we need to add buckets into this access point.
+So here I will have app in this
+and we have these two buckets that I wanted to add.
+So let's add these buckets
+and you can see I can add more buckets, okay?
+But you only have one bucket per AWS region
+as far as it goes right now.
+Okay, so then, do we want to block
+or to enable public access
+for this multi-region access point?
+And this is if you wanted to, for example,
+to make this public, but right now I'll leave it as default,
+and then we'll create this multi-region access point.
+And for this, I need to make sure
+that the name is lowercase, my-global-app.
+All right, now let's create this access point.
+So as we can see, it can take less than 30 minutes usually,
+but up to 24 hours to create,
+so we'll wait for it to be ready and I'll get back to you.
+So my multi-region access point is now ready.
+I can click on it,
+and we have, its ARN, we have its alias,
+and we have the buckets, that's underneath.
+So if I click on these buckets, I can open them in new tabs,
+and before I do so, let's go into Permissions.
+So Permissions is how
+to access this multi-region access point,
+so we need to define an access point policy,
+which will allow our application to actually go through it.
+And then for Replication and failover,
+this is where it gets interesting.
+So we have a map of what's happening
+for your replication and your failover.
+And as you can see right now,
+we don't have any replication rules.
+And we even have a warning saying that, yeah,
+your data replication might be incomplete
+because we're missing these rules.
+So fairly simple,
+we need to just create these replication rules,
+and there's a facility to do that from within.
+So let's create a replication rule.
+And here we have to choose
+we want to replicate among all specified buckets,
+or from one, two different destinations.
+The simplest is obviously the first one,
+which was going to give us high availability
+and failover capabilities.
+So let's choose these buckets,
+and to enable the replication,
+we must enable bucket versioning.
+So this is done directly from this console as well.
+And then we enable the rules, okay?
+And do we want to limit the scope
+or do you want to apply to all objects in the bucket?
+We'll say all objects.
+And finally, let's go ahead
+and create these replication rules.
+So now they're created,
+and if you had more buckets,
+obviously you have replication rules across all the buckets.
+And when this is done, you can close this,
+go back to your map
+and now you can see two-way replication for your buckets.
+And you can verify this by also going into your Management,
+and here you can find your replication rules.
+So that's it,
+I'm not gonna show you how to actually use it.
+This is more of an application specific type of API calls,
+but at least we saw what these are made of.
+And just to finish, what you can do
+is just delete this multi-region access point.
+You're not paying anything for having it,
+but in case you are using it,
+you will pay extra charges,
+based on how many gigabytes go through it.
+All right, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

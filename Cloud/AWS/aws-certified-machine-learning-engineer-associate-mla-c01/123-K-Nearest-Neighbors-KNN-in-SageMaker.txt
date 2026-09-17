@@ -1,0 +1,53 @@
+# 123. K-Nearest-Neighbors (KNN) in SageMaker
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285541
+# Caption: en_US (auto)
+
+Next up is KNN, which is probably the world's simplest machine learning algorithm out there.
+K nearest neighbors.
+But SageMaker does take it to the next level.
+If you're not familiar with KNN and how it works, it's a really simple.
+Basically, you plot your data points in some sort of feature space, and for a given point, you just
+take the k closest points to that sample and return the label that occurs most frequently.
+So you're just looking at the k items that are most similar based on some distance metric from your
+point to the other points in your training data, and return the most frequent label from those similar
+data points.
+It turns out you can actually use KNN for regression as well, so it can do more than just classification.
+It's just a very simple twist on it.
+Instead of just returning the most common classification label from the nearest neighbors, you return
+the average value from whatever feature you're trying to predict.
+So yeah, no big deal.
+KNN very simple classification or regression algorithm.
+All it's doing is looking at the k nearest neighbors quite literally of your data point in some feature
+space.
+So you can give it a train channel that contains your data.
+The test channel can be used if you want to measure accuracy or MSE accuracy metrics for training.
+It can take record I, o protobuf or CSV for CSV.
+The first column would be the label data, followed by all the features, and you can use file or pipe
+mode in either case.
+So like I said, SageMaker kind of takes it to the next level.
+First, it actually samples the data, assuming that you have too much to deal with.
+KNN does have some scaling problems otherwise, and furthermore it does dimensionality reduction on
+that data as well.
+So if you do have a lot of features, it will try to boil that down first to avoid the curse of dimensionality.
+That way it becomes easier to compute those nearest neighbors if you're in a smaller dimensional space.
+This does come at the cost of noise inaccuracy, of course, so you know you want to be a little bit
+careful in how you do that.
+Under the hood it has a couple of options for that sign or fault or the options there.
+Once that's done, it builds up an index for looking up the neighbors quickly at runtime, and then
+serializes the model, and then you just query the model for a given value of k.
+How many neighbors do I want to look at before I get back the average value or the classification that
+I'm looking for?
+Obviously, the most important hyperparameter in KNN is K itself.
+How many neighbors do I look at tuning?
+That is kind of a science in its own.
+You kind of have to experiment and see where you start to get diminishing returns on higher values of
+k.
+Also, sample size is an important thing to tune here as well.
+Otherwise though, it's straight up KNN.
+If you've ever done machine learning before, you know what it's about.
+You can train it on either CPU or GPU instances, which I kind of find kind of interesting.
+You can actually take advantage of a GPU for KNN, so either an M5 dot two Xlarge or a P2 dot xlarge
+are recommended for training for inference, CPU or GPU, whatever you want.
+CPU will probably give you lower latency, but GPU will give you higher throughput.
+If you're trying to run KNN on large batches of data all at once

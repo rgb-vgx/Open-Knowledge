@@ -1,0 +1,106 @@
+# 137. [SAA/DVA] S3 Lifecycle Rules (with S3 Analytics)
+# Section: Advanced Amazon S3 & Athena
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/12957390
+# Caption: en_US (manual)
+
+So now let's talk
+about how we can move objects
+between different storage classes
+so you can transition them,
+and this is a diagram of how it's possible.
+So as you can see,
+you can go from the Standard, for example,
+to Standard IA to Intelligent Tiering to One-Zone IA,
+and then from One-Zone IA, as you can see,
+you can go to Flexible Retrieval or Deep Archive.
+And so all the types
+of permutations are shown in this graph.
+So as a matter of fact, if you know
+that your objects are going to be infrequently accessed,
+then move them to Standard IA.
+And if you know that you're going to archive objects,
+move them into the Glacier
+of tiers or the Deep Archive tier.
+Now, moving these objects can be done manually, of course,
+but we can automate this using lifecycle rules.
+So these lifecycle rules are made of multiple things.
+The first thing is a transition action
+to configure the object
+to transition to another storage class.
+For example, you say move
+to Standard IA class after 60 days after creations
+or move to Glacier for archiving after six months.
+You can also set up expiration actions.
+So configure objects to be deleted,
+to be expired after some time.
+For example, your access log files,
+you want to delete them after 365 days.
+Or you can, for example,
+use an expiration action to delete old versions
+of files if you have enabled versioning.
+Or we can use this to delete incomplete multi-part uploads
+if, for example, the multi-part uploads is more
+than two weeks old because, well,
+the thing should have been fully uploaded by now.
+The rules can also be specified for a certain prefix.
+So they can apply to entire buckets
+or to a specific path within your buckets.
+And you can also specify it for specific object tags.
+So if you want to only do a rule
+for the department finance, you can.
+So here's some scenarios.
+For example, you have an application on EC2,
+and it creates images, thumbnails
+after profile photos are uploaded to Amazon S3.
+But these thumbnails, they can be easily recreated
+from the original photo
+and they only need to be kept for 60 days.
+But the source images, they should be able
+to be immediately retrieved for these 60 days
+and afterwards the user can wait up to six hours.
+So how would you design this?
+This is what an exam question will ask you.
+So the S3 source images can be on the Standard class
+with a lifecycle configuration to transition them
+to Glacier after 60 days and the thumbnails images,
+so this is how you would use a prefix to differentiate
+between source and thumbnails, for example.
+So the thumbnails can be on One-Zone IA
+because well, they're infrequently accessed,
+and they can be recreated easily,
+and you can have a lifecycle configuration to expire them
+or delete them after 60 days.
+Another scenario, so a rule
+in your company states that you should be able
+to recover deleted S3 objects immediately for 30 days,
+although this may happen rarely.
+After this time, for up to 365 days,
+deleted objects should be recoverable within 48 hours.
+For this, we can enable S3 versioning in order to keep
+and have object versions so that the deleted objects
+are in fact hidden by a delete marker
+and then can be recovered.
+And then you will create a rule to transition
+the non-current versions of the objects to Standard IA.
+So that means the versions
+that are not the top level versions,
+and then transition afterwards these non-current versions
+to Glacier Deep Archive for archival purposes.
+Lastly, how do we determine what's the optimal number
+of days to transition an object from one class to another?
+Well, you can do this thanks to Amazon S3 Analytics.
+So it's going to give you recommendations
+for Standard and for Standard IA.
+It does not work with One-Zone IA or Glacier.
+And so the S3 buckets
+will have S3 Analytics run on top of it.
+And this will create a CSV report
+that will give you some recommendations and some statistics.
+The report is going to be updated daily
+and then it can take between 24 to 48 hours
+to start seeing data analysis coming out of it.
+So this is a good first step, this CSV report
+to put together lifecycle rules that makes sense
+or to improve them.
+Okay, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

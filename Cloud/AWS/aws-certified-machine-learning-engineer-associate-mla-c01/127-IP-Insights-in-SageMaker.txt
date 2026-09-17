@@ -1,0 +1,56 @@
+# 127. IP Insights in SageMaker
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285581
+# Caption: en_US (auto)
+
+And let's cover the IP insights algorithm in SageMaker.
+IP insights is all about finding fishy behavior in your web logs.
+So it's an unsupervised technique that learns the usage patterns of specific IP addresses, and it automatically
+identifies suspicious behavior from given IP addresses so it can identify login attempts from anomalous
+IP addresses.
+It can identify accounts that are creating resources from anomalous IP addresses.
+So basically it's used as a security tool as a way of analyzing your web logs for suspicious behavior
+that might cause you to flag something or maybe shut down a session.
+It can take in usernames and account IDs directly, so you don't really need to pre-process your data
+a whole lot.
+It has a training channel, obviously, but since it is unsupervised, the validation channel is optional.
+If you want, you can use that to compute an area under the curve score, which we talked about earlier.
+Remember the input has to be CSV data.
+And it's a very simple CSV file.
+It's just entity and IP address.
+So that entity again can be a username or an account ID or whatever identifier you use, followed by
+the IP address associated with that entity.
+That's it.
+Under the hood, it's using a neural network to learn latent vector representations of entities and
+IP addresses.
+So it's, you know, doing some pretty fancy modeling there to try to learn what specific IP addresses
+do.
+Those entities are hashed and embedded.
+So it has an embedding layer to like try to organize those IP addresses together.
+You need a sufficiently large hash size for this to work.
+So that's going to end up being one of our important hyperparameters.
+And it will automatically generate negative samples during training by randomly pairing entities in
+IPS.
+So that's kind of a neat little twist to the algorithm there.
+This is a case where we have an unbalanced data set right.
+So it's kind of like fraud detection where the vast majority of transactions are not going to be anomalous.
+So it actually generates anomalous examples by just randomly pairing together entities and IP addresses.
+And you know, those are random fishy things that probably are anomalous.
+So kind of a neat idea there.
+The important hyperparameters, the number of entity vectors, the hash size.
+That's all that is that we talked about earlier.
+They recommend that you set this to twice the number of unique entity identifiers.
+So a little bit of a manual step there.
+Also the size of the embedding vectors is given by vector dim.
+Something else you might want to tune to.
+Larger result there could result in overfitting.
+So something to be careful of there.
+And since it is a neural network under the hood, we have the usual suspects for tuning neural networks
+the number of training epochs, the learning rate, and the batch size.
+You can use a CPU or GPU, but since it's a neural network, GPUs are recommended.
+If you can, a P3 dot two xlarge or higher is recommended, and it can use multiple GPUs on one machine.
+The size of a CPU instance would depend on the parameters that you chose if you're going to go with
+CPUs instead.
+So again, main thing with IP insights, it's used to identify anomalous behavior from IP addresses
+using a neural network.
+That's the main takeaway

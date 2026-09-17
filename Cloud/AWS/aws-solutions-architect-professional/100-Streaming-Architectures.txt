@@ -1,0 +1,192 @@
+# 100. Streaming Architectures
+# Section: Data Engineering
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376600
+# Caption: en_US (manual)
+
+So let's talk about
+some real-time architectures
+for your full data engineering pipeline.
+So we can produce data, for example,
+into Amazon Kinesis data streams,
+and then we can build several things out of it.
+We can build an Amazon EC2 based application
+to read from your stream
+and your full power over what you do.
+You can also build an application
+directly under Apache Flink
+for the managed service.
+So this is for streaming analytics,
+lots of data transformations and so on.
+It's a very great framework
+and the managed version on AWS is very handy,
+or you can just sync this data into various targets.
+And for this,
+the best is to use Amazon data Firehose
+in which you can send, for example, to Amazon S3
+and through Amazon S3.
+A very popular target is Amazon Redshift,
+but you can also send it,
+for example, to Amazon open search service.
+Finally, you should know
+that you can also produce directly into Amazon Data Firehose
+if you want to.
+Another architectural discussion we may have is,
+we have different things to do streaming in AWS.
+Which one is going to be the more cost effective?
+So let's say for example,
+that you plan on receiving 3000 messages
+of one kilobytes per second.
+So this is all your data
+going to be sent to your architecture.
+So option number one is to use Kinesis data streams
+with a Lambda function.
+And option number two is going to be using a DynamoDB table
+with a DynamoDB streams and a Lambda function.
+So ask yourself what is going to be the most efficient
+and what is going to be the most cost effective,
+and what trade-offs are we going to have
+between these two architectures because they both work.
+Well for Kinesis, I did some computations for you.
+So we have three shards because we need 3000 messages
+of one kilobytes.
+So three shards are gonna be three megabytes per second,
+and the cost of three shards per hour is three times 0.015.
+This is based on some numbers I found on the AWS websites,
+and this gives you about $32 per month of cost.
+Then to send the data into Lambda, this is very easy.
+We can just use an event mapper
+and if we wanted to send the data for long-term storage,
+we would need to use something like Kinesis Data Firehose.
+I'll put it into S3 and we would get long-term storage there
+because can see the streams will have 24 hours to one year
+of data retention, but after that, the data will be lost.
+So this is a good combo to use KDF
+to persist the data into S3
+very cheaply for long-term storage.
+Next, when you look at DynamoDB and DynamoDB streams,
+we need to have 3000 writes of one kilobyte per second.
+So if you remember, that is 3000 WCU, write capacity units,
+and that gives you three megabytes per second.
+Now, if you do a computation of how much that cost you,
+this cost you about 1,450 US dollars per month
+just for that DynamoDB table.
+So the good thing is that yes,
+we do get storage in DynamoDB,
+so the data can be stored long term there,
+but the streaming aspect of things is extremely expensive.
+So there's a factor 50 of cost between Kinesis
+and DynamoDB plus DynamoDB streams.
+So this is something you have to realize
+as a solution architect.
+It's not because something works,
+but it's going to be a great solution.
+And so in this example, both solutions work for streaming,
+but Kinesis is obviously going to be a much cheaper
+and probably better choice for what you're trying to do.
+Okay, so now let's look at all the technologies
+we've seen so far for data exchange
+and we can understand where are the different aspects
+based on data retention, ordering, scalability,
+the possible readers and latency.
+So Kinesis data streams is immutable data,
+so once it's inserted, we cannot change it
+and the retention is up to one year.
+We can export to S3 using Kinesis Data Firehose.
+The ordering is going to be per shard,
+and we have to provision the shards in advance.
+And the readers for the shards can be EC2 instances,
+Lambda function, Kinesis Data Firehose,
+Kinesis Data analytics, and KCL, Kinesis Client Library
+that has a checkpointing feature.
+In terms of latency, if we're using Kinesis data streams,
+then we have about 200 millisecond latency.
+And if we're using Kinesis Data Firehose,
+it's not latency, it's near real time,
+so it's about going to be one minute minimum
+to flush that buffer size
+in that buffer into Amazon S3 for example.
+Next, let's look at SQS.
+So SQS, the data is also immutable,
+once it's inserted, it cannot be removed,
+and the data retention in SQS
+is going to be between 1-14 days.
+There is no ordering for SQS standard,
+and the scalability is virtually unlimited.
+There's a soft limit, but you can always increase it.
+The readers of SQS is going to be EC2 or Lambda functions,
+and the latency in this case is going to be quite low
+between 10 to 100 milliseconds.
+Then we have SQS FIFO, which is very similar to SQS,
+but the data is still immutable.
+We still have the same retention,
+but now there's an ordering we can have thanks to FIFO,
+which means "First In First Out."
+And so we get ordering per group id.
+Now, because we have this ordering constraints,
+the scalability is going to be different.
+So we have about 300 messages per second
+or three thousands if we're using batching by batching
+10 messages at a time.
+The readers can also be EC2 and Lambda function,
+and the latency will be quite low
+between 10 to 100 milliseconds.
+Then we have SNS, which is also going to be immutable data.
+There's no data retention whatsoever, no ordering.
+This is going to be also something that scales really well.
+So there's a self limit, but you can always increase it.
+And in terms of what can consume from SNS,
+these are called subscribers.
+So it can be an HTTP subscriber, Lambda function,
+an email or SQSQ if we're using find out patterns,
+this kind of stuff.
+And the latency is going to be quite low
+between 10 to 100 milliseconds.
+DynamoDB now is going to be having mutable data,
+so once we insert data into DynamoDB, we can override it.
+The retention of the data can be infinite,
+or we can implement a time to live on our rows.
+There is no ordering in DynamoDB.
+For scalability, we have to use either some WCU and RCU
+to create and provision our database
+and maybe have auto scaling on top of it,
+or we can use on demand scaling
+if we don't know our usage pattern in advance
+and we have something very spiky,
+very unpredictable, or very, very, very low.
+Finally, in terms of what can read from a DynamoDB,
+well, you have the SDK,
+but you cannot read a stream using the SDK.
+You need to create first a DynamoDB stream,
+and then that DynamoDB stream
+can be read from a Lambda function
+or an EC2 instance, for example.
+The latency is also quite low
+between 10 to 100 milliseconds.
+And finally, S3, yes, S3 is a way to stream data
+if you wanted to, if you're a bit twisted.
+So you can insert data in S3 and replace it.
+So there is a mutable aspect,
+but we've seen that there is S3 object logs
+or versioning that can help against that.
+The retention is going to be infinite,
+but we can set up lifecycle policies
+to transition between different tiers.
+And we can also have a lifecycle policy to delete data.
+There's no ordering in S3.
+For scalability, we get about 3,500 puts per second
+and 5,500 gets per second per prefix,
+and the storage itself is infinite.
+And then the readers of S3 can be the SDK
+to get a specific object.
+Or we can use S3 events
+to get notified whenever an object is inserted into S3.
+In terms of latency, it is quite low,
+so between 10 to 100 milliseconds.
+So that's it.
+Hopefully that was helpful
+from an architectural perspective.
+Hopefully it's very clear
+whether the differences between all these technologies
+and you will be able to answer the questions
+based on them at the exam.
+Alright, that's it. I will see you in the next lecture.

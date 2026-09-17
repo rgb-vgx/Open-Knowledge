@@ -1,0 +1,11 @@
+# 19. EC2 Cleanup
+# Section: EC2 for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512652
+# Caption: en_US (manual)
+
+And when you're done with this section,
+please make sure to delete your EC2 instance.
+Terminate it; even though this is within the feature here
+it is best practice to keep everything shutdown.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

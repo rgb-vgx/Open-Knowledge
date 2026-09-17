@@ -1,0 +1,25 @@
+# 2. Get the Course Materials
+# Section: Introduction
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40392594
+# Caption: en_US (auto)
+
+Instructor: One more bit of housekeeping
+before we dive in.
+If you do want to get the course materials
+for this course of follow along,
+head on over to sundog-education. com/aws-data-engineer, and that should
+take you to this page here.
+I'll put a link to this in the resources
+for this lecture to make it a little bit easier.
+Any materials you might need
+for the exercises in this course will be here for download.
+And also everybody wants a copy of the slides to study from, this is where
+you'll find them.
+So just go down to get the course slides
+and you should find a handy dandy download link for that.
+While you're here, you can read our latest
+news and if you want to, you can sign up for our mailing
+list totally optional, not necessary.
+And if you wanna stay in touch with me, my
+social links are up here in the corner as well.
+So with that outta the way, let's move on.

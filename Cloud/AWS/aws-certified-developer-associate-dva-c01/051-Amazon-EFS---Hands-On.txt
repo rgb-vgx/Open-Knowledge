@@ -1,0 +1,298 @@
+# 51. Amazon EFS - Hands On
+# Section: EC2 Instance Storage
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26100988
+# Caption: en_US (manual)
+
+So let's go ahead and practice using
+the Amazon Elastic File System Service.
+So let's create our file system
+and here we can give it an optional name,
+but I'll leave it empty and we have
+to choose a VPC where we want to connect to our file system.
+So we'll leave it as the default VPC as well,
+and we could just click on create and be done.
+But I wanna show you the options.
+So let's click on Customize.
+So here again, we'll leave the name empty and optional.
+Next, we need to choose a file system type.
+So we have two options.
+We have regional, which gives you a file system
+within the region across multiple availability zones,
+which gives you very high availability
+and durability of the data.
+But if you need to reduce costs, you could use
+the one zone option, in which case you have
+to choose one specific availability zone.
+And this is going to be good for development environments
+but not good for production environment
+because if that availability zone becomes unavailable,
+then your data will be unaccessible.
+So definitely, you want to use regional
+in production settings and we'll use regional right now
+for this hands-on.
+Next we can enable or disabled automatic backups,
+but it's recommended to keep it enabled.
+Next we have lifecycle management.
+So this is to move data
+across different storage tiers to save costs.
+So it turns out that you can transition
+into infrequent access or archive and then back to standard.
+So we're saying that hey, if a file hasn't been accessed
+for 30 days, but you can obviously customize this,
+if a file hasn't been accessed to 30 days, then move it
+to the infrequent access storage tier
+and it's going to be cheaper
+for you except when you access the file.
+But the likelihood is that
+after 30 days, you're rarely accessing the file.
+And then if the file was not accessed, for example,
+in 90 days since the last access, then moving
+into the archive, which is going to be even cheaper
+as a storage class.
+And then for example, you say
+that here when the file is accessed the first time,
+so on first access, transition back into standard
+because for example, we assume that it's going
+to be reused a lot more.
+So this is called a lifecycle management.
+So we can keep this on as is encryption.
+We leave it enable, that's perfect.
+And then we have performance settings.
+So for performance settings we have throughput mode
+and you should have three options.
+So, enhanced is just a category
+to regroup, elastic and provisions.
+But so you have elastic throughput mode,
+you have provisioned throughput mode as well
+as bursting throughput mode.
+So let's start with bursting.
+So bursting is a way for you to have the throughput scale
+with the amount of storage you're actually using
+and going a little bit over,
+that's why it's called bursting.
+So if you have one gigabytes,
+you get a throughput based on one gigabyte.
+If you have one terabyte, you get higher throughput
+because you use more storage.
+Then there was enhanced mode.
+And now elastic is recommended, which is saying,
+Hey, regardless of the size of your EFS file system,
+we're going to give you all the I/O you need
+and we'll scale automatically
+and you're going to only pay for what you use.
+So this is best when you have a workload
+with unpredictable I/O where for example, you can scale
+from zero megabytes per second
+to a hundred megabytes per second in no time.
+This is why it is the recommended mode
+because it doesn't require for you
+to think about any settings.
+And then the last one, so we have bursting elastic,
+and the last one is provisioned.
+This is when you know
+in advance the throughput you're going to be needing.
+So this is the provision mode.
+So you say,
+Hey, I will need 100 megabytes per second for sure.
+And then you also have a bursting limit
+of 300 megabytes per second.
+And because you provision throughput
+in advance, you're going to pay for it in advance.
+So elastic is the recommended setting.
+And then if you look at the additional settings,
+so we have general purpose and max I/O.
+So in the case of elastic, you get the I/O you need based
+on the performance you need.
+So general purpose is the only option for performance mode,
+but if you use bursting or if you use provisions,
+then you have the option between two settings.
+So general purpose, which is giving you high performance
+and latency sensitive applications.
+So that means the latency is very low,
+but if you want to get a maximum amount
+of I/O mode, then this is for highly paralyzed workloads
+and you can tolerate higher latency.
+So at the expense of a higher latency, you
+also get more I/O.
+This is good in a big data type of setting,
+but the best recommended setting now for AWS is
+to use enhanced with general purpose and elastic.
+Okay? So that's it for the options.
+Hopefully it's not too confusing.
+I don't love the fact that under enhanced there is elastic
+and provision, it's really just three options we have.
+We have bursting, elastic and provision,
+and that's what you should remember for the exam.
+Okay, let's click on Next now.
+Next we have the network access settings
+and they're very important, we have to choose a VPC.
+I'll choose the default VPC and then the mount targets.
+And because we've chosen a regional type
+of EFS file system, we have free AZ available to us.
+So each AZ is going to be assigned to a subnet.
+I'll leave it as is, which is the default subnets.
+The IP is automatic and we need to assign a security group.
+And so we need to go ahead
+and create a specific security group for my EFS file system.
+So I'll go into the EC2 console and then I will go
+into Security Groups.
+I will create a security group
+and I will call it sg-efs-demo.
+And I will call this one EFS Demo SG.
+For now, we will not have any inbound rules.
+I'll click on Create Security Group and we cannot have this.
+So EFS demo is good enough.
+Okay, so my EFS demo is created successfully
+and to have it appear here, what I need
+to do is to refresh the page.
+So we'll start all over,
+but the settings are the basic ones,
+the default ones that we come next.
+And now I can remove these security groups
+and choose the EFS demo security group
+that I have created from before.
+Okay, we're good.
+So now we have done all the network access configuration.
+I will click on Next.
+We have a file system policy that is optional
+and we will not touch it right now.
+This is pretty advanced and we don't need it right now.
+So I will click on Next.
+And here we can review
+and create all the file system settings.
+So we're happy with that.
+And when we're done, we just click on Create.
+Now my file system is creating and I will get back
+to you when it is created.
+My file system is now available and I can go in it
+and see that the fact that there is six kilobytes of size
+that is being used right now.
+And when you have a EFS file system, you only pay
+for the storage you use, so right now my cost are zero.
+So this is good, this is created.
+And now we want to mount this onto EC2 instances.
+Therefore, you know the next step we're going
+to create EC2 instances.
+So let's launch some instance.
+And I will name this one Instance A,
+because we will launch it in subnet of AZA.
+So we are going to run Amazon Linux version 2.
+We're good to go, we'll use the t2.micro
+because it's free tier eligible.
+We will disable the key pair.
+We'll just do EC2 instance connect to connect
+to our EC2 instance.
+For network settings, I will leave it as is
+and there will be a new security group created
+with these rules right here.
+So allow SSH access from anywhere, which is good.
+Then we have eight gigabytes of GP2 storage.
+But now because we want to configure the storage
+of the EC2 instance
+into Amazon EFS, we can actually now do it
+from within the EC2 console, which is very exciting.
+So let me show you how to do it.
+Before we had to run some commands.
+So there are 0 x file systems and you do edit
+and it says that you cannot add a file system
+before you choose to select a subnet.
+So we scroll back up, we go to Network Settings, we Edit it,
+and in subnet I'm going to choose eu-west-1a.
+So now that my subnet is created, I can go back
+into file systems.
+And as you can see, I can add an EFS or an FSx file system.
+So we'll add an EFS file system,
+then we'll click on Add Shared File System.
+It's going to be linked to my EFS right here.
+The mount point is /mnt/efs/fs1. This is good enough for us.
+This is going to automatically create
+and attach security groups for us, which is amazing.
+And then it's automatically going
+to mount shared file system
+by attaching the required user data scripts.
+So these in the past we had
+to run ourselves onto the EC2 instance manually
+or create our own user data script.
+But now this is done for us
+by the EC2 console, which is really nice.
+Okay, let's create one instance and launch it.
+Okay, so this instance is launched.
+I can go view all instances
+and I'm going to launch a new one.
+Okay, I will call this one Instance B.
+We'll have Amazon Linux 2, again to make it quick, I'm going
+to proceed without a key pair, I will go into eu-west-1b.
+I can just select the security group of launch-wizard-2
+that was created just from before.
+And then again, we need to edit this
+and add a file system of type EFS
+and we'll use the same file system as before
+and the same mount points
+and we'll leave these options on as well.
+So we're good. Let's launch that instance.
+And now let's have a look
+at the interesting stuff that has happened.
+So I'm going to just do instant state equals running
+and refresh this until I see both of my instances.
+So now they're both running.
+And the interesting thing is
+that if we go into the EFS console
+and go to the network tab, as we can see now,
+each availability zone now has multiple security groups.
+So we have the EFS demo we created from before,
+but also the efs-sg-1 and efs-sg-2, which were auto created
+by the EC2 console for us and attached
+into our EFS file system.
+So if I go into my EC2 instances
+and then security group right here, I can look at
+for example, this efs-sg-2, look at the inbound rules.
+And as you see, it allows the protocol NFS on port 2049
+and the source of it, if we have a look
+at the inbound rules himself, the source
+of this is this security group
+and that security group is the one
+that is attached into my EC2 instance, instance B.
+So this allows my instance B to access the EFS file system
+because that security group right here called efs-sg-2
+is attached into my EFS file system.
+So all the setup is done by AWS for us, which is truly nice.
+So now if I go into one of these instance, we're going
+to connect using EC2 instance connect
+on this tab, and then I will also do the exact same thing
+by connecting to instance B over EC2 instance connect.
+So now I can, for example, verify the fact that yes,
+in ls /mnt/efs/fs1/ there is an EFS file system
+and now we need to create files in it.
+So to make it simple, I will elevate my right
+and type sudo SU
+and then I can do echo "hello world"
+into the /mnt/efs/fs1/hello.txt.
+So we've created that file named hello.txt.
+And if I do cat and then this entire file name right here,
+as you can see it says hello world.
+So this file has been created into my EFS file system
+from this EC2 instance, which is an eu-west-1a.
+But now if I go into my second EC2 instance and do LS
+and then the same file system, so I look for files in it,
+as you can see, we also see this hello.txt file in it.
+And if I do cat and then cat the file, hello.txt,
+it says hello world as well.
+So as you can see, the EFS file system is indeed mounted
+as a network drive onto both my EC2 instances
+and they are in different AZs
+and they share it the same EFS.
+So that's amazing and that's a different kind of storage
+that you had the demo of it right now.
+So that's it for the EFS demo. That was pretty complete.
+Now to just clean it up, what you can do
+is you can terminate these two EC2 instances.
+So you go here and you terminate them.
+And something else you can do is you can go
+into the EFS file system, you can delete it
+by entering the file system ID,
+and then when everything is deleted, you can go ahead
+into your security groups
+and delete the extra security groups
+that have been created during this demo.
+Okay, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

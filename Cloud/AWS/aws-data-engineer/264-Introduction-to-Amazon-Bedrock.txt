@@ -1,0 +1,234 @@
+# 264. Introduction to Amazon Bedrock
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/54308771
+# Caption: en_US (auto)
+
+All right, as promised,
+let's dive into generative AI fundamentals
+and Amazon Bedrock,
+which is basically the fundamental service
+of AWS with generative AI.
+Now, before we can talk about Bedrock,
+well, what is that Bedrock?
+It's the foundation models
+that we're building these applications on top of.
+So, foundation models,
+are giant, pre-trained transformer models
+and we might be fine-tuning those for specific tests.
+We might be using them as components
+that we're building larger systems around,
+or agentic systems around.
+What are some examples?
+So, the one you're probably most familiar with is like GPT,
+whatever number it is this week from OpenAI.
+That's the foundation model.
+So, you can build systems around that.
+Something that's more available
+within Amazon is Claude from Anthropic.
+You're probably familiar with that as well.
+Same idea, it's this giant large language model
+that can sound pretty darn intelligent
+and you can build applications around it.
+That's a foundation model.
+On the image side, we have DALL-E from OpenAI,
+which can be used for generating images.
+LlaMa is Meta's or Facebook's offering
+in the LLM space as well.
+DeepSeek from China, getting a lot of buzz,
+so, also a good LLM, good foundation model.
+And Amazon has its own as well with Amazon Nova
+and also Amazon Titan.
+So, different models have different strengths.
+There are different purposes.
+Jurassic-2, you don't really see a whole lot about anymore.
+It does show up a little bit
+on the AI foundation exam,
+but not so much this one, I don't think.
+That one's more about multilingual large language models,
+so, if we're generating text across different languages.
+Claude is a more popular one.
+So, that's definitely a popular choice
+within Amazon Bedrock.
+It's a large language model.
+You're familiar with it
+if you've used anything like ChatGPT,
+really good one, good for answering questions.
+And it's also good at workflow automation.
+So, you might've heard of Claude Code.
+That's an example of using Claude
+to actually drive much larger workflows
+and doing more complex agentic tasks.
+So, it really excels at that sort of a thing.
+For image generation, Stable Diffusion is one option.
+And again, LLaMA, another competing LLM from Meta,
+also a good contender.
+Amazon's Titan model is more about generating
+what we call embeddings.
+So, kind of like extracting the meaning from chunks of text.
+So, it can summarize text,
+it can generate text, it can do Q&amp;A.
+But Titan is really more about embeddings.
+So, basically, translating pieces of text
+into these large vectors that embody their meaning.
+And we'll see how that becomes important
+with Retrieval-Augmented Generation in a little bit.
+Also, Amazon Nova Reels is a cool one
+that's a little bit more recent.
+That's for generating video using AWS.
+So, what is Amazon Bedrock?
+So, Bedrock has basically built this abstraction layer
+around all these foundational models.
+So, that's pretty cool, right?
+So, they have a single unified API
+where you can swap these foundation models in and out
+and use whatever ones you want.
+And this is important,
+because foundation models come and go, right?
+New, better ones are coming out all the time.
+So, you don't really wanna be coding specifically
+against any one of them.
+So, that's pretty cool.
+It allows you to invoke chat, text or image model.
+So, it's all multimodal.
+You can also build it around your own models,
+your own prebuilt models or your own fine-tuned models
+that you built from one of these foundational models.
+And the way it works is that,
+yeah, Bedrock has its own costs,
+but basically, they're a marketplace.
+So, they're basically being this layer
+between you and the foundation model.
+And the usage that you have
+of the underlying foundation model,
+which might not be from Amazon, right,
+it might be from Anthropic or from Meta or somebody else,
+they will bill you directly
+through the Amazon billing platform.
+So, you gotta make sure you understand
+what the actual pricing and costs are
+for these foundation models you're using.
+Because they will be billing you separately
+from just raw AWS usage.
+When I say separately,
+you're not gonna get a separate bill from them.
+It's still gonna be part of your AWS bill.
+But it will be billed on its own terms, its own usage
+through the AWS Marketplace.
+Also, they have this really fancy system in Bedrock
+for Retrieval-Augmented Generation,
+they call it knowledge bases.
+We're gonna talk more about that shortly.
+And it has some very cool features around LLM agents
+that you can build around these foundation models as well.
+So, they've basically built a standardized API
+around these models that let you build cool stuff with them,
+that's what Bedrock is.
+And it's completely serverless.
+So, the really cool thing is you don't have to worry
+about managing and maintaining servers
+and keeping system software up to date and all that stuff.
+All that's been abstracted away from you
+with Amazon Bedrock.
+Also, it has a lot of integration points with SageMaker.
+So, if you do want more fine-tuned control
+over how you're deploying this stuff
+and how you're tweaking it and tuning it,
+you can do that from within SageMaker as well.
+And we have a whole section of the course coming up on that.
+So, Bedrock can be used from a visual standpoint
+from the console.
+It also has an API if you wanna do things
+from an actual application standpoint.
+So, there is a bedrock API end point
+that lets you manage, deploy and train models,
+fine-tune them if you want to.
+So, you can do that through the console,
+or you can do it through the API.
+Bedrock-runtime, probably a little bit more useful
+from an API standpoint.
+This is where you're gonna be performing inference.
+So, actually, calling your underlying foundation models,
+calling the applications that you've built on Bedrock
+and getting a response back from them.
+So, that will allow you to execute a prompt
+and get a response back,
+generate embedding vectors,
+whatever it might be against these models.
+And there are four main entry points to bedrock-runtime.
+Converse for basically chatting, right?
+ConverseStream, which is just gonna be kind
+of that real-time feedback
+that you get as it's generating text.
+InvokeModel, if you just wanna kick off a model.
+And InvokeModelWithResponseStream,
+again, the runtime, the real-time version of that as well.
+Then we have bedrock-agent,
+which is about using these larger agentic systems,
+you might be building with Bedrock
+around these foundation models.
+So, you might have multiple models running in parallel,
+doing different stuff, right?
+So, bedrock-agent will let you manage and deploy
+and potentially train those agents
+and also the underlying knowledge bases
+that they're using as tools.
+So, agents are more about just running in parallel.
+It's also giving tools to your systems,
+your gen AI application, giving them external knowledge,
+giving them external information
+and the ability to do stuff
+on the internet or on your local computer.
+So, bedrock-agent is the API endpoint around that stuff.
+And then, we have bedrock-agent-runtime,
+which allows you to actually use those agents.
+So, performing inference
+against those agents and knowledge bases.
+You can invoke an agent and say, "Okay, here's my prompt.
+Go do some agentic stuff to make it happen."
+You can also use Retrieve and RetrieveAndGenerate
+if you're more interested
+in getting the underlying knowledge base information.
+So, if you want
+to hit that underlying knowledge base vector store
+and get information back from it,
+there's an API for that as well.
+Let's talk a little bit about permissions.
+So, you do need to be careful if you're using Bedrock
+to use it with an IAM user.
+Do not use it as your root account.
+So, resist the temptation
+to log into the console with your root account
+and start playing with Bedrock.
+It might work at first, but it ain't gonna work for long.
+So, I've learned that the hard way.
+You, of course, need to make sure
+that the user has relevant Bedrock permissions,
+so, BedrockFullAccess or BedrockReadOnly depending
+on what you wanna do.
+If you do want to be developing using that user,
+FullAccess would make sense.
+If you're just going to be using that system
+and reading from it, ReadOnly might make more sense.
+Model access, so, like we said,
+there's kind of this menu
+of underlying models you can use.
+Foundation models with Bedrock,
+how do I get access to them?
+Used to be that if you wanted to use a model,
+you had to explicitly request access to it,
+agree to its terms and agree to its billing.
+They are phasing that out as of this recording.
+So, this slide is probably already out of date.
+Going forward, you can just use any model in the catalog
+and they will just automatically start billing you for it.
+So, they are phasing out that extra step there.
+However, do be sure to check the pricing
+at aws.amazon.com/bedrock/pricing.
+Because different models cost different amounts of money.
+And as we'll see later in the course,
+a big part of optimizing these systems,
+is making sure you're choosing the right model for the job
+and not paying for more power than you need.
+This will all make a lot more sense
+if we play around with it.
+And conveniently, Bedrock has a playground, so, let's play.

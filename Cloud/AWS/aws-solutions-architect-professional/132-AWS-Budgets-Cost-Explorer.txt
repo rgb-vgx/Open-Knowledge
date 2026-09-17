@@ -1,0 +1,143 @@
+# 132. AWS Budgets & Cost Explorer
+# Section: Cost Control
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30991052
+# Caption: en_US (manual)
+
+Okay, so there are more tools
+to manage your costs in AWS.
+The first one is AWS Budgets,
+which allows you create a budget,
+and then send alarms,
+when the costs are exceeding your budgets.
+So you have four kinds of budget
+you can define in the Budget service.
+You have usage, cost, reservation, and savings plan.
+And so you define what you want for which type of budget,
+and then you will receive an alarm.
+So in the case of reserved instances,
+this budget, you can track the utilization
+of these ROIs.
+It supports EC2, ElastiCache, RDS, and Redshift
+And you can define up to five SNS notifications per budget.
+Now these budgets are very granular.
+You can filter by service, linked account, tag,
+purchase option, instance type, region,
+region availability zone,
+API operation, et cetera, et cetera,
+which are the same options as Cost Explorer.
+The first two budgets are free,
+but then you're going to pay two cents per day per budget.
+We also have Budget Actions.
+So the idea is that you want the budget service
+to run an action on your behalf,
+whenever a budget exceeds a certain cost,
+or usage threshold.
+We have three action types:
+We can, for example, apply a specific IAM policy
+to a user, a group, or an IAM role.
+Thus, for example, restricting users, groups, or roles,
+from doing anything.
+We can also apply service control policies directly
+into an OU,
+again, to restrict what an account can do
+or you can automatically stop EC2, or RDS instances.
+These actions can be executed automatically,
+or they can require a workflow approval process,
+to make sure that some human says "yes,"
+before these actions are implemented.
+The goal of budget actions
+is to reduce the unintentional overspending
+in your accounts.
+So if we like an example of an OU,
+with management account, and a dev OU of member accounts,
+then we can create a budget,
+and then in case the budget reaches a specific threshold,
+then we can automatically apply an SCP
+onto the development OU,
+to make sure to restrict the member accounts.
+So in this example, we would make the budget tailored
+for the dev OU itself.
+So we have two types of architecture
+when managing budgets in AWS:
+You have the centralized budget management,
+and decentralized budget managements.
+So in the centralized management of your budget,
+here's an example, where we have the management accounts,
+and then an OU with a member account, and a restrictive OU.
+So we create a budget in the management accounts,
+for every member accounts that we want to monitor.
+So if we have 10 member accounts,
+we create 10 budgets in the management accounts,
+but we apply a filter on each budget,
+and the filter can be an account filter,
+so that the budget is tailored to one specific account.
+Therefore, effectively,
+by creating a budget into the management account,
+we are effectively, but not actually,
+creating a budget for the member account.
+Now, when the budget exceeds a threshold,
+then we can send a notification into SNS,
+which can trigger a Lambda function,
+and that Lambda function
+can have the API call embedded into its code,
+to move the account that has breached its threshold,
+into a more restrictive OU,
+where an actual SCP has already been applied.
+So effectively, we move that member account
+from OU to a restrictive OU,
+and there we don't allow it
+to create new resources, and so on.
+On top of it, to be notified of this move
+we can also make the Lambda function
+send an email to an Amazon SNS topic,
+through an Amazon SNS topic,
+to our administrators, for example.
+So that is centralized budget management,
+because here,
+we manage all the budgets of our organization,
+within the management accounts itself.
+We also have decentralized the budget managements.
+So in this case,
+while the budgets are going to be managed
+directly into the member accounts,
+but to simplify distributing these budgets,
+and creating them in each member account,
+we can use a CloudFormation stack sets,
+to deploy these budgets.
+So we have a budget in each member account,
+and that budget can have the same thing.
+For example, send messages into an SNS topic,
+and then trigger an email,
+in case we are about to reach
+a specific threshold for budget.
+Or if it's a critical notification, for example,
+budget has been exceeded, then again, send a notification,
+and trigger a Lambda function that would, for example,
+stop all EC2 instances.
+And that's just one example.
+Talking about Cost Explorer,
+so it's a way for you to visualize, understand,
+and manage your AWS cost and usage over time,
+and you create custom reports
+that will analyze your costs, and usage data.
+You're Going to analyze your data at a high level.
+So you're going to get overview into your total cost,
+as well as usage across all accounts.
+But you can go deeper,
+and you can analyze it monthly, hourly,
+and at the resource level.
+Cost Explorer is a great service
+to allow you to \choose an optimal savings plan.
+As we saw before, savings plans are a way
+to commit to a certain dollar amount over time,
+and lower your prices on your bill.
+Now with Cost Explorer, there's also a nifty feature,
+in which you can forecast usage of your cost,
+up to 12 months in advance, based on previous usage.
+So if we look at Cost Explorer, this is the interface,
+and we get access to a lot of filters, as I said,
+the same filters for Cost Explorer and for Budgets,
+as well as some detailed graphs
+around how your costs are spread out over time, and so on.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

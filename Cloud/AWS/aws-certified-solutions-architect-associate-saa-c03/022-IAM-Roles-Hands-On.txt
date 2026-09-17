@@ -1,0 +1,54 @@
+# 22. IAM Roles Hands On
+# Section: IAM & AWS CLI
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098068
+# Caption: en_US (manual)
+
+So let's practice using roles.
+So on the left hand side, you click on roles,
+and you can see that some roles may have already
+been created for your accounts.
+Could be two, could be more. It doesn't matter.
+But what we're going to do is that we're going to
+create our own role in here.
+So a role is a way to give AWS entities permissions
+to do stuff on AWS.
+As you can see, you have different kind of roles.
+You can create actually five of them right now.
+But the one that you need to know about for this hands-on
+and for the exam is going to be a role for an AWS service.
+So let's choose this one, and then we need to choose
+for which service we want this role to apply to.
+So as you can see, if you click on it,
+you have commonly used services, such as EC2 and Lambda,
+or a role for pretty much every service on AWS.
+So it's a very common thing to know in AWS,
+and that's why we learn about it.
+So we are going to create a role for an EC2 instance
+when we get to the EC2 section.
+And so we choose EC2, and the use case is just EC2.
+We disregard any of these.
+So click on next, and now that we create a role
+for an EC2 instance, we need to attach a policy.
+So I'm going to attach the IAM read only access
+to allow my EC2 instance to read whatever is in IAM.
+Let's click on next.
+Next do meet to enter a demo, a role name,
+so DemoRoleForEC2 is going to be my role name,
+and then we select the trusted entities.
+So this is saying, hey, this role can be assumed
+by the EC2 service, and this is what defines it
+as a role for Amazon EC2.
+We are verifying the permissions,
+yes, it has IAM read only access,
+and we create this role.
+So now my role is created.
+As you can see, it appears in my role lists.
+And we can verify that the permissions
+are correct for this role.
+Now, we cannot use this role just yet
+because we need to get to the EC2 section,
+but we will use it when we get to it.
+In the meantime, you've seen how to create a role
+for Amazon EC2 and how to attach correct permissions to it.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

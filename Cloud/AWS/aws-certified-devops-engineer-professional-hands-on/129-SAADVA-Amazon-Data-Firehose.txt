@@ -1,0 +1,101 @@
+# 129. [SAA/DVA] Amazon Data Firehose
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904016
+# Caption: en_US (manual)
+
+So now let's talk about Amazon Data Firehose.
+So Amazon Data Firehose is a service
+to send data from sources into target destinations.
+So to get data into Amazon Data Firehose,
+you may have producers that could be your applications,
+your clients, or things you write,
+and you use the SDK to send data into Firehose
+or the Kinesis agents,
+as well as Firehose has the capability
+to pull directly from some services
+such as, for example, a Kinesis Data Streams
+or an Amazon CloudWatch logs and events,
+or for example, AWS IoT.
+And so all these services are either going
+to be pushing into Amazon Data Firehose
+or Firehose are going to be pulling from,
+for example, a Kinesis data stream
+and it is going to receive the records.
+Now these records are going to be received,
+and then they can optionally be transformed
+using a Lambda function, if you wanted
+to do some data conversion format, for example.
+And they're going to be accumulated into a buffer
+and the buffer is going to be flushed once in a while
+to do batch writing into a lot of destinations.
+So the first destinations are going
+to be AWS specific destinations,
+such as sending data into Amazon S3
+or into Amazon Redshift to perform analytics,
+or into Amazon OpenSearch as well.
+You also have the option to send from Data Firehose
+directly into third-party partner destinations
+such as Datadog, Splunk, New Relic, and MongoDB.
+And finally, if your destination is not supported,
+you can simply use the HTTP endpoint integration
+to send it anywhere you want.
+Now, Firehose will write this data,
+but you also have the option to write all
+or just the failed data that has been sent
+into an S3 bucket for a backup.
+So Amazon Data Firehose
+used to be called Kinesis Data Firehose
+for the longest time,
+but now it's called Amazon Data Firehose
+because it does way more than just Kinesis.
+It's a fully managed service,
+and again, it supports Redshift, S3,
+and Amazon OpenSearch service,
+third party destinations such as Splunk
+and a custom HTTP endpoint
+if you wanted to write your own integration.
+You also have automatic scaling.
+It's fully serverless,
+and you only pay for what you use from within the service.
+It's called a near real-time service
+and this is something you have to look for in the exam.
+Near real-time usually points
+to Amazon Data Firehose, and why?
+Well, because you have a buffer inside of Firehose,
+and the buffer can be optionally disabled,
+but usually it's used
+and it has a capability based on size or time.
+So it's going to accumulate, accumulate,
+and then after a while,
+it's going to be flushed into your destination.
+And therefore, because that takes a little bit of time,
+it's a near real-time service.
+In terms of what type of incoming data it supports,
+it supports CSV, JSON, Parquet, Avro, text, or binary data.
+And from within Firehose, you can convert your data
+to Parquet or ORC as data formats
+or even do compressions with gzip or snappy.
+But if you wanted to do a custom conversion
+or data transformation,
+for example, you could use AWS Lambda.
+For example, if you wanted to change your data
+from CSV to JSON format before sending it to Amazon S3.
+So it's usually helpful to compare Kinesis data streams
+and Amazon Data Firehose, so here it is.
+So Kinesis Data Stream
+is a streaming data collection service.
+You're going to usually have
+to write your own producer and consumer code.
+It's going to be real-time.
+And there are two modes, provision and on-demand mode.
+Data can be stored up to one year
+and you have a replay capability.
+For Amazon Data Firehose,
+it's a way to load streaming data into target destinations
+such as Amazon S3, Redshift, OpenSearch and so on.
+It's fully managed, it's near real-time,
+it has automatic scaling, no data storage,
+and no replay capability.
+All right, that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

@@ -1,0 +1,69 @@
+# 156. On-Premise Redundant Connections
+# Section: VPC
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18387238
+# Caption: en_US (manual)
+
+So the question is,
+how do you make your connection
+between data center and AWS redundant?
+So for this, we can use, for example,
+in terms of VPN connections, an active-active setup.
+So as we can see,
+we have two Corporate Data Centers, 1 and 2,
+and they're both connected
+through a dedicated VPN connection into AWS.
+Now what happens that also your Corporate Data Centers
+and Corporate Data Center 1 and 2,
+they are connected with each other
+with an internal connectivity.
+So what happens that if, for example,
+this first VPN connection goes down,
+then your network can root from Corporate Data Center 1
+to Corporate Data Center 2 into AWS,
+thanks to this redundant active-active VPN connection
+and vice versa if this connection is down.
+This happens as well when you use Direct Connect.
+So you have two Direct Connect connections
+on two Corporate Data Centers,
+and then these are connected through internal networking.
+And therefore, if one of these
+Direct Connect location goes down,
+then one Corporate Data Center
+can still access AWS through the other data center location.
+And then finally, if you wanted to mix them up together,
+you could of course choose a hybrid backup VPN location.
+For example, here your Corporate Data Centers
+are connected with each other,
+as well as with a rest through a VPN and a Direct Connect.
+And so if one of these things even failed,
+then you have a failover route
+through Corporate Data Center 1
+or Corporate Data Center 2.
+Also, another feature you need to know about
+is that the Direct Connect Gateway SiteLink feature,
+which allows you to send data
+from one Direct Connect location to another
+bypassing the AWS regions.
+So how does that work?
+Well, with this, you can create a private network connection
+between your on-premises data centers
+by connecting them directly to Direct Connect location,
+and the data will be sent over the fastest path
+within these Direct Connect locations.
+So we have two Corporate Data Centers and they have routers
+and they're in different locations,
+so around the world of course.
+So we connect them to different Direct Connect locations
+around the world as well.
+And on the side of AWS, we create a Direct Connect Gateway.
+What's going to happen is that if we do enable SiteLink,
+then this kind of traffic can happen
+where the Corporate Data Center
+goes for Direct Connect to the Gateway
+back to another Direct Connect to the customer router,
+and this happens to connect the Corporate Data Center A
+with Corporate Data Center B
+without being routed through the AWS regions.
+So, that's called Site SiteLink. Okay?
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

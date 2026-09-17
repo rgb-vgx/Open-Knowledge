@@ -1,0 +1,117 @@
+# 177. Shared Responsibility Model: Reminders & Examples
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056304
+# Caption: en_US (manual)
+
+Welcome to this section
+on security and compliance.
+We're going to start right away with the shared
+responsibility model.
+So this is something we've seen all along this course,
+but now it is time for us to formally introduce it.
+So, AWS responsibility is the security of the cloud.
+That means that all the infrastructure they provide to you,
+that includes the hardware, the software facilities,
+networking.
+They have to protect it
+because this infrastructure will run
+all the services that you're using on AWS.
+On top of it, any service that is managed by AWS,
+such as S3 DynamoDB, RDS, is the responsibility of AWS.
+But once they provide a service to you,
+then how you use that service is your responsibility.
+So for example, as a customer,
+you are responsible for the security in the cloud.
+So in the instance of EC2 instance, your customer,
+so you, is responsible for the management of all the
+operating system that includes patching the operating system
+and making updates to it.
+You must configure the firewall,
+so that means that's you Mister Green figure, for example,
+the network ACL and the security group,
+and also you need to make sure that your EC2 instance has
+the correct IAM information through the use of,
+IAM instance role.
+Then, we also need to ensure that we
+encrypt the application data,
+according to our compliance requirements.
+Then, there are some controls that are shared.
+For example, patch management, configuration management,
+awareness and training are both shared between you and AWS.
+For example, for batch managements,
+if using something like RDS,
+then AWS will do the patch management for us.
+And if we are using something like EC2 then we have to
+patch our operating system,
+so the shared control is here.
+For example, for awareness and training,
+AWS has to train their employees
+to use their facilities correctly,
+and to make sure they adhere to their security guidelines.
+And you have to make sure to train your employees correctly,
+to use the cloud,
+and doing this training is one of these ways, obviously.
+Next, let's look at a detailed technology, for example.
+So for RDS,
+the responsibility of AWS is to manage the underlying
+EC2 instance and to the civil SSH access,
+to automate the database patching,
+to automate the operating system patching,
+and to edit the underlying instance and disk
+to guarantee that it functions over time.
+Your responsibility as a user of RDS
+is to check that the ports,
+IP security groups inbound rules
+in your database security group are set up correctly.
+It's also to make sure that the in-database user creation
+and the permission of these users is done the way you want,
+and also you need to make sure that if you want to create a
+database with or without public access.
+And if you wanted to configure a database you could use
+parameter groups, for example,
+to force only encrypted connections.
+Finally, if you wanted to encrypt the data
+within the database, it is again,
+your responsibility to enable.
+Next, for Amazon S3,
+The responsibility of AWS is to guarantee you
+to get unlimited storage,
+to guarantee you to get encryption when you enable it,
+and to ensure the separation of data between all your,
+all the different customers of AWS.
+As well, they need to make sure
+that all the employees of AWS can not access your data.
+Your responsibility is to configure your bucket
+the way you want to make sure
+the bucket policy adheres to your standards,
+and also to use IAM users and roles accordingly.
+And finally, if you want to encrypt your data,
+it is your responsibility to enable it and to use the
+encryption scheme that works for you.
+So, hopefully that makes sense.
+Here is a diagram from the website of AWS,
+which shows the responsibility in the cloud is a customer
+and responsibility of the cloud is for AWS.
+So as a customer, your data,
+the applications, the platform,
+identity, and access management is up to you,
+operating system, network and firewall configuration,
+as well.
+Then your client's side data encryption,
+your server-side encryption,
+and your network traffic protection is all yours.
+AWS instead, is responsible for their software,
+so their services,
+also making sure that the compute, storage, database,
+and networking are working correctly when they
+provide it to you,
+and they're responsible for their hardware
+and the global infrastructure.
+So the regions, the AZ, and the edge locations.
+Hopefully that makes sense because their shared
+responsibility comes up at least two to three questions
+in your exam.
+So understanding what is your responsibility
+and what is the responsibility of AWS is very important.
+I hope that was helpful
+and I will see you in the next lecture.

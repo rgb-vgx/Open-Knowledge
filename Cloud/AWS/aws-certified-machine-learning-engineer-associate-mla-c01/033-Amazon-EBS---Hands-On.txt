@@ -1,0 +1,136 @@
+# 33. Amazon EBS - Hands On
+# Section: Data Ingestion and Storage
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45356655
+# Caption: en_US (manual)
+
+So let's have a look
+at the EBS volumes attached to our instance.
+So if you click on instance
+and then you go to the storage tab in here,
+you find that there is a root device
+and there's a block device on it.
+As you can see, we got one volume
+of eight gigabytes currently attached
+into our EC2 instance.
+So what I can do is I can click on this volume
+and it will take me into the volumes interface of AWS.
+And we can see that, yes, indeed,
+our volume exists and it's there.
+It's in use as shown here
+and it's attached to an instance right here.
+So we have a different kind of console here
+and to access it, you can just go on the left hand side
+and click on volumes.
+So as we can see, now we have one EBS of eight gigabytes
+and what I can do is I can create a second volume.
+So let me create a volume
+and I will have many options to choose from,
+GP2, GP3 and so on
+but I will just use GP2 of type of size two gigabytes.
+And then for availability zone,
+I can choose the same one where my EC2 instance is.
+So for this, I'm gonna go into my EC2 instance, in here
+and I will find which availability zone it is on.
+So I scroll down,
+and it is going to be in the networking one.
+So I scroll down in the networking
+and here, availability zone, it says eu-west-1b.
+Therefore, the volume I will create
+is going to be in eu-west-1b
+because the EBS volumes are bound by specific AZ.
+So that's good.
+I will have it done and create this volume.
+And now my volume is created.
+And what I can do is if I can click on it,
+this one is currently not attached.
+Okay, so it's been creating
+so let me refresh this to see if it's created.
+Okay, it's available and it's not attached yet.
+So therefore, because it's available,
+what I can do is action
+and then I can attach the volume
+and we need to find an instance.
+So we have one running right here.
+And so we're going to attach this volume to my instance,
+click on attach volume and voila,
+our instance now has two EBS volumes attached to it.
+How do we know?
+Well, I can refresh this page,
+go to storage on my EC2 console, scroll down.
+As you can see now for block devices,
+I have two block devices.
+I have the one of eight gigabytes
+and the one of two gigabytes.
+To actually use this new block device,
+it's a bit more complicated
+and out of scope for this course,
+but you can go to format EBS volume attach EC2,
+and you should find something like, yes,
+make an Amazon EBS volume available to use on Linux
+and this gives you instructions on how to do it
+but again, this is out of scope for this.
+So now if I go into my volumes and I create a volume,
+I can create a volume of two gigabytes of GP2
+but this time the AZ is going to be eu-west-1a
+and not eu-west-1b.
+So it's gonna be a different AZ
+than the one of my EC2 instance.
+And the reason I do so is to show you
+that right now, we have three GP2 volumes.
+So let me refresh this.
+So the last one is available and it's a different AZ,
+so eu-west-1a.
+And if I do actions and then attach volume,
+as you can see, I cannot attach it to my EC2 instance
+because my EC2 instance is in eu-west-1b.
+And so therefore, we can see that the EBS volumes
+indeed are bound by a specific availability zone.
+Lastly, what I can do is that I can take this volume,
+do action, delete volume, and it's gone.
+And that really shows you the power of the cloud.
+I can just request volumes, delete volumes
+right on the go in the matters of seconds.
+Okay, so we have our two EBS volumes in here
+and what I wanna show you now is a cool behavior.
+So what happens if I terminate my instance?
+Well remember, and I will show you again,
+this one root volume of eight gigabytes
+has the delete on termination attribute.
+So how do we know?
+Well, if I go into my storage
+and then go to my block devices, into this table right here,
+and scroll all the way right,
+you see the first one has delete on termination yes
+and the second one no.
+So why this one is yes?
+Well, I don't know if you remember,
+but when you go through the process
+of launching an instance, okay?
+And then you scroll down to the storage,
+in here, if you click on advanced,
+you can see the fact
+that it is your roots of eight gigabytes
+and by default, this delete on termination attribute is yes,
+which makes sense, but you could set it to no
+if you wanted to keep the root
+after terminating your instance.
+So this explains why we see from before,
+the yes in this table.
+And so therefore, if I go ahead and terminate my instance
+which I will, so it says successfully terminated
+so it's going to really remove it from here.
+I can go back into my EBS volumes.
+I can refresh them.
+And what's going to happen is that this one
+soon is going to be available
+so because it's going to be detached from my EC2 instance
+and then it's going to be terminated.
+So I'm going to pause until this is done.
+And here we go.
+So my eight gigabyte volume has now disappeared.
+Only my two gigabyte volume is left
+and if I go to my EC2 console,
+well, it says that my first instance has been terminated.
+So that's it for this lecture.
+I hope you liked it
+and I will see you in the next lecture.

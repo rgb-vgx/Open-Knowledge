@@ -1,0 +1,97 @@
+# 335. API Gateway Mapping Templates Hands On
+# Section: AWS Serverless: API Gateway
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19731588
+# Caption: en_US (manual)
+
+So let's test out mapping templates,
+and to do so, I'm going to create a resource,
+and the resource name is going to be mapping,
+and I create this resource.
+And underneath mapping, I'm going to create a method,
+and it's going to be a GET method.
+We're going to use Lambda again,
+so let's go ahead and create a new Lambda function.
+So let me copy this name, create a function,
+and the name is API gateway mapping get,
+and we'll choose Python 3.11.
+Let's create our function. and the idea here
+is that we're going to choose Lambda function,
+but we are not going to enable Lambda proxy integration.
+This time, we're going to integrate directly
+with the Lambda function.
+So let's copy the ARN and paste it.
+Okay, we're good. We have it.
+And we're going to create this method.
+Now, this function right here
+is going to return something very simple.
+It's going to return a JSON document,
+and the response is going to be "example"
+and then "hello world".
+So as you can see,
+the Lambda function does something very simple.
+I'm going to deploy it and test it, so with my test event,
+and as you'll see, by testing it, it just responds,
+"Example, hello world."
+So that's perfect.
+So let's verify that everything is working
+by going into my API Gateway,
+and I'm going to test this, and then I'm going to test it.
+And as you can see, the response body
+is "example, hello world" with the status 200.
+Now, we didn't need to have the status
+and the body in here in our Lambda function
+because we don't have the proxy integration.
+This time, we're just returning whatever the Lambda returns.
+So this is perfect.
+Now we want to change the response body
+to add keys and to rename it and so on.
+So to do so, we're going to create a mapping template
+on the integration response.
+So click on integration response,
+and then you have mapping templates.
+We're going to create a template,
+and here, I'm going to define the content type,
+so application/json.
+And for the template body,
+I'm going to create a new response.
+So you can have whatever you want,
+so you can have my key and then my value,
+and this will be in every response.
+There will be my key, my value.
+But we wanted to rename this.
+For example, we wanted to rename it
+from example to something else.
+So let's have the value.
+So renamed key is my renamed key, and then the value of that
+must be the value, "hello world".
+So to access it, we must take the value
+corresponding to the key example.
+So to do so, you do dollar inputs,
+which corresponds to the JSON received as an input.
+That JSON, you open a parentheses and you open the quotes,
+dollar sign dot, and then we need to specify the key
+that we wanna get, and the key is example.
+So dollar sign dot example.
+Now, I may recognize this may seem advanced.
+You don't need to know this syntax for the exam,
+you just need to know that mapping templates are a thing.
+So let's go ahead and create this template.
+and what's going to happen is that now,
+the integration response
+is going to go through this template and change the outcome.
+So if we test again our method and test it right now,
+as we can see now, the response body says,
+"my key, my value", and the renamed key is "hello world".
+So the output of the Lambda function, this output,
+was being sent to our mapping template,
+which created this final response body.
+So that's it.
+It's a very one-on-one example,
+but you can have mapping templates
+on the integration request
+and the integration response for some types of integration.
+and this really allows you
+to transform the input and the output
+of your integration itself to make it map with your API.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

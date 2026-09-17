@@ -1,0 +1,116 @@
+# 69. Amazon DynamoDB Accelerator (DAX) - Hands On
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304574
+# Caption: en_US (auto)
+
+Instructor: So in the DynamoDB console,
+on the left hand side you have DAX.
+And DAX is not part of the feature here,
+so creating a DAX cluster was not, is not going to be free,
+but you can just go ahead and see the process.
+So you create a cluster, for example, demo DAX,
+and then the node family.
+So which kind of nodes do you want
+to attribute into your DAX cluster?
+It could be T types or R types, R is memory
+and T is for bursting.
+So this is recommended for use cases
+requiring a lower throughput.
+And this is for always ready capacity.
+Or you can compare all families.
+And in here you can select the node types you want.
+So you want an R5 large,
+an R5 4Xlarge, and so on.
+Or do you want to have a T3 small and so on?
+So in this example I'll take a T2 small
+and then the cluster size.
+So do you want one up to actually 11 nodes?
+So they keep on increasing the capacity.
+Three is going to give you a multi AZ setup, right?
+But one is going to be good, for example,
+just one AZ or for development.
+But if you have one or two nodes,
+you might experience reduced availability.
+So let's go ahead with one node.
+I just, I'm just going to go ahead and create this for you,
+but you don't have to go ahead
+because this will cost you some money.
+Now the subnet group is which subnet group you want
+to associate it with?
+So demo subnet group.
+So this has to live within a specific subnet group
+and in a VPC, so you choose your VPC ID
+and then you choose the subnets
+you want to have, obviously three subnets means you can have
+three nodes and be in a highly available setup.
+Access control, so what is the security group
+to access your DAX cluster?
+And you need to open up port 8111, okay.
+Or 9111 if you do intrinsic encryption.
+So we need to go ahead and create a
+security group from the EC2 console.
+But right now I'll keep it simple
+and just use a default security group
+just to show you the process.
+And then a Z allocation.
+Do you want to have automatic
+or do you want to spread your nodes manually?
+So we'll keep it as automatic.
+Next for IM permission.
+So you need to provide an IM service role
+that will give the DAX cluster access to DynamoDB.
+And so therefore we are just going to create this,
+IM role called DAX to DynamoDB
+and the policy will be created.
+We'll provide read write capacity, rewrite rights,
+and we're going to give access to all tables,
+but we could obviously limit some tables if we needed to.
+Then we're going to encrypt data in transit
+and at rest on our DAX cluster.
+So this is good.
+And then for parameter groups, we're going
+to choose the existing one.
+So this one, and we could on the left hand side,
+define some more parameters thanks to parameters groups.
+So this is going to basically tell how to, how long
+to cache the items thanks to the time to live.
+And what's the query time to live as well.
+So this is what the settings you have as part
+of the parameter group, but
+by default the one is giving you five minutes of TTL on both
+item time and query time.
+Okay, the maintenance window.
+So obviously DAX will be occasionally patched and upgraded.
+And so this is why it's good to have
+a multi AZ kind of setup.
+And so you can say no preference or specify
+your time window, your tags, and then you're good to go.
+You can review it and create your cluster.
+So my DAX cluster is now created and let's have a look.
+So the important thing I want you
+to look at is here there is a cluster endpoint,
+and this is the endpoint your applications should leverage
+to just leverage the DAX feature.
+Now we can have a look at the nodes,
+so we can have a look at the node types,
+how many VCP per node, memory, and so on.
+So we can add nodes over time if we wanted to.
+But as you can see, we cannot change the node types, okay?
+And we need to create a new DAX cluster if you wanted to.
+We can have some monitoring.
+So we can do alarms
+and metrics around whether
+or not the cache is being used correctly.
+So cache hits, cache misses for items
+and queries, CP utilization and so on.
+So this is very, very handy
+to see if DAX is effective for you.
+Events to monitor, the events of your database,
+as well as settings if you want to modify some settings such
+as the parameter group, network configuration,
+security configuration, maintenance window. and tags.
+So that's it for DAX.
+I hope you liked it.
+Now I'm just going to delete this cluster,
+including all the CloudWatch alarms,
+and I will see you in the next lecture.

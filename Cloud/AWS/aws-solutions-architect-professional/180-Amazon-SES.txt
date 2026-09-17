@@ -1,0 +1,68 @@
+# 180. Amazon SES
+# Section: Other Services
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34782962
+# Caption: en_US (manual)
+
+So here is a quick lecture about Amazon SES
+also called Simple Email Service.
+So it's a fully managed service as the name indicates
+that will allow you to send email securely,
+globally, and at scale.
+So the idea is that your application will use the SES API,
+or SMTP server, and Amazon SES will then send bulk emails
+to users.
+So this allows for outbound and inbound emails,
+so you can receive replies,
+and it gives you a reputation dashboard
+if your emails are open or not,
+performance insights, as well as anti-spam feedback,
+so if people write your emails as spam or not.
+It provides email statistics such as deliveries, bounces,
+feedback loop results, and whether or not
+the email was open.
+And it supports the standard security
+for email sending of today,
+so you have DKIAM and you have SPF.
+There is a flexible deployment, so you can use a shared IP
+a dedicated IP, or your own customer owned IP,
+this is to send emails from a specific IP address.
+And then the APIs are accessible from the console
+specific AWS APIs, or the SMTP protocol.
+So the use cases for Amazon SES
+will be transactional emails, marketing email,
+and bulk emails communications.
+The next feature you need to know about for Amazon SES
+is configuration sets.
+So it's a way for you to customize and analyze
+your email send events on Amazon SES.
+So there are two things you can set,
+you can set number one, the event destinations
+and you have two of them,
+you have Kinesis Data Firehose,
+so that Firehose receives metrics,
+such as the number of sends, deliveries, opens, clicks,
+bounces, and complaints for each email.
+Or SNS which gives you immediate feedback
+on bounce and complaint information.
+So the first part of configuration sets,
+and the second part if you want to is IP pool management
+to use IP pools to send particular types of emails,
+therefore, for example, that you have one IP set
+for the transactional emails,
+and one IP set for your marketing emails,
+therefore creating two types of email reputations.
+So Amazon and SES can have config sets, as I said,
+so when you send emails to users,
+then the analytics will be sent in real time
+or at least the data behind the analytics
+will be sent in near real time to Kinesis Data Firehose.
+And then you will have near real time analytics
+using Kinesis Data Analytics if you wanted to,
+or you can set it to Amazon S3,
+so that you can run queries on it with Amazon Athena.
+And finally, if you want to have immediate feedback
+on bounce and complaint information,
+you could set up an Amazon SNS topic
+to receive this kind of notifications.
+Okay, So that's it for Amazon SES,
+I hope you liked it, and I will see you in the next lecture.

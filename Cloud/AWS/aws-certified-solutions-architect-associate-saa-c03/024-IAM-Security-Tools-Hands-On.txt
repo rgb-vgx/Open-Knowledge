@@ -1,0 +1,61 @@
+# 24. IAM Security Tools Hands On
+# Section: IAM & AWS CLI
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098074
+# Caption: en_US (manual)
+
+So let's generate a credentials report.
+For this, on the left hand side,
+I just click on Credential report
+and then Download credential report
+which is going to create a CSV file.
+Now this CSV, because I'm using a training account,
+is not fascinating,
+but as we can see we have two rows in it.
+We have my root account and my account name, stephane.
+We can see when the user was created,
+if the password was enabled,
+when the password was last used and last changed,
+when is the next rotation to be expected
+if we do enable password rotation?
+Is MFA active?
+So we can see it's active from my root accounts
+but it is not active for my Stefane accounts.
+Then access keys, are they generated or not?
+Yes, they're created for my Stefane account,
+but not for my root account,
+and when they were last rotated, last used and so on,
+you can get more information about other access keys
+and certificates and so on.
+So this report is extremely helpful
+if you want to look at some users
+that haven't been changing the password,
+or using it, or their account,
+it could be giving you a great way to find which users
+that deserve your attention from a security standpoint.
+Now let's have a look at IAM Access Advisor.
+For this, I'm gonna go to my user, stephane,
+and then on the right hand side, I click on Access Advisor.
+And Access Advisor is going to show me
+which services were accessed by my user and when.
+So as you can see, organizations, health,
+identity and access managers with IAM Service,
+EC2, Resource Explorer, were all accessed by my user.
+So I use my user to access these things
+by clicking in the UI, but some services were not accessed,
+for example, Alexa for Business
+or AWS App2Container and so on.
+So using Access and Advisor, you can actually have a look
+at whether or not the user has the correct permissions.
+And it turns out that maybe based on this access,
+have 37 pages of this,
+maybe the user needs access only to a few services
+but not all of them.
+And this UI allows you to drill down.
+On top of it, if a user accesses a specific service
+for example Amazon EC2, we are told
+that this is the administrator access
+that granted access to this service.
+So to summarize, Access Advisor becomes very helpful
+when you need to do granular user access permissions on AWS.
+So that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

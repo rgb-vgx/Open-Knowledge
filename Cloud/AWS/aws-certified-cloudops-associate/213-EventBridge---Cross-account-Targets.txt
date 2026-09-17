@@ -1,0 +1,43 @@
+# 213. EventBridge - Cross-account Targets
+# Section: Monitoring, Auditing and Performance
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218041
+# Caption: en_US (manual)
+
+So now, let's talk
+about how we can use EventBridge
+to send data across different accounts.
+So let's take the example
+that we want to have an EventBridge Bus as a target.
+So we want to send from the source account bus
+to the destination account bus.
+So here, first of all, on your source account bus,
+you need to have a resource policy,
+and this resource policy must allow events, put events,
+to be sent to the destination account bus.
+So this is from the source account.
+And on the destination account,
+you also have a resource-based policy,
+this time allowing the root user of the source account
+to do put events on our own event bus
+from the destination account.
+So it's a classic security issue,
+but the source account must allow,
+of course, to send events to the target account,
+and the target account must allow
+the receiving of the events from the source account.
+It's a very similar process
+in case you have other services as targets.
+So here, we have an EventBridge bus
+sending into an SQS queue of our destination account.
+Here, we're going to need an IAM role,
+and this role must allow the send message operation
+into the queue of the destination account,
+and the destination account's queue
+must have a resource-based policy
+allowing, again, the other account
+to send messages into the queue.
+And this is valid for SQS, SNS, Lambda, API Gateway,
+or Kinesis Data Streams,
+that all support resource-based policy.
+All right, that's it. I hope you liked it.
+And I will see you in the next lecture.

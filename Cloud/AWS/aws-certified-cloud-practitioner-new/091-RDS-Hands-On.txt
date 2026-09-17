@@ -1,0 +1,176 @@
+# 91. RDS Hands On
+# Section: Databases & Analytics
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20055980
+# Caption: en_US (manual)
+
+So let's go ahead and create a database.
+So I'm in the Aurora and RDS console.
+On the left-hand side, I click on Databases,
+and then I click on Create database.
+And as we can see here, we have different options,
+so it can be a full configuration or an easy create.
+Because we wanna see the different options,
+we're going to go over full configuration.
+Here, you can select the engine option,
+so you have Aurora, either MySQL or Postgres compatible.
+Then you have MySQL, Postgres, and other type of engines.
+For this hands-on,
+we're going to select MySQL to keep it simple.
+Then you scroll down, and then for engine version,
+just choose whatever default there is right here.
+Next, for templates, we can have Production,
+which gives us access to more settings,
+or Dev/Test, or Free tier.
+So free tier is going to be what we're gonna be choosing.
+But if you take the production setting,
+what's going to happen is that you have the option
+to have Multi-AZ DB instance deployment with two instances,
+or even Multi-AZ DB cluster deployment with three instances.
+So these are production.
+We don't need this right now,
+but it gives you an idea of like the kind
+of setup you can have across multiple availability zones.
+But we're going to use free tier,
+and as you can see, the only thing we can use
+right now is Single-AZ database instance deployment,
+one instance.
+All right, perfect, let's scroll down.
+We keep everything as default for database and fire,
+master username, yes,
+and then credential management.
+So here, we have the option to either create our password
+and then have RDS manage the password,
+or we can also have the password be managed directly
+by AWS Secrets Manager.
+So this is the most secure,
+but there is a cost to using AWS Secrets Manager,
+so we don't use this, we'll use self-manage,
+but you should know that it's an option anyway.
+So for the master password, I will just enter password,
+and I will confirm the master password.
+It's very weak, I know.
+Then we'll just enable only password authentication,
+but as you can see, you have the option to also have IAM
+to authenticate to the database.
+Then you scroll down, and for instance configuration,
+we have information around, well, what's free,
+so we'll use the db.t4g.micro.
+Maybe you have a db.t3.micro,
+maybe you have something else, it doesn't matter,
+just choose whatever the default is right now.
+For storage type, we'll have 20 gigabytes.
+But then as you can see,
+under additional storage configuration,
+there is the option to enable storage autoscaling,
+and that means that if you use all the storage,
+you can autoscale up to, for example,
+1,000 gigabytes of storage.
+For connectivity, we'll select don't connect
+to an EC2 compute resource, we'll select the default VPC,
+and we don't change anything.
+For subnet group, no, we keep it as default,
+and for public access, we'll say yes,
+because we want to be able
+to publicly access our RDS database with a public IP.
+For the VPC security group,
+we will choose Create new,
+and I'll call this one demo-rds.
+And then we don't have any preference for the AZ,
+we don't want an RDS proxy,
+and for additional configuration, we're good to go.
+We'll use the port 3306.
+That is the port that we're going to connect to
+on our MySQL database.
+Let's scroll down.
+We choose the standard insights for monitoring.
+As you can see, we can enable enhanced monitoring
+and also export the logs if you wanted to.
+And then we have additional configuration,
+we're not going to look at it right now.
+For estimated monthly cost,
+it gives you information around the RDS free tier,
+and this is available for 12 months
+for these instance types.
+So we're good to go, now let's click on Create database.
+So it took a few minutes, but now my database is created,
+and here, we have some summary.
+So we know where it is launched, for example, eu-central-1a.
+We get some information around the endpoint
+if you wanted to connect to it.
+This will be the endpoint, and the port to be using.
+We can have a look at the VPC security group
+that has been created for my RDS instance,
+and the inbound rules, we can see,
+there's an inbound rule on the port,
+and if I scroll right on the port of 3306
+into my instance, so that means
+that I can use the correct port
+to connect to my MySQL database instance, perfect.
+If we look into monitoring,
+because this is a managed service, we have some information
+around the CPU utilization, which is great.
+So we start really seeing the power of managed services,
+login events ,and so on, configuration, backups and tags.
+So as we can see, having a database
+in the cloud is really helpful
+when it's managed, because well,
+we have all the nice monitoring configuration settings
+and so on associated with it, so this is a huge advantage.
+Other things you can do is that you can take a snapshot
+of your database, and this snapshot would allow you,
+for example, to restore the database into another one.
+So let's do it, demo-snapshot,
+and we'll take the snapshot.
+So we can't do it
+because my database is still in a backup stage,
+so what I'm going to do is wait for it
+to not be backed up, but to be available.
+Okay, so my database is now available,
+so let's go back to your Actions,
+Take snapshot, and here's the snapshot name.
+Take the snapshot.
+Now my snapshot is being created,
+and with it, I have a few options, so I can click on it
+and I can do a few things.
+So let's wait for it to be created.
+Right now it's in the creating status.
+So my snapshot is now available,
+and what I can do is do Action, Restore snapshot,
+and this would allow me to create a new database
+out of this snapshot.
+And the reason why I would do so is that, for example,
+you wanted to create a bigger database
+or create a copy of database and so on,
+or create a different settings for your database,
+then restoring a snapshot would be the way to do it.
+So I'm going to cancel this.
+Other things you can do with your snapshot is to copy it
+so you can copy it to a different region.
+And this would be extremely helpful
+if you wanted to restore the database
+into another region of AWS,
+for example, for disaster recovery,
+so yet another very handy feature.
+Another thing you can do is share the snapshot,
+and sharing the snapshot allows you to share
+with the other accounts so they can restore their database
+directly from your snapshot,
+so again another very handy feature.
+So that's it for RDS just as a quick overview.
+So again, we've created a database
+and we've created a snapshot out of it,
+and we saw different options.
+So we can see managed services really have a good impact
+on how you use the cloud,
+and they really speed it up for you to make sure
+that you don't manage too much infrastructure.
+So just to finish this hands-on,
+let's delete this snapshot,
+and then we're also going to delete this database
+by doing Action, Delete.
+And then you don't want to create a final snapshot,
+you do not want to retain automated backups,
+and you acknowledge that everything will be deleted.
+Then you type delete me, and you're good to go.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

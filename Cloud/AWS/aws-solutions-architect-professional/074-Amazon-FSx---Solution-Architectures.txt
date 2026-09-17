@@ -1,0 +1,77 @@
+# 74. Amazon FSx - Solution Architectures
+# Section: Storage
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34783562
+# Caption: en_US (manual)
+
+So let's have a look
+at some solution architectures for Amazon FSx.
+First of all, how do you migrate
+from a single AZ FSx for Windows file server to a multi-AZ?
+There is no option to just upgrade it and with multi-AZ yet
+so therefore you must do some kind of steps.
+So let's create first a multi-AZ version
+of FSx for Windows file server
+and then we're going to use DataSync to send data
+from the single AZ to the multi-AZ file server.
+The great thing about this solution is that we remain
+up and the data sync happens in the background
+and then when we're ready
+we're going to migrate over to multi-AZ.
+So it's slower, but we maintain availability.
+The other option to go
+from a single AZ to multi-AZ is to do a backup
+of the first Windows file server, shut it down,
+and then do a restore into a multi-AZ.
+So we're going to get some down time
+but at least we're going to be a bit quicker.
+So how would you go to decrease an FSx volume size?
+Well, if you take a backup, you should know
+that you can only restore to a same size volume
+and you can only increase capacity for a file system.
+You can never decrease it.
+So the way to do it is actually to do a create
+a FSx that is smaller and then you're going to
+use DataSync to sync data and migrate your app over.
+So say you have a two terabytes FSx
+for Windows file server app file system,
+and it's going to be used by an application
+and you know you only use it say 500 gigabytes
+and you want to migrate to one terabyte.
+Therefore, you will create that one terabyte FSx
+for Windows file server and then use DataSync to
+migrate the data over continuously.
+And then when you have reached parity
+you can just migrate your application to use the new FSx
+for Windows file server and stop using the old one.
+Another feature you should know
+for FSx for Lustre is called data lazy loading.
+So any processing job on Lustre with S3
+as an input data source can be started
+without Lustre doing a full download of the dataset first.
+So what as that means?
+That means that if you have a huge S3 bucket, we're talking
+you know, petabytes and using Amazon FSx for Lustre
+then you can start using your application
+for data processing right away
+because the data is going to be lazy loaded.
+So that means that's only when a client is going to request
+for that specific data set, will FSx for Lustre download it
+and therefore is going to decrease your cost
+and decrease your latency.
+So your FSx for Lustre right now, the clients ask
+for a very specific dataset, so it's going to be loaded
+into FSx for Lustre and then processed by the clients.
+But the idea is that as soon as you have an S3 bucket
+you can just launch Amazon FSx
+for Lustre on top of it and start using it.
+And then of course the data is
+is going to be loaded only once.
+So if you already have a dataset
+in your Amazon FSx for Lustre file system
+then it's not going to be loaded a second time
+if it hasn't changed or if it's being requested by clients.
+So data lazy loading allows you to get the right
+data exactly when your client requested
+and that's a great feature.
+So that's it for this lecture
+I hope you liked it and I will see you in the next lecture.

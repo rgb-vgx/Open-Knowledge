@@ -1,0 +1,196 @@
+# 184. [SOA] EventBridge - Input Transformation Hands On
+# Section: Domain 5: Incident and Event Response
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37932892
+# Caption: en_US (manual)
+
+So let's practice using
+EventBridge input transformers.
+So to do so, let's go into EventBridge.
+Let's go under Rules.
+And we're going to create a rule,
+and this was going to be DemoInputTransformer.
+Okay, so what we're going to do is that
+we want to have an input,
+but we want to transform it
+because this is something
+that can come up in the exam
+even as a hands-on lab.
+So how do we do it?
+Well, we have an event bus,
+and then we're going to have a rule
+that matches an event pattern.
+So we send next.
+Then the event source is going to be an AWS event.
+And for sample events for now,
+we're going to trigger it.
+This is a AWS event.
+And the event we want to filter on
+is the EC2 instance state-change notification.
+So you paste this in,
+and this is what the input event looks like.
+So we have an id,
+we have a detail type, we have a source,
+an account, a timestamp,
+we have a region,
+we have resource
+which is the instance ID
+that it supplies to the full ARN.
+Then detail, we have instance ID and states.
+And this is a JSON document
+and it may look fine,
+but maybe a downstream application
+wants to have a specific event type
+and doesn't want to use this,
+but instead wants to use
+a simplified version of it
+where maybe the instance ID is not under detail
+but it's just one level up.
+For whatever reason
+you may want to transform this.
+So let's see how we can do it.
+So first, we are going to use
+a creation method of use pattern form,
+and then AWS services, EC2 again.
+So we have to reselect the event type.
+So take this one and then paste it in.
+And then we just have
+this event pattern right here
+that has been created.
+So this is good.
+We'll click on Next.
+Next, we want to target an AWS service.
+So to do so, I'm going to target CloudWatch log groups,
+and it is going to be under
+/aws/events/event input transformation.
+And then where we actually
+configure the input transformation
+is under additional settings.
+And then here under configure target inputs,
+we're going to click here
+and say we want an input transformer.
+And here we can configure this input transformer
+and it gets fun.
+So again, we have to respecify the sample events.
+So let's filter and have it here.
+So now we have the sampled events just like before,
+but now we have an input path that we can have.
+So the doc, this console gives you
+some information around what you can have.
+So it gives you, for example,
+I'll show you right now.
+It gives you like input path like this.
+This is the template
+and this is the output.
+And we're going to use something similar,
+but you can have a look at this in your own time.
+But let's go into target input transformer.
+So this is to define variables
+and you can have at least as right now
+as up to 100 variables in there.
+And then we can use the variable
+as this variable name.
+So to define variables,
+we have to use a JSON documents.
+I'll paste it in
+and we have a look at it in a second.
+So here on the left hand side,
+we define the variable name which is timestamp.
+And here we define the value of timestamp.
+Dollar means to take the inputs,
+dot means to look up
+for a field in a JSON form,
+and time is to look for the time field.
+So dollar dot time brings us here
+to this time field.
+So we take this value
+and it's going to be stored
+under the name "timestamp."
+We can go as down as we want.
+So if we do dollar dot detail dot instance id,
+we go in here in detail.
+Then underneath detail,
+we have JSON documents.
+So instance-id,
+and then we get the instance ID out of it.
+So we have the same for states.
+And finally, if you have arrays,
+you can use the brackets
+to specify the value
+in the position in the array.
+So dollar dot resources is an array,
+and bracket zero means number zero.
+So here we have the resources.
+This is an array,
+and zero means this one right here.
+Awesome.
+So we have defined four input variables
+and then we can do whatever we want with it.
+For example, I could say something like
+instance was launched at timestamp,
+and so we can try it out.
+So we can generate output.
+And as we can see,
+we see that our instance
+was launched at this timestamp
+just by having this input template as this output.
+So everything is working great,
+but to send stuff into CloudWatch log groups,
+you need to actually include a JSON document.
+So we'll include this JSON document,
+and it's going to be a very simple one.
+It's going to be saying,
+"Hey, the timestamp is this timestamp
+and this is necessary by CloudWatch log groups."
+And then the message is,
+"Instance blah blah is in state state
+at timestamp with ARN resource."
+Let's generate the outputs.
+And as you can see,
+we see the proper messages
+that we want out of it.
+So let's confirm this
+and then save our events.
+So save right here,
+update this rule or create it.
+So how do we test this?
+Well, let's go into the EC2 console,
+and I'm going to just create an EC2 instance
+and see whether or not
+we see some things in EventBridge.
+So let's launch an instance "demo,"
+and I'm going to scroll down very quickly.
+We don't need a key pair.
+Everything else looks good.
+Let's launch this instance.
+So these instances being launched
+is going to actually generate some EventBridge data.
+So EventBridge will send it to CloudWatch log.
+So I need to go into CloudWatch logs now.
+Okay.
+And I go into Logs, Log groups,
+then I look for AWS event input transformation.
+And as you can see right now
+we have log streams being created.
+So if you have a look at one of this,
+for example, we have the timestamp that was included,
+and then the message's instance
+is in state pending at this timestamp
+with ARN like this.
+So this is fully working,
+and we can have a look at this event right here
+where it says
+now the instance is in state running.
+So our integration is perfectly working.
+This is awesome.
+We have taken an event from EventBridge,
+we've transformed it,
+thanks to input transformers.
+And now it's in CloudWatch logs.
+So to just complete this,
+terminate your instance
+so you don't have any cost associated with this.
+And you can leave the row running
+if you want it to,
+or you can just disable it.
+All right, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

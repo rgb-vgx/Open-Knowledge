@@ -1,0 +1,54 @@
+# 111. Serverless Introduction
+# Section: Other Compute Services: ECS, Lambda, Batch, Lightsail
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056030
+# Caption: en_US (manual)
+
+So now, I want to formally introduce
+the Serverless Section to you.
+So what is severless?
+Severless is a catchy word but it is a new paradigm
+in which the developers don't manage the servers anymore.
+They just do what they do best,
+they just deploy the codes or they deploy functions.
+So initially, serverless was pioneered
+as a Function as a Service with AWS Lambda,
+and that means that you just deploy your code
+and each function will be run independently
+by the Lambda service, but nowadays,
+anything that's serverless
+is mostly mentioned as something that is managed
+and that does include servers managed by the user
+so that includes serverless databases,
+messaging, storage, et cetera.
+So serverless does not mean that there are no servers.
+There are, of course, servers behind the scenes.
+Otherwise, services would not work,
+but it just means that as an end user,
+you don't manage, provision, or even see the servers.
+So in this course,
+we have been using some serverless services
+from the beginning.
+So Amazon S3 was one of them
+because we used it as a storage layer,
+but we didn't manage any servers at all, okay?
+Amazon S3 can scale infinitely, there was no servers,
+it was just uploaded file, and that was it.
+DynamoDB was another one.
+So in DynamoDB, we just went ahead, we created a table,
+but we didn't provision a server for that table,
+and that server was, that table could auto scale
+based on the load it was receiving.
+So that makes it another serverless service.
+Fargate is another one
+so Fargate was to run Docker containers,
+and as I said with ECS, you create EC2 instances
+to run the Docker containers
+so that would not be serverless, but with Fargate,
+you just send the Docker containers
+and Fargate will automatically find a way for it to be run
+so that makes it another serverless service,
+and in this section, we're going to see Lambda,
+which was the pioneer of serverless services.
+So Lambda allows you to run functions in the cloud.
+So this is it for the quick intro to serverless,
+I will see you in the next lecture to talk about Lambda.

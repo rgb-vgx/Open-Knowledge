@@ -1,0 +1,149 @@
+# 116. AWS Personal Health Dashboard
+# Section: Monitoring
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34785504
+# Caption: en_US (manual)
+
+If you wanted to know
+how events in AWS affects your services and your resources,
+then you would use the personal health dashboard.
+So, this is the little bell icon you see
+on the top right corner of your console,
+and it is a global service
+and it will show how outages happening within AWS
+will directly impact you.
+It will show you the impact on your resources
+so you can see if your EC2 instances or EBS volumes
+have maintenance upcoming,
+and it will list issues
+and actions you can do to remediate them.
+So, the important thing to know is that it show you all
+the maintenance events from AWS
+and this is a keyword to look for in the exam.
+You can also access all this information programmatically
+using an API called the AWS Health API.
+And finally, there's a capability,
+if you have enabled AWS Organizations,
+to aggregate all the information
+from all your accounts in your organization in one place,
+and here is the URL in case you need it.
+Now, let's talk about health event notifications.
+So, you can use if EventBridge or CloudWatch Events to react
+to changes to your health events for your accounts.
+So we have the personal health dashboard that will trigger
+an event in CloudWatch Events or EventBridge, okay?
+For example, you may want
+to receive notification whenever EC2 instances
+in your accounts are scheduled for updates.
+In this case, you would set up this notification
+and then you would line it up with a target.
+So this can not be used to return public events,
+so, all the service health dashboard events
+cannot be intercepted here.
+They have to be using the RSS if you remember.
+But with this, we can enable use cases
+to capture notifications for our accounts.
+For example, sending notifications,
+capture event information,
+or take automatic corrective actions,
+if you know how to do so using some automation.
+So, CloudWatch Events or EventBridge can invoke Lambda,
+SNS, SQS, or Kinesis Data Streams.
+And then for example, if you have Lambda,
+you can do whatever you want with it
+and take some corrective action
+if this is something that happens a lot in your accounts.
+So, that's it.
+Now let's have a look at the health dashboard.
+So what I'm going to do now is click on this bell icon.
+As you can see right now, there's zero open issues,
+schedule changes, or other notifications.
+But I can click on "Event Log"
+and see what has happened in my accounts.
+And so, as you can see, some days, for example, June 30th,
+there was an Athena engine version auto upgrade notification
+and one entity was affected
+or an EC2 instance recovery, no action,
+because it's something I triggered during my recording
+and it affected one resource.
+So you can see all these kind of issues
+and whether or not they were closed.
+For example, there was an EC2 operational issue right here,
+and it gives you the region, so US-East-2,
+the category,
+whether or not it affected some resources,
+and what was the description of that issue,
+which was right here.
+You can also get some information
+around the affected resources here if you have many.
+So this becomes very, very, very helpful.
+Then there is a dashboard, okay?
+And the dashboard shows you how many issues
+in the past seven days, scheduled changes,
+and other notifications.
+And as you can see,
+you can create a CloudWatch Event rule
+to create rules and receive notifications for events
+that might affect your infrastructure.
+So let's have a look at it.
+So what I'm going to do is go to CloudWatch Events,
+but actually I'm going to go into EventBridge
+to show you the newer interface, because they're similar.
+And here we have a rule, and we can create a rule,
+and I'll call it "PHD Demo Rule."
+And then we have to look for an event pattern by service
+and the service provider is going to be "AWS"
+and the service name is going to be "Health," okay?
+And then we select an event type.
+So we can have all events or specific health events,
+but we're going to use "All Events."
+And then it shows you what a simple event can be for this.
+So for example, this is an elastic load balancing issue
+with a start date and an end date and so on.
+So we can get notified of all these events right here
+through CloudWatch Events.
+And then, the cool thing is that you can select targets
+and invoke a Lambda function
+or send a message to an SNS topic and so on,
+or all really the destinations are listed right here
+for your health events to be intercepted.
+So this is one way of doing it.
+And the other way is to query all this information
+using the health API.
+As you can see, you can also get an organization-wide view.
+And so the idea is that you set up organizations
+and then you enable organizational view for AWS Health,
+and you'll be good to go.
+And I'm pretty lucky because I just got an issue
+with my PHD.
+So I'm trying to launch to EC2 instances right now
+for another lecture.
+And it turns out that they're
+in pending states for a long time.
+And for me this looks a bit odd.
+So, I looked at my personal health dashboards
+and see that there's one open issue.
+So I can click on it and see that
+there is an open issue that's affecting me right now.
+So I'm pretty unlucky,
+but pretty lucky regarding recording purpose.
+And so, as we can see, in EU-Central-1
+there is an EC2 operational issue.
+And the event data is showing me that
+there is an instance connectivity issue.
+So there is increased error rates
+and latencies for the EC2 API
+and connectivity issues for some instances
+within a single AZ in the EU central region.
+So it doesn't detect that my instances are affected.
+It's probably because my instances are
+not launched just yet, but as you can see,
+this was shown in my PHD.
+And so I can explain what is happening regarding my
+EC2 instances just yet,
+even though I find it extremely annoying.
+So, the only thing I have to do is to wait
+for this to be resolved.
+So hopefully that makes sense of what you understand now,
+the usefulness of the service.
+I hope you liked this lecture
+and I will see you in the next lecture.

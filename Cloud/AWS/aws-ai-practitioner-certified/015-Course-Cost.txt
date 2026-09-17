@@ -1,0 +1,42 @@
+# 15. Course Cost
+# Section: Course Cost & AWS Budget Setup
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45022814
+# Caption: en_US (manual)
+
+Okay, so let's talk about the course budget.
+So there is a cost associated with using this course
+because using the AWS AI Services is not free.
+If you follow along with me
+and do the hands-on, you will incur charges.
+But I do my best to guide you on how to limit them,
+and I show you what will cost you money
+and how to turn things off.
+Now, as you see though,
+I spent all my course recording 31 cents, so it's not a lot,
+but 14 different services have incurred cost.
+And of course, if you don't follow closely
+and then all of a sudden, you leave things running
+or you do use something too much,
+your course's cost are going to go up.
+So I want to give you a little of a heads up here
+just to make sure that nothing unexpected happens to you.
+Some services, for example, Amazon Queue, have free trials,
+but again, with free trials, it's dangerous
+because you don't forget to turn it off
+and then you have charges.
+So I will again show you how to turn things off, of course,
+but very good for you to triple check things in your case.
+So to make it extra safe, I'm going
+to show you in the next lecture
+how to set up a course budget
+and you set the alarm
+to whatever amount you feel comfortable
+so that you make sure
+that in case you hit your course budget,
+in case you have a forecast of hitting your course budget,
+then you'll receive an email notification
+and you can have a look at your bill to see
+what is costing you money.
+So that's it for this lecture.
+I hope you liked it
+and I will see you in the next lecture.

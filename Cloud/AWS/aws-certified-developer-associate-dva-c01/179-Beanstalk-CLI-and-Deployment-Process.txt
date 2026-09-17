@@ -1,0 +1,65 @@
+# 179. Beanstalk CLI and Deployment Process
+# Section: AWS Elastic Beanstalk
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19729900
+# Caption: en_US (manual)
+
+So, we have the EB CLI available to us,
+but there is an additional CLI called,
+the "Elastic Beanstalk CLI,"
+which makes working with Beanstalk from the CLI much easier.
+And there's a bunch of commands
+such as eb create, eb status,
+health, events, logs, open,
+deploy, config, terminate,
+and all these commands and more
+can help you reproduce what we've been doing
+from the Elastic Beanstalk console,
+but with a command line interface.
+Now, it's helpful to use the EB CLI
+when you want to automate your development pipelines.
+It is not necessary to know these commands
+going into the developer exam.
+It is more necessary to know them
+when you go into the DevOps exam.
+So, I deal with those in my DevOps exam.
+So there will be no hands on on the EB CLI,
+but just you know,
+the EB CLI does exist and helps you
+speed up your efficiency when using the CLI
+against Elastic Beanstalk.
+Now, this Elastic Beanstalk CLI
+helps you with deploying your Beanstalk application.
+So, regardless, to deploy a Beanstalk application,
+you need to describe your dependencies.
+So for example, you need to create
+a requirements.txt for Python
+or you create a package.json for Node.js.
+Then you package all your code as a zip
+and you described your dependencies in that file.
+So as we said, these two files.
+Then you upload the zip file into Beanstalk.
+This will create a new app version
+and then when the app version is uploaded,
+we can deploy it using the console or using the CLI.
+We can do the exact same thing with the EB CLI,
+it will create a zip file,
+upload that zip and deploy it.
+That zip, by the way, when you upload it onto Beanstalk,
+it actually gets uploaded onto Amazon history,
+and then refers the Amazon is free bundle
+from the Beanstalk interface.
+Okay, so then once this is done,
+Beanstalk will take these zips
+and will deploy them onto each EC2 instances,
+they will resolve the dependencies from the requirements,
+the Python or the package of json for Node.js,
+and then the application will start.
+This is the theory lectures that should
+explain you the backend process of how Beanstalk works.
+If you want to replay, try to go on the documentation
+website and install the EB CLI.
+But just so you know, this is out of scope of the exam
+and out of scope for this course
+so I don't want to tell you with so many details,
+just know that it exists and hopefully that was helpful.
+I will see you in the next lecture.

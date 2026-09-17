@@ -1,0 +1,19 @@
+# 264. Lambda & CloudWatch Events / EventBridge
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730484
+# Caption: en_US (manual)
+
+So now let's talk
+about how we can integrate CloudWatch Events
+or EventBridge with Lambda.
+So two ways, number one is
+to do a serverless CRON or a rate.
+So we're going to create an EventBridge Rule,
+and then every, for example, one hour
+it's going to trigger our Lambda function to perform a task.
+Or we can create a CodePipeline EventBridge Rule,
+for example to detect every time CodePipeline State Changes,
+and on State Changes is going to invoke
+our Lambda function to perform a task.
+Very simple idea, but let's see how
+we can do it in the hands-on.

@@ -1,0 +1,150 @@
+# 58. Imputing Missing Data
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285025
+# Caption: en_US (auto)
+
+So a big part of feature engineering is imputation of missing data.
+What do you do when your data has a missing data elements in it?
+This is what happens in the real world.
+For every observation you have, there's going to be some missing data points more than likely.
+Well, a simple solution is just called mean replacement.
+The idea is that if you have a missing attribute or feature within one of the rows of your data, just
+replace it with the mean from the entire column.
+And remember we're talking about columns, not rows.
+Here you want to take the mean of all of the other observations of that same feature.
+Doesn't really make sense to take the mean of all the other features for that row, right?
+So mean replacement is all about taking the mean of that column and replacing all the empty values with
+that mean.
+So it's fast and it's easy.
+Those are some of the the positives of this approach.
+It also doesn't affect the mean or the sample size of your overall data set, because you're just replacing
+missing data with the mean.
+It won't affect the overall mean of the entire data set, which can be nice.
+Now, one nuance is that if you have a lot of outliers in your data set, which is also something you
+have to deal with when preparing your data, you might find that median is actually a better choice
+than the mean.
+So if you have a data set of a bunch of people and maybe one of those columns is income, and some people
+don't report their income because they think it's sensitive.
+Uh, you know, you might have your mean skewed by a bunch of millionaires or billionaires in your data
+set.
+So if you do mean imputation in that sort of a situation where you have outliers, you might end up
+with an overly high or overly low value that you're using for replacement.
+So if you do have outliers that are skewing your mean, you might want to think about using median instead.
+That will be less sensitive to those outliers.
+But generally speaking, it's not the best choice for imputation.
+First of all, it only works on the column level.
+So if there are correlations between other features in your data set, it's not going to pick up on
+those.
+So, you know, if there is a relationship between, say, age and income, that relationship is going
+to be totally missed.
+So you could end up saying that a ten year old is making, you know, $50,000 a year, because that's
+the mean of your data set But it really doesn't make sense, right?
+I mean, a 15 year old wouldn't be making that much money yet.
+So it's a very naive approach from that standpoint.
+The other issue is that you can't really use it on categorical features.
+You know, how do you take the mean of a categorical piece of data?
+That just doesn't make sense, right?
+Although you could use the most frequent value that appears, you know, the most commonly seen category
+would be a reasonable thing to do.
+In that case, it's sort of in the same spirit as mean replacement, but not really the same thing.
+Overall, though, it's not going to be a very accurate method.
+It's a very ham handed attempt at doing imputation.
+So although it's quick and easy and has some advantages in practice, if someone's asking you, say
+on a certification exam, what's the best way to do data imputation mean replacement probably, isn't
+it?
+It's also probably not just dropping the missing rows, although as we've seen sometimes, that's a
+reasonable thing to do.
+If you do have enough data such that dropping a few rows doesn't matter if you don't have too many rows
+that contain missing data, Well, it doesn't sound that unreasonable.
+The other thing, too, is that you want to make sure that dropping the rows that have missing data
+doesn't bias your data set in some some way.
+What if there's an actual relationship between which rows are missing data and some other attribute
+of those observations?
+For example, let's say that we're looking at income.
+Again.
+There might be a situation where people that have very high or very low incomes are more likely to not
+report it.
+So by removing or dropping all of those observations, you're actually removing a lot of people that
+have very high or low incomes from your model.
+And that might have a very bad effect on the accuracy of the model you end up with.
+So you want to make sure that if you are going to drop data, that it's not going to bias the data set
+in some way as, as a byproduct.
+Right?
+So it's a very quick and easy thing to do, probably the quickest and easiest thing to do.
+You can literally do this in one line of code in Python, but it's probably never going to be the best
+approach.
+So again, if an exam is asking you what's the best way to impute missing data dropping data probably
+is not the right answer.
+Almost anything is going to be better.
+Maybe you could just substitute a similar field, right?
+I mean, that would also be a simple way of doing it.
+For example, I might have a data set of customer reviews on movies, right?
+Maybe if I have a review summary and a full text review as well, it would make more sense to just take
+the review summary and copy that into the full text for people who left the full text blank as an example.
+So almost anything is better than just dropping data.
+But, you know, in the real world, if you're just trying to do something quick and dirty and sort
+of like start experimenting with some data just to start playing with it, it can be a reasonable thing
+to do.
+I just wouldn't leave that in place for production necessarily.
+The thing you probably really want to do in production is by using machine learning itself to impute
+your missing data into your machine learning training.
+So it's a kind of a meta thing.
+There are different ways of doing this.
+One is called KNN that stands for K Nearest Neighbors.
+And if you have any experience with machine learning, you probably know what that is already The general
+idea is to find the k where k is some number of the most similar rows to the ones that you're looking
+at that has missing data, and just average together the values from those most similar rows.
+So you can imagine having some sort of a distance metric between each row.
+Maybe it's just the Euclidean distance between the normalized features within each row or something
+like that.
+And if you find the, say, ten nearest rows that are most similar to the one that's missing data,
+you can just take the average of that feature from those ten most similar rows and impute the value
+from that.
+So that takes advantage of relationships between the other features of your data set, which is a good
+thing.
+Um, one problem with it, though, is that that idea assumes that you have numerical data that you're
+trying to impute and not categorical data.
+It's tough to take the average of a category, but there are ways of doing that with techniques like
+Hamming distance.
+But KNN is generally a better fit for numerical data, not categorical.
+If you have categorical data, you're probably better served by actually developing a deep learning
+model.
+Neural networks are great at doing categorization Problems.
+So the idea would be to actually build a machine learning model to impute the data for your machine
+learning model, right?
+It's a kind of a cycle there, and that works really well for categorical data.
+It really well.
+It's tough to beat deep learning these days.
+However, of course it is complicated.
+There's a lot of code involved and a lot of tuning as well.
+Um, but it's hard to beat the results if you actually have a deep learning model that tries to predict
+what a missing feature is based on other features in your data set, that's going to work out.
+A lot of work, a lot of computational effort, but it's going to give you the best results.
+You can also just do a multiple regression on the other features that are in your data set.
+That's also a totally reasonable thing to do.
+And three regressions.
+You can find linear or non-linear relationships between your missing feature and the other features
+that are in your data set.
+And there is a very advanced technique along these lines called mice, which stands for multiple imputation
+by chained equations.
+It's kind of the state of the art in this space right now for imputing missing data.
+So, you know, if you see a question that says what's a good way to impute missing data?
+And one of the answers is mice.
+A good chance that might be a reasonable answer for you there.
+To be clear, I didn't actually see a question like that on the exam, but if I were writing the exam,
+I might put that on there.
+All right.
+And finally, probably the best way to deal with missing data is to just get more data.
+So if you have a bunch of rows that have missing data, maybe you just have to try harder to get more
+complete data from people.
+And it's hard to beat just getting more real data so that you can just not have to worry about all the
+rows that have missing data.
+Again, you want to be careful that if you are dropping data that you're not biasing your data set in
+some way.
+But, uh, really, the best way to deal with not having enough data is to just get more of it.
+Sometimes you just have to go back and figure out where that data came from and collect more, better
+quality data.
+So the better quality data you have going into your system, the better the results you will get.
+And while imputation techniques are a way to cover up issues where you just don't have enough data and
+you can't get more of it, it's always a good idea to just get more and better data.
+If you can.

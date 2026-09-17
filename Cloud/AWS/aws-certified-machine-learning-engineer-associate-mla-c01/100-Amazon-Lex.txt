@@ -1,0 +1,54 @@
+# 100. Amazon Lex
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45381381
+# Caption: en_US (manual)
+
+So now let's talk about Amazon Lex.
+So Amazon Lex is a way for you to build chatbots quickly
+for your application using either voice or text
+to interface with the chatbots.
+So here's an example of a chatbot,
+which is actually doing hotel bookings.
+But you can do a chatbot for anything, for example,
+to order pizza, to provide customer support, and so on.
+So Amazon Lex builds a conversational AI
+and it supports multiple languages.
+On top of it,
+in order to perform the actions it's supposed to do
+it has deep integration with AWS Lambda,
+or Amazon Connect, Comprehend, or Kendra.
+The idea is that the bot is going to understand
+the user intent
+and then invoke the correct Lambda function
+behind the intent in order to fulfill the intent.
+So, for example, we said like
+to book a hotel at the beginning.
+And so Amazon Lex knows that the intent
+is for us to book a hotel
+because we have programmed this intent ahead of time.
+And so therefore,
+when we have the last bit of information we need,
+a Lambda function is going to be invoked,
+is going to perform a booking in the booking system,
+and then when it's correctly done,
+Amazon Lex will reply to the user,
+"Thank you, your reservation went through successfully."
+So the idea is that now we allow our users to interact
+with our backend system, but only using texts and voice,
+which is very nice.
+In case your Lambda function needs a few parameters,
+for example, to book a hotel, you need to know the city,
+the check-in date, and so on,
+then the bot is going to ask for Slots.
+And Slots are input parameters.
+And so the bot is smart enough automatically
+to just converse with the user,
+gather all the information it needs,
+and when it has it, it will invoke the Lambda function,
+which will perform the booking.
+So it's a very, very powerful service.
+And in the next lecture we'll have a look
+at how we can quickly configure it and see how it works.
+So that's it.
+I hope you liked it.
+And I will see you in the next lecture.

@@ -1,0 +1,186 @@
+# 356. High Performance Computing (HPC) on AWS
+# Section: More Solution Architectures
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078473
+# Caption: en_US (manual)
+
+So there is this concept in AWS
+that's becoming more and more common
+and something that the exam will test you on
+which is called High Performance Computing or HPC.
+So the cloud is the perfect place
+to perform high performance computing.
+Why? Because you can create a very high number
+of resources in no time,
+and you can speed up the time to results
+by adding more resources
+and you only pay for what you've used.
+Once you're done, you can destroy the entire infrastructure
+and not be built a single dime.
+So the idea here is that
+we can have an extremely high number
+of instances performing competition for us,
+and then be done with it and just pay for what we used.
+This is perfect.
+This is a great use case for the cloud,
+and something that AWS is encouraging you
+to do more and more.
+So where do we use HPC?
+Well to perform genomics,
+computational chemistry, financial risk modeling
+weather prediction, machine learning
+deep learning, autonomous driving and so on.
+So the question is,
+what services in AWS will help us perform HPC?
+Let's have a look.
+So the first category is, how do we manage the data
+and how do we transfer the data into AWS?
+The first one is going to be Direct Connect
+to move data gigabytes per second of data into the cloud
+over a private secure network.
+So we've seen this in details.
+Then we have Snowballs and Snowmobile to move PetaBytes
+of data to the cloud through a physical route,
+and they're usually four big transfers or one off transfers.
+And then we have data sync,
+where we have to install the data sync agents
+and they will help us move large amount of data
+between on-premise and FS or SMB systems
+into S3 EFS or FSX for windows.
+Okay. This makes sense.
+Now what about Compute and Networking?
+Very important.
+The first one is obviously EC2 instances.
+We have CPU optimized or GPU optimized instances
+based on the type of computations we're trying to do.
+We can also leverage Spot instances
+or Spot fleets for huge cost saving
+and Auto Scaling to automatically scale our fleets
+based on the computation we're doing.
+Finally, if our EC2 instances need to talk to one another
+and perform some computation in a distributed fashion,
+then using an EC2 placement group of type cluster
+is great to get the best network performance.
+In which case, we have a Low latency,
+10 gigabyte per second network in this example,
+and for the cluster placement group,
+everything is on the same rack,
+everything is on the same AZ.
+Okay, next, how can we go even further
+to improve the performance of our EC2 instances?
+The first one is EC2 Enhanced Networking,
+also called also called (SRI-IOV).
+And this gives you higher bandwidth,
+higher PPS which is packet per second,
+and lower latency.
+And how do we get this easy two enhance networking?
+The Option 1, which is the most recent and popular,
+is called an Elastic Network Adapter.
+And this delivers you a network speed
+of up to 100 gigabits per second.
+And this is something you have to know going into the exam.
+So, ENA, is for easy to enhance networking,
+and gives you higher bandwidth,
+higher package per second,
+and lower latency.
+Option number two,
+is to use this very complicated things from Intel,
+called 82599 VF,
+and that gives you up to 10 gigabits per second,
+and that was to be the old ENA,
+so it's LEGACY
+but I'm still including it here,
+just in case this comes up in the exam
+and you see it you know what it is.
+So, both these things,
+the ENA and the Intel,
+allow you to get easy to enhance networking
+on your instance.
+But you can push this a step further,
+and using the Elastic Fabric Adapter or EFA.
+And this is an improved ENA,
+dedicated for HPC for High Performance Computing,
+and it only works for Linux,
+and it's great when you have inter-node communication
+or tightly coupled workload.
+So think about distributed computation.
+Why? Because it's going to leverage something called MPI,
+the Message Passing Interface standard.
+And this standard will bypass the underlying Linux OS
+to provide even lower latency and more reliable transport.
+So think of it as like, if you have a Linux instance,
+and you're performing tightly a couple workloads,
+then using an EFA,
+will bypass the OS
+and provide you even higher network performance.
+So it is quite common in the exam,
+that you will be asked to differentiate
+between an ENA and EFA or ENI or something else.
+And so this is good that we are seeing this right now.
+You need to make sure to understand these concepts
+very very clearly.
+Okay. So we have transferred the data,
+we're computing over the data,
+and we've configured our network,
+but how do we store the data?
+So multiple choice,
+we can use the instance-attached storage.
+So we could be EBS,
+and this can scale up to 256,000 IOPS
+with io2 Block Express.
+It could be an instant store,
+and we've seen this can scale to million of IOPS.
+And it's linked to the EC2 instance.
+So it's on a hardware.
+It's going to be lower latency,
+but we can lose it if we lose our instance.
+Then we can use network storage,
+such as Amazon S3 to store large blob of data.
+It's not a file system,
+it's to store large objects.
+Or EFS, where the IOPS is going to be scaled
+based on the total size of your file system.
+Or we can use provisioned IOPS mode on EFS
+to get higher IOPS.
+But we've seen there is a file system
+that's dedicated to HPC,
+which was called FSX for Luster.
+And Luster was for Linux and cluster.
+And it's gonna be HPC optimized,
+gives you millions of IOPS,
+and in the backend, it's backed by S3.
+So lots of options again.
+Finally, how about Automation and Orchestration?
+The first thing will be to use batch,
+which is (indistinct) indicates,
+a support service to perform multi-node parallel jobs
+and enables you to run jobs
+that spend multiple EC2 instances.
+There are Batch jobs,
+and it's very easy to schedule these jobs
+and launch the EC2 instance accordingly.
+They will be managed by the batch service.
+So batch is a very popular choice for HPC.
+And we have AWS parallel cluster,
+which is an open source cluster management tool
+to deploy high performance computing on AWS.
+So you configure it using text files,
+and then you would deploy it on AWS.
+And it's going to automate the creation for you of VPC,
+Subnet, cluster types and instance types.
+And it can come up in the exam
+that you must use parallel cluster alongside EFA,
+because there is a perameter in the text files
+to enable elastic fabric adapters.
+So EFA on the cluster,
+and the impact of that is to improve the network performance
+and therefore have a higher performance HPC cluster.
+So to summarize,
+HPC is something that comes up more and more in the exam,
+and it's not a service,
+it's a combination of service and different options,
+and need to make sure you understand all,
+of those to maximize the potential
+of computation within AWS.
+And I hope that for this, this lecture was helpful.
+All right, that's it.
+I will see you in the next lecture.

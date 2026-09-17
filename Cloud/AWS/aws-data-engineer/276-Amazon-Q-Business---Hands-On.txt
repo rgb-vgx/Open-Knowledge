@@ -1,0 +1,231 @@
+# 276. Amazon Q Business - Hands On
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/54320853
+# Caption: en_US (manual)
+
+Okay, so let's go ahead
+and practice using Amazon Q Business.
+So we're going to click on Amazon Q Business.
+Get started.
+And you may have a warning about a region.
+So choose the region that works for you.
+For example, if I choose Frankfurt,
+you see it's not going to work.
+So I need to choose, for example, Ireland.
+So we're going to create a generative application
+that's going to use our internal knowledge base.
+So let's create this application
+and it's going to be named Q Business Demo.
+And here for user access, to keep things very simple,
+we're going to use anonymous access.
+This removes a lot of the setup around users.
+So please follow me with this.
+Actually for this hands-on, please do not follow me.
+Please, please, please do not do what I do.
+The hands-on is valid and shows you how to use Amazon Q,
+but I realize after recording it
+that the consumption pricing
+for doing anonymous use cases is $200 per month
+and you get charged right away for this.
+So if you wanted to be charged less,
+you would need to use Amazon Q Business Light
+or Q Business Pro.
+But this includes user access functionality,
+and it's very difficult to set this up.
+That's why I wanted to keep the video simple
+and doing anonymous access.
+So for anonymous access,
+end users have the same functionality;
+it's just the other methods are more difficult to set up.
+So I do anonymous.
+Don't do anonymous or don't follow along.
+Just watching the video is enough, trust me,
+to understand the capability of Amazon Q Business.
+But please, if you follow along,
+be ready to pay $200 for a month.
+So this was painful for me.
+Okay, I've warned you enough.
+Now let's go back to the video.
+Obviously, this is not good for production access,
+but for a demo, this is perfect.
+And then we're going to just create
+this application right here.
+And now my application is created.
+So let's preview the web experience right here.
+Actually, I click on it
+and I'm going to have access to the Q Business chat.
+So here's a chat and I'm in guest mode,
+and I say, "What is the World Wide Web?"
+And as you can see right now,
+it says, "Well, please ask your IT admin
+to add data sources."
+So we don't have any data source, so let's add one.
+So on the left-hand side,
+let's click on Data sources,
+and we're going to add an index
+and then connect data sources,
+and then we're going to be good to go.
+So no index has been added to this application.
+Let's add an index.
+So an index costs you some money,
+but we'll use a starter type of index.
+Good for proof of concept, development, and testing.
+And for a number of units is how many documents
+we can have in our data source.
+We'll just choose one, which is the lowest amount of units,
+which is 20,000 documents or 200 megabytes,
+whichever comes first, which is enough.
+So let's create this index.
+And now this can take some time,
+approximately 20 minutes to complete.
+Still, let's scroll down
+and learn more about the options.
+So now we need to add a data source.
+So let's click on Add data source
+and we can have a look at the different options
+that we have access to.
+So this is where Amazon Q Business
+is going to base its knowledge upon.
+So the most popular is Amazon S3,
+and that's the one we're going to be using.
+But you have different options.
+So you have Asana, Box, Dropbox, GitHub,
+Google Drive, Google Calendar.
+I mean, a lot of where the information lives
+in your enterprise can be used actually
+to be a source of information for Amazon Q Business.
+So if you have all your information on SharePoint,
+you may want to set up SharePoint as a source,
+but we'll keep it simple.
+And for now, we'll use Amazon S3.
+So we click on it and I'll call it
+My S3 Knowledge Base.
+I scroll down.
+We need to select an IAM role,
+so we'll use a new service role, recommended,
+and it's going to be automatically configured.
+Perfect.
+Now the sync scope.
+So where is our S3 bucket where the data is stored?
+So we're going to browse Amazon S3,
+and currently we have none.
+So let's go into Amazon S3,
+and I'm going to create a knowledge base bucket
+like this one, but this time not in us-east-1.
+I will select it in eu-west-1,
+which is where I am right now.
+So let's create a bucket
+and I'll name it this one, eu-west-1.
+The rest is the same.
+I will create this bucket
+and it's going to be created in the proper region
+now in Ireland.
+This is perfect.
+And for the files, I'm just going to have in my bucket
+the exact same file as before.
+So let me download this Evolution of the Internet file.
+Perfect.
+And I'm going to just upload it back in this bucket.
+So we're going to upload it.
+So now I've selected my file
+and then I click on Upload.
+All right, so we're good to go.
+So now in this bucket right here,
+we have this Evolution of the Internet Detailed PDF.
+Let's go here and we're going to refresh the sync scope,
+select my bucket, this one, choose it.
+Maximum single file size 50 megabytes is good.
+We're not going to touch any of these advanced options.
+We'll select a full sync
+and the schedule of the full sync
+is going to be on demand.
+This is just so we can have a sync now button
+and get started.
+But obviously, in production,
+you may want to have only a sync for new,
+modified, or deleted content,
+and you may want to have it,
+for example, run on an hourly basis.
+So by the way, my index is now created,
+so we're good with this tutorial.
+So let's go ahead.
+We are going to click on Add data source
+and it says that because we are enabling anonymous access
+for Q Business Demo, so no users,
+we can access data sources without authentication
+and so therefore Amazon S3 will be publicly accessible.
+This is fine for this demo tutorial.
+Obviously, this is not a production setup,
+it's just to show you the capability
+of Amazon Q Business.
+So my data source is now created
+and I'm going to close all these popups
+and you can just click on Sync now
+to synchronize whatever is in your S3 bucket
+to your index.
+This can take a few minutes to a few hours.
+It's going to take less time, I think,
+because we only have one document,
+but everything that belongs in our S3 bucket,
+so all the knowledge base,
+is going to be synced into the index,
+and that index can be then leveraged
+by our data source.
+So let's wait for the sync to be happening.
+Okay, so it took a little bit of time, but here we are.
+We have one item being scanned and it's been indexed.
+And so therefore, what's going to happen now
+is that if I go back to Amazon Q Business and ask it,
+"What is the World Wide Web?"
+hopefully we're going to get a better answer.
+And we get better information.
+So it's been invented by this guy,
+Tim Berners-Lee, in 1989,
+and we have the sources that are linked directly
+to the PDF in my demo bucket
+with the specific passage
+where this was actually quoted from.
+So this is super nice.
+So we have the events, the sources, and so on.
+The events tell you what happened during the queries
+and for the response to happen.
+The sources tell you which documents were used.
+And then you can also give some feedback
+around good response, bad response,
+or even copy the response.
+But if you ask it, for example,
+"Give me a recipe for chili?"
+well, it says, "Well, listen,
+I have found no answer based on your knowledge base."
+So right now, Amazon Q Business is set up
+to only give me answers based on my data sources.
+You can change it if you wanted to with this here
+around admin controls and guardrails.
+So here, instead of allowing Amazon Q
+to fall back to LLM knowledge off,
+if you set this to on,
+and actually I cannot do this right now
+because I don't have access to this option,
+but if you set this to on,
+probably if you have a user activated, like,
+then you can fall back to LLM knowledge.
+But this may not be desirable.
+You may only want to have answers
+based on your internal knowledge.
+Also here you have controls for topic-specific controls.
+So you can set up some guardrails
+around some things you may not want to see
+answered by Amazon Q,
+but that gives you the idea.
+You can add as many data sources as you want,
+pretty much around 50 data sources per application,
+configure them, and get this AI-powered
+internal knowledge base internally in your company.
+So I hope you liked it
+and I will see you in the next lecture.
+And don't forget actually to delete your application
+because there is an ongoing cost
+to having an index.
+All right, so that's it.
+I hope you liked it
+and I will see you now in the next lecture.

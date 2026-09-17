@@ -1,0 +1,156 @@
+# 213. SQS - Certified Developer concepts
+# Section: AWS Integration & Messaging: SQS, SNS & Kinesis
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/21437546
+# Caption: en_US (manual)
+
+Now let's talk
+about some more concepts you need to know for SQS,
+but more at the developer level.
+So the first one is called long polling.
+So when a consumer requests a message from SQS,
+it has the option to quote, unquote wait for messages
+to arrive if somehow the queue is empty.
+And this is called long polling.
+So let's take an example.
+We have an SQS queue and it is empty
+and the consumer does a poll request into the SQS queue.
+Now we have the option to wait and it's fine to wait, right?
+Because there are no messages.
+So that means that if during the waiting period a message
+goes into the SQS queue,
+then the message will be received by the consumer then.
+So why do we do long polling?
+Well, we do long polling because we are doing less API calls
+into the SQS queue.
+And on top of it, we know that as soon
+as the message will arrive in the SQS queue,
+then the SQS queue will send it back to the consumer.
+So we are increasing the efficiency
+because we do less API calls.
+So less CPU cycles are used
+and we are also decreasing the latency
+because as soon as a message
+will be received by your SQS queue,
+it will be received by your consumer.
+So long polling is a no-brainer.
+Long polling, you can set between 1 second to 20 seconds,
+but 20 seconds is preferable, why not?
+And overall, it is a recommendation in your applications
+to use long polling to short polling.
+So you will see in the exam some questions
+maybe telling you that the consumer is doing too many calls
+into the SQS queue, and that is costing you money
+and CPU cycles, and maybe increasing the latency.
+Then long polling is going to be the option.
+Now, long polling can be either enabled at the queue level,
+so queue level setting, or at the API call level.
+So whenever your consumer does an API call into SQS queue
+for polling using
+the ReceiveMessageWaitTimeSeconds parameter.
+The second thing we need to look at
+is the SQS Extended Client.
+So as we know, the max message limit is 1,024 kilobytes.
+So how do we go ahead
+by sending large messages into your SQS queue, for example,
+one gigabytes messages?
+For this, we can use a Java library
+called the SQS Extended Client,
+which does something very simple
+that you could implement in any other language.
+But the idea is that it will use an Amazon S3 bucket
+as a repository for the large data.
+So the second example, the producer wants
+to send a large message into SQS,
+but first what's going to happen
+is that the actual large message will end up in Amazon S3,
+and what will be sent into your SQS queue
+will be a small metadata message that has a pointer
+to the larger message in your Amazon S3 buckets.
+So the SQS queue will contain small messages
+and your Amazon S3 bucket will contain large objects.
+And your consumer, when it reads from the SQS queue,
+using this library, the SQS extended clients,
+then it will consume this small metadata message,
+which will say to the consumer,
+"Hey, go read that bigger message out of Amazon S3,
+and the consumer will be able to read
+and retrieve large messages from S3.
+So a typical use case for this
+is if you're processing video files,
+you don't send the entire video file into your SQS queue.
+No, you upload that video file into your Amazon S3 bucket,
+and you send a small message with a pointer
+to that video file into your SQS queue.
+And that allows you to accommodate any message size really
+through this pattern.
+Finally, you will maybe see some API calls given
+through by the exam.
+And so it's just normal API calls that you should understand
+by now, but let's go over them.
+So CreateQueue is used to create a queue
+and you can use the argument MessageRetentionPeriod
+to set how long a message should be kept in a queue
+before being discarded.
+And DeleteQueue is used to delete a queue
+and delete all the messages in the queue at the same time.
+PurgeQueue is an API call
+that's used to delete all the messages in a queue as well.
+Now, when we are sending messages,
+we use the SendMessage API
+and if we want to send messages with a delay,
+we can use the DelaySeconds parameter.
+ReceiveMessage is to do polling
+and DeleteMessage is to delete a message
+once it has been processed by a consumer.
+So when you receive a message by default,
+the parameter MaxNumberOfMessages is set to one.
+That means that you receive one message at a time,
+but you can receive up to 10 messages in a time in SQS.
+So you can set the MaxNumberOfMessages parameter
+for the receive message API to 10 to receive a batch
+of messages from SQS.
+The ReceiveMessageWaitTimeSeconds
+is telling your consumer how long to wait
+before getting a response from the queue.
+And this is equivalent of enabling long polling.
+and the ChangeMessageVisibility,
+it is used to change the message timeout
+in case you need more time to process a message.
+Now, if you want to use batch API calls,
+you can do so for SendMessage, DeleteMessage,
+as well as ChangeMessageVisibility,
+and this help decrease the number
+of API calls you're doing into API
+and therefore help decrease your costs.
+So that's it.
+Now let's have a look at how long polling works in AWS.
+So let's go into our demo queue
+and we'll edit the settings of our demo queue.
+So as we can see here,
+the receive message wait time is currently zero,
+which is called short polling,
+but we can set it anywhere between 0 and 20 seconds.
+So as soon as you set it to one, you enable long polling,
+but we'll say to 20.
+And this is saying that you should wait up to 20 seconds
+to receive a message if the queue is empty.
+So I will just go ahead and apply this setting.
+So I'll save my queue configuration,
+and then I will go into my send and receive messages.
+And in here I'm gonna go ahead and start a consumer.
+Now this consumer is doing long polling
+because it was set at the queue level,
+and so that means that only one API call is happening
+and it's waiting for a message coming from the SQS queue
+because right now there is none.
+But if I say hello world
+and just press send, as soon as I press send,
+the message was received by my consumer.
+This was extremely low latency
+because my consumer was in long polling mode
+and it was waiting for a message from SQS
+thanks to the wait message time setting
+that we set from before.
+So that's it, very simple demo,
+but hopefully that makes sense.
+I will see you in the next lecture.

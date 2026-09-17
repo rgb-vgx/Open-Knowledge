@@ -1,0 +1,67 @@
+# 83. Lambda@Edge Reduce Latency
+# Section: Caching
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/35038504
+# Caption: en_US (manual)
+
+So here is a use case for Lambda@Edge
+where you can use it to root to a different origin
+and reduce the latency of some calls from CloudFront Edge.
+So how does that work?
+Well say we are using the classic architecture
+of an S3 bucket
+and then we'll have a CloudFront Edge location.
+So it turns out that's if we link these two together,
+then it's going to work.
+But in case the edge location is far away from the bucket,
+then the first request to get some files
+may take a long time.
+So how do we solve for this?
+Well, in the case, for example,
+where the users are in Europe
+and they want to access our Edge location
+if the content is already cashed, then it's perfect.
+The object is returned with very, very little latency.
+So this is how the edge location works.
+But to get the object into the cache,
+because the CloudFront edge location is to make a request
+from Europe into the US East 1 region
+it can have some latency added
+which may not be acceptable to you.
+So how do we solve for this?
+Well, we're going to create a second S3 Bucket,
+this time in EU West 2,
+and we're going to set up
+S3 cross region replication across my two buckets.
+The reason we do so is that all the buckets,
+all the content of bucket one is now in bucket two
+in a region close earth to the user.
+Next we're going to create a Lambda@Edge function
+which is going to be triggered
+by your CloudFront's Edge locations.
+And what's going to happen here is that
+whenever the users are accessing
+the CloudFront Edge location,
+the Lambda at edge function is going to look
+where the request is coming from.
+And if it comes from a region
+that is closer to the first bucket
+then it's going to direct users to the first bucket.
+But else, if the request comes
+from a region closer to the second bucket,
+then it's going to modify the origin request
+and send it to my second origin.
+The reason is that the data is the same across both regions,
+and so therefore,
+the Lambda@Edge function will help us route the request
+to the bucket that is the closest to the edge location
+thus reducing the latency
+of our first call to get a file into an edge location.
+Then of course, the object will be returned
+and will be good to go.
+So it's a tricky pattern
+but a very useful one to reduce the latency
+of the first call of a file
+into the CloudFront Edge location
+based on Lambda@Edge and different origins.
+So that's it this lecture, I hope you liked it
+and I will see you in the next lecture.

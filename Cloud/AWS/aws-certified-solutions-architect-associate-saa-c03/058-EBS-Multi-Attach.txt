@@ -1,0 +1,49 @@
+# 58. EBS Multi-Attach
+# Section: EC2 Instance Storage
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26098298
+# Caption: en_US (manual)
+
+So now let's talk about
+the Multi-Attach feature of the EBS volumes.
+So as the name indicates,
+the Multi-Attach feature allows you to attach
+the same EBS volume to multiple EC2 instances
+in the same availability zone.
+So what does that mean?
+That means that, well,
+we have multiple EC2 instances,
+and we have an io2 volume
+with the Multi-Attach feature enabled.
+Then this volume can be attached
+to multiple EC2 instances at a time,
+which is something that is only available
+for the io1 and the io2 family of EBS volumes.
+Now, each instance will have
+full read and write permissions
+to the high-performance volume.
+And so that means that they can all
+write and read at the same time.
+So the use case for this is
+you have higher application availability
+in case of a clustered Linux application,
+for example, using Teradata,
+or if your application must manage
+concurrent rights operation.
+So just so you know,
+this Multi-Attach feature is only available
+from within a specified availability zone, of course.
+It doesn't allow you to attach an EBS volume
+from one AZ to another AZ.
+Another limitation of Multi-Attach is
+that it is up to 16 EC2 instances at a time
+that can be attaching the same volume.
+And this is something you have to know for the exam,
+so be careful to that 16 number.
+Finally, for it to work,
+you must use a file system
+that is going to be cluster-aware.
+So it's a different file system than XFS or EX4.
+And this is just a little bit more details,
+but in case you wanted to use this feature, now you know.
+Okay, that's it for this lecture, I hope you liked it.
+And then we'll see you in the next lecture.

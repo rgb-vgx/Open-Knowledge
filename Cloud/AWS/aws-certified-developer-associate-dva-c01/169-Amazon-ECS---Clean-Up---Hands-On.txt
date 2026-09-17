@@ -1,0 +1,44 @@
+# 169. Amazon ECS - Clean Up - Hands On
+# Section: ECS, ECR & Fargate - Docker in AWS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/40425544
+# Caption: en_US (manual)
+
+So let's make sure to destroy everything
+before we're done.
+So first, we need to stop the service.
+So to stop the service,
+make sure you have zero tasks running.
+If not, you update the service
+and you set the desired task to zero.
+And then you can click on Delete Service, type in Delete,
+and this will delete the service.
+Now, when you delete the service,
+this is actually going to go
+into a service called CloudFormation.
+And CloudFormation is going to take its time
+to delete the entire stack that it created.
+And so part of the thing it's going to delete
+is the ECS service, but also you LoadBalancer Listener,
+you LoadBalancer itself, the security group,
+and the target groups.
+So this can take a little bit of time
+and we need to wait for everything to be deleted.
+And when the service is fully deleted,
+then you can go and delete this cluster.
+So for this, you just click on Delete Cluster
+and it's going to delete the demo cluster.
+And we can do this right now.
+And again, this is going to start something
+in CloudFormation to delete the infrastructure
+of the ECS cluster.
+So that includes the capacity provider,
+the auto-scaling group that we have created,
+the cluster, and the launch templates.
+So this is very good.
+Finally, for your task definition, you can leave them as is.
+They don't cost you any money, they're just definitions.
+But if you wanted to,
+you could also click on one of them and deregister.
+Do Action and deregister the test definition itself.
+So that's it.
+I hope you liked it and I will see you in the next lecture.

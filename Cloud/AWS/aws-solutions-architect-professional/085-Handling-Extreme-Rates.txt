@@ -1,0 +1,140 @@
+# 85. Handling Extreme Rates
+# Section: Caching
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376550
+# Caption: en_US (manual)
+
+So let's talk about the limits
+of solution architecture on AWS.
+What if you had to handle an extremely high rates
+of requests on your infrastructure?
+So let's have a look.
+Route 53 is a global DNS service
+and it's meant to handle an extremely high rates
+of requests so your fine at this stage.
+You can handle client, also do some client caching
+so to save some data that has been requested from your APIs
+in order to save requests going into your infrastructure.
+But if your request goes
+into your infrastructure, for example, through CloudFront
+then CloudFront also has caching capability
+and you can achieve easily 100,000 requests per second
+on the CloudFront.
+CloudFront has reduction origin
+and the origin can do many things
+but let's took an example with ALB or API Gateway.
+So if you're using an ALB, it can scale tremendously.
+And the ALB used to have warmup issues, but not anymore
+it can now scale seamlessly.
+The API Gateway has a soft limit
+of 10,000 requests per second, as we've seen.
+And also the API Gateway has some caching capability,
+so there's a chance to stop requests at this stage.
+The Compute Layer within different options,
+if we're using an ASG or ECS on EC2
+it's going to be slow,
+you're gonna have to bootstrap your instances
+after your VMs are created.
+So this can take a lot of time to scale
+but this still scales well,
+it's just going to be a little bit slower.
+If you're using Fargate,
+it's Docker containers that have to be booted up.
+It's going to be quicker to scale.
+They've launched onto the AWS Global infrastructure.
+So it may be a little bit faster to scale
+and we'll still work with your architecture.
+And if you're using Lambda for your Compute Layer,
+you can get up to 1,000 concurrent executions
+for your Lambda functions in your region,
+but this can be increased as well, this is a soft limit.
+But it's good for you to see these numbers
+just to get understanding of the capability of each side.
+So as we can see in the Compute Layer
+we don't have any caching capability.
+Now we have a Database Layer
+which is our data is going to be in RDS, Aurora,
+ElasticSearch.
+These are going to be provision databases
+a lot harder to scale except maybe Aurora,
+AWS will disagree with me, but still
+you have provisioned a capacity for your database side.
+If you're using DynamoDB, then you are
+in luck because you can use autoscaling, on-demand scaling.
+And so you can enable a much higher read and writes.
+If you need some caching capability for your data
+then you can have Redis.
+You can scale up to 200 nodes.
+Memcached, up to 20 nodes in charting
+or DynamoDB DAX up to 10 nodes that are primary and replica.
+That's going to help cache your DynamoDB queries.
+What if you need to store data on disk,
+then in case you're using an EBS drive, you get
+up to 16,000 IOPS on gp2 and 64,000 IOPS on io1
+and it has some caching capability,
+that means that you can cache data,
+if you wanted to onto an EBS volume,
+that is a very common pattern.
+If you're using Instance Store,
+you get millions of IOPS, so a much higher IOPS rates.
+And again, your Instance Store can be used
+as a local cache for your EC2 instances.
+For EFS it's a bit different
+because you're sharing files across many instances.
+In which case you have two different performance mode,
+General in which we get more performance
+the more files we have onto our EFS Network Files System
+or we can enable the Max IO
+or provisioned IO on EFS, in which we're saying, okay
+we want more IOPS than the number of files we have.
+So please enable that.
+Finally, if we need to decouple our applications
+then SNS and SQS virtually have unlimited scales.
+So we're fine.
+SQS FIFO have about 3,000 requests per second
+with batching or 300 requests per second without batching.
+And can you say is something you have to provision?
+And for each chart you provision
+you get about one megabytes per second in
+and two megabytes per second out per chart.
+Okay.
+Regarding the static routes
+we can also have a CloudFront edge at the edge
+and we can use S3
+and S3 as we seen the main lines performance is 3,500 puts
+and 5,500 gets per pre fixed per second.
+And the KMS limits will be a problem
+if you're using SSE KMS encryption
+in which case you'll be limited
+to 10,000 API calls on KMS, for example, per region.
+Now this is a number that changes based
+on the region you're choosing
+but I just wanna give you some idea that KMS
+will be a limit for your S3 performance.
+And obviously you can have your EC2 instance
+where your Compute Layer also talk to S3.
+It doesn't have to be through CloudFronts.
+So one which you notice is that the more we are going
+on the right hand side in this architecture
+the more it's going to be expensive.
+So the earlier we can cache the request
+the less expensive is going to be for us.
+So all the things we can have to do with this is caching
+on all left hand side, maybe deal with TTL,
+understand all the network calls that have to be made,
+if we have to go all the way to the right,
+understand the computations that need to happen,
+the cost of these computations that need to happen
+and also the increased latency from going
+and propagating a request all the way to the right.
+So this is a high level solution architecture discussion,
+but it's really important for you
+to see all the limits of AWS into one slide.
+Just so you understand why caching is so important,
+why it's so much better to treat the requests
+at the edge versus treating them at the
+very very deep parts of your architectures
+and why caching can be made in so many different places.
+Okay.
+So, that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

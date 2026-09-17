@@ -1,0 +1,56 @@
+# 93. ElastiCache Overview
+# Section: Databases & Analytics
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20055990
+# Caption: en_US (manual)
+
+So now let's talk about a second type
+of database you will see on AWS,
+which is Amazon ElastiCache.
+So the same way you use RDS to get
+managed Relational Databases,
+you're going to get ElastiCache to get a managed,
+Redis or Memcached database.
+These caches are going to be in-memory databases
+with high performance, low latency.
+So anytime in the exam you see something that says
+you need an in-memory database,
+you have to think directly ElastiCache.
+Now ElastiCache will be helpful
+to reduce load off of databases
+that have a read intensive workloads.
+The idea is that if we have an RDS database
+and we're doing a lot of query on it
+and they're the same queries all the time,
+we put a bit of pressure onto that RDS database.
+Instead what we could be doing,
+is to use a cache to reduce the pressure
+off of the database by making sure the queries
+are directly going onto my in-memory database
+through ElastiCache.
+And because this is a managed database,
+then AWS will take care of all the operating system
+maintenance and patching, the optimizations,
+the setup, the configuration, the monitoring,
+failure recovery and backups.
+So we've already learned a lot about caches in this exam
+but we need to know it's an in-memory database
+and the solution architecture around using a cache
+looks like this.
+So you're Elastic Load Balancer
+will go to your EC2 Instances.
+Possibly in an ASG.
+They will be reading and writing data from
+your Amazon RDS database, which is slow.
+And then if possible there will be caching some values
+into an Amazon ElastiCache database
+and this will be very fast because it's in-memory.
+And so with ElastiCache, there will be pressure
+taken off the main RDS database
+and put it on to the ElastiCache database
+and that's the whole idea behind the cache.
+You want to save the queries somewhere else,
+so that they're very readily available.
+Easily accessible and they can relieve, again pressure
+from the main database.
+So that's it, that's all you need to know going
+into the exam and I will see you in the next lecture.

@@ -1,0 +1,30 @@
+# 254. Lake Formation Data Filters
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/46730321
+# Caption: en_US (auto)
+
+Let's discuss data filters in lake formation, which is another way of including security restrictions.
+We can do column row or cell level security using data filters.
+When you're setting up lake formation in the console, this is what it looks like.
+Over on the right.
+Here you'll see a little create data filter screen.
+Here you can give that data filter a name.
+Tell it what database and table you're applying this filter to.
+And then the key of this is down where it says column level access and row filter expression.
+So by choosing different things there you can achieve column row or even cell level security.
+So these are applied when we're granting the select permissions on a table.
+So that's when we get this option.
+So let's say I want to have row level security I would do that by selecting access to all columns under
+column level.
+But then implementing a row filter expression to have a row level security implemented on this data
+filter.
+If I wanted column level security, I would leave the row filter blank and have all rows.
+But then I can say include columns or exclude columns to provide column level security under the column
+level access.
+And for cell level security I can do both.
+I could say include specific columns or exclude specific columns, and also apply a row filter expression
+as well.
+If I'm selecting both columns and rows that are allowed in my filter, then I now have cell level security.
+You can do this via the console as we're seeing here to the right.
+Or you can also do it through the API through the CLI that's create data cells.
+Filter is the name of the API call for that.

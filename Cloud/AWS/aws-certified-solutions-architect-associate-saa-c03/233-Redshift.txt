@@ -1,0 +1,167 @@
+# 233. Redshift
+# Section: Data & Analytics
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13672448
+# Caption: en_US (manual)
+
+Okay, so now let's talk about Redshift.
+So Redshift is a database that's based on PostgreSQL,
+but it's not used for online transaction processing.
+Instead it's OLAP. So it's online analytical processing.
+So it's used for analytics and data warehousing.
+So any type of computations on your data,
+Redshift is a good place to do it.
+So it gives you 10 times better performance
+than other data warehouses, and it has big scale.
+You can scale to petabytes of data.
+The data is going to be stored as a column instead of a row.
+And so that's what makes it so good at analytics
+because it's able to quickly add all the data
+in a specific column.
+And on top of it, it has a parallel query engine
+to speed up any queries you may have.
+You have two modes of starting a Redshift cluster.
+You can do a provision cluster or a serverless cluster.
+You also use a SQL interface for performing the queries.
+And you have BI tools such as Amazon Quicksight
+or Tableau that have direct integration with it.
+So if you were to compare Redshift versus Athena, well,
+Redshift has faster queries, faster joins
+and aggregations thanks to indexes,
+but you need to of course provision a whole cluster,
+whereas Athena is serverless only
+and all your data lives in S3.
+So talking about this Redshift cluster,
+so you have the concept of a leader node and a compute node.
+So the leader node is for query planning
+and results aggregation,
+whereas the compute nodes in the Redshift cluster is going
+to be to perform actually the queries
+and to send the results to the leader.
+When you are in provision mode, you have access
+to choosing the instant types in advance,
+and you can reserve instances if you wanted
+to do cost savings.
+But if you are in serverless mode,
+you just leave everything in the hands of AWS
+and you don't manage any type of cluster or node.
+So list or summarize it, the leader node has access
+to the compute nodes
+and it makes it a whole Redshift cluster.
+And so when you send a query, for example,
+select count from My_TABLE GROUP BY by na na na.
+The leader node is going to plan the query, send it
+to the compute nodes, you're going to execute the query
+and then send back the results to the leader node.
+And that's the architecture of Redshift.
+So let's talk about Snapshots and DR.
+So Redshift is single AZ for most clusters,
+but now there's a multi AZ mode for some cluster types.
+And so if you have multi AZ, then you're good
+for disaster recovery.
+But if you have single AZ, then to do disaster recovery,
+you need to use snapshots.
+So snapshots are point in time backups of a cluster,
+and they will be stored internally in Amazon S3,
+and they are incremental only
+where that has changed will be saved,
+and that will save you a lot of space, obviously.
+You can restore a snapshot into a new Redshift cluster,
+and you have two modes for snapshots.
+You can take them manually
+or you can take them in an automated way.
+So if you automate it, every eight hours is going
+to be a snapshot or every five gigabytes on the schedule.
+And then you can set the retention
+for your automated snapshots,
+or you wanna do a manual snapshot.
+The snapshot is going to be retained
+until you delete it manually.
+And then a really, really cool feature of Redshift is
+that you can configure Redshift
+to automatically copy snapshots, whether they're automated
+or manual of the cluster into another AWS region,
+hence giving you a disaster recovery strategy.
+So let's take this Redshift cluster, your original cluster,
+and then we have another region.
+So we're going to take snapshots.
+They're going to be automatically copied
+into your new region,
+and from there you can restore a new Redshift cluster
+from that copied snapshots.
+Now let's talk about how we ingest data into Redshift.
+So we have three ways I'm going to describe to you.
+The first one is to use Amazon Kinesis Data Firehose.
+So we have Firehose that will be receiving data
+from different sources,
+and then it will send it into Redshift.
+And to do so, it will first write the data
+into an Amazon S3 bucket, and then Kinesis Data Firehose
+will issue automatically an S3 copy command
+to load the data into Redshift.
+Now, how does this copy come in work?
+We can also use it manually.
+So you would load data into S3,
+and then you would issue a copy command directly
+from Redshift to copy data
+from an S3 bucket using an IAM role
+into your Amazon Redshift cluster.
+And as we've seen, there are two ways of doing so.
+You might go through the internet
+because your S3 buckets are public through the internet.
+I mean, they're not public,
+but they're connected to the internet.
+And so therefore, you're going to have your data flow
+through the internet back into your Redshift cluster.
+And this is without enhanced VPC routing.
+But if you wanted all your network
+to remain private into your virtual private cloud,
+then you can enable enhance VPC routing
+to have all the data flow through the VPC entirely.
+And finally, if you wanted
+to insert data using the JDBC driver
+into the Redshift cluster, you could do so as well.
+So for example, if you have an application, an easy
+to instance that needs to write data
+into your Redshift cluster,
+you would need to use this method.
+And in that case, it is much better to write large batches
+of data into Amazon Redshift instead of one row at a time,
+which would be truly inefficient for this type of database.
+So a cool feature of Redshift is Redshift Spectrum.
+The ideas that you would have data in Amazon S3
+and you want to analyze it using Redshift,
+but you don't want to load it into Redshift first.
+And on top of it, you want
+to use a lot more processing power.
+So you use Redshift Spectrum
+and you must have a Redshift cluster already available
+to start the query.
+And then once you start the query,
+the query will then be submitted to thousand
+of Redshift Spectrum nodes
+that will perform the query onto your data in S3.
+So let's go for an example.
+You have your Redshift cluster with a leader node
+and a bunch of compute nodes as we've seen,
+and the data you want to analyze is in Amazon S3.
+So in this case, we're going to run a query
+onto our cluster, as we can see.
+What we want to do is that the table we want
+to query is living in S3.
+So we have from S3 dot and whatever you want.
+In that case, Spectrum will launch automatically.
+And so the query is going to be submitted to thousands
+of Redshift Spectrum nodes who are going
+to read the data from Amazon S3
+and perform some aggregations.
+And when they're done, they're going
+to send back the results
+into your own Amazon Redshift cluster,
+and then you will get back into whoever initiated the query.
+But with this feature,
+we can leverage a lot more processing power
+from a shift than the one we have provisioned
+into our cluster in the first place,
+loading the data from Amazon S3 into Redshift.
+So that's it for Amazon Redshift.
+I hope you liked it, and I will see you in the next lecture.

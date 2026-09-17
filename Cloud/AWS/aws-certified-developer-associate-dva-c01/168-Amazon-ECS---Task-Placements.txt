@@ -1,0 +1,170 @@
+# 168. Amazon ECS - Task Placements
+# Section: ECS, ECR & Fargate - Docker in AWS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/31788360
+# Caption: en_US (manual)
+
+So a new concept you need to know
+for the exam is the concept of ECS tasks placements.
+So when you create a task of type EC2,
+ECS must figure out
+where to place the task based on the available memory, CPU
+and ports on your target EC2 instances.
+So for example, here is our ECS cluster
+made of three EC2 instances
+and some tasks are placed on each instance
+in some ways.
+If the ECS service has a new container
+a new task that it wants to place on your EC2 instances,
+it needs to figure out where to place it.
+And that's the big question mark.
+So similarly, whenever a service scales in
+I mean that we remove an ECS task,
+the ECS service needs to determine
+which ECS task to terminate.
+Okay.
+So to assist you with this
+you can define what's called a task placement strategy
+and task placement constraints.
+And this will guide where this new container
+will be added or where a container will be removed from.
+This is only working for when you use ECS
+launched on EC2 instances,
+not for Fargate,
+because for Fargate AWS figures out
+for you where to start the container
+and you don't manage any backend instances.
+Okay.
+So this is only valid for ECS on EC2.
+Okay.
+Now let's talk about the task placement process.
+Okay.
+So the first thing to note is that
+task placement strategies are a best effort.
+If you wanted to have constraints
+we'll see this very very soon.
+Okay.
+So when ECS places tasks
+it will use the following process
+to select where to place it.
+The first one is that it will identify instances
+that satisfy the CPU, memory
+and port requirements in the task definition.
+So figure out where it can place the task
+in the first place.
+Then it will look at the
+task placement constraints that we'll see in this lecture.
+And then finally,
+it will try to identify the instance
+that satisfies best the task placement strategy.
+And then it will select that instance for the task placement
+and place the task there.
+So now let's talk about what
+these task placement strategies are.
+The first one that you need to know for the exam that comes
+up is called binpack.
+And binpack will place tasks
+based on the least available amount of CPU or memory.
+And this is to help you minimize
+the number of instances in use.
+So this will bring you cost saving.
+So if you want to define a binpack placement strategy
+this is the JSON that's according to it.
+So it's here.
+It says binpack on the field memory so RAM.
+And so that means that if we have one EC2 instance,
+it's going to try to fill up
+that EC2 instance all the way with containers.
+And then when it can't put any more containers
+on that one EC2 instance,
+it's going to place EC2 containers
+on another EC2 instance.
+So as you can see here
+we are placing as many containers as possible
+on one EC2 instance before moving on
+to the other.
+That's why it's called binpack
+because it packs all the containers together.
+And that's the strategy that brings the most cost saving
+because it will minimize the number of EC2 instances in use
+and try to maximize the utilization
+of one EC2 instance at a time.
+Okay?
+Next the task placement strategy for random.
+So here very simple, it places the tasks randomly.
+So if we look at this placement strategy
+in JSON it's very simple.
+And so say we have two EC2 instance
+and tasks are being added
+then they would just be placed randomly.
+And there is no logic to it, just random,
+very very simple.
+Not an optimal strategy,
+but one that works really great.
+Okay.
+The last placement version to be aware of
+is called spread.
+So say we have three EC2 instances
+and they are in three different availability zones.
+Then, if we do a spread
+the task will be spread
+based on the specified value.
+So for example, that value could be instance ID
+or ECS availability zones and so on.
+So in this example
+I'll make it very simple
+and understandable.
+We choose a placement strategy of spread
+on the ECS availability zones.
+That means that the task will be spread evenly
+across AZs.
+So my first task may be on AZ-A
+then AZ-B,
+then AZ-C.
+And so they're spread as you can see on each AZ
+and then it will start all over again.
+So with this,
+we have basically maximized the high availability
+of our ECS service by spreading the task
+on the EC2 instances.
+So, these task placement strategies
+they can be mixed together.
+So we can have a spread on availability zone
+and then a spread on instance ID
+or we can have a spread on availability zone
+and then a binpack on memory.
+So it is possible for you to mix and match.
+But the exam should test you only on the basics.
+So understanding the difference
+between binpack spread and random.
+And then we have ECS task placement constraints
+to bring constraints to how tasks are being placed.
+So, the first one is called distinctInstance
+and we are seeing through the ECS service
+that each task should be placed
+on a different container instance.
+So you will never have two tasks on the same instance.
+And this is defined by this JSON
+called placement constraints distinctInstance.
+And then there is a second task constraint
+called memberOf
+and we want to place task
+on instances that satisfy an expression
+that can be defined in the cluster query language,
+which is pretty advanced.
+And so I'll just give you one concrete example of it
+and that should be enough going into the exam.
+So for example, we do a placement constraint here
+and we wanna say that the instance type must be of type t2.
+And so what we are saying here is that
+all these tasks should be placed only on t2 instances.
+So this is the kind of constraints
+you can use with a memberOf.
+So we have distinctInstance
+which is very easy to understand
+and memberOf with a more complicated
+cluster query language to force your task to be
+for example only on EC2 instances.
+Okay.
+That's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

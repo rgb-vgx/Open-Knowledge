@@ -1,0 +1,190 @@
+# 122. S3 Hands On
+# Section: Amazon S3 Introduction
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/23743312
+# Caption: en_US (manual)
+
+So here I am in Amazon S3,
+and we're going to go ahead and create a bucket.
+So as you can see,
+this bucket is created in a specific region.
+For example, Europe (Ireland) eu-west-1.
+You can change the region selector
+on the top right if you wanted to.
+So next we have the bucket type.
+So we have General purpose or Directory.
+Directory is for low-latency use cases.
+We're not going to use it.
+General purpose is what we're going to use.
+This is the most common
+and recommended type of bucket for most access patterns.
+Now here comes the namespace.
+So it used to be only Global,
+but now we have Global and Account Regional namespace.
+So this is about naming your bucket.
+So if you use the Global namespace
+and you name your bucket bucket test for example,
+you're going to have a problem.
+So let's name it test,
+and then scroll down and then create this bucket.
+As you can see, a bucket with the same name already exists.
+So someone created a bucket named test.
+And so you need to make sure
+that the bucket name here is going to be globally unique.
+So for me, it would be for example, stephane-demo-s3-v6.
+But as you can see, it already exists.
+So I need to go to v7 and so on.
+So someone already took it and it's not even me.
+So how do we do then to find a bucket that's unique
+while we can keep on increasing the versions
+until one one will work,
+or we can use now
+what's called the Account Regional namespace,
+and the idea is that you can do whatever you want.
+You can name it test, you can name it demo,
+you can name it whatever you want.
+And it turns out
+that there will be an Account Regional namepace suffix
+that is added and so your full bucket name is going
+to be this, but you have the guarantee that this is going
+to be available no matter what
+because this is your account number
+and this is the region you're in.
+And so this is the recommended way going forward
+because you create a bucket named demo
+and you can use this demo name across all your regions
+and all your accounts if you wanted to.
+But for the purpose of this demo,
+I'm going to name my bucket stephane-demo-s3-v12,
+which I know is available.
+All right, so the bucket name is now available.
+Okay, so next for Object Ownership,
+right now you have ACL disabled, this is recommended.
+This is a security setting. Don't worry about it.
+We'll leave it as a default.
+Now for blocking public access to this bucket,
+we again, we'll leave this enabled.
+So we'll block all public access
+and we want to have maximum security in our buckets
+so only us can upload files to it.
+Next for Bucket Versioning,
+so we want to disable Bucket Versioning right now
+and we'll see later on how to enable it.
+No tags are needed.
+And for Default encryption,
+I'm going to use server-side encryption
+with Amazon S3 managed key.
+So all my objects are going to be encrypted,
+and then we'll choose the first option.
+We'll talk about encryption later on.
+And Bucket Key, I will enable it.
+So we'll leave, as you can see, all the settings as default.
+The only thing we have set really is the bucket name.
+So I'll go ahead and create my bucket.
+And now it has been successfully created.
+And you will see here in this UI all your buckets.
+If you have directory enabled,
+you will see also directory buckets.
+Right now I have none,
+but your general purpose buckets are here.
+Right now you should see one bucket
+that you've just created this course.
+For me, I have 33
+because I've been using my account quite a lot.
+And this will deploy buckets for all AWS regions,
+not just the one you're in right now, but all regions.
+As you can see, I have Ireland, London,
+I scroll down and get us-east-1, Frankfurt and so on.
+So all your buckets are going to be displayed here
+and you can do a little search.
+For example, stephane-demo, and here is my bucket.
+So I'm going to click on it and have a look at it inside.
+And now in my bucket,
+I would like to start uploading objects
+because currently, you have zero objects.
+So let's click on Upload and then we can add files.
+And navigate into your code, go into the s3 folder,
+and then you will find a coffee.jpg file.
+So choose this coffee.jpg file.
+As you can see, it's an image JPEG,
+it has 100 kilobytes in size,
+and then the destination is s3://stephane-demo,
+which is my bucket.
+Okay, so let's upload this file.
+We're done, so I can close this on the right-hand side.
+And now back into my S3 bucket,
+I can see the coffee.jpg file is under my Objects.
+So what I can do is now click on it
+and have more details around that file.
+So now that we are in the Object page,
+we can have a look at a bunch of overviews.
+So a bunch of properties where it's been uploaded,
+the size, the type, and there is an object URL here,
+we'll be playing it in a moment.
+So how do we do this?
+So now we want to open this object
+and see if we can open it.
+We can view it because we have uploaded it
+onto our Amazon S3 bucket.
+Therefore, I'm going to click on Open.
+And if I do click on Open, as you can see,
+I can see my coffee.jpg file.
+So this is the one I have uploaded
+and it is on the internet.
+Awesome, right?
+But if I go back to my overview
+and click on this object URL over here,
+so I copy it, I paste it, and I enter it,
+as you can see, I get an AccessDenied.
+And this AccessDenied tells me
+that I cannot access my object using
+what's called the public URL.
+So as you can see here, this public URL is not working,
+but this URL is working.
+So what's the difference?
+Well, this URL right here, if you have a look at it,
+the beginning is exactly the same,
+but then the rest is a very,
+very complicated and long URL
+because it's called an S3 pre-signed URL, why?
+Well, because this URL contains actually a signature
+that verifies that I am the one making the request,
+and therefore it has my credentials in it.
+And so because my credentials are encoded in this URL,
+then Amazon S3 says, "Well,
+Stephane is allowed to view his own object,
+therefore I will display it."
+So this public URL does not work,
+but this pre-signed URL with my own credentials works
+and obviously this URL is only for me.
+So we'll see how to make that object public later on
+so that the public URL will function as well.
+So let's go back into our bucket, the stephane-demo-s3,
+and I have one object, but I can create a folder,
+and this folder name may be called images.
+So we scroll down and create this folder.
+So now I have the images folder in my bucket.
+I can click on it and within it, I can upload again a file,
+and this time I will upload the beach.jpg file
+into, as you can see,
+the destination is my images folder within my S3 bucket.
+So let's upload this, close this.
+As you can see now we have the beach.jpg object
+within the images folder.
+And if I go one level up, we can see the folder here.
+So this looks just like, you know,
+the cloud storage service you used to know,
+such as Google Drive or Dropbox or whatever you want.
+Here, we have something very similar in terms
+of the user experience on Amazon S3.
+So of course, I can go to images
+and I can delete this folder entirely.
+So this will delete everything within the folder.
+And to delete things,
+I just type permanently delete into the text input,
+delete my object, and I'm good to go.
+So that's it for this lecture.
+We've seen how we can upload objects into Amazon S3,
+we've seen how we can open them in two different ways,
+creating folders, deleting folders, and so on.
+So I hope you liked it
+and I will see you in the next lecture.

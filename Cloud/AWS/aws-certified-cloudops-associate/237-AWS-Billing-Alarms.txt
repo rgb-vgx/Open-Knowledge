@@ -1,0 +1,83 @@
+# 237. AWS Billing Alarms
+# Section: AWS Account Management
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516220
+# Caption: en_US (manual)
+
+So let's go through creating a billing alarm.
+And billing data is going to be stored in only one region.
+It is us-east-1 and this is in CloudWatch.
+But the data is going to be for your overall worldwide cost.
+Okay. So not just for that one region.
+It is only started in one region
+but represents worldwide costs.
+And it's actual cost incurred into your accounts,
+not for project-specific costs.
+So let's go ahead and create an alarm together.
+So for this tutorial,
+please make sure that you are selecting
+US East Northern Virginia us-east-1 as an option,
+because this is how you access your billing alarm.
+Then you go into the CloudWatch console.
+And to find your billing alarms,
+you need to go on the left-hand side into Alarms
+and then Billing.
+So this only appears in us-east-1.
+So this is where you can create your billing alarms.
+And this is to see whether or not
+you have alerts based on your actual spend.
+So let's create an alarm
+and then when you select metric.
+And so here, the metrics are going to be related
+to your billing.
+Okay. So the first thing you have to do is
+to enable billing alerts.
+So let's go to my billing dashboard.
+And then on the left-hand side,
+we have Billing preferences.
+And then we can click on Receive Billing Alerts.
+And this is to enable monitoring the usage charges and fees.
+So you need to enable this
+and then you need to wait about 15 minutes
+for your data collection to be active.
+So I'm going to enable this and pause the video and wait.
+Now that I've activated my billing alerts,
+I can go into CloudWatch
+and start looking at my billing data.
+So we did about maybe two or three hours to get back to you.
+So now if I go on the left-hand side, under Billing,
+I can create an alarm
+and select a metric.
+And here I have access now to the billing metrics
+and they would not appear if you did not enable
+that tick box here
+and give it some time to populate.
+So we get By Service
+and so we can get a billing by service.
+So if you wanted to control, for example,
+your Amazon EC2 cost, you could just tick that.
+And if you wanted to just look at your overall cost,
+you would go one level up
+and then you go Total Estimated Charges
+and you would click on it.
+Now, obviously there's not showing
+something very, very interesting right now
+because we only have one data point and it's $1.36.
+So I don't spend a lot on my accounts.
+But at least you could select this metric, for example,
+and then you could, for example, define a condition,
+being static,
+and saying that if you become greater than $10 USD.
+then please send me an alarm.
+Okay. And the alarm could be, for example,
+that you should send it out to an existing SNS topic
+and create the relevant SNS topic.
+So that's it for billing alarms.
+I hope that makes sense.
+So remember, you can set them at two levels.
+You can send them on the metrics
+at the overall spend for your accounts,
+or you can also send it by service
+and drill down for the service you want,
+for example, Amazon S3, SNS, Config, and so on. Okay.
+So that's it. I hope you liked this lecture.
+And I will see you in the next lecture.

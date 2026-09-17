@@ -1,0 +1,96 @@
+# 167. Amazon Kinesis Data Streams - Handling Duplicates
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305636
+# Caption: en_US (auto)
+
+Instructor: Now, let's talk about
+how you can handle duplicate records
+in Kinesis data streams.
+And there are two cases when that can happen.
+There is on the producer side and also on the consumer side.
+So Producer retries can create duplicates
+due to mainly network timeouts.
+And this is an exam question.
+So how does that work?
+Well you have your producers, it could be applications,
+it could be using like SDK or the KPL,
+and they're producing into a Kinesis data stream.
+Now, when we do a PutRecord and we send some data,
+then we know what happens.
+The data gets written into the Kinesis data stream.
+The data gets a unique sequence number.
+And then can you see the stream says,
+I've written your data correctly,
+but in case of a network timeout,
+then this acknowledgement
+may never reach our producer application,
+maybe due to a network timeout.
+And our producer cannot know that.
+So maybe it says,
+okay I don't think this record has been written
+because I haven't received any acknowledgement back,
+and now there's a timeout.
+So what's going to happen is that
+the producer record is going to be retried
+by our application by reissuing an API call.
+So we're going to do a PutRecord again for the same data,
+which is going to be written a second time
+into my data stream.
+And as you can see,
+the sequence number has increased from 123 to 124,
+and now the acknowledgement reaches back to our producer
+and we are good to go.
+But what happened is that,
+from a Kinesis data stream perspective,
+we have created duplicate records
+because the same data was written twice
+and it got two different sequence ID.
+So although the two records have identical data,
+they also have unique sequence numbers.
+And so there will be two data points
+in our Kinesis data stream.
+So the fix for it is to embed a unique record ID in the data
+to be able to deduplicate based on
+that unique record ID on the consumer side.
+So this, although it looks scary,
+I would say rarely happens,
+but still is a case for you to know about
+and something the exam will test you on.
+Now let's talk about what can happen on
+the consumer side for duplicates.
+So the consumer retries
+can make your application read the same data twice
+and the consumer retries can happen
+in four different type of use cases,
+but they all correspond
+to when your record processor will restart.
+So it could be when a worker terminates unexpectedly.
+It could be when a worker instances are added or removed.
+It could be when shards are merged or split
+or when the application is deployed.
+So remember these four cases,
+'cause they can come up as well in the exam.
+So the fix for that is quite difficult
+and the documentation is pretty vague about it.
+But the idea is that
+you make your consumer application idempotent.
+That means that if you read the same data twice,
+then it does not have twice the same side effects.
+And the other recommendation provided by the documentation
+in AWS is that if somehow your final destination
+can handle duplicates, it's recommended to do it there.
+For example, if you can rely on that unique record ID
+and you insert that into a database,
+then the database will not allow you to insert
+that unique record ID twice.
+And so that could be a good one for you.
+If you want more information,
+you can read the documentation here.
+But from an exam perspective,
+you need to know that network timeouts
+can introduce producer-side duplicates
+and that these four consumer retries
+can introduce duplicates from a consumer perspective
+because the data is going to be read twice.
+So that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

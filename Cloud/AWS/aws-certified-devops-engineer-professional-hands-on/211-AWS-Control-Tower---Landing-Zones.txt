@@ -1,0 +1,54 @@
+# 211. AWS Control Tower - Landing Zones
+# Section: Domain 6: Security and Compliance
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37935838
+# Caption: en_US (manual)
+
+So now, let's talk
+about landing zones in Control Tower.
+So, landing zones are automatically provisioned,
+secure, and compliant multi-account environment
+based on AWS best practices.
+Now, this concept may be quite obscure.
+So, a landing zone is a combination of many things.
+We have an organization
+that is used to create and manage multi-account structure.
+We have Account Factory to easily create accounts
+and make them adhere to configs and policies.
+We have OUs to group and categorize accounts
+based on the purpose.
+SCP to make sure you have fine-grained permissions
+and restrictions.
+IAM Identity Center
+to make sure we have centralized user access
+to all the accounts and services.
+And Guardrails to make sure
+we have rules and policies in place
+to enforce security, compliance,
+and best practices.
+And Config to make sure
+we are assessing the resources' compliance
+alongside the Guardrails.
+So, a landing zone is a concept
+to talk about the combination of all these things.
+So, when we refer to a landing zone,
+we have the organization
+that is made up of the management accounts,
+different OUs,
+and within the security OU,
+we have, usually, a log and archive account
+and an audit account.
+We have an Account Factory facility within Control Tower
+to create new accounts
+and make sure they're properly configured.
+We have IAM Identity Center
+to make sure the users can log in
+into all the accounts securely using one login.
+And then, we have Guardrails,
+so either preventive Guardrails by applying SCP
+at the organization's level,
+or using detective Guardrails
+by using config and monitoring the compliance of everything
+across your organizations and accounts.
+So, that's it for this lecture.
+I hope you liked it
+and I will see you in the next lecture.

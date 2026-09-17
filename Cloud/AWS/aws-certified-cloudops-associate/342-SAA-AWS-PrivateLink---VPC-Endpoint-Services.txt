@@ -1,0 +1,100 @@
+# 342. [SAA] AWS PrivateLink - VPC Endpoint Services
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516546
+# Caption: en_US (manual)
+
+So now let's talk about how we can expose services
+in our VPC to other VPCs.
+So option number one is to make it public.
+And in which case, the traffic of internet,
+we go through the public internet
+and it's tough to manage access.
+So here's an example.
+We have a service VPC with an application service
+and customer VPC with internet gateways
+and through the public internet,
+they can communicate.
+So this works, but it is not very optimal.
+It's not reliable
+because it goes through the public internet.
+I mean, there's definitely some better options.
+Option number two,
+you may think of based on what you've seen in this section
+is to use VPC peering.
+And in this case,
+in case you need to
+have one VPC connected to multiple customers VPCs
+you need to set up if you're hearing connections
+between all these VPCs together
+and that's a lot.
+And on top of it,
+when you set up a VPC incorrect peer in connection,
+you open up the whole network
+of one VPC to another
+Whereas all you wanted was just to
+externalize one application service.
+So as you can expect,
+there is a better way of doing it.
+And this way is called AWS PrivateLink
+which is what powers the VPC endpoints.
+And this one is also called the VPC endpoint services.
+So it's a more secure and scalable way
+to expose the service, say to thousands of VPC,
+either in your own or other accounts.
+And this is what the exam will test you on.
+You want to expose the service to thousands of VPC?
+What do you use, all the answer is PrivateLink.
+So it does not require a VPC peering
+or internet gateway,
+or knots or route tables. You know,
+it's actually kind of magical.
+So the way it works is that you have a service VPC.
+If your application service
+and a customer of VPC with a consumer application
+now to expose your service,
+you need to have a network load balancer
+and an ENI or a gateway load balancer,
+but networks of balancer there are most common.
+So this network load balancer is going to expose
+our application service. Okay?
+And on the customer VPC side,
+we're going to create an ENI.
+And this ENI through PrivateLink is going to be connected
+to your network load balancer.
+And this is going to go all through
+the private network of AWS.
+And this is the power of PrivateLink.
+So in this example,
+to establish a connection between
+the NLB and the ENI
+there was no need to establish VPC peering before.
+And that's really, really, really powerful as a concept.
+So if the NLB is in multiple availability zones,
+then you need also ENIs in multiple availability zones
+and you have a fault tolerance solution
+on top of that.
+So highly secure,
+highly scalable
+doesn't require much setup
+and really is a good way
+to have a filter and solution.
+So PrivateLink is an awesome solution.
+So a way you could set us up, for example,
+just to show you how everything can be used
+is for using PrivateLink with ECS.
+So we have an ECS service with multiple tasks.
+They're exposed to an application about an answer, okay,
+but we know that we need a network load balancer
+to expose this. So how do we do it?
+Well, we connect a network load balancer
+to the application load balancer,
+because the ALB can now be a targets of the NLB.
+The PrivateLink can be established directly into your NLB.
+And so for other VPCs
+it could be an ENI directly into PrivateLink.
+And for your corporate data center,
+it could be a private connection, for example,
+going over direct connect
+or a VPN connection. Okay.
+So that's it for PrivateLink. I hope you liked it.
+And I will see you in the next lecture.

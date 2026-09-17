@@ -1,0 +1,162 @@
+# 189. Config Overview
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056338
+# Caption: en_US (manual)
+
+Now let's talk about AWS Config.
+So Config helps with auditing and recording the compliance
+of your resources by recording the configuration
+and their changes over time.
+So any time we've been doing some manual changes
+of the configuration in AWS, we did not have a list
+of all the changes that happened,
+but we can have this using Config.
+Then this configuration data can be stored into Amazon S3,
+to be later analyzed by Athena, or to be recovered.
+The question that can be solved by using Config,
+can be is there unrestricted SSH access
+to my security groups?
+Or do buckets have any public access?
+Or has my ALB configuration changed over time?
+All these things can be resolved by Config and Config rules.
+Then you can receive alerts through SNS notifications
+for any changes done onto your infrastructure,
+and Config is a per-region service,
+but you can create multiple Config configurations
+and then aggregate all the results across all the accounts
+and all the regions.
+So let's have an example of how Config work.
+So if you want to see the compliance of a resource
+over time, this is for a security group,
+you can see that it was noncompliant,
+and then after making some changes,
+it became compliant and green.
+You can also view the configuration of a resource over time
+to see how their configuration
+of that security group has changed.
+And finally, you can view who made these changes
+to the resources based on CloudTrail
+if you have enabled CloudTrail in your accounts.
+So I am in the Config console, I'm going to get started,
+and I need to choose the type of resources
+that I want to record.
+Just know that Config is not a free service,
+so if you enable it, then you will have to pay.
+For this, I will enable to record all the resources
+in this region, including the global resources,
+and it will create a bucket
+in which all the configuration will be stored.
+Then I can select a topic to send notifications
+to for all the changes of the configurations.
+I will disable this for now,
+and it will create a Config service-linked role.
+I'll click on next, then I can choose Config rules,
+so these are rules to apply on my account.
+For example, to check if SSH is open.
+So the restricted-ssh is one rule,
+you can have also public entry buckets.
+So if you go to rds-instance-public-access-check,
+for example this is an example, or if I type S3,
+we can see s3-bucket-logging-enabled,
+or s3-account-level-public-access-blocks.
+So these are a bunch of rules in which they can be enabled
+to check the compliance of our resources within our account.
+For this example, and remember this is going to be paid,
+I'm going to enable the restricted-ssh rule to show you
+the compliance of my security groups.
+I'll click on Next, and then as I can see,
+I'm going to record the configuration of all the resources,
+it's going to be put in the S3 bucket,
+and it is going to apply this Config rule, restricted-ssh.
+I'll click on Confirm,
+and setting up Config can take a time,
+so I will wait for Config to be done,
+and to record everything in my account.
+Okay, so I'm in Config, and I'm going to use the new console
+to match your experience, and so in Config,
+what I'm going to be able to see is the inventory
+of all my resources in AWS.
+As you can see, I have five security groups,
+three subnet, one InternetGateway,
+and so on you can read with me.
+And it turns out, that as part of all my resources,
+I have some resources that are not compliant.
+So there's one rule that is not compliant,
+and that is the restricted-ssh rule.
+If I click on this, I can look at the rule detail,
+and I can see the resources in scope,
+and I can see that three out of five security groups
+are not compliant.
+So if I click on one of these security group,
+I can look at the details of the security group,
+and I can see the rule is applied,
+and I can see that this rule is not compliant.
+So this rule, what did it describe?
+Well, it described the fact that there is unrestricted
+SSH allowed onto my security group.
+So what I can do, is that I can fix this rule.
+So let's go into Resources and then I will find
+my security group that is not compliant, so this one,
+and we'll click on it,
+and then I'm going to click on Resource Timeline.
+So I can see my configuration timeline,
+and I can see that my configuration was done
+on the 2nd of June, and I can also look at
+my compliance timeline, and I can see
+that my security group right now, is not compliant.
+So if I scroll down, I look at the rules,
+and say, yes, this is not compliant,
+and this is because we have a port opened
+on SSH for everyone to use.
+So what I can do is that I can fix this resource.
+So for this I'm gonna go
+into our security group configurations,
+so this is this one I'm looking at,
+and I'm gonna go into the EC2 consoles,
+so I'll go into EC2, I will find the security group.
+On the left-hand side I will go under security groups,
+I will filter for the security group I'm looking for,
+press Enter, here it is, and for the inbound rule
+I can see that yes, SSH on port 22 is opened for everyone.
+So what I'm going to do is that I will for example,
+delete this rule temporarily, save the rule,
+and then what I'll be waiting for is for my resource
+to become compliant again.
+So for this, I can either wait a little bit of time,
+and this would show me the compliance,
+or I can go a bit faster,
+and then I can launch a rule and make sure it runs again.
+So this rule that I created right here, I can do Action,
+and Re-evaluate, and this is going to re-evaluate
+all my noncompliant resources.
+So let me pause a bit to wait for it to be done.
+Now I'm going to refresh this page,
+and what we are seeing now is that only two noncompliant
+resources are done, so what I did, did fix one compliance.
+If you go back to the Resource Timeline,
+and I'm going to refresh this again,
+let's see what happened.
+We can see that now my resource is green,
+and it's compliant, and if I click on Changes,
+I can see that the fact that my Config rule
+went from noncompliant to compliant.
+If we want to look at the configuration changes
+that are associated with this,
+if I go to Configuration Timeline, I can see
+that the resource has changed configuration on this.
+So if I go to one change, I can click on it,
+and I can see that this rule right here
+that is described as-is, went to nothing,
+which means it was deleted.
+And if you look at CloudTrail,
+we have the CloudTrail integration that said
+that my root user did remove that security ingress rule.
+And we can view that event in Details in CloudTrail.
+So I hope that's helpful, I hope you now understand
+the whole aspect of using Config to track
+the resource configuration and their compliance over time,
+and this is very helpful to ensure that all the resources
+created by your employees within your company are compliant
+with whatever you have decided for security rules.
+So that's it, I hope that was helpful,
+and I will see you in the next lecture.

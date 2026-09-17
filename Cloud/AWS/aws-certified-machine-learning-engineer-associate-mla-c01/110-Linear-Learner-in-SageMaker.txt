@@ -1,0 +1,98 @@
+# 110. Linear Learner in SageMaker
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285403
+# Caption: en_US (auto)
+
+Let's start diving into the long list of built in algorithms that SageMaker offers.
+You will actually be expected to know about these things and the things that are special and quirky
+about each one.
+So pay attention, guys.
+Take notes.
+It's all important.
+We'll start with Linear Learner, which is a pretty simple concept, right?
+I mean, linear regression.
+That's kind of like the first thing you learn about in machine learning.
+And all it is, is the idea of fitting a line to some training data set.
+Right.
+So once I have a line fitted to some data, I can just say okay, given an x value, I'll use that line
+equation to predict its y value.
+But linear learner does a whole lot more than just that.
+It is important to remember that it's linear.
+I mean, not all data sets are really suitable for a linear function, right?
+Not all data sets are separable by a line.
+Sometimes you have to have more of a curve to actually get at what's going on.
+So, you know, you want to make sure you're looking at your scatter plots and figuring out if a line
+really is an appropriate fit for what you're trying to do.
+But if so, it can actually do more than just linear regression.
+It can handle both regression and classification, which is a little bit counterintuitive.
+I mean, usually when we think about regression, we're thinking about numerical problems, not classification
+problems, but linear learner can actually do both by using what's called a linear threshold function.
+So in the classification case it can do either binary or multi-class classification problems.
+So linear learner can do pretty much anything as long as the line will fit what you're trying to do,
+its input format.
+And we're going to get into this with every single algorithm that we look at.
+It would like to have record IO wrapped protobuf file format in Float32 data.
+So that's going to be the most performant option for you.
+But it can also take raw CSV data as well.
+In that case, it will assume that the first column is the label data, followed by all the feature
+data, and it supports both file or pipe mode in either case.
+So what do I mean by that?
+Well, in file mode in SageMaker, it will copy all of your training data over as a single file all
+at once to every training instance in your training fleet, whereas pipe mode will actually pipe it
+and stream it in from S3 as needed.
+Obviously, pipe mode is going to be more efficient, especially with larger training sets, right?
+So if you're having a problem where S3 is taking too long to train like it's getting a hard time even
+getting started, a very simple optimization would be to use pipe mode instead of file mode.
+Remember that for the exam guys, we'll get into for every algorithm some sort of things that are special
+about them.
+So for linear learner, some things you have to know are that the training data should be normalized.
+And you can either do that yourself or let the linear learner algorithm do that for you automatically.
+But you have to remember to do one or the other.
+Either normalize your data up front, or remember to tell linear learner to actually normalize your
+data for you.
+You also need to make sure that your input data is shuffled.
+That's going to be very important for getting good results out of it.
+Now Linear Learner is actually doing some pretty complicated stuff under the hood.
+It's using SGD stochastic gradient descent.
+You can have one of many optimization algorithms to choose from, including variations of SGD like Adam
+and Adagrad, and it actually trains multiple models in parallel and chooses the most optimal one during
+the validation step.
+So pretty sophisticated stuff.
+It also offers L1 and L2 regularization, which you can tune.
+Again, these are just ways to prevent overfitting where L1 is ending up doing feature selection, whereas
+L2 is sort of just weighting your individual features more smoothly.
+Some important hyperparameters.
+When you're actually tuning your linear learner model one is balanced multi-class weights, and you
+want to be able to set that to give each class equal importance in the loss function.
+So important to remember to set that.
+Also, you can adjust the learning rate and batch size, just like we talked about when we talked about
+tuning neural networks.
+Very much works the same way.
+And you can also adjust the L1 regularization term as well as L2.
+L2 goes by the name of weight decay in this particular set of hyperparameters.
+Also a couple of more parameters that may or may not be important for the exam.
+Our target precision and target recall.
+So with either of these, if you set the binary classifier model selection criteria to the appropriate
+value, either recall at target precision or precision at target recall, what you can do is set a target,
+a precise value that you want to hit for either precision or recall, and it will either hold the recall
+at that value while maximizing for precision, or hold the precision at that value while maximizing
+for recall.
+Good to know the types of instances you should choose for linear learner are either single or multi-machine.
+CPU or GPU.
+So it does help to have more than one machine, but it does not help to have more than one GPU on one
+machine.
+So important to remember that stuff just to drive home that this is not your father's linear regression
+here.
+One of the examples they give you is actually using linear learner to classify handwriting recognition
+using the mNIST data set.
+So that's kind of cool.
+You can actually use linear learner as a classifier and just feed in raw pixel data and have it classify
+things.
+And it actually works.
+I mean that's crazy right?
+But again, if you look at how it's working under the hood, it's not that dissimilar from how we train
+neural networks.
+So even though it's not a neural network, it works in some ways in a similar manner.
+So it's kind of cool.
+So that's linear learner in a nutshell And we're just going to keep plowing through each of these algorithms
+and talk about the important points that might show up on the exam.

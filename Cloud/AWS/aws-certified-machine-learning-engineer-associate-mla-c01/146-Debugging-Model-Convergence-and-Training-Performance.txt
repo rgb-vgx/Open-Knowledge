@@ -1,0 +1,195 @@
+# 146. Debugging Model Convergence and Training Performance
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57864809
+# Caption: en_US (auto)
+
+So if I have trouble training my model,
+how do I figure out what's going wrong?
+How do I debug that problem?
+This is a very important slide
+because there's a lot of common patterns here
+that you need to know how to recognize.
+So there are different scenarios here
+that point to different kinds of problems.
+Let's say my loss function is not decreasing
+or it's plateauing on me too early.
+That might be nature's way of telling you
+that your learning rate is too low,
+you're not being aggressive enough.
+And that could be what we call
+the vanishing gradient problem.
+It could also mean that you're underfitting
+or that your training data is bad,
+but at the end of the day,
+it means that you're not being aggressive enough.
+You need more of a learning rate,
+you need better training data,
+you need to fit more aggressively.
+Now the opposite problem is if your loss
+is oscillating all over the place or diverging.
+That could be the learning rate being too high.
+So if your loss function is oscillating
+and just going out of whack,
+that might mean you need to pull back
+that learning rate a little bit.
+That's the opposite problem.
+It might also mean that your batch size is too small.
+That can also lead to unstable optimization.
+If your loss just explodes entirely
+and goes infinite or not a number,
+then that's what we call the exploding gradient problem.
+And the root cause of that is generally poor normalization
+or poor pre-processing of your data.
+So you might need to go back and ask yourself,
+was I supposed to normalize that input data
+that I'm training on?
+Maybe I forgot to do that.
+And as a result, my gradients don't make any sense at all.
+That's a very common mistake.
+What if your validation stalls
+while your training keeps improving?
+So while you're training your model,
+your training metrics get better and better,
+but your validation set kind of stalls out.
+This is the classic sign of overfitting.
+And if there's one thing you take from this slide,
+this should be it.
+So if you're seeing performance improving on training,
+but not on validation, you're overfitting.
+So you need to go back,
+regularize or simplify your data, add more data.
+You're overfitting to your training data set in that case.
+What if I have identical training runs
+and they're giving me very different results?
+That shouldn't happen.
+You know, this is machine learning.
+It's supposed to be deterministic.
+Well, that might point to unstable optimization.
+And there might be things that are different
+that you don't really, that you missed, right?
+So maybe your hyper parameters
+actually changed a little bit,
+or your data actually changed a little bit.
+And that's what's actually driving that changes in behavior
+across otherwise identical runs.
+Also, your performance of your training might be bad
+and that might just be hardware limitations.
+So if you're not taking full advantage
+of your CPU and GPU power,
+then you probably have a bottleneck somewhere.
+It might just be disk IO.
+It might be memory IO,
+or it might be IO going to your CPU or your GPU.
+So that might be a sign of having the wrong batch size.
+So maybe you need to increase your batch size
+to make a greater throughput to these various resources
+and not be starved on IO by having too small batches.
+So a healthy convergence is gonna look like that.
+Just, you know, sort of converging over time
+in an exponential manner.
+That's gonna be your loss function.
+If it's unstable,
+then this is the case where your learning rate is too high.
+So batch size is too small.
+Learning rate's too high.
+That can lead to an unstable loss function
+oscillating all over the place.
+If you're plateauing,
+that might mean that your learning rate is too low.
+You know, you're not being aggressive enough.
+So that could be the vanishing gradient problem
+or underfitting your data.
+And this is the classic overfitting scenario
+where your train performance on your training set improves,
+but your validation set is getting worse.
+That means you're overfitting your data.
+That's a bad thing.
+All right, so how do I actually figure out what's going on?
+So there used to be something called SageMaker Debugger
+that would help you with this,
+but they put it into maintenance mode.
+So instead we're being asked to use
+other third-party open source tools instead.
+But fortunately there are solutions.
+So even without SageMaker Debugger,
+we do have open source things like MLflow
+and SageMaker AI can integrate with that.
+And that can give you experiment tracking
+to do things like logging your loss functions
+and other metrics per training step,
+logging parameters, hyperparameters,
+comparing runs side-by-side
+and tracking your artifacts and model lineage.
+So if you need to manage
+the actual training experiments you're doing
+and how they're behaving relative to each other,
+MLflow can be used with SageMaker AI for that end.
+TensorBoard can also be used with SageMaker AI,
+and this can give you more visibility
+into the model internal.
+So if you want to visualize those training
+and validation curves that we looked at
+in the previous slide,
+TensorBoard might be a tool for helping you to do that.
+And it can also help you inspect gradients distributions,
+weight histograms and activations
+and deeper model training behavior,
+as it says on this slide.
+So if you need more internal information
+as to what's going on during the training itself,
+TensorBoard can give you that insight.
+And for the hardware side,
+if you're just seeing poor performance
+in some sort of a hardware bottleneck,
+CloudWatch of course can log your infrastructure
+and system metrics on the hardware
+you're using to do that training.
+So it can tell you if your bottleneck is memory disk,
+CPU or GPU and give you dashboards and alarms
+surrounding all of that.
+So what does a workflow look like
+for actually diagnosing a training problem
+and repeating until it's good?
+So let's say I train my model and I don't like the results.
+There's some sort of a training problem.
+First step is to inspect the training and validation curves.
+So I might need a tool like TensorFlow to look into that.
+And tracking those training problems
+and identifying them in the first place
+might be something where MLflow helps.
+MLflow will definitely help in comparing
+the experiment parameters and runs to each other,
+which might give me more diagnostic information.
+Once I have the gradients and model internals
+that I've taken a look at,
+that might give me hopefully some insight
+as to what's going on.
+And there might also be performance issues
+that CloudWatch could alert me to as well
+on the hardware side that I might want to be aware of too.
+Once I have all that information, I can act accordingly.
+Maybe I need to go back and adjust my training configuration
+or adjust how I'm carving up my data for training,
+assuming that it's just a underfitting
+or overfitting kind of an issue.
+Run it again, compare that to the original results
+and iterate until you get something that works.
+So sometimes, you know, you just need to iterate
+and try different approaches to your configuration
+for the model and the topography of that model,
+how you're carving up your training and validation data.
+A lot of times it's an iterative process
+where you just try new things until you finally converge
+on something that works well for your training.
+And again, the tools that might help you do this
+are MLflow, TensorBoard, and CloudWatch.
+MLflow for managing your runs and parameters,
+TensorBoard for giving that internal visibility
+into your training and validation curves
+and what's going on inside the model
+while it's being trained,
+and CloudWatch for monitoring the actual hardware
+that's doing that training for you.
+All right, and unfortunately, you know,
+SageMaker Debugger, no longer a thing,
+but this is the new way of doing it.

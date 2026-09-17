@@ -1,0 +1,303 @@
+# 325. [SAA] NACL & Security Groups
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/13221984
+# Caption: en_US (manual)
+
+Okay, so let's go for a very long lecture
+on Security Groups and Network ACLs or NACLs.
+So let's take an example of a subnet
+and we know when you have an EC2 instance
+that we attach a security group to it.
+But there is an extra level of protection on the subnet
+that we haven't seen yet,
+which is your network ACL or NACL.
+And let's take an example
+to really understand the role of a NACL
+in an incoming request.
+So a request goes to your EC2 instance,
+now what is happening from a network perspective?
+Well, first the request is going to make it to the NACL
+before going into the subnets.
+And so there are going to be some inbound rules
+on the NACL that are going to be defined.
+And if the request is not allowed,
+then the request doesn't go in.
+And if it is allowed, then it will go in, right?
+So the NACL is stateless.
+So we'll see what that means in a second.
+So the first request goes through the NACL
+and then it reaches inside the subnets
+and it goes through the security group
+inbound rules, okay.
+So we know how this works.
+So again, if the request is not allowed explicitly
+then it is denied.
+Now something about security group
+is that they are stateful.
+So remember NACLs are stateless
+and security groups are stateful.
+So what does that mean?
+That means that if the request makes it through
+the inbound rules of the security group
+and makes it to the EC2 instance,
+the EC2 instance will then reply
+with whatever reply there is to do
+for the application perspective.
+And then the outbound is automatically going to be accepted
+at the security group level.
+This is because the security group is stateful.
+That means whatever is accepted in can go also out.
+So here, there is no rules being evaluated.
+And the security group outbound rules
+are not mattering in this example.
+So now that we know
+that the outbound at the security group level
+is always allowed because it's stateful,
+what happens still?
+Well the NACL is not stateful, it is stateless,
+and therefore, because it is stateless
+then the NACL outbound rules are going to be evaluated.
+And again, if they are not passing,
+then the request will not make it through.
+So this is for an incoming request.
+Now let's go through the same scenario,
+but for an outgoing request,
+and you can try doing this on your own
+by pausing the video,
+just to see if you understand the difference
+between stateful and stateless.
+Okay. Did you try?
+Okay, let's go.
+So the security group this time,
+so the EC2 instance is making an outbound request.
+So it's doing a request to the outside.
+And so the EC2 instance will first maybe use,
+for example, connect to www.google.com,
+and so therefore the first rules
+that are going to be evaluated
+are the security group outbound rules.
+So is the traffic allowed out
+from the EC2 instance to the web?
+Then if the rules are good and the request is allowed,
+then the request goes through the NACL
+outbound rules as well.
+So they're evaluated.
+Then the request reaches www.google.com,
+it comes back to Amazon web services,
+and obviously the NACL is stateless and therefore
+the NACL inbound rules are going to be evaluated.
+And finally, while the inbound within the subnet
+at the security level is also going to be allowed
+no matter what, because of the statefulness
+of your security group rules.
+So here the inbound rules of your security group
+do not make a difference
+because the admin roles was already accepted
+and your security group is stateful.
+So hopefully that is a very clear explanation
+between stateful and stateless.
+So what are Network Access Control List, NACLs?
+Well they're like a firewall that control the traffic
+to and from the subnet level,
+and you have one NACL per subnet,
+and each new subnet will be assigned the default NACL.
+We'll have a look at the default NACL in the next slide.
+So you define NACL rules and rules have a number
+from one to 32,000 and so.
+And there's a higher precedence with a lower number,
+so one is the highest priority
+and the latest is 32,000 and so on.
+And the first rule match will drive the decision, okay.
+So for example, if you define allow on this CIDR
+and deny on the same CIDR, so a specific IP,
+but the allow is 100 and the deny is 200,
+the IP address will be allowed
+because 100 as a higher precedence over 200.
+In that case,
+the first rule match will drive the decision.
+The less rule is an asterisk and will deny any request
+in case of no rules match.
+Now, AWS recommends adding rules by increments of 100.
+And the reason is that if you want to add rules
+in between then, you are fine.
+Okay, so newly created NACLs will deny everything
+by default.
+And NACLs have a very, very good use case.
+They're great for blocking a specific IP address
+at the subnet level.
+So NACLs in this diagram, where are they?
+So we have this diagram we know about,
+but NACLs again are at the subnet level.
+And so we can have NACLs at the public subnet,
+private subnet level and so on.
+So the default NACL is super important because
+it can come up in the exam.
+And the default NACL has this one specificity
+that it accepts everything inbound and outbound
+with the subnets it's associated with.
+So this is what the default NACL looks like
+for the IPv4.
+It allows everything out and everything in.
+And that makes sense, right?
+Because if the NACL was not allowing
+everything in and everything out
+then we would have do some serious debugging to do
+when we get started with AWS.
+But the default NACL is very open.
+Now my recommendation is to not modify the default NACL.
+Instead, if you want to have some custom
+Network ACLs, then create a custom one.
+Okay, but if the exam mentions to you,
+that there is a default NACL,
+just know that by default this NACL will
+disassociate it with subnets.
+If this NACL is associated with subnets, sorry,
+then it will allow everything in and everything out.
+Okay, so now let's go into the important concept
+of Ephemeral Ports.
+So when you have a client and a server connecting together,
+they must use port.
+So we have IP address and ports,
+and the clients connect to the server
+on the defined port.
+So we know for example,
+that the HTTP port is 80,
+the HTTPS port is four, four, three,
+the SSH port is 22 and so on.
+So when we have a server that exposes a service,
+then the client connects to a defined ports,
+except though that the clients
+needs a reply back from the server.
+So the server also needs to connect to the clients
+to send a response.
+And the client does not have any open port by default.
+So what it does that when the client
+is connecting to a server,
+the client will open a specific ports on itself.
+And this port is ephemeral
+because it's just a port that will be
+as long lived as the connection is
+between the clients and the server.
+And so what is that ephemeral ports?
+Well, based on the OS you have,
+the operating system you have,
+you have different port ranges, for example,
+if you're using Windows 10, for example,
+then you get to 49,152
+all the way through 65,535,
+the port ranges that will be chosen
+for a random ephemeral ports.
+If you use Linux, then a good range
+will be 32,768
+to 60,999, okay.
+So based on the different OS,
+you have different port ranges.
+So let's go through concrete example
+to understand how that works.
+So the clients connects to a web server,
+the web server has a fixed IP and a fixed ports.
+So the client is saying, hey, here's my IP,
+and I will open for this one request
+or this one connection,
+an ephemeral port of five, zero, one, zero, five.
+So the request sent from the client to the server is,
+Hey, here is the destination IP,
+here is the destination port of the server
+that you connect to,
+here's the payload of my request, so what I'm requesting,
+and here is my source IP, by the way, for the reply,
+and here is my source ephemeral ports
+for the replay as well,
+which is five, zero, one, zero, five.
+And then the web server,
+when connecting back to the client
+to send back of the response,
+will send the response and say, Hey,
+so here's the source IP, here's a source port.
+So, the server port, and then the destination IP
+is 11.22.33.44,
+here is the response payload.
+And finally, where we'll also need a port
+it will reuse the ephemeral port
+that the client has sent.
+And this is why it's called ephemeral port
+it's because it's a random port that is assigned
+just for the connection life.
+So now, why do I mention ephemeral ports?
+Well, because they're very important
+in terms of NACLs.
+So if you consider a client's connecting
+to a database
+and we have a private subnet and a public subnet,
+we have one NACL associated with each subnet.
+So a web NACL and a DB NACL.
+Now, when the client initiates a connection
+to the database instance,
+what are the rules that need to be allowed
+when you think about it, right?
+Well, if you consider the first NACL
+we need to allow outbound TCP
+on port three, three, zero six
+to the database subnet CIDR, that makes sense.
+Otherwise, the request will not leave the subnets.
+And then from a database perspective,
+then the DB NACL says,
+Hey, I need to allow inbound TCP
+on port three, three, zero, six
+from the web submit CIDR.
+All this makes sense, right?
+Now, here's the tricky part.
+When the database sends back the request
+to the clients, what do you think needs to happen?
+Well, the client has an ephemeral port, right?
+And so as such, they will be a random ports
+being assigned for this request.
+And so therefore,
+the DB NACL must allow outbound TCP
+on ports and, on ephemeral port,
+so, maybe from 1024
+to 65,535
+to web subnet CIDR,
+and then the web NACL also needs to allow inbound TCP
+on this range of ephemeral ports
+from the DB subnet CIDR.
+And this is why ephemeral ports
+are super important to configure well.
+So if you want to learn more,
+there's a link to the documentation.
+Another thing about NACLs you need to know
+is that if you have multiple NACLs and multiple subnets,
+then each NACL combination
+needs to be allowed within the NACL,
+because you're using CIDRs
+and each subnet will have its own CIDR.
+So it's super important for you to realize that,
+if you add subnets into a NACL,
+you need to also update all the NACL rules
+to make sure that the combination of connections
+is possible.
+So to summarize, what is the difference between
+a security group and a NACL?
+Well the security group operates at the instance level,
+whereas the NACL is at the subnet level.
+The security group supports allow rules only,
+whereas NACL supports allow and deny rules,
+this is why you can deny a specific IP address in a NACL.
+Security groups are stateful,
+so automatically return traffic is allowed
+regardless of the rules,
+whereas NACL is stateless, that means that every time
+the inbound and outbound rules will be evaluated
+and think of ephemeral ports as a reminder.
+Now for security group, all rules are going to be evaluated
+to decide whether or not to allow traffic,
+whereas for a NACL, the ones that will be having
+the highest priority will be evaluated first,
+and the first match wins.
+Security group applies to an EC2 instance
+when specified by someone,
+whereas NACL applies to all EC2 instances
+in a subnet that it's associated with.
+So that sits for this lecture.
+Hopefully that makes sense
+and I will see you in the next lecture for some practice.

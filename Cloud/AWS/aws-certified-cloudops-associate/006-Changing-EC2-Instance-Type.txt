@@ -1,0 +1,103 @@
+# 6. Changing EC2 Instance Type
+# Section: EC2 for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512502
+# Caption: en_US (manual)
+
+Okay, so one operation you need to know about
+is how to change the EC2 instance type.
+So for example,
+you want to go from a t2.micro to a t2.small,
+maybe because you need more RAM
+and more CPU for your application.
+So this only works if your instance
+is an EBS backed instance.
+So the steps are to stop the instance,
+then change the instance type,
+and then start the instance again.
+So let's connect to our instance,
+and first we're going to create a file on it.
+And then also look at the available memory.
+So if I do echo "hello" into a text file
+called hello.txt,
+as we can see now we have that hello.txt
+file available to us
+and within it says the word hello. Okay.
+If we do free minus m the screen to give us some
+information around the memory, on our instance,
+as we can see, we have 993 megs of memory, okay,
+now let's close this
+or I'll keep it in this app just to compare.
+And I'm going to cancel this.
+And I want to change the instance type
+from micro to t2.small.
+So to do so I'm going to stop my instance.
+And once the instance has stopped,
+I will be able to change its type.
+So my instance is now stopped.
+And what I can do is right click instance settings,
+and then change instance type.
+So you can see, we have a t2.micro right now,
+but we can upgrade to a t2.small, for example,
+if only to increase the size vertically
+or to go to to go t2.nano
+to go down. Okay.
+But as we can see,
+we can also choose any kind of a gap instance.
+For example,
+we can go into an r5dn.4xlarge,
+and based on the instance type you choose, as you can see,
+you get either an EBS-optimized instance,
+which is enabled by default,
+or if we go in and stay in the t2 range, for example,
+t2.small, EBS-optimized is not supportive for this instance.
+So EBS-optimized means that you are going to have better
+throughput to your EBS volumes.
+And this is available to newer type generations type of
+EC2 instances.
+For example, a t3
+will have an EBS optimized type of instance. Okay?
+So in this example, I'll just keep it as a t2.small.
+Please know that if you do this,
+then you're going to get the charges because the t2.small is
+not part of the free tier,
+so I will just apply it.
+And now my instance type is t2.small.
+Now, when I start my instance, okay,
+and I'm going to start it,
+what's going to happen is that's my EC2 instance.
+When you stop and start an instance,
+is going to be restarted on another physical
+host within the AWS data center.
+So that means that yes,
+the instance will change its hardware. Okay.
+But because the storage is EBS based,
+this is a block device as an EBS volume,
+then the data will remain the same.
+And I will show you this in a second.
+So I want to do is to wait for the instance to be running.
+And here we go. And we want to yet, again,
+connect to our instance.
+So in this example,
+I'm going to connect again, using the,
+EC2 connect instance connect.
+So let's try because probably instance is rebooting
+and I am back in my the instance.
+So we know that there's the same instance,
+because if we look at the files we have hello world.txt,
+hello.txt.
+And if we look within it, we have the word hello.
+So that means that our file system is the same,
+but if you do free -m to look at some memory,
+we can see that now we have 1,991 megabytes of Ram available
+on this instance,
+which is different from what we had from before. Okay.
+So this is the whole power of using this resize
+of the instance.
+Now, just to close this off,
+please stop your instance
+and make sure you go back to your
+t2.micro for the reason that you want to remain
+within the free tier.
+So to (indistinct) end the lecture,
+I hope you liked it.
+And I will see you in the next lecture.

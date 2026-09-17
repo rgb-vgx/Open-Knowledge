@@ -1,0 +1,56 @@
+# 131. AWS CloudTrail
+# Section: AWS Security Services & More
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45375627
+# Caption: en_US (manual)
+
+So now let's talk about AWS CloudTrail.
+So CloudTrail is a service that provides governance,
+compliance and audit for your AWS accounts.
+And whenever you use an account
+it's going to be enabled by default
+because CloudTrail will get an history of all the API calls
+or events that happen within your accounts.
+And this is very important because you've
+if someone, for example, logs in the console
+then whatever they do will be logged in CloudTrail.
+If someone uses the SDK, it will be logged in CloudTrail.
+If someone does a command with the commanded line interface
+it will again be logged
+with CloudTrail
+as well as any service activity
+as well will be logged in CloudTrail.
+So that means
+that anything that happens will be put in CloudTrail.
+And then for you,
+for audit and security purposes
+you can take the logs of all the history
+of events and API calls made within CloudTrail
+and send them to two locations,
+either CloudWatch Logs or Amazon S3.
+Now, when you create a trail in CloudTrail,
+you can actually apply it to all the regions
+to monitor what's happening in all regions.
+And then the trail can go into CloudWatch Logs or Amazon S3
+or just trail it down to a single region.
+So the example that's queued, hey for example,
+a user has deleted something.
+How would we know what has been deleted
+and who deleted it and when?
+Then the answer is going to be CloudTrail.
+So anytime there is an API call that needs to be looked up
+CloudTrail is going to be the right answer.
+So to summarize.
+From within the CloudTrail console
+we can have information about usage of the SDK,
+CLI and console,
+as well as any IAM users and IAM roles
+and all the API calls they make,
+then the CloudTrail consult will display it.
+But if you want long term retention of data
+what you can do is that you can send them to CloudWatch Logs
+or to your S3 bucket for longer term retention.
+And from within CloudTrail
+you can do any type of inspection and audit.
+So that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

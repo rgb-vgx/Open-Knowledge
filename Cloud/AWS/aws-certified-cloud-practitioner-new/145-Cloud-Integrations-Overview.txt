@@ -1,0 +1,55 @@
+# 145. Cloud Integrations Overview
+# Section: Cloud Integrations
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20219084
+# Caption: en_US (manual)
+
+Okay, so now let's talk about
+Cloud Integration.
+So when we have multiple applications,
+at some point they will have to communicate
+with one another.
+And there are two types of patterns
+to make applications communicate.
+The first one is easy to understand,
+it's called a synchronous communication
+in which an application talks to another application.
+For example, you have created a service to buy something
+and then you need to talk to a service
+that ships what has been bought.
+And so therefore you want to integrate the buying service
+and the shipping service synchronously
+because it talk directly to one another.
+That's the first way, but there's a second way,
+which is called asynchronous or event based,
+for example when we have a queue to talk to.
+So let's have an example,
+our buying service this time, anytime something is bought,
+will put an order in a queue.
+And the shipping service will be reading
+from the queue to get the orders.
+As you can see in this example,
+your buying service and your shipping service
+are not directly integrated with one another.
+There are something called decoupled
+because there is a queue in between to talk to.
+And this allows us to get some nice integration patterns.
+So if we get synchronous communication
+between an application and another one,
+it could be a problem.
+For example, what if you have a sudden spike of traffic?
+What if you need to encode 1000 videos, but usually it's 10?
+In this case, the service you are talking to
+may get overwhelmed and you may get an issue
+to encode these 1000 videos and things may fail.
+In that case.
+It's a lot better to decouple your applications
+and to use something like SQS, which is a queue model,
+or SNS, which is a pub/sub model,
+or Kinesis, which is used for real time data streaming.
+Now these services, once they're decoupled,
+they can scale independently for our applications.
+And so this is great.
+So in this section,
+we're going to have a deeper look at SQS and SNS.
+So I hope you like this
+and I will see you in the next lecture.

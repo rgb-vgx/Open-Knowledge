@@ -1,0 +1,44 @@
+# 94. Redshift Security
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356056
+# Caption: en_US (auto)
+
+Instructor: So a couple of specific security concerns
+I wanna talk about with Redshift.
+We'll talk about security a lot more later in the course,
+but here are a few things that might show up on the exam.
+One is the issue of using a Hardware Security Module,
+or an HSM, with Redshift.
+And if you're using an HSM with Redshift,
+you need to use a client and a server certificate
+to configure a trusted connection
+between Redshift and the HSM.
+Now, if you're trying to do this after the fact,
+you're trying to add an HSM to an existing Redshift cluster,
+you're gonna have to copy it over.
+So if you wanna migrate an unencrypted cluster
+to an HSM encrypted cluster,
+you're gonna have to create the new encrypted cluster first
+and then move your data over
+to that encrypted cluster, okay?
+So that's kind of the nitty-gritty of using
+an HSM with Redshift.
+You need a client and server certificate to do it.
+Also, here's a cool thing where you can use
+GRANT or REVOKE commands in SQL
+to actually define access privileges for individual users
+or for groups of users in Redshift.
+So, an easy way to manage permissions in Redshift
+is to just say something like,
+grant select on table foo to bob.
+That would grant the permission to Bob
+to do select statements on the table named Foo.
+And you can do things like grant all or grant drop
+to let people drop data as well.
+This can all be managed individually
+to a user or group just using the GRANT command
+just like any other SQL command,
+or the REVOKE command if you wanna take
+those permissions away.
+So that's the fundamental way that you manage
+security and access permissions in Redshift.

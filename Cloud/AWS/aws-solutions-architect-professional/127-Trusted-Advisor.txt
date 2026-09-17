@@ -1,0 +1,111 @@
+# 127. Trusted Advisor
+# Section: Cost Control
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376646
+# Caption: en_US (manual)
+
+So now let's talk about Trusted Advisor.
+So it's a service, you don't have to install anything,
+and it's going to give you a high level account assessment.
+So it's going to analyze your account
+and provide recommendations on several categories
+such as cost optimization,
+performance, security, fault tolerance,
+service limits and operational excellence,
+and I've put cost optimization, service limits,
+and operational excellence in bold
+because I think they are important going into the exam.
+So all customers of AWS have access
+to the core checks and recommendations.
+It's a few checks, but if you want to have access
+to the full trusted advisor, this is only available
+for business and enterprise support plans.
+On top of it, you can have weekly
+email notifications from the console
+directly set up from Trusted Advisor.
+Now, if you have the full Trusted Advisor,
+again, only available for enterprise
+and business support plans, then you have the ability
+to select CloudWatch alarms when reaching limits,
+and you get programmatic access
+using the AWS Support API.
+So we can talk about AWS support plans
+and there's four of them.
+There's basic support, developer, business and enterprise.
+Now, you don't need to remember the differences
+between all these support plans,
+but let's go over the basics
+that you do need to remember for the exam.
+The first one is basic support
+and it's included for all customers and it's free.
+And for Trusted Advisor,
+you're going to get seven score checks.
+If you use the developer plan,
+it's something you have to pay for.
+You get more business support from AWS,
+but it still only gives you access to seven core checks.
+As soon as you go into the business
+or the enterprise support plan,
+then you're going to have access
+to the full set of checks from Trusted Advisor
+and you're going to get
+programmatic access to the Trusted Advisor
+through the AWS support API.
+And that is something you have to remember
+going into the exam.
+So here are a few things you should know
+about Trusted Advisor.
+First of all, Trusted Advisor has a check
+to know if your S3 buckets are public,
+but it cannot check whether there are objects
+within your bucket that are made public,
+so therefore it's not the right solution for that.
+You should use Amazon Event Bridge or S3 Events
+or create an AWS config rule to check for compliance.
+In terms of service limits, yes,
+you can monitor service limits in Trusted Advisor,
+but if you want to increase a limit, you would need
+to manually open a support center case
+to increase its limits, or you can use the new API
+of the AWS service quota's service.
+So that means that you can come up
+with some very funky architecture
+to monitor your limits at scale,
+which I'm just showing you here,
+and you can have a look at it right now.
+So here, for example, we have a Lambda function
+that is going to refresh Trusted Advisor once in a while,
+and then Trusted Advisor has checks,
+which is going to evoke an event bridge rule.
+We can do the same with service quotas.
+So this time we can check for VCPUs in service quotas.
+This is a lower kind of limit you can have in that service.
+And again, in case something is being like over the limit
+or at the limit, then we can evoke an event rule.
+We can do this cross account as well.
+So the same kind of architecture
+works in a secondary account.
+And then thanks to event buses,
+we can have the events go from one EventBus
+to the central primary EventBus.
+From there, EventBridge may just have multiple targets.
+For example, an SNS topic to receive emails as an admin
+or an SQSQ so that you have a Lambda function
+that automatically summarizes its limits
+and sends them into a DynamoDB table
+and maybe a DLQ in case these events
+cannot be processed correctly.
+And finally, a Slack notifier
+to notify your admins that they're on Slack.
+That's something is happening in terms of your limits.
+And you need to have your admins
+have a look at it right now and Parameter Store
+if you wanted to get some credential informations
+from Slack stored securely.
+So I really like this architecture,
+and you can even improve it if you wanted
+to have automatically limits increases
+by making this Lambda function here
+actually increase the limits through the service quotas API,
+but this is a cool architecture.
+So that's it for Trusted Advisor.
+I hope you liked it, and I will see you in the next lecture.

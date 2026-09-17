@@ -1,0 +1,26 @@
+# 279. Intro: Developer Tools
+# Section: Developer Tools
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40332296
+# Caption: en_US (auto)
+
+-: Honestly, I was a little surprised that the exam guide
+for the data engineering exam has such extensive coverage
+of Amazon's developers tools.
+I suppose the rationale is that you need to write
+custom code and custom applications
+for moving and transforming your data around
+so you need to know how to take advantage
+of Amazon's developer tools.
+The exam guide even calls out testing your knowledge of GIT,
+which doesn't really strike me
+as a data engineering specific thing.
+Regardless, the exam expects you to know this stuff,
+so we have to cover it.
+Stefan's covering this one, including a review
+of how to use the AWS Command line interface,
+AWS Cloud nine, the AWS Cloud Development kit,
+AWS code build, code commit, code deploy and code pipeline.
+And when you're done, we'll test your ability
+to assemble these tools into a larger
+development environment.
+One you might use for data engineering purposes.

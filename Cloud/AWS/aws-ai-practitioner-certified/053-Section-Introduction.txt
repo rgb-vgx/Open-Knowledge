@@ -1,0 +1,19 @@
+# 53. Section Introduction
+# Section: Artificial Intelligence (AI) & Machine Learning (ML)
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44977041
+# Caption: en_US (manual)
+
+So we've learned about quite concrete AWS services,
+but in this section we're going to take a step back
+and learn about AI and machine learning overall.
+So this section is a little bit more theory-oriented
+and it has a lot of information.
+Don't worry and don't go too much into the details.
+What I want you to understand is the general idea behind AI,
+machine learning, deep learning, and generative AI.
+And if you've understood this,
+then you will be acing your questions at the exam.
+I give you a little bit more information than you should
+because I think it's a fascinating topic
+and I hope you will really understand
+the behind those scenes of AI and machine learning.

@@ -1,0 +1,87 @@
+# 115. BlazingText in SageMaker
+# Section: SageMaker Built-In Algorithms
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285461
+# Caption: en_US (auto)
+
+Next, let's cover the blazing text algorithm, and you would think with a name like Blazing Text,
+it would be this incredibly general purpose, huge natural language processing thing.
+But in reality, it's fairly constrained in what it can do.
+So don't let the name fool you.
+What is it for?
+Well, it can be used for a couple of different things.
+One is text classification, so it can predict labels for a given sentence.
+If you train the system with existing sentences and the labels that you have associated with them.
+So this is a supervised learning system where you train it with a group of sentences and labels that
+you've associated with those sentences.
+And it can take that information and predict labels for new sentences that you pass in in the future.
+This is useful for things like web search or information retrieval, but remember, it's intended only
+for use with sentences, not entire documents.
+That's an important distinction to remember on the exam.
+The other thing it can do is what we call a word to vec.
+This is a word embedding layer that it creates.
+So it creates a vector representation of words where semantically similar words will be vectors that
+are close to each other.
+In the space of this embedding layer, basically it's finding words that are similar to each other.
+So you might ask yourself well how is that helpful?
+By itself it often isn't.
+But for other natural language processing algorithms it can be a useful component.
+So you can use that embedding layer that gives you similar words when you're doing things like machine
+translation or sentiment analysis and other things.
+But remember, word two vec only works on words.
+It does not work on entire sentences or entire documents.
+It's just giving you this embedding layer that puts similar words close to each other.
+That's all it does.
+So blazing text two things supervised text classification or word two vec, which is a word embedding
+layer for finding words that are similar to each other.
+Now the training input that it expects is very specific.
+So for supervised mode when you're doing the text classification, basically you're going to feed in
+one sentence per line.
+And the first so-called word in that sentence will be the string underscore underscore label underscore
+underscore followed by the actual label for that sentence.
+It also accepts what we call augmented manifest text format, if you wish.
+And for word two vec mode, it just wants a text file with one training sentence per line.
+So an example of what the input for the supervised mode might look like is below.
+Here you see that we have underscore underscore label underscore underscore for.
+That means I'm going to associate label number four with the following sentence Linux ready for prime
+time, blah blah blah.
+And notice that we've tokenized this so that every word is separated by a space with other words.
+And that also goes for punctuation.
+So you'll notice that there's spaces around the commas and the periods as well there too.
+We've also lowercased everything to make sure that we don't have to deal with case sensitivity in the
+algorithms either.
+So this is an example of what that actual input would look like.
+Remember that these input formats are actually important and could show up on the exam.
+The augmented text format is also shown here, which is a little bit more of a structured way of putting
+that together.
+We have a source and a label field where we have again the tokenized and pre-processed sentence and
+the actual label number as well There are a few different modes of operation for word two vec.
+One is called cbow, which is continuous bag of words and envision, if you will, a bag of words.
+It's exactly like that.
+So the idea there that you're trying to picture is that these words aren't really structured in a way
+where the order of the words matters.
+It's just a bag of disconnected words that it's learning relationships between.
+So the actual order of the words is being thrown out during the training process.
+It's just the words themselves that matter.
+However, it also has two other modes skip gram and batch skip gram, which are different.
+Those can be actually distributed over many CPU nodes.
+In the case of batch skip gram, which is kind of good.
+Skip gram we're talking about n grams there.
+So the order actually does matter in that case.
+Important hyperparameters.
+Again, this differs based on which mode you're using for a word to vec where we're doing the embedding
+stuff.
+The mode is obviously very important are using continuous bag of words skip gram or batch skip gram.
+Also learning rate window size vector dim and negative samples all are important parameters for tuning
+the performance of that for the text classification mode.
+The the usual suspects for neural networks come into play here.
+The number of epochs, the learning rate, and also the word n grams and vector dimension for actually
+seeing how many words are going to look at together.
+For the continuous bag of words and skip gram modes of blazing text, they recommend a P3 node, and
+you can use a single CPU or single GPU instance as well, but this will take advantage of GPUs.
+However, it can only use a single machine.
+However, batch skip gram can use multiple CPU instances instead, so if you do need to scale horizontally,
+batch skip gram would be the way to go, but you're going to be using CPUs instead of GPUs for that
+one.
+For text classification mode, they recommend a C5 node if you're using less than two gigabytes of training
+data, and if you need something bigger, you could go up to a P2 xlarge or a P3 dot two xlarge so it
+can go with either CPU or GPU on that one.

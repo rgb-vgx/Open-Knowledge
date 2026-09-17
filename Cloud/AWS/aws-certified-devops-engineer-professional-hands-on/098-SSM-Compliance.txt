@@ -1,0 +1,26 @@
+# 98. SSM Compliance
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869582
+# Caption: en_US (manual)
+
+So systems manager has a compliance module
+where you're going to be able
+to scan your fleet of managed nodes
+and you're going to look at patch compliance
+and configuration inconsistencies.
+So, you're going to get the current data
+about what patches are been applied
+in patch manager and the associations in state manager.
+So all this compliance data can be aggregated
+across multiple regions and so on
+by syncing data into an S3 buckets.
+And this is called a resource data sync.
+So, all the data can be aggregated into an S3 bucket
+and then you can analyze it using Athena
+and QuickSight, for example.
+So, you can collect and aggregate data
+from multiple accounts and regions
+and then use the resort data sync.
+And this compliance data can also be sent into Security Hub.
+So that's it, you know enough for the exam.
+I hope you liked it and I will see you in the next lecture.

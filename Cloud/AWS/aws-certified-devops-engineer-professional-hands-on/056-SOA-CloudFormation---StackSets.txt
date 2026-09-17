@@ -1,0 +1,88 @@
+# 56. [SOA] CloudFormation - StackSets
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/42314440
+# Caption: en_US (manual)
+
+So let's do a deeper dive
+into CloudFormation StackSets.
+So StackSets, as we know,
+is a way for you to deploy stacks
+across multiple accounts
+and regions all in a single operation.
+So we have the stack instance being deployed
+in different regions and different accounts.
+Now the only way for you to do this
+is to have the administrator accounts create StackSets,
+and the target accounts are only used for the creation,
+the adaptation, and the deletion of these instances
+from the StackSets.
+When you upload and update a StackSets
+in the administrator account,
+then all the target accounts are going
+to receive this updates in all regions.
+And you can also, to define what is a target account
+and what is Administrative account,
+apply this to accounts from within an AWS Organization.
+So let's talk about the permission model.
+So because there is the concept of administrator accounts
+and then target accounts,
+there must be permissions.
+And so you have IAM roles
+with trust relationships in both the administrator
+and the target accounts.
+And these IAM roles allow you
+to deploy your CloudFormation templates
+into the target accounts.
+So in the administrator accounts,
+there is a AWS CloudFormation StackSet administration role,
+which has a trust relationship
+with every AWS CloudFormation StackSet execution role
+in every target accounts.
+And it is for you to manually create these roles
+if you are not using AWS Organization.
+This is the self-managed permissions.
+If you have service-managed permissions,
+then you use AWS Organization,
+and automatically, Organization is going to create
+the IAM role on your behalf.
+For this, we need to enable trusted access
+within AWS Organization and all features,
+and automatically, you can deploy
+to any new accounts in the future,
+including the new accounts in your organization.
+So here, we have the management accounts
+or a delegated administrator
+that is deploying to the target accounts,
+and we don't need to worry about IAM roles.
+So on top of it,
+if you have new accounts in your organization,
+you can have a feature to enable deploying stack instances
+automatically to these new accounts.
+So this allows you to really make sure that, for example,
+one stack is deployed across all accounts
+in your organization as soon as they're created.
+You can also decide
+to delegate the StackSet administration,
+to specific member accounts in your organization
+for security and governance purposes.
+Also, to make sure that this all works together,
+you need to make sure that you have trusted access
+within your organization to be enabled
+so that the delegated administrator can deploy
+to accounts managed by Organization.
+So to summarize, StackSets with AWS Organization,
+we have the organization itself.
+We have maybe a delegated administrator account
+that is going to deploy a StackSet
+and manage stack instances
+into all the target member accounts in different OU.
+For example, the Prod OU and the Dev OU.
+And if you have enabled it,
+and you have a new account in one of the OUs,
+then automatically, a stack instance
+will be deployed to that new account.
+And that is the whole power of using StackSets
+with AWS Organization.
+So that's it for it.
+I hope you liked it,
+and I will see you in the next lecture.

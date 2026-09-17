@@ -1,0 +1,55 @@
+# 54. Amazon EFS vs. Amazon EBS
+# Section: Storage
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40286010
+# Caption: en_US (manual)
+
+So now let's talk about the differences
+of EBS volumes and EFS file systems.
+So the EBS volumes, they're attached to one instance
+at a time, except in the edge case
+of using the multi attached feature
+of the io1 and io2 types of volume,
+but that is for very specific use cases.
+EBS volumes are also locked at the AZ level,
+so here is an example.
+We have one EC2 in AZ 1
+and we have one EBS volume attached to it
+and it cannot be attached to an EC2 instance in AZ 2.
+For the gp2 type of volume,
+the IO will increase if the disc size increases,
+and for the gp3 and IO1 type of volumes,
+you can increase the IO independently from your disc size.
+To migrate an EBS volume across AZ,
+we need to take a snapshot,
+so it will go into the EBS snapshots,
+and then we can restore the snapshot into another AZ.
+This is how we move from one AZ to the next.
+Now, the EBS volumes backups, they will use IO,
+and so you shouldn't run them while your application
+is handling a lot of traffic
+because that may impact the performance.
+For your EC2 instances, the route EBS volumes
+of your instances will get terminated by default
+if the EC2 instance gets terminated,
+but you can disable that behavior.
+Now for EFS, it's a bit different.
+So it's a network file system,
+and the goal is really to attach it
+to hundreds of instances across availability zone,
+so we really see the distinction here.
+So one with one EFS file system,
+we can have different mount targets in different AZs,
+and then multiple instances can share
+that one file system together, .
+So it's very helpful, for example, when you have WordPress
+and it's only for Linux instances
+because it is using the POSIX system.
+The EFS has a higher price point than EBS,
+but you can leverage storage tiers for cost savings.
+So hopefully you understand now the difference between EFS
+and EBS and for the instance store,
+well it is physically attached to the EC2 instance,
+and so therefore if you, you lose your EC2 instance,
+you will lose the storage as well.
+All right, that's it, I hope you liked it,
+and I will see you in the next lecture.

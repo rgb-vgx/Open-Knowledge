@@ -1,0 +1,269 @@
+# 157. Amazon EMR
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356512
+# Caption: en_US (auto)
+
+Instructor: Next, let's talk about EMR
+or Elastic MapReduce,
+another very important service
+in the data analytics world on AWS.
+What is EMR?
+Again, it stands for Elastic MapReduce.
+And what it really is is a managed
+Hadoop framework that runs on EC2 instances.
+So basically, Amazon took Hadoop,
+and they integrated with EC2.
+That means that you can launch a cluster
+that runs Hadoop using the AWS console.
+This is a managed framework,
+but you know, you do have to specify
+what servers you wanna be running it with.
+How many instances you want in your cluster.
+What software you want installed on it.
+And in return, you will actually be able
+to log into these instances,
+and do low level stuff with it.
+So for example, you could say that
+you want Apache Spark
+installed on your EMR cluster.
+So instead of having this totally opaque system
+like you did with glue ETL,
+where you don't see the servers,
+if you wanna get down and dirty,
+and actually have low level access
+to Apache Spark and wanna be able to have
+explicit control over the resources that it has,
+EMR might be for you.
+You can also include applications such as HBase
+or Presto or Flink or Hive and more,
+and we'll talk about those in more depth shortly.
+If you wanna develop code that takes advantage
+of your cluster on EMR,
+it offers something called EMR Notebooks
+where you can develop,
+and iterate on your scripts on your cluster,
+just using a notebook environment
+in your browser.
+And they've integrated EMR
+or integrated Hadoop rather
+with AWS at several key points,
+which we'll also talk about more.
+So what makes up an EMR cluster?
+Well, an EMR cluster is fundamentally
+just a collection of EC2 instances
+that are running Hadoop.
+Now, each one of these instances
+is called a node.
+Each node has a role within the cluster,
+which we call a node type.
+So there are three different node types
+that an instance in an EMR cluster
+might be performing.
+One is the Master node.
+You always need at least one of these.
+So the Master node will manage the cluster
+by running software components
+to coordinate the distribution of data.
+And the tasks among other nodes
+for processing.
+Its job is to track the status of those tasks,
+and monitor the health of the entire cluster.
+So every cluster will have a Master node.
+You could even create a single node cluster
+that has nothing but a Master node.
+So a bare bones minimal single node EMR cluster
+would just have a Master node
+that does everything.
+The Master node is also referred to
+as the leader node sometimes.
+Then we have the Core node.
+So the Core node has software components
+that run tasks and store data
+in the Hadoop distributed file system,
+HDFS on your cluster.
+Or on EMR, it might be EMRFS,
+which allows you to write data into S3 instead.
+But the Core nodes are what are doing
+the actual work and distributing that work
+across the cluster.
+So the trick here is that
+your job would be split across
+many Core nodes potentially,
+each of them responsible for
+storing a part of your data,
+and for running the processing
+on a portion of that data.
+So a multi-node cluster
+will have at least one Core node.
+If you're gonna distribute your processing,
+you need at least a Core node.
+Now the third type for EMR is a Task node.
+So this is kind of a new-ish thing.
+So a Task node has software components
+that only runs tasks,
+but does not store data in HDFS or EMRFS.
+They're optional.
+So if you need to add more processing capacity
+to your cluster,
+but you don't need more storage capacity,
+a Task node might be a good choice.
+And if you think about it, R is often using S3
+for its storage under the hood, right?
+So you don't always need to have
+more storage available to you on an EMR cluster
+because it's all getting funneled into S3 anyway.
+So a Task node can make a lot of sense on EMR
+where you don't necessarily need
+a ton of storage on the EMR cluster itself.
+So that saves you some money, right?
+Like you're not paying
+for all the storage that you're not using.
+Now the other thing too is that there's no risk
+of data loss when you remove a Task node
+because it can't write data, right?
+So you don't have to worry about that.
+That means that it's a good thing
+to be using for spot instances.
+All right.
+This is something
+that I can almost promise you'll see referred to
+on the exam somewhere.
+The availability of spot instances
+for Task nodes.
+If you want to cut down your costs
+on an EMR cluster
+or add more capacity in a cost-efficient way,
+a spot instance is a great way to do that
+because you don't really care if it goes down,
+you know, it's just being used
+for extra processing capacity,
+and the cluster can handle it
+if that comes in or out
+as you're processing your jobs.
+There's no risk of data loss with a Task node
+because they don't store data.
+So again, remember,
+a good way to expand your cluster dynamically
+is by using a spot instance on a Task node.
+A few ways of using EMR.
+So one is by using a transient cluster.
+A transient cluster will automatically
+terminate once all the steps
+are complete that it's been assigned.
+So when you set up a transient cluster,
+you can say, okay.
+I want you to spin up this EMR cluster
+that has this kind of hardware behind it,
+and it's going to run these processing steps
+that I've defined ahead of time.
+And then when it's done, shut yourself down.
+So you can define ahead of time
+steps in EMR that will load your data,
+process your data and store the results.
+And then when it's done,
+automatically shut down the cluster.
+That's what a transient cluster is all about.
+And obviously this saves money
+because you're not paying
+for time on this cluster beyond what you need.
+So if you do have these sort of one shot jobs
+that you need to run once in a while,
+a transient cluster is a good way
+to do that,
+where it will just spin up
+those clusters resources,
+run your job and then shut down.
+So good way to save money potentially.
+However, sometimes you wanna basically
+build a data warehouse that's long lived.
+You don't want to be spinning up this thing
+all the time and shutting it down,
+and losing all of your data
+in the process, right?
+So if you want to build
+basically a data warehouse
+with periodic processing on some large dataset
+where you can access that data whenever you want
+or be running jobs on it continuously,
+a long running cluster might be more appropriate.
+So in this case,
+you would spin up a cluster,
+you know with whatever parameters
+that you specify upfront,
+and just leave it running forever.
+Well, not forever,
+but until you manually shut it down.
+And if you do need to add capacity
+to it later on,
+you can always spin up more Task nodes
+using spot instances for temporary capacity needs
+that you might have like we talked about.
+If you wanna save even more money,
+you can use reserved instances
+on these long running clusters to save even more.
+If you know you're gonna be running this cluster
+for a long time,
+then obviously a reserved instance
+is a good choice
+for the hardware backing that cluster.
+So by default, termination protection will be on,
+and auto termination will be off
+on a long running cluster.
+It will try to preserve itself
+as much as it possibly can.
+So two use cases here, transient clusters.
+If you just wanna spin up a cluster on demand,
+run something that you've predefined,
+and then shut it down.
+Or a longer running cluster
+where you have it running all the time,
+and can access it
+whenever you want to and keep that around
+in a more persistent manner.
+You specify the frameworks,
+and applications when you launch the cluster.
+So we talked about, for example,
+running Spark.
+That would be something that you would select
+when you're spinning up the cluster
+ahead of time,
+and it will automatically
+install those frameworks
+and applications that you want
+when it's being spun up.
+Once you have a cluster spun up,
+if it's a long lived one,
+that's not just running in a transient manner,
+you can then connect directly to the Master node,
+and from that Master node,
+run your jobs directly.
+So if you're a command line type of person,
+you would basically, for example,
+set up a Spark-enabled EMR cluster.
+Connect to the Master node.
+Kick off your Spark driver script,
+and it would go off and do its thing
+using the complete power of the cluster.
+So that's one way of using EMR.
+Or you can submit steps
+via the AWS console to EMR.
+So these steps you can define
+strictly in a graphical manner
+through the console,
+and you can do basic things like
+processing data in S3 or from HDFS,
+which is the underlying file system of Hadoop.
+You can output that data to S3 or somewhere else,
+but once defined,
+you can then kick off those steps
+via the AWS console
+instead of going through a command line prompt
+by a direct connection to the Master node.
+So two ways of using EMR,
+you can log into the Master node
+and kick stuff off you know,
+the old fashioned way.
+Or you can define your steps
+using the console exclusively,
+and kick off those steps through the console
+to run on your cluster.

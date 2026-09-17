@@ -1,0 +1,70 @@
+# 128. S3 Security: Bucket Policy Advanced
+# Section: Amazon S3 Introduction
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27513906
+# Caption: en_US (manual)
+
+So here are some examples
+of S3 bucket policies.
+They are advanced and you don't need
+to know them going into the exam.
+Just that the possibility does exist.
+So you can use an S3 bucket policy
+to grant public access to the bucket,
+force objects to be encrypted at upload,
+grant access to other countries and cross accounts,
+and you can specify conditions on Public IP or Elastic IP,
+but not on Private IP.
+The source VPC or source VPC endpoint,
+and this works only with VPC endpoints,
+the CloudFront origin identity.
+So if you want the traffic to just come from CloudFront,
+MFA, if you wants multifactor authentication to be present,
+and you can find a lot of examples here
+and I invite you to have a look at it in your own time.
+Okay.
+So if we have a look at some of them
+that I think are very valuable,
+here's an example.
+So this one is restricting access to an S3 bucket.
+to all principals,
+as long as they belong to an AWS organization.
+So the idea here is that if your account
+is part of an organization,
+it will have access to this bucket
+which is a scalable way of doing cross account access
+across an organization.
+And to do so, well,
+it's a condition and you specify
+the aws:PrincipleOrdID condition key
+to be done with it.
+This one policy prevents upload of unencrypted objects.
+So you force objects to have
+an X AMZ service at encryption, True.
+And to make sure that this header is present
+So this is a very common one,
+to deny any upload of unencrypted objects.
+This one is to restrict IP addresses.
+So you're saying that if the IP is not in the range
+that you've provided in the condition,
+then deny and upload it.
+So this one is an example of the NotIpAddress condition key.
+This one is to show that a user can list and download
+objects in an S3 bucket, but as you can see,
+and this is very important, the list bucket property
+is applied to the resource ARN without a slash
+because it supplies to the bucket itself.
+But the GetObject applies to the objects within the bucket,
+so the resource ARN applied to it is the full object,
+it is the full resource slash and a star.
+This bucket policy is making sure that you do get objects
+only if you have been authenticated
+using multi-factor authentication.
+So the condition here is multifactor of presence, True.
+So just make sure that you have a look at these policies
+and make sure you understand their use cases
+and how they're formed.
+The important stuff to know out of it
+is that conditions allow you to create very,
+very complex conditions for your S3 bucket policies.
+So that's it for this section, I hope you liked it.
+And I will see you in the next lecture.

@@ -1,0 +1,74 @@
+# 196. Security & Compliance Summary
+# Section: Security & Compliance
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20237316
+# Caption: en_US (manual)
+
+So let's summarize this section
+on security and compliance and I have to agree,
+yes, this was a very, very long section
+and I'm sorry about that.
+You have to just remember a lot of things.
+So the shared responsibility model on AWS,
+we've seen it at length in this course
+so that you know about it.
+Shield is a way for you to get automatic DDoS protection
+and then if you use Shield Advanced, you get 24/7 support.
+You get WAF web application firewall, which is a firewall
+to filter incoming requests, based on specific rules.
+KMS to manage your encryption keys on AWS,
+CloudHSM to have hardware encryption.
+And this time, it's not AWS that manages the keys,
+it is ourselves that manages the encryption keys.
+AWS will only manage the hardware behind it.
+ACM, so AWS Certificate Manager is a way for you
+to provision, manage, and deploy SSL and TLS certificates
+and to get in-flight encryption.
+Artifact is going to give you access to complaints reports,
+such as PCI, ISQ, et cetera, et cetera.
+GuardDuty is a way for you
+to find malicious behavior automatically
+by analyzing VPC logs, DNS logs,
+and CloudTrail logs and Inspector,
+you'll find software vulnerabilities in EC2, ECR container
+images and Lambda functions
+and Network Firewall, which allows you
+to protect your VPC against network attacks.
+Next, we have Config, which is allowing us for compliance
+to track configuration changes
+and also create rules to check compliance of these
+resources configuration over time.
+Macie is a way for us to find sensitive data.
+For example, PII data.
+So personal information in Amazon S3 buckets.
+CloudTrail is a way for us to track API calls,
+made by users within the accounts.
+Security Hub is a way for us
+to gather all the security findings from
+so many different services, from multiple AWS accounts
+into one place and really act on these
+security findings directly from there.
+Detective is in case we have a security finding,
+how do we get to the root cause very quickly,
+and this is with Detective, which is going
+to link up all these services together
+and help you with that.
+The Abuse team is a team that you report
+to when you see abusive behavior by using AWS resources
+for abusive or illegal purposes.
+And you either have a form or you send them an email.
+And then you have to remember,
+I think the four most important things
+that a root user can do in your accounts.
+It can change the account settings,
+it can close your AWS accounts, it can change
+or cancel your support plan, or it can register as a seller
+in the Reserved Instances marketplace.
+We have IAM Access Analyzer, which is used
+to identify which resources are going
+to be shared externally, so outside of your zone of trust.
+And finally, we have the Firewall Manager that is used
+to manage the security rules across an organization,
+that is for your security groups, but also for WAF
+and Shield and so on.
+Alright, so that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

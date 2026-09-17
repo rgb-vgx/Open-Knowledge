@@ -1,0 +1,151 @@
+# 306. [SAA] CIDR, Private vs Public IP
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/13221960
+# Caption: en_US (manual)
+
+Okay, so now let's talk about CIDR or CIDRs
+or Classless Inter-Domain Routing,
+which I will call CIDR for the rest of this course.
+So, it's a method for allocating IP addresses
+and we've seen them before in this course,
+because when we look at security group rules for example
+and networking in AWS, we saw something like this.
+So, these are my security group rules
+and if we look at the source column,
+here we remember we had an IP address / and then a number
+and this was our first touch with CIDRs.
+So, CIDRs help define IP ranges
+that we've seen some very, very simple one.
+So, when we have an IP address /32,
+this actually represents only one IP.
+And when we saw 0.0.0.0/0
+then this is represented all IPs,
+but there are a lot of different possibilities.
+For example,
+if we define 192.168.0.0/26
+then this represents a range of 64 IP addresses
+as you see in this slide.
+So, how does CIDR work?
+Well, CIDR has two components.
+There's the base IP and this is an IP that is contained
+in the range.
+Usually it is the beginning of the range,
+but it could be that it's contained in the range.
+And then, so this is example, so 10.0.0.0 or 192.168.0.0.
+And then the other thing is the subnet mask
+and the subnet mask will define how many bits
+can change in the IP.
+So, we have the /0, /24 all the way to /32
+and this can take two different forms.
+So, if we have /8 this is equivalent
+to subnet mask of 255.0.0.0
+and /16 is 255.255.0.0
+and so on, okay.
+But the most common form we see in this course and in AWS
+is the / form, okay?
+So, for the rest of this course
+we'll be using /8, /16 and so on.
+Now, let's have a detailed look at subnet masks.
+So, this is how we can define
+which values can change from the base IP.
+So, if we have an IP address /32,
+this allows for one IP, 2 to the power of 0
+and this is the IP that we have on the left hand side.
+Now, if we have an IP /31,
+then we allow for two different IPs.
+And so we'll allow for 192.168.0.0 and then .0.1.
+If we have the same IP /30,
+now this goes exponentially as you can see,
+we allow for 4 IPs.
+So, we'll have a bigger range from .0 to .3,
+then /29 allows for 8 IPs so .0 to .7.
+/28 allow for 16 IPs, so .0 to .15,
+then we can look at the table, okay.
+So, it goes from 4, 8, 16, 32, 64, 128, 256 IPs to change.
+So, the /24 is 256 IPs, which is 2 to the power of 8
+and this is from .0 to .255.
+Then if we go one step deeper,
+so we go to /16, so I skipped some in the middle.
+Then we allow for 2 to the power of 16 IP to change,
+so 65,536.
+So, as we can see the last two parts of the IPs have changed
+and then /0 allows for all IPs,
+so from the very beginning to the very end.
+So, how do we know?
+As a quick memo we know an IP is made of 4 Octets,
+so the first part, the second part,
+the third part and the fourth part.
+And /32 means no octets can change,
+/24 means the last octet can change,
+/16 means the last 2 octets can change
+and take different values.
+/8 is the last three octets can change
+and /0 is all octets can change.
+So, hopefully they started making a little bit more sense
+into how CIDRs work.
+So, now here comes a little exercise,
+feel free to pause the video if you need to answer.
+So, what is 192.168.0.0/24?
+So, /24 so that means the last octet can change
+and so therefore we have 256 IPs,
+because the last number it can go from the number 0
+to the number 255 included.
+Now, what is 192.168.0.0/16?
+Well, this is /16,
+so the last two octets can change,
+so we have a 65,536 IPs.
+And what is 134.56.78.123/32?
+Well, /32 so it's only one IP, so just one IP.
+And then 0.0.0.0/0 we know this one,
+it is all IPv4 space, okay?
+When in doubt, there is this little website
+that I can show you that is very, very handy.
+So, on this website we have two options,
+we can have a CIDR to an IP range
+or an IP range to a CIDR, so let's try both.
+So, if you have 10.0.0.0/ let's say a 16,
+we calculate it as you can see we see the first IP
+and the last IP in here.
+How many IPs are including to the range and so on?
+Okay.
+If we do /17, which is a little bit less obvious.
+In this one, we have 32,000 or so IPs.
+We can have a look at the first bit so
+this is the first IP and this is the last IP,
+so it's quite handy and again you can play.
+And reversely if you wanted to for example,
+take an IP range, so this IP range and figure out
+what CIDR this corresponds to, then click on calculate
+and this will give us a result of 10.0.0.0/17.
+So it's quite handy, if you start doing some networking
+to use a website like this to help you out.
+So, why are we talking about all these things?
+Well, because we want to discuss public versus private IP
+in the IPv4 space.
+So, there is the Internet Assigned Numbers Authority
+the IANA that established certain blocks of IPv4 addresses
+that will be used only for private LAN networks,
+so local network or public internet addresses.
+So, the private IPs can only allow for certain values.
+So we have this range for 10.0.0.0/8
+which represents, you know a huge amount of IPs.
+So, this is a private IP range you can use
+and this is your least something you use in big networks,
+because it allows for lot of different values.
+Then we have the 172.16.0.0/12,
+which is another sets of private IP addresses.
+And when you create an account
+it will provide you with a default VPC
+and it turns out the default VPC
+will be included in that networking space.
+And then finally,
+another one you may have seen before is 192.168.0.0/16,
+which represents your home network.
+So, this is very common when you have an internet router
+to have your own devices,
+have an IP that starts with 192, okay?
+So, all the other IP addresses out there in the world
+are going to be on the internet
+and they're going to be public IP addresses.
+So, that's it for these basics of IPv4s and CIDRs,
+I hope you liked it and I will see you in the next lecture.

@@ -1,0 +1,117 @@
+# 166. AWS Foundation Models and SageMaker JumpStart with Generative AI
+# Section: Generative AI Model Fundamentals
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285981
+# Caption: en_US (auto)
+
+All right.
+So we've talked in general terms how transformers work and specifically how GPT works.
+But how does this all fit into AWS.
+So AWS offers something called foundation models.
+What do we mean by a foundation model.
+Well, these are the giant pre-trained transformer models that we're going to fine tune for specific
+tasks.
+So we can take something like a pre-trained GPT or pre-trained Bert or pre-trained llama, whatever
+it is model that understands, again, the foundations of how a language works, and then build upon
+that fine tune it for a specific application.
+Some examples of foundation models are the GPT series.
+And like we said, GPT is owned by OpenAI, which is heavily funded by Microsoft, which has its own
+web service product called Azure.
+So you're not going to see OpenAI cooperating with AWS anytime soon, I don't think.
+They're not going to offer that.
+Now, there were earlier GPT models, like I said, like GPT two or offshoots of it, like GPT J, that
+are open source and available that they can give you.
+But the latest and greatest stuff from OpenAI.
+Probably not going to find that on AWS.
+Similarly, Bert is an older transformer model built on encoders instead of decoders that was created
+by Google.
+Google also has its own cloud platform.
+They're not going to be cooperating with AWS anytime soon either.
+Dall-E if you're looking for image generation, that's also made by OpenAI, which is also funded by
+Microsoft, which is another direct competitor for AWS.
+Not going to find that either, however.
+There's also meta, who's been developing their own foundation models as well.
+So their text generation foundation model is called llama.
+It's actually quite good.
+And it turns out Facebook does not have its own web services platform.
+So they're not in direct competition with AWS.
+So you will find Meta's models offered on AWS.
+They also have an image generation foundation model as well called segment anything.
+So if you want to use that instead of Dall-E, you can.
+And in my personal experience it's actually better.
+So these are all examples of foundation models.
+Some of them you will find on AWS.
+Some of them you won't find.
+So where's Amazon?
+Why don't they have their own models.
+And you know, frankly they're late to the party here.
+Um, they're quick to point out that they've been using Transformers and generative AI internally for
+a long time.
+Um, I don't know, maybe they have been and they've just been keeping it to themselves, but, um,
+they are a little bit late to the party here.
+They do, however, offer a suite of foundation models, um, that are sourced from others and also
+from themselves.
+So what they've done is taken the approach of being an aggregator of foundation models and getting them
+all in one place for you so you can use them.
+It's really not that different from hugging face, right?
+So that's kind of hugging faces entire reason of existence as well.
+They've assembled all these pre-trained foundation models you can build on top of similar idea here.
+With AWS Foundation models, they only offer a few right now what's called Jurassic two by a company
+called 21 labs.
+Uh, this is for text generation, and its strength is in, uh, being multilingual so it can speak
+Spanish, French, German, Portuguese, Italian or Dutch right now.
+They also have something called Claude from a company called anthropic.
+These are large learning models used for conversations.
+It's also good for question answering and workflow automation.
+They also offer something called stable diffusion from stability AI.
+This is again a image generation foundation model that can make images, arts, logos or designs for
+you automatically.
+And finally, they have their own offering called Amazon Titan.
+Again, it's early days, but this is their more general purpose text generation Foundation model LM,
+if you will.
+It can summarize text, it can generate text, it can answer questions.
+And it also gives you embeddings.
+So you can just use it for computing the similarities between tokens or phrases or words and use that
+to do things like personalization or search.
+So remember an embedding layer is just converting something into a big vector, right?
+And by computing how close vectors are to each other, you can compute how similar they are to each
+other.
+So the personalization aspect would be I have an embedding that represents some thing.
+What are other things similar to that thing that I might recommend to people who like the first thing,
+right.
+Or for search, I can take the embedding of my search query and see what other things are close to that
+search query in the embedding space, and that would give me a reasonable list of results.
+So just the embeddings API itself can be a powerful thing even without the text summarization or the
+the language modeling part of it.
+And how do I use these things?
+So SageMaker has something called Jumpstart where you can very quickly launch off a new notebook that
+comes pre-populated with some examples on how to do something.
+So Jumpstart now has something called Foundation Models, where you can select one of these foundation
+models and kick off a pre-populated notebook that lets you play around with it so that notebook will
+walk you through.
+How do I load up this model?
+How do I feed data to it?
+How do I query it?
+What kind of things can I do with it?
+How do I fine tune it?
+How do I shut it down?
+Right?
+So if you go there, you'll see a huge list of models that are from hugging Face.
+So they've actually gone out and worked with hugging face and integrated a lot of the models most popular
+models there into SageMaker Jumpstart as well as Foundation models.
+So in addition to the ones that Amazon is offering exclusively, we also have the entire hugging face
+ecosystem as well.
+And if you've never seen Hugging Face before, it's just a website that's an aggregation of a bunch
+of pre-trained models out there that you can use to, to build off of and very quickly use.
+So this lets you very quickly open up a notebook with a given model loaded up and ready to go.
+And right now, in addition to hugging face models which include things like Falcon Flon, bloom Z and
+GPT J, also GPT twos in there.
+It also gives you access to stable diffusion for image generation.
+And also Amazon Alexa has a model in there as well that is an encoder decoder based, multilingual large
+learning model.
+So if you want to use a large language model that's at least being labeled as Alexa, I'm not sure if
+that's what they're really using under the hood.
+Um, that's also available to you now as well.
+So.
+So SageMaker jumpstart with generative AI just refers to the ability to jumpstart a SageMaker notebook
+with one of these pre-trained models baked into it already to play with.
+And we'll dive into an example of that now.

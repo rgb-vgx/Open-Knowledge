@@ -1,0 +1,92 @@
+# 269. State of Learning Checkpoint - AWS Certified Cloud Practitioner
+# Section: Preparing for the Exam + Practice Exam - AWS Certified Cloud Practitioner
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20053356
+# Caption: en_US (manual)
+
+Okay, so we are in that part of the course.
+We were going to be checking what we learned,
+so how far we've gone on our learning journey.
+For this, we'll head to the certification page
+for the Certified Cloud Practitioner exam.
+So here I am on the AWS Certified Cloud
+Practitioner exam page.
+And I'm going to scroll down
+and find the exam guide, the CLF-C02 exam guide,
+as well as the official practice question sets.
+So for the exam guide, it shows you what is expected
+of you from an exam perspective, so you are able
+to explain the value of the Cloud.
+You're supposed to understand the security best practices,
+the shared responsibility model and so on.
+It says that you have up to six months of exposure
+to AWS Cloud design,
+but this course gives you all the necessary
+knowledge to get there.
+Also, you have the knowledge of the Cloud concepts,
+the core services, and the economics of the AWS Cloud.
+So the idea is that it describes who you are.
+Now, if you follow this course up to this point,
+I tell you you should be in a really good state
+to take this exam regardless if you don't think you're a
+perfect fit for the exam guide.
+Now the exam itself will have two types of question.
+It has the multiple choice question
+where one answer is correct
+and three are incorrect responses.
+They're called distractors.
+And then in a multiple response, you have two
+or more correct responses out of five
+or more response options,
+and it will tell you how many responses you should
+answer for every question.
+Now, if you don't answer a question,
+it's marked as incorrect.
+And if you guess, there is no penalty.
+So answer every single question at your exam no matter what.
+There are 50 questions that affect your score
+and 15 that are unscored,
+and they help AWS collect data
+to know if a question at the exam is going
+to be good or not.
+Now your exam is going to be scored between 100 to 1000
+and the passing score is 700.
+Here you have the outline of the domains
+that are going to be at the exam.
+So 24% on Cloud concepts, 30% on security
+and compliance, 34% on Cloud technology and services.
+And finally 12% on billing, pricing and support.
+Now, within each domain, it has been quite specific
+with their exam guide into what is covered.
+I will let you read about it,
+but everything is covered by the course,
+I guarantee you this.
+So once you've seen all the domains,
+finally you have a section on,
+and this is a pretty long document, as you can see,
+you have the appendix on technologies and concepts.
+This is a list of all the services that may
+or may not appear at the exam.
+So you will notice that most of these things are going
+to be covered in my course
+and if something is not covered in my course,
+it is intentional.
+That's because some of these services
+may only be distractors and not actual correct answers
+and if they happen to be a correct answer,
+usually students let me know that there is
+a service that is not covered by my course
+and then I update my course accordingly.
+So you can trust that I cover entirely this exam guide,
+even though you will find
+that some services in here are not covered by the course.
+Otherwise, they would make the course
+extremely complicated and long, but don't worry about it.
+Now, to assess are you're ready,
+you have the official prep question set on this website
+called AWS Skill Builder and you can enroll, it's free,
+and you'll have 20 questions to practice
+and to understand how the exam is actually structured.
+So I invite you to enroll in this
+and attempt these questions.
+Alright, so that's it.
+I hope you liked it and I will see you in the next lecture.

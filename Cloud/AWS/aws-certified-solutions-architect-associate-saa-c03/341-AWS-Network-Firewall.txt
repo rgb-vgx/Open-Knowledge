@@ -1,0 +1,81 @@
+# 341. AWS Network Firewall
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33879084
+# Caption: en_US (manual)
+
+So let's summarize the kind
+of ways you can protect your network
+on AWS that we know about so far.
+So we've seen Network Access Control Lists,
+we've seen Amazon VPC security groups,
+we've seen AWS WAF.
+It protect against malicious requests made through HTP
+on specific services that we have.
+We've seen AWS Shield and Shield Advance
+to protect against DDoS,
+and we've seen AWS Firewall Manager
+to manage them all, your rules for WAF and Shield and so on,
+across multiple accounts.
+Okay, so we know about this,
+but what if we want to protect our entire VPC
+in a sophisticated way?
+Introducing the AWS Network Firewall.
+So this is used to protect your entire VPC with a firewall.
+So here's my VPC
+and the firewall is going to be all around it.
+And so this AWS Network Firewall protects it
+from the layer 3 to the layer 7 protection.
+So you can inspect any kind of traffic in any direction.
+So you can expect VPC to VPC traffic,
+outbound to internet, inbound from internet,
+and to and from Direct Connect
+and Site-to-Site VPN connections.
+So every representative there,
+so here we protect anything coming
+in and out of the internet,
+in and out of a peered VPC
+and in and out of Direct Connect
+or a Site-to-Site VPN connection.
+So we define rules
+and then we can control anything that happens.
+So internally, the network firewall uses
+the AWS Gateway Load Balancer,
+but instead of us setting up a third party appliance
+to inspect the traffic,
+we just have AWS manage it with its own appliances.
+And so therefore, we have our own rules
+on the firewall.
+And these rules can be centrally managed as well
+across multiple accounts and many VPCs
+on the AWS Firewall Manager service.
+So with the network firewall,
+we have fine grained controls
+over all kind of network traffic.
+So we support thousands of rules at our VPC level.
+We can filter by IP and by port
+with tens of thousands of IPs.
+We can filter by protocol.
+For example, we can disable the SMB protocol
+for outbound communication.
+We can filter at the domain level.
+So we say, hey, you only allow outbound traffic
+from our VPC into our mycorp domain
+or any third party software repository
+that we only allow.
+We can do general pattern matching with regex and so on.
+And we can choose to allow,
+drop or get alerted on the traffic
+that will match the rules that we've set up.
+And we also have active flow inspection,
+so we can actually have an intrusion prevention capability
+just like we have with the Gateway Load Balancer,
+but all managed by AWS.
+And all the rule matches can also be sent
+to Amazon S3, CloudWatch Logs,
+and Kinesis Data Firehose for analysis.
+So that's it for the network firewall.
+This is a firewall that you do at the VPC level.
+Remember this.
+And you can do traffic filtering and flow inspection.
+I hope you liked it
+and I will see you in the next lecture.

@@ -1,0 +1,230 @@
+# 149. Transit Gateway
+# Section: VPC
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18387210
+# Caption: en_US (manual)
+
+So if we look at a typical architecture
+or network topology for your VPC, your customer gateway,
+your VPN connections, direct connect and so on,
+it becomes very, very complicated
+because you allow some things to talk to one another,
+and anytime you need another thing to talk to another thing,
+then you have to create maybe a new VPN connection,
+maybe a new VPC Peering connection,
+and it can become very, very complicated.
+And so the idea is that as we grow our architectures,
+the number of accounts we have, we need to have a better way
+of handling all the network topology in our accounts.
+And we saw the VPC transits, that was a possible solution,
+but here we have a transit gateway
+which is going to be a more modern solution brought by AWS.
+So the reason we introduce a transit gateway
+is that we want to have transitive peering between,
+I would say thousands of VPC, even on premise data centers
+into a hub and spoke star connection.
+So why a star?
+Well, you can look at the diagRAM, it looks like a star.
+And so as you can see,
+my treasure gateway can connect many VPCs together.
+They can also connect to direct connect gateway
+if we needed to, and also connect to our on premise
+through a VPN connection and a customer gateway.
+So similar to the idea of the transit VPC we had before,
+now we have a transit gateway and all the traffic will flow
+through the transit gateway and we'll have control over
+how that traffic is going to be rerouted
+to different endpoints in our star network.
+So the transit gateway is a regional resource,
+although you can peer together
+many transit gateways across region.
+And to share a transit gateway
+into many different accounts,
+you use resource access manager or RAM,
+and that is one of the primary use case
+for using RAM alongside transit gateway.
+You can peer transit gateways across regions
+as where as just said, so it has cross region support.
+And in the route tables, you are able to limit
+which VPC can talk to which other VPC.
+So you define these route tables directly
+at the transit gateway level.
+It works with direct connect gateway VPN connections.
+And one thing it supports is called IP multicast.
+So trendy gateway, to my knowledge,
+is the only thing that supports IP multicast
+in your AWS network.
+No other services will support IP multicast.
+And so if your architecture and your application
+is relying on IP multicast,
+then you have to use a transit gateway.
+So what does it give us, a transit gateway?
+Well, instances in the VPC
+can access any other NAT gateway,
+network load balancer or private link
+or EFS in other VPCs attached to the transit gateway.
+So here we do have edge to edge routing,
+we have transitivity and this is the whole purpose
+of the transit gateway.
+So let's go through an architecture
+in which we have the transit gateway
+be a central NAT gateway,
+and you really have to understand what's going on.
+So I would suggest you look at this link and open the blog,
+but I will walk you through this architecture
+as best as I can.
+But take your time, try to understand how that works
+because if you do, then you're good to go for VPCs.
+So the idea is that we have an Egress VPC
+on the left hand side, and within it, we have a NAT gateway.
+And so we want these NAT gateways into two AZs,
+so AZ one and AZ two, to take all the internet traffic
+from my other VPCs in my architecture.
+This is something I've tried to represent to you
+before in another slide, but I showed you it wasn't possible
+because of the lack of edge to edge routing for VPC peering.
+But here, so we have two NAT gateways and two AZ,
+and they're highly available.
+And then we have two ENIs,
+and these ENIs are going to allow us
+to connect our transit gateway.
+And so our transit gateway in here
+is going to be connected to two VPC,
+so the app1-VPC and the app2-VPC.
+And through the editing of the route tables,
+we are going to allow any traffic coming from the app2-VPC
+to go all the way through my Egress VPC,
+and get to the internet gateway here
+and talk to the internet.
+And why would we do this?
+Well, because we have more control here over
+how the internet traffic is going to be distributed.
+We also have the centralization of resources,
+so we don't to create one NAT gateway
+in one internet gateway per VPC,
+we can keep all the other VPCs private
+and make sure they have to access the internet
+through the transit gateway, through the Egress VPC.
+And so for this to work, you need to edit some route tables.
+So here, it says 000/0
+should go to the transit gateway internet
+and then the transit gateway internet is saying,
+okay, anything that comes from 000/0
+should go to these ENIs,
+and then it goes on to NAT gateway and so on.
+And you look at all the route tables and that works.
+But something that is happening
+in that diagram is that the app VPCs themselves,
+they cannot talk to each other.
+And the reason for that is that
+the transit gateway route table does not allow currently
+these VPCs to talk to one another,
+but that would be something that's very possible.
+So meaning that if you have a transit gateway,
+it doesn't necessarily mean that
+everything is going to be peered with another.
+You have to define the route tables
+to allow things to be talking to one another.
+So you can also share your transit gateway
+using the resource access manager service, RAM.
+And so you can share within other accounts
+or within your AWS organization.
+So let's say for example, we have an account A
+with a transit gateway that's being set up correctly,
+and then account B, well, first we can
+share our transit gateway,
+account B will then accept our request,
+and then the account B can just use the transit gateway
+for example, to create more attachments
+of VPC to the transit gateway, but VPC that belong
+in account B, therefore simplifying
+your network architecture.
+Also using the transit gateway, you can connect it to
+many different accounts, many different VPCs.
+So using the resource access manager,
+we can go into some sort of network topology where
+different VPCs from different accounts
+are connected to the same transit gateway.
+But of course, you do not want the prod
+and the staging account to communicate together
+or the dev and the pre-product account
+to communicate together.
+So in that case, what you can do
+is that you can create, for example, a prod route table
+which gives some CIDRs as well as the next hop,
+which is a special transit gateway attachment.
+And if you attach it to these one,
+the A and B VPC in the prod and pre-prod accounts,
+we only ensure that VPC A can communicate with with VPC B
+and vice versa.
+But C and D are isolated from it
+because they do not appear in this route table.
+Likewise, we could create a staging route table
+with the correct transit gateway attachments
+to ensure that the staging and the dev accounts
+can communicate with each other,
+but not with the prod accounts.
+So by default, of course,
+everything will connect to each other,
+but if you're to create your own route tables
+and attach them to the transit gateway,
+you can specify which VPCs or which attachments
+can route to each other.
+If you have a direct connect gateway set up,
+so you have corporate data center,
+a direct connect location, and a direct connect gateway,
+you can connect to multiple regions.
+So if you create a transit gateway in us-east-1
+and a transit gateway in us-west-2 in two different regions,
+it is totally possible for you to connect the gateway
+to the first transit gateway
+as well as the second transit gateway.
+Therefore, you have a direct connection into
+multiple regions through using a transit gateway.
+And of course, if the us-east-1 VPCs
+must talk with the us-west-2 VPCs,
+you can create an inter-region transit gateway peering
+to peer the true transit gateway together
+and then allow the network connectivity
+to go directly and stay within AWS.
+So which brings me to the second subject, which is
+around inter and intra region peering.
+So say we have a region right here,
+we create a transit gateway, we can do attachments
+to site to site VPN to VPCs and so on.
+But we can also, for example, create a second
+transit gateway or use a third party transit gateway
+and connect connected to its own, of course,
+type of topology.
+And you can establish an intra-region peering mesh.
+So you have your own VPC transit gateway
+or TGW one connected to your second transit gateway.
+You can do the same thing in another region.
+So it's very possible for you
+to have the same kind of architecture.
+But if you wanted to connect all these regions together,
+you could create a third transit gateway
+which is a hub transit gateway,
+and then you connect it inter-region
+using an inter-region peering mesh.
+And then these transit gateways, the hub ones,
+can be connected to the ones within the region
+using in-region peering mesh.
+So you go into this kind of architecture
+and you can extend it into a third region
+to have, again, a mesh of inter-region peering mesh
+between your hub transit gateways,
+and within each region you have intra-region peering.
+So you're going to be billed hourly
+for each peering attachment,
+but there are no data processing charges.
+Okay?
+But if the data, of course, grows cross region
+through the attachments,
+then you will have standard charges.
+So if the data goes from region A to region B,
+of course, you're going to pay some money.
+For this to work, you must of course, do all these peerings
+by specifying the transit gateway ID.
+Okay.
+So that's it for transit gateway, I hope you liked it.
+And I will see you in the next lecture.

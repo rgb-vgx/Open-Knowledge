@@ -1,0 +1,61 @@
+# 366. AWS Cost Explorer
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26099616
+# Caption: en_US (manual)
+
+So a small service that can come up
+in the exam is a billing service called Cost Explorer,
+which is used to visualize, understand,
+and manage your AWS cost and usage over time.
+It allows you to create custom reports
+that analyze your cost and usage data.
+And so with this, you get dashboards,
+and diagrams, and so on.
+And so you can analyze your data at a high level,
+for example, total cost and usage across all accounts,
+but you can also go down to get it monthly, hourly,
+or at the resource level granularity.
+And then thanks to Cost Explorer,
+you can do some cost savings
+because it allows you to choose an optimal savings plan
+to lower the prices on your bill.
+You can forecast usage as well
+up to 18 months based on previous usage,
+which can be helpful for cost planning.
+So if we look at Cost Explorer, here's an example.
+We get monthly cost by AWS service.
+In this example, we can see, for example,
+that some instances based on instance type
+can be more expensive than others,
+and so we can start optimizing our costs,
+asking ourselves the question,
+"Are these instances correctly used?
+Are they maximally used?
+Are they the right size?"
+These kind of things.
+Then we can get also hourly and resource level.
+So in this example, we get to, again,
+some EC2 instance resource level information,
+and we get the cost over time, so we can see what happens
+every single hour to get a better breakdown
+and understanding of our bill.
+This is also to find, as I said, a savings plan.
+So savings plan is an alternative to reserved instances,
+we have seen this.
+And so thanks to Cost Explorer,
+we get this little popup that will come up
+and it will tell us what kind of savings plan
+we can have based on our usage,
+and it will give us some recommendation,
+and give us some estimated monthly spend, and so on.
+So this is quite handy.
+Finally, we can forecast usage.
+So based on previous costs that we had in the past,
+we can get some forecasts and some confidence
+of the forecast around how much we're expected to pay
+for our bill based on our previous usage,
+and that could be quite helpful.
+So these kind of use cases can come up in the exam,
+and this is probably the only billing service
+that AWS will ask you in the exam.
+So that's it, I will see you in the next lecture.

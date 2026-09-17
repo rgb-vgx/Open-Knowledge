@@ -1,0 +1,75 @@
+# 276. Lambda Environment Variables - Hands On
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26623386
+# Caption: en_US (manual)
+
+Okay, so let's practice
+environment variables.
+So for this, I'm going to author a function
+from scratch and I'll call it,
+"lambda-config-demo".
+I would use Python 3.8
+and create my function.
+So the idea here is that we want
+to play with environment variables.
+And so we're going to pass environment variables
+in unencrypted form to learn their function.
+For the encryption part,
+this will be dealt with in the security section
+of this course.
+And so we want to pass this environment variable
+to lambda and have lambda print this environment
+variable to the console.
+Okay, so first, let's modify the code
+of our lambda function.
+So let's go into the code source,
+and we need to modify it a little bit for it to work.
+So the first thing we have to do
+is to do "import OS" to import the OS package.
+And this is going to allow us
+to get access to environment variables.
+And then in the return statement,
+there's going to "return os.getenv",
+get environment,
+and then the environment variable name,
+so, "ENVIRONMENT_NAME".
+So we're going to create this environment variable
+called "ENVIRONMENT_NAME"
+and we're going to give it a value
+and the value of which will be retrieved
+by the lambda function and return.
+So let's deploy this function to save our changes.
+Next, we need to go into the configuration
+of our lambda function, which I missed.
+So let's go here and go to configuration.
+On the left hand side, we have environment variables.
+And here I can edit and add an environment variable.
+The key is going to be, "ENVIRONMENT_NAME",
+and the value is going to be "dev",
+but you could add many different environment variables
+if you wanted to, okay?
+As we can see,
+there is an encryption configuration we can have,
+but I will do this in the security section of this course.
+So for now this environment variable is unencrypted.
+So now that we've set the key
+and the value to be "dev", now let's test our function.
+So if we go in here and test our function,
+and we'll create a sample event
+and create and now test our function.
+As we can see, the response we get is "dev",
+which corresponds to the value of the environment,
+they're both named "ENVIRONMENT_NAME".
+But so now if I go and edit this
+and change this from "dev" to "prod" and save my function,
+as we can see, the code of the function has not changed,
+so the code did not change,
+but now if I test my function yet again,
+the response is going to be "prod".
+And so here we see the impact that environment variables
+can have on to the return values
+and the behavior of our code,
+and this is the whole power behind environment variables.
+So that's it.
+I hope you liked this lecture,
+and I will see you in the next lecture.

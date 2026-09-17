@@ -1,0 +1,47 @@
+# 127. CodePipeline Overview
+# Section: Deployments & Managing Infrastructure at Scale
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/24682564
+# Caption: en_US (manual)
+
+So next we have CodePipeline.
+So how do we know that
+CodeCommit and CodeBuild are connected?
+Well, we can connect them using CodePipeline.
+So CodePipeline is going to be a way
+for us to orchestrate the different steps
+to have the code automatically pushed to production?
+What does that mean?
+Well, maybe we want to define a pipeline that takes the code
+builds it, tests it, provision some servers
+and then deploys the application on those servers
+but it could be more complicated.
+And so to orchestrate all these steps
+you need a pipeline tool
+and this is going to be CodePipeline.
+And so you may or may not
+have heard of the term CICG, which may stand
+for Continuous Integration and Continuous Delivery.
+It is the whole concept
+that every time a developer pushes the code
+into a repository, it is being built, tested
+and deployed on to some servers.
+So if we look at CodePipeline, say we have code
+as an orchestration layer,
+it will take its code from CodeCommit
+build it with CodeBuild, then decide to deploy it
+with CodeDeploy, and may be deployed
+into an Elastic Beanstalk environment as one example.
+But it's just one way of building a pipeline,
+okay, there's so many different ways.
+So why would you use CodePipeline?
+Well, the benefits is that it's fully managed.
+It's compatible with so many services such
+as CodeCommit, CodeBuild
+CodeDeploy, Elastic Beanstalk, CloudFormation, GitHub
+and other third party services and custom plugins.
+And it gives you fast delivery and rapid updates.
+So it is at the core of the CICD services within AWS.
+And so anytime you see orchestration of pipeline
+in your exam, you have to think AWS CodePipeline.
+So that's it, I hope you liked it.
+And I will see you in the next lecture.

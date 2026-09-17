@@ -1,0 +1,119 @@
+# 52. Elastic MapReduce (EMR) and Hadoop Overview
+# Section: Data Transformation, Integrity, and Feature Engineering
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45284859
+# Caption: en_US (auto)
+
+Next, let's dive into the world of elastic MapReduce or EMR for short.
+It is a managed Hadoop framework that runs on EC2 instances, and it's kind of a confusing name because
+MapReduce itself is kind of an obsolete part of Hadoop, and it's a lot more than just a Hadoop cluster
+on EMR.
+So yeah, it does include Hadoop, and MapReduce is in there, but it's the stuff that's built on top
+of Hadoop that you tend to use more often, technologies like spark or HBase or Presto or Flink or Hive
+and even more things come pre-installed with EMR, potentially.
+There's also something called an EMR notebook that's much like a Jupyter notebook that runs on your
+EMR cluster, and it has several integration points with AWS services as well.
+This is relevant for the world of machine learning, because if you have a massive data set that you
+need to prepare and normalize or scale or otherwise treat before it goes into your algorithms.
+EMR provides a way of distributing the load of processing that data across an entire cluster of computers.
+So for massive data sets, often you need a cluster to actually process that data and prepare it for
+your machine learning training jobs in parallel across an entire cluster.
+A cluster, an EMR is a collection of EC2 instances where every EC2 instance is called a node.
+Each node has a role within the cluster, which is called the node type.
+First is the master node that manages the cluster by running software components to coordinate the distribution
+of data and tasks among the other nodes for processing.
+It tracks the status of tasks and monitors the health of the cluster.
+Every cluster has a master node.
+You can also create a single node cluster of just a master node.
+If you have just enough processing that runs on a single machine.
+The master node is also sometimes referred to as the leader node.
+We also have core nodes.
+These are nodes with software components that run tasks and store data on the Hadoop Distributed File
+System, or HDFS for short.
+On your cluster, multi node clusters will have at least one core node.
+And then we have task nodes.
+These are nodes with software components that only run tasks and do not store data on HDFS.
+These are optional.
+You don't need them, but they are good use of spot instances because you can introduce them and take
+them out of the cluster as needed, because they don't really impact the storage on your cluster since
+they don't actually talk to HDFS.
+The Hadoop distributed file system, there aren't any permanent files stored on the task node that your
+cluster needs, so they're only used for computation.
+So if you have a sudden task that needs to run on a massive amount of data, and you're only going to
+need that once, you can introduce a task node into your cluster and then remove it when you're done.
+And your cluster will just continually, happily run along without it after you've removed it.
+There are a couple of ways to use an EMR cluster.
+There's a transient and a long running cluster.
+A transient cluster is configured to be automatically terminated once all the steps that you've defined
+to run on it have been completed.
+So the steps you might run would include loading input data processing that data storing the result
+of the output, and then shutting down the entire cluster.
+So if you have a predefined sequence of things that you want your cluster to do, you can save money
+by automatically terminating that cluster as soon as that task has been completed.
+You can also have long running clusters where you create a cluster and you want to interact with the
+applications on it directly, and then just manually terminate it when you're done with it.
+So this is more appropriate for, say, ad hoc queries or experimenting with data sets where you don't
+really know what you want to do upfront and you don't have some repeatable sequence that you just want
+to run over and over again.
+In that case, you would want to have a long running cluster and just terminate it by hand when you're
+done.
+Now, when you launch a cluster, you select the frameworks and applications to install for your data
+processing needs at that time.
+Once you have a cluster spun up, either way you can connect to it directly to the master node through
+EC2 and run jobs from the terminal there.
+Or you can submit ordered steps via the console as well if you can predefine those through the console
+in AWS.
+Either way works.
+We talked about integration points between EMR and AWS.
+Obviously, those are important.
+For example, it uses EC2 of course, for the actual underlying instances that comprise the nodes on
+your cluster.
+It can work with Amazon VPC to have your cluster within a virtual network.
+You can store your input data and your output data on Amazon S3 instead of HDFS if you wish.
+You can also use Amazon CloudWatch to monitor the performance of your cluster and configure alarms on
+the individual nodes in your cluster.
+IAM can be used to configure permissions to your cluster.
+CloudTrail will create an audit trail for the requests made to the services on your cluster.
+And finally, AWS data pipeline can be used to schedule and start your clusters that are running a series
+of steps that are predefined.
+Let's talk a little bit more about the storage on EMR.
+Now the default storage solution on Hadoop is HDFS.
+And this is a Hadoop system.
+So we do have HDFS available to you.
+It's a distributed scalable file system for Hadoop.
+It distributes the data that it stores across every instance in your cluster.
+And it stores multiple copies of data on different instances to ensure that no data is lost if an individual
+instance fails, every file in HDFS is stored as blocks and is distributed across the Hadoop cluster.
+By default, the size of a block in HDFS is 128MB.
+Now this is ephemeral storage.
+Once you terminate your cluster, that storage that was stored locally on those nodes goes with it.
+So that's the reason not to use HDFS.
+However it's going to be a lot faster.
+Right.
+Because we don't have to go across the internet to access that data.
+It's all local on the actual nodes that are doing the processing of your data.
+And Hadoop has a lot of smarts built into it so that it tries to optimize things such that where the
+code is running to process a bit of data is the same node where that data is stored.
+So HDFS is very good from a performance standpoint.
+But it has the downside that when you shut down your cluster that data goes away.
+That's not a good thing.
+However we have EMR, ZFS which allows you to use S3 as though it were an HDFS file system, and it
+turns out it's still pretty darn fast.
+There's also an optional consistent view in EMR, ZFS that's for S3 consistency, and you can actually
+use DynamoDB to track that consistency across the EMR.
+FS so a key thing with EMR is that you can use S3 in place of HDFS.
+That's the key point there.
+You can also of course use the local file system if you want to as well for ephemeral things.
+But again that's not going to be distributed.
+So that is only useful for example on the master node where you're trying to basically stage data and
+get it where it needs to be.
+We can also back HDFS with elastic block store.
+So EBS and HDFS have a relationship their.
+EMR charges by the hour plus any EC2 charges under the hood.
+It does promise that it will provision new nodes for you automatically if a core node fails.
+So you don't have to worry about that at least.
+And you can add and remove task nodes on the fly as well.
+Like we talked about, you can use spot instances to add additional capacity or remove capacity without
+impacting the underlying storage.
+On the HDFS file system.
+You can also resize the core nodes on a running cluster as well.
+You can get away with that for capacity planning to.

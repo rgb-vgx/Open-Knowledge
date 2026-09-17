@@ -1,0 +1,177 @@
+# 438. AWS Certification Paths
+# Section: Congratulations - AWS Certified Developer Associate
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/39035322
+# Caption: en_US (manual)
+
+So, congratulations,
+you are about to attempt an AWS certification,
+but there is so much more on your journey.
+So AWS is made of foundational certifications,
+associate level certifications,
+professional level certifications,
+as well as specialty level certifications.
+And based on the type of role you want to have,
+they recommend different paths.
+So all these paths can be found in a document on the URL
+that have linked below in the bottom-right corner.
+So we have the architecture path.
+So if you wanna become a solutions architect,
+for example, to design, develop,
+and manage cloud infrastructure and assets,
+you need to do these certifications.
+So if you already know about the cloud and in IT,
+no need to do Cloud Practitioner,
+but I still think it's a good one.
+And then if you want to leverage AI, they recommend
+the AI Practitioner Foundational Certification.
+Then you move on to Solution Architecture Associate,
+Solutions Architect Professional.
+And if you want to dive deep,
+the Security Specialty would be really recommended.
+If you're more into application architecture,
+so this is around the user interface, the middleware,
+the infrastructure, and so on,
+then they recommend to have the same as before,
+but you add the Developer Associates
+and then you go into DevOps Engineer Professional.
+And then if you wanted to dive deep,
+the Solutions Architect Professional certification.
+So if you're into operations,
+you can be a systems administrator
+and your role is to install, upgrade,
+and maintain computer components and software
+and to integrate automation processes.
+In which case, Cloud Practitioner
+followed by SysOps Administrator Associate is a good one.
+And to do a deeper dive, DevOps Engineer Professional.
+If you're a cloud engineer and your role is to implement
+and operate an organization network computing infrastructure
+and implement security systems to maintain data safety,
+then you have Cloud Practitioner Foundational,
+SysOps Administrator Associate, Security Specialty,
+and for a deep dive, DevOps Engineer Professional
+and Advanced Networking Specialty.
+If you're into DevOps,
+for example, you can be a test engineer,
+your role is to embed testing and quality best practices
+for software development from design to release
+throughout the product lifecycle.
+In which case, we have Cloud Practitioner, then Developer,
+and then DevOps Engineer.
+If you're a cloud DevOps engineer,
+then your role is to design, deploy,
+and operate large-scale global hybrid
+cloud computing environments
+and to advocate for end-to-end automated CI/CD pipelines.
+So in that case, you would go
+from Cloud Practitioner Foundational to Developer Associate
+and then optionally, do SysOps Administrator.
+And then if you are into machine learning,
+then doing the Machine Learning Engineer Associate
+could be a very good one.
+And finally, for a deep dive,
+the DevOps Engineer Professional Certification.
+If you're a DevSecOps engineer,
+so your role is to accelerate enterprise cloud adoption
+while enabling rapid
+and stable delivery capabilities using CI/CD principles,
+methodology, and technology.
+Then it is recommended for you to start
+with Cloud Practitioner,
+then SysOps Administrator Associates,
+Machine Learning Associate
+if you are working with AI and ML projects,
+DevOps engineer, and finally, Security Specialty.
+If you are into the security space,
+you can be a cloud security engineer
+and your role is to design computer security architecture
+and develop detailed cyber security designs.
+Then you develop, execute a new track performance
+of your security systems to protect information.
+So Cloud Practitioner Foundational
+is a good one to start with.
+If you're working with AI and ML systems,
+AI Practitioner Foundational is also a very good one.
+Then we have SysOps Administrator,
+and finally, Security Specialty.
+And for a deeper dive, DevOps Engineer Professional
+and Advanced Networking Specialty is a good idea as well.
+If you're a cloud security architect,
+then your role is to design
+and implement enterprise cloud solutions,
+applying governance to identify, communicate,
+and minimize business and technical risks.
+In that case, you have Cloud Practitioner,
+then AI Practitioner Foundational,
+then Solution Architect Associate,
+and then Security Specialty.
+And you can do a deeper dive
+on Solution Architect Professional.
+If you're into development and networking.
+So for development, you go
+and you as a software development engineer,
+you develop and you will maintain software
+across platforms and devices,
+so Cloud Practitioner, AI Practitioner Foundational,
+Developer Associate and then DevOps Engineer.
+And if you're just into networking,
+then as a network engineer,
+you need to design your LANs and your WANs,
+so you have the Cloud Practitioner Foundational,
+Solutions Architect Associate,
+Advanced Networking Specialty,
+and for a deeper dive, Security Specialty.
+If you are in the data analytics space,
+you can be a cloud data engineer
+to do the automation of collection
+and processing of structure or semi-structured data,
+and you can monitor the data pipeline performance,
+in which case, Cloud Practitioner,
+then Solutions Architect Associate,
+then Data Engineer is your way to go.
+And for a deeper dive, you can do Security Specialty.
+And if you're working on AI and ML project,
+Machine Learning Engineer Associates.
+If you are in AI or in machine learning,
+you can be a machine learning engineer
+and your role is to research, build,
+and design artificial intelligence systems
+that will automate predictive models
+and design machine learning systems, models, and schemes.
+So here, you can do Cloud Practitioner
+and then AI Practitioner Foundational, Solution Associate,
+and then Machine Learning Engineer Associate.
+And then for deeper dive,
+Data Engineer Associate and Machine Learning Specialty.
+Then if you're a prompt engineer,
+your goal is to design, test, and refine text prompts
+to optimize the performance of an AI language model.
+So here, we're talking about Cloud Practitioner
+and very important AI Practitioner Foundational.
+Then we have Machine Learning Engineer Associate.
+And then finally,
+Machine Learning Specialty for a deep dive.
+If you're a machine learning ops engineer,
+you're more on the operation side,
+so this is where you maintain
+the platform and infrastructure.
+So you're going to be around Cloud Practitioner,
+AI Practitioner of course,
+and then Solutions Architect Associate
+and Machine Learning Associate,
+and for a deeper dive, Data Engineer and DevOps Engineer.
+And if you are a data scientist, your role is to develop
+and maintain AI and machine learning models
+to solve business problems.
+And you train and fine tune these models
+to evaluate their performance.
+And so therefore,
+you should do Cloud Practitioner Foundational,
+AI Practitioner Foundational,
+then Solution Architect Associates,
+Machine Learning Engineer Associates,
+and then Machine Learning Specialty.
+And you'll be good to go.
+So that's it for your learning journey
+on AWS certifications.
+I hope you liked it and I will see you in the next lecture.

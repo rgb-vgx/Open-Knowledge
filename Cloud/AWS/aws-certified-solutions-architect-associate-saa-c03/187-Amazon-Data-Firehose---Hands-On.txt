@@ -1,0 +1,245 @@
+# 187. Amazon Data Firehose - Hands On
+# Section: Decoupling applications: SQS, SNS, Kinesis, Active MQ
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33907166
+# Caption: en_US (manual)
+
+Okay, so let's practice
+using Kinesis Data Firehose,
+using delivery streams.
+So I click on delivery streams.
+And in here,
+I'm able to create a delivery stream.
+And we have a detailed diagram
+of how Kinesis Data Firehose works.
+So we ingest data from producers,
+and these producers can be either
+a Kinesis Data Stream.
+So this is our use case,
+or they can be Direct PUTs
+done through the Kinesis Data Agents,
+the Kinesis Agents,
+some other AWS services,
+such as CloudWatch, IoT Core,
+EventBridge, et cetera,
+et cetera, and also your own apps using the SDK
+that can send data directly into Kinesis Data Firehose.
+So once we ingest the data,
+we can outright transform it using a Lambda function.
+And this can also be used to do many things,
+such as converting the record format, and so on.
+And then, we load the data into target stores.
+So we have Amazon S3, Amazon OpenSearch Service,
+which is ElasticSearch being renamed,
+and Amazon Redshift,
+and various HTTP endpoint destinations.
+So in this example,
+our source is going to be a Kinesis Data Stream,
+and the destination is going to be Amazon S3.
+But it's very important for you to notice
+that we have OpenSearch service.
+So ElasticSearch, RedShift, S3,
+you need to remember these three for sure.
+Then we have some,
+a lot of third-party services,
+so you don't need to remember them all or at all.
+But just remember that they are third party services.
+Or any custom HTTP Endpoint that you can choose as well.
+So we'll choose Amazon S3.
+Now for the source,
+we need to browse and choose our stream.
+So we have the ARN Demostream entered right here.
+So this is good.
+Then, the delivery stream name is automatically generated,
+so this is perfect.
+Now, we go into the Transform and convert records part.
+So this is optional.
+But we want to transform source records using Lambda.
+So here we can transform, filter,
+un-compress, convert,
+process source records.
+So these Lambda functions are just pieces of code
+you can run into AWS,
+and they can do whatever you want
+on this data before being delivered
+by Kinesis Data Firehose.
+So this could be quite handy.
+And if you do enable it,
+then you need to choose a Lambda function.
+Okay.
+Next, the Convert record format option.
+So based on where you are sending your data to,
+it can be useful to transform these records
+into Parquet or ORC based on some advanced options.
+So this is not in scope,
+but just remember that you can transform the record format
+using Kinesis Data Firehose.
+Now, this is more detailed
+into the data and analytics certification of AWS.
+Right now, just know at a high level
+that you can convert record formats.
+Next, we need to choose a destination.
+So we can just choose an S3 bucket
+that we've created from before or create one.
+So for me,
+I've already created an S3 bucket.
+So I'll use this one.
+So demo-firehose-stephane-V3.
+I will choose this one,
+but feel free to create a bucket
+or choose an existing one as well.
+Do you want to have dynamic partitioning?
+So right now, we will say no.
+S3 bucket prefix,
+so do we want to prefix our data?
+And for now,
+we don't need to.
+And also, a bucket error output prefix if we needed to,
+if you wanted to,
+you have for example, error.
+But again, we don't want to this right now.
+We'll keep it very, very simple.
+And now, more importantly,
+around the buffer hints,
+compression and encryption.
+So the buffer is a way
+for Kinesis Data Firehose to accumulate records
+before delivering them into the targets.
+And so by default,
+Kinesis will write five megabytes of data into the buffer
+before delivering it into the target,
+so Amazon S3.
+Now, you can make the buffer more efficient,
+for example more than 128 megabytes,
+if you wanted to get a bigger buffer size
+and more efficiency,
+or a small buffer size,
+if you wanted to deliver the data as fast as possible.
+So we'll have it as 1.
+And then, the buffer interval,
+so this is how fast,
+if the buffer size doesn't fill up.
+How fast should it be flushed into the target?
+And so, if you choose 300 seconds,
+you're going to wait five minutes to fill the buffer size.
+But if the buffer size is not filled after five minutes,
+then it's going to be flushed nonetheless.
+So if we set a lower buffer interval,
+such as 60 seconds,
+we have the guarantee that at maximum,
+every 60 seconds,
+the buffer is going to be flushed into Amazon S3.
+If we set a really long buffer size,
+such as 900 seconds,
+then we need to wait,
+I think, 15 minutes before the buffer
+is flushed into Amazon S3,
+so a lot longer.
+So for the purpose of this demo,
+we don't want to be efficient.
+We want to be fast.
+So we'll choose 60 seconds,
+which is the minimum.
+Next, we want to enable compression and encryption,
+so we can compress the records in the target,
+such as with GZIP, Snappy,
+Zip or Hadoop-Compatible Snappy.
+And the idea is that you're going to save some space,
+because we are compressing the data
+before storing into Amazon S3.
+So save some cost.
+And also, do you want you to encrypt your records?
+Yes or no.
+There's some advanced settings.
+But the one that's very important for you to see
+is this permission right here.
+So this is going to create automatically
+an IAM role named this.
+And this IAM role
+is going to have all the permissions required
+to write into Amazon S3.
+So this is how Kinesis Data Firehose is able to write
+to the target buckets
+and to read as well from the Kinesis Data Stream.
+So let's create this delivery stream.
+And it is active.
+So we can have a look at some metrics.
+So the more data will go through Kinesis Data Firehose,
+the more these metrics will be populated,
+which is very helpful in production.
+You can look at the configuration,
+but we've already done that.
+And then, we can look at the destination for the error logs.
+And right now,
+this is CloudWatch Logs.
+Okay, so what we have here
+is a Kinesis Data Firehose of source Kinesis Data Streams,
+and we need to test with some data flowing through it.
+So you could use the test data right here
+to test it going into Amazon S3,
+but we don't want to use this.
+Actually, because we have Amazon Kinesis Data Stream,
+let's just use that one as well.
+So my Kinesis Data Stream right here is named DemoStream,
+and we're going to send more data to it.
+Because even though we have created
+the Firehose Delivery Stream,
+even if some data was sent in the past
+to the Kinesis Data Stream,
+you actually need to send new data
+after setting up Firehose for Firehose to be active.
+So let's just use CloudShell,
+and we're going to use the commands right here.
+So we're going to have to modify this,
+and make sure that you have the right stream name.
+So DemoStream is the one that I have today,
+and user signup.
+This is good.
+And then, paste this command.
+Let's press enter.
+The data has been sent.
+So we have user signup.
+Then, we have user login.
+And then, we'll have user logout.
+Okay, so three records have been sent.
+And what I can do now is go into Amazon S3
+and see if they have appeared in Amazon S3.
+So let's go into the S3 console.
+I'm going to type firehose.
+I found my bucket.
+As you can see,
+currently, there are zero objects in my bucket.
+That's because the Kinesis Data Firehose
+has a buffer of 60 seconds.
+So we need to wait 60 seconds
+until the data makes it into Amazon S3.
+So let's just wait.
+I'll pause the video.
+Okay, so it's been more than 60 seconds.
+So I'm going to refresh.
+And as you can see,
+updates have appeared into my Amazon S3 bucket.
+So I can click, click,
+click, and it says partitioned by date and so on.
+And here, I have the record,
+so I can click on it.
+Click open,
+and then open this with my text editor.
+And as you can see,
+not very fascinating,
+but we have user signup, user login,
+and user logout in one text file.
+So Kinesis Data Firehose is working
+and working great.
+So that's it for this lecture.
+I hope you liked it.
+And just to clean it up,
+please make sure to delete first that delivery stream.
+So you need to type in the name
+and you have it.
+And then most importantly,
+delete the DemoStream itself.
+Because if you let it run,
+then it's going to cost you money every hour, okay?
+So that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

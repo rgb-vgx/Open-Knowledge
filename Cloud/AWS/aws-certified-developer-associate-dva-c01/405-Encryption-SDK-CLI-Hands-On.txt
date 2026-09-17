@@ -1,0 +1,122 @@
+# 405. Encryption SDK CLI Hands On
+# Section: AWS Security & Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM & STS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851454
+# Caption: en_US (manual)
+
+So if you google
+installing the AWS Encryption CLI
+then we see how we can install it and we have to use Python
+and we can check the Python version,
+it gives you the instructions for Windows as well
+and we'll use pip, so it's just pip, install AWS encryption
+as the case CLI.
+So let me go ahead and run this command
+and this is just for us to see how encryption works,
+this is definitely not needed for the exam to know how
+to execute this command, this is just for the people who
+are curious and want to see data key encryption in action.
+Now we have the AWS Encryption CLI installed,
+so if I do minus, minus version I get the encryption CLI
+to be 1.37, 1.3.7 and 1.1.5 for the CLI itself.
+Okay so we're ready to use the encryption,
+now if we do examples we can go straight to understanding
+how to encrypt a file and so we'll have
+to export a C-M-K-A-R-N so we have to figure out the key
+and then we'll have to run the encrypt command
+and then we'll have to run decrypt command afterwards.
+So as far as the key we'll use, we'll use the tutorial key
+from before, except this time we need the full ARN
+of our key, we cannot just use the alias.
+I'll just say key equals and I'll just paste this,
+now my key has been exported
+and now I'm able to run this command.
+We first have to generate a hello text dot file
+so I'll just say, VI hello dot text and I'll say something
+super secret that's over one megabyte.
+Basically imagine this file is over one megabyte and yeah,
+that'll be enough okay but this is just a text file
+and it could be as big as you want.
+Here it contains some very super secret data, okay?
+And what we want to do is encrypt this,
+so for this we'll run this entire command right here
+and you have the power shell equivalent if you need it
+right here
+and so I'll copy it
+and paste it
+and so here the only thing
+I have to change because I didn't name exactly just like
+them, I'll name this key so key equals dollar key
+and that should be it.
+So we're encrypting the data and the input to the encryption
+is going to be hello dot text and the master key we're going
+to use is going to be this ARN coming straight out of Amazon
+and we're going to update up with the metadata, if you want
+to explore the metadata, I'll probably just use the
+metadata folder right here.
+Encryption context is optional and to be honest
+I will remove it right now cause we don't need to use it
+for now and now we'll use the output and the output is the
+encrypted file where we'll go.
+Press Enter and it say metadata output's file cannot be in
+the output's directory so how about I make a directory
+called output and I'll use the output directory to do this.
+Okay so we're done.
+So now the file has been encrypted so if we look at
+the results we have hello text,
+that's our file that before encryption.
+We have metadata, which is the metadata that happened
+and we have output which is the output encrypted file.
+So let's look at the metadata first.
+The metadata contains adjacent documents and so I'll just
+have it into JQ to print it a little bit clearer.
+This Jason document has a header and so it tells us the
+algorithm that was used to encrypt the data.
+It tells us what data key was used, the key provider,
+the encryption context of all these things that described
+before are gonna be in this metadata.
+This is just something you can use if you wanted to have a
+summary of what happened but this metadata file is
+definitely not needed, so what I can do is remove this
+metadata file and so the important thing is that
+if we go to the output directory we get a hello dot text
+dot encrypted file
+and so if I do cat output, there's an encrypted
+we see a lot of gibberish,
+it's because our file was being encrypted.
+The important thing though is we can see is that our file
+was being encrypted using this KMS key and the generated
+data key, so it allows the Encryption SDK
+to decrypt that file in the future.
+Let's play with the decryption now
+and for the decryption we'll just need to run this one
+command right here, so let me just run it and adapt it
+because I did a few changes.
+So now we want to run decrypt function and the input is
+going to be in the output directory of me which is
+hello dot text dot encrypted.
+The encryption context was not used so I'll just remove
+this for simplicity sake.
+The metadata output is again if we wanted to output
+the metadata so I'll just have it right here
+and the output is going to be decrypted folder.
+Okay?
+So here we're decrypting the encrypted data
+and let's press Enter.
+We need to create the decrypted directory,
+let's run this again, and now it worked
+so now if we do LL,
+we see it created a decrypted directory.
+If we look into that decrypted directory we have the
+hello dot text dot encrypted dot decrypted so it's been
+decrypted in the end.
+Let's cat the content to make sure it was
+decrypted correctly and we get back our super secret
+that was over one megabyte.
+So this is really interesting because using this
+encryption CLI, two commands,
+okay I just had to get them right.
+Using the encrypt command and the decrypt
+command we're able to encrypt a large file and decrypt a
+large file and this involves KMS directly.
+That's it for this end zone I hope you liked it
+and I will see you in the next lecture.

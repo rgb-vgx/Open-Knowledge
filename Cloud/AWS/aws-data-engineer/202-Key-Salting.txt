@@ -1,0 +1,72 @@
+# 202. Key Salting
+# Section: Security, Identity, and Compliance
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40394578
+# Caption: en_US (auto)
+
+-: Another technique for further improving
+the security of personal or sensitive information
+is something called key salting.
+So if you're gonna be hashing some credit card number,
+or a password or something, the idea of salting
+is either appending or pre-pending some random value,
+known as a salt, to the piece of data,
+which might be the password, before you hash it.
+This prevents people from just going through
+what we call rainbow table attacks,
+where they just have a list of already used passwords,
+or some list of passwords
+that they got from some nefarious source,
+and just go through that whole table trying to find matches.
+So if the passwords you're actually storing
+have some sort of random information
+stuck at the beginning or at the end of them,
+that will thwart their attempts
+to guess what those passwords are.
+This ensures that the same piece of data,
+like two identical passwords,
+don't produce the same hash across different instances
+because of that unique salt value
+that was added in front of it, or at the end of it.
+A best practice is to make sure your salts are strong,
+cryptographically-secure random values
+so nobody can try to guess what they might be,
+and you also wanna rotate those salts periodically
+to make it even harder.
+So if somebody does crack your list of salt values,
+you won't necessarily be in trouble.
+You also wanna make sure that every user
+has their own unique salt value.
+So you don't wanna be reusing the same salt on every user.
+Then, if somebody finds out what that salt value is,
+you're done, right?
+There's no point to that anymore.
+So a better practice is to have unique salt values
+for each user.
+So what you wanna do is salt and then hash your passwords,
+or whatever it might be, before you store them.
+That way, the stored value for that password
+will be a lot harder to crack
+because of that random salt value that's a part of it.
+Just to make this real with an example.
+Let's say we have user one and user two,
+and they both have the same password.
+They're not very good at making passwords,
+so their password is both password123.
+However, they both have unique salt values,
+that are random and cryptographically secure,
+that are associated with each user.
+So user one has one salt value,
+user two has a different salt value.
+And if we stick each salt value after that password string,
+you can see that after we hash that
+with the SHA256 algorithm,
+they look completely different from each other
+even though they both encode the same exact password.
+So that's one little trick for being extra secure
+in how you're storing
+your personally identifiable information.
+And as long as you know what that salt is for each user,
+you can still create the same hash value
+for that user's password,
+and make sure they compare and match up properly
+within your applications.

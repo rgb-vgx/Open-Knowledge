@@ -1,0 +1,66 @@
+# 210. EventBridge - Pipes
+# Section: Monitoring, Auditing and Performance
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53218065
+# Caption: en_US (manual)
+
+So now let's talk about
+Amazon EventBridge Pipes.
+So the idea is that with an EventBridge Pipe,
+you're going to be able to connect sources
+and targets in AWS.
+What can be the sources?
+Well, you have DynamoDB Streams,
+you have Kinesis Data Streams, you have Amazon MQ,
+Amazon MSK, Amazon SQS, or Apache Kafka.
+All these sources have data
+and usually, traditionally, to extract data out of them,
+you need to write a consumer or some code.
+But here, nothing is needed.
+EventBridge Pipe will read these sources for you.
+And then you may want to send the data
+into target destinations.
+For example, Kinesis Data Firehose, Kineses Data Stream,
+EventBridge Bus, Redshift Database, Amazon SQS, Amazon SNS,
+the API Gateway, ECS task,
+and actually many, many different
+Amazon EventBridge targets.
+So EventBridge Pipes
+will allow you to connect these things together
+without writing any single line of code.
+So how does that work?
+Well, we set up an EventBridge Pipe
+and then the events from the sources are going to be pulled.
+Within EventBridge Pipe,
+you have the option to filter these events to only extract
+or keep the ones you want and also to enrich them.
+What does an enrich means?
+That means transforming the event
+to maybe adapt a data format you need or add other data.
+To do so,
+you can use several other services
+to perform the data enrichments,
+such as Amazon Lambda, Step Functions, API Gateway,
+or an EventBridge API destination.
+So this is optional,
+the filtering and the enrichment, but you can do them.
+And then, finally,
+once the event has been processed or not,
+then you can send it to your target.
+And the target is any of those.
+And again, you don't have to write the code
+to send to the targets.
+So that makes EventBridge Pipes a really nice solution
+to move data within your A-List services.
+So to summarize, it's an out-of-the-box integration
+between data sources and targets in AWS.
+It's a no-code solution,
+which has filtering capability and enrichment capability.
+You can process the events using Lambda, Step Functions,
+API Gateway, and the EventBridge API Destination
+to enrich these events.
+So next time you're doing an integration
+between these kind of data sources,
+think no more than EventBridge Pipes
+because it's awesome as a solution.
+Alright, that's it.
+I hope you liked it and I will see you in the next lecture.

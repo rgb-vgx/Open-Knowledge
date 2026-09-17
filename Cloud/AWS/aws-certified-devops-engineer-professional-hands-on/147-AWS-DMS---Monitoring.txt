@@ -1,0 +1,41 @@
+# 147. AWS DMS - Monitoring
+# Section: Domain 3: Resilient Cloud Solutions
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37904394
+# Caption: en_US (manual)
+
+So let's talk about monitoring for DMS.
+So you can actually monitor
+the replication tasks themselves.
+So you have the task status,
+if it's creating, running or stopped.
+And the task status bar gives you
+an estimation of the task's progress.
+You also have the table states, so you know, by table,
+if we are in before load or table completed and so on.
+And you get some statistics around the number
+of inserts, deletions, and updates for each table.
+Now, there are some CloudWatch metrics
+we can get out of DMS, so here are some examples.
+You can get replication task metrics
+such as the bandwidth and so on,
+as well as host metrics such as the CPU utilization
+or the freeable memory.
+So the host metrics represent the performance
+and utilization statistics for the replication host.
+So we're talking about the CPU, the RAM,
+the storage space, the IOPS, and so on.
+And then the replication task metrics are statistics
+for the number of incoming and committed changes,
+the latency between the replication host
+and both the source and target databases.
+So you'll have these kind of metrics
+such as the FullLoadThroughputRowsSource, RowsTarget,
+as well as the CDCThroughputRowsSource
+and the CDCThroughputRowsTarget,
+based on if you're doing a full load
+or a continuous replication.
+Finally, table metrics, as I said, give you some information
+about the number of inserts, updates, deletes,
+and DDL statements completed for your table.
+So that's it. I hope you liked it,
+and I will see you in the next lecture.

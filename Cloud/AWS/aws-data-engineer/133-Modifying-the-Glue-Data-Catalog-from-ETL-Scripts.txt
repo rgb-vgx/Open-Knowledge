@@ -1,0 +1,67 @@
+# 133. Modifying the Glue Data Catalog from ETL Scripts
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356210
+# Caption: en_US (auto)
+
+Narrator: So, sometimes a result
+of your ETL job is that you want
+to modify the data catalog itself,
+as part of that.
+Maybe you've added some fields or tables,
+or moved things around a little bit as a result.
+So how do you do that
+when you've had this crawler
+that ran, that defined your schema?
+What happens when you wanna change
+that schema, later on after the fact.
+Well, there's a few ways of doing it.
+You might also need to change
+your partitioning as well as part of your ETL.
+You might choose to store that data differently.
+Under different partitions.
+Also, something you need to deal with.
+Turns out there's a couple of ways.
+So, A, you could just rerun the crawler again.
+But the other way would be
+to have your ETL script.
+Actually explicitly change the partitions
+by using the enable update catalog,
+and partition keys options,
+while it's setting things up.
+So, that is possible to do.
+You can also update this table schema as well.
+Again, option A is to just rerun the crawler,
+but you could also do that from a script as well,
+by using enable update catalog
+and update behavior, to update the schema
+of a table explicitly,
+once you're done processing it.
+You can also create new tables
+from your script.
+Again, you would use enableUpdate Catalog.
+And update behavior for that.
+Together with set catalog info,
+to create new tables
+from your script if you need to.
+And there are some restrictions
+on doing all this stuff.
+First of all, modifying the data catalog
+from ETL can only be done
+when S3 is your underlying data store.
+It's also limited to JSON,
+CSV, Avro and Paurqet formats.
+And if you're using Parquet,
+there is some special code
+you need to know about, when you're doing it.
+Also, nested schemas are not supported for this.
+So those are the gotchas,
+with modifying your data catalog.
+But it is important to know
+that Glue ETL allows you to do this.
+You don't have to rerun
+the crawler in every case.
+Sometimes your script
+can actually add new partitions,
+Update the table schema,
+or even create new tables
+right from the script.

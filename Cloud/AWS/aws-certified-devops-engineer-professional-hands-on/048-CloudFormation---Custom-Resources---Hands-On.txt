@@ -1,0 +1,175 @@
+# 48. CloudFormation - Custom Resources - Hands On
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/42314616
+# Caption: en_US (manual)
+
+Okay, so let's actually deploy
+a custom resource.
+But first, let's understand
+how it works to use custom resources.
+So, we are going to develop a template
+that has a custom resource,
+and we can choose either Lambda or Amazon SNS
+to back up that custom resource.
+Now, when we have a Lambda or Amazon SNS backed resource,
+what's going to happen is that CloudFormation
+will send an S3 pre-signed URL for a response.
+And the idea is that CloudFormation expect the response
+to comes back from an Amazon S3 bucket.
+So, Lambda or SNS don't talk back directly
+to CloudFormation.
+They actually perform whatever API calls you want.
+And then when they're done,
+they're going to upload the JSON response to Amazon S3
+using that S3 pre-signed URL.
+So, there's gonna be a request that will contain a lot
+of information from CloudFormation,
+such as the parameters and so on, and the S3 pre-signed URL.
+And then using that pre-signed URL Lambda
+or whatever script you have,
+is able to upload that response into Amazon S3.
+So, now we know we cannot delete a non-empty S3 bucket.
+So first, we must delete all the objects inside it.
+And so for this, we're going to create a custom resource
+with a Lambda function that will be used
+to empty an S3 bucket before deleting it.
+So, we'll have a stack
+and the Lambda function,
+we'll empty the bucket upon deleting it.
+So, let's go ahead and create our first custom resource
+and look at some code.
+So, here is my template.
+We have an S3 bucket that we're creating,
+and then it's going to be created as a resource.
+We referenced the name of the S3 bucket from the parameter,
+and we want it to be deleted when my template is deleted.
+Now we're going to create a custom resource,
+so, "Custom::S3fCustomResource",
+in which the service token is going to be
+where we send the custom request to.
+So it's going to be my LambdaFunction.ARN,
+and we create the Lambda function right underneath.
+And of course, we need to reference a bucket name,
+which is an initial parameter when invoking
+our Lambda function to tell our Lambda function
+which bucket to delete.
+So, it's my sample S3 bucket.
+Now, my Lambda function is used to empty an S3 buckets.
+So we have runtime, which is Python,
+a role, which allows the lender function to actually,
+empty the S3 buckets.
+Then we have some code.
+And the important thing is that we have a handler.
+We look at the request type,
+and we look at the parameters from CloudFormation.
+So, if the event is going to be delete,
+then we delete the S3 content.
+And these are API calls
+to actually delete all the objects in the bucket.
+When everything is okay,
+we send a response back to CloudFormation.
+The CFN response package actually
+uploads the request back into the temporary S3 bucket
+where CloudFormation expects a response from.
+And if it's not a delete event, then we just ignore it.
+So, this script will actually empty our S3 bucket
+upon receiving a delete request in confirmation.
+Now, we also have an execution role,
+which allows us to perform actions on Lambda,
+such as your logs, but also to delete objects
+and list your buckets on Amazon S3
+to give our Lambda function the permission it needs
+to actually delete everything it needs
+on that Sample S3 buckets.
+So, we have our template.
+Now, let's upload it.
+So, let's create a stack.
+We're going to upload the template file,
+and it's going to be our custom resource Lambda backed.
+We need to give "DemoEmptyS3Bucket",
+and a bucket name.
+So, let's answer whatever bucket name you want.
+Something that is going to be globally unique.
+I just entered whatever next.
+And then, we acknowledge
+that we're going to create IAM roles.
+So yes, we submit it and we're good.
+So now, this is going to create an S3 bucket.
+So, I need to go into Amazon S3,
+and actually I will have a resource link right here.
+And this is my S3 bucket.
+So, let's actually make sure
+that this bucket has something in it.
+So let's add a file,
+and I'm going to add a few files for my course,
+and upload it.
+So now, my S3 bucket is non-empty.
+So, we have three files within it.
+And if I tried to delete it
+through CloudFormation without a custom resource,
+this would fail because the bucket is non- empty.
+This is just a safety
+that CloudFormation has created, right?
+But because we have a Lambda function,
+that Lambda function will be able to empty our bucket.
+So, let's wait for the Lambda function to be created,
+and then we'll observe the behavior.
+Okay, so my Lambda function is created.
+I can have a look at it.
+Here it is.
+It was created by CloudFormation.
+And we can have a look at the source code.
+Again, it's a bit easier to read now.
+But we have, if the event equals delete,
+then delete all the S3 contents,
+and then send, okay, back to CloudFormation.
+So, well, let's just try it out and see if that works.
+So, I'm taking my stack right now,
+which is in Create_Complete,
+and I'm going to delete it entirely.
+And what's going to happen is that my Lambda function
+will be invoked, and then this code will run.
+The S3 bucket will be emptied,
+and then the S3 bucket can be deleted by CloudFormation.
+So, the key here is that this CFN response module
+is a module that's going to help you in sending responses
+to CloudFormation instead of writing your own code.
+So, this module is going to be responsible
+for actually sending responses back
+to the temporary S3 bucket that CloudFormation is doing.
+So just to have a look, let's monitor in CloudWatch Logs,
+the logs, just to have a trace of what was being run.
+So, here is my log stream.
+And as you can see now, we had to create events.
+So, nothing happened and the execution was successful.
+And we can have a look at the pre-signed URL
+and the response body that was sent by your Lambda function.
+And then, we had the delete event.
+So, this is when we deleted our CloudFormation stack.
+Now, we deleted all the S3 content.
+The execution was successful,
+so my bucket was completely emptied.
+If I refresh this, it's empty,
+but now my bucket is gone anyways,
+so that's why I get an error.
+And then, we had a pre-signed URL to send the response to.
+Then here was the response body.
+It was a success and it was sent to this pre-signed URL.
+So therefore, if I go into CloudFormation
+and have a look at it,
+my custom resource was delete complete.
+Then my Lambda function was deleted,
+and then my S3 bucket was deleted.
+And the deletion of everything was successful.
+And that really shows you the power of customer resources.
+I don't wanna go too much over the code
+because it's not that important,
+but for you to understand the general idea is what matters.
+So, have a look at these logs.
+Try to make sense of it,
+if you didn't get it.
+But, by looking at it,
+I'm pretty sure you will figure it out.
+All right, so that's it for my lecture.
+I hope you liked it.
+And I will see you in the next lecture.

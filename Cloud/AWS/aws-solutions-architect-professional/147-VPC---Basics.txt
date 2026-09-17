@@ -1,0 +1,286 @@
+# 147. VPC - Basics
+# Section: VPC
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18387196
+# Caption: en_US (manual)
+
+Okay, so now let's go over the VPC section,
+and first I want to remind you of some basics.
+Now if you don't remember them all,
+I'll suggest you take back one of my courses
+and look at the VPC section, but in here,
+I would assume you know all the basics of VPC
+that I'm going to go over right now.
+If anything is unclear, please investigate on your own.
+So a CIDR is a block of IP addresses,
+and is defined as an IP address slash a number,
+and the number defines the IP range.
+So for this example, 192.168.0.0/26
+is equivalent to the range of 64 IP
+that start at 192 168 0 0,
+all the way to 192 168 0 63.
+The CIDR block are going to be used everywhere on AWS,
+they will be used when you have security groups,
+root tables, VPC, subnets, et cetera, et cetera.
+So knowing what a CIDR block is,
+is very important going into the exam obviously.
+A private IP is going to be an IP
+that's going to be only accessible
+within a private network, and there is a limited range
+of private IP that is defined by the norms,
+so we have the range from 10 0 0 0, all the way
+to 10 255 255 255, which represents the CIDR block
+10 0 0 0/8, which is when you have a big network.
+Then there is the 172.16.0.0 all the way to 172 31 255 255.
+And finally we have the smaller 192 168 0 0
+all the way to 192 168 255 255,
+which represents the home network, for example,
+the kind of things you have using your home router.
+So these are the only possible private IP you have.
+Anything else is going to be a public IP.
+So this is all you need to know right now on the IP side.
+Next we have the VPC.
+What is a VPC?
+A VPC must be defined as a list of CIDR blocks
+and cannot be changed, and the VPC will represent
+your virtual private cloud, based on these CIDR blocks.
+So each CIDR within your VPC must have a minimum size
+of /28 and a maximum size of /16,
+which represents 65536 IP addresses.
+The VPC is by definition private,
+so only private IP CIDR range are going
+to be allowed within your VPC.
+Next, a VPC is made of subnets, so this is within the VPC,
+and you define, again, a CIDR that is going
+to be a subset of the VPC CIDR,
+that's why it's called a subnet.
+All the instances within the subnet
+will get a private IP based on the CIDR you have defined
+for that subnet.
+And the first four IP and the last one in every subnet
+are going to be reserved by AWS for networking purposes.
+Okay, then we have route tables.
+Route tables are used to control where the network traffic
+will be directed to, and they're associated
+with specific subnets.
+They're an idea that to say, okay,
+if we're going from one subnet to another,
+you need to use this route.
+This is what the route tables are used for.
+The most specific routing rule is always followed,
+so as long as the routing rule is going to be smaller,
+so the slash number is going to be higher,
+then this route will always be followed by default.
+And this is something we'll have a look at
+when we'll look at VPC peering.
+Okay. Next, we have internet gateway or IGW,
+to help connect our VPC to the internet.
+It's highly available and it will scale horizontally.
+The idea is that it will act as a net for instances
+that have a public IPv4 or a public IPv6.
+So any instance that you linked to your internet gateway
+will have internet connectivity,
+and this is how we define public subnets.
+So public subnets are subnets that will have a route
+that will send 0 0 0/0, so that means all internet traffic
+to an internet gateway, and the instances must have
+a public IPv4 to talk to the internet,
+that's where they're called public subnets
+and public instances.
+Whereas private subnets are accessing the internet
+through a NAT Instance or a NAT Gateway,
+and that NAT Instance or that NAT Gateway
+needs to be set up in a public subnet.
+And then the routes on the private subnet
+must be so that 0.0.0/0 routes all the traffic
+to either your NAT Instance or your NAT Gateway.
+So this is the idea, internet gateway, public subnets,
+private subnets, NAT Instance, NAT Gateway,
+you should know this already.
+So next, we have NAT Instances.
+So there are EC2 instances that you deploy
+in a public subnet, and the way it works
+that we edit our route table so that our private subnet
+has to route for the internet through the NAT Instance.
+So it's not resilient to failure
+because we only have one instance,
+we have limited bandwidth because it's based
+on the instance type, but it's a cheap solution.
+And in case of any failover,
+it must be managed by ourselves,
+and for NAT Instance to work,
+we need to disable the source destination check settings
+on EC2, and that is the case with any type
+of instance that proxies internet traffic.
+So the architecture is at such
+where we have a public and a private subnet,
+and in the private subnet we have an EC2 instance,
+and then in the public subnet,
+we're going to create a NAT Instance.
+Now, thanks to the route table,
+the private EC2 instance traffic to the internet
+is going to go through the NAT Instance,
+and then the NAT Instance is going to direct
+to the public internet.
+The NAT Instance should be assigned an elastic IP,
+and therefore the public internet will see all the traffic
+originating from that one elastic IP.
+So remember, the source check must be disabled.
+And so therefore, because we only have
+one public IP, then if we're trying to access
+a third party service, we can tell them to whitelist
+a specific elastic IP to make sure
+that there is some kind of network security in there.
+For NAT Gateways, it's a managed solution,
+so in this case, the NAT solution is managed
+and the bandwidth increases over time.
+It's resilience to failures within a single AZ,
+and if you want to have management of failures across AZ
+then you can deploy the NAT Gateway
+in multiple availability zones.
+So you can also assign an elastic IP to each NAT Gateway
+and therefore whenever we access the internet,
+the traffic will be seen as originating
+from that specific elastic IP.
+So we have an architecture here with two AZs,
+two private subnets, two public subnets,
+we're going to create a NAT Gateway in each public subnet
+and each will have its own elastic IP.
+And so therefore the EC2 instance can be routed
+through the NAT Gateway to the internet gateway and so on,
+for AZ-B, and we have a highly available kind
+of setup across multiple AZs.
+Okay, next we have network ACLs or NACL.
+They're stateless firewalls defined at the subnet level
+and they will apply to all the instances within that subnet,
+and NACLs are special because they allow
+for allow and deny rules.
+Stateless, what does that means?
+That means that any return traffic
+must be explicitly allowed by the rules.
+So this is very helpful when you want to quickly
+and cheaply block a specific IP address,
+but they're complicated to use because there are stateless
+and so you need to have both rules allowing traffic in
+and allowing traffic out.
+Then we have security groups, and these ones are applied
+at the instance level, not the subnet level,
+and they only allow for allow rules, okay?
+They don't have any deny rules.
+Stateful means that the return traffic
+is automatically allowed, regardless of what the rule says,
+so that means that if your traffic is,
+if your instance is sending traffic
+to a third party service, you have the guarantee
+that it will be able to come back
+through the security group, obviously,
+if the network ACL allows it as well,
+and traffic going into your instance,
+for example if you're having HTP server,
+is allowed to go back out to the service
+that requested stuff from you.
+Okay. Security groups are very special
+because they also allow you to reference
+other security groups in the same region,
+whether it be even with a peered VPC
+or with cross accounts.
+Okay. Next, how about logging?
+So we have VPC flow logs, and they allow you
+to log the internet traffic going through your VPC.
+And you can have three kind of VPC flow logs,
+the first one can be defined at the VPC level,
+the second one is a subnet level,
+or third as the ENI level, elastic network interface,
+which is the virtual network card
+attached usually to your EC2 instances.
+They're very helpful when you want to understand
+why your traffic is not going the way it's wanted,
+so to capture denied internet traffic,
+this will show you why it failed and where it failed.
+And then these VPC flow logs can be sent
+to CloudWatch Logs or Amazon S3,
+which is very helpful if you want to see, for example,
+an increase in traffic onto your infrastructure,
+and that will probably lead to your thinking
+that you're under attack.
+Next, we have Bastion Hosts,
+and so they allow you to do SSH
+into private EC2 instances by using a bastion host
+which is a public EC2 instance in the public subnets.
+So it's a two hop SSH.
+And in case you're using bastion host
+you must manage the instances yourself,
+there is no managed bastion host by AWS.
+That means you need to manage the failover
+and the recovery, and the security of these bastion hosts.
+But the new way now to avoid using bastion host
+is to use, as you know, SSM Session Manager
+because we can remote control our instances
+that have the SSM agent running on them,
+without using SSH, which is a better security model.
+Okay. And next we have IPv6.
+So IPv6, I'll try to explain to you in short,
+but all the IPv6 addresses are going to be public.
+And the reason why IPvC addresses were included
+and inserted and created, is that we are running out
+of IPv4 addresses.
+So IPv4 addresses are a total of 4.3 billion,
+but currently we're about to run out.
+And so we have invented IPv6 to have public addresses
+and we have a total of 3.4 times 10
+at the power of 38 addresses, which is a huge number, okay?
+So here is an example of a CIDR for an IPv6,
+it looks a lot more complicated than IPv4,
+you are not expected to know how this works exactly,
+but this is the same idea,
+on the left hand side, there is an IPv6,
+and on the right hand side there is a subnet mask.
+The addresses are seemingly random,
+and the idea is that because there's so many addresses
+online that can be IPv6, then no attacker can scan them all,
+it will take forever, and so the idea is
+that if you're using an IPv6,
+your instance is somewhat going to be protected
+from attacks as long as people can't guess its IP address.
+So this is quite a beautiful thing,
+and the internet is slowly transitioning
+from IPv4 to IPv6.
+Now, your VPC does have support for IPv6.
+How does it work?
+We can create a IPv6 CIDR for your VPC
+like the one I showed you above,
+and then you use an internet gateway, which as I said,
+supports IPv6 traffic.
+So, how to make this work?
+Well, in your public subnet,
+you're going to create an instance
+with IPv6 support, and that IPv6 will correspond
+to the CIDR that has been assigned to your VPC.
+And then you have to create a route table entry
+for ::/0, which is the shorthand of IPv6 also,
+for IPv4 was 0 0 0/0, and for IPv6 it's ::/0,
+which represents all IPv6, and so we're saying
+any traffic to any IPv6 is going to be sent
+to the internet gateway, which, remember,
+it supports IPv6.
+And so for your instances in private subnets,
+they're still private so they still don't have an IPv4
+and they still don't have an IPv6,
+but they may want to target external services
+that are only reachable using IPv6,
+in which case, we have to create something
+very similar to a NAT Gateway, but for IPv6
+which is called an Egress-Only internet gateway,
+in your VPC, and this has support only
+for IPv6, and then we had a route table entry
+from the private subnet for ::/0, so all IPv6,
+directly into the Egress-Only internet gateway,
+and this way our instances in our private subnets
+will have IPv6 support to reach to external services.
+And that's it.
+So all of this should be something you seemingly know
+for the VPC, those are why they're called the basics,
+and then in the next lecture we're going to view
+a lot more details on a few aspects of VPC
+that are going to be critical going into the exam.
+So that's it.
+I will see you in the next lecture.

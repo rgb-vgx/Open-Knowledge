@@ -1,0 +1,66 @@
+# 258. SageMaker Security: VPC's, IAM, Logging and Monitoring
+# Section: Security, Identity, and Compliance
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45287019
+# Caption: en_US (auto)
+
+There are some specific concerns around VPCs with SageMaker that you need to know about as well.
+So when you run a training job in SageMaker that's running within a virtual private cloud of some sort.
+Now, if you really need extra security, you could even use a private VPC for that.
+You can specify that when you're launching your training job.
+However, that creates some problems, right?
+Because SageMaker depends on having access to S3 to get its training data, and also to get the trained
+model artifacts for when it's actually deploying your model.
+So we need to make sure that we at least have connectivity between SageMaker and S3 within a private
+VPC.
+That means you'll have to set up S3 VPC endpoints to enable that communication, and you can still use
+custom endpoint policies and bucket policies within S3 to keep that secure.
+But you do need to set that up for SageMaker to work at all.
+Another consideration with security in SageMaker is that SageMaker notebooks are internet enabled by
+default.
+So by default, your notebook can go out to the internet and download data and do whatever it wants
+to it.
+That can be very convenient if you're downloading, you know, public data sets or what have you.
+But it can also be a security hole.
+So you can disable that while you're creating your SageMaker notebook.
+But again, you need to get out to S3 somehow in order for SageMaker to work at all.
+So if you do disable internet access on your notebooks, you're going to have to set up an interface
+endpoint that's also known as Privatelink, or maybe a Nat gateway, and set up outbound connections
+to actually allow your training and hosting to work.
+So remember, if you disable internet access from your notebooks, you're going to have to set up Privatelink
+or a Nat gateway to make sure that you can get through your VPC to get the outbound connections that
+you need for training and hosting to work.
+Also, your training and inference containers are also internet enabled by default.
+It is possible to enable network isolation on those as well.
+But again, you're going to lose S3 access by doing so, so you'll have to work around that somehow.
+Um, you know, it is a security concern in general that SageMaker has to get to S3 still somehow.
+So you can tighten that up using these techniques, but you still have to make sure that SageMaker has
+the S3 access that it needs.
+We mentioned using IAM with SageMaker, the identity and access management service.
+Here are a list of some of the specific permissions you can set that are related to SageMaker.
+So you can set a specific permissions for creating training jobs, creating models, creating endpoints.
+Creating hyperparameter tuning jobs, creating notebooks.
+You can lock these down or enable them to whatever degree makes sense for a given user.
+So if I want a user that I just want to be able to create notebooks but not actually deploy them, or
+create notebooks, but not actually create a huge training job that might cost a lot of money.
+Or I might just want to lock down hyperparameter tuning jobs because those in particular can get really
+expensive.
+You can do that through user permissions with IAM and SageMaker.
+There are also some predefined policies you can use, such as SageMaker read only access, SageMaker
+full Access administrator access, and a data scientist policy as well that you can use just out of
+the box.
+A brief mention of logging and monitoring again.
+So again, it's a good practice to use CloudWatch.
+In general, CloudWatch can log, monitor and alarm on your endpoints for actually doing inferences,
+and it can monitor the invocations of those endpoints and the latency of those endpoints as well.
+Very important for runtime performance, right?
+The health of the nodes themselves, the CPU available memory, things like that can also be monitored.
+And you can also use CloudWatch with ground truth which is kind of neat.
+So if I want to monitor how many active human beings, how many workers are actually working on my job
+and how much work they're doing, I can actually monitor that as well through CloudWatch.
+So kind of an interesting twist there.
+You usually think of CloudWatch as monitoring machines, but it can monitor the performance of humans
+doing your labeling tasks as well.
+And CloudTrail is again used for auditing.
+So that's going to record actions from your users roles and services.
+Within SageMaker, the log files containing that log information are delivered to S3, where they can
+later be used for auditing purposes

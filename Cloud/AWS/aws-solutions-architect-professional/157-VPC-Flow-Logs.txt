@@ -1,0 +1,153 @@
+# 157. VPC Flow Logs
+# Section: VPC
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/35038450
+# Caption: en_US (manual)
+
+So now let's talk about VPC Flow Logs.
+VPC Flow Logs allow you to capture information
+from IP traffic going into your interfaces.
+So that could be at the VPC level, the subnet level,
+or the elastic network interface, ENI level.
+So you have three kinds of flow logs.
+They're very helpful to monitor
+and troubleshoot connectivity issues
+happening within your VPC.
+So these flow logs can be sent to Amazon S3,
+CloudWatch Logs, and Kinesis Data Firehose.
+And they will capture information
+for also AWS managed interfaces such as ELB, RDS,
+ElastiCache, Redshift, WorkSpaces, your NAT gateway,
+your transit gateway, and so on.
+So in this graph, well, it's very simple.
+Your flow logs are at the VPC level, for example,
+or subnet or ENI level
+and they're sent to CloudWatch and Amazon S3.
+So this is what a VPC Flow Log looks like.
+So there is a format associated with it
+but there is a version, account-id, interface-id,
+source address, destination address, source port,
+destination port, protocol, packets, bytes, start,
+and action, and log-status.
+So this is metadata about the network packets
+going into your VPC.
+And you don't need to remember this at a high level, right?
+But let's have a look at what information
+we can get out of these flow logs.
+So the source address and the destination address
+help identify problematic IP.
+This is where you see if an IP is repeatedly being denied,
+maybe there is something wrong with that IP
+or maybe you're being attacked by a specific IP.
+Srcport and dstport helps you identify
+the problematic ports.
+Action is going to be either accept or reject,
+and so it's going to say whether or not it's a success
+or failure at the SG or NACL level,
+and we'll see this in the very next slide.
+And so this can be used, the VPC Flow Logs
+to do analytics on usage patterns
+or detect malicious behavior, port scans, and so on.
+Now, to query these flow logs,
+you have two ways of doing it.
+The best way is to do Athena on S3,
+or if you wanted to do a streaming analysis
+you could use CloudWatch Logs Insights.
+So here are some examples that you can have a look
+on your own time for Flow Logs.
+So how do we use Flow Logs to troubleshoot security group
+and NACL issues?
+Well, we look at the ACTION field.
+So let's have a look at the typical incoming request
+for your NACL and your subnet.
+So remember, your NACLs are stateless
+and your security groups are stateful.
+So what happens?
+Well, if we get an inbound reject,
+so we see that the inbound request
+coming from the outside to our EC2 instance is rejected.
+That can mean that either from this graph
+the NACL is refusing the request,
+or the security group is refusing the request.
+And this makes sense, right?
+But if we have a inbound accept and an outbound reject,
+it can only mean a NACL issue.
+Why?
+Well, because your security group is stateful,
+and if the inbound is allowed because of the accept,
+automatically, the outbound will be allowed
+thanks to the statefulness of your security group.
+So after outgoing requests, similar analysis, right?
+This is the diagram we know already.
+And so if you get an outbound reject,
+then you have a NACL or a security group issue.
+But if you get an outbound accept and an inbound reject,
+then it must mean a NACL issue.
+So let's have a look at a few architectures
+for your VPC Flow Logs.
+So they can flow into CloudWatch Logs, as we know.
+And then we can use something called
+CloudWatch Contributor Insights,
+for example, to find the top 10 IP addresses
+that contribute to the most amount of network
+on your VPC.
+Or an ENI, or whatever you want.
+You can also use VPC Flow Logs to send them
+again into CloudWatch Logs.
+Here we can set up a metric filter to look, for example
+for the SSH or the RDP protocols.
+And if we realize that there is a lot more SSH
+or RDP than usual, then trigger a CloudWatch alarm
+and send an alert into an Amazon SNS topic,
+because something fishy may be happening on your network.
+Or we can use a VPC Flow Log,
+and then we send everything into an S3 bucket for storage,
+and we use Amazon Athena
+to analyze the VPC Flow Logs with SQL.
+And we can even visualize that with Amazon QuickSight.
+So there is one case where you have VPC Flow Logs
+with a NAT gateway,
+and it turns out that you have this use case
+and it seems weird to you.
+So the VPC Flow Logs show Action = ACCEPT
+for incoming traffic from public IP addresses
+onto your VPC.
+But you know that NAT gateways don't accept traffic
+from the internet.
+So you're wondering if your NAT gateway
+is actually accepting inbound traffic from the internet
+because you still see it in your VPC Flow Log.
+So this is the architecture where the internet goes through
+and talks to your NAT gateway
+and maybe to your private subnets,
+so you wanna verify this.
+So in that case, that is possible if the inbound traffic
+is permitted by the security group
+or the NACLs of your NAT gateway itself.
+But when it arrives to your NAT gateway,
+it's going to be dropped
+because the NAT gateway itself doesn't allow traffic.
+So to confirm this behavior,
+you run the following query
+in your CloudWatch Log Group's insights.
+You do a filter, and in the filter you look
+for the destination address to be xxx.xxx
+where this is the first two octets of your VPC CIDR.
+So you look at destination being within your VPC,
+and your source address to be like the public IP
+that's trying to reach you.
+So you're going to analyze whether or not
+you see any traffic from public IP
+that's trying to reach you onto your VPC.
+And then you sum the bytes as the byte transferred
+by source address and destination address.
+And this is going to view a list of all the traffic
+between the public IP and your VPC.
+And it turns out that you will see the traffic
+on the private IP of the NAT gateway
+because it is accepting traffic
+because of the security group or the network ACL.
+But then you will not see any other line than this one,
+because the unsolicited traffic
+onto your NAT gateway has then been dropped.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

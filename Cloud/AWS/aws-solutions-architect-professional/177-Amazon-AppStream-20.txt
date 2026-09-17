@@ -1,0 +1,53 @@
+# 177. Amazon AppStream 2.0
+# Section: Other Services
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34783138
+# Caption: en_US (manual)
+
+And so next, let's talk about AppStream 2.0.
+This is a desktop application streaming service.
+The idea is that you're gonna have a desktop application,
+but you want to deliver it to any computer
+without acquiring or provisioning infrastructure.
+The way this works is that this app is going to be delivered
+from within a web browser,
+and this is why it's called AppStream,
+because your web browser is going to stream the application
+that's going to be run, but from your web browser.
+I'll give you a very graphical example,
+so I used the AppStream service to open up Blender,
+which is a desktop application,
+and as you can see, Blender was streaming
+from somewhere into my Chrome web browser,
+and I was able to use Blender as is.
+So AppStream is really to stream applications,
+whereas Workspaces is to get a true desktop
+on which you can run any application you want.
+So let's compare AppStream's 2.0 and Workspaces.
+Workspaces is a fully managed VDI and desktop.
+The users will connect to the VDI
+and open native applications,
+or applications that have been packaged
+using Workspace Application Manager, or WAM.
+The Workspaces can be on demand
+and then it will turn off whenever we're done, or always on,
+whereas AppStream's 2.0 is going to be to stream
+a desktop application into your web browsers,
+and so you don't need to connect to a VDI,
+and it works with really any device that has a web browser,
+so you can stream a desktop application for Windows
+onto a Mac device through a Chrome web browser, for example.
+And the cool thing is that each
+of these AppStream applications can be configured
+to run on an instance type per application type.
+So maybe if you're running something like Photoshop,
+you need more CPU, more RAM, and more GPU,
+you can configure your AppStream container
+to have more of that,
+and so that gives you full control
+over how much power should be allocated
+to the application that you're streaming.
+And if you make the differences between the two,
+between Workspaces and AppStream 2.0,
+then you're good to go for the exam.
+All right, that's it.
+I will see you in the next lecture.

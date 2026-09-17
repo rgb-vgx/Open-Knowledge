@@ -1,0 +1,29 @@
+# 70. Amazon S3 - Storage Class Analysis
+# Section: Storage
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/35038530
+# Caption: en_US (manual)
+
+So just a quick lecture around S3 Analytics.
+And in the exam you may see it being called
+just Storage Class Analysis, so these two are equivalent.
+And it's a feature to help you decide
+when to transition objects into the right storage class.
+So it's going to give you recommendations to transition data
+for the Standard and the Standard IA storage class,
+but it doesn't work for One-Zone IA or Glacier.
+It's a report that's updated daily and it may take
+between 24 to 48 hours to start seeing the data
+and analyze it within the S3 buckets
+You can also visualize all of its data
+into Amazon QuickSight, which has integrations
+with this dataset.
+So using the Storage Class Analysis feature
+is a really good first step to put together Lifecycle Rules
+or to improve them and to figure out the sweet spot.
+To summarize, we have our S3 bucket
+and we have Storage Class Analysis on top of it,
+And then after a while, a CS report is going to be created,
+which gives us insight into which storage class we have
+in our bucket on which object as well as the age and so on.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

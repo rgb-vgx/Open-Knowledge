@@ -1,0 +1,11 @@
+# 279. Intro: Management and Governance
+# Section: Management and Governance
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45287033
+# Caption: en_US (auto)
+
+In this next section, we'll cover management and governance ways to monitor how your systems are being
+used with CloudWatch and CloudTrail, and how to visualize that information with Amazon QuickSight.
+How to manage the configuration and deployment of your systems with AWS config and AWS CloudFormation,
+and how to manage your costs with AWS budgets and Cost Explorer.
+We're getting close to the end of the course, so hang in there.
+Let's dive in to Management and Governance.

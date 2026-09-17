@@ -1,0 +1,83 @@
+# 108. Routing Policy - Geoproximity
+# Section: Route 53
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/26099214
+# Caption: en_US (manual)
+
+So now, let's talk about another feature
+which is called Geoproximity Routing.
+And it can be a little bit confusing
+but I will try to explain with diagrams
+in the very next slide to make it clear.
+So this allows you to route traffic to your resources based
+on the geographic location of your users and resources.
+So the idea is that with this policy,
+you're able using a number called the bias
+to shift more traffic to resources
+based on specific locations.
+And it will show you this in a diagram
+in the very next slide.
+So the idea is that to change the size
+of a geographic location, you need to specify a bias value.
+If you want more traffic to go to a specific resource,
+you expand the bias value by increasing it.
+And if you want less traffic to go to your resource,
+you shrink it, you decrease the bias values
+to a negative number.
+So the resources can be resources from AWS,
+in which case you specify the region they're in
+and automatically a list will compute the correct routing.
+Or if there are none, AWS resources exercise
+such as your on premises data center.
+Then, you will just need to specify the latitude
+and longitude, so the AWS knows where they are right now.
+And then it chooses feature,
+you need to use the advanced Route 53 Traffic
+flow to be able to leverage the bias.
+So the diagram should make everything more simple.
+And to me, this is what you should remember.
+So let's take an example of a resource in us-west-1,
+and one resource in us-east-1.
+And the bias is set to zero in both regions.
+So that means that if you have users all around the US
+trying to access these resources,
+there's going to be a line dividing the US is too into two,
+and users left of that line will go to us-west-1,
+and user rights of that line will go to us-east-1.
+Now, this is simple, this is when there is no bias, okay?
+And this looks like going to the closest resource region
+based on the user location.
+But thanks to the bias, we can have the same setup
+but a different way to have the users routed
+to different regions.
+So let's take an example.
+We have us-west-1 and us-east-1,
+and the bias is set to zero in us-west-1,
+but we're going to have a positive bias of 50 in us-east-1.
+And we've seen that the bias make more users
+and more traffic to that resource.
+Why?
+Well, because of the bias now the quote in quote,
+dividing line between the first.
+The two resources is going to be a little bit more
+to the left because of the higher bias of us-east-1.
+And so that means is that's the user left
+of that line can go to us-west-1,
+but the users right or that one will go to us-east-1.
+So what we do this?
+Well, for example, you would set your resources
+all around the world and say you needed to shift
+more traffic to a specific region.
+What you would do is that you will use
+a Geoproximity Routing Policy to increase the bias
+in that specific region.
+And therefore, have more users dragged
+and more users have traffic attracted to that region.
+So what you to remember going into an exam is
+that the Geoproximity Routing is really helpful
+when you need to shift traffic
+from one region to another, by increasing the bias.
+Okay?
+So hopefully the diagrams helped you make more sense
+of the Geoproximity Routing Policy.
+I hope you liked this lecture,
+and I will see you in the next lecture.

@@ -1,0 +1,154 @@
+# 177. Vector Stores and Embeddings with Amazon Bedrock Knowledge Bases
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45286363
+# Caption: en_US (auto)
+
+So a critical component of Rag is the data store that you're storing stuff in.
+So again this really depends on your ability to retrieve relevant results to the prompt that you're
+given.
+And there's a more than one way to do it right.
+So now in the context of bedrock we call this a data store that's used by a knowledge base.
+So for whatever reason bedrock doesn't call it retrieval augmented generation, even though that's what
+it is.
+Now.
+You could just use whatever database is appropriate for the type of data that you're retrieving, right?
+So if you have graph data like recommendations or for products or relationships between items or a knowledge
+graph of some sort, a graph database is a great choice and generally that will produce really good
+results.
+Neo4j's being one example of a graph database, you can also use OpenSearch or something for traditional
+text search just using old school tfidf.
+That's fine.
+Um, you know, if you just want to do it the old fashioned way and search text using Tfidf or any other
+method, you can just do it the way you've always done search before.
+That's fine.
+And in fact there are hybrid approaches that combine sort of these older search techniques with a newer
+semantic search techniques and but that's really how pretty much every example you see these days does
+it using a vector database and semantic search.
+So why?
+Well, because vector databases leverage AI.
+So what we're storing in these vector databases are embeddings that sort of encode the underlying meaning
+of the information you're storing and that leverages AI.
+So in theory that gives you better results.
+Now notice that Elasticsearch and OpenSearch can function as a vector database.
+And that's why you'll often see OpenSearch used within knowledge bases in Amazon bedrock.
+So before we can understand how vector databases or vector stores work, we first need to review what
+embeddings are, because those are the vectors that we're storing.
+And embedding is just a giant vector that's associated with your data.
+So if you have some chunk of text that you're storing in a vector database, you're associating an embedding
+vector with that text.
+So we can use to search against.
+And this can be very high dimensions.
+So we can have a vector that's, you know, thousands of dimensions in size.
+And this example on the right here, we're just using two dimensions so you can actually wrap your head
+around it.
+But you can think about it as a point in multi-dimensional space.
+Typically, like I said, hundreds or even thousands of dimensions.
+That represents, if you will, the meaning of the text that you're storing associated with that vector.
+Now, these are computed such that items that are similar to each other are close to each other within
+that space.
+So things that are semantically similar are going to be close together geometrically within this vector
+space.
+And that's why we call it semantic search.
+So taking a look at this example on the right, the words potato and rhubarb might be pretty close to
+each other in that vector space, where those vectors to those locations in that space are the vectors
+that we're talking about.
+The embedding vectors for potato and rhubarb, they are just geometrically close to each other because
+they have a similar meaning.
+They're both, you know, vegetables or whatever.
+Similarly, we might have science fiction oriented stuff up in another section of our space, you know,
+the Starship Enterprise, Spaceballs, The Orville, those all might be in a very similar neighborhood
+within this vector space because they're talking about science fiction spaceships right now.
+How do you compute these embedding vectors?
+Well, there are embedding foundation models like Titan, for example, that can compute these on mass.
+So it's actually relatively inexpensive to say, here's a pile of text.
+Go give me a bunch of embedding vectors that I can use to store these in a vector store.
+And this is easy to do because if you remember how transformers work, the first stage is to transform
+your.
+That's not why they call them transformers, but we are transforming your prompt into tokens which correspond
+to embedding vectors.
+So embedding is sort of baked into the capabilities of all these large language models.
+From the get go.
+We're just repurposing them for storing our information in a vector store for semantic search here.
+So embeddings are vectors right.
+So how do we store them.
+Well we store them in a vector database.
+Right.
+And that's just going to store your original text data or whatever it is.
+It could be images as well alongside their computed and embedding vectors.
+So we can find things that are semantically similar to each other.
+And again, this leverages the embedding capability that your underlying model already has when it was
+being trained.
+So usually that's a pretty easy thing to get when you're building a generative AI system.
+So retrieval when you're actually doing a lookup in a vector database will work like this.
+So first you need to create an embedding vector for the thing you want to search for.
+So whatever your prompt is you need to convert that to an embedding vector.
+And then you just query the vector database for the top items that are close to that vector you're searching
+for.
+You get back the top and most similar things.
+So that's basically the same thing as k nearest neighbor.
+And that's what we call vector search.
+Now you might say to yourself self what if I have, you know, thousands or millions of things in my
+database?
+Do I really have to do a linear search through every single vector and find the ones that are most close
+to the one that I'm searching for?
+Well, no.
+There are some optimizations that these vector databases typically employ to narrow things down to a
+smaller set that you need to search through.
+So, you know, basically there'll be some underlying probability of it being close to a given vector
+that it starts from, and you don't actually have to search through everything to find those k nearest
+neighbors.
+Now, there are some a lot of implementations of vector databases out there.
+Most popularly, you can coerce an existing database to do vector search.
+So a lot of database companies out there have added vector capabilities in response to the rise of generative
+AI.
+So OpenSearch and Elasticsearch being a notable example.
+So OpenSearch does have the ability to store and search by vectors.
+And that is what bedrock is going to steer you toward because OpenSearch is an Amazon product, right?
+So, um, it does a fine job.
+OpenSearch is a perfectly valid choice for doing that, but you can also get SQL databases to do it.
+You can get Neptune to do it.
+You can get Reddis to do it.
+MongoDB, Cassandra.
+They've all adapted to this world of vector databases and semantic search as an option.
+There are also purpose built vector data stores out there, such as pinecone.
+Um Waveaid is another commercial alternative chroma Marco Vespa quadrant.
+Usually I see pinecone um in this context.
+More than anything else, they seem to be winning the battle, but you can store this in whatever database
+you want and tie bedrock to it.
+If you're doing a knowledge base with bedrock, let's take another look at an example just to drive
+it home as to what's going on here.
+Let's say that I have a rack system that has all the scripts of Star Trek in it, and I want to ask
+it data, referring to Lieutenant Commander Data.
+Of course, from Star Trek The Next Generation.
+Tell me about your daughter lol.
+The first thing I would do would be to compute an embedding vector for that prompt.
+So I'm going to go to my foundation model that can do text to embedding and say take that prompt, give
+me an embedding vector.
+And that might be a vector with thousands of dimensions right.
+I then query my vector database of everything data ever said in Star Trek The Next Generation, and
+it's going to do a semantic search there.
+And all that is is a fancy way of saying, give me the top vectors that are closest to my embedding
+vector that I'm searching for, and those are going to be my top results.
+That's all there is to it.
+It's just geometrically saying, what is the distance between all these vectors?
+Give me the closest one to the thing I'm searching for.
+Usually that's done using a cosine metric if you want to get technical.
+What I get back are the top end results that are closest to that embedding vector.
+So these might be script lines for example, that are relevant to the prompt.
+So things that are about LOL presumably will come back.
+Then I just embed the responses that came back into the prompt.
+So I say you are commander data from Star Trek.
+How might data respond to the question data?
+Tell me about your data lol.
+Taking into account the following related lines from data.
+And then I would just list the top five results or whatever it is into that prompt.
+Now you can see there's a lot of things that can influence your quality of the result here, right?
+What choice do I have for K?
+How many of those similar lines am I including in the prompt.
+That's going to make a difference there, right.
+And how relevant they are is going to make a big difference.
+How I phrase that prompt is going to make a difference.
+So again, these systems can be rather sensitive in practice.
+But generally you're taking the original prompt.
+You're going to take a query and retrieve the relevant data from that prompt and include that into the
+prompt itself.

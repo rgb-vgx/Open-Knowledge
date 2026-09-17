@@ -1,0 +1,86 @@
+# 244. Amazon CloudWatch - Alarms - Hands On
+# Section: Management and Governance
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40307128
+# Caption: en_US (auto)
+
+Okay so we are in CloudWatch alarms.
+So let's go and create an alarm.
+So first of all I'm going to create an EC2 instance very quickly.
+And we're going to create an alarm on top of the CPU utilization.
+So we'll go ahead and create an EC2 instance type T2 micro I will go quickly type review and launch
+and then say yes, I have this.
+So we don't need a key pair or anything like this.
+We just want the instance to be launched.
+And the idea is that we want to create an alarm that will terminate the instance if the
+CPU goes to 100%.
+So let's create this alarm.
+So we need to select a metric.
+And so for this we need to choose a metric.
+So we need to go and find our EC2 instance.
+So this is our instance ID right here and search for it.
+And I'm maybe a little bit too quick okay.
+So let's wait for the instance to be launched.
+I will go into EC2 per instance metric and then I will wait for it to be populating.
+So it took about five minutes for some metrics to appear in my CloudWatch dashboard for my instance.
+So now I can probably refresh this page and I will get the chance to find the metrics I'm looking for.
+So let me select a metric and then paste the instance in perfect.
+I have it and I will go and find the CPU utilization of my instance.
+So this is this metric right here okay.
+We'll select this metric.
+As we can see we have it here.
+And then we can choose a way to compute this metric.
+So average sum maximum and so on the period we want to evaluate this alarm on.
+So five minutes is good because this metric gets populated every five minutes.
+If we don't enable detailed monitoring now we get some conditions in terms of the threshold.
+So is it static or is it anomaly detection.
+Is it greater than equal than and so on.
+So I will say for example, if you're a greater than 95% for a long time.
+So for and here you can say three out of three.
+So that means that for 15 minutes you're stuck at 95%.
+Then probably something is up with this machine.
+And so in that case I could choose a notification, I could choose an autoscaling action, I could
+choose an EC2 action or a systems manager action.
+But I'm going to choose an EC2 action okay.
+And I will say, hey, if you are in alarm, okay, then just terminate this instance because
+maybe I know that my application sometimes has a huge failure and the CPU utilization will be at 95% or 100% for a very long
+time.
+And the only way to resolve this is to just terminate the instance.
+So I will choose this and then click on next and say terminate.
+You see to on high CPU.
+Click on next to verify everything and we're good to go.
+So now this alarm obviously does have insufficient data.
+So we need to wait 15 minutes for it to be okay.
+And it's not going to be triggered unless we make it so.
+So we could go into the EC2 instance and launch a way to get the CPU very high for 15 minutes.
+But this would be very, very long.
+Or we can use the API call named set alarm states to really see what would happen if this alarm went
+into the breach phase.
+So let's have a look.
+This is the history of the alarm okay.
+And what I'm going to do is that I'm going to set the alarm state.
+So I type CloudWatch set alarm state.
+And we look at the API reference.
+And so we need to do set alarm state.
+The alarm name and the state value and the state reason.
+So we'll do.
+In here.
+So AWS CloudWatch set alarm status.
+And then we need to set multiple parameters.
+So the alarm name is going to be.
+This one.
+Then the alarm.
+So the state value.
+Is going to be alarm and the state reason is going to be testing.
+We press enter.
+And now this alarm if we refresh this page.
+Is now in the alarm state.
+As you can see, it says in alarm.
+And so the action is when an alarm terminate the instance.
+And so if you look at the history, it says that the alarm updated from okay to an alarm.
+And then an action was made and it is successfully executed, the action to terminate my EC2 instance.
+So if I go into my EC2 instances here and I refresh, as you can see, it's shutting down and is being
+terminated because there was an alarm that was triggered on top of this EC2 instance.
+And we did set up the alarm to do this specific action.
+So that's it.
+I hope you liked it.
+I hope this makes sense to you and I will see you in the next lecture.

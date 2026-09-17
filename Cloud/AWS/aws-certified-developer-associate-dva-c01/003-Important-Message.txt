@@ -1,0 +1,18 @@
+# 3. Important Message
+# Section: Course Introduction - AWS Certified Developer Associate
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/12203058
+# Caption: en_US (manual)
+
+So just a quick lecture about course review. Very shortly
+Udemy will ask you to give your opinion about this course and ask that you put a star rating. The star rating
+represents the entire course overall not just if you like what you've just seen
+So basically these reviews, they mean a lot to me.
+And they represent your opinion about the course. They're super important and I would love one from you
+but if you're not ready to rate the course.
+Just click on "ask me later" and the prompt will come back maybe half an hour or an hour later.
+Overall in this course we're going to start by the fundamentals.
+And so if you're already a certified solutions architect you can skip the few fundamental lectures or sections
+or you can just watch them if you want a quick refresher.
+OK.
+I really hope you'll enjoy this course.
+I will see you in the next lecture.

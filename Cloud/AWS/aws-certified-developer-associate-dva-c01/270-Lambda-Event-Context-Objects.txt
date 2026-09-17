@@ -1,0 +1,65 @@
+# 270. Lambda Event & Context Objects
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/36527842
+# Caption: en_US (manual)
+
+So let's understand a very important concept,
+which is event
+and the context objects in your Lambda function.
+So let's take an example where your Lambda function
+is invoked, for example, by a EventBridge rule.
+So what's going to happen
+is that EventBridge is going to create an event
+and that event is going to be passed to your Lambda function
+and your Lambda function will receive that event,
+and it's called the event object.
+And the event object includes a lot of detail around, well,
+the event itself.
+Where it was emitted from
+and the service itself will include a lot
+of data related to that event in the event.
+But we also have the context object.
+So this is the second part of your Lambda function
+and this is more some metadata around your function,
+such as the request ID from AWS, your function name,
+the log group associated with your Lambda function,
+the memory limit, and so on.
+So this event object and this context object
+are very different but very complementary.
+So the event object is a JSON-formatted document
+that contains data that the function is going to process.
+So the invoking service, for example,
+EventBridge or SQS or SNS or whatever you want
+will contain all the information needed
+for your Lambda function to process the events.
+Then based on the runtime you're using,
+this event object is going to be converted into an object.
+For example, if you're using Python,
+it's is going to be converted into a dictionary.
+So any kind of input, arguments
+or invoking service arguments are going to be contained
+in the event object.
+The context object, on the other hand,
+provides methods about the data
+of the invocation itself and the runtime environment.
+So this is passed to your Lambda function at runtime
+and from the context object,
+we can get the AWS request ID, the function name,
+the memory limit in megabytes and so on, and we can use
+that concept information as well in our Lambda function.
+So in your code, you will see, for example, a handler.
+I'm using Python,
+so the handler has an event and has a context,
+and the event will have information, for example,
+such as the source of the event or the region
+of the event and so on that we can print
+to the console or the context will have information,
+such as the request ID, the function ARN, the function name,
+the memory limits in megabytes, and then, for example,
+some information about CloudWatch Logs,
+such as the stream name or the group name.
+So now you'll be able to choose the correct event
+or context to get the specific information requested
+from you at the exam.
+Okay, that's it for this lecture.
+I hope you liked it and I will see you in the next lecture.

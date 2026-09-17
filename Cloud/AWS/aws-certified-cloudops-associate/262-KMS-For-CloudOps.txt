@@ -1,0 +1,90 @@
+# 262. KMS For CloudOps
+# Section: Security and Compliance for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27516348
+# Caption: en_US (manual)
+
+So here are a few additional things
+you need to know
+about KMS regarding the CISSP exam.
+So, first of all,
+you can not change your encryption key used by an EBS
+volume, if you wanted to do so,
+you will need to create an EBS snapshot,
+and then you create a new EBS volume.
+And from it, you specify a new KMS key.
+So this is very similar to what we've seen.
+We would create a snapshot
+from an already encrypted EBS volume,
+which would have the same CMK being used.
+But then when we create a new volume,
+we can decrypt and reencrypt it with a new CMK.
+And this is how we will do to switch the KMS key
+from one volume, from one volume to another.
+The second thing that we've seen is around sharing KMS
+snapshots that are encrypted across accounts.
+So to do so,
+we need to share it with your target accounts,
+but also create a key policy to allow the target accounts,
+to access our snapshot.
+So here is what's happening.
+We're going to create a key policy on our CMK to allow
+another accounts so specified in it,
+to do the encrypt decrypt operations and so on.
+And therefore, when we share our, for example,
+RDS DB snapshot, that's encrypted,
+the other accounts can access it because the CMK accessible.
+And therefore we can create a DB instance from that
+encrypted snapshot into our other accounts.
+Something we haven't seen yet is around KMS key deletions.
+So you can schedule a CMK for deletion,
+and then you have a waiting period
+between seven and 30 days.
+This is in case you want to cancel the deletion because you
+realize that you still need the CMK.
+So when you go into a deletion,
+the first state is going to be pending deletion
+during the waiting period
+and during that waiting period,
+this CMK can not be used for any cryptographic operations.
+That means that if you have an objective, Amazon is free.
+That's a KMS encrypted with that CMK then this is going to
+fail, and this is something the exam will test you on.
+And if the key is planned for rotation,
+then it will not happen.
+Now, if you realize that somehow
+you are indeed using that same carrier
+you want to use it,
+then you can console the key deletion.
+And so this is why it's always very important to maybe
+disable your key first, instead of deleting it,
+if you're not sure.
+And so cool automation you can build is around figuring out
+whether or not after being deleted.
+The key is still being used.
+So for this, when we do,
+and we delete the key
+and it goes into the pending deletion state,
+we're going to set up a CloudTrail on top of it.
+So that's for example,
+if a user wants to use a cryptographic operation for our
+key, for example, a decrypt or an encrypt operation,
+then the API goal is going to be denied.
+And we are going to log that API call into CloudTrail.
+Now CloudTrail will send its logs into CloudWatch logs,
+and we can set up a metric filter to look for the keywords.
+The key is pending deletion.
+Now, if this metric filter
+has any occurrences other than one,
+then set up a CloudWatch alarm and trigger it
+to for example,
+send us an SMS alert into a email notification.
+And with this whole schedule what's going to happen is that
+every time you delete a CMK and you implement this solution,
+in case someone tries to use a CMK,
+you're going to receive an alert and then you can drill down
+and maybe understand that this CMK can not be deleted
+because it is still being used by someone else,
+which is a cool type of automation.
+So that's it,
+I hope you liked it.
+And I will see you in the next lecture.

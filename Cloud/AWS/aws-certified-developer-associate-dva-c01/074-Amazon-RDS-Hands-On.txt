@@ -1,0 +1,234 @@
+# 74. Amazon RDS Hands On
+# Section: AWS Fundamentals: RDS + Aurora + ElastiCache
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851262
+# Caption: en_US (manual)
+
+So let's go ahead and create a database.
+So I'm in the Aurora and RDS console.
+On the left-hand side, I click on Databases,
+and then I click on Create database.
+And as we can see here, we have different options.
+So it can be a full configuration or an easy create.
+Because we want to see the different options,
+we're going to go over full configuration.
+Here you can select the engine options.
+So you have Aurora, either MySQL or PostgreSQL-compatible.
+Then you have MySQL, PostgreSQL,
+and other types of engines.
+For this hands-on,
+we're going to select MySQL to keep it simple.
+Then you scroll down, and then for engine version,
+just choose whatever default there is right here.
+Next, for templates, we can have Production,
+which gives us access to more settings,
+or Dev/Test, or Free tier.
+So Free tier is going to be what we're gonna be choosing.
+But if you take the Production setting,
+what's going to happen is that you have the option
+to have Multi-AZ DB instance deployment with two instances,
+or even Multi-AZ DB cluster deployment
+with three instances.
+So these are production.
+We don't need this right now,
+but it gives you an idea of the kind of setup you can have
+across multiple availability zones.
+But we're going to use Free tier.
+And as you can see, the only thing we can use right now
+is Single-AZ database instance deployment, one instance.
+Alright, perfect.
+Let's scroll down.
+We keep everything as default for database identifier.
+Master username, yes.
+And then credentials management.
+So here we have the option to either create our password
+and then have RDS manage the password,
+or we can also have the password managed directly
+by AWS Secrets Manager.
+So this is the most secure,
+but there is a cost to using AWS Secrets Manager.
+So we won't use this; we'll use self-managed,
+but you should know that it's an option anyway.
+So for the master password, I will just enter password,
+and I will confirm the master password.
+It's very weak, I know.
+Then we'll just enable only password authentication.
+But as you can see, you have the option to also have IAM
+to authenticate to the database.
+Then you scroll down, and for instance configuration,
+we have information around, well, what's free.
+So we'll use the db.t4g.micro,
+maybe you have a db.t3.micro,
+maybe you have something else.
+It doesn't matter.
+Just choose whatever the default is right now.
+For storage type, we'll have 20 gigabytes.
+But then as you can see,
+under additional storage configuration,
+there is the option to enable storage autoscaling.
+And that means that if you use all the storage,
+you can autoscale up to, for example,
+1000 gigabytes of storage.
+For connectivity,
+we'll select Don't connect to an EC2 compute resource.
+We'll select the default VPC,
+and we don't change anything.
+For subnet group, no, we don't.
+We keep it as default.
+And for public access, we'll say yes,
+because we want to be able
+to publicly access our RDS database with a public IP.
+For the VPC security group, we will choose Create new,
+and I'll call this one demo-rds.
+And then we don't have any preference for the AZ.
+We don't want an RDS proxy.
+And for additional configuration, we're good to go.
+We'll use port 3306.
+That is the port that we're going to connect
+to on our MySQL database.
+Let's scroll down.
+We choose standard insights from monitoring.
+As you can see, we can enable enhanced monitoring
+and also export the logs if we wanted to.
+And then for the additional configuration
+under database initial name, enter mydb.
+For estimated monthly cost,
+it gives you information around the RDS Free Tier,
+and this is available for 12 months
+for these instance types.
+So we're good to go.
+Now let's click on Create database.
+So while my database is being created,
+let's go ahead and download SQL Electron.
+And this is a SQL client that we're going to use
+to connect to our database.
+So very simple.
+You're going to click on Download GUI,
+and then click on it.
+Take the latest version for whatever platform you have.
+So you have latest Windows,
+and then for Mac, it's going to be a DMG.
+So I'm gonna do this one, then open it and install it.
+Okay, so my database is now created.
+It took a little bit of time,
+and now, as you can see, it is available.
+And so what I'm going to show you are a few options.
+So first of all, we have the endpoint right here
+and the port 3306.
+And it's linked to this security group.
+And this security group,
+if you click on it and look at the inbound rules,
+we can see that we have an inbound rule here
+on TCP port 3306.
+So that's great, okay?
+Coming from just my IP address.
+Okay, so you should of course modify this security group
+if you have problems connecting to your database instance
+to maybe allow it from anywhere (IPv4).
+Okay.
+So now let's take this endpoint
+and we're going to connect to it using SQL Electron.
+So using SQL Electron, I'm going to add a new database.
+I'll call it RDSDemo.
+It's a database of type MySQL.
+And then for the server address, I'm going to enter
+what I have right here on port 3306.
+The user is admin, and the password for me was password.
+And then the initial database is myDB
+as I entered it from before.
+Let's click on Test, and the connection is successful.
+If it's not successful, please have a look
+whether or not your database was set
+to be a public database, number one,
+and number two, have a look at your security group settings
+to make sure that your IP is allowed in.
+So let's save this and connect to our database.
+And now I'm connected into my database,
+directly into myDB,
+which was the database that was created.
+And in here, I could go ahead
+and enter some CREATE TABLE statements.
+So CREATE TABLE mytable,
+and then just a name of VARCHAR(20),
+and a first_name of VARCHAR(20).
+So it's just a very quick statement
+just to show you how SQL works,
+but this is definitely out of scope for the exam.
+Execute this.
+So now we have my_table that has been created,
+and then we don't have any content in it, okay?
+But you could have an INSERT statement
+to insert some data into your table.
+So you would say, for example,
+enter the value ('marrek'),
+and then the value here ('Stephane').
+Execute this.
+And then if you click on Select rows,
+then you see that my_table has my name and my first name
+to be marrek and Stephane.
+So this is how we would use an RDS database with MySQL.
+But again, out of scope of the exam,
+I just want to show you the full picture
+of using SQL Electron.
+So back in here, my RDS database is fully managed,
+so this is great.
+We can use it.
+This is amazing.
+Other things we can do that are worthy are
+to create a read replica directly from this database.
+So we can create a read replica,
+and then this read replica would allow us
+to have more read capacity for our database,
+which would be very, very helpful.
+And do we want whether or not that database to be Multi-AZ
+for recovery purposes?
+So I'll keep it as no and cancel it.
+Next, we can have a look at monitoring.
+And monitoring, for example, has the CPU Utilization.
+And as we can see,
+while the CPU Utilization is monitored by my database,
+and we can monitor this, for example,
+for scaling our database
+if in case we have too many connections into it.
+We can have a look at the database connection count as well
+to see how many clients are connected into our database.
+And a lot of metrics overall, okay?
+Other things you can do with RDS
+is around creating snapshots.
+So you can take a snapshot,
+and this will snapshot your database,
+and you can restore it wherever you want.
+You can restore it to a point in time for your database,
+or you can even migrate a snapshot
+if you wanted to migrate it into a different region,
+for example.
+So all these are a bunch of options that we can use.
+But as we can see, the whole power of RDS is
+to manage databases for us.
+To have replicas, Multi-AZ,
+you know, we can increase the instance type
+as we go along, and so on.
+And that all comes very handy
+from a managed service perspective.
+So you've seen all you need to know
+for your RDS database.
+I hope you liked it.
+And just to finish yourself,
+please make sure to delete the database.
+So to delete it,
+first you need to remove the termination protection.
+So you go to Modify,
+and then at the very bottom, you will scroll down
+and find the delete protection setting.
+So here it is.
+We'll disable it, press Continue,
+and then Apply immediately.
+And then once the delete protection is done,
+you can go ahead and delete this database.
+You can remove creating a final snapshot
+and then say delete me,
+and acknowledge the fact that upon deletion,
+everything will be lost.
+Click on Delete, and you're good to go.
+So that's it for this lecture.
+I hope you liked it,
+and I will see you in the next lecture.

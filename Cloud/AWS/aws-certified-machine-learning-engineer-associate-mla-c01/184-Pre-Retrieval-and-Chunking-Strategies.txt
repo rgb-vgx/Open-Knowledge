@@ -1,0 +1,102 @@
+# 184. Pre-Retrieval and Chunking Strategies
+# Section: Building Generative AI Applications with Bedrock
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57865669
+# Caption: en_US (auto)
+
+So what we've done so far is known as naive RAG. So we're just taking straight up RAG,
+we're taking a prompt, retrieving relevant context, and augmenting our prompt to generate an answer.
+Very simple, right? There are more complicated approaches though to try to improve upon that,
+and we call that set of approaches advanced RAG. The idea here is that we take the R and
+RAG the retrieval, and we split that up into different components. So there's a pre-retrieval
+stage, and that actually refers to a couple of different things. So before we actually retrieve
+a context, there's a couple of things that we can try to optimize. One is how we're indexing that
+data that we're retrieving. So before we start, we have a data store somewhere, a vector database,
+a graph database, some external service or system. If we think about how that data is stored and how
+it's organized, that might impact the quality of the results of the context that we get back,
+right? So we need to think about the data granularity, how we're chunking that data up
+and storing it, and what sorts of bits of information, what the scope of that information
+is that we're retrieving as the context. We can also think about what data are we indexing in the
+first place. Are we missing data? Is there information that we're missing out on? Like maybe
+you have PDF documents that you're extracting data from and you're only extracting the text.
+What if there's information in the tables and the images in that data that you want to capture as
+well? Maybe you need to be a little bit more thorough about what data you're capturing
+and actually extracting before you store it in your data store. There's also the idea of query
+rewriting. So that's also in the pre-retrieval state. So if I take in a query and I say,
+wait a minute, this query doesn't make sense. It's asking two different things that are
+completely different from each other. Or maybe it has a lot of irrelevant filler words
+that don't really help matters. Maybe I need to rewrite that query to split it up into two
+queries or more. Or maybe I just need to summarize that query or shrink it down a little bit to
+make it easier to find relevant bits of context associated with it. Those are all in pre-retrieval.
+Then we do the actual retrieval from our data store. And then we can also optimize the post
+retrieval state. So do I need to massage those results that came back from the context in some
+way? Do I need to winnow it down to the most relevant content before I pass it on to the
+actual LLM to generate a response? So let's go into more detail on how that might work.
+Let's first talk about data granularity and chunking. So when we're storing stuff into
+our vector database or whatever it is, you have to ask yourself, what should I be storing in the
+first place? So in our earlier example, we had blocks of lines from data, right? So whenever
+data said something, we would store that entire line, which might be multiple sentences as one
+bit of context, right? But the data granularity matters. So is that the right thing to do? I don't
+know. Maybe we should split that up into individual sentences. I don't think so because if he's saying
+something altogether, that probably represents a cohesive context that he's talking about,
+but that's an example. Maybe I need to go the other way around. Maybe I shouldn't just limit
+myself to data's lines. I should also include some of the lines surrounding it, the people that
+he's talking to, right? That might have more information, more context of what he's saying
+that might be useful in generating the answer down the road. Honestly, the only reason I didn't do
+that in the earlier example was because it just resulted in too much data to process in Google
+CoLab's free tier. But you need to think about that. What data am I storing? What is the granularity
+of that data that's appropriate? Maybe I need to summarize those lines. So maybe instead of just
+taking those lines as is, I ask an LLM, summarize this information before I store it and clean that
+data up a little bit, fix any pronouns or things that might be ambiguous before we actually store
+that into bits of context. So some pre-processing of that data might be useful as well. In this
+example, since we're trying to recreate how data talks, rephrasing it is probably a bad idea, but
+if it's just straight up information retrieval, maybe that's a good idea. You want to summarize
+and compress that information before you store it. Now, the process of splitting up your data
+prior to storage is sometimes referred to as chunking. So in a lot of the APIs like lang
+chain and whatnot, they'll call this chunking. So that's what we need. How do we chunk up
+that raw data that we're storing into bits that are relevant for contextual information?
+A little bit more about chunking. So part of the idea of what we're trying to do is to make sure
+we don't end up feeding more information into the LLM than it can handle. So by restricting how much
+information we're storing, we're reducing the risk of passing too many tokens in the end because
+our context just has too much stuff in it. So if you take this really simple, one way to do this
+is to just take the input data and chunk it up into blocks of text that are within that token limit,
+right? So make sure that you don't blow that limit when you're passing that on to an actual query.
+And usually that's what people do. They just say, okay, I'm going to take chunks of a thousand
+characters at a time or whatever it is. Maybe there's some overlap between chunks, but that's
+a very naive way of going about chunking. And that's what things like lang chain do by default.
+That limit is becoming larger and larger though. So it's becoming less of a constraint, but more
+tokens do cost more money. So there's economic reasons to try to keep that under control as well.
+Also, there's an idea of semantic chunking. So that says, okay, I'm going to chunk things up,
+not just based on the length or what sentence it is, but just on the semantic
+independence of its information. So this gets a little bit fancier, right? We're saying, okay,
+for these lines that data said, are they similar to each other or not? And if they are similar,
+maybe we'll group them together into one chunk. If they're not similar at all, we'll break that
+up into separate chunks. And there's ways of measuring that the most obvious one would be
+using embeddings, right? So if we take each line of data's dialogue and create an embedding,
+we can have some sort of a threshold where we say, if they're less similar than this,
+then we're going to split it up into separate chunks. And there's support for that in lang
+chain, Lama index, and others. That's a very straightforward and common way of doing semantic
+chunking. You can also use your own little standalone model like BERT or something like that
+to avoid the cost of actually hitting the open AI API or something like that
+and try to eliminate those costs. And you can also just ask an LLM straight up,
+take this data and split it up into semantic chunks. That gets pretty costly though,
+as you can imagine. Here's an example of those of what one of those prompts might look like.
+If you did just throw it over to an LLM, you could say, decompose the content and pass in
+all the content that you're trying to store into clear and simple propositions, blah, blah, blah.
+So this is asking it to split compound sentences into simple sentences, but maintaining the original
+phrasing when you can saying that if you're going to use descriptive information about a named
+entity, separate that into its own distinct proposition. So try to split ideas up as much
+as you can. And if there's modifiers to nouns that are required and pronouns, you want to spell those
+out into what they're actually referring to so that if you end up retrieving that bit of context
+out of the larger context, it still makes sense and then present the results as something we can
+do something with it. Also, when we're talking about pre-retrieval, there's also the idea of
+extracting data. So again, there might be more to the world than just text. If you have PDFs,
+for example, or images, there are tools for extracting information from them. There's one
+library called Pi PDF, and there's also some extractions in Lang chain and Lama index for
+accessing structured data that might be hidden within your PDF. So if you have tables or diagrams
+or charts and graphs, it's not off limits. There are tools available that will let you extract
+information from them and use that as well as relevant context that you might store.
+You might even just have straight up image data that's not structured at all. There's solutions
+for that too. There's a package called unstructured.partition.pdf. There's also a
+tool called chat doc, or you can just ask chat GPT. Hey, here's an image extract information from
+it for me and have it do all the work. Again, that gets expensive, but it's an option. So those are
+some of the pre-retrieval things we can do. Let's talk about some more in the next lecture.

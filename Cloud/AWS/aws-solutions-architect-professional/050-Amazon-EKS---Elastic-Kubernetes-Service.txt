@@ -1,0 +1,89 @@
+# 50. Amazon EKS - Elastic Kubernetes Service
+# Section: Compute & Load Balancing
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/34785466
+# Caption: en_US (manual)
+
+So let's talk about the other way
+to run containers onto AWS, and this is using Amazon EKS.
+So Amazon EKS stands for Amazon Elastic Kubernetes Service.
+So it is a way, as the name indicates,
+to launch and manage Kubernetes cluster onto AWS.
+So what is Kubernetes?
+Well, this is the blue logo
+you see in the top right corner of the screen.
+Kubernetes is an open-source system
+for automatic deployments, scaling and management
+of containerized, usually Docker, applications.
+So it is an alternative to ECS, which has a similar goal
+which is to run your containers, but a very different API.
+The idea is that ECS is definitely not open-source.
+Whereas Kubernetes is open-source
+and used by many different cloud providers
+which gives you some sort of standardization.
+So EKS supports two launch modes,
+again the EC2 launch mode if you want to deploy
+worker mode like EC2 instances,
+or the Fargate mode if you wanted to deploy
+serverless containers in an EKS cluster.
+So the use case for using EKS is that your company
+is already using Kubernetes on-premises,
+or already using Kubernetes in another cloud,
+or they just want use the Kubernetes API,
+and they want to use AWS to manage the Kubernetes cluster,
+then they would use Amazon EKS.
+So again, Kubernetes from an exam perspective,
+is cloud agnostic, it can be used into any cloud
+such as Azure, Google Cloud and so on.
+And so that means that if you are trying to migrate
+between clouds or your containers,
+using Amazon EKS may be a much more simple solution.
+So in terms of diagram, this is what it looks like.
+So we have a VPC, 3 AZ separated
+into public subnets and private subnets.
+And so you would create EKS Worker Nodes
+they would be EC2 instances for example,
+and each of these nodes will be running EKS Pods.
+So they're very similar to ECS tasks,
+but from a naming perspective,
+anytime you see pods, it relates to Amazon Kubernetes, okay?
+So we have EKS Pods and they're running onto EKS Nodes,
+and so these nodes can be managed by an Auto Scaling group.
+Now, very similarly to ECS,
+if you wanted to expose EKS Service and Kubernetes Service,
+we could set up a private load balancer,
+or a public load balancer to talk to the web.
+So let's summarize the different node types
+that exist for Amazon EKS.
+So you have the Manage Node Groups,
+and this is AWS that will create and manage Nodes,
+so EC2 instances for you.
+And these nodes are part of an Auto Scaling group,
+managed by the EKS service itself.
+And you have support for On-Demand and Spot Instances.
+You can also choose if you wanted to,
+to self-manage nodes, this is if you want to have
+more customizations and more control.
+So in that case you need to create the nodes yourself,
+and then you need to register them to an EKS cluster,
+and then you manage your own nodes as part of an ASG.
+You can still use the pre-built Amazon EKS Optimized AMI
+for this, which saves you a bit of time,
+or you can build your own AMI, which is more complicated.
+This supports as well, the On-Demand and the Spot Instances.
+And finally, if you don't wanna see any nodes at all,
+then Amazon EKS, as I told you, supports the Fargate mode
+in which there is no maintenance required,
+and no nodes are managed at all you can just run containers
+on top of Amazon EKS.
+Now you can attach data volumes to your Amazon EKS cluster.
+For this, you need to specify a StorageClass manifest
+on your EKS cluster, and this leverages something called
+the Container Storage Interface, CSI compliant driver.
+So keywords to look out for at the exam.
+And you have support for Amazon EBS,
+you have support for Amazon EFS, and this is the only type
+of storage class that works with Fargate.
+You have Amazon FSx for Lustre
+and Amazon FSx for NetApp ONTAP.
+So that's it for Amazon EKS.
+I hope you liked it and I will see you in the next lecture.

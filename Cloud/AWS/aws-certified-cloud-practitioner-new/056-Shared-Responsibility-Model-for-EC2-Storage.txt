@@ -1,0 +1,47 @@
+# 56. Shared Responsibility Model for EC2 Storage
+# Section: EC2 Instance Storage
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20055828
+# Caption: en_US (manual)
+
+As usual, shared responsibility is important
+going into the certified cloud practitioner exam.
+And so we need to understand where is the responsibility
+for AWS and yours regarding EC2 storage.
+So AWS, of course, is responsible for their infrastructure,
+but also because in the technical specification of EBS, EFS,
+the tell you the data is replicated across many hardware,
+it is AWS responsibility to perform that replication.
+So that if one day some hardware is not working,
+you as a customer is not impacted.
+Also, anytime an EBS drive would fail,
+or one part of it would fail.
+It is obviously AWS responsibility
+to replace that faulty hardware.
+And finally, because we're talking about data storage,
+it is their responsibility to ensuring that their employees
+cannot access your data.
+Now what is your responsibility as a customer?
+Well, setting up any backup or snapshot procedures
+and guidelines is very important to ensure
+that you don't lose your data.
+Setting up data encryption is another layer of protection
+to ensure that people cannot have access to your data,
+would it be AWS or other customers of AWS,
+even though obviously,
+security would be in place for it not to happen,
+but it would be an interesting second layer of security.
+Any data you set,
+obviously, on the drive is your responsibility.
+Anything you write to that disk is your own responsibility.
+And if you're using an EC2 instance store,
+you need to understand the risks
+that are associated with it,
+which is that you can lose the drive if somehow
+there's a faulty hardware,
+or that if you stop or terminate the EC2 instance
+that has an instant store,
+then the data will be lost.
+So again, it would be responsibility
+to back it up in the first place.
+Okay, that's it, I hope that was helpful
+and I will see you in the next lecture.

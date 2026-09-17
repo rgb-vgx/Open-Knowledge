@@ -1,0 +1,131 @@
+# 7. [DVA] CodeCommit - Hands On Part 2
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858364
+# Caption: en_US (manual)
+
+Okay, so let me show you
+how to add step to repository.
+So you click on Clone URL
+and then you go to Connection steps.
+And then you'll have the Connection Steps
+for HTTPS, SSH, if you have the option,
+depending on how you connected, or HTTPS GRC.
+So, I'm using a federated account,
+so I'm going to use HTTPS GRC,
+but this should work for everyone.
+So, the idea is that you're going to have
+to set up a specific client.
+So, first of all, you have to set up Git
+and Git is going to be installed on most machines.
+Otherwise you have to just go here
+to install it on the Git's download page.
+What I'm going to do,
+what you should do as well to follow along,
+is to just open a CloudShell,
+and CloudShell comes with Git installed
+as well as Python installed.
+So that's perfect.
+Next, we're going to install
+the git-remote-codecommit Python package.
+So you copy this in here and press Enter.
+And this is going to install what's necessary
+to connect to codecommit using Git,
+and then you do do Git clone.
+And then you have this URL right here.
+This is the Git clone command
+to clone the existing repository into your environment.
+So this could be here CloudShell,
+but this could be as well your machine
+if you're using a local installation.
+So if I do ls,
+I have my-nodejs-app that's ready.
+And so this is where I'm going to have,
+if I do cd my-nodejs-app,
+I'm going to have my index.html,
+which is the exact same index.html
+that I have when I go to my repository
+and click on this file.
+So this file right here
+is the exact same as this file right here
+that I see in my CloudShell.
+All right, so that's perfect.
+So now we need to upload,
+we want to upload more files into my repository.
+So first I need to have files.
+So right now I only have index.html,
+but I'm going to upload file from my computer
+into this CloudShell environment.
+So I upload app.js.
+And I'm going show you where it is.
+It's actually one level up.
+So you have my app.js here.
+So I'm going to move my app.js
+into my-nodejs-app.
+And then if I go back to my-nodejs-app,
+clear and do ls,
+I have my two files.
+But if I do now git status,
+'cause it's a Git repository,
+as you can see it says
+that there is an untracked file called app.js.
+So I'm going to do the same now
+for all the files that I'm missing.
+So cron.yaml, I'm going to upload it,
+and I'm going to go again one level up,
+I'm going to move cron.yaml
+into my-nodejs-app folder,
+and I will do it one last time.
+So I'm going to upload the last file, which is package.json.
+It was uploaded.
+Again, I'm going to move this package.json
+into my-nodejs-app.
+So here we are in my-nodejs-app
+and I have four files.
+So if I do git status now,
+it's gonna tell me that three files
+have been untracked, are untracked.
+So I'm going to do git add and then .
+which is going to add these files for tracking.
+So now if I do git status,
+as you can see, now we have new files
+and we need to commit these changes.
+So I'm going to do git commit -m
+and then open quotes
+and say, "added three files"
+and end the quotes.
+This is going to create a new commit.
+So before this is working, I need to tell Git who I am.
+So I need to say git config and enter my email.
+So I'm entering stephane@example.com.
+And then also need to configure my username.
+So I'm just going to enter stephane.
+Okay, here we go.
+Now we can try the git commit command again.
+And as you can see now, three files were added.
+So app.js, cron.yaml, and package.json.
+And if I refresh my web browser,
+you'll see still nothing will have happened
+because even though this was committed,
+this was committed in my CloudShell,
+but it wasn't pushed to CodeCommit.
+So to push it, just do git push.
+And when you do git push,
+it's going to push your commit into CodeCommit.
+So now if I refresh my page, I should see my three files.
+So this is just a way to show you how Git is working.
+Now, this is not a Git course
+and Git is not necessary to know at the exam,
+but it's, it is important for you to know how Git works
+and how CodeCommit works with Git.
+So I just demonstrate that to you.
+If you wanna follow along,
+you could also just add files the way we did it,
+using the Create file or Upload file method,
+and you'll be good to go.
+But now you've seen how to use CodeCommit
+directly from the console
+as well as using the Git command.
+And we've seen how to get the connection steps
+directly using this UI right here.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

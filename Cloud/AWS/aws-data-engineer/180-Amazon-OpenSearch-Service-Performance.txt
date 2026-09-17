@@ -1,0 +1,43 @@
+# 180. Amazon OpenSearch Service Performance
+# Section: Analytics
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40356608
+# Caption: en_US (auto)
+
+Instructor: A few quick notes on optimizing performance
+of your Amazon OpenSearch cluster.
+One thing to think about is memory pressure in the JVM, and a couple
+of scenarios that can result in that
+are having unbalanced shard allocations across your nodes.
+So if you have a certain set of
+shards that are doing most of the work and
+a few that are just sitting there doing nothing,
+that can cause memory pressure on the overworked shards.
+And when you run out of memory,
+bad things happen, right?
+You start swapping memory to disc in your performance tanks.
+So often, that can result in performance issues.
+Also, having too many shards in a cluster
+can also cause trouble.
+Sort of a fundamental truth of distributed computing
+is that less can be more sometimes.
+The act of distributing that processing
+often takes more work than you think
+and specifically can take a lot of memory to manage it all.
+So the takeaway from all
+this is that if you're seeing JVM memory pressure
+errors in your logs, often you can fix that by having fewer shards
+to yield better performance.
+And the way to get fewer shards is by deleting older,
+unused indices if you can.
+So if there's a way to offload data from your cluster
+into some archive where you don't need it as much,
+maybe you can unload data off the glacier or
+something and delete the indices associated
+with that old, unused data, that
+might be a good way to get around that
+JVM memory pressure error.
+Or maybe you have indices that just aren't used at all.
+Get rid of them. That'll help too.
+So yeah, just a quick
+note here on avoiding the JVM memory pressure error specifically
+within Amazon OpenSearch.

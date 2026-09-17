@@ -1,0 +1,224 @@
+# 131. Activation Functions
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285617
+# Caption: en_US (auto)
+
+We mentioned activation functions in passing earlier, but let's go into a little bit more depth as
+they are an important concept.
+It turns out there are many different kinds of activation functions you can choose from, and picking
+the right one can be important for the performance of your neural network.
+Now an activation function is just the function inside of a given node or neuron, whatever you want
+to call it.
+That sums up all of the incoming inputs into that neuron and decides what output it should then send
+out to the next layer of neurons.
+So it's just that function that says, given the inputs, what should my output be?
+That's all an activation function is.
+Now the simplest activation function is called the linear activation function.
+And all this does is output whatever it got as an input.
+It's just a straight line there.
+The problem with a linear activation function is that it doesn't really do anything, it's just a mirroring
+what came into it as an output.
+So as a result it can't really do any interesting learning.
+It can't do any back propagation, as it's actually going back and learning through the network and
+trying to optimize things, and also because it's just outputting whatever it got as an input.
+There's really no point to having multiple layers at all with a linear activation function.
+If it's just turning around and putting the input of one layer as the output to the next layer, there's
+really no point in having more than one layer, because it's just going to be the same thing all the
+way through.
+So linear activation functions actually aren't very useful.
+You don't really see these in action very much at all.
+Sort of.
+The close cousin to a linear activation function would be the binary step function.
+And all this does is say, well, if I have nothing coming in to the neuron, then I'm going to output
+nothing.
+But if anything at all is coming in, I'm going to output a positive value that's a fixed value.
+So it's either on or off.
+The problem with this.
+Well there's a few problems.
+First of all it can't handle any multiple classification.
+It's a binary function.
+It can only be on or off.
+It can only signal that this neuron represents one thing.
+Right?
+So if you want to say that a given thing belongs to multiple categories, there's no way to do that
+with a binary step function.
+It can only say that this belongs to a single category.
+But the bigger problem is something that has to do with mathematics and calculus.
+So as we're learning through this network, we have to do a bunch of derivatives on these activation
+functions as we do so.
+And it turns out that vertical slopes and calculus really don't get along together.
+The derivative of that would be infinite, and that just causes your math to blow up.
+That's why in this particular instance here, you're seeing that the step function isn't quite a step.
+It's off to the side a little bit there.
+It has a little bit of a slant to it.
+That's just to make the math not explode.
+And when you find yourself doing things like that to just make things not explode, that might be nature's
+way of telling you that what you're building is not very stable.
+Right.
+So again, binary step function is very simple in concept.
+It's kind of like where they started with neural networks back when they were first being developed.
+But they quickly found that they were very limited and had these mathematical problems.
+So you don't really see them in use much today.
+Instead, we want to focus on nonlinear activation functions.
+And the benefit of a nonlinear function is that you can create these complex mappings between inputs
+and outputs.
+So there's more information there to be passed along from layer to layer.
+And because they have a useful derivative, they're not just straight lines that are horizontal and
+vertical.
+It allows you to do more interesting learning as you back, propagate and learn how to optimize these
+weights between the layers of your network.
+Also, they allow for multiple layers because they aren't just a degenerate linear function that outputs
+whatever the input was.
+Because they're more complicated, you can actually have a benefit from having multiple layers to your
+neural network.
+So non-linear is the way to go.
+So you might start with a function like this.
+And on the top here we have what's called a sigmoid activation function which is also known as a logistic
+activation function.
+It's the same thing.
+And at the bottom we have what's called a tanh or a hyperbolic tangent activation function.
+Again two different names for the same thing.
+The benefits of these are like we talked about.
+They're nice and smooth.
+They have nice pretty derivatives.
+And the only real difference is that the sigmoid function on the top of the logistic activation function
+will scale the outputs between 0 and 1, whereas the hyperbolic tangent function will scale everything
+between negative one and positive one.
+And generally speaking, when you're dealing with machine learning, it's nice to have things with a
+mean around zero.
+So in practice you'll find that the hyperbolic tangent function is the function of choice between these
+two.
+You don't really see sigmoid or logistic functions being used more often.
+It's the hyperbolic tangent one that you're going to see in this sort of a environment.
+And they're very well suited to recurrent neural networks as well.
+They have some problems though.
+So one problem is that as you get toward the extreme positive or negative values here of the inputs,
+the output starts to change very slowly, right?
+So if you imagine these graphs stretching out even further to the left or the right, the change in
+those values becomes very, very small.
+And this is what we call the vanishing gradient problem.
+It's actually gets to the point where numerical precision issues can become a problem at a given point.
+And we'll talk about the vanishing gradient problem in more detail later in the course.
+But this is where it comes from.
+That's one of the downsides of using a sigmoid logistic tanh or hyperbolic tangent activation function.
+They're also computationally expensive.
+Computers aren't very good at doing trigonometry very quickly.
+So if you do use a complex activation function like this, it tends to take a longer time for your neural
+networks to converge and to actually do their learning.
+So an answer to that is what's called the rectified linear unit, or ReLU for short.
+This is a very popular choice these days.
+Very simple.
+As you can see.
+It's just a linear straight line on the positive side and just a flat zero on the negative side.
+So it kind of has a lot in common with a binary step function.
+Except it's not a step.
+It's actually more of a slant off to the right there.
+Right.
+The main benefit of this is that it's very easy and fast to compute.
+So computers are very efficient at computing straight lines right.
+So as opposed to trigonometry.
+So it's very quick to have a model converge using a simple function like this.
+So that's a good thing.
+And there's no vertical lines in this either.
+So we don't have to have any, um, you know, weird calculus problems resulting from vertical gradients
+and the infinities that result from that.
+There are some downsides, however, to ReLU, even though it is a popular choice and a very fast and
+efficient choice.
+And that's that.
+When we have zero or negative values, we do degenerate back to a linear function here.
+And all the problems that come along with that.
+This is known as the dying ReLU problem, and in a lot of cases it's not really an issue.
+But there are some models where that can actually cause trouble.
+So the solution to the dying ReLU problem is simply to not have it go flat on the negative side, but
+have it slope down at sort of a shallow angle there instead.
+This just introduces a small negative slope when you go below zero on the x axis, and usually it's
+not as steep as that.
+Usually it's going to be a little bit closer to horizontal there, but that's the idea of leaky ReLU.
+Instead of a straight, flat horizontal line to the left, we slow it down a little bit instead.
+But how do you know what slope is best, right?
+Like you can just decide arbitrarily and some people do that, but a better way would be something called
+parametric ReLU.
+Or Prelu for short.
+And this is exactly the same thing as leaky ReLU.
+But the slope in the negative part is learned via back propagation itself.
+So as we're going back and learning all the weights between the nodes in our neural network, we're
+also learning the optimal slope for that negative portion of the ReLU activation function.
+The downside, of course, is that this is very complicated and computationally intensive.
+So we're kind of throwing away some of the benefits of ReLU.
+And your mileage may vary.
+Different kinds of problems will benefit from this more or less than others.
+So you'll find that in the majority of cases, straight up ReLU or a constant leaky ReLU will fit the
+bill.
+But if you do need to do better than that parametric ReLU.
+Or Prelu is worth exploring.
+And there are other variants of ReLU as well out there.
+And one is called the exponential linear unit that's shown on the top here, or ELU for short.
+This is like leaky ReLU, but instead of a straight line on the negative side, it's actually doing
+an exponential function instead.
+So again calculus tends to favor these sort of smoother curves here.
+So that can sometimes work out better than leaky ReLU.
+Also on the bottom here we have something that's pretty close to swish.
+This is a function that was developed by Google and it performs really well.
+It's a good alternative to ReLU or leaky ReLU or any of this stuff.
+Mostly you see a benefit with swish.
+If you have really, really deep networks.
+You need to have like 40 or more layers to really start seeing a benefit from swish.
+Now that said, swish was developed by Google, not Amazon, so you're probably not too likely to see
+this come up on an Amazon exam.
+But good thing to know about anyway.
+One other variant is called maxout, and that's a very simple function that just outputs the maximum
+of all of the inputs that came into that node.
+And technically ReLU is a special case of that.
+Mathematically speaking.
+However, max out doubles the number of parameters that you need to train it, so it's not really practical
+in practice.
+It's going to be very expensive to do.
+And you know, it's usually not worth the effort of actually doing that.
+One more activation function we need to talk about is softmax.
+And you often see this as the final output layer of a multiple classification problem.
+So if you have a one hot encoded classification like you know what object is in this picture.
+Things like that.
+Often you will see softmax applied as the activation function on the final output layer of that neural
+network.
+And what softmax does is it takes those outputs from that last layer and converts them into probabilities
+for each classification.
+So it allows us to take the output of this neural network that's trying to classify something and interpret
+those final outputs of the probabilities of that thing being in each one of those classifications.
+And if you need to choose which classification is the best guess, you can just take the maximum one
+out of that set of outputs.
+Another thing is that, you know, it can't produce more than one label for something still.
+So if you do have a case where you want to say that this picture contains this thing and this thing
+and this thing, it can't really do that.
+It's got to pick one or the other.
+A sigmoid activation functions, however, are good for more than one label for something, you know,
+multiple classification.
+Okay.
+So that's an important distinction.
+That's another thing that sigmoid is good for.
+Now you don't have to worry about the actual guts of the softmax function itself.
+For the exam.
+You just need to know what it's used for.
+It's for multiple classification and converting the outputs of a neural network into probabilities of
+each given Classification that each neuron represents.
+So that's a lot of activation functions.
+How do you choose one.
+Well it's not that hard really.
+So if you're going to be doing multiple classification where you're just trying to pick one classification
+for an object, you want to use softmax on the output layer.
+That's what softmax is for.
+If you have a recurrent neural network, those tend to do well with tanh or hyperbolic tangent activation
+functions.
+Two names for the same thing.
+For everything else, you probably want to start with ReLU.
+And if ReLU is not good enough, try leaky ReLU.
+If leaky ReLU is not good enough, try Prelu or maybe even Maxout.
+If you have a really, really deep neural network with 40 or more layers, you might want to look at
+something like swish instead.
+Also, remember that sigmoid activation functions are appropriate if you need to assign more than one
+classification to the same thing.
+So that's it.
+That's what all the activation functions are.
+Or most of them there's there's more that we didn't cover.
+Those are the main ones though, the popular ones.
+And how to go about choosing which one to use for a given problem.
+This may come up on the exam, so make sure you understand this

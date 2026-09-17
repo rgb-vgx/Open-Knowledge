@@ -1,0 +1,70 @@
+# 141. Ensemble Methods: Bagging and Boosting
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285725
+# Caption: en_US (auto)
+
+Let's talk about the world of ensemble learning and specifically bagging and boosting.
+Any machine learning expert should know this stuff, and therefore the exam might expect you to know
+it too.
+What is an ensemble method?
+Well, it's best illustrated by an example if you've heard of Random Forests, that's one example of
+an ensemble method.
+Basically, at a high level, an ensemble method takes multiple models, and they might be just variations
+of the same model and lets them all vote on a final result.
+So if I have a decision tree, maybe I'll make a little variant of that decision tree that was created
+using different thresholds or a different set of training data, and I can create many decision trees
+for the same problem and let them all vote on the final result.
+It turns out that often that ends up with a better result than just using a single decision tree.
+So that's how random forests work.
+So how do those trees differ?
+Well, that's where we get into the nuances between bagging and boosting.
+So bagging would generate multiple training sets by random sampling with replacement.
+So basically we create a bunch of different models that just have different training sets that are generated
+this way that are resampled from the original set of training data.
+The advantage of this is that you can train all of those models in parallel, right?
+And then just let them all vote on a final result.
+So model one might say this is classification one.
+Model two might say it's also one.
+Model All three.
+Might say it's two.
+So in the end, they all vote on what the actual classification is, and together they end up being
+more robust than a single model would have been.
+Boosting, in contrast, works in a more serial manner.
+So with boosting, we assign weights to each observation in our data set.
+We start off assuming that every data point has equal weight, but as we run our model, we assign weights
+to those data set points.
+And as we learn that over time, we keep refining those weights of the underlying observations.
+And this yields a model that's better in the end of the day.
+So that runs in a more sequential manner, where we start off running our model with equal weights on
+each observation.
+At each stage, we reweight the data and the model, and we run it again with that data and the new
+weights.
+And we just keep iterating on that until we get a better and better result.
+That's how boosting works.
+How do you choose one versus the other?
+Well, I got to say, boosting is pretty hot these days.
+XGBoost, which is a big part of SageMaker as well, is a very hot algorithm these days.
+If you look at Kaggle, a lot of Kaggle challenges are being won by XGBoost right now.
+Boosting really works well.
+So if you care about accuracy, boosting is probably a good thing to try out.
+Its strength is Accuracy.
+However, bagging is a good way to avoid overfitting, right?
+Because that's actually sort of spreading out your data and subsampling it more.
+So that prevents any individual model from overfitting, and they all end up voting on a final result.
+And even if any one model in a bagging model were overfitting, the other models should balance that
+out right and sort of average out that overfitting that might be happening in any one specific model.
+So it's a good way to sort of smooth out any overfitting that might be happening by having multiple
+models that all vote on the result.
+That might, if they are overfitting, at least are probably overfitting in different ways.
+Right?
+So that cancels itself out.
+Bagging is going to be a lot easier to parallelize as we said as well.
+So like we said boosting is more of a serial process.
+Bagging can happen in parallel.
+So bagging obviously can happen faster if you have parallel resources to work with.
+So what should you use?
+It depends on your goal.
+If you care about accuracy above all else, boosting is worth looking at.
+If you care about preventing overfitting, having a regularization effect, and having a more parallelizable
+architecture, bagging is probably the thing you want to be looking at instead.
+So that's bagging and boosting the difference between the two when you would use one over the other.

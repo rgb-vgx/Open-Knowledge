@@ -1,0 +1,179 @@
+# 122. AWS EC2 Instance Metadata - Hands On
+# Section: AWS CLI, SDK, IAM Roles & Policies
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/37760210
+# Caption: en_US (manual)
+
+So let's go ahead and practice
+using the EC2 instance metadata service.
+So I'll call this one DemoEC2.
+I'm just creating EC2 instance,
+and I wanna show you something.
+So, if we use Amazon Linux,
+and we choose Amazon Linux 2023 AMI,
+which is the latest AMI I have right now,
+and we scroll all the way down into advanced details,
+and we scroll down.
+As we can see, we'll find it in one moment.
+As we can see here, there is the metadata version
+that we can select between V1 and V2 or V2 only.
+And it turns out that if you use Amazon Linux 2,
+by default, it will be V2 only, okay?
+And this is what I'm gonna show you after.
+But if you chose something like Amazon Linux 2,
+so instead of 2023, use Amazon Linux 2.
+For example, this one, this is Amazon Linux 2.
+Then you could, for example, under the metadata version,
+choose V1 and V2 or V2 only.
+But right now, I'm going to use
+the Amazon Linux 2023, the latest one.
+And from this point onwards,
+you have to use the DB IAM V2,
+and I will show you this in a moment.
+So we can proceed without a key pair.
+And in terms of security group,
+we can just create a new security group
+that allows SSH from anywhere and there will be enough.
+Then we scroll down, and for IAM instance profile,
+for now I will not select anything
+but later I will select whatever profile is available for me
+just to show you how it's being accessed
+using the metadata service.
+So again, we are not going to specify a metadata version,
+but I will show you that it's V2 only in a second.
+Okay so this is enough.
+We're going to launch our instance,
+and then we're going to issue commands within
+our instance using V EC2 Instance Connect service.
+So now let's connect to our instance using EC2 Connect.
+And here we go.
+So we are inside and we want to query the metadata service.
+So I'm going to type IMDS V1 on Google,
+and then I'm going to just have a look at this.
+So this is documentation,
+because the commands can be quite complicated.
+So if we look at the commands,
+this is the URL we have to request, okay?
+So first we have to issue this command,
+and then we have to issue the second command.
+But this is IMDS V2.
+First I wanna show you that IMDS V1 does not work.
+So I'm going to click on retrieve instance metadata,
+which is just going to give me the URL
+for the instance metadata when we're using IMDS V1.
+So in EC2 Instance Connect,
+I'm just going to type curl and then this URL.
+And as a result of this, we get a 401 unauthorized.
+That means that we cannot access this URL.
+This would work if you're using Amazon Linux 2 for example
+and you've enabled IMDS V1.
+But you can see on Amazon Linux 2023, this does not work.
+So we need to address this of course,
+and to do so, we're going to use IMDS V2.
+So before being able to query this URL,
+we need to retrieve a token.
+So this is what this command is showing you right now.
+So we'll take all the command right here
+from token equals and paste this in.
+And so this token is querying this URL
+called the latest API token
+passes in the header for the token aspiration.
+So now this is done, and if we do echo dollar token,
+then this is the token that was retrieved
+from this first call, this first HTTP call.
+So now that we have this, I'm going to clear my screen.
+We can issue a command against the metadata service
+bypassing the token as a header to the curl.
+So we are again going to go into here, press enter,
+and as you can see, things are working.
+Now we don't get unauthorized.
+So we are gonna remove this minus V option
+just to get a cleaner output.
+So we remove our minus V, oh, and I need a space.
+So here we go.
+Okay and we see that when we query this URL,
+passing in the token that we had from before,
+then we get access to all these bits of information.
+So whenever you have a trailing slash,
+that means it's like I call it a directory.
+That means there is more data within,
+but when there is no trailing slash it's a value.
+For example, if you wanted to retrieve the host name
+of this instance, just type in host name
+at the end of the URL call,
+and then we get the host name from the EC2 instance.
+As you can see, this is how the EC2 instance
+knows about its own host name.
+We can have another one.
+We can have, for example, local IPV4
+I believe and here we go.
+We have the local IPV4.
+So lots of different options.
+You can definitely try it out.
+And again, by having a trailing slash
+you have all the information.
+So now how does it work for when the EC2 instance
+is an IAM role and wants to obtain the credentials
+to use that role?
+Well, it turns out that if you go into identity credentials,
+then we're gonna find some stuff.
+So identity minus credentials,
+and then we add a trailing slash always.
+As we can see right now we have EC2,
+we go in and then we have info and security credentials.
+So we'll go into info first,
+and we say, okay there's a success.
+So it's not what we need.
+Let's go into the other one called security credentials.
+And here we get a not found.
+So that means that currently we don't have any
+security credentials attached to our instance.
+And that makes sense because we don't have an IAM role
+attached to our instance.
+What we can do is that we can click on our instance
+and then we're going to go under security
+and we're going to give it an IAM role.
+So to do so, we'll do action, security,
+and then modify IAM role.
+And we'll give it whatever role you want,
+really have tons of roles created for this course,
+but choose whatever role.
+This doesn't really matter.
+The idea is that you attach a role to your EC2 instance
+and then we're going to wait about 30 seconds.
+So now let's issue the command again, press enter.
+Oh, I get a not found,
+but the reason I do is
+because I'm missing a trailing slash.
+So make sure you are adding trailing slash
+and make sure you don't make any typos as well.
+So just press enter.
+And now we have the EC2 instance.
+So we're going to add slash EC2 instance,
+and then we'll be good to go.
+And as we can see, so it's a long URL,
+we had slash metadata, slash identity credential,
+slash EC2 slash security credential slash EC2 instance.
+But out of it, we get this JSON,
+and what we get out of it is an access key ID,
+a secret access key and a token
+and an expiration date, which said
+that this role expires in the next whatever, 24 hours maybe.
+So here we have the,
+and it's probably more like one hour than 24 hours.
+Anyways so here, this is how the EC2 instance
+obtains the credentials that allows it
+to use its own IAM role
+because the IAM role provides credentials
+through the EC2 instance metadata service.
+So that's it.
+Not something you have to do anything with
+because the EC2 instance and the AWS, CLI,
+and SDK are smart enough to do things behind the scene,
+so that you don't have to worry about these things.
+But I want to show you how the behind the scenes work
+and the value that the metadata service
+was providing to EC2.
+So that's it for this lecture.
+When you're ready,
+you can just take this EC2 instance and terminate it.
+All right, I will see you in the next lecture.

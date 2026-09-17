@@ -1,0 +1,102 @@
+# 42. Solution Architecture on AWS
+# Section: Compute & Load Balancing
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376426
+# Caption: en_US (manual)
+
+[Instructor] - Now let's talk about solution
+architecture on AWS.
+At a very high level, because there are so many
+combinations, but it all looks a little bit similar if you
+look at it from a high level.
+So we have our users, and they need to get access
+to our application, so the first thing they do is talk
+to a DNS.
+And the DNS layer is usually going to be your route 53.
+Then they have two possible routes from there.
+They have to find some static content and some
+dynamic content.
+Usually the static content is going to be spread all around
+the world, it's going to be cached by having a CDN
+layer, a content delivery network, and usually that
+is going to be CloudFront.
+And CloudFront is going to source this data, usually
+in a static form from S3 or Glacier, but we all know that
+CDN of CloudFront can also get it from custom sources
+and we'll learn all these topics one by one.
+What I want to expose to you right now is all the
+plus switches we have and the kind of architectures
+we have to get into and the choices we have to make.
+Okay.
+So, on a static asset layer surge, we have S3, which is
+going to be perfect for CloudFront, or Glacier for
+archives and it doesn't work directly with CloudFront.
+Okay, on the web layer now, which is the more dynamic
+content, we have to set up a load balancer or a gateway.
+So we have classic load balancer, application load
+balancer, network load balancer, API gateway, or even
+an elastic IP, if we don't need that amount of layer,
+for example if you have a very simple solution in the
+backup.
+Then that web layer has to talk to a compute side,
+and that compute side may be something like EC2, or
+an auto scaling group, AWS Lambda, ECS, Fargate, Batch or
+EMR, and obviously you cannot connect EMR with a web layer
+but what I wanna show you is that if there's no web layer,
+then we can still have a compute layer that does some
+batch computations.
+It's really hard to represent all the solutions
+architecture and AWS into one slide, but I want to be able
+to divide to you the different categories so you get
+a better understanding of all the kind of things we're
+going to do a deep dive on in the future lectures.
+Okay.
+By the way, the platform layer can also be in front of
+your web layer, as you can see in the arrow from the
+CDN to the web layer so it is possible to get
+different directions as well.
+Okay, next your data needs to be somewhere so usually
+you have a database, and that database can have multiple
+forms, it can be RDS, Aurora, DynamoDB, ElasticSearch,
+S3 is considered a database as well, or Redshift if you have
+more analytical type of workloads.
+It's also very possible that you will need a caching layer,
+and so you can cache stuff or it can have a section layer
+for cashing your section data, so it could be Elastic cache,
+DAX if you have infinite of DynamoDB, DynamoDB itself can
+also be a session layer, and RDS, it's very possible to put
+your sessions in RDS, even though ElactiCache is probably
+going to be a little bit more scalable and faster.
+Okay, next there's possible that your instances will need
+to fetch static data as well, so this data can be on EBS,
+EFS or directly on the instance stores.
+Again, it depends on the kind of requirements you are going
+to have for your solution architecture and you need to be
+able to decouple your solutions if you have a micro services
+type of architecture.
+And so it could be using SQS, SNS, Kinesis where they have
+streams of data, Amazon MQ, Step Functions
+for orchestration, and so on.
+Finally, it is possible that your compute layer also needs
+to be accessing some static assets, so S3 Englisher
+is a definite option.
+So these are all some kind of combinations, and if you
+try to permit all of them, you can get really an infinite
+number of solution architecture, but what I want you
+to realize at this high level is that as we get into
+solution architecture discussions based on what you choose
+for your database, your computer caching, your
+orchestration, your storage, your static, your web layer,
+your CDN, everything, it will have some impact into the
+cost, into the availability, the durability,
+the scalability, and so on, so it's really up to you as a
+solution architect to understand which type of technology
+is going to be the best for which moment, and this is what
+the exam will be testing you on.
+Now in this section, we're going to do a deep dive into
+everything in this slide, so don't worry, there will be
+specific solution architectures for each of these
+components, and we'll get a better discussion to which one
+is more appropriate and when and why.
+Okay, so that's it for a small introduction.
+I hope you're all excited, and I will see you
+in the next lecture.

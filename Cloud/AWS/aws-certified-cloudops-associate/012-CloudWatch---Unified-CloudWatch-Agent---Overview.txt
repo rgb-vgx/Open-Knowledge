@@ -1,0 +1,92 @@
+# 12. CloudWatch - Unified CloudWatch Agent - Overview
+# Section: EC2 for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512584
+# Caption: en_US (manual)
+
+So let's talk about a way for us
+to collect metrics and logs
+from within our EC2 instances.
+And this is the Unified CloudWatch Agent.
+So this is for virtual servers,
+it could be for your EC2 instances
+or your on-premise servers,
+and you're going to connect additional system-level metrics,
+such as the RAM, processes,
+used disk space, et cetera, et cetera.
+And you can also send the logs to CloudWatch logs.
+Because by default, if you launch an EC2 instance,
+there will be no files, no logs,
+that will be sent from your EC2 instance
+to CloudWatch Logs
+without using an agent,
+and that agent could be the CloudWatch Unified Agents.
+So the idea is that,
+if you wanted to get the memory metric
+from within your EC2 instances,
+the only way you could do it
+is using the CloudWatch Unified Agent.
+Then, if you wanted to configure your agent,
+you can configure it
+by using the SSM Parameter Store
+and storing the configuration in a central place.
+Or you can specify a configuration file, alternatively.
+So you have your EC2 instance
+with a Unified CloudWatch Agent
+and you want to send metrics and logs to CloudWatch.
+For this, you would just configure the agents
+and make sure you have the right permissions.
+This is also true if you wanted to use a server
+from within your own corporate data center.
+So on-premises, you would still install
+the Unified CloudWatch Agent,
+you would specify IAM permissions
+and then it would be able to push the logs
+and push the metrics.
+So they're important because you are interacting
+with possibly the SSM Parameter Store,
+as well as the CloudWatch Logs
+and CloudWatch metrics services.
+They need to be able to have the correct IAM permissions
+attached to your IAM role on your EC2 instance,
+or attached to your access keys
+that are deployed on your on-premises servers.
+Finally, any metrics that is being pushed
+by the Unified CloudWatch Agent,
+is starting with the prefix CWAgent,
+so this is going to be in this namespace.
+You can configure and changes this,
+but at least this is the default one.
+So, something you need to know that comes up in the exam
+is that there is a procstat Plugin, sorry,
+on the CloudWatch Agent.
+And that means that with this procstat Plugin,
+you're going to collect metrics
+and monitor system utilization
+of individual processes
+running on your Linux or Windows servers.
+For example, you would get some information
+around how much time a CPU will be using,
+a process will be using the CPU,
+or how much memory a process will be using,
+or the process that are running
+directly on your EC2 instance.
+So you can select which processes to monitor by PID file.
+So you can get the PID, so the process ID number,
+or you can get the name that you have of the process
+or the pattern.
+If you want it to filter again,
+the processes to monitor
+and all the metrics related to your statistics
+of your processes on your Linux or windows servers,
+we'll be starting with a procstat prefix,
+so procstat_time, procstat_cpu_usage, and so on.
+So again, what we need to remember out of this
+is that if you wanted to get some information
+around the processes running and their associated metrics,
+the only way to do it
+would be to use the Unified CloudWatch Agents
+deployed on your institute's instances
+and configured to use that plugin.
+So, that's it for this lecture,
+I hope you liked it,
+and I will see you in the next lecture.

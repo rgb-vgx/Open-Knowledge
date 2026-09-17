@@ -1,0 +1,161 @@
+# 261. SageMaker Ground Truth
+# Section: Machine Learning
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/54600321
+# Caption: en_US (auto)
+
+Let's finally talk about SageMaker's Ground
+Truth service.
+This is a relatively new product from Amazon.
+And what is it?
+Well, it's basically a way of using humans
+to label your data.
+And I kind of struggled with where
+to put this in the course.
+In the end, I ended up putting it in feature engineering.
+'Cause fundamentally it comes down
+to dealing with missing data.
+And in this case it's really more about missing labels
+and missing features more often than not.
+But you could, you know, actually apply this
+to missing features as well.
+Basically the idea is that if you have missing data
+that can be in inferred easily by a human,
+Ground Truth lets you farm these tasks
+out to actual human beings
+to fill in that missing data for you.
+And the most common example of this is in the world
+of image classification.
+So for example, if I'm training a new image classification
+model, in order to train that, someone's gonna have to go
+through and actually tag all these training images
+with what's actually in them, right?
+There's, it's not gonna be an easy thing
+for a computer to do necessarily.
+So for example, in this picture here we have someone
+classifying this picture as being
+of a basketball or a soccer game.
+Someone's gotta go through and do all that work.
+What kind of a bird is this?
+Where are the birds in this image?
+Things like that.
+So Ground Truth will manage a fleet of human beings
+who will go through and label your data
+for training purposes.
+So if you have a huge data set, like a bunch of pictures
+and you need labels on them,
+sometimes human beings are the best way
+to actually get those labels.
+Ground Truth is what manages that process for you.
+But it's more than just managing the
+humans that label your data.
+The thing that sets Ground Truth apart is
+that it creates its own model as those labels are coming in.
+So this model is learning as it receives more
+and more label data from the humans.
+And over time, it's only gonna send out labels
+to the humans that it's not sure about.
+So as time goes on, as it gets more
+and more labels from the human labelers,
+it will create a model of its own
+and only the ambiguous cases will be sent out
+to human labelers going forward.
+So this model builds up over time,
+gets better and better over time,
+and only the things
+that the model is not sure about actually get farmed
+out to human beings.
+This ends up reducing the cost of your labeling jobs by up
+to 70%, which is pretty substantial.
+Who are these people?
+Well, you have different choices of
+who Ground Truth can use.
+One is just using the Amazon Mechanical Turk workforce.
+This is a huge workforce of people around the world
+who will label your data
+and do a bunch of other, you know, simple tasks for you
+for a very small amount of money.
+You can also choose to farm it out
+to your own internal team.
+So if you're dealing with very sensitive data,
+that might make sense for you.
+And there are professional labeling companies out there
+as well who do nothing
+but have a fleet of human beings
+who label training data for a living.
+So if you want someone who's a little bit more specialized
+in this sort of thing, you can spend even more
+money and use one of them.
+Now, there are other techniques then just using humans
+to actually generate training labels that you don't have.
+One other would be to use AWS's recognition service,
+which we'll talk about more later on in the course.
+Basically it's an AWS service for image recognition.
+So if you do need to classify images, that could be either
+for creating labels or maybe even feature data.
+You know, maybe you just have a feature in your dataset
+for what is in this image.
+Recognition has a pre-trained model for most common types
+of objects that you can just use.
+So if you are just using, you know,
+classifications of general objects in the world,
+recognition might be able to do that for you.
+If you're dealing with textual information as opposed
+to images, Comprehend might be useful.
+Basically, that is a AWS service.
+You're doing text analysis and topic modeling.
+So you could automatically generate topics
+or sentiments for a given document that way.
+So that might be a way of both creating labels
+and maybe even additional training features, right?
+So this is another example of feature engineering
+where you might generate additional features in your model
+by using something like Comprehend.
+So if I have a document, maybe I can use Comprehend
+to generate new features that include the topic of
+that document or the sentiment that
+that document represents,
+and that might be useful information
+for training and machine learning model.
+So that's why this is in this section about
+feature engineering.
+You know, you can actually apply these techniques of using
+existing services
+or even human beings to generate more information
+that your model can use.
+Really any pre-trained model
+or unsupervised learning technique can be helpful in
+generating new training labels
+or even new training features in your dataset.
+So Ground Truth is pretty simple,
+but if it's still too hard for you,
+there's something called Ground Truth Plus
+where somebody just does it all for you.
+And it's a turnkey solution
+where you just basically hire someone through AWS
+to set it all up and manage the whole project for you.
+So in the documentation, they call it our team
+of AWS experts.
+I'm not really sure where they come from,
+but these people will manage the workflow
+and set it all up for you and manage your team
+of labelers for you.
+All you do is fill out this form that says who you are,
+what you're trying to do at a high level,
+and they'll contact you and try to work out the details
+and discuss the pricing,
+which they do not publicly disclose,
+but I imagine it's not cheap
+because of this sort of a white
+glove treatment that they give you.
+As they set things up
+and they start actually getting results back from their army
+of labelers, you can track their progress
+through the Ground Truth Plus project portal
+where they give you some handy dandy charts displaying
+how the progress is going and what the results look like.
+When they're finally done,
+you'll get your label data back from S3,
+but not a whole lot to talk about here.
+Basically, it's a way of handing off the whole problem
+of labeling your data to somebody else.
+Ground Truth Plus if you're willing to pay for it.

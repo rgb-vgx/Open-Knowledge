@@ -1,0 +1,248 @@
+# 220. Amazon Kinesis Data Streams - Hands On
+# Section: AWS Integration & Messaging: SQS, SNS & Kinesis
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/26101790
+# Caption: en_US (manual)
+
+So let's go ahead and get some practice
+for Kinesis Data Streams.
+So I'm going to open the Kinesis service,
+and create our first Kinesis Data Streams.
+As we can see, we have three options here.
+We can use Data Streams, Data Firehose, or Data Analytics,
+but we only know about Data Streams so far,
+so let's go ahead.
+We get some information around the pricing,
+which is at per shard, we pay $0.05 per hour.
+Okay.
+And then there's a cost for making PUTs or for sending data
+into Kinesis Data Streams.
+So we'll create a Data Stream,
+let's name our stream, DemoStream,
+and then we have to define the data stream capacity.
+So as you can see, we have two modes,
+we have the On-demand mode and the Provision mode.
+And in the On-demand mode,
+you don't have to think about the capacity,
+it's automatically going to scale for you,
+so there's a maximum throughput of 200 megabytes per second,
+and 200,000 records per second,
+and the maximum read capacity of 400 megabytes per second,
+per consumer, if you're using the enhanced Fan-Out option.
+So the on demand as a pay-per throughput pricing model,
+but there is no free tier. Okay.
+And the Provision mode also doesn't have a free tier.
+And in the provision mode, you need to provision shards.
+And so there's a Shard estimator tool,
+if you wanted to understand how many shards you needed,
+based on like how many records you send per second,
+and what is the size of your record,
+and how many consumers you have. Okay.
+But in a example, we're going to just set up one shard.
+One shard gives us one megabyte per second for write
+and two megabytes per second for read.
+And obviously, if you put 10 shards,
+then everything is multiplied by 10. Okay,
+And so one shard is enough for us to do the demo.
+It's also the cheapest option we can get.
+If you do not want to pay any money in this course,
+then do not do this hands on,
+because you will pay some money for your shard,
+although we will deal with it,
+and then delete it fast enough.
+So when you're ready, you just click on Create data stream,
+and you wait for the data stream to be created.
+And our stream is now successfully created.
+So in terms of applications, we can see,
+we have producers, and we are recommended three options.
+The Kinesis Agents, the SDK,
+or the Kinesis Producer Library.
+So they're all available on GitHub, for you to check it out.
+This is a way to stream data from application servers
+into Kinesis Data Streams.
+The SDK is for you to develop producers at a very low level.
+And the KPL is for you to develop producers
+at a very high level, with a better API.
+And in terms of consumers,
+we get Kinesis Data Analytics, Kinesis Data Firehose,
+or the Kinesis Client Library, or Lambda, as well,
+that is not shown as an option right here.
+Okay. We get some monitoring information
+about our Kinesis Data Streams.
+So how many records we are sending into it?
+We could look at the configuration.
+So if you wanted to scale the stream,
+we can say how many shards we want.
+We can go from one, to say, five,
+and scale our Kinesis Data Stream.
+We could add some tags,
+and then we could use enhanced Fan-Out, and configure it,
+if we wanted to have some consumer applications
+leveraging the enhanced Fan-Out capability.
+But for now, let's keep it simple.
+We just want to write and read from our stream,
+and so therefore,
+we're going to use the SDK for producing and for consuming.
+So to do so, we want to open a CLI,
+and let's use CloudShell because it's fun.
+So I'm going to click on CloudShell right here,
+which is the icon, next to the bell icon.
+And this is going to open, for me,.
+a command line interface in AWS.
+As an alternative, you could be using your own terminal
+or CLI if it's preconfigured,
+but I like to switch things up,
+and this one, I really like,
+because there's less configuration involved at least.
+Creating the environment, the first time,
+can take a bit of time, and the CloudShell is free on AWS,
+so no worries here.
+In the meantime, on Kinesis,
+open the kinesis-data-streams.sh file,
+and we're going to use that overall.
+So there are two types of commands
+to write to Kinesis Data Stream based on your CLI version
+for the AWS CLI.
+So usually, you have version two installed
+but it is possible for you to somehow,
+have version one installed.
+And so you get the version,
+you just type aws --version, and paste,
+and then, you will get some information
+around the version of AWS CLI.
+So in CloudShell,
+the CLI version that's going to be installed is version two,
+as you can see here, it was CLI version 2.1.16,
+so we're going to use the CLI commands version two.
+But if you wanted to have the version one,
+then you would use these comments.
+Okay. So now we're good to go.
+The first we want to do is send a record
+into our Kinesis Data Stream.
+And to do so, there is an API called put-record.
+And put-record, we need to specify a stream name.
+So in this example, I didn't name my stream test,
+I named it DemoStream,
+so we'll have to change this in the CLI command,
+but you get the idea.
+Then you specify a partition key for the data settings.
+So user one, and remember the data
+that shares the same partition key
+will go to the same shard, but we only have one shard,
+so that doesn't matter in this case.
+Then the data itself, so users signup.
+And finally, because we are writing some text data,
+we need to say this option cli-binary-format
+raw-in-base64-out.
+Okay. So let it paste this command, so copy and paste,
+but let me just edit the stream name,
+to make sure that it is DemoStream.
+And the cloud channel is automatically configured
+with your own IM credentials,
+so it will inherit whatever you have for IM credentials,
+and also, we'll use the region by default,
+in which it was launched.
+So us-east-1.
+I press Enter.
+And now, we get a successful message.
+So the message was sent shardId-0000000000000.
+So our first shard, and the sequence number
+of the message is here.
+If I do it again, then I'm going to get a second message
+with a successful, so we can do user signup.
+We can mix up the message,
+then user login, and then, maybe user logout.
+So we're just, we're just setting a few messages
+into our Kinesis Data Stream.
+Perfect. So I'm going to clear this,
+and if you waited a little bit,
+and went into monitoring, and look at the stream metrics,
+I will have it on one hour,
+you would see a put record right here,
+but it takes a bit of time for CloudWatch metrics
+to be updated, but you would see it here. Okay.
+So next we want to be able to consume
+from Kinesis Data Stream.
+So to do so, we're going to first describe the stream,
+to get some information around what this stream is made of,
+because we need to be able to consume from a specific shard.
+So it's DemoStream, I'll press Enter,
+and as you can see here, we have this StreamDescription.
+We have one shard called shardId-0000000000000,
+and so we need to keep this in our mind. Okay.
+To be able to read from this stream.
+And so when you use the CLI,
+the SDK at a very, very low level,
+you need to specify from which shard you are reading from.
+But if you are using Kinesis Client Library,
+all of this is handled for you by the library itself.
+But we are using the CLI,
+so we have to specify the shard ID.
+So I press Q to quit this,
+and I'm going to consume some data.
+So I'm going to run this command, right here,
+and let me clear this.
+And there's two things to note,
+so number one, I need to change the name of the stream
+I'm consuming from.
+So DemoStream is a stream,
+and then the shard-iterator-type is TRIM-HORIZON.
+And this means that you're going to read
+from the very beginning of the stream,
+so it will read all the records
+that were sent for from the beginning.
+The other option, just make sure to only receive the records
+from that very moment onwards when from a new launched
+to CLI command.
+Anyway, so I'm going to press Enter.
+And this is going to give me a ShardIterator.
+And this ShardIterator can be reused to consume records,
+so the next API comment
+is kinesis get-records --shard-iterator.
+And then, we just specify this entire string, right here.
+So this consumption mode I'm doing right now,
+by using the low level API,
+describing the stream, getting a ShardIterator,
+and getting records is using the shared consumption mode.
+This is not using enhanced Fan-Out,
+which in my opinion,
+should be using the Kinesis Client Library,
+Consumer Library for you to really leverage,
+and have a nice API to do so.
+But this is low level.
+So let's click, and let's press Enter
+on the Kinesis get-records,
+and we get a batch of records out of it.
+So we used to have record one right here,
+which is PartitionKey user1.
+And we have some data right here, but it's base64-encoded.
+We have, again, another data, base64-encoded.
+We get some time stamp information,
+another data, base64-encoded.
+And then if I press Enter,
+it's going to go a little bit down.
+Some more data that is base64-encoded.
+So to just make sure we can read the data,
+I can go to websites, base 64 decode online,
+and I'm going to paste this data right here,
+into base 64 decode, and click on DECODE,
+and this gives us user signup.
+And if I paste the second type of data, this one,
+copy and paste it in here, is going to give us user login.
+So we which is that we sent.
+So that's perfect.
+Everything is working.
+And then, as you can see,
+there's a NextShardIterator argument right here.
+So the next time we consume,
+we need to specify this NextShardIterator argument
+to consume from where we stop consuming from.
+So this is something you have to iterate from in your code.
+But at a low level,
+we've produced data to Kinesis Data Stream,
+and consume data from Kinesis Data Stream, which is awesome.
+And we've also used CloudShell in the meantime,
+which I think is very handy.
+So that's it for this demo,
+just keep this stream open as we will be using it
+for Kinesis Data Firehose in a second.
+And I will see you in the next lecture.

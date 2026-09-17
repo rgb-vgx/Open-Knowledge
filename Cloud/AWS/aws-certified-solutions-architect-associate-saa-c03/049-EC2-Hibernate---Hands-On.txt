@@ -1,0 +1,100 @@
+# 49. EC2 Hibernate - Hands On
+# Section: EC2 - Solutions Architect Associate Level
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18105183
+# Caption: en_US (manual)
+
+So let's practice using
+the EC2 hibernate feature.
+So let's go and launch an instance.
+I'll choose Amazon Linux 2.
+I'll go t2.micro, I'll select a key pair.
+And then for network security
+I will just use an existing security group
+namely launch-wizard-1 and for storage,
+for now we're good.
+I'll show you a few things we have to set
+but I will scroll down and then stop hibernate behavior.
+We can enable it.
+And this will allow us to enable hibernation
+on our EC2 instance.
+And there's a warning message.
+You cannot really read it here
+but it says that if you do enable hibernation
+then you need to make sure that the root volume
+has enough storage to fit the RAM of our EC2 instance.
+And on top of it, the EBS volume,
+the root EBS volume must be encrypted.
+So first regarding the storage,
+I will go to advanced, choose my EBS volume
+and I will, yes I will encrypt it
+and I will choose the default AWS/EBS key to encrypt it.
+So now our EBS volume is correctly set up
+and then we have an eight gigabytes volume.
+And that is enough of storage
+because if we look at this t2.micro,
+here it says there's one gigabyte of memory of RAM.
+So all the RAM fits onto the disk and that is good for us.
+So we have set up everything
+we need to enable hibernation.
+And now what I'll do, is I will just launch my instances.
+So our instance is now created
+and we have enabled hibernation as a specific star behavior.
+So how do we prove that hibernation works?
+So let's connect to our instance
+using the EC2 Instance Connect
+and I'm going to connect right now.
+I will go back into my instance and here we go.
+So we are connected to our instance
+using EC2 Instance Connect.
+And there is one command called uptime that is quite special
+because uptime allows you to know
+for how long the instance has been turned on.
+So if you do uptime,
+it says that right now it's been up for zero minutes.
+So we just need to wait maybe a little bit to do uptime
+for it to become one minute.
+But the idea is that the uptime is telling you
+how long has the instance been on since its last restart.
+So as we can see now, we do uptime
+and we are getting one minute of uptime.
+So that means that the instance has been up for one minute.
+Okay, great.
+So let's disconnect from our instance
+and what we're going to do now is
+that we're going to hibernate the instance.
+So to do so we do instant state
+and then hibernate instance,
+and this is going to make sure that all the data
+on the RAM is stored onto our EBS volume.
+So we are hibernating the instance
+and so we need to wait for it to be stopped.
+So our instance is now stopped
+and I'm going to start it again.
+Now, if we do it a little mental exercise,
+if we did not have hibernation
+and then we stopped the instance,
+and then we start it again,
+we expect the uptime command to return again zero minutes
+and then one minute, because we have effectively stopped
+and started the instance.
+But we have hibernated the instance and then started it.
+And so if that's the case
+then we should be able to have the uptime start not at zero,
+but start at maybe three or four minutes.
+So let's connect to the instance and do uptime.
+And yes, we get up for two minutes
+because I was really quick.
+So the idea is that even though we have stopped,
+quote unquote stopped the instance by hibernating it,
+and restarted it from an operating system perspective,
+the instance was never stopped.
+It was hibernated.
+And therefore the uptime command gives you two
+or three minutes because it has never quote unquote
+been stopped from an operating system perspective
+which is the whole idea behind hibernation.
+So that's it.
+It's a really cool demo, I think.
+And to finish this hands on,
+just take your instance and terminate it.
+That's it, I will see you in the next lecture.

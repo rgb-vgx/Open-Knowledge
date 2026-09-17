@@ -1,0 +1,71 @@
+# 368. AWS Outposts
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/46803319
+# Caption: en_US (manual)
+
+Okay, so now let's talk about
+an exciting development which is called AWS Outposts.
+What is hybrid cloud?
+Businesses that keep an on-premise infrastructure
+alongside a cloud infrastructure
+are called hybrid cloud.
+And when we have that,
+we have two ways of dealing with IT systems.
+We have one for the cloud of AWS, for example
+using the console of AWS, the CLI
+and the APIs from AWS,
+but also we have another one
+that is dedicated to on-premises infrastructure.
+And so, that means two different types of skillsets,
+two different types of API,
+and that may be complicated.
+So it was said, "Okay, we do recognize
+that some companies will run a hybrid cloud
+therefore, let's create Outpost."
+And Outpost our server racks
+that offer the same AWS infrastructure,
+services, API and tools
+to build your own application on-premises
+just like in the cloud.
+So what this means is that
+they will come and set up
+and manage Outpost racks which are servers
+within your on premises infrastructure.
+And then these servers come preloaded
+with the (indistinct) services
+but you can benefit them from on-premises.
+So as we can see now on your corporate data center
+you will have your Outpost racks directly set up by AWS.
+And this allows you to extend
+the (indistinct) services directly
+onto your on-premises data centers
+which is I think revolutionary.
+But a difference between an EC2 instance
+running on the cloud
+and an EC2 instance running in your own data center
+is that now you are responsible for their security,
+the physical security of the rack itself
+because that rack is within your own data center.
+The benefits from using Outposts are many,
+first of all, you get low latency access
+to on-premise the system,
+you get local data processing
+so the data may actually never leave your on-premise system
+and never go to the cloud,
+data residency, so again, it lives
+within your own data centers.
+It's easy for example, to start the migration
+from on-premise is to Outpost
+and then when you're ready from Outpost to the cloud.
+It's a fully managed service.
+So AWS will manage the service for you.
+And with Outpost for now,
+you can launch a lot of services
+such as Amazon EC2, Amazon EBS, Amazon S3
+Amazon EKS, Amazon ECS, Amazon RDS, and Amazon EMR.
+So it's really a cool way to extend the cloud directly
+onto your own our infrastructure on-premises system,
+and this is revolutionary.
+So this may come up in the exam.
+I hope you liked it.
+And I will see you in the next lecture.

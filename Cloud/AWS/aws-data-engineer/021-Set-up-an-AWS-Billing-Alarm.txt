@@ -1,0 +1,34 @@
+# 21. Set up an AWS Billing Alarm
+# Section: Storage
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/45090815
+# Caption: en_US (auto)
+
+If you choose to follow along with the hands on activities in this course, you might want to set up
+a billing alarm just to make sure that you don't inadvertently leave something up and running that might
+cost you money.
+If you just follow along with the instructions here and clean up after yourselves like we show you,
+it shouldn't cost you more than a couple of bucks to get through this course, but it is all too easy
+to leave something up and running by mistake and end up with a big, nasty surprise on your AWS bill.
+So it's a good idea to go to your console here.
+Once you've created your AWS account, search for billing and let's set up an alarm so we get notified
+if our expenses start to exceed a threshold that we're not comfortable with.
+From here, just go down to budgets and planning and select budgets and create a new budget.
+Use the template.
+If you're not comfortable with spending anything, you can select zero spend budget.
+But again, you're not going to get through this course for free.
+If you truly don't want to spend anything, then you should just watch the videos for those activities
+instead of following along.
+Hands on.
+But if you have a certain budget per month that you want to stick within, you can select monthly cost
+budget.
+Enter the amount that you are comfortable spending, let's say $20, and specify an email address that
+you want to get notified if you exceed that amount for the month.
+So by setting this up, if I start to exceed more than $20 in expenses from AWS in the month, I'll
+get an email so I can go and look into what I forgot to shut down and try to fix that before it wraps
+up into something more substantial.
+Once you're done, hit Create Budget and then you will automatically get notified if you have any lingering
+resources that might rack up a bill that you don't want.
+So good idea to do that just to cover yourself and protect yourself, because it is all too easy to
+forget to shut something down and leave an expensive resource running for the entire month.
+You don't want that to happen, so take a moment to protect yourself and set up a billing alarm here.
+And with that, let's move forward.

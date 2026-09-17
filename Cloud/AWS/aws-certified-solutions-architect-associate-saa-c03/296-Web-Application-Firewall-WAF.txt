@@ -1,0 +1,69 @@
+# 296. Web Application Firewall (WAF)
+# Section: AWS Security & Encryption: KMS, SSM Parameter Store, Shield, WAF
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/18078429
+# Caption: en_US (manual)
+
+So now let's talk about AWS WAF,
+the Web Application Firewall.
+It's used to protect your web application
+from common web exploits at the Layer 7.
+Just a reminder Layer 7 is HTTP,
+so it protects you against HTTP exploits.
+Whereas as comparison Layer 4 is for TCP or UDP protocol.
+So this WAF, this Web Application Firewall can be deployed
+on the Application Balancer, and API gateway, CloudFront,
+the AppSync GraphQL API, or Cognito user pools.
+So remember, this is very important.
+You remember the targets of WAF
+because the exam will try to trick you,
+and for example, make you deploy WAF on an NLB
+but this is not possible.
+So once you've deployed a firewall on these services,
+you can define web ACL,
+they're web access control lists, and their rules.
+And so you can set a rule, for example,
+to filter based on IP addresses.
+So you can define an IP sets.
+Each IP set can be up to 10,000 IP addresses.
+And if you need more IP addresses,
+you can use multiple rules for more IPs.
+You can also filter based on HTTP headers, body.
+You can use URI strings to protect
+from the most common attacks, such as SQL injection
+and cross-site scripting.
+You can have size constraints to make sure
+that the request are only up to, for example, two megabytes
+or geo match to allow or block specific countries.
+And you can even have rate-based rules
+to count the occurrences of requests per IP
+for DDoS protection, for example, to prevent a specific IP
+from sending more than 10 requests per second.
+So these web ACLs, they're regional, except for CloudFront,
+where they are defined globally.
+And if you see the term rule group, well,
+it's a set, it's a reasonable set of rules
+that you can add it to many web ACL.
+So this is just to organize them.
+So WAF has a really good use case.
+So what if you want to get a fixed IP on our application
+while using WAF with an application load balancer?
+So WAF does not support the Network Load Balancer
+because the NLB operates on Layer 4 and WAF is for Layer 7.
+So therefore, to provide WAF, you need to have
+an application load balancer.
+But we know that an application balancer
+does not have fixed IPs.
+So to solve a problem, we can use a Global Accelerator
+to get fixed IP for application,
+and then enable WAF on our ALB.
+So the architecture looks like this.
+We have one region with an ALB and EC2 instances.
+We're going to front our ALB with a Global Accelerator
+to get a fixed IP for our application.
+And we're going to attach a Web Application Firewall
+with a WebACL on the same region
+as where our application low balancer is located.
+And therefore, we have achieved our target architecture.
+So that's it for this lecture.
+I hope you liked it.
+And I will see you in the next lecture.

@@ -1,0 +1,36 @@
+# 82. Amazon Keyspaces (for Apache Cassandra)
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304680
+# Caption: en_US (auto)
+
+Narrator: So now let's talk about Amazon keyspaces.
+And keyspaces AZ managed Apache Cassandra on AWS.
+So Cassandra is an open-source NoSQL distributed database.
+And so, with keyspaces you get Cassandra directly managed
+on the cloud by AWS.
+So it's going to be a serverless type of service.
+It's scalable, it's highly available,
+and fully managed by AWS.
+And it will automatically scale tables up and down
+based on the application's traffic.
+The table's data is going to be replicated three times
+across multiple AZ.
+And to perform your queries on top of keyspaces,
+you're going to use the Cassandra query language or CQL.
+So thanks to this, you're going to get
+single-digit millisecond latency at any scale.
+And you can do thousands of requests per second.
+Two capacity modes to note.
+This is just like DynamoDB.
+You have the on-demand mode,
+and then you have the provision mode with auto scaling.
+And these are the same things as DynamoDB really.
+You get encryption features, backup, point-in-time recovery
+up to 35 days.
+And so the use cases is going to be to store
+IOT device information, time series data.
+And generally from an exam perspective,
+anytime you see Apache Cassandra, you just think about
+Amazon keyspaces and you're done.
+Okay, that's it for this short lecture.
+I hope you liked it, and I will see you in the next lecture.

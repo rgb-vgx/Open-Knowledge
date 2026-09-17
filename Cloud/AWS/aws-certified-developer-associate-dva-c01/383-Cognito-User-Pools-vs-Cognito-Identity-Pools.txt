@@ -1,0 +1,86 @@
+# 383. Cognito User Pools vs Cognito Identity Pools
+# Section: Cognito: Cognito User Pools, Cognito Identity Pools & Cognito Sync
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19732000
+# Caption: en_US (manual)
+
+So, let's try to really understand
+the difference between Cognito User Pools and Identity Pool.
+But by now, you should have a good idea.
+So, Cognito User Pools is used for authentication
+which is identity verification.
+So it's going to be a database of users
+for your web and your mobile applications.
+And then you have federation for logins,
+so you can have social logins
+such as Google, Facebook, Amazon, or OIDC,
+or corporate logins using SAML.
+But the idea is that Cognito User Pools
+will be your database of users.
+You can even customize the hosted UI for authentication,
+include your logo, and you have integration with Lambda
+during the authentication flow
+for pre-, for post, and so on.
+You can also adapt the sign-in experience
+to different risk levels, for example,
+with adaptive authentication.
+So that MFA is used in due time.
+Now for Cognito Identity Pools,
+this is for authorization or access control.
+And this is access control from within AWS.
+So, for just the comparison,
+if you have a mobile application
+and you just wanna have a database of users,
+you're good to go with Cognito User Pools.
+But if you want these users to be able
+to access your AWS environment, for example
+a DynamoDB database or an S3 bucket,
+then you need to give them authorization,
+and this is achieved by using Cognito Identity Pools.
+So, here you will obtain temporary credentials for users
+and then the login to get these credentials,
+the way to exchange a token for these credentials
+can be done, again, by social, OIDC, SAML,
+which can be confusing but also Cognito User Pools.
+And so, the idea is that wherever your user is identified
+then they can exchange this token for authorization.
+So you can use Cognito Identity Pool
+with Cognito User Pool,
+but you can also use Cognito Identity Pool on its own.
+The benefits also of using Cognito Identity Pools
+is that the users can be unauthenticated,
+they can be guests.
+And then, once you have them set up in Identity Pool,
+the users are going to be mapped
+to specific IAM roles and policies,
+and you can leverage policy variables,
+which gives them access to, for example, a DynamoDB table
+or an S3 Buckets.
+So when you use Cognito User Pools
+with Cognito Identity Pools,
+you get authentication on the first hand
+and authorization on the second hand.
+And this is what I'm trying to represent in this diagram.
+So, let's say you have a web and mobile application,
+and you want to access your private S3 Bucket
+and DynamoDB Table with a per user type of security.
+So first, we'll do best practices.
+We'll do a login and get token from Cognito User Pools.
+So you'll have your internal database of users
+and you can federate the login using SAML, OpenID Connect,
+Google, or Facebook.
+Then the user will have its identity will be verified.
+What we can do is that we can exchange then this token
+of your users for temporary AWS credentials.
+And the way it works out
+we can integrate Cognito Identity Pool directly
+with Cognito User Pools.
+Then we're going to get temporary credentials thanks to STS.
+And then the web and mobile applications
+can then issue API calls directly into AWS
+and we'll have made sure from Cognito Identity Pool
+that the IAM policy attached to these temporary credentials
+allow them to perform exactly the action they need.
+Okay, so by now you should really be able
+to understand the differences
+between user pools and identity pools.
+I hope you liked it and I will see you in the next lecture.

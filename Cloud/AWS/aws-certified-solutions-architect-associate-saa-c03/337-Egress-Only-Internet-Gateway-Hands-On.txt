@@ -1,0 +1,34 @@
+# 337. Egress Only Internet Gateway Hands On
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13528562
+# Caption: en_US (manual)
+
+So I am in my VPC
+and on the left-hand side of Egress Only Internet Gateways.
+Now I can create one,
+and I'll call it DemoEIGW.
+And then we need to attach it to your VPC.
+So my DemoVPC.
+And then create this egress only internet gateway.
+So it's created and attached already.
+So this is good.
+But now just to make it work,
+well, we need to go ahead and edit a route table.
+So let's go in here.
+It needs to be for the private sub-net, okay?
+It doesn't make sense for the public subnets.
+So for the private subnets.
+Let's go and edit the route table for the private subnets,
+and edit these routes.
+And we're going to say that's..
+Yeah, You know what?
+Anything that is going to be ::/0.
+So any IPv6,
+please be redirected to the egress only internet gateway.
+Save the changes.
+And now, all good.
+My easy two instances in my private subnets can access
+the internet over IPv6 but are not reachable.
+Super easy demo,
+but I hope you liked it.
+And I will see you in the next lecture.

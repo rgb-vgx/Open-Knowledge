@@ -1,0 +1,185 @@
+# 181. [SAA/DVA] Amazon Aurora
+# Section: Databases for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27515778
+# Caption: en_US (manual)
+
+So let's talk about Amazon Aurora
+because the exam is starting to ask you
+a lot of question about it.
+Now, you don't need deep knowledge on it,
+but you need enough high-level overview
+to understand exactly how it works,
+so this is what I'm going to give you in this lecture.
+Aurora is going to be a proprietary technology from AWS.
+It's not open-sourced.
+But they made it so it's going to be compatible
+with PostgreSQL and MySQL.
+And basically, your Aurora database
+will have compatible drivers.
+That means that if you connect
+as if you were connecting to your PostgreSQL
+or a MySQL database, then it will work.
+Aurora is very special,
+and I won't go too deep into the internals,
+but they made it cloud-optimized.
+And by doing a lot of optimization and smart stuff,
+basically they get 5x performance improvements
+over MySQL on the RDS,
+or 3x extra performance of PostgreSQL on RDS.
+Not just that, but in many different ways,
+they also get more performance improvements.
+To me, I watch it, it's really, really smart,
+but I won't go into the details of it.
+Now, Aurora storage automatically grows,
+and I think this is one of the main features
+that is quite awesome.
+You start at 10 gigabytes,
+but as you put more data into your database,
+it grows automatically up to 256 terabytes.
+Again, this has to do with how to design it,
+but the awesome thing is that now as a DBA or a SysOps,
+you don't need to worry about monitoring your disk,
+you just know it will grow automatically with time.
+Or I can have up to 15 read replicas,
+and the replication process
+is going to be faster than MySQL.
+You will see sub-10-millisecond replica lag, typically.
+Now, if you do failover in Aurora,
+it was going to be instantaneous.
+So it's going to be much faster than a failover
+from Multi-AZ on MySQL or RDS.
+And because it's cloud-native,
+by default, you get high availability.
+Now, although the cost is a little bit more than RDS,
+about 20% more, it is so much more efficient
+that at scale, it makes a lot more sense for savings.
+So let's talk about the aspect that are super important,
+which is high availability and read scaling.
+So Aurora is special because it's going to store
+six copies of your data anytime you write anything
+across three AZ.
+And so, Aurora is made such as it's available,
+so it only needs four copies out of six for writes.
+So that means that if one AZ is down, you're fine.
+And it only needs you have three copies
+out of six needed for reads.
+So, again, that means that it's highly available for reads.
+There is some kind of self-healing process that happens,
+which is quite cool, which is that if some data
+is corrupted or or bad, then it does self-healing
+with peer-to-peer replication in the backend,
+and it's quite cool.
+And you don't rely on just one volume,
+you rely on hundreds of volumes.
+Again, not something for you to manage,
+it happens in the backend,
+but that means that you just reduce the risk by so much.
+So if you look at it from the diagram perspective,
+you have three AZ and you have a shared storage volume,
+but it's a logical volume,
+and it does replication, self-healing,
+and auto-expanding, which is a lot of features.
+So if you were to write some data, maybe blue data,
+you'll see the six copies of it in three different AZ.
+Then if you write some orange data,
+again, six copies of it in different AZ.
+And then as you write more and more data,
+it's basically going to go, again, six copies of it
+in three different AZ.
+The cool thing is that it goes on different volumes
+and it's striped and it works really, really well.
+Now we need to know about storage and that's it.
+But you don't actually interface with the storage,
+it's just a design that Amazon made,
+and I want to give it to you as well,
+so you understand what Aurora takes.
+Now, Aurora is like Multi-AZ for RDS.
+Basically there's only one instance that takes writes,
+so there is a master in Aurora,
+and that's where we'll take writes.
+And then if the master doesn't work,
+the failover will happen in less than 30 seconds on average.
+So it's really, really quick failover.
+And on top of the master,
+you can have up to 15 read replicas,
+all serving reads.
+So you can have a lot of them,
+and this is how you scale your read workload.
+And so any of these read replicas can become the master
+in case the master fails,
+so it's quite different from how RDS works.
+But by default, you only have one master.
+The cool thing about these read replicas
+is that it supports cross-region replication.
+So if you look at Aurora
+on the right-hand side of the diagram,
+this is what you should remember:
+One master, multiple replicas,
+and the storage is going to be replicated, self-healing,
+auto-expanding, little blocks by little blocks.
+Now, let's have a look at how Aurora is as a cluster.
+So this is more around how Aurora works
+when you have clients, how do you interface
+with all these instances?
+So as we said, we have a shared storage volume
+that is auto-expanding.
+Your master is the only thing that will write
+to your storage.
+And because the master can change and failover,
+what Aurora provides you is what's called a writer endpoint.
+So it's a DNS name, a writer endpoint,
+and it's always pointing to the master.
+So even if the master fails over,
+your client still talks to the writer endpoint
+and is automatically redirected to the right instance.
+Now, as I said before,
+you also have a lot of read replicas.
+What I didn't say is that they can have
+auto-scaling on top of these read replicas.
+So you can have one up to 15 read replicas
+and you can set up auto-scaling,
+such as you always have the right number of read replicas.
+Now, because you have auto-scaling,
+it can be really, really hard for your applications
+to keep track of where are your read replicas,
+what's the URL, how do I connect to them.
+So for it, you have to remember this
+absolutely for going for the exam:
+There is something called a reader endpoint.
+And a reader endpoint has the exact same feature
+as a writer endpoint.
+It helps with connection load balancing,
+and it connects automatically to all the read replicas.
+So anytime the client connects to the reader endpoint,
+it will get connected to one of the read replicas,
+and they will be load balancing done this way.
+Just notice that the load balancing
+happens at the connection level,
+not the statement level.
+So this is how it works for Aurora.
+Remember writer endpoint, reader endpoint.
+Remember auto-scaling.
+Remember shared storage volume that auto-expands.
+Remember this diagram because once you get it,
+you'll understand how Aurora works.
+Now, if we go deep into the feature,
+you get a lot of things I already told you,
+automatic failover, backup and recovery,
+isolation and security, industry compliance,
+push-button scaling by auto-scaling.
+Automated patching with zero downtime,
+so it's kind of cool the magic they do in the backend.
+Advanced monitoring, routine maintenance.
+So all these things are handled for you.
+And you also get this feature called backtrack,
+which is giving you the ability to restore data
+at any point of time,
+and actually doesn't rely on backups,
+it relies on something different.
+But you can always say,
+"I want to go back to yesterday at 4:00 PM."
+And you say, "Oh, no, actually I wanted to do
+yesterday at 5:00 PM."
+And it will work as well, which is super, super neat.
+So that's it for Aurora,
+and I will see you in the next lecture.

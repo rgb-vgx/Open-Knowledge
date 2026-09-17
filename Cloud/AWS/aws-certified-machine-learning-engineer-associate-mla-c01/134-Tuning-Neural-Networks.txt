@@ -1,0 +1,88 @@
+# 134. Tuning Neural Networks
+# Section: Model Training, Tuning, and Evaluation
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285645
+# Caption: en_US (auto)
+
+Let's talk a bit about tuning your neural networks.
+And again, this is getting into the part of the exam where they're trying to weed out people who haven't
+actually done this in the real world.
+This is not stuff that is typically taught, but I'm going to try to convey it as best as I can.
+This is very important stuff for the exam guys.
+So let's talk about learning rate.
+First of all, what do we mean by learning rate.
+Well you need to understand how these neural networks are trained.
+They're using a technique called gradient descent or something similar to gradient descent.
+There's various different flavors of it out there.
+The basic idea is that we start at some random point of weights in our neural network, and we just
+sample different solutions, different sets of weights, trying to minimize some cost function that
+we define over several epochs.
+So those are the key words there.
+We have many epochs iterations over which we train.
+At each epoch we try a different set of weights on our neural network, trying to minimize some cost
+function, which might be the overall accuracy of how well it makes predictions on our validation set.
+So we need to have some sort of rhyme and reason as to how we make those samples of different solutions,
+different weights, if you will.
+If we were to boil this down into sort of a two dimensional graph, maybe it would look something like
+this where we're just sampling different points here along a curve of solutions, and we're trying to
+find the one that minimizes the cost function.
+So that's the the y axis here.
+So what we're trying to find is the lowest point on this graph.
+And we're trying to get there by sampling it at different points and learning from each previous sample.
+That's what gradient descent is all about.
+So the learning rate is all about how far apart those samples are.
+So you see here, we might have started up here and our learning rate said, okay, I'm going to try
+another point here and I'm going to try again here.
+And so on and so forth, until I finally find the lowest point along this curve and call that my best
+solution.
+So not too hard to understand the effect of learning rate on your training, right?
+If you have too high of a learning rate, you might overshoot that solution entirely.
+So imagine my learning rate was huge and I went straight from here to here.
+I might miss that bottom point there entirely if my learning rate were too high.
+But you can see that if my learning rate is too small, I'm going to be sampling a whole lot of different
+points here, and it's going to take a lot of epochs, a lot of steps to actually find that optimal
+solution.
+So too high of a learning rate might mean that I overshoot the correct solution entirely.
+But too small of a learning rate will mean that my training might take longer than it needs to.
+Now, learning rate is an example of what we call hyperparameters.
+It's one of the knobs and dials that you use while training your deep learning model.
+That can affect its end result, and oftentimes these hyperparameters can have just as much influence
+on the quality of your model as the topology of the model.
+The feature engineering you've done and everything else.
+So it's just another piece of the puzzle here that you need to arrive at experimentally.
+In addition to learning rate, another important hyperparameter is the batch size, which is how many
+training samples are used within each batch within each epoch.
+Now hammer this into your heads, guys, because it's kind of counterintuitive.
+You would think that a large batch size would be a good thing, right?
+The more data, the better.
+But no, that's not how it ends up working.
+It turns out that if you have a small batch size, it has a better ability to work its way out of what
+we call local minima.
+So in this example here, you can see that we have a minima here, sort of a dip in the graph here where
+we have a pretty good, you know, nice low loss function value here.
+What we're trying to optimize for is pretty good here.
+But there's a risk during gradient descent that we get stuck in that local minima, when in fact the
+better solution is over here somewhere.
+So we want to make sure that during the process of gradient descent, we have some ability to wiggle
+our way out of this thing and find that better solution.
+It turns out that smaller batch sizes can do that more effectively than larger ones, so a small batch
+size can wiggle its way out of these local minima.
+But a large batch size might end up getting stuck in there, like basically weighing it down, if you
+will.
+So batch sizes that are too large can end up getting stuck in the wrong solution.
+And what's even weirder is that because you will usually randomly shuffle your data at the beginning
+of each training epoch, this can end up manifesting itself as getting very inconsistent results from
+run to run.
+So if my batch size is just a little bit too big, maybe sometimes I'll get stuck in this minima and
+sometimes I won't, you know?
+And I'll see that in the end, results of seeing that from run to run, sometimes I'll get that answer
+and sometimes I'll get that answer right.
+So hammer this into your head, guys.
+It's very important for the exam.
+Smaller batch sizes tend to not get stuck in local minima, but large batch sizes can converge on the
+wrong solution at random.
+A large learning rate can end up overshooting the correct solution but small learning rates can increase
+the training time.
+So remember this write it down.
+Important stuff.
+And again, it's an example of things that most people just learn the hard way through experience.
+But I'm trying to teach it to you up front here.

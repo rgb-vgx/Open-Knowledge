@@ -1,0 +1,79 @@
+# 219. Maximizing Resource Utilization and Throughput
+# Section: Machine Learning and AI Operations (MLOps/ AIOps) with AWS
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/57866197
+# Caption: en_US (auto)
+
+Yet another lever you have at your disposal for optimizing the efficiency of your system is making
+sure you're maximizing your resource utilization.
+So are you paying for computing capacity that's just sitting idle and not doing anything.
+Well there's an opportunity if so.
+One way to make sure you're eating up all that capacity efficiently and all at once is by using batching strategies.
+So instead of sending individual prompts and getting back individual responses maybe I can batch
+those up in some situations.
+A good example is when I'm computing embedding vectors for my vector stores for my knowledge bases.
+So do I really need to do that one at a time.
+No that'd be crazy.
+So if I have a huge document with like a huge number of chunks I want to submit those all together
+in these big batches and that's going to save me a lot of money and be more efficient.
+So batch up those embedding requests for vector stores.
+Don't do them one at a time.
+It'll be a lot faster and a lot cheaper.
+Also on the inference side there is bedrock batch inference as well.
+So if you don't need immediate real time responses maybe you can get away with this and also use
+this to optimize the efficiency of your system.
+So you can submit many prompts together stick them in an S3 bucket somewhere and say hey bedrock
+batch inference go to on these and give me back all the responses together in S3 as well.
+So that's going to be a much more efficient way of doing a lot of prompts at once.
+Again if you don't need a real time interaction there.
+Now how do I plan for capacity with bedrock.
+So how do I know if I have enough resources to begin with or if I'm being throttled or I'm hitting some quota limits.
+Basically you want to start by figuring out your desired tokens per minute and request per minute
+that you expect your system to be able to handle.
+And from there you can figure out what kind of capacity you actually need.
+Now the AWS service quotas tool has within it a bedrock tool which you can see here on the right
+that can help you estimate the amount of capacity that you actually need on bedrock.
+And if you actually need to request a quota increase because you've exceeded the actual built in
+approvals for the amount of capacity you have for bedrock.
+If you do there's a form you can fill out to ask for that.
+Also if you need additional capacity you can also buy provisioned throughput.
+We'll talk about that in a moment as well.
+Cloud formation is also an important tool for capacity planning so it does have templates that can
+help you with this too.
+Another thing is tensor parallelism and this is something that generally happens under the hood.
+I just want you to know the term.
+This is the idea of sharding a large models weights across many GPUs which any large model has to do
+because they won't fit in a single GPU right.
+But the end result is that we have better memory utilization per container.
+So I can really say OK as I'm sharding this large model across many containers I'm really optimizing
+the use of that memory on each container right.
+So that's what tensor parallelism is all about.
+Again something you usually don't have to think about as a application developer but the term comes up.
+So I want to make sure you're familiar with it.
+A little more depth on maximizing resource utilization with bedrock provisioned throughput.
+So with bedrock you are allowed to provision by tokens or by model units which is a somewhat opaque
+unit but it corresponds roughly to token throughput.
+So if you do need dedicated capacity for deterministic performance you can do that through provision throughput with bedrock.
+And you can see an example of that over here to the right.
+Now if you're using a customized model you must provision throughput for that.
+That is a requirement but it's generally useful for any requirement that you have for consistent
+performance under high volume.
+So anytime you see a scenario where you have really high performance requirements for a bedrock
+model and it's not keeping up provision throughput might be the answer.
+And one little fine point of this that you should know that you are provisioning for a given model
+not for a bedrock overall.
+And when you're actually going to use that provision throughput you need to pass through the ARN of
+that specific provisioned model that you provisioned resources for.
+So when you're making an actual API call for inference against that model you need to be sure to
+provide the ARN for the provisioned model and not just a generic model ID for the model as a whole.
+That's a very important point.
+Also for utilization monitoring CloudWatch is your friend for keeping track of how you're using your resources.
+It has built in dashboards as well that can be helpful for monitoring utilization monitoring.
+So there are dashboards you can build with CloudWatch you don't necessarily have to use QuickSight.
+Also AWS Cost Explorer is a valuable tool for attributing model costs to business functions.
+So if you need to go back and figure out who's driving up my AWS bill AWS Cost Explorer can help you
+narrow that down to a specific application and a specific business function or department that might be behind it.
+Also auto scaling is an important tool in maximizing your resource utilization.
+Be sure to make use of serverless solutions like Lambda, Bedrock, OpenSearch, Serverless and
+AgentCore to take advantage of those serverless auto scaling scenarios so you don't have to worry
+about resource utilization so much in the first place.
+So there are some tips and tricks and tools for maximizing resource utilization with your generative AI system.

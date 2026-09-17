@@ -1,0 +1,138 @@
+# 62. CloudFormation - cfn-hup
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/42314520
+# Caption: en_US (manual)
+
+So let's talk about cfn-hup.
+It's another script that is part
+of the CFN Bootstrap Suites.
+And this one can be used to tell your EC2 instance to look
+for metadata changes every, for example, 15 minutes
+and apply the metadata configuration again.
+It's very powerful
+and I will show you how it works in the hands-on right now.
+And the idea is that you place a cfn-hup configuration file
+and a cfn-auto-reloader configuration
+and then automatically,
+when the instance is launched, it is going
+to retrieve the init data
+and then it will check metadata every 15 minutes
+to see if there are any changes.
+And if there are changes, it's going
+to rerun the configuration and reconfigure itself.
+So this is quite abstract,
+but let me show you as a hands-on an example
+so you understand exactly what is happening.
+So I'm in my file cfn-hup-demo.yml,
+and as we see right now, we create a SecurityGroup
+which high enables HTTP access
+because we'll expose a file as a web server
+and then we create my instance, which is an EC2 instance
+and we have metadata, so we have CloudFormation init.
+So we're going to initialize it.
+And the first thing is install.
+So we're going to install packages such as httpd,
+we're going to install some files
+such as the cfn-hup.com file.
+So this is the file I told you about,
+the configuration init,
+in which specify the stack that we have.
+So this is a pseudo parameter
+for the StackId and then this one for the Region.
+So we have the stack properly referenced
+and the region as well,
+and the interval I wish to check.
+So one means every one minute the cfn-hup will check
+changes in metadata.
+So this is quite a high interval,
+but I wanna show you this for educational purposes.
+Next we have the cfn-auto-reloader.conf.
+So what is happening when the metadata has changed?
+So let's have a look.
+So post updates of the metadata
+and the metadata is in Resources.MyInstance.
+So my instance right here, .Metadata, .CloudFormation Init.
+If there are changes to this, then the action is
+to run the cfn init again on the stack,
+StackName, for the resource MyInstance
+with the default conflict sets on my region
+and run as root.
+So in case the metadata changes, then this is going
+to rerun the cfn-init.
+And this is the whole power of cfn-hup.
+Next for configure, we configure some files.
+So we have index.html
+and in here we have a Hello World title
+and a Hello World body saying, Hey, welcome to my website,
+and this is what we're going to change in the future
+and this is what cfn-hup is going to update.
+So then we run httpd.
+We make sure it's running and enabled.
+We have an ami, a t2 micro, a security group referenced,
+and then the user data again is running the cfn-init.
+Then it's running cfn-hup and starting it.
+And then finally it's signaling the success
+to our own stack
+to make sure that everything is working fine.
+And I'll put, well, we have a website URL
+and we have a public DNS.
+So let's have a look and see if everything was working.
+So I'm going to create a stack, upload a template file,
+and I will choose cfn-hup-demo.yml.
+And then I will call this one DemoCfnhup.
+And so this is going to do basic configuration
+of our EC2 instance.
+Let's submit it
+and the create is in progress.
+So let's wait until this is done
+and which we're going to have a web server
+that should be ready for us to be used.
+So my instance has been successfully created
+and if I go to output, I get a website URL
+and I get a "Hello World!
+"Welcome to my Website!"
+So all of this is great,
+but now we wanna show the power of cfn-hup.
+So what I'm going to do is that I'm going to just go
+to cfn-hup-demo and then I'm going to update my metadata.
+So my metadata block is all this
+and I'm going to update this block.
+And of course the file I'm going
+to change is the index.html.
+So Hello World welcome to my website
+and then I'm going to say I've added some content to it.
+And so as we can see now, I'm going
+to re-upload this template.
+So the only thing that has changed is just the metadata
+and nothing else.
+And automatically the EC2 incense will pick up this new file
+every one minute and should update my web server.
+So let's go ahead and practice this.
+So I'm going to update my stack, replace the templates,
+and upload my cfn-hup-demo file again.
+Next, next, and then next.
+And if you look at the changes
+and the change set preview, as you can see just
+my instance has been modified, but it's just the metadata
+and there's no replacement, so nothing should happen
+to it specifically.
+So now we have an update in progress
+and the update is complete.
+That was very quick because it was only a metadata update.
+Now if I go in here and refresh,
+I still get, "Hello World! Welcome to my website!"
+but let's wait one minute and see what happens.
+Okay, so now more than one minute has passed
+and I'm going to refresh this page.
+And as you can see now I get,
+"Hello World! Welcome to my website!"
+and bottom is "I've added some content to it."
+So the cfn-hup's script was able
+to pick up the metadata changes from CloudFormation
+and then reapply the cfn-init configuration
+to update my index.html file.
+And that really shows you the power of cfn-hup.
+So I hope you liked it.
+Don't forget to delete your stack
+and you're good to go.
+I will see you in the next lecture.

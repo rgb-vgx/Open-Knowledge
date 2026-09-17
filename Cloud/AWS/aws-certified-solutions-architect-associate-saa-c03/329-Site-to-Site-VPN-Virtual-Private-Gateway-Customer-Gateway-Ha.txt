@@ -1,0 +1,55 @@
+# 329. Site to Site VPN, Virtual Private Gateway & Customer Gateway Hands On
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/28874574
+# Caption: en_US (manual)
+
+So let's have a look at how you can
+create a site to site VPN connection in AWS.
+So scroll down and under VPN,
+you go and click on "Customer Gateways."
+So the first step to having a site-to-site VPN connection
+is to have a customer gateway that you host on-premises.
+So you create it on-premises.
+You can name this AWS. Okay?
+And then you can specify a BGP ASN
+for your gateway device.
+This is advanced. You don't need to know it. Okay?
+You need to specify the IP address
+of your customer gateway device external interface.
+So how it can be reached from AWS
+into your on-premises infrastructure.
+And then you would specify a Certificate ARN
+which allows AWS to connect into your VPN device
+on-premises and establish a secure connection.
+So this is to create a customer gateway
+but I won't do this because I don't have
+an on-premises infrastructure to show you.
+Next, we have a Virtual Private Gateway.
+So you would create a Virtual Private Gateway.
+And then you would use a ASN number
+and it will be created on the side of AWS.
+Okay? So this is now the site of AWS.
+And then we need to connect these two things
+and therefore we need to create
+a site-to-site VPN connection.
+To do so we click on "Create VPN Connection."
+It is of type "Virtual private gateway."
+Then you specify the virtual private gateway
+that you would have created from before.
+You specify the customer gateway
+you would have created from before.
+Then you specify a lot of options
+that you don't need to know about
+regarding routing, regarding IPV4,
+regarding tunneling and so on.
+And then you would create that VPN connection.
+All this is out of scope in terms of hands-on.
+For the exam, all you need to know is that
+to establish a site-to-site VPN connection
+between on-premises and AWS, you need to first
+create a customer gateway,
+then a virtual private gateway on AWS,
+and then connect the two using
+a site-to-site VPN connection.
+Okay? So that's it. I hope you liked it.
+And I will see you in the next lecture.

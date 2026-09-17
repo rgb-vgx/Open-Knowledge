@@ -1,0 +1,289 @@
+# 167. Lab: Using Amazon SageMaker JumpStart with Huggingface
+# Section: Generative AI Model Fundamentals
+# https://ua.udemy.com/course/aws-certified-machine-learning-engineer-associate-mla-c01/learn/lecture/45285997
+# Caption: en_US (auto)
+
+All right, let's play around with SageMaker Foundation models just to get your feet wet or your hands
+dirty.
+Whatever metaphor you want to use for getting familiar with SageMaker and using AI within it.
+Now I've gone to SageMaker AI, Amazon SageMaker AI from the console here.
+That's where we're going to start from.
+And under Jumpstart, you should find foundation models, computer vision models, and neural language
+processing models.
+Foundation models are where the hotness is.
+So let's click on that and see what they got.
+Now, before we dive in, I do want to warn you that what we're about to do costs real money.
+We're going to be spinning up some rather expensive instances to play around with this.
+And if we're only going to run it for like an hour or so, it's probably not too bad.
+But there is a very real possibility that you will forget to shut something down or not shut things
+down completely, and you could end up with a very nasty surprise at the end of the month.
+If that's the case, you could find yourself running up a bill of thousands of dollars if you don't
+follow along.
+Exactly.
+So you have been warned.
+My recommendation would be just to watch me here and do not follow along hands on because you are taking
+on a very real risk.
+Some people get upset with me for saying that all the time, but believe me, you'd be a lot more upset
+if you had a bill for thousands of dollars that you weren't expecting just for following along in this
+course.
+That said, let's take a look at what they have to offer here.
+Obviously, this list is going to change over time as Amazon adds more and more models, but you can
+see they've got a pretty good selection here for image generation.
+They have stable diffusion.
+They have metas latest models here which are quite good.
+They have Jurassic two uh, some I haven't heard of before like light on mini instruct.
+Interesting.
+And, uh, some more llama models from meta.
+Uh, I 21 also some stuff from them.
+Jurassic two.
+That's an oldie but goodie.
+Uh, cohere.
+And what else?
+I'm going to skip past Falcon because we're going to come back to that.
+But you're seeing here a lot of models also from hugging face.
+And that's kind of the de facto repository for other more academic models or research models.
+So that is also cool to see more meta models here.
+And you can see there's a pretty long list, a pretty good selection here to choose from.
+Right.
+So I'm going to stick with a hugging face model just because they're cheap.
+And let's go ahead and select Falcon P-40b instruct BF 16.
+That's a text generation model.
+It's not a bad 140 billion parameters.
+That's a lot.
+It is a decoder only model just like GPT, and it is freely available under the Apache 2.0 license.
+So let's try that.
+Now.
+Obviously you could also run Falcon P-40b or any hugging face model from within Google Colab or something,
+and it would probably be faster and a lot cheaper.
+However, you are, you know, paying for the flexibility and control that AWS gives you and the ability
+to to run this within your AWS resources.
+To get started, let's click on View model.
+And from here we can get some more information about the model itself.
+That's basically what it said on the homepage there.
+It also has a link to the model card, which gives you additional information from the Hugging Face
+website.
+And there's that.
+So you can see here just some more information about what it's good for.
+Um may not be ideal for further fine tuning, so it is possible to fine tune this model, but however,
+this isn't probably your best choice for it.
+Good to know.
+Also, some advice here on smaller, less expensive models.
+Uh, Falcon seven B instruct.
+So good stuff here.
+And also some little sample code here for getting started.
+So good resources there.
+Close out of that.
+And let's go ahead and click on Open Model in Studio and see if we can play around with it.
+However we don't have a SageMaker domain yet so that's going to be the first step.
+Let's go ahead and click on create a SageMaker domain.
+If you don't have one already.
+A SageMaker domain again is just sort of this, uh, meta environment, if you will, for all of your
+SageMaker stuff within your account.
+So it's basically storage space that's shared amongst your users and also a repository for high level
+configuration information and user level information.
+Now you can go with a quick setup here for a single user.
+That's all I'm going to do because we are just playing around.
+That meets my needs.
+But if you did need to do something a little bit more fancy, you could instead say, set up for organizations
+and give yourself more control and more options that way.
+So if you need specific security settings, specific access to specific tools within SageMaker studio,
+advanced network security, data encryption, things like that, you can do that.
+But I'm just playing around.
+So I'm going to stick with setup for single user, and I can expand that out to additional options as
+well there if I want to, but I don't.
+So I'm just going to hit hit set up here and let's see what it guides us through.
+All right.
+So this is a lot easier than it would normally be.
+So you know usually when you set up a SageMaker domain you do need to set up those user profiles explicitly
+and whatnot.
+So you can see that it does take some time to set up that default domain.
+So I'm going to give it that time and I will come back when it is done.
+All right.
+So after a five minutes or so that finished and we now have a default domain with some default settings.
+It did prompt me earlier to choose a username, so we'll take care of that at a minimum.
+So anyway, let's walk through what's underneath this domain because it might be informative.
+So you can see that it gave us a default name of quick setup domain, whatever it is.
+Today's date.
+Um we have some default permissions set up.
+Um, some default roles and some default, uh, a default VPC and subnets as well that were created
+for us.
+So that saves us a whole lot of grief.
+You can also see that it's set up a default user profile as well.
+While we're waiting for that to finish setting up, let's take a tour through the other domain details
+here.
+Space management.
+So you can also set up a shared space here if you want to be able to share resources among other users
+in your domain.
+So by default we set up this one default user.
+But we could have more than one user in our account if we wanted to do that.
+So each user would have their own individual space.
+But you can also share space between them as well.
+And that's a place where you can put notebooks and other resources that they can all work on together
+within a communal IDE, and all using a shared EFS directory as well.
+So that could come in handy if you're working on a larger team, but again, this is a quick setup just
+intended for a single user, so we're not doing that right now.
+There's also various app configurations.
+Again, like I said, there's various configuration data associated with the domain level.
+For example for Q developer for Docker settings SageMaker studio at a high level.
+So these are all settings that have been set to a reasonable default for us.
+Also for SageMaker, canvas, Jupyter and the code editor.
+All this other stuff.
+So these are all the settings that are associated at the domain level.
+We also have some environment settings here that you can set up if you want to.
+We don't need any for what we're doing.
+And finally any specific resources associated with our domain.
+So always important to keep an eye on this.
+So you know what is running under SageMaker.
+Because typically the resources under SageMaker are on some pretty expensive hardware instance types.
+So you definitely want to check in here and make sure nothing's running that you don't expect.
+Right now there is nothing running, which is good because I haven't actually spun up my notebook yet.
+Let's go back to user profiles Still spinning.
+Let's refresh this page.
+That's better.
+It's not really still spinning.
+Now we can click on that and get more details.
+I said I could change the name, but I actually can't.
+If you were to hit edit on this, the name is not something you can change after the fact, so that's
+okay.
+I'll live with it.
+I'll, uh, I'll just call myself default 2025 0407 T14 2663 from now on.
+Cool.
+So let's go back to the domain here.
+And what I'm going to do is go back to that user profile and click on launch.
+And I'm going to launch a SageMaker studio instance.
+Uh, no, no tour yet.
+But if you wanted to, you could, of course.
+All right.
+So I have SageMaker studio up and running.
+Let's go back to that model and, uh, get back to where we started from here.
+So again, I'm under SageMaker AI Foundation models, and we were trying to launch Falcon 40 and struct
+bf16.
+Let's click on view Model again to get back to that.
+And again try to open it in studio.
+So we're going to select our default user profile and open studio.
+All right that brings us to this page here.
+And let's go to notebooks.
+And here is a sample notebook that we can play around with.
+Now what we have here is just a read only preview.
+If I want to actually run this I can open it in JupyterLab.
+So let's do that.
+All right.
+So let's create a new space because we don't have one already.
+And give it a name.
+I don't know whatever you want.
+Sundog playground.
+How about that?
+Create space and open notebook.
+And that will take time.
+So I'll come back when that's ready.
+All right.
+As promised, it took about five minutes.
+So let's go ahead and open JupyterLab.
+Now, if I wanted to actually run this, I could.
+Now.
+However, I actually can't.
+And the reason why is because once you get down to actually deploying this model, it's going to try
+to deploy a machine learning extra large 48 x instance type, which it costs a ridiculous amount of
+money.
+And that is the default for this model just for inference, which is kind of crazy, and it actually
+won't allow me to do that.
+I've tried this earlier and it gave me a resource limit error, because in order to use that sort of
+hardware, you actually need to reach out to AWS and ask permission for it because it is that expensive.
+So I'm just going to walk through kind of what this would do if I had infinite money, which I don't.
+So basically, all we need to do to use this model is to import Jumpstart model.
+From SageMaker Jumpstart model, we select the model ID, and if we want a specific version of that
+model, we can specify it.
+We're just going to use a wild card though, which says, you know, use the latest one, whatever it
+is, the ID for the specific model is hugging face LM Falcon 40 B and struct Bf 16.
+It could be any other jumpstart foundation model that was listed there as well, and that would also
+work.
+I changed except Eula to true here, which is just used to accept all the legalese stuff there, and
+then we deploy the model, and to do that we just create a new Jumpstart model instance there with the
+model ID and version that I specified above.
+And then we call deploy.
+That's the point where I'm going to run out of resources.
+So again that's where the real money starts adding up.
+All right.
+So then to use it all we need to do is call model dot retrieve all examples.
+It turns out there's a list of example prompts you can give to this model just to see what it can do.
+You know, answering questions, sentiment analysis, things like that.
+And it will iterate through all of those example payloads and print out the input and output from that
+large language model.
+And there are some notes here on some things you can specify, for example, a random seed if you want
+to get more consistent results.
+The temperature also controls the randomness in the output.
+Top k.
+Top E also used for controlling just how random those results are.
+And also we can specify some parameters like the stop token that's used, and that's very useful for
+making sure that it doesn't just keep on going and talking forever.
+And when we're done, of course we need to call predictor dot delete predictor.
+Because again this is an incredibly expensive hardware.
+And you definitely would not want to leave that running.
+But hey, you don't have to worry about it because odds are your account isn't enabled for it anyway.
+On the off chance that you're doing this from a corporate account that actually does have access to
+that kind of hardware.
+Please do not actually run this, or you're going to get in a lot of trouble with your boss.
+All right, so now that I'm done, I'm going to go to file and say log out.
+What why do I need to reload the site for that?
+Okay, whatever.
+Um, so we are not done cleaning up, though, you know, we did shut down that specific notebook,
+but there's a ton of resources associated with this domain.
+And if we leave it running, we're going to be racking up a bill for the whole time, and it's kind
+of hard to find some of these resources.
+So our ultimate goal here is to delete this entire domain so we can be sure.
+Let's start with the resources tab and see what's going on here.
+And you had to give that a minute to populate.
+So you can see that we do still have a Sundog Playground JupyterLab application running here using up
+an Mlt3 medium instance type.
+And if I didn't know about that, I would have just left that running and got a big bill at the end
+of the month.
+So let's go ahead and shut that down.
+First of all, I'll select that and say stop.
+And let's go ahead.
+And it says it's stopping right now.
+So I'm going to trust that that's going to do what it needs to do.
+But we're just getting started here folks.
+We also created that shared space for the notebook as well.
+If you as you recall.
+So again these shared spaces are so you can actually share that notebook across multiple users in your
+domain if you had them.
+And we did create one in the process of spinning up that notebook.
+However that is also using resources.
+So we need to delete that too.
+If we want to make sure we're not getting any unexpected bills.
+Go ahead and delete that.
+I have to say yes, I'm sure.
+Obviously, you need to be careful about this in the real world, because you could be blowing away
+a lot of people's work by doing this.
+And that is deleting.
+And finally, I need to delete my user profile before I can delete the domain.
+Let's go ahead and click on that default name.
+And from here I can say delete.
+Yes I'm sure.
+All right.
+And even though it says it's spinning up here, it says it did delete successfully.
+Finally I need to delete the domain itself.
+So under domain settings they kind of hid this.
+You got to scroll down a little bit and say delete domain.
+Yes.
+And delete.
+And let's make sure that actually happens.
+So this says it's going to take a few minutes.
+So I am going to hang out for a few minutes and make sure it really does that.
+This will not update on its own, by the way.
+So you do need to refresh this page once in a while to make sure that it really deleted.
+And again, you want to make sure you're not running up any resources that you're not aware of, or
+you're going to get a very nasty bill at the end of the month.
+So the moral of the story is SageMaker can be really expensive.
+And we saw that it wouldn't even let us try to run that specific inference on that model from hugging
+face.
+It's not even a big model, you know.
+But even though I didn't actually spin up that massive instance type that it wanted for that foundation
+model, it also spun up a lot of resources under the hood that you might not be aware of.
+So again, you just have to be super careful with SageMaker because it is notorious for running up large
+bills.
+However, we did learn how to peruse the foundation models that are available under SageMaker Jumpstart,
+how to actually launch a SageMaker domain, and how to launch a notebook within that domain, and all
+the resources that go along with it.
+So I hope that was useful.
+And kind of seeing how SageMaker domains and foundation models in Jumpstart actually work.

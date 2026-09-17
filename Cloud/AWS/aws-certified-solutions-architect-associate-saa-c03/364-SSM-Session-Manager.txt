@@ -1,0 +1,137 @@
+# 364. SSM Session Manager
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/33879146
+# Caption: en_US (manual)
+
+Okay. So now, let's discuss
+the SSM Session Manager feature of Systems Manager.
+So this allows you to start a secure shell
+on your EC2 instances and on-premises servers
+without having SSH access or the need for bastion host
+or any SSH keys.
+That means that the port 22 on your EC2 instances
+is going to be closed because there is going to be
+no need to do SSH to establish a secure shell
+onto your EC2 instance.
+That means better security.
+So how does that work?
+Well, the EC2 instance that we're going to show you
+in a second has an SSM Agent
+and that agent is connected to the Session Manager service.
+So that means that our users can access
+through the Session Manager service
+these two instance and execute some commands on it.
+This has support for Linux, macOS and Windows
+and we can send log data to Amazon S3 or CloudWatch Logs
+to make it super secure.
+I think it'll make a lot more sense
+when we do the hands-on so let's do it.
+So let's have a look at the SSM Session Manager service,
+but first, we need to launch an EC2 instance.
+So let's launch an instance right now
+and I will scroll down.
+We will choose Amazon Linux 2 AMI, t2.micro.
+We will not use any key pair.
+And then I will disable SSH traffic.
+So as you can see, my EC2 instance will have
+a security group that allows nothing.
+No HTTP, no HTTPS, no SSH.
+Yet, we will be able to use an SSM Session Manager shell.
+So what I need to do actually is
+to attach an IAM instance profile to my instance
+to allow it to talk to the SSM service.
+So I have a few right here,
+but I'm going to create a new one just to show the process.
+So click on create a new IAM role profile.
+Then let's create a role.
+For a service on AWS, it will be Amazon EC2.
+Click on next. Then, for permissions,
+we're going to filter for SSM
+and we will choose the Amazon SSM managed instance core.
+So let's select this and click on next.
+And then I will call it demo EC2 role for SSM,
+which allows the EC2 instance to use this policy
+to talk to the SSM service.
+So this is necessary for my instance
+to be managed by the SSM service
+and so we can use the SSM Session Manager feature.
+So now that this role is created,
+we're going to refresh here and we're going to look
+for this demo EC2 role for SSM.
+Perfect. So let's go ahead
+and now, create and launch our instance,
+which is now launched
+and it's going to boot.
+And so the thing I have to check now is the SSM service.
+So let's go into Systems Manager.
+And on the left hand side,
+you're going to look for Fleet Manager
+and Fleet Manager is a service where all the EC2 instances
+that are registered with SSM will appear here.
+So they're called managed nodes.
+And as you can see right now,
+we don't have any managed nodes,
+but we need to wait for the EC2 instance to boot up
+and then it will appear right here.
+Okay. So I just refreshed and as you can see,
+there's one instance. It's running.
+We can see the SSM Agent is online.
+We can see the platform, the operating system,
+Amazon Linux 2, the SSM Agent version
+and then links to the EC2 instance if we wanted to.
+Okay. So as soon as our instance is under Fleet Manager,
+that means that we're ready
+to run a secure shell against it.
+So to do so, I will scroll down
+and I will look for Session Manager.
+Now, Session Manager is a way for us
+to access our Linux instances and Windows instances.
+So let's start a session.
+And as you can see here, okay,
+my EC2 instance under the security group
+does not have any inbound rule.
+Okay. So zero inbound rules in here.
+So let's start a session on this EC2 instance and start it.
+And the idea is that we're going to get a secure shell,
+as you'll see in a second.
+Here we go, we have a secure shell
+and I didn't need to have SSH access
+so I can do ping google.com
+and this command is going to work, obviously.
+And if I do host to get the host name, so host name,
+we can see that this is IP 172-31-1-148,
+which is exactly corresponding to,
+and if you go into networking,
+the private IP address of my instance.
+So that means that using the SSM secure shell,
+we're able to have indeed a secure shell directly
+from AWS without having SSH security keys and SSH access.
+So to summarize, we have three ways
+of accessing our EC2 instance.
+Number one is to open the port 22 and then use SSH keys
+and with a terminal to do the SSH command.
+Number two is to use EC2 Instance Connect
+and that didn't require to get SSH keys
+because they will be temporarily uploaded
+onto the Amazon EC2 instance if we need to.
+So that was number two, but this required still
+the port 22 to be opened on our EC2 instance
+to have access with using EC2 Instance Connect.
+And then we've explored the third option
+which is Session Manager.
+So we need to make sure that we had an EC2 instance
+with Amazon Linux 2 and make sure
+that this EC2 instance had an IAM role
+and this IAM role, okay, as you can see under security,
+had an IAM role and this IAM role allowed access
+from the EC2 instance to Systems Manager
+and this is what allowed us to get the secure shell running.
+So that's it for this lecture.
+We can terminate this session and the cool thing is
+that the session history will be saved in terms of logs.
+So we can see the session history right here.
+So this is awesome.
+And to finish, just take your instance and terminate it.
+That's it.
+I hope you like this lecture
+and I will see you in the next lecture.

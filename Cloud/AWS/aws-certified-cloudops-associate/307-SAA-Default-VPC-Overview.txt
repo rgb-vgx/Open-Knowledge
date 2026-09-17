@@ -1,0 +1,151 @@
+# 307. [SAA] Default VPC Overview
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/13221962
+# Caption: en_US (manual)
+
+So, now let's do a quick walkthrough
+of the VPC that is created with your account
+called the default VPC.
+So, now all new AWS accounts will have a default VPC
+and this is so that you can start,
+you know, using it this right away.
+So, new EC2 instances that are launched
+into the default VPC if you don't specify any subnets.
+And obviously when you start in your accounts,
+you only have one VPC anyway.
+So, the default VPC
+will by default have internet connectivity,
+so this is why our instance are being able
+to access the internet and each EC2 instance within it
+will get a public IPv4 address
+and this is why we've been able to connect
+to our EC2 instances right away when we created them.
+We will also get a public and a private IPv4 DNS name
+for our EC2 instances.
+So, let's go in to the console
+to have a look at this default VPC.
+So, I'm in the console and we're going to have a look
+at the VPC service.
+So, the reason why we have a default VPC
+is that if we didn't have one,
+it will be very, very complicated for newcomers in the cloud
+to start using AWS, okay?
+But it is best practice if you know a bit
+it was a networking that you create your own VPCs
+in your production accounts
+instead of using the default VPC.
+So, this is the dashboard and on the left hand side,
+there is your VPCs.
+Now, as we can see one VPC is created,
+there is no name, but it's called the default VPC,
+because it's created by default, okay?
+And as you can see there's an IPv4 CIDR block here
+that is defined.
+And what I can do is go to my website
+and then calculate this range.
+And as we can see, we can see where the first IP
+of my range is.
+Where is the last IP sets a /16 that means
+that the last two octets of my IP can change.
+So, the last two can change so all the way to .255.255
+and we have 65,536 IPs possible in that range.
+Okay, very handy.
+And if we have a look at CIDRs, so again,
+only one IP for CIDR has been created
+and associated with that VPC.
+No IPv6 CIDRs, flow logs are not enabled
+and there are no tags, okay?
+So, this is pretty good.
+Now, if you look at all the options,
+we have a look at main route table,
+main network ACLs and so on,
+so we'll have a look in the course
+into what these are at one at the time, okay.
+But let's just explore the menu for now.
+So, we have three subnets already
+and these subnets are linked to the VPC
+that is the default VPC.
+Now, each of these subnets by default
+has its own IPv4 CIDR, okay.
+And so if you have a look at on the right hand side
+the availability zones as we can see
+each subnet is in a different AZ.
+And the reason is well, by default
+we got three subnets across three AZ
+to have a highly available architecture if we needed to.
+So, these subnets turns out have these IPv4 CIDRs.
+So, let's have a look at one of these for example, this one
+and then I will calculate this new CIDR.
+And so here's the first IP and here is the last IP.
+And the total number of hosts is 4,096,
+but it turns out that if you go back
+into the subnets console,
+the number of available IPv4 addresses is 4,091.
+So, we'll have a look at why this is the case
+and obviously it would be a lesser number
+if you are already using this subnets, okay?
+So, we'll try to understand why this is the case,
+but there are five IPs are missing and we'll learn about it
+in this course.
+So, looking all the way to the right,
+each subnet has a route table and a network ACL.
+And as you can see there is a default subnet
+and we have the setting auto-assign public IPv4 enable
+that means that any EC2 instance created
+into these default subnets will have a public IPv4, okay?
+So, let's have a look at now the settings,
+so the flow logs are not enabled for the subnets.
+The route table is available,
+so there is this route table that exists
+and we'll have a look at it in the second.
+And then there is network ACL and this is again,
+we'll see in details where this is in this section, okay.
+But it turns out that's all traffic on all protocols
+from everywhere is allowed for inbound and for outbound.
+So, that means that anything launched
+into these subnets, okay.
+Will be having network connectivity, which is good.
+Now, for CIDR reservations,
+there are none of them sharing,
+so this subnet is not shared and there are no tags.
+So, let's have a look at the route table.
+So, the route table is helping your traffic
+being routed through your VPC.
+So, this is called a default route table,
+a main route table and it turns out
+that there are two rules,
+will have a look at what this means later on.
+But this one right here,
+this one is pointing to all traffic, okay.
+Outside of this CIDR, all traffic goes to
+this internet gateway.
+So, if we click on this internet gateway
+and go here, so it's on the left hand side.
+This internet gateway is attached to my VPC
+and whether it does that it gives internet access
+to my EC2 instances within my VPC.
+So again, this is why are our EC2 instances
+did gets internet access.
+Now, we'll have a look at it again
+in the later stage in details.
+And if you look at the subnet association,
+this route table is not explicitly associated
+with any subnets, but it is implicitly associated,
+because these subnets do not have a route table
+assigned to it.
+So, the main route table is by default going to be assigned
+to them implicitly, okay?
+And then we're good to go.
+So, we've seen VPCs subnets, route tables, internet gateway
+at a very high level, but hopefully
+it gives you a little bit on understanding
+as to why we were able to launch EC2 instances,
+why they were getting specific kind of IPs and so on.
+Now in this section,
+we're gonna spend a lot of time having a look at
+all these options and recreate our own VPC.
+So, we'll understand exactly what VPC, subnet,
+route table, internet gateway
+and everything else here actually are made of.
+So, I hope you're excited
+and I will see you in the next lecture.

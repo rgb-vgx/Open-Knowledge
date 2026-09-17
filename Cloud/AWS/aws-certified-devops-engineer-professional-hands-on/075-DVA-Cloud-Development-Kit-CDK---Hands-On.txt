@@ -1,0 +1,274 @@
+# 75. [DVA] Cloud Development Kit (CDK) - Hands On
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37869428
+# Caption: en_US (manual)
+
+So just as a quick reminder
+we're going to use the CDK to create an S3 bucket,
+a Lambda function that will invoke Amazon Recognition
+and DynamoDB tables to save the results of our action
+all using the Amazon CDK.
+So let's go.
+Okay, so let's practice using the CDK.
+For this I'm going to use CloudTrail
+to be able to run commands against my AWS environment.
+So click on CloudTrail and CloudTrail is getting ready.
+And in the meantime you can go under CDK
+and open the steps.sh to get started
+and run some commands.
+So first of all, what we have to do is to initialize
+and install the CDK on our environments.
+So for this, we do a sudo npm install
+and we install the aws-cdk-lib.
+So let's paste this and press Enter.
+And now we have installed the CDK lib on our computer.
+So that means that if I type cdk now
+we're going to get some commands out of it
+as you can see.
+Right now we get some error
+because we have to specified which CDK command we want,
+but it's working.
+So next we're going to create a directory called cdk-app
+and then we're going to change directory to go in it.
+And this is very important to do so.
+Next we're going to initialize our CDK application.
+So for this the command is cdk init.
+Then we specify app and then we specify a language.
+This is what we will write the infrastructure in.
+So we have JavaScript
+but we can also have for example, Python.
+But we chose JavaScript in this example.
+Okay, now everything is done.
+So we're going to verify that it has been successfully
+initialized by doing cdk ls, which should return one thing,
+it will return the CdkAppStack.
+Alright, that's perfect.
+So next what we have to do is to actually
+copy the content of the cdk-app-stack
+into the lib directory.
+So if you do ls lib, you'll see there's a cdk-app-stack.
+So let's go into this lib directory.
+We're going to remove the cdk-app-stack,
+and then we touch the cdk-app-stack to create a new file
+and we'll use nano to edit this file.
+So if you see nano command not found.
+Just do sudo yum install nano.
+Nano is a text editor. Yes.
+Nano is a text editor, which will allow us
+to edit some files.
+So let's clear this and we'll do again,
+nano cdk-app-strack.js.
+And now we're going to paste the content of lib, this file.
+So let's copy-paste it.
+Yes, please paste multiline.
+Exit.
+And Save, so Control + X and Y.
+Okay, just make sure you're good by doing a cat.
+And cat allows you to see that, yes,
+you have indeed copied all the content into this file.
+Okay, so now let's do a little look into what this file is
+because this is the core of the CDK.
+So at the top, we require the CDK library
+and then we require some specific constructs from CDK
+such as S3, IAM, Lambda, DynamoDB,
+as well as more.
+So we scroll down and then we see that thanks to code
+we start deploying and defining our infrastructure.
+For example, here we define an S3 buckets
+and we say this is an S3 bucket,
+and by the way, the removal policy is destroy this.
+So that means that please destroy this bucket
+when the stack is destroyed.
+And we have an output that's defined out of it
+called CfnOutputs.
+And the name is buckets and the value is the bucket name.
+And so this is going to be converted into CloudFormation
+but this is programmed as code.
+This is because the CDK knows what to expect
+to create an S3 bucket,
+and so therefore you can define different parameters.
+And this allows you to be a lot more versatile,
+a lot more agile when creating your stacks
+because you just write code, you don't write CloudFormation.
+So if you know a little bit of JavaScript
+or you know a little bit of Python,
+you may prefer this method.
+So then we go ahead, we create a role for Lambda.
+So we call this one role
+and then we define how it's working to work.
+And then there's a function called addToPolicy
+where we can add a policy statement into a role.
+So we've done this in two steps, in two lines of code,
+one and two.
+And this really shows the power of mixing programmation
+and then at the end, compiling into CloudFormation.
+So we have a DynamicDB table yet again we created,
+we defined the partition key, the removal policy
+as well as that becomes an output.
+Then we have a Lambda function.
+We define the runtime, the role,
+some environment variables that are linked directly
+to the table we have defined from before.
+And the buckets we're defining right after,
+or right before right here.
+So it really shows again the power
+of using programming languages.
+We can add event sources to say that the Lambda function
+is going to be triggered from Amazon S3.
+And then we have some very good shorthand
+such as we can grant read-write access
+to the Lamnda function on the bucket and the table
+by just having one line and using this function
+instead of figuring out what is the correct IAM policy.
+So that's really the power of using the CDK right here.
+Okay.
+So once we're done, we need to actually set up
+the lamb function that will be invoked.
+Okay, so to do so from the lib directory,
+we go one level up.
+So now we're back into our top-level directory.
+We're going to create a Lambda directory and go in it.
+And then we're going to create a file called index.py in it
+by doing touch index.py.
+Then we're going to edit it, so nano index.py
+and we copy the content of Lambda index.py.
+So let's take everything from here and paste it
+and then paste it.
+And then Control + X, Y Enter. Okay.
+So now our index.py file is properly set up as you can see.
+This is perfect.
+We can have a look at what it does.
+So what it does that it detects labels in images
+using Amazon Recognition.
+So it's going to actually look at the image coming from S3
+and then run it through recognition.
+And then finally write the data,
+the target data into DynamoDB.
+Okay, so this function is now created.
+Now we need to bootstrap the CDK application,
+bootstrap CDK overall.
+So this is something you have to do
+once per account per region,
+and of course you should be running this command
+from a directory one level up
+because there is a cdk.json file in it
+which contains some important information
+around how we want to be set up.
+Let's go back, we run the CDK bootstrap again.
+Paste this. Press Enter.
+And this is going to create all the necessary stuff
+in your accounts to run the CDK.
+So it actually goes into CloudFormation.
+So if you open the CloudFormation service,
+so CloudFormation in here.
+As you see right now, there's a stack being created
+called the CDK Toolkit.
+And this is what's necessary for CDK to work.
+So if you look at resources in here,
+you can see that there is SSM parameter, IAM roles,
+ECR repository, IAM role, IAM roll,
+and then an S3 bucket.
+A bit of necessary stuff for the CDK to work.
+This is something you have to do once per region
+and per account.
+Next, we're going to run cdk synth
+to get the target CloudFormation template
+that is going to be generated out of our stack.
+So by running cdk synth,
+what's going to happen is that we're actually going to get
+a whole CloudFormation template,
+as you can see in here, an entirely a big one.
+And that contains everything we need.
+So it has an S3 bucket
+it has S3 bucket notifications being set up.
+It also has a Lambda function and so on,
+and IAM role and SSM parameters.
+So the idea here is that this
+is what's going to be deployed to CloudFormation,
+and we can preview it,
+but we don't need to necessarily do it.
+And finally, we need to deploy the CDK stack.
+So we'll run CDK deploy.
+And this is actually going to generate
+this CloudFormation template
+and deploy it into CloudFormation.
+So you say, yes, here are all the things
+that are going to be created.
+Everything looks good, let's say yes.
+And press Enter.
+And now is going to actually deploy
+a new CloudFormation template
+that is going to be representing our stack.
+So if I go in here,
+we have the CdkAppStack, actually yes, being created.
+And if we have a look at our resources,
+there's going to events and resources and refresh.
+We can see everything that is being created
+such as the IAM role, the S3 bucket,
+DynamoDB table, and so on.
+So let's wait until everything is created.
+Okay, so my stack is fully created
+and if we refresh this page,
+we see we have 11 resources being created.
+So what's important to us is going to be the S3 bucket
+and the DynamoDB table.
+So let's go into the S3 bucket right here,
+open it in a new tab, and then the DynamoDB table as well.
+So the idea is that whenever we upload a file
+into this S3 bucket, the Lambda function that get deployed
+will be run and then we will have some data
+in our DynamoDB table.
+So for this right now, if you go into explore table items,
+we don't have any items, but let's do a quick experiment
+and see if everything is working.
+So we go into these buckets
+and I'm going to upload the file.
+Add files, and then underneath my code,
+I'm going to choose the cdk, images
+and then we'll choose penguins.
+So let's upload this file in our buckets.
+And we're done.
+So this file is right here.
+I'm going to open it right here
+to show you what it looks like.
+Let's go, Preference, Allow.
+Okay, so this is just a man with some penguins.
+And so this is sent into our S3 buckets.
+And then what's going to happen is
+that our Lambda function is being run.
+It's going to be triggered because S3 sent a notification
+to our Lambda function
+and then recognition is going to be invoked.
+And finally, if I refresh this,
+you see that now there's one item return in my table.
+So the image is penguins.jpeg
+and then we can have a look
+at the fact that a penguin, a mobile phone, animal,
+bird, person, man, adult, male, glove and shoe
+all get detected in my images.
+And you can play a bit more.
+You can, for example, go back to your buckets
+and upload two more files.
+So we could upload kid_and_pigeons and swans
+and upload them.
+Okay, we good?
+So they've been uploaded
+and very quickly
+I go back into the DynamoDB.
+And now I see that more of my images
+have had item detected in them.
+And you can have a look at this table on your own.
+So that's pretty cool.
+We've seen how to deploy a full stack using the CDK.
+Now to clean up everything,
+what we have to do is that we have to empty our S3 buckets.
+So let's take all these files and yes,
+we say yes, I want to permanently delete them.
+So that's step one.
+And then step two, to clean everything up
+we're going to do cdk destroy.
+So back into CloudShell, do cdk destroy
+and is going to destroy everything for you.
+Yes, and you're good to go.
+All right, that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

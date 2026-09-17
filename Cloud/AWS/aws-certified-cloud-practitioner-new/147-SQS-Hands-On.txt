@@ -1,0 +1,81 @@
+# 147. SQS Hands On
+# Section: Cloud Integrations
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20056164
+# Caption: en_US (manual)
+
+So let's go and practice the SQS service.
+So in SQS we see it's a message queuing service
+and the idea is that we have a high-throughput
+system-to-system messaging service.
+So we're going to go ahead and create a queue,
+which is going to be free.
+So as you can see, we have two types of queue
+we can create, a standard queue or a FIFO queue.
+Now this is way beyond the scope of the exam
+for the Cloud Practitioner.
+So I'm just going to do standard
+and I will call my queue demo-sqs.
+In terms of the configuration, you can safely don't look
+at all these things, again, it's more advanced
+than we need to know as well as the access policy,
+we can leave everything as default.
+So what I'll just do is create the queue.
+Now my queue is created, and we can start sending
+and receiving messages from it.
+So let me close these panels right here.
+So we have all the configuration panels here, but again,
+not in this scope, so let's not do,
+deal with them right now,
+but here we have our queue details where we can find
+the type of queue it is, the name,
+whether or not we enable encryption and so on.
+And we if we click on more,
+we get some more information and we get some information
+around how many messages are available,
+how many messages are in flight,
+how many messages are delayed?
+So what we're going do is to produce and consume permits.
+So for it we'll go on the top right hand side
+and there is send and receive messages.
+So once I click on send and receive messages,
+you can send a message
+so we'll send the message, hello world.
+And then we can just click on send message.
+Now as you can see, the message has been sent
+and it's ready to be delivered,
+received and if you click on view details,
+you can get some information around that message,
+so the message ID as well as the MD5 attributes,
+but more importantly, if we scroll down,
+we can see that now in the receive message section,
+one message is available.
+So if I just do another one, so I say another hello
+and press send message, now you see that
+the messages available is two.
+So now we need to poll the queue to receive these messages.
+So click on poll for messages,
+and this will go ahead and retrieve these messages for me.
+As we can see, the two messages here are showing up
+and on application, we click on them,
+we'd actually read them, so look at the body and say,
+okay, this looks like hello world,
+which is the exact message I sent.
+We could look at some attributes and so on.
+If there were say, if there were some sets,
+but what the application will do is that it will read
+the messages and this is the application you would have
+to code obviously and then when the message processing
+is done, you would click on the messages
+and then delete them to remove them from the queue
+and as you can see, messages available is zero.
+Very, very simple, but that's how SQS works at a high level.
+Now, if you go back to your queues,
+you will get a list of all your queues
+and to finish this hands on, you can go ahead
+and delete this queue.
+This won't cost you any money, but it's not bad
+to clean up after yourself.
+So that's it.
+We should enter the word delete, sorry.
+So that's it for this lecture, I hope you liked it,
+and I will see you in the next lecture.

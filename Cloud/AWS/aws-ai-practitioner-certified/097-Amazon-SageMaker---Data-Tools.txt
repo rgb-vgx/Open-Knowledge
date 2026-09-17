@@ -1,0 +1,100 @@
+# 97. Amazon SageMaker - Data Tools
+# Section: Amazon SageMaker - Deep Dive
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887771
+# Caption: en_US (manual)
+
+So to get started with SageMaker,
+we need to prepare some data,
+for this, we can use SageMaker Data Wrangler.
+So this allows you to prepare tabular and image data
+for machine-learning purposes.
+In SageMaker Data Wrangler,
+you can do data preparation, transformation,
+and feature engineering.
+So this is extract of the interface
+of SageMaker Data Wrangler.
+And from this single interface,
+you can also do data selection,
+you can cleanse it,
+you can do data exploration,
+you can visualize it with some graphs, and process it.
+So it's very, very powerful as a data tool,
+to make sure that your data is ready for machine learning.
+On top of it, if you're a programmer
+that uses the SQL language, you have SQL Support.
+And if you want to analyze the quality of your data,
+you have a data quality tool,
+which will tell you, for example,
+if all your rows and your columns are in the right format,
+if you're missing some data, and so on.
+So anytime you need to transform data, think Data Wrangler.
+I just wanna show you different screenshots,
+so you can import data from different places,
+for example, from Amazon S3,
+you can preview data to see and extract
+and configure the types of column names
+as well as their types.
+You can visualize data,
+this is where you create graphs
+that allow you to understand
+what is happening within your data sets,
+and understand the type of data you're dealing with
+because that has a big impact
+on the machine learning model you will choose,
+you can transform data,
+so this is where you define the data transformation,
+the type of function you will apply on your data,
+the things you wanna drop, and add, and so on.
+And then you can do a quick model,
+a quick analysis to understand if your machine model
+is going to perform or not.
+Finally, your data flow can be exported
+so that it can be recreated in the pipeline
+and in an automated fashion.
+So Data Wrangler is part of SageMaker Studio,
+and is a very good way to transform
+and deal with your data
+before going into machine learning models.
+So when you use Data Wrangler or any other tool,
+you will want to create machine learning features,
+and these features are going to be
+what is gonna be given as an input
+to your machine learning models.
+And they will be used during training
+and used for inference.
+So remember, we had this dataset
+in which we had the birth date,
+but the birth date was not good enough for us,
+so after doing feature engineering,
+we've transformed it into an age,
+a numerical value that was more usable for us.
+Other things we can do, for example,
+will be to extract the song rating,
+the listening duration,
+or listener demographics for a music data set.
+And it's super important to have very high-quality features
+across your data sets in your company to use.
+So not just one,
+but across all your data sets to reuse them.
+So that brings us to the SageMaker Feature Store.
+So the idea is that these features exist
+in many of data sets,
+and you're going to ingest them from a variety of sources.
+And in the Feature Store,
+you're going to get an overview
+of all the features that exist in your company
+and you can have a description and so on,
+which is very handy.
+So you are able to also define
+the transformation of data into feature directly
+from within the Feature Store,
+or you can publish it directly from Data Wrangler
+that we've seen into the SageMaker Feature Store.
+And these features are discoverable within SageMaker Studio,
+which allows for better collaboration
+and better discovery of data within your company.
+So that's it for this lecture on preparing data.
+We have seen Data Wrangler
+and we have seen Feature Store.
+I hope you liked it,
+and I will see you in the next lecture.

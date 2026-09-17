@@ -1,0 +1,103 @@
+# 41. [DVA/SOA] CloudFormation - Rollbacks
+# Section: Domain 2: Configuration Management & IaC
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858860
+# Caption: en_US (auto)
+
+So let's talk about CloudFormation rollbacks.
+And they're very important to understand at the exam.
+So if you create a stack and the stack creation fails you have two options.
+The first one is the default option, which is that everything rolls back and that means gets deleted.
+And you can look at the log of your CloudFormation create to understand what happened and why it failed.
+But you cannot look at your resources.
+But if one of these resources has a problem and you want to keep it, you have the option to disable
+the rollback to troubleshoot what happened during your stack creation.
+If it is a problem with stack updates, then automatically by default, the stack is automatically going
+to roll back to the last previous known working state, again, deleting anything that was newly created.
+And again, you can look in the log to see what happened and the error messages.
+Now in case of a rollback failure.
+So that means that there is a stack update.
+It rolls back and during the rollback there is a failure.
+Then this is a problem with your stack.
+And you probably had resources that were manually changed.
+In that case you need to go and fix these resources manually.
+And then through the console or through the API, you can issue what's called a continue update rollback
+to tell CloudFormation to try rolling back again.
+So either you do it from the console or an API call, or from the CLI using the continue update rollback
+API call.
+Okay.
+So let's practice failures.
+So let's create a stack and we'll upload a template file.
+And the file I'm going to upload is called trigger failure dot Yaml to number two.
+So why is this file problematic.
+Well if you go into trigger values.yaml you look at the image ID of my EC2 instance, it is an image
+ID that does not exist.
+So therefore it's going to create a failure.
+So let's click on next and I'll call this one Trigger Creation Failure.
+Click on next.
+And here under Stack Failure Options we have two options.
+Number one is to rollback all stack resources.
+That means that they're going to be rolled back to the previous known stable state.
+Or we can preserve successfully provision resources.
+And this will keep the successfully provisioned resources and rollback any failed resources to the last
+known stable state.
+So if we do this, which is the Non-default option, and then we click on next and then submit.
+As you can see, we generate an SSH security group and we generate a server security group.
+And so as you can see I need to first of all there's one problem that I didn't provide the group description.
+So it's a good example of the failure of this.
+So as you can see though, even though my uh server security group was not able to be created, my SSH
+security group was able to be created.
+And if I go into resources, well, one is still being kept.
+Whereas if you had a creation and by default it would fail, it would delete everything.
+So this could be the occasion to just troubleshoot if you needed to.
+But of course, because this leaves some Remainers, uh, you need to absolutely delete the stack to
+get rid of it.
+So you cannot update the stack and fix things.
+So we will delete it.
+And now it's gone.
+So this is showing you the option of what it is when there is a create failure and you can do the exact
+same thing.
+So you can create a stack.
+Right now I'll create a stack based on a correct template called just EC two dot Yaml.
+And I'll call it uh, failure on update.
+So right now we're good.
+We know that this is going to work because well, this is the template we've used from before.
+So let's wait for things to be created.
+And as we can see we're good.
+So I'm going to update my stack.
+And if you don't see this button just refresh your page.
+So update my stack.
+But this time I will replace the template with the template file named Trigger failure.
+So this time we'll have a group description called hello next.
+And here we have again the option to rollback all stack resources or to preserve successfully provision
+the resources.
+So we're now would say rollback everything and see what happens.
+And then we'll do the second option right after.
+So let's click on next and then click on submit.
+So this is going to create a few security groups.
+And then it's going to trigger a rollback.
+So my security groups right now are being created.
+Now they're done.
+And as you can see, the instance gets created.
+But then there was an update failed because, well, the invalid army was not found.
+So therefore what's going to happen?
+Well, because we have specified everything to roll back, then everything is going to roll back based
+on the last known state.
+And so that means that my server, SSH security server, security group and SSH security groups should
+disappear.
+So let's wait for these events to happen.
+And as you can see right now, my SSH security group and server security group get deleted.
+And similarly as an exercise if you update the stack.
+But this time you choose again the trigger failure and.
+We just enter description again?
+And then the stack failure option.
+We just say preserve successfully provision resources.
+Then you know what happens.
+You can try it out on your own.
+This would create SSH and server security groups, but it would not roll them back in case there is
+a rollback happening a stack failure.
+So this is up to you to choose what you want.
+But both both the behaviors can be desirable based on what you're trying to do.
+So when you're done please go ahead and delete the stack and you'll be good.
+All right.
+That's it.
+I hope you liked it and I will see you in the next lecture.

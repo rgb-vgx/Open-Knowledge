@@ -1,0 +1,184 @@
+# 6. What is Cloud Computing?
+# Section: What is Cloud Computing?
+# https://ua.udemy.com/course/aws-certified-cloud-practitioner-new/learn/lecture/20262744
+# Caption: en_US (manual)
+
+So now let's talk about cloud computing.
+So what is cloud computing?
+The definition is as such,
+cloud computing is the on-demand delivery of compute power,
+database storage, application, and other IT resources.
+The very important keyword here is on-demand,
+you get it when you need it.
+And then through a cloud service platform,
+you're going to get a pay-as-you-go pricing.
+That means that you're only going to pay
+for what you requested when you requested it
+and as you're using it, when you're done using it,
+you're not going to pay anymore.
+This is a big shift, right?
+Then this is cloud computing.
+So we can provision exactly the right type
+and size of computing resources you need.
+Do you need a big server? We have that for you.
+Do you want a small one? We have that too.
+Do you want 10? Yes.
+Do you want two tomorrow? Of course.
+The cloud really allows you to adapt
+to the type and size you need.
+Then you can access all these resources,
+not with 24-hour notice, not with two hours notice,
+but instantly, you don't need to order things in advance.
+When you want a server, and you'll see this in this course,
+you'll have it within seconds.
+Then the cloud will also give you a really nice interface
+so you can easily access your servers, your storage,
+databases, and a set of application services.
+Something about the cloud, but in specific AWS,
+which is Amazon Web Services owns and maintains
+the network-connected hardware required
+for these application services while you provision and use
+what you need via a web application.
+So with this interface,
+we'll make all these things a reality.
+Now, let's go back to our traditional IT.
+So we're changing.
+We have our office or our garage,
+but now instead of building our own data center
+we're going to use the cloud, and in the cloud,
+which is also a data center, is just not our data center,
+we're going to have servers one, two, three, as we need
+and as we go and we're just going to pay for exactly
+what we're using.
+So you have actually been using the cloud without
+even knowing it because it is omnipresent,
+but not necessarily visible.
+So if you use a web client such as Gmail,
+well, for example, it's an email cloud service
+and you're going to pay only for the emails you stored.
+You're not provisioning servers when you use Gmail,
+you just use it.
+Maybe you've stored some data on the cloud,
+maybe through Dropbox, Google Drive, Google Photos,
+iCloud, I don't know.
+But with Dropbox, for example, it's a cloud store service,
+you're going to put your files on Dropbox.
+And originally, fun fact, Dropbox was built on AWS.
+So we've been using a cloud storage service as well
+without knowing it.
+And Netflix, it's huge.
+It is built entirely on AWS and it provides you
+a cloud service, which is to get video on-demand.
+Now, obviously these cloud services are very different
+from AWS, but we'll learn what it goes behind these services
+and how AWS can help you build
+these kinds of cloud services.
+So let's go one step further.
+There are different kinds of clouds out there.
+The first one is called a private cloud and the provider is,
+could be Rackspace.
+This is cloud services used by a single organization,
+they're not exposed to the public,
+so you get your own private cloud,
+your own private data center,
+it's just managed by someone else.
+You still have complete control over it
+and you have more security for a sensitive application,
+which may need some specific business needs.
+This is out of scope for this course,
+but still good to mention.
+Now the public cloud is more interesting.
+So three famous cloud providers that are public,
+are Microsoft Azure, Google Cloud, and Amazon Web Services
+that we'll be learning in this course, obviously.
+So in this case, the cloud resources own and operated
+by a third party cloud service provider
+and they're delivered over the Internet
+and we'll see the six advantages of using cloud computing.
+So in this instance, that means that from AWS,
+we'll be able to request what we need when we want it.
+And then lastly, which is also important for the exam
+is the concept of a hybrid cloud.
+So with hybrid, we're actually getting the mix
+of private and public.
+We're going to keep some servers on premises and we'll
+extend some of the capabilities we need into the cloud.
+That means that we'll have a hybrid of our own
+infrastructure and the AWS cloud.
+We'll have control over sensitive assets
+in your private infrastructure,
+but we'll have the flexibility and the cost effectiveness
+of using the public cloud.
+Now, five characteristics of cloud computing.
+The first one is that it's fully on-demand and self service.
+Users, and we'll see this in this course,
+we will be able to provision resources
+and use them without having anyone from AWS intervene.
+Then we'll be having access to a broad network,
+the resources will be available over the network,
+and it can be accessed in diverse ways
+as we'll see in this course.
+It'll be multi-tenancy and we'll have resource pooling.
+So that means that not just us, but other customers
+from AWS can share the same infrastructure
+and applications while still having security and privacy.
+And then these multiple customers are getting serviced
+from the same physical resources.
+So here, me, you, and other customers,
+we're going to share this entire data center of the cloud.
+This gives us rapid elasticity and scalability.
+That means that we can automatically and quickly acquire
+and dispose resources when we need.
+And that means that we can quickly
+and easily scale based on demand.
+And that is a major advantage of the cloud.
+Finally, it's a measured service, so the usage is going
+to be measured and we're going to pay exactly
+for what we have used.
+This is a big shift from on premises.
+Now, six advantages.
+We're going to trade capital expenses
+for operational expenses, so CAPEX or OPEX.
+That means that you don't own hardware,
+you're going to pay on-demand and that will reduce
+your total cost of ownership, your TCO,
+and your operational expense.
+That means that you don't buy the hardware in advance,
+you're just going to rent it from AWS.
+Then we're going to benefit from massive economies of scale.
+The price is because we are using AWS, not just us,
+but other customers and so many people are using it,
+then the prices will be reduced by AWS over time because AWS
+will be more efficient at running due to its large scale.
+We also need to stop guessing capacity.
+Before we had to plan and buy servers in advance
+and hope that it would meet the capacity,
+but now we can actually scale automatically
+based on the actual measured usage for our application.
+And because everything's on-demand,
+we have increased speed and agility.
+We can create, operate and do stuff right away,
+no blockers for us to be efficient.
+And finally, we have a huge cost that we don't need
+to have anymore, which is we can stop spending money running
+and maintaining data centers.
+And this allows a team of say five people
+to create a global application in minutes,
+thanks to leveraging this AWS global infrastructure
+that is going to be worldwide.
+Okay. So the problems we've just solved by using the cloud
+is that we're more flexible, we're more cost effective,
+we are more scalable because we can add resources
+as we need to go along,
+we're elastic, we can scale out and scale-in when needed,
+we also have high availability and fault tolerance
+because we don't really on the one data center,
+we rely on the fleet of data centers all around the world.
+We're more agile, we can rapidly develop,
+test and launch software applications,
+and although this make the cloud a really no brainer.
+So that's it, just for an introduction of how the cloud
+is going to be effective.
+Now in the next lecture,
+we're going to view one step further,
+what are the different types of cloud computing.

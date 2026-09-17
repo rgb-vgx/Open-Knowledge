@@ -1,0 +1,67 @@
+# 89. Amazon Comprehend Medical & Transcribe Medical
+# Section: AWS Managed AI Services
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/44887711
+# Caption: en_US (manual)
+
+So now let's talk about
+AI services for the medical space.
+So we've seen Amazon Transcribe,
+but there is a version of Amazon Transcribe
+that is specifically geared for the medical space.
+And this allows you to automatically convert
+medical related speech into text.
+And the reason why this is specialized
+is because we have HIPAA compliance,
+that means that you should be able to use it
+in regulated environments.
+So your audio is going to go
+through Amazon Transcribe Medical,
+and you're going to get text out of it,
+but it specializes in medical terminologies,
+such as the medicine names, the procedures,
+the conditions, and diseases.
+So you have the option to do real time with a microphone
+or to upload files and get batch transcription.
+And the use cases for Amazon Transcribe Medical
+is to create a voice application
+that will enable physicians to dictate medical notes
+or to transcribe phone calls
+that will report on drug safety and side effects.
+So once from the audio you have text,
+then you can do even more things.
+So you can, for example, use Amazon Comprehend Medical,
+again, a version of Amazon Comprehend
+geared for the medical space,
+and Comprehend Medical is going to detect
+and return useful information from your text.
+It's going to understand the physician's note,
+the discharge summary, the test results, the case notes.
+For this, it uses the natural language processing,
+but this time, it's going to also be able
+to detect protected health information, PHI,
+to make sure that you're not sharing
+information that you shouldn't.
+The data can be from Amazon S3.
+You have a real time feature to analyze this,
+using Kinesis Data Firehose,
+and then you can combine it with Amazon Transcribe
+to get a flow from the audio
+all the way to the comprehension of this audio.
+So here's an example.
+This is audio that has been transcribed
+by Amazon Transcribe,
+and we're going to pass this into Comprehend Medical.
+And Comprehend Medical is actually able to understand
+the full relationships of all the words.
+So if you look, for example, on the top right,
+we'd see it's a 40-year-old mother.
+It can understand the age, it can understand the profession.
+Then for the medicine, it's able to understand
+the name, the dosage, the frequency, and so on.
+And so from some text that has been very unstructured
+because it's just text,
+we're able to create a very structured pattern
+thanks to Comprehend Medical.
+So that's it, you just need to know
+these services at a high level and what they do.
+I hope you liked it, and I will see you in the next lecture.

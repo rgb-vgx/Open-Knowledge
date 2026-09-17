@@ -1,0 +1,159 @@
+# 125. Amazon ECS - Create Cluster - Hands On
+# Section: Containers
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40305414
+# Caption: en_US (manual)
+
+So let's have a look at Amazon ECS,
+and we're going to create our first cluster.
+So on the left-hand side, let's click on Clusters,
+and then click on Create cluster.
+So the cluster name can be whatever you want.
+For example, DemoCluster.
+And then under Infrastructure,
+we have the way to select how to obtain capacity.
+So now we have several options.
+And the options is Fargate only.
+This is serverless. You don't think about servers,
+and AWS will provide them for you.
+You have Fargate and Manage Instances,
+and Fargate and Self-managed instances.
+So this is the old way
+in which you manage your EC2 instances,
+and you have to create an auto-scaling group,
+and then you have to select the type of AMI that you want,
+the type of EC2 instance you want, and so on.
+It's nice to see these options,
+but we're not going to go over this
+because now AWS is trying to move you
+away from self-managed instances.
+Fargate and Managed Instances is very similar
+in which we're also going to have Fargate,
+but also AWS is going to manage
+our EC2 instances behind the scenes.
+And here what we have to do
+is to create an instance profile.
+So you can click on Create new instance profile right here.
+And then this is for ECS.
+And this is for EC2 Role for ECS Managed Instances.
+And we click on Next.
+And then this is called ecsInstanceRole.
+And click on Create role.
+So my role already exists,
+so I'm going to just use this role right here,
+and I'm good to go.
+And then for infrastructure role,
+I'm going to create a new infrastructure role.
+I scroll down.
+You use this one, Infrastructure for ECS Managed Instances.
+Next. This is a new role,
+so I'm going to create this role.
+And now my role is created.
+So back at it, I can just put it right here.
+And we are good to go.
+Next, we have the instant selection.
+So do we want to have the ECS default
+to choose based on the test definition
+and service requirements?
+And for a production workload,
+this is definitely necessary.
+Or do you want to use custom?
+And here you would choose between the vCPU attribute
+and the memory, say how much min and max you want.
+So this is more advanced.
+And also, if you wanted to force, for example,
+a specific instance type,
+you would say Allowed instance type.
+And you would say, for example, only t3.micro.
+That's it.
+And then you would only have t3.micro
+as part of these managed instances.
+So it's quite nice because AWS is going to manage
+these instances for you.
+And then you can go and click on Create.
+Now, to be compatible with the next lectures that I've done,
+but they're very similar things,
+instead of managing our instances,
+we'll have self-managed instances.
+Here we're going to create a new auto-scaling group
+of on-demand.
+We specify the instance type to be t3.micro.
+And then we'll use the default role
+for the EC2 instance role.
+We say a maximum 2. No need for SSH.
+We specify the min root EBS volume size of 30 gigabytes.
+And then we leave everything for network settings
+as defaults, and then click on Create.
+So while this is happening,
+let's have a look at the auto-scaling group
+that is being created on AWS.
+And then on the left-hand side,
+I will click on Auto Scaling Groups right here.
+And it's showing, as you can see,
+there was an auto-scaling group created for me
+called Infra-ECS-Cluster.
+And these are capacity 0,
+min capacity 0, max capacity 5.
+And this was created directly by my ECS cluster.
+And the creation is in progress.
+And what this cluster has,
+we'll have maybe EC2 instances
+for me to launch tasks on.
+So we can see it's in three available two zones.
+So we know that the ECS tasks
+are going to be launched across three AZ.
+And what I'm going to do now
+is just wait for this cluster to be created,
+which is the case now.
+So what I can do now is explore this DemoCluster.
+So if I click on it, I'm in the DemoCluster,
+and I can go to Services, are 0,
+tasks are 0 because we haven't launched anything yet.
+And then we go to the more interesting, Infrastructure.
+So if you go here to the Infrastructure,
+we have three capacity providers in this ECS cluster.
+The first one is FARGATE.
+That means that we can launch Fargate task
+onto our ECS cluster.
+The second one is FARGATE_SPOT.
+That means that we can launch Fargate task in Spot mode,
+select Spot instances for EC2.
+And the last one is a ASG provider.
+And this one means that we can launch EC2 instances
+in this cluster directly through this ASG.
+So it's managed scaling right now,
+and the current size is 0.
+But I can change it if I wanted to.
+So let me show you what it would look like.
+I go here, I go to Details,
+and I would edit the desired capacity to be 1,
+just to show you what it's like.
+So what's going to happen out of this
+is that an EC2 instance is going to be created, okay?
+And when is created is going to register itself
+into the DemoCluster.
+And then I will see it under Container instances.
+That means that when we create an ECS task,
+it can either be launched on a Fargate
+or Fargate Spot capacity provider,
+or it can be launched on the container instances
+that I will have launched as part of this ASG.
+So what I'm going to do now
+is just wait for this instance
+to be in the running state
+and registered into my ECS cluster.
+So let me refresh now.
+My instance is in service, and it's t2.micro.
+And if I go back into my Amazon ECS cluster,
+it is registered as a container instance
+that is currently, of course, running 0 tasks,
+and has 1024 CPU available,
+and 982 memory available.
+So this is giving me the capacity of this instance,
+and I can launch, as you'll see, tasks on it
+until the capacity runs out.
+So, we're good to go.
+So we have an ECS cluster.
+We've seen two capacity providers. Three.
+We've seen the container instances.
+So now let's go ahead and do run our first service.
+And I will see you in the next lecture to do that.

@@ -1,0 +1,110 @@
+# 337. [SAA] Site to Site VPN, Virtual Private Gateway & Customer Gateway
+# Section: Networking - VPC
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/13222006
+# Caption: en_US (manual)
+
+Okay, so now let's talk
+about site-to-site VPN.
+So the idea is that, now we have a VPC
+but we may have also a structure
+within the corporate data center,
+and we wanna connect AWS to our corporate data center
+using a private connection.
+So for this, we'll have a customer gateway
+on the corporation side,
+and a VPN gateway on the VPC side.
+And we're going to establish,
+through the public internet,
+a private site-to-site VPN connection.
+So it's a VPN connection, so it's encrypted.
+It goes over the public internet, though.
+And using this, we have linked effectively
+the network of our VBC
+to the network of our corporate data center.
+So, as such, the VPNs need two things.
+First, they need a virtual private gateway, VGW.
+It's a VPN concentrator on the AWS side
+of the VPN connection,
+and the VGW is created and attached to the VPC
+from which you want to create
+the site-to-site VPN connection.
+It's possible for you to customize the ASN number,
+if you know what that means.
+The customer gateway is a CGW,
+and it's an actual software
+or a physical device on your side,
+so on the data center side of the VPN connection,
+And there's a bunch of these
+that will have been tested by AWS,
+so we can have a look at the list here.
+So, to do a connection, it's very simple.
+We have a corporate data center with a customer gateway,
+and then we have our VPC with our virtual private gateway.
+So, how do we set up the customer gateway device
+that is on premises?
+Which IP address should we use?
+Well, if your customer gateway is public,
+there is a public internet-routable IP address
+for your customer gateway device.
+Then you would use this one,
+and you would establish the connectivity
+between your VGW and your CGW
+using the public IP of the customer gateway.
+But it's possible for your customer gateway
+to also be private and have a private IP.
+In which case, then it is very common for it
+to be behind a NAT device that has NAT-T enabled.
+And then, that NAT device has a public IP, in which case,
+the IP address you should use for the CGW
+is the public IP of the NAT device.
+And then, the site-to-site VPN connection
+can be established.
+I'm saying this because this can come into the exam.
+And then, the second question that can come up
+to the exam is that,
+even though this is set up,
+this site-to-site VPN connection will not work
+until you enable route propagation in your VPC
+within your subnets.
+And then, when this is done,
+then the connectivity will work.
+Finally, another exam question that can come up
+regarding site-to-site VPN.
+If you need to ping your EC2 instances
+from on-premises to AWS,
+then make sure that the ICMP protocol on the inbound
+of the security group is enabled.
+Otherwise, I would say the connection will not work.
+This is just a security group question, obviously.
+But they mix it up with the site-to-site VPN
+and that can be confusing, so here is some help.
+Now, there's one last thing to know
+about a site-to-site VPN.
+It's called AWS VPN CloudHub.
+So the idea is that you have your VPC with your VGW
+and you have multiple customer networks,
+multiple data centers, each with their own customer gateway.
+So CloudHub is to provide secure communication
+in between all these sites, using multiple VPN connections.
+It's a low-cost hub-and-spoke model
+for primary or secondary network connectivity
+between different locations,
+but only using the VPN.
+So you would establish a site-to-site VPN
+between the CGW and the one single VGW within your VPC.
+And then, thanks to this connection,
+then your customer networks can now communicate
+with one another through that VPN connection.
+Now, because it's a VPN connection,
+all the traffic goes over the public internet.
+So they're not connected through a private network.
+They're connected through public network
+but the VPN connection is encrypted, obviously.
+And to set it up, super simple,
+you set up multiple site-to-site VPN connection
+on the same virtual private gateway,
+and then you enable dynamic routing
+and you configure your route tables, and you're good to go.
+So that's it.
+That's all you need to know for site-to-site VPN.
+I hope you liked it, and I will see you in the next lecture.

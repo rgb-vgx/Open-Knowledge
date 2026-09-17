@@ -1,0 +1,74 @@
+# 226. Monitoring Overview in AWS
+# Section: AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrail
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/11851348
+# Caption: en_US (manual)
+
+Okay, welcome to this section
+on monitoring, troubleshooting, and audits.
+We are going to learn about CloudWatch,
+X-Ray, and CloudTrail and to me
+it's one of the most exciting section.
+So why is monitoring important?
+I think you already know the answer
+but I like to say it out loud.
+We know how to deploy applications.
+We have seen how to do it safely,
+automatically using infrastructure as code,
+leveraging the best AWS components.
+So we know how to do deployments.
+What we don't know is that once our applications
+are deployed, our users don't really care how we did it.
+They don't care if we used Elastic Beanstalk,
+they don't care if we use infrastructure as code.
+It's great that we did it, it's an edging prowess,
+but the users don't care.
+The users only care that the application is working.
+And so what we know to work is, for example, the latency.
+Will the application latency increase over time and why?
+Outages, you know, if there's an outage,
+well, our customer experience should not be degraded, okay?
+It should still be good, that's why we deploy
+highly available things.
+And then if the user contacts the IT departments
+or complaining, that's really, really bad.
+We don't want to be alerted of problems by our users,
+we kind of want to be able to do troubleshooting
+and remediation beforehand.
+So internally, can we prevent issues before they happen,
+or if they happen, can we see them before our users?
+Can we also monitor performance and cost?
+Can we look at trends in terms of how things scale,
+in terms of patterns of outages?
+And, you know, what can we learn and how can we improve?
+Thanks to this monitoring.
+So to me monitoring is really, really, really important.
+Now, in AWS there, CloudWatch.
+And CloudWatch allows you to collect metrics.
+It allows you to collect logs to monitor
+and analyze the log files.
+Events to send notifications when certain things happen
+in your AWS environment.
+And alarms to react in real time
+to metrics events and even logs.
+Then we have X-Ray and X-Ray is kind of a new service
+that is not very popular yet,
+but I think it is one of the most awesome ones.
+And so it allows you to troubleshoot
+your application performance and errors,
+so we'll see the latency and we'll see the errors just live.
+And it allows us to do something really cool
+called distributed tracing of microservices.
+So if you have a lot of services
+doing a lot of things and calling one another,
+or if you're in track with many AWS components,
+such as, you know, S3, DynamoDB, et cetera,
+then you're able to see how your application makes calls
+and how long they take and you can trace your call
+all the way through, which is really, really nice.
+CloudTrail is allowing you to do internal monitoring
+of your API calls being made, and also audit the changes
+made to AWS resources by your users.
+So overall, these three technologies all together
+gives you a really solid combination to monitor AWS.
+We're going to learn about these in this section.
+So see you in the next lecture.

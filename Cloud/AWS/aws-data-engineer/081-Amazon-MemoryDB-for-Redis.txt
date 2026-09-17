@@ -1,0 +1,36 @@
+# 81. Amazon MemoryDB for Redis
+# Section: Database
+# https://ua.udemy.com/course/aws-data-engineer/learn/lecture/40304614
+# Caption: en_US (auto)
+
+Stephane: So now let's talk
+about Amazon MemoryDB for Redis.
+So it's a Redis-compatible, durable,
+in-memory database service.
+So the difference between Redis and MemoryDB for Redis
+is that while Redis's intent is to be used
+as a cache with some durability,
+MemoryDB is really a database
+that has a Redis-compatible API.
+So it gives you ultra-fast performance
+with over 160 million requests per second,
+so really, really high performance.
+And it's in-memory data,
+but it's durable data storage with multi-AZ transaction log.
+So, this is a different kind of functioning than Redis.
+It will scale seamlessly from tens of gigabytes to hundreds
+of terabytes of storage, and the use cases for memory DB
+for Redis will be your web and mobile applications,
+online gaming, media streaming, and so on.
+So, imagine you have a lot of microservices,
+and they need access to a Redis-compatible
+in-memory database then this is perfect.
+You use MemoryDB for Redis,
+you're going to get ultra-fice in-memory speed,
+as well as a multi-AZ transaction log,
+which is going to be stored across multiple AZ
+and will give you access to fast recovery,
+and data durability if you need it.
+Okay, just an overview,
+but that should be enough for the exam.
+I hope you liked it, and I will see you in the next lecture.

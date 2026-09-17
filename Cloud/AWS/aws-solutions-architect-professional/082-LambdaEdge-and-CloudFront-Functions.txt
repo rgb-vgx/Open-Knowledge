@@ -1,0 +1,271 @@
+# 82. Lambda@Edge and CloudFront Functions
+# Section: Caching
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376532
+# Caption: en_US (manual)
+
+So CloudFront has more capability
+than just a CDN.
+It is allowing you to run custom code at the edge
+to do some customization.
+So the idea is that you want to execute edge functions
+as close as possible to users to make sure
+that you're verifying some early logic, some early behavior,
+or normalizing some cache keys.
+So an edge function is a code that you write
+and that you attach to your CloudFront distribution,
+and it will run very, very close to your users
+in order to minimize the latency
+of whatever you're trying to do.
+It doesn't have any cache behavior.
+It is just here to change the request
+and the response sent by the users and back to the users.
+Now, CloudFront has two different logic for edge functions.
+It has the CloudFront functions and Lambda@Edge.
+We'll see them both in this lecture.
+So the use cases for customization at the end is to,
+at the edge is to manipulate HTTP request and responses.
+Is to implement request filtering
+before reaching your application.
+Is to verify user authentication and authorization.
+Is to also maybe generate HTTP responses
+directly at the edge
+or do A/B testing by separating users into two groups,
+or for example, doing bot mitigation at the edge.
+The idea is that using edge functions,
+so either CloudFront functions or Lambda@Edge,
+you do not have to manage any servers.
+Everything is deployed globally and it is serverless.
+So if we look at a traditional architecture of CloudFront,
+we have our clients talking to our edge locations,
+talking to original edge cache, talking to our origin.
+Now, Lambda@Edge functions are going to be deployed
+at the regional edge cache level,
+whereas CloudFront functions are going to be deployed
+on the edge location.
+So as you can see, two different level for deployment
+of these functions, and that will impact your choice
+between CloudFront functions and Lambda@Edge functions.
+So if we look at CloudFront functions,
+they will interact with the viewer request
+and the viewer response.
+These are the request and response
+that happen between the client and CloudFront.
+It does not modify origin request or origin response.
+So these are lightweight functions returning JavaScript,
+and they're meant to do high scale latency sensitive
+CDN customizations.
+So it is a sub-millisecond startup time,
+so it's very, very quick to start and it can handle
+millions of requests per second.
+So we run at edge locations
+and it's process-based isolation.
+So you want to change the viewer request and responses
+as I said.
+So what is the viewer request?
+Well, it's after CloudFront receives a request
+from a viewer, and your response is before CloudFront
+forwards the response to the viewer.
+So the idea is that it's a native feature of CloudFront.
+You manage the code directly from within CloudFront,
+and this allows you to do some very quick
+time sensitive transformations in CloudFront.
+Okay?
+The idea is that you cannot call external services
+from the CloudFront functions.
+You just want to perform some transformations,
+some computations or some normalizations
+in a very, very quick fashion.
+Now, Lambda@Edge is a different mindset.
+So these were first what CloudFront was offering
+as a feature.
+CloudFront functions are new,
+but Lambda@Edge has been existing for a long time,
+and the idea was this is that you have Lambda functions
+that are in either NodeJS or Python,
+and you can scale to thousands of requests per second.
+So less scale than your CloudFront functions for sure.
+And they run on the nearest regional edge cache.
+They're VM-based isolation,
+and they're used to change both
+CloudFront requests and responses.
+So we can change the viewer request, the origin request,
+which is the request that CloudFront sends to your origin.
+You can change the origin response, so the response
+that CloudFront receives from the origin
+and as well as the viewer response.
+Okay?
+Now, when you want to deploy them,
+that edge functions on CloudFront,
+you need to author your functions in one region,
+which is US East one,
+and then CloudFront will replicate this function
+to all its regional edge caches.
+Now, if we have a look at
+how these things can be used together.
+So we have edge locations and regional edge caches,
+and so the view request goes all the way like this,
+then it goes through the origin,
+and then the origin response goes all the way like this
+to the viewer response.
+Now your CloudFront functions
+are going to run on the edge locations at the viewer request
+and viewer response level,
+whereas your Lambda@Edge functions are going to run
+at the origin request and origin response level.
+This is if you want to use both CloudFront functions
+and Lambda@Edge functions together.
+Okay, so this is one option
+and we can see a clear separation of duties.
+But if you want to just have Lambda@Edge functions,
+then in that case, what's going to happen
+is that the Lambda@Edge functions are going to operate
+on both the viewer requests response
+and the origin request and response,
+but only at the regional edge cache level.
+In this case, we cannot use CloudFront functions
+because we cannot use both Lambda@Edge
+and CloudFront functions
+on the viewer request and responses.
+So this is when you need capabilities of Lambda@Edge
+that are not available with CloudFront functions.
+For example, if you need a longer execution time,
+network access, third party API calls, these kind of things.
+So if we want to compare, you know, on the table,
+the CloudFront functions and Lambda@Edge,
+while the runtime support is different,
+so one is JavaScript, pure JavaScript code,
+the other one is NodeJS and Python,
+where it gets executed is on edge locations
+for CloudFront functions, whereas it's original edge cache
+is for Lambda@Edge.
+The CloudFront triggers is going to be the view request
+and response for functions
+and all of them, for them that edge.
+The isolation is process-based versus VM-based.
+Now, the max execution time
+is what I think is the most important thing.
+You only get one millisecond
+to execute your CloudFront functions
+and therefore they must be very, very quick
+and very, very simple.
+Whereas Lambda@Edge, you get five seconds of runtime
+for viewers triggered and 30 seconds of runtime
+for origin triggers.
+The memory of your CloudFront functions
+is low, two megabytes.
+Whereas for Lambda@Edge, you have more memory,
+128 megabytes or 10 gigabytes.
+The total package size is very, very small
+for CloudFront functions, 10 kilobytes.
+Whereas Lambda@Edge has more space.
+There's no network access, no file system access
+for CloudFront functions,
+whereas you have some for Lambda@Edge.
+You do not have access to the request body
+in CloudFront functions,
+you have access to it in Lambda@Edge.
+So CloudFront functions is really about
+reading headers and so on.
+And the pricing is that there's a free tier
+for CloudFront functions,
+and it's 1/6 of the price of @Edge.
+So if you can move your logic from Lambda@Edge
+to CloudFront functions, you're better off.
+And Lambda@Edge has no free tier
+and you get charged per request and duration.
+So when do you use a CloudFront function
+versus a Lambda@Edge function?
+Well, CloudFront functions are going to be used
+for cache key normalization.
+So you want to transform the request attributes
+such as the headers, cookies, the query string, the URL
+to create an optimal cache key.
+You also want to manipulate your headers,
+so you want to change them.
+So you want to insert, modify, or delete HTTP headers
+in the request or response,
+or you want to do your rewrites or redirects
+or to request authentication
+and authorization directly at the edge.
+So in which you can create
+and validate user generated tokens, for example, JWT,
+to allow or deny request very, very close to your users.
+Whereas Lambda@Edge is going to be giving you
+a much longer execution time, okay?
+Up to five seconds or 30 seconds.
+You get adjustable CPU or memory.
+You get to have code that can depend on
+third party libraries.
+For example, you can use the SDK
+to access other AWS services.
+You can use the network access to use external services
+for processing, and you have file system access
+if you wanted to cache some stuff locally,
+or you can even access the body of the HTTP request
+to manipulate the body itself.
+So hopefully the use cases are clear and well-defined.
+Now, if you wanted to do authorization
+and authentication with CloudFront functions,
+the idea is that at the Edge location
+you would intercept the content
+and you would check the token, the digital JWT token,
+which lives in your headers, and then you can check
+whether or not it is correct.
+And then if it's not correct,
+then the client will get an error message directly
+without having your request go all the way to your origin.
+Whereas your Lambda@Edge function
+will operate on the regional edge cache level.
+It could be intercepted by a Lambda function,
+which can do some custom logic
+and even issue third party API calls
+to check whether or not the authorization
+and authentication is properly well set up.
+Another very common use case for CloudFront functions
+is to load content based on the user agents.
+We have an S3 bucket
+and Amazon CloudFront with original Edge cache
+and we have users accessing it from desktop
+and others just accessing it from mobile.
+Now they both wanna access a cat picture,
+so they do a request for cat picture,
+and the resolution is super high.
+So 1920-1080.
+So it's 1080p and they request it from CloudFront.
+So if the request goes well,
+well the request is passed all the way through
+to the S3 bucket to get that specific image.
+But imagine that the same request is done
+from our mobile device, and this time the user agent
+is not Chrome, it is the iPhone OS Safari.
+Now what we can do is instead of sending this big image
+back to our mobile, which may be very inefficient,
+we can have a CloudFront function
+that will inspect the user agent HTTP header
+and then redirect based on the device type.
+And so there, therefore,
+because our device is a mobile device,
+then the image is going to be asked into our S3 bucket
+is going to be cat 640-320,
+which is a lower resolution for our cat picture.
+And this is the picture that will be returned
+by our S3 bucket into our mobile device.
+So the function was able to modify the request
+to change the target of these requests.
+So the other way you can use Lambda@Edge
+is for a global application, for example,
+your client gets the website from an S3 bucket,
+and then for dynamic API request,
+it sends it into CloudFront to leverage the cache.
+But your Lambda function can also be used, for example,
+to query data into DynamoDB table,
+which gives you a fully global
+and serverless way to do an API in AWS.
+So that's it.
+At the exam level what you need to know
+is understand when you need to use Lambda@Edge
+or CloudFront functions, and that should be good to go.
+But I want to give you a bit more detail
+so you can really understand the use cases behind it.
+So I hope you liked this lecture
+and I will see you in the next lecture.

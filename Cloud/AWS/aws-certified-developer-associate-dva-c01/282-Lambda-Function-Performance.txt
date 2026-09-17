@@ -1,0 +1,131 @@
+# 282. Lambda Function Performance
+# Section: AWS Serverless: Lambda
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19730610
+# Caption: en_US (manual)
+
+Okay, so now let's talk
+about our lambda function configuration and performance,
+and the first one I want to address is the RAM.
+So currently we've been using 128 megabytes of RAM,
+but we can scale up to 10 gigabytes of RAM
+in one megabytes increments.
+The idea is that the more RAM
+or memory you add into your lambda function,
+the more vCPU credits you get.
+So you cannot set the number of vCPUs directly.
+You have to increase the RAM to implicitly get more vCPU.
+So when you reach 1,792 megabytes of RAM,
+your function will have the equivalent of one full vCPU.
+Afterwards, you get more than one vCPU,
+and so you need to use multi-threading
+to benefit from the added vCPU.
+So if your application is CPU bound,
+that means that it has a lot of computations,
+and you want to improve the performance of your application,
+that means to decrease the amount
+of time your function will run for,
+then you need to increase your application,
+your lambda function RAM.
+This is a very common exam question as well.
+Then let's talk about a timeout.
+So your lambda function
+by default has a timeout of three seconds.
+That means that if your lambda function runs
+for more than three seconds,
+it will error out with a timeout,
+but you can set the timeout
+up to a maximum of 900 seconds, which is 15 minutes.
+So any interval of an execution
+between 0 seconds and 15 minutes
+is a good use case for lambda.
+Anything above 15 minutes is not a good use case for lambda
+and is something maybe that's going to be better
+for Fargate, ECS, or EC2.
+This is, again, something that the exam may test you on.
+Next we'll talk about the performance.
+So the lambda has an execution context.
+It's a temporary runtime environment
+that initializes any external dependencies
+of your lambda code.
+So you would use that context
+to establish database connections,
+to create your HTTP clients, or your SDK clients.
+The cool thing about the execution context
+is that it's maintained for some time
+in anticipation of another lambda function invocation.
+That means that if you invoke lambda function multiple times
+in a row, then that invocation context can be reused
+and reuse all these existing database connections,
+GP clients and so on, and that's very helpful
+because it can speed up and improve the performance
+of your lambda function.
+I will show you some pseudocode in a second.
+Now the execution context does include the /tmp directory
+that I'll be talking about in this lecture as well,
+which is a space where you can write files
+and they will be available across executions.
+So I want to show you some code that leverages
+that execution context.
+So this code is bad. Why?
+So we have a function called get_user_handler,
+which is what lambda will be invoking.
+And if you read about this code,
+we get the DB_URL called os.getenv,
+so we get an environment variable, and this is great.
+But then the next line db_client = database.connect DB_URL.
+And so while this seems correct because to get a user,
+we first need to connect to the database,
+every time our lambda function will be run,
+this connect of the database will have to run.
+So anytime someone invokes our lambda function,
+it first has to connect to the database
+and then get the user.
+That is quite inefficient
+because our lambda function may be invoked multiple times.
+Instead, what AWS wants you to do, and the best practice,
+is to initialize the database connection outside
+of your handler, why?
+Well, because it will just be initialized once,
+and then it can be reused across function calls,
+and it will greatly improve your function performance.
+So this kind of use case is, again,
+well, something that can come up at the exam,
+and it will show you some pseudocode
+and try to make you understand
+what is good and what is bad based
+on where the database connection clients
+or your HTTP clients or SDK clients are opened.
+Best practices, anything that takes a lot of time
+to initialize, put it out of your function handler
+and reuse it across executions.
+Okay, lastly, what if you need to write some temporary files
+and reuse them?
+You can use the /tmp space.
+So this is, for example,
+if you need to download a big file to work
+or if you need disk space to perform operations,
+in this case, store all these files in a /tmp,
+which means temp or temporary.
+The idea is that you get 10 gigabytes of disk space
+you can use for your lambda functions,
+and this directory contains and remains
+for the execution time of your lambda function.
+So even if your lambda function stops
+and then it gets reinvoked,
+it is possible for you to refind the exact same files
+in the /tmp space and to win a lot of time.
+So this is the exact same idea with the execution context.
+Here we can write very heavy files,
+up to half a gigabyte, into the /tmp space.
+So if you need a permanent persistence of your objects,
+so non-temporary, then you need to store it in a space
+that you know will be persisted across calls,
+and so that space will be Amazon S3, for example.
+And if you wanted to encrypt content on the /tmp space,
+there is no setting to do so on lambda.
+What you must do is that you must use the KMS feature
+to generate data keys and actually encrypt the data
+on your temp space with these data keys.
+So we have seen all the ways we can improve the performance
+of our lambda functions.
+Now let's go into the console to play with those.

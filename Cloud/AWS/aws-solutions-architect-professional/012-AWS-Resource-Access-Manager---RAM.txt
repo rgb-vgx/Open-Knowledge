@@ -1,0 +1,136 @@
+# 12. AWS Resource Access Manager - RAM
+# Section: Identity & Federation
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/18376360
+# Caption: en_US (manual)
+
+So let's talk
+about AWS Resource Access Manager, or RAM.
+So you're going to share AWS resources that you own
+with other AWS accounts.
+And with this you can do it from any account,
+or just accounts within your organization.
+This is allowing you to avoid the resource duplication.
+So what can you share with RAM?
+You can share VPC Subnets, for example,
+which is very helpful and one of the best use case for RAM,
+which allows you to have all the resources
+launched within the same subnets.
+And all these subnets
+then must be from the same AWS organizations.
+You cannot share the default security groups
+and the default VPC.
+The participants can manage their own resources
+within the subnets, but the participants cannot view,
+modify, or delete resources
+that belong to other participants or the owner.
+So they only share the networking, really.
+You can also share a transit gateway
+or Route 53 Resolver Rules and a DNS Firewall Rule Groups,
+and so on.
+Or license manager configurations.
+There's other stuff you can share. I'm just gonna do a list.
+So Aura DB Clusters, ACM Private Authority,
+Certificate Authority, CodeBuild Projects,
+EC2 Dedicated Hosts, Capacity Reservations,
+Glue Catalog, Database, and Table,
+Network Firewall Policies, Resource Groups,
+System Manager, System Incidents, Outpost,
+and the list goes on and on and on,
+and it will not update it, okay?
+But one of the most important use case
+from an exam perspective for Resource Access Manager
+is for the VPC.
+So in this example, we have a VPC and there's a VPC owner
+and it has a private subnet,
+but this VPC is going to be shared
+with account one and account two.
+So each account is going to be responsible
+for its own resources, okay?
+They cannot view and modify
+or delete other resources in other accounts.
+So for example, if I deploy an EC2 instance
+and ALB in account one,
+then an account two will have an EC2 instance.
+They can communicate with one another,
+but they cannot view each other, okay,
+because they are in separate accounts.
+And then your database
+may sit in a private subnet of the VPC owner.
+And so network is shared.
+That means that all these things can talk to each other
+and these applications can access each other
+using private IPs.
+So this avoid the needs, for example, to do a VPC peering.
+Now security group can also be referenced across accounts
+for maximum security, which is very helpful.
+Now, the use cases for this
+is that applications within the same trust boundaries
+can be deployed within the same VPC
+and they will simplify your network.
+And if you have applications
+with a high degree of interconnectivity, yet, again,
+you will have a much simplified network set up
+because you only have one VPC.
+And so by default, any application deployed within it
+can talk with each other.
+Another example of what can be shared
+by Resource Access Manager is a managed prefix list.
+So what is a managed prefix list?
+Well, it is a set of one or more CIDR blocks,
+and it makes it easier to maintain
+and configure security group rules and route tables.
+So here's an example.
+Account A has a prefix list,
+and in it you have the CIDR 1, CIDR 2, CIDR 3.
+And these are set of rules, for example,
+that represent your internal network of your company.
+And say you want to apply these rules,
+these prefixes, to many different security groups.
+So instead of having them all in all security groups,
+what you do is that you create a prefix list
+and then that prefix list can be referenced
+by a security group.
+So on top of it, this can be shared.
+So if they're shared using RAM to another account,
+then a security group inbound rules
+can look as simple as this.
+Where you say, well, SSH is allowed on port 22
+from the source Prefix List A.
+And so that if you are using, for example,
+your own customer managed prefix list,
+then you define the CIDRs
+and then you can share it with other accounts' organizations
+and then you can modify them.
+And if you modify your prefix list,
+automatically all the security groups
+that were leveraging that prefix list,
+or all the route tables
+that were leveraging that prefix list,
+are going to be updated at the same time,
+which gives you a central management of your prefixes,
+and so on.
+You also have a second kind of prefix list,
+which is the AWS-Managed Prefix List.
+So this time the CIDRs are defined by AWS
+for their own services, and you cannot create, modify,
+share, or delete them,
+but I wanted you to know about them in this slide anyway.
+Something else you can share with Resource Access Manager
+is the Route 53 Outbound Resolver.
+So this allows you
+to scale your following rules to your DNS
+in case you have a hybrid setup,
+and you have multiple accounts and multiple VPC.
+So the idea is that in your main account,
+you will define the resolver rule for Route 53.
+So you have your forwarding rules
+that have the domain names that you want and the target IPs,
+and then you would share those with other accounts
+so that after you share it, the other account accepts it,
+then they can be associated with other VPC,
+and any other VPC that have these rules
+can then resolve the domain names you've specified.
+So this allows you
+to have a centrally managed resolver rules for your DNS.
+Okay, so that's it for Resource Access Manager.
+I hope you liked it, and I will see you in the next lecture.

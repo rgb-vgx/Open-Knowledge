@@ -1,0 +1,106 @@
+# 242. Big Data Ingestion Pipeline
+# Section: Data & Analytics
+# https://ua.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/13674898
+# Caption: en_US (manual)
+
+Okay, so, now let's talk
+about another architecture for Big Data Ingestion Pipeline.
+So, ideally, we want the application ingestion pipeline
+to be fully serverless, fully managed by AWS,
+and we want to collect data in real time,
+we want to transform the data,
+we want to query the transformed data using SQL,
+and the reports we create using these queries,
+maybe they should be stored in S3,
+and then we want to load that data into a data warehouse
+and create dashboards on it.
+So, overall, you know,
+the usual big data problems of ingestion,
+collection, transformations, querying, and analysis.
+Okay, so how do we do this?
+And there's some technologies,
+we may not have seen them directly in this course,
+but that's okay,
+I'll just introduce them to you in this pipeline
+because they really help.
+So, IoT devices,
+so let's assume that the producers are data are IoT devices?
+And so there is this really cool services
+in Amazon Cloud services and it's called IoT Core.
+And IoT Core helps you manage these IoT devices.
+So remember this, if you go into the exam.
+Now, these devices can send data in real time to IoT Core
+and IoT Core directly into a Kinesis data stream.
+So data stream for Kinesis, remember it allows us
+to basically pipe big data in real time,
+very fast into this Kinesis service.
+Now, Kinesis can be talking to Kinesis data Firehose,
+and Firehose allows us to, for example, every one minute
+put and offload our data into an Amazon S3 bucket
+and that will be an ingestion bucket.
+So here, what we've done here is
+that we've just had a whole pipeline to get a lot
+of data from a lot of devices in real time
+and put it every one minute into an S3 bucket.
+On top of it,
+it's possible for us to cleanse
+or really quickly transform the data
+using an AWS Lambda function that is directly linked
+to Kenesis Data Firehose.
+Okay, so now we have that ingestion bucket,
+what can we do with it?
+Well, for example,
+we can trigger an SQS topic,
+an SQS Queue, sorry, and it's optional.
+And maybe the SQS Queue can trigger AWS Lambda function.
+I say optional because Lambda can be directly triggered
+by our S3 bucket,
+but I just wanted to show you the possibility
+of invoking SQS through that slide.
+Okay, so Lambda, what we'll do, well Lambda will trigger
+an Amazon Athena SQL query.
+And this Athena query will pull data
+from the ingestion bucket
+and we'll do an SQL query that's all serverless.
+And the outputs
+of this serverless query will go into a reporting bucket,
+maybe again in Amazon S3 B is different bucket.
+Okay, so from this we have the data it's being reported on,
+it's being cleansed and analyzed.
+We can either directly visualize it using QuickSight.
+So QuickSight is a way for us
+to visualize our data into an Amazon S3 bucket,
+or we can load the data into a proper data warehouse
+for analytics, such as Amazon Redshift.
+And so this Redshift data warehouse can also serve
+as an endpoint for QuickSight.
+But this shows you overall
+what you can expect in data ingestion pipeline
+at a high level,
+including real-time ingestion, transformation,
+serverless Lambda, and some data warehousing using Redshift
+and visualization using QuickSight.
+So let's discuss about the pipeline.
+IoT Core allows you
+to harvest many data from many IoT devices.
+Kinesis is great for real-time data connection,
+and Firehose helps you with data delivery
+to S3 in near real time.
+So one minute is the lowest frequency you can choose.
+Lambda can help Firehose with data transformation,
+and then Amazon S3 can trigger notifications
+to SQS, SNS or Lambda.
+Lambda can subscribe to SQS,
+but we could have, as I said, connected S3 to Lambda.
+And Athena is a serverless SQL service
+and we can store the results
+of Athena directly back into S3.
+And the reporting buckets contain analyzed data
+and we can use reporting tools such as QuickSight
+for visualization or Redshift
+if you want to do more analytics on it.
+So that's it for a big data ingestion pipeline,
+but at a high level
+from a solution architecture perspective.
+It's really good to know how all these things work.
+I hope you like this and I will see you in the next lecture.

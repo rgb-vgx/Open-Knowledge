@@ -1,0 +1,27 @@
+# 366. Amazon ECS for CloudOps
+# Section: Other Services
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/53217655
+# Caption: en_US (manual)
+
+Here are extra bits of knowledge you may need
+on ECS for the CloudOps exam.
+So the first thing is that you have ephemeral storage
+for Fargate tasks.
+That means that you have storage that can be shared
+amongst other tasks in your Fargate containers,
+and you can configure this from 20 gigabytes
+to a maximum of 200 gigabytes.
+And that storage is encrypted.
+It's ephemeral, meaning that once your task is over,
+the storage will disappear.
+You also can send ECS task log to CloudWatch
+or a Partner using what's called the FireLens,
+which is developed by Fluent Bit or Fluentd,
+container to your ECS task definition.
+It's called a sidecar pattern
+because it runs as a new container,
+as a new task alongside your other containers,
+and is going to act as a log router
+and send the log directly into CloudWatch or elsewhere.
+So that's it for this lecture.
+I hope you liked it, and I will see you in the next lecture.

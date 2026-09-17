@@ -1,0 +1,74 @@
+# 418. CodeBuild Security
+# Section: AWS Security & Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM & STS
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19732462
+# Caption: en_US (manual)
+
+Let's do a quick lecture on CodeBuild Security.
+So first of all, we know that CodeBuild is out of your VPC,
+but you can launch your CodeBuild inside of your VPC
+to access your VPC resources.
+And we haven't talked about secrets in CodeBuild,
+so obviously do not store them as plaintext
+in CodeBuild environment variables.
+That would make no sense.
+Instead, you have two options.
+You can have environment variables
+that reference parameter store's parameters,
+or environment variables that can reference
+secrets manager secrets.
+And we'll see how to configure this in a second.
+So, we are in CodeBuild and I'm going to create
+a new build project.
+Now, I don't need to fill in any details,
+I just want to show you where the settings are.
+So, if I scroll down and go to additional configuration,
+I have some good configuration regarding security.
+Number one is regarding the VPC,
+so we can launch CodeBuild within your VPC,
+so like the subnets and the security groups.
+And then if you scroll down,
+environment variables is super important.
+So, say we needed to access, for example,
+an RDS database within our VPC
+and we needed the RDS database password.
+We could say DB_PASSWORD and say "supersecret,"
+but this would be really bad.
+This is a plaintext secret in your environment,
+so this could be seen and leaked,
+so not good.
+But you can also have a parameter
+or a secrets manager secret.
+So, in case of parameter, you can get
+into the parameter store.
+So, let me get into the SSM parameter store to show you.
+So, in my parameter store, I can create a parameter.
+I'll call it /CodeBuild/DBPassword.
+And then I will set it a standard parameter.
+It's going to be a secure string,
+and I can say that I want to associate it
+with this KMS Key ID.
+So, the AWS CMK, and the value is going to be "SuperSecret"
+and here we go.
+Then I'm going to create this parameter,
+and so now I can reference this parameter name
+into my value.
+So here I said DB_PASSWORD is using this value,
+coming from the parameter store,
+and automatically at runtime,
+my CodeBuild will fetch the value of this parameter,
+so the "SuperSecret" value, which is right here,
+the "SuperSecret value,"
+and inject it into my container.
+But I can also add another one.
+It could be DB_PASSWORD_ALT, alternative.
+And you can do the exact same process
+with the secrets manager by referencing the name of the
+secret you're looking for in the secrets manager.
+And of course, if you do these things,
+make sure that the IM roll associated
+with your CodeBuild project does have
+access to the systems manager parameter store
+and secrets manager.
+And that's it.
+Super simple, but some good things to see before the exam.
+I will see you in the next lecture.

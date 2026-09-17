@@ -1,0 +1,99 @@
+# 179. RDS & CloudWatch
+# Section: Databases for CloudOps
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/12993856
+# Caption: en_US (manual)
+
+So, let's look at RDS with CloudWatch.
+As we know, CloudWatch is going
+to be deeply innovative with RDS.
+We're going to get from the hypervisor
+some basic metrics, such as number
+of DatabaseConnections, SwapUsage,
+ReadIOPS/WriteIOPS, ReadLatency/WriteLatency,
+ReadThroughPut/WriteThroughPut, DiskQueueDepth,
+and FreeStorageSpace.
+From these, we can do a lot of troubleshooting.
+For example, if the latency is high,
+something is wrong, if the ReadIOPS are peaking,
+maybe we've reached our IOPS for our EBS volume.
+If the DiskQueueDepth is too high,
+that means that a lot of operations are waiting
+to be executed.
+We can also look at the CPU.
+I'm sure that that is not too high.
+All that stuff, right?
+This is provided by CloudWatch basic metrics
+and you can enable enhanced monitoring
+and we'll do this right away.
+Enhanced monitoring is, usually, metrics
+that are gathered from an agent
+that runs on the DB instance.
+So, it is more special, more specific,
+and what you get with it is you get a lot
+of information around the processes
+and the threads that use the CPU,
+and you get access to over 50 new CPU,
+memory, file system, and disk I/O metrics.
+Let's go have a look at
+how we can enable enhanced monitoring right now.
+Let's go to mydb, modify,
+and in there we're going to be able
+to enable enhanced monitoring.
+If you remember, when we first created our database
+we did not enable it.
+I'll just scroll down,
+and as you can see, all the way at the bottom
+we can enable enhanced monitoring.
+In there, you're able to get more information
+and you need to define monitoring role.
+We'll just create default and RDS will create a role for us.
+Then, you can see how granular
+you want your monitoring to be.
+I'll leave it at 60 seconds, but as you can see,
+you can get per second granularity,
+which is quite awesome.
+Now, you click on continue and apply immediately
+to apply the changes right away.
+And here we go, it's working
+so it's just going to give you a little bit
+of weird error message but you just have
+to wait until everything is created.
+Now, we're done.
+So if you go to monitoring, in there,
+you're going to get CloudWatch
+so we can look at what CloudWatch gives you.
+It gives you CPU utilization, the number of connections
+that we have, the storage space, the write iops,
+the read IOPS, the memory that's free.
+Using enhanced monitoring, we're going to get a lot more.
+To view enhanced monitoring, pretty tricky, monitoring,
+there's a drop-down.
+In here, you can choose CloudWatch,
+so this will just give you the CloudWatch information.
+Also, you can choose enhanced monitoring
+and this will give you all the enhanced monitoring.
+We have to wait a little bit until the agent starts up.
+You can also get the OS process list if you wanted to.
+Let me just wait a little bit for enhanced monitoring
+to kick in and I'll be right back.
+Okay, so now if I go to enhanced monitoring
+I start seeing some data.
+As we can see, we have free memory, active memory, CPU user,
+load average, used filesystem.
+We have more graphs as well
+as available number of tasks running, etc.
+So, enhanced monitoring does give me more access
+to more metrics,
+and if we go to OS process list,
+you get some information around
+which processes using whatever memory and RAM.
+This gives you a lot more information around
+what is happening on your database
+thanks to this enhanced monitoring.
+So, that's it.
+Just wanted to show you this, but overall,
+the idea is that the exam will ask you questions
+around how maybe a metric can impact your database
+and just use your common sense
+and troubleshoot using your brain, basically.
+So, that's it. I will see you in the next lecture.

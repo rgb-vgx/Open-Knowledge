@@ -1,0 +1,160 @@
+# 137. VPC & Network Security
+# Section: AWS Security Services & More
+# https://ua.udemy.com/course/aws-ai-practitioner-certified/learn/lecture/45796371
+# Caption: en_US (manual)
+
+Now let's talk about VPC
+and network security.
+So VPC is a concept that you should know
+in depth when you pass
+the AWS Certified Solution Architect Associate course
+or exam, and also the Certified SysOps Administrator exams.
+But for the Certified AI Practitioner level,
+you still should know about it but at a high level.
+So we'll learn in this lecture about VPCs,
+subnets, internet gateways, and NAT gateways.
+and we'll learn about VPC endpoints and PrivateLink.
+Usually when you will see an exam question
+related to VPC at this exam, the AI Practitioner level,
+then it's usually to deploy models privately
+or accessing AWS Services privately
+without going through that internet.
+And so I wanna give you
+the reason why this is the case and why we need it.
+So first of all, let's talk about VPCs and subnets.
+So VPC stands for Virtual Private Cloud,
+it's a private network for you to deploy your resources.
+So we have within the VPC, a subnet
+and they allow you to partition your network
+inside of your VPC.
+So here in a specific availability zone,
+we're going to have multiple subnets.
+For example, we can have a public subnet
+that's a subnet that is going to be
+publicly accessible from the internet.
+And we may have private subnets,
+there's subnets that are not accessible from the internet.
+And so for sometimes you may want to use a public subnet
+and deploy your application there.
+For example, if you deploy a website or a web application,
+you may want people to access your websites publicly.
+But then we also have private subnets
+and so this is for example,
+if you're doing internal data analysis.
+For example, if you want to analyze
+your S3 data with SageMaker,
+then you don't really need to have this application
+being accessible from the internet
+so therefore this is a security risk.
+So there is a need for public and private subnets.
+Now, if we look at a VPC in the cloud,
+VPCs are for each specific regions.
+And then you will have a IP range called CIDR Range
+but don't linger on this.
+And within it you'll have multiple
+availability zones usually.
+So each AZ will have a public and a private subnet,
+and another AZ will have another public
+and another private subnet.
+And this is called high availability
+because now you have multiple subnets
+over multiple availability zones.
+Now this is just a level you need to know,
+this is probably a little bit more
+but remember from this slide,
+we have multiple public subnets
+and multiple private subnets.
+So now how do we give internet access to these things?
+So if you have a public subnet,
+then automatically it's able to connect to the internet.
+And the way to do so is to use
+what's called an internet gateway.
+And so the public subnet will have a route
+to the internet gateway
+and therefore it will make our instances
+directly accessible from the web.
+But if we have instances in a private subnet,
+we may not want them to be accessible from the internet
+but we may want them to access the internet
+because well, we may want for example,
+to download data from the internet
+or update some libraries and so on.
+And so therefore, we may use something called a NAT gateway.
+And a NAT gateway will be used in a public subnet,
+deployed in a public subnet,
+and then accessed privately by the private subnet instances.
+And so the flow of information here is in one direction,
+meaning the private subnet resources
+can access the internet through the NAT gateway,
+but they're still not accessible from the internet.
+The internet cannot reach directly the private subnet,
+so this is good network security.
+So as we can see here,
+the public summit has an internet gateway,
+and the private summit will leverage a NAT gateway.
+Now, let's talk about VPC endpoints and PrivateLink,
+and this is what will come up the most at the exam.
+So by default when you're using AWS,
+anytime you're using an AWS Service,
+you are accessing it by default over the public internet.
+This is why when you go to the console,
+you are able to use all the services of AWS,
+that means that all the APIs are public.
+But sometimes you may want within AWS
+to deploy your application in private subnets.
+And as we said before, they may not have internet access.
+So for example, imagine there is no internet gateway
+and there is no NAT gateway, okay?
+So your applications really don't have internet access.
+But how do we make these application
+access our AWS Services?
+For this, we may want to use
+what's called the VPC endpoints and that allows us
+to access our AWS Services privately
+without going over the public internet.
+And these VPC endpoints are usually powered
+by it's called...
+By something that's called AWS PrivateLink
+so if you see at the exam, PrivateLink or VPC endpoints,
+they are pretty much the same.
+So the idea behind using VPC endpoints
+is that all the traffic remains within the network of AWS.
+So for example, let's have an application
+deployed in a private subnet in our VPC,
+and then we want to be able to invoke our Bedrock model.
+So how do we do this?
+Well, because we don't have access to the internet,
+we need to deploy a Bedrock VPC endpoint,
+which is going to be privately connected
+to our Bedrock service,
+this is why it's called, PrivateLink.
+And then our application is able
+to access resources within the VPC,
+so the Bedrock VPC endpoint,
+which is going to forward the request to the Bedrock model.
+But all these things happen
+within the network of AWS and privately.
+There is a special case for Amazon S3,
+something called an S3 Gateway Endpoint,
+which is an alternative to something called
+an S3 Interface Endpoint.
+And this allows you to access S3 data privately
+so there is, similarly, you don't need to know really
+the difference between gateway and interface
+at this level of the exam,
+so we'll just talk about a VPC endpoints.
+Again, we have a VPC endpoint for Amazon S3,
+and then it's connected directly privately
+to the Amazon S3 service.
+And then our SageMaker notebook can access Amazon S3 data
+through the S3 VPC endpoints, and that's it.
+And so we've seen the need for network security.
+We've seen private subnets
+to deploy applications with maximum security.
+And so therefore, because we have this,
+we've seen the need of using VPC endpoints and PrivateLink
+to access AWS Services internally.
+If you've understood this,
+you will rock any question about VPC at the exam.
+So that's it, I hope you liked it,
+and I will see you in the next lecture.

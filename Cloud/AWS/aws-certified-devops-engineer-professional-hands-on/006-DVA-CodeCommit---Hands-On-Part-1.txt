@@ -1,0 +1,179 @@
+# 6. [DVA] CodeCommit - Hands On Part 1
+# Section: Domain 1: SDLC Automation
+# https://ua.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/learn/lecture/37858362
+# Caption: en_US (manual)
+
+Okay, so let's learn about CodeCommit.
+So I'm just going to open the CodeCommit console.
+So in this CodeCommit, as we see on the left hand side,
+we have access to CodeCommit, CodeBuild, CodeDeploy,
+and CodePipeline all in one UI.
+So right now we'll be starting with CodeCommits.
+So I currently have no repositories.
+So let's get started in create a repository.
+And I will just call it my-nodejs.app.
+You could add description and tags,
+but we'll just go ahead
+and create our odeCommit repository.
+So here we are riched with connection steps.
+And so as we can see, we have HTTPS, SSH or HTTPS GRC.
+And here, if you don't see SSH,
+that means you're not connected using the roots,
+you're connect to using the root account
+and not using an IAM User.
+So in this example,
+I'm connected using my IAM Users defined.
+And so if you're using root, you will not see SSH,
+but if you're not using root, you should see SSH.
+Okay, so right now,
+we will not go over the connection steps,
+we'll go over that in the next lecture.
+So right now what we're to do,
+is to explore the CodeCommit UI.
+So let's go into the code.
+And here is my-nodejs-application.
+And what we can do is we can create a file.
+So we'll add a file, and I will upload a file.
+And I need to choose a file to upload.
+So currently, we can only do one file at a time.
+So I'm gonna go to my code, and then go to CICD,
+nodejs-v2-blue and choose the index of HTML file,
+we had from before.
+So we're going to upload that file,
+the author name is Stephane
+and the email address is stephane@example.com.
+And the commit message is first commit.
+Then I'm going to click on commit changes
+and this will create my first AWS CodeCommit commit.
+So as you can see, now,
+my repository has the index.html file in it,
+which is the one we use from before in Elastic Beanstalk.
+And we know it is the one because if we scroll down,
+we can look at the fact that the background color,
+is navy blue.
+So it has created a commit with a commit ID
+and this is something specific to get.
+And the commit has been done onto a branch,
+and that branch is called master.
+And so this is why it says master here,
+it is the default branch
+and the first branch to get created.
+But in CodeCommit,
+you can go ahead and create more branches,
+if you want developers to collaborate together.
+So right now we're good.
+We have a repository my-nodejs-app,
+and it contains an index.html.
+Now let's go over the options in CodeCommits.
+So the first one is pull request,
+and pull request is to allow developers
+to merge their changes from a different branch,
+into your master branch, for example.
+So you would need to create a pull request,
+we're not going to do this,
+this is more advanced something you need to know,
+in the DevOps exam.
+But pull requests are here
+to help you merge your changes,
+from other branches into your main branch.
+Then here on the left hand side,
+you can look at your commits.
+So we can see we did our first commit right here,
+and we can browse the repository at the time
+of this commits.
+Or we can look at a Commit Visualizer.
+So if you had multiple commits,
+they would appear here
+and also Compare commits if you wanted to compare,
+a certain branch to another branch.
+Okay, next let's talk about branches.
+So currently, we only have the master branch,
+and it is the default branch.
+And we could go ahead and create another branch,
+if we wanted to call it for example,
+the dev branch or the test branch or whatever you want,
+and where to branch it from.
+So you would create a dev branch, branch out of master,
+I'm not going to do this, is more advanced.
+Right now we'll keep on doing this tutorial,
+with only the master branch.
+Get tags is something we're not using right now,
+so we'll just skip it.
+And finally, settings.
+So let's go over the settings.
+Here, we can find our repository name, the ID and the ARN,
+as well as the description.
+Then we can go into notifications,
+and this is important.
+This is where we will create notification rules,
+for our code repository.
+So let's go ahead and create a notification rule.
+We're just going to give it DemoNotificationRule.
+And then whatever details we want in the notification,
+it could be full to get the full information
+or basic to get some basic information.
+It doesn't matter, we'll just keep it as full
+and then the events that will trigger these notifications.
+So we can get to comments on commits on a pull request.
+Approval status to Status change and Rule override.
+Pull request, so whenever the source was updated, created,
+status changed or merged,
+and branches and tags are created, deleted and updated.
+So these represents some changes happening,
+on your CodeCommit repository,
+you could go ahead and click on Select all to of them all.
+And then you just select a target
+of these notification rule.
+So it could be an SNS topic
+or Chakbox Slack and you can create another target.
+So we can create an SNS topic or a chatbot Slack,
+will keep it as SNS topic,
+and it has to start with codestar-notification, I think,
+and then you can rename it.
+So I'll just call call it codecommit.
+And then the name is going to be lab,
+something like this codecommit-lab.
+And here we go, I can create this SNS topic.
+And so this is a topic that will be notified whenever any
+of these things happen.
+And an SNS topic will help us for example,
+trigger an email alert or something like this.
+Okay, we'll click on submits.
+And here we go, we have created our first notification rule.
+And we can look at the settings here, edit it or delete it.
+But right now we're good.
+We'll go to View notification rules.
+Okay, excellent, and they are on the left hand side,
+under the settings.
+So to go back to our CodeCommit,
+we need to go into Source, Repositories, and then in here,
+and we are able to go on the left hand side to settings
+and get back to our Notifications.
+Okay, so we're good to go.
+Next is a Trigger.
+So we can create a trigger, and I'll call it DemoTrigger.
+And the triggers are more on specific actual code events.
+So we can have push to existing branch,
+create branch or tag
+or delete branch or tag that is a bit of overlap,
+based on the notification rules,
+but push to existing branch for example, is something new.
+You can specify the branches name, for example, master.
+And again, the service you want
+to trigger based on these events.
+So would it be SNS
+and we can choose the exact same SNS topic
+or a Lambda function when we get to see Lambda.
+So just create rate the trigger.
+And here we go, we have created a different trigger,
+that will be sending a notification
+to SNS whenever something happens,
+in our CodeCommit repository.
+Finally, Repository tags which should be tags,
+if you wanted to tag a repo, but for now, we won't do it.
+And that's all.
+So right now we've just pushed some information
+and some files into our CodeCommit repository.
+In the next lecture, we'll be setting up our credentials
+to have a way to do this programmatically.
+So we'll see you in the next lecture.

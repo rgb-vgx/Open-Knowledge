@@ -1,0 +1,40 @@
+# 139. Snow Family - Improving Performance
+# Section: Migration
+# https://ua.udemy.com/course/aws-solutions-architect-professional/learn/lecture/30991142
+# Caption: en_US (manual)
+
+So I've heard some student feedback,
+and you might have one question around
+improving the transfer performance
+for your Snow Family devices.
+So there's a list of recommendation that AWS provides
+from the most impactful to the least impactful.
+So the most impactful is to perform
+multiple write operations at a time, okay,
+from multiple terminals,
+when you transfer files to your Snow device.
+Then you need to transfer small files in batches.
+So if you have a lot of small files instead,
+put them together, create a zip,
+and then when the zip, is at least one megabyte of size,
+then upload it into the Snow Family device.
+Don't perform any other operations
+on the files during the transfer.
+Reduce the local network use.
+Eliminate any unnecessary hops,
+so directly connect the Snow device to the computer.
+And then data transfer rates using the file interface
+is typically between 25 megabytes
+to 40 megabytes per second.
+But if you need faster data transfer than this,
+then there is something called
+the Amazon S3 Adapter for Snowball,
+which has a data transfer rate
+of typically 250 megabytes per second
+to 400 megabytes per second.
+So these recommendations together, especially the first two,
+and then the data, the S3 adapter for Snowball
+is going to be the answer for that one question.
+All right.
+I hope you liked it,
+and I will see you in the next lecture.

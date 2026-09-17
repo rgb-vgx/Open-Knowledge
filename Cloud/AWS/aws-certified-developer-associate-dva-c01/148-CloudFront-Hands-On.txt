@@ -1,0 +1,142 @@
+# 148. CloudFront Hands On
+# Section: CloudFront
+# https://ua.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/19729726
+# Caption: en_US (manual)
+
+So let's go and practice using CloudFront,
+but first we have to create an S3 bucket
+to hold our files for our distribution.
+So let's create a bucket,
+and I'll call this one demo-CloudFront-Stephan-v4,
+and it will scroll down, leave everything as the default
+and click on Create Bucket.
+Okay, so my bucket is now created
+and I'm going to upload some files in it.
+So let me add files
+and I will choose my three files,
+beach, coffee and index.html.
+So let's upload them.
+And now that they've been uploaded,
+so if I go in my bucket, we can see all of them.
+And as a reminder, if I go on index.html,
+I have two ways of open it.
+The first one is to use the object URL.
+But if I try it,
+I get an access denied because my object is not public.
+And if I go and click on open here,
+this generates a pre-sign.
+So let's allow popups.
+This generates a pre-signed URL for my S3 objects,
+which allows me to access the object.
+So you see "I love coffee" and "hello world"
+but I still don't see the image
+because the image itself is not public.
+So let's see how we can instead use CloudFront
+to make these files accessible without making them public.
+So let's open up the CloudFront console.
+And I first have this popup about pricing,
+so I'm going to click on don't show it again
+and then close it.
+So let's go ahead and create a CloudFront distribution.
+So first we have to do is to select a plan.
+So now there are several plans for CloudFront,
+and as you can see, they have different features.
+But if we have a look,
+the free plan is going to be enough for us.
+So we have enough requests and allowance per month,
+we're going to get always on DNS protection,
+we're going to get geographic traffic blocking
+and global CDN, DNS, free TL certificates.
+So all of this is enough for us
+for what we need for CloudFront.
+But if you needed something such as, for example,
+edge key-value store or advanced DDoS protection
+or uptime SLA,
+or protection for WordPress, these kind of things,
+then one of these plans will be better for you.
+And finally, you have the pay as you go option,
+which is to pay for based on the traffic you use.
+And then you're going to have
+to pay extra for some features.
+But to keep things simple, let's keep as a free
+because this is going to be enough for our use case.
+So this one is going to be called demo new CloudFront.
+And here we have only the option
+to use a single site or app.
+We don't need to have a domain, but we could add a domain
+and provision a TLS certificate for us.
+Let's click on next.
+And now we have to say, what is the origin type?
+So as you can see right now, we have Amazon S3,
+elastic load balancer, API gateway,
+elemental media package or other.
+And the VPC origin,
+if you want to connect directly to a private EC2 instance
+or an application of balancer that are deployed privately,
+this is only available in the business plan.
+But still an option of what CloudFront can do.
+So we'll use Amazon S3.
+And then we have to browse Amazon S3.
+And we'll use a demo CloudFront stephane v4.
+Okay.
+Next we're going to allow private S3 bucket access
+to CloudFront.
+Yes, and we'll use the recommended origin settings
+and we'll use the recommended cache settings
+to serve S3 content.
+So now the setup is quite simple.
+If we want to have security,
+we can enable the web application firewall,
+but this is not something we need right now.
+And if you want to have protection against layer 7, again,
+this is available with the business plan.
+So right now, I don't want anything.
+I'll click on-
+Make sure we have the free plan.
+Yes, that's good.
+The UI is just a little bit counterintuitive in this case,
+but let's get back into this.
+So web application firewall, we don't need anything.
+We click on next and we can review everything.
+So yes, we are on the free plan
+and we're going to create our distribution.
+Okay, so my distribution is now created.
+Now if I go into S3 and look at the permissions
+and I look at my bucket policy,
+I can see that now in my bucket policy,
+I have a bucket policy allowing access
+to my bucket from our CloudFront distribution.
+These are two because I had two,
+one is a test and one is the one I just created for you.
+As we can see, this allows our CloudFront distribution
+to privately access our S3 buckets.
+And so this was entered as a bucket policy
+by the platform service as it was being deployed.
+So my distribution is now ready
+and I can click on the domain name,
+open a new tab, and press enter.
+Now I'm gonna get an access denied, but this is fine.
+It's because I need to enter one specific path.
+So /coffee.jpg.
+As you can see, my coffee image is now loading.
+Or /beach.jpeg.
+And again, my beach image is loading.
+And now if I go to index.html,
+I have my full image
+with "I love coffee" and "hello world" and this image.
+So even though all my bucket objects are private,
+now because we have this bucket policy
+allowing access from CloudFront,
+I'm able through CloudFront, to see all that I need to see.
+But now the added benefit is that if I go back
+to beach.jpeg, the image is cached
+so loading is almost instantaneous.
+So back to here.
+Again, very, very fast loading.
+And that is the benefit of CloudFront.
+So that's it.
+We've created a CloudFront distribution within
+the free plan, and we set up S3 as an origin
+and we saw the bucket policy.
+So I hope you liked it,
+and I will see you in the next lecture.

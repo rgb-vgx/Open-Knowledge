@@ -1,0 +1,192 @@
+# 32. SSM Automations
+# Section: Managing EC2 at Scale - Systems Manager (SSM)
+# https://ua.udemy.com/course/aws-certified-cloudops-associate/learn/lecture/27512810
+# Caption: en_US (manual)
+
+Now let's talk about SSM Automations.
+So, automations are going to help you simplify
+common maintenance and deployment tasks
+for your EC2 Instances or other AWS resources.
+For example, using an automation, you can do some things
+such as restarting an Instance,
+creating an AMI or doing an EBS snapshot.
+The idea is that automations are going
+to be higher level, okay.
+They're from outside your EC2 Instances,
+whereas the Run command from before,
+were from inside your EC2 Instances.
+So the automation Runbook is the name
+of the document for SSM that are going
+to be of type Automation, okay.
+So we commonly refer them as Runbook now.
+And the Runbooks will do actions preformed
+on your EC2 Instances or resources and AWS resources.
+And you can create your own Runbook obviously,
+or use the predefined Runbooks done by AWS.
+So here's an example.
+The SSM Automation is using the Runbooks.
+They'll show automation documents.
+And we can execute them on EC2 Instances.
+Or specific resources, such as EBS volumes, for example,
+to pro-creating snapshots, AMI to create AMIs,
+or RDS for creating snapshots and so on.
+Now, how do you trigger an SSM Automation?
+Well, you can do it manually using the console
+or using the CLI or using the SDK.
+But you can also automate it by using EventBridge as a rule.
+And the target of the rule will be the SSM Automation.
+On a schedule, so very often using a Maintenance Window
+or as a rule remediation directly,
+whenever AWS Config Remi, finds out
+that a resource is not compliant with the rule.
+So all these options are defined right here.
+So the Console, the SDK, Maintenance Windows,
+EventBridge, and the Config Remediation,
+can all execute the automation called AWS-RestartEC2Instance
+from within the SSM automation service, okay.
+So let's have a look
+at how Automations work in this lecture.
+So I'm gonna go on the left hand side into Automation.
+So Change Management, Automation.
+And I'm going to execute an Automation.
+So I need to choose the document.
+Again, we can write our own document
+or choose the one owned by Amazon, okay.
+And there are document categories, for example,
+user guide tutorials, Remediation,
+Patching, Security, Instance Management.
+For example, common tasks for EC2
+and EBS, Data Backups, AMI Management,
+Self-service support workflows.
+So as you can see, a lot of them
+including for example, Cost Managements.
+So in this example,
+we can look at Instance Managements and what can happen.
+So we can attach an EBS volume directly from an Automation.
+We can attach an IAM role to an Instance.
+We can, for example, enter an ASG
+into standby or exit stand by.
+So you can do a lot of different things, okay.
+Detach your volume and so on.
+So what I'm going to do,
+is I'm going to look for Automations.
+And I'm going to look for the Automation
+named AWS- Restart, and that should do it.
+So, AWS-RestartEC2Instance.
+And so in this one, we have the RestartEC2Instance.
+And what it's going to do, is that is going
+to just restart our EC2 Instances.
+And as you can see, we have different one.
+If we wanted to have an Approval step
+as part of our Automation.
+So let's use this one actually.
+So we're going to choose the document.
+I will scroll down.
+Here's the document detail. Which version do we want?
+So we want the latest version. This is great.
+And the Description. Click on next.
+Now we need to choose
+where we want this document to be executed.
+So we can do a Simple Execution to execute on all targets
+or a Rate Control to do it one at a time.
+Or we can do Multi-account and Multi-region
+or a Manual execution to do step by step Runbook mode.
+So I will choose Rates Control, okay,
+to restart my EC2 Instances with approval.
+And the target is going to be for example, Instance IDs.
+And then we can choose based
+on a resource group just like before.
+Or we can, for example, say on Tags
+or Parameter values, or just All Instances.
+So in this example, let's choose a resource group
+to change things up.
+And I want to operate it on the Dev.
+So it means I want to restart all my Dev Instances.
+So we need to provide Instance IDs, but as you can see,
+because we've specified our Resource Group,
+then the Instance ID is going to be filled.
+And then Approvers.
+So, IAM user or user arn to approve
+for the automation action.
+And so I think that it's not going to be easy to do so.
+So I'm just going to roll this back
+because I'm not using an IAM user
+and I want to make it as simple as possible.
+But if we look again at this address, Restart Commands.
+And use this one. We're good to go.
+Next.
+So again, the Rate Control is going
+to be done on Instance ID for the DevGroup.
+We're going to need to have an ARN for the role.
+That's the Automation Assume
+to perform the automation on your behalf.
+And this is if you want to have the automation user role
+that is different than the one
+that you're currently using right now
+to launch this automation.
+So, I will not specify an IAM role,
+but you could specify one if you wanted to.
+Now for the Rate Control is going
+to be one target at a time.
+And if there's one error, then please stop this automation.
+Okay, let's execute it.
+And now the execution has been initiated
+for my RestartECInstance.
+So, we can have a look at the steps.
+So let's refresh this page in here.
+So currently one step is being executed, okay.
+Which is to execute this automation.
+And so I can click on the step itself
+to have a look at what is done.
+So, the Execution ID is right here.
+And two steps were executed.
+So number one is stop Instances.
+So we'll change the Instance state and this is in progress.
+So if I go into my EC2 Management Console and have a look,
+as you can see, this one is being stopped, okay.
+Which was the first step of my automation.
+And then there's a second step that is going to happen,
+which is to start my Instance.
+So this one was a success.
+And now the Instance that was stopped is now being started.
+So if I go back into my Management Console and refresh this,
+We're in pending state.
+That means that my Instance is being started.
+So effectively, what we can do, for example,
+using this automation is just restart
+a full fleet of EC2 Instances,
+without number one enabling SSH access.
+And number two, we don't have to code a script for it
+because, well, there is an automation available to us.
+And if we had a script then,
+embedding for example, different steps
+and making during Rate Control
+and looking at errors and looking at lugs
+would be extremely complicated.
+So this really shows the power of Automations within a SSM.
+And as we can see, two executions are being done.
+So one of them on one Instance,
+and then on the other Instance at this Rate Control.
+And so what we will do is that,
+while now the three of them are running
+and one of them soon we'll go down
+and we'll be stopped and so on.
+So you get the idea?
+But this is the whole part of automations.
+And hopefully they open up your mind
+around how you use AWS.
+So I would strongly suggest if you have some time
+to go into your documents, okay.
+And you need to just look at documents
+that are going to be of type, Automation
+and have a look at what is offered by AWS
+in terms of documents.
+There's a lot of them, but they can help you imagine
+and understand how you can leverage automations better
+within your infrastructure.
+So that's it for this lecture.
+I hope you liked it.
+And make sure that the automation was successful at the end.
+So go back in here and make sure it was good.
+But I hope you liked it.
+And I will see you in the next lecture.
