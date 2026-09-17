@@ -1,5 +1,7 @@
 # ✂️ Chunking: Chia nhỏ tài liệu LangChain để RAG "nhẹ gánh" hơn
 
+> Nguồn: `058-Chunking-Text-Splitting.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/51360029)
+
 Trong vài video tới, mình và các bạn sẽ cùng **chunking (chia nhỏ)** toàn bộ tài liệu LangChain thành những đoạn nhỏ hơn, để có thể cung cấp chúng làm context cho LLM. Bước tiếp theo là **embed** — biến các chunk thành vector — rồi **đánh index (index)** vào vector store.
 
 Nghe qua thì nhiều công đoạn, nhưng đây là một trong những bước dễ triển khai nhất của cả pipeline đấy!
@@ -10,6 +12,17 @@ Toàn bộ quá trình chunking được thực hiện bằng **RecursiveCharact
 
 * **`chunk_size = 4000`** — giới hạn mỗi chunk tối đa 4000 ký tự.
 * **`chunk_overlap = 200`** — 200 ký tự chồng lấn giữa các chunk liền kề.
+
+Toàn bộ pipeline ingestion mà chúng ta đang đi qua trông như sau:
+
+```mermaid
+flowchart LR
+    A[Documents gốc] --> B[RecursiveCharacterTextSplitter]
+    B --> C[Chunk tối đa 4000 ký tự]
+    C --> D[Chồng lấn 200 ký tự]
+    D --> E[Embed thành vector]
+    E --> F[Index vào vector store]
+```
 
 Cách hoạt động của splitter này là **chia một cách có ngữ nghĩa (semantically)**: đầu tiên nó thử tách theo **đoạn văn (paragraph)**, rồi mới đến **dòng mới (new line)**, cứ thế đệ quy cho tới khi thỏa mãn kích thước mong muốn. Nếu muốn đào sâu hơn về RecursiveCharacterTextSplitter, các bạn có thể xem lại video chuyên đề mà mình đã làm riêng cho nó.
 
@@ -37,6 +50,85 @@ Mình khẳng định rõ: **RAG không chết, nó đang tiến hóa.** Ngay c�
 2. **Độ chính xác và giảm nhiễu (precision & noise reduction):** RAG lọc ra **chỉ những chunk liên quan nhất**, từ đó giảm mạnh **hallucination (ảo giác)** và **positional bias (thiên lệch vị trí)** thường gặp ở phương pháp long context. Kết hợp thêm **retrieval with intelligent reordering (truy hồi và sắp xếp lại thông minh)** sẽ nâng chất lượng câu trả lời mà vẫn dùng ít token hơn so với nạp toàn bộ ngữ cảnh — điều này đã được chứng minh.
 3. **Tính năng hướng người dùng:** RAG cho phép hiển thị **nguồn của từng mảnh thông tin** trong câu trả lời. Người dùng có thể truy vết câu trả lời về tận gốc — điều cực kỳ quan trọng để tạo **niềm tin** vào hệ thống AI, và đặc biệt thiết yếu trong các **môi trường bị quản lý chặt (regulated environments)**.
 
+| Tiêu chí | Long context | RAG |
+|---|---|---|
+| Chi phí & tốc độ | Nạp cả tài liệu triệu token — chậm hơn đáng kể, đắt hơn nhiều lần | Retrieve đúng snippet liên quan — nhanh và rẻ hơn |
+| Độ chính xác | Dễ nhiễu, có **positional bias** | Lọc chunk liên quan nhất, giảm mạnh **hallucination** |
+| Truy vết nguồn | Khó chỉ ra nguồn của từng thông tin | Hiển thị nguồn rõ ràng, tăng niềm tin, hợp môi trường bị quản lý chặt |
+
 Nói ngắn gọn: các mô hình long context **bổ trợ** cho RAG, giúp RAG xử lý những prompt và chuỗi ngữ cảnh phong phú hơn một cách hiệu quả. **Larger context windows don't kill RAG — they amplify it and magnify the strings!**
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Hai tham số quan trọng của `RecursiveCharacterTextSplitter` trong bài là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `chunk_size = 4000` (ký tự) và `chunk_overlap = 200` (ký tự).
+
+Giải thích: Chunk tối đa 4000 ký tự, chồng lấn 200 ký tự giữa các chunk liền kề.
+
+Tham chiếu: Mục Chia nhỏ tài liệu.
+
+</details>
+
+**Câu 2:** Splitter tách tài liệu theo thứ tự ngữ nghĩa như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thử tách theo đoạn văn trước, rồi đến dòng mới, cứ thế đệ quy cho tới khi thỏa kích thước.
+
+Giải thích: Đó là lý do nó được gọi là "recursive" — luôn ưu tiên đơn vị ngữ nghĩa lớn hơn.
+
+Tham chiếu: Mục Chia nhỏ tài liệu.
+
+</details>
+
+**Câu 3:** Vì sao nói "RAG đã chết" là chưa đúng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì long context **bổ trợ** cho RAG, không thay thế nó.
+
+Giải thích: Context window lớn giúp RAG xử lý prompt phong phú hơn — "amplify it".
+
+Tham chiếu: Mục "RAG đã chết".
+
+</details>
+
+**Câu 4:** Lợi ích cost efficiency của RAG so với nạp cả tài liệu là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chỉ retrieve snippet liên quan — nhanh hơn và rẻ hơn nhiều lần.
+
+Giải thích: Nhét tài liệu triệu token vào LLM chậm hơn đáng kể và tốn kém hơn.
+
+Tham chiếu: Mục "RAG đã chết".
+
+</details>
+
+**Câu 5:** Vì sao khả năng hiển thị nguồn của RAG đặc biệt quan trọng trong regulated environments?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì cần truy vết câu trả lời về tận gốc để tạo niềm tin và tuân thủ quản lý.
+
+Giải thích: Người dùng bấm thẳng vào nguồn của từng mảnh thông tin.
+
+Tham chiếu: Mục "RAG đã chết".
+
+</details>
+
 Còn bây giờ, hãy lấy toàn bộ số chunk vừa tạo, biến chúng thành vector và đánh index vào vector store thôi. Hẹn gặp các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Chunking (Text Splitting)](https://ua.udemy.com/course/langchain/learn/lecture/51360029)
+- [LangChain Docs — Splitting recursively](https://docs.langchain.com/oss/python/integrations/splitters/recursive_text_splitter)
+- [LangChain Docs — Retrieval overview](https://docs.langchain.com/oss/python/langchain/retrieval)

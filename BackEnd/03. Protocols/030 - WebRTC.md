@@ -1,5 +1,7 @@
 # 🎥 WebRTC: Hiểu tận gốc video call thời gian thực — SDP, ICE, STUN, TURN và bài demo trên trình duyệt
 
+> Nguồn: `029-WebRTC.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630282)
+
 Các bạn có bao giờ tự hỏi vì sao gọi video trên trình duyệt lại mượt đến vậy, dù hai người chẳng đi chung một server nào không? Hôm nay mình sẽ mổ xẻ **WebRTC (truyền thông thời gian thực trên web)** — công nghệ đứng sau mọi ứng dụng call video chạy trên web — đi từ triết lý peer-to-peer cho tới từng viên gạch **SDP, ICE, STUN, TURN**. Và như mọi khi: *không hộp đen, chúng ta sẽ hiểu tường tận bên dưới đường truyền.*
 
 ### 🎯 Vì sao WebRTC ra đời: con đường ngắn nhất giữa hai peer
@@ -43,6 +45,14 @@ Rồi làm sao chọn giữa núi lựa chọn đó? **ICE (cơ chế kết nố
 
 **SDP (giao thức mô tả phiên — Session Description Protocol)** mô tả ICE candidate, phương án mạng, media, bảo mật... và cả một đống thứ mình thừa nhận là đọc không hết. *Theo mình nó không hẳn là protocol — nó là format.* Bạn có thể nhét "đồ riêng" vào đây, và Discord đã làm đúng vậy: tự viết SDP tùy biến gắn với hệ thống voice server riêng thay vì phụ thuộc STUN/TURN mặc định.
 
+Bảng đối chiếu nhanh bộ ba vượt NAT:
+
+| Thành phần | Vai trò | Chi phí vận hành |
+|---|---|---|
+| STUN | Cho biết public IP:port của bạn sau NAT | Rất nhẹ, có server public miễn phí |
+| TURN | Trung chuyển gói tin khi P2P bất khả thi | Đắt, tốn public IP, mọi traffic dồn qua một choke point |
+| ICE | Thu thập mọi candidate rồi chọn đường hoạt động | Tốn thời gian trickling, phải chờ đủ mới chốt SDP |
+
 ---
 
 ### 🔑 Signaling & SDP offer/answer: cặp đôi không thể tách rời
@@ -55,6 +65,22 @@ Còn đây là chỗ mình từng mắc: "muốn nói chuyện P2P thì trước
 2. Offer được signal sang B; B đặt nó làm **remote description**.
 3. B tạo **answer** (SDP của B), đặt làm **local description**, chờ đủ candidate rồi signal ngược lại.
 4. A nhận answer và đặt làm **remote description** — kết nối hình thành.
+
+Toàn cảnh quá trình signaling và trao đổi ICE candidate:
+
+```mermaid
+sequenceDiagram
+    participant A as Peer A
+    participant SG as Signaling server
+    participant B as Peer B
+    A->>SG: Offer SDP của A
+    SG->>B: Chuyển offer
+    B->>SG: Answer SDP của B
+    SG->>A: Chuyển answer
+    A->>SG: ICE candidate
+    SG->>B: Chuyển candidate
+    Note over A,B: Kết nối P2P hình thành
+```
 
 Mỗi bên luôn có 2 bước: **local description** của mình và **remote description** của đối phương. Một chi tiết bảo mật đáng lưu ý: SDP phơi cả **local IP** của bạn — từng có người tên Sammy khai thác điều này, lợi dụng application layer gateway trên router để mở toang port nội bộ và truy cập từ một malicious server. *Đọc xong mình chỉ biết nói: hay lắm, kính nể.*
 
@@ -80,4 +106,77 @@ Mình mở thẳng **DevTools của 2 trình duyệt** trên cùng một máy (k
 
 "Beyond" còn có: **`addIceCandidate`** cho candidate sinh ra sau khi SDP đã gửi (port bị firewall chặn, kết nối đứt — ta thêm candidate mới vào SDP); **cấu hình ICE server** với TURN kèm username/password (ví dụ STUN của Mozilla); dự án mã nguồn mở **Coturn** để tự dựng STUN/TURN; và **`getUserMedia()`** của Media API. Xong phần này, các bạn có thể tự tin rằng không có phép thuật nào ở đây cả — chỉ là một chuỗi cơ chế mà mình vừa tháo tung từng mảnh.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao WebRTC ưu tiên kết nối peer-to-peer?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì P2P là đường ngắn nhất, độ trễ thấp nhất — không phải đi vòng qua server trung gian tốn kém.
+
+Giải thích: Reverse proxy hay TURN đều phải terminate traffic, xử lý, giải mã rồi mã hóa lại — cộng thêm độ trễ.
+
+Tham chiếu: Mục Vì sao WebRTC ra đời.
+
+</details>
+
+**Câu 2:** Offer/answer và local/remote description hoạt động thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** A tạo offer, đặt làm local description; B nhận và đặt làm remote description rồi tạo answer; A nhận answer và đặt làm remote description.
+
+Giải thích: Mỗi bên luôn có local description của mình và remote description của đối phương.
+
+Tham chiếu: Mục Signaling & SDP offer/answer.
+
+</details>
+
+**Câu 3:** STUN và TURN khác nhau ở điểm nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** STUN chỉ cho biết public IP:port; TURN trung chuyển toàn bộ gói tin khi không thể nối trực tiếp.
+
+Giải thích: STUN rất nhẹ và có bản public miễn phí; TURN đắt, phải tự dựng và tốn công vận hành.
+
+Tham chiếu: Mục STUN, TURN và ICE.
+
+</details>
+
+**Câu 4:** Vì sao symmetric NAT làm STUN "thua"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì mapping được tạo chỉ dành cho một server cụ thể, không tái dùng được cho peer khác.
+
+Giải thích: NAT chỉ cho đúng cặp 4-tuple đã ghi trong bảng đi qua, không nới bất kỳ trường hợp nào.
+
+Tham chiếu: Mục NAT và Mục STUN, TURN và ICE.
+
+</details>
+
+**Câu 5:** Vì sao đa người tham gia không dùng mesh P2P?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì 100 người cần hàng nghìn kết nối mỗi-người-nối-mọi-người; thay vào đó nên dùng server trung tâm, SFU hoặc MCU.
+
+Giải thích: Discord đã theo con đường server trung tâm tự kiểm soát thay vì mesh.
+
+Tham chiếu: Mục Demo 2 trình duyệt, ưu nhược điểm.
+
+</details>
+
 Hẹn gặp lại các bạn ở bài tiếp theo, nơi chúng ta tiếp tục giải mã những giao thức "dưới đường truyền"! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — WebRTC](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630282)
+- [MDN — WebRTC API](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
+- [MDN — Signaling and video calling](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Signaling_and_video_calling)

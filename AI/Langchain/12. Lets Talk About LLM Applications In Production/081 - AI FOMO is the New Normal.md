@@ -1,5 +1,7 @@
 # 😵💫 AI FOMO là chuyện thường ngày: Khi chính Karpathy cũng thấy mình tụt lại
 
+> Nguồn: `081-NEW-AI-FOMO-is-the-New-Normal.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54198055)
+
 Chào các bạn, Eden đây! Bài này chúng ta nói về **FOMO (fear of missing out — nỗi sợ bỏ lỡ)** trong môi trường phát triển AI đang thay đổi với tốc độ chóng mặt mà chúng ta đang sống.
 
 Cụ thể hơn, mình muốn bàn về một **bài blog của Andrej Karpathy viết cuối năm 2025** — bài viết đã chạm đúng cảm xúc của rất nhiều người, trong đó có mình. Mình đồng ý và tin vào rất nhiều ý trong đó, nên hôm nay muốn chia sẻ lại cùng các bạn.
@@ -34,6 +36,13 @@ Mình rất thích so sánh với **một team lead quản lý kỹ sư**:
 
 Toàn bộ tech stack mới — agents, subagents, MCP, LSP, slash command, workflows, tích hợp IDE — **là tech stack mới, là ngôn ngữ lập trình mới của tương lai**. Mình nghĩ chúng ta có **đặc ân lớn** khi được trực tiếp chứng kiến mọi thứ tiến hóa nhanh chóng: chúng ta đang chứng kiến **một cuộc dịch chuyển paradigm và một tầng abstraction mới**.
 
+| Khía cạnh | Kỹ thuật truyền thống | Kỷ nguyên agentic |
+|---|---|---|
+| Đơn vị công việc | Viết code, nắm đúng cú pháp | Viết prompt để code được viết ra |
+| Vai trò | Coder | Orchestrator quản lý một đội agents |
+| Kỹ năng quý | Regex, thuộc API, syntax | Giải quyết vấn đề, tò mò, lọc nhiễu và tập trung |
+| Cách học | Sách hướng dẫn, tài liệu chính thức | Xắn tay thử nghiệm, best practice đang hình thành |
+
 ---
 
 ### 📜 Từ punch card đến English, và câu chuyện regex của mình
@@ -59,10 +68,89 @@ Karpathy viết: **"Rõ ràng có một công cụ ngoài hành tinh cực mạn
 * Từ function calling mở ra **agentic workflows**.
 * Và giờ ta đang ở **kỷ nguyên deep agents, task delegation và subagents**.
 
+```mermaid
+flowchart LR
+    A[ReAct prompt] --> B[Function calling]
+    B --> C[Agentic workflows]
+    C --> D[Deep agents]
+    D --> E[Task delegation và subagents]
+```
+
 Khi bạn thấy được các iteration tận mắt, bạn **hiểu vấn đề nào tồn tại hôm nay và tool mới giải quyết vấn đề gì** — điều đó **xóa tan cảm giác FOMO**.
 
 Vì không có sách hướng dẫn, **best practice đang được tạo ra ngay lúc này**, và câu trả lời nằm ở **thử nghiệm, thực nghiệm, "xắn tay áo vào bùn"**. Và "thuốc giải" cho FOMO: **dấn thân thử nghiệm**. FOMO sẽ **ở lại lâu dài** — bạn sẽ luôn cảm thấy nó, mình cũng cảm thấy nó mỗi ngày.
 
 Lời khuyên "2 xu" của mình: **focus (tập trung) cực kỳ quan trọng**. Mỗi ngày có vô số tweet, công nghệ mới, sản phẩm mới hứa giải quyết X, Y. **Kỹ năng lọc nhiễu và tập trung vào điều quan trọng** là kỹ năng quý giá, vì mạng xã hội là một **"hang thỏ vô tận"** nếu bạn không tập trung. Cách mình làm: khi lướt Twitter, mình **xem cái gì mới, không đọc hết mọi thứ, không đào sâu mọi thứ**. Nếu thấy điều gì hấp dẫn và **giải quyết vấn đề mình đang muốn giải** — mình mới đào sâu và bắt tay thực hành.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao Karpathy — một chuyên gia — vẫn cảm thấy mình tụt lại?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì ngày nào cũng có thứ mới ra đời, việc theo kịp tất cả là bất khả thi, và nghề đang được tái cấu trúc mạnh mẽ.
+
+Giải thích: Đây là cảm giác FOMO chung mà cả Eden lẫn Karpathy đều trải qua.
+
+Tham chiếu: Mục Khi Karpathy cũng nói "tôi thấy mình tụt lại".
+
+</details>
+
+**Câu 2:** TL;DR của Karpathy về software stack là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Stack đã thay đổi — ta không còn viết code mà viết prompt để code được viết ra; ta trở thành orchestrator.
+
+Giải thích: Agent/subagent gọi tool và trả về artifact cho ta kiểm soát.
+
+Tham chiếu: Mục Software stack đã thay đổi.
+
+</details>
+
+**Câu 3:** Hình ảnh so sánh với team lead quản lý kỹ sư diễn ra thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Giao task, xem agent làm, đôi khi đưa đúng tools và skills, review và lặp đến sản phẩm cuối — công việc dịch chuyển từ viết code sang review nhiều hơn.
+
+Giải thích: Đây là sự thay đổi mang tính nền tảng của vai trò lập trình viên.
+
+Tham chiếu: Mục Software stack đã thay đổi.
+
+</details>
+
+**Câu 4:** Agent đã tiến hóa qua những bước nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** ReAct prompt → function calling → agentic workflows → deep agents, task delegation và subagents.
+
+Giải thích: Nhìn lại lịch sử tiến hóa giúp hiểu tool mới giải quyết vấn đề gì.
+
+Tham chiếu: Mục Bí quyết sống chung với FOMO.
+
+</details>
+
+**Câu 5:** Hai lời khuyên để sống chung với FOMO là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Xắn tay vào thử nghiệm, và **focus** — lọc nhiễu, chỉ đào sâu thứ giải quyết vấn đề mình đang muốn giải.
+
+Giải thích: FOMO sẽ ở lại lâu dài; thử nghiệm là "thuốc giải", focus là kỹ năng quý.
+
+Tham chiếu: Mục Bí quyết sống chung với FOMO.
+
+</details>
+
 Điểm mấu chốt: **bạn không đơn độc với FOMO**. Tất cả mọi người đều trải qua nó — kể cả mình, kể cả Andrej Karpathy. Hãy chấp nhận nó và tiếp tục sống chung với nó nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — [NEW] AI FOMO is the New Normal](https://ua.udemy.com/course/langchain/learn/lecture/54198055)

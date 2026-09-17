@@ -1,5 +1,7 @@
 # 🕵️ [Optional] Crawling Deep Dive: Map + Extract, batch processing và xử lý rate limit
 
+> Nguồn: `056-Optional-Crawling-Deep-Dive.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/51359991)
+
 Chào các bạn, Eden đây! Đây là video **optional (tùy chọn)**, dành cho những ai muốn đi sâu hơn vào crawling và scraping.
 
 Như mình đã chỉ trong bài trước, **TavilyCrawl** là lựa chọn khuyên dùng cho hầu hết trường hợp: đưa nó một URL, nó tự map toàn bộ site, scrape mọi thứ trong sitemap và cho phép lọc chính xác thứ bạn cần bằng **ngôn ngữ tự nhiên** — ví dụ "chỉ lấy cho tôi mọi thứ về agents". Tuy nhiên, đôi khi ta muốn **kiểm soát từng bước**, tùy biến quy trình, hoặc đi **thật sâu** vào một phần nào đó của website. Khi đó hãy dùng **TavilyMap + TavilyExtract**.
@@ -28,6 +30,11 @@ Vậy là ta có **hai tầng xử lý song song**:
 * **Tầng API**: Tavily hỗ trợ xử lý song song phía họ — mình chỉ cần gửi đúng lượng URL theo tài liệu của họ, điều khiển qua **batch size**.
 * **Tầng phía chúng ta**: tự bắn các request **bất đồng bộ** — đây là ví dụ kinh điển của **I/O bound operations (tác vụ chờ I/O)**, ngồi chờ API trả về.
 
+| Tầng | Ai xử lý | Điều khiển bằng |
+|---|---|---|
+| Tầng API | Tavily | batch size |
+| Tầng phía chúng ta | Client Python | request bất đồng bộ |
+
 Kỹ thuật này giúp lấy tài liệu **"trong nháy mắt"**. Tin mình đi: hồi trước, khi tải thủ công và **không chạy đồng thời**, mình mất **cả mấy giờ đồng hồ**.
 
 Hàm **`chunk_urls`** nhận danh sách URL và `chunk_size`, trả về danh sách mà mỗi phần tử là một batch URL — code Python khá cơ bản, mình đã giới thiệu trong notebook bài trước. Mình gọi nó với **chunk_size = 20** và nhận về **25 batch**. *Nhớ đừng để chunk_size quá lớn*, nếu không API sẽ từ chối vì bạn gửi quá nhiều URL một lúc!
@@ -48,6 +55,20 @@ Tiếp đó là **coroutine `async_extract`** — "nhạc trưởng" chạy tấ
 1. Log khởi động.
 2. **`enumerate`** qua các batch, tạo coroutine cho mỗi batch và lưu vào biến **`tasks`**. *Lưu ý:* lúc này chúng **chưa thực sự chạy** — vì mình chưa `await` các expression đó.
 3. Gọi **`asyncio.gather`** để `await` mọi coroutine trong danh sách — tất cả chạy **bất đồng bộ**, và mình chờ đến khi **tất cả** hoàn thành. Toàn bộ tài liệu nằm trong biến **`results`**.
+
+```mermaid
+sequenceDiagram
+    participant M as main
+    participant A as async_extract
+    participant B1 as Batch 1
+    participant B2 as Batch 2
+    M->>A: gọi async_extract với url_batches
+    A->>B1: tạo task và chờ
+    A->>B2: tạo task và chờ
+    B1-->>A: trả kết quả trước
+    B2-->>A: trả kết quả sau
+    A-->>M: all_pages đã gom đủ
+```
 
 Sau đó mình duyệt từng phần tử trong `results` — mỗi phần tử hoặc là một **dictionary** chứa nội dung đã extract (URL + `raw_content`), hoặc là một **exception (lỗi)** báo batch thất bại:
 
@@ -70,4 +91,81 @@ Trong hàm `main`, mình `await async_extract(url_batches)` và lưu kết quả
 
 Một phát hiện thú vị: có document ghi **"Page not found"** — nghĩa là mình lấy nhầm URL, hoặc URL đó **không còn tồn tại**. Một document khác là trang tài liệu **LangChain Expression Language** — trông ổn áp! Và đến đây thì chúng ta đã sẵn sàng cho bước tiếp theo: **chunking** và index vào **vector store**.
 
+---
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Khi nào nên dùng TavilyMap + TavilyExtract thay vì TavilyCrawl?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi muốn kiểm soát từng bước, tùy biến quy trình, hoặc đi thật sâu vào một phần nào đó của website.
+
+Giải thích: TavilyCrawl vẫn là lựa chọn khuyên dùng cho hầu hết trường hợp.
+
+Tham chiếu: Đoạn mở đầu.
+
+</details>
+
+**Câu 2:** "Hai tầng xử lý song song" trong bài là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tầng API do Tavily xử lý song song (điều khiển qua batch size) và tầng phía chúng ta tự bắn request bất đồng bộ.
+
+Giải thích: Đây là ví dụ kinh điển của I/O bound — ngồi chờ API trả về.
+
+Tham chiếu: Mục Batch processing.
+
+</details>
+
+**Câu 3:** Với 500 URL và `chunk_size = 20`, ta được bao nhiêu batch và cần lưu ý gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** 25 batch; đừng để chunk_size quá lớn vì API sẽ từ chối khi nhận quá nhiều URL một lúc.
+
+Giải thích: Mỗi batch tương ứng một request extract.
+
+Tham chiếu: Mục Batch processing.
+
+</details>
+
+**Câu 4:** `asyncio.gather` làm gì trong `async_extract`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `await` mọi coroutine trong danh sách `tasks` để tất cả chạy bất đồng bộ và chờ đến khi tất cả hoàn thành.
+
+Giải thích: Coroutine được tạo qua `enumerate` chưa thực sự chạy cho tới khi được await.
+
+Tham chiếu: Mục extract_batch, async_extract và asyncio.gather.
+
+</details>
+
+**Câu 5:** Mỗi phần tử trong `results` có thể là gì và xử lý ra sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hoặc là dictionary chứa nội dung đã extract, hoặc là exception báo batch thất bại — khi đó log error và tăng `failed_batches`.
+
+Giải thích: Phần hợp lệ được tạo thành LangChain Document với metadata `source` là URL gốc.
+
+Tham chiếu: Mục extract_batch, async_extract và asyncio.gather.
+
+</details>
+
+---
+
 Nào, cùng đi tiếp hành trình RAG nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — [Optional] Crawling Deep Dive](https://ua.udemy.com/course/langchain/learn/lecture/51359991)
+- [Tavily Docs — Extract API](https://docs.tavily.com/documentation/api-reference/endpoint/extract)
+- [Python Docs — Coroutines and Tasks](https://docs.python.org/3/library/asyncio-task.html)

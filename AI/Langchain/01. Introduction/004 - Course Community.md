@@ -1,5 +1,7 @@
 # 💬 Cộng đồng Khóa học: Không gian kết nối và hỗ trợ tối đa
 
+> Nguồn: `004-Courses-Community.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37587208)
+
 Chào mọi người, lại là Eden đây! (Vâng, thực sự là mình đang ngồi gõ những dòng này đây!).
 
 Mình vô cùng hào hứng được giới thiệu với các bạn về **Máy chủ Discord của khóa học** – một công cụ tuyệt vời mà bạn có thể tìm thấy link tham gia ngay trong phần Tài nguyên (Resources) của video. Đây chính là "vũ khí bí mật" giúp nâng tầm trải nghiệm học tập của bạn.
@@ -41,3 +43,7 @@ Mình luôn mở lòng đón nhận mọi phản hồi và góp ý từ các b�
 
 **🔧 Một lưu ý kỹ thuật nho nhỏ trước khi kết thúc:**
 Nếu bạn cố gắng tham gia server Discord nhưng vì lý do nào đó lại không được, hãy **đảm bảo rằng bạn đã đăng nhập vào tài khoản Discord trên trình duyệt trước khi click vào đường link**. Thao tác nhỏ này thường sẽ giải quyết dứt điểm mọi lỗi kết nối đấy!
+
+## Nguồn tham khảo
+
+- [Udemy — Course's Community](https://ua.udemy.com/course/langchain/learn/lecture/37587208)

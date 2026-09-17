@@ -1,5 +1,7 @@
 # 🛡️ HTTPS, TLS, Keys và Certificates: Chuyện gì thực sự xảy ra sau ổ khóa trên thanh địa chỉ?
 
+> Nguồn: `024-HTTPS-TLS-Keys-and-Certificates.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/49646843)
+
 Chào các bạn! Hôm nay mình sẽ mổ xẻ **HTTPS**, **TLS**, chuyện khóa và **certificate (chứng chỉ số)** — và mình hứa sẽ cho các bạn thấy đằng sau cái ổ khóa nhỏ xíu trên thanh địa chỉ là *rất nhiều* công việc đang diễn ra. Hiểu được tầng này, các bạn sẽ không bao giờ còn coi bảo mật là một "hộp đen" nữa.
 
 ### 🛡️ HTTPS mã hóa... đến đâu? Đừng tin vào cảm giác an toàn
@@ -27,6 +29,15 @@ Hai chiều sử dụng bất đối xứng đều có ứng dụng riêng:
 * **Mã hóa bằng private key → ai có public key cũng đọc được.** Nghe vô dụng? Không hề — đây là **chữ ký số (digital signature)**. Mình công bố một tuyên bố và ký nó bằng private key; bất kỳ ai dùng public key của mình để xác minh chữ ký đều biết đó đúng là mình. Thực tế người ta ký lên **hash** của tài liệu. Nếu hacker sửa nội dung, chúng không thể ký lại vì không có private key — chữ ký không khớp hash, thế là lộ ngay.
 
 *Và đây là lý do bất đối xứng không dùng để mã hóa dữ liệu lớn: nó rất chậm và nặng máy. Muốn mã hóa cả trang web thì phải dùng mã hóa đối xứng — nhưng khóa đối xứng thì trao đổi cách nào? Chờ chút, chúng ta sẽ tới đó.*
+
+Bảng đối chiếu nhanh hai thế giới mã hóa:
+
+| Tiêu chí | Mã hóa đối xứng | Mã hóa bất đối xứng |
+|---|---|---|
+| Số khóa | Một khóa chung vừa mã hóa vừa giải mã | Cặp public key và private key |
+| Tốc độ | Rất nhanh, chỉ dùng lệnh CPU đơn giản | Rất chậm và nặng máy |
+| Dùng cho | Mã hóa dữ liệu lớn, session key | Trao đổi khóa và chữ ký số |
+| Thách thức | Làm sao hai bên có chung khóa | Không bao giờ để lộ private key |
 
 ---
 
@@ -75,6 +86,19 @@ Nhưng vẫn còn **man-in-the-middle**: kẻ tấn công Z chặn giá trị pu
 
 **TLS 1.3** làm tất cả gọn hơn: gửi mọi thứ **một lần duy nhất**, server có luôn khóa đối xứng sau **một vòng round-trip**. Server **ký tham số DH bằng private key** (chỉ ký, không gửi khóa), client kiểm tra chuỗi chứng chỉ, xác minh chữ ký bằng public key, rồi cả hai đổi khóa. Vẫn còn *cả rừng* thứ chưa kể: extension, SNI, thuật toán ký, thuật toán sinh khóa, kích thước khóa, certificate phía client, mutual TLS... không khóa học nào ôm hết nổi.
 
+Tóm gọn luồng bắt tay TLS 1.3:
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>S: Client Hello kèm tham số DH
+    S-->>C: Server Hello, certificate và chữ ký DH
+    C->>S: Xác minh chữ ký rồi gửi Finished
+    Note over C,S: Một round trip là có session key
+    C->>S: Dữ liệu mã hóa đối xứng
+```
+
 ---
 
 ### 🧪 Thực hành: Node.js, OpenSSL và cái kết "curl không tin mình"
@@ -95,4 +119,76 @@ Cuối cùng là bài **test hiệu năng** quen thuộc với agent HTTPS: kế
 
 Nếu các bạn chạy `curl -v https://...`, sẽ thấy **đầy đủ mọi thứ chúng ta vừa nói**: danh sách IP, Client Hello, Server Hello, các extension mã hóa, certificate, chữ ký xác thực bằng private key, thuật toán public key đã dùng, ALPN và cả việc thương lượng HTTP/2.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao HTTPS không phải lúc nào cũng mã hóa đầu-cuối?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì mã hóa chỉ kéo dài tới điểm dừng đầu tiên — CDN, proxy hay API gateway phải terminate TLS để đọc nội dung rồi mã hóa lại.
+
+Giải thích: Có HTTPS không đồng nghĩa mọi chặng trên đường đi đều được mã hóa toàn trình.
+
+Tham chiếu: Mục HTTPS mã hóa đến đâu.
+
+</details>
+
+**Câu 2:** Quy tắc vàng của cặp khóa bất đối xứng là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Từ private key có thể sinh ra public key, nhưng không bao giờ suy ngược private key từ public key.
+
+Giải thích: Trừ khi có toàn bộ sức mạnh tính toán của thế giới, việc suy ngược là bất khả thi.
+
+Tham chiếu: Mục Hai thế giới mã hóa.
+
+</details>
+
+**Câu 3:** Certificate xác thực website dựa vào những thành phần nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tên chủ thể, Subject Alternative Name khớp tên miền, nhà phát hành và chữ ký số, dẫn ngược lên root certificate trong certificate store.
+
+Giải thích: Client nhận leaf certificate, tra CA trong store rồi lần theo chuỗi tin cậy tới root.
+
+Tham chiếu: Mục Certificate.
+
+</details>
+
+**Câu 4:** Vì sao RSA key exchange bị người ta bỏ?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì không có perfect forward secrecy — kẻ tấn công ghi lại traffic rồi chờ private key lộ là giải mã được cả kho dữ liệu cũ.
+
+Giải thích: Heartbleed 2014 là ví dụ điển hình khi private key bị rò rỉ từ bộ nhớ server.
+
+Tham chiếu: Mục Bắt tay TLS.
+
+</details>
+
+**Câu 5:** Diffie-Hellman vẫn có thể bị man-in-the-middle, chặn bằng cách nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bằng chữ ký số — server ký tham số DH bằng private key, client xác minh chữ ký qua chuỗi certificate.
+
+Giải thích: Không có certificate thì kẻ tấn công Z có thể tráo giá trị public và nghe trọn cuộc trò chuyện.
+
+Tham chiếu: Mục Bắt tay TLS.
+
+</details>
+
 Tổng kết: chúng ta đã đi qua mã hóa, TLS, certificate, Node HTTPS và tự tay sinh khóa bằng OpenSSL. Ở bài tới, mình sẽ mang **Wireshark** ra để đo **cái giá** của TLS: sau TCP handshake lại thêm một TLS handshake nữa — nhiều việc hơn, tốn hơn, ảnh hưởng tới hiệu năng. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — HTTPS, TLS, Keys and Certificates](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/49646843)
+- [RFC 9846 — The Transport Layer Security (TLS) Protocol Version 1.3](https://www.rfc-editor.org/rfc/rfc9846.html)

@@ -1,5 +1,7 @@
 # 🐍 Sinh Tool Descriptions động bằng Python: "Kể chuyện" về tool cho LLM nghe
 
+> Nguồn: `035-Generating-Dynamic-Tool-Descriptions-in-Python.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54977429)
+
 Chúng ta đã có ReAct prompt trong tay. Giờ là lúc bắt tay vào code: mình sẽ tạo file mới, chuẩn bị phần **parse response dạng text** và **tự sinh mô tả tool động** từ chính các hàm Python.
 
 *Phần này khá kỹ thuật, nhưng cực kỳ quan trọng để hiểu chuyện gì thật sự diễn ra under the hood — nên hãy kiên nhẫn theo mình nhé!*
@@ -33,7 +35,21 @@ Có một **caveat nhỏ**: vì các function đều được **bọc bởi Lang
 * **`inspect.signature()`** — trả về **chữ ký của hàm**: tên hàm, các argument nhận vào, kiểu dữ liệu của chúng và kiểu giá trị trả về.
 * **`inspect.getdoc()`** — lấy **docstring** của hàm, thứ sẽ giúp LLM quyết định **khi nào nên dùng hàm này**.
 
+| Tiện ích | Lấy được gì | Dùng để làm gì |
+|---|---|---|
+| `inspect.signature()` | Tên hàm, arguments, kiểu dữ liệu, kiểu trả về | Mô tả cách gọi từng tool cho LLM |
+| `inspect.getdoc()` | Docstring của hàm | Cho LLM biết khi nào nên dùng tool |
+
 Cuối cùng, mình **append vào list descriptions** một string chứa đầy đủ **tool_name, signature và docstring**, được format gọn gàng. List này cuối cùng sẽ chứa **hai string** — ứng với hai tool — và mình **join tất cả thành một string lớn**, phân tách bằng **dòng mới**. Đây chính là thứ sẽ được inject vào **react_prompt**.
+
+```mermaid
+flowchart LR
+    A[tools dictionary] --> B[get_tool_descriptions]
+    B --> C[inspect.signature và inspect.getdoc]
+    C --> D[String mô tả từng tool]
+    D --> E[Join thành một string lớn]
+    E --> F[Inject vào react_prompt]
+```
 
 Chạy thử và mở **Debug Console**: ta thấy ngay một **string lớn** chứa toàn bộ chi tiết hàm cùng docstring, kèm các dòng mới được nối vào. Thông tin này sẽ giúp LLM quyết định có nên gọi những tool đó hay không.
 
@@ -67,4 +83,77 @@ Vì vậy mình **viết lại** hàm:
 * Bỏ phần **tool_dict** vì ta đã có tool dictionary sẵn.
 * Thay vì **system prompt** như trước, chúng ta sẽ dùng chính **ReAct prompt** làm bộ não cho agent.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao phải import `re` trong file này?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để parse raw response từ LLM — vốn chỉ là text thuần — xem cần gọi hàm nào.
+
+Giải thích: Không còn dựa vào định dạng JSON của function calling nữa nên phải tự "bới" trong text.
+
+Tham chiếu: Mục File mới và hai import "đặc biệt".
+
+</details>
+
+**Câu 2:** Vì sao cần import `inspect`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để lấy metadata của các function được dùng làm tool và truyền thông tin đó cho LLM.
+
+Giải thích: LLM vốn không biết gì về các hàm của chúng ta, nên phải gửi mô tả về từng function.
+
+Tham chiếu: Mục File mới và hai import "đặc biệt".
+
+</details>
+
+**Câu 3:** Caveat khi hàm được bọc bởi LangSmith traceable là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Phải truy cập thuộc tính `__wrapped__` để lấy function gốc trước khi bị decorator "khoác áo".
+
+Giải thích: Nhờ vậy mới lấy được đúng đoạn code và metadata gốc của hàm.
+
+Tham chiếu: Mục get_tool_descriptions.
+
+</details>
+
+**Câu 4:** `get_tool_descriptions()` nhận vào và trả ra gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nhận dictionary tools, duyệt từng tool bằng `items()`, rồi append các string mô tả tool_name, signature, docstring và join thành một string lớn phân tách bằng dòng mới.
+
+Giải thích: String lớn này được inject vào react_prompt; tool_names thì lấy bằng cách nối các key bằng dấu phẩy.
+
+Tham chiếu: Mục get_tool_descriptions.
+
+</details>
+
+**Câu 5:** Vì sao phải viết lại hàm `ollama_chat_traced`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để bỏ function calling của Ollama và chỉ còn nhận model, messages, options — dùng chính ReAct prompt làm bộ não cho agent.
+
+Giải thích: Ta muốn dùng trí tuệ thuần túy (raw intelligence) của model thay vì lợi dụng function calling.
+
+Tham chiếu: Mục Viết lại ollama_chat_traced: tạm biệt function calling.
+
+</details>
+
 Mọi thứ đang dần khớp lại thành bức tranh hoàn chỉnh. Hẹn gặp lại các bạn ở video tiếp theo, nơi chúng ta ráp toàn bộ vòng lặp agent với prompt thuần! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Generating Dynamic Tool Descriptions in Python](https://ua.udemy.com/course/langchain/learn/lecture/54977429)
+- [LangChain Hub — hwchase17/react](https://smith.langchain.com/hub/hwchase17/react)
+- [Ollama Docs — Tool calling](https://docs.ollama.com/capabilities/tool-calling)

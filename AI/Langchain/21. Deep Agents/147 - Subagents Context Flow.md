@@ -1,5 +1,7 @@
 # 🗺️ Subagents Context Flow: Nghệ thuật "nén" context của Deep Agents
 
+> Nguồn: `147-Deep-Agents-Subagents-context-flow.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54113271)
+
 Chào các bạn, mình là Eden đây! Hôm nay chúng ta sẽ đi sâu vào **luồng context (context flow)** khi sử dụng subagent, để hiểu vì sao **sub-agent (agent con)** lại mạnh mẽ và hữu ích đến vậy.
 
 ---
@@ -18,6 +20,15 @@ Lợi ích rõ ràng: luồng chính được giữ **tinh gọn (lean)**. Thay 
 
 Tóm gọn: **main agent đưa một input cho subagent, subagent làm việc rồi trả về một output**. Đây là cách cực kỳ thông minh để **nén context**.
 
+```mermaid
+sequenceDiagram
+    participant M as Main agent
+    participant S as Subagent
+    M->>S: Prompt mới chỉ chứa tác vụ cần làm
+    S->>S: Tự gọi tool trong context window riêng
+    S-->>M: Một câu trả lời cô đọng
+```
+
 ---
 
 ### 📈 Vì sao phải giữ context "tinh gọn"?
@@ -33,6 +44,13 @@ Chúng ta **không hề muốn chạm tới giới hạn đó**, vì:
 
 Mỗi lượt tương tác, mỗi tin nhắn gửi đi đều tiêu tốn token và cộng dồn vào context window: lượt đầu có thể thêm **10K token**, lượt hai lên **30K**, đến lượt thứ năm thì đã chạm **100K token**. Đến một lúc nào đó, ta buộc phải compact với lệnh `slash compact`, xóa sạch mọi thứ, hoặc mở một phiên Claude Code mới và bắt đầu lại từ đầu. Thế mới thấy: **giới hạn context chính là thứ trói buộc mọi tương tác của chúng ta.**
 
+| Tiêu chí | Main agent thread | Subagent |
+|---|---|---|
+| Bắt đầu với | Toàn bộ hội thoại | Chỉ prompt do main agent tạo |
+| Token tích lũy | Cộng dồn vào context window chính | Không tính vào agent chính |
+| Khi kết thúc | Tiếp tục dài thêm | Trả về một kết quả cô đọng |
+| Giới hạn | Chạm trần 200K, 1 triệu token... | Context riêng, được giải phóng |
+
 ---
 
 ### ✨ Subagent: giải pháp "thanh lịch" để mở rộng giới hạn
@@ -43,4 +61,77 @@ Khi subagent kết thúc, nó chỉ trả về **một câu trả lời cô đ�
 
 Thêm một điểm tinh tế: mỗi side chain, mỗi subagent đều chạy với **system prompt riêng được may đo theo đúng nhu cầu**, nên nó giải quyết tác vụ của mình tốt hơn hẳn agent chính. Đó chính là toàn bộ lý do tồn tại của subagent — một ý tưởng vô cùng mạnh mẽ.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Subagent bắt đầu công việc với context nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chỉ với prompt mà agent chính tạo ra — nó không biết hội thoại trước đó.
+
+Giải thích: Mỗi lần spawn subagent là bắt đầu với context hoàn toàn mới.
+
+Tham chiếu: Mục Một vào, một ra.
+
+</details>
+
+**Câu 2:** Vì sao không muốn chạm giới hạn token?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Request sẽ thất bại, câu trả lời tốn kém hơn, chậm hơn và gần như chắc chắn gặp context pollution.
+
+Giải thích: Giới hạn có thể là 200K, 1 triệu, thậm chí 10 triệu token nhưng luôn hữu hạn.
+
+Tham chiếu: Mục Vì sao phải giữ context tinh gọn.
+
+</details>
+
+**Câu 3:** Lợi ích cốt lõi của subagent với luồng chính là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Giữ luồng chính tinh gọn, nén context và không cần dùng slash compact hay slash clear.
+
+Giải thích: Càng nhiều context thì hiệu năng càng giảm.
+
+Tham chiếu: Mục Một vào, một ra.
+
+</details>
+
+**Câu 4:** Token mà subagent dùng có bị tính vào agent chính không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không — subagent chạy với context window riêng; chỉ kết quả cô đọng được trả về.
+
+Giải thích: Kết quả có thể là 15K-20K token tóm tắt và code đã sửa, nhưng không tích lũy vào luồng chính.
+
+Tham chiếu: Mục Subagent: giải pháp thanh lịch.
+
+</details>
+
+**Câu 5:** Vì sao subagent có system prompt riêng lại mạnh hơn?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó được may đo theo đúng nhu cầu nên giải quyết tác vụ tốt hơn hẳn agent chính.
+
+Giải thích: Đó chính là toàn bộ lý do tồn tại của subagent.
+
+Tham chiếu: Mục Subagent: giải pháp thanh lịch.
+
+</details>
+
 Hẹn gặp lại các bạn ở bài tiếp theo, nơi chúng ta khám phá mảnh ghép tiếp theo: **file system (hệ thống tệp)**! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Subagents context flow](https://ua.udemy.com/course/langchain/learn/lecture/54113271)
+- [LangChain Docs — Deep Agents subagents](https://docs.langchain.com/oss/python/deepagents/subagents)
+- [LangChain Docs — Deep Agents overview](https://docs.langchain.com/oss/python/deepagents/overview)

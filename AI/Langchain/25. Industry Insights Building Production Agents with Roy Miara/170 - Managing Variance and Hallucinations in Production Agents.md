@@ -1,5 +1,7 @@
 # 🎛️ Variance & Hallucination: Bài toán "không được phép sai" của Production Agent
 
+> Nguồn: `170-Managing-Variance-and-Hallucinations-in-Production-Agents.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/55968665)
+
 Nếu bạn từng chạy cùng một coding agent nhiều lần và nhận về nhiều kết quả khác nhau, bạn đã chạm tới chủ đề của bài hôm nay. Trong cuộc trò chuyện với Roy Miara, chúng mình bàn về **variance (độ biến thiên kết quả), hallucination và bài toán comprehensiveness (tính bao quát)** – những thứ quyết định sống còn với một production agent.
 
 Đây là phần mà mình tin bất kỳ ai xây agent nghiêm túc đều nên nghe qua. Cùng bắt đầu nhé!
@@ -23,6 +25,22 @@ Nhưng với **autonomous hacker – về bản chất là một security produc
 
 * Bạn **không thể cho phép mình bỏ sót một lỗ hổng đang tồn tại**.
 * Điều này dẫn tới bài toán **comprehensiveness (tính bao quát)** – theo Roy, đây là một bài toán **cực kỳ phức tạp** khi xây agent.
+
+```mermaid
+flowchart TD
+    A[Cùng một yêu cầu] --> B[Agent chạy nhiều lần]
+    B --> C[Nhiều đáp án khác nhau]
+    C --> D{Bối cảnh sử dụng}
+    D -->|Agentic coding| E[Chấp nhận được nếu giải đúng bài toán]
+    D -->|Security product| F[Không được bỏ sót lỗ hổng]
+    F --> G[Bài toán comprehensiveness]
+```
+
+| | Agentic coding | Autonomous hacker |
+|---|---|---|
+| Tính chất | Công cụ hỗ trợ viết code | Về bản chất là một security product |
+| Nhiều đáp án | Chấp nhận được, miễn giải quyết được bài toán | Không được phép bỏ sót lỗ hổng đang tồn tại |
+| Bài toán khó nhất | Chất lượng lời giải | Comprehensiveness toàn diện |
 
 ---
 
@@ -51,4 +69,75 @@ Từ đó nảy sinh **sự căng thẳng (tension) kinh điển**:
 
 Theo Roy, đây chính là trạng thái mà đội ngũ đang sống cùng mỗi ngày. *Nếu bạn thấy mình cũng đang kẹt giữa hai thái cực ấy – các bạn không cô đơn đâu, đội đang làm top 1% cũng vậy!*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao phải hiểu rõ "ai đang giữ context nào"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để biết agent nào hiểu phần nào của nhiệm vụ tại từng thời điểm, giúp hệ thống lớn dần mà không rối.
+
+Giải thích: Roy nhấn mạnh việc hiểu tường tận sự phân chia này là cực kỳ quan trọng khi scale.
+
+Tham chiếu: Mục Hiểu rõ "ai đang giữ context nào".
+
+</details>
+
+**Câu 2:** Vì sao agentic coding chấp nhận được nhiều đáp án khác nhau?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì suy cho cùng bạn chỉ cần giải quyết bài toán, và có nhiều lời giải đều hợp lệ.
+
+Giải thích: Đây là điều rất quen thuộc với người dùng agentic coding.
+
+Tham chiếu: Mục Cùng một bài toán, nhiều đáp án.
+
+</details>
+
+**Câu 3:** Vì sao autonomous hacker không được phép variance?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó là một security product: không thể cho phép bỏ sót một lỗ hổng đang tồn tại.
+
+Giải thích: Điều này dẫn tới bài toán comprehensiveness cực kỳ phức tạp.
+
+Tham chiếu: Mục Cùng một bài toán, nhiều đáp án.
+
+</details>
+
+**Câu 4:** Nghịch lý của "high temperature" là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Muốn agent sáng tạo cao, nhưng sáng tạo cao đồng nghĩa variance cao; phải tìm điểm cân bằng giữa creativeness và exhaustiveness.
+
+Giải thích: Đây là bài toán cân bằng khó khi xây agent bảo mật.
+
+Tham chiếu: Mục Cân bằng giữa sáng tạo và bao quát.
+
+</details>
+
+**Câu 5:** Vì sao cách "bake in" tính bao quát có nhược điểm?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì ép hệ thống toàn diện theo cách định sẵn khiến khi vào thế giới thực, agent không thực sự khám phá được những vùng phức tạp của bài toán.
+
+Giải thích: Đây là quan sát của Roy về nhiều sản phẩm khác trên thị trường.
+
+Tham chiếu: Mục Cân bằng giữa sáng tạo và bao quát.
+
+</details>
+
 Mình hy vọng những chia sẻ này giúp các bạn nhìn production agent bằng con mắt thực tế hơn. Ở các bài tiếp theo, chúng ta sẽ quay trở lại với các kỹ thuật cụ thể – đừng bỏ lỡ nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Managing Variance and Hallucinations in Production Agents](https://ua.udemy.com/course/langchain/learn/lecture/55968665)

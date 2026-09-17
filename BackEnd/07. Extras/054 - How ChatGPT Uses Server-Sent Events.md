@@ -1,5 +1,7 @@
 # 🧠 ChatGPT "nhả chữ" từng token như thế nào? Mổ xẻ Server-Sent Events từ A tới Z
 
+> Nguồn: `052-How-ChatGPT-uses-Server-Sent-Events.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/35952430)
+
 Các bạn có bao giờ tự hỏi vì sao ChatGPT trả lời mà chữ cứ hiện dần ra từng chút một, thay vì đợi cả câu trả lời rồi mới hiện một cục? Hôm nay mình sẽ mở DevTools, tắt cache và đi từ lúc gõ `chat.openai.com` cho tới lúc nhận được từng **token (đơn vị chữ của LLM)** ở phía client.
 
 Mục tiêu rất đơn giản: chỉ cho các bạn thấy **Server-Sent Events (sự kiện đẩy từ server)** hoạt động ra sao dưới đường truyền (under the wire), kèm vài quyết định thiết kế backend của OpenAI mà mình "săm soi" được. Không hộp đen, tất cả đều kiểm chứng được.
@@ -26,6 +28,17 @@ Về thông số kết nối:
 ### 📡 Vì sao Server-Sent Events lại "đi nhờ" HTTP/2?
 
 Đây là điểm mình muốn các bạn khắc cốt ghi tâm: **SSE về bản chất vẫn là một request-response (yêu cầu/phản hồi)**, nhưng cái response kéo dài rất lâu và bị chia thành nhiều **logical message (thông điệp logic)** để client đọc dần. Phía client chỉ thấy một request-response duy nhất, nhưng response cứ "nhỏ giọt" mãi. Nó giống như một request-response hào nhoáng — chỉ khác là phần thân bị chẻ nhỏ.
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant S as Server
+    B->>S: POST kèm header chờ event stream
+    S-->>B: 200 text event-stream
+    S-->>B: Logical message 1
+    S-->>B: Logical message 2
+    S-->>B: Logical message n
+```
 
 Vì response sống lâu như vậy, dùng **HTTP/1.1 là một ý tồi**: bạn đang chiếm dụng hẳn một connection, mà Chrome chỉ cho bạn **tối đa 6 connection** cho HTTP/1.1. HTTP/2 giải quyết bài toán đó:
 
@@ -70,6 +83,13 @@ Vậy request đó có gì đặc biệt?
 * Nhưng nếu bạn click vào tab **EventStream** trong DevTools, nó **trống trơn**. Lý do: DevTools chỉ đọc event stream khi bạn dùng **EventSource API** của trình duyệt — thứ mà ChatGPT **không dùng**. Họ tự viết thư viện client riêng: chỉ là gửi request rồi đọc dần response trả về, một response bị chẻ nhỏ bằng token của chính họ.
 * Nếu dùng EventSource chuẩn, mỗi message phải kết thúc bằng **ký tự xuống dòng kép**; họ không muốn vậy, có lẽ họ truyền token/định dạng đặc biệt của riêng mình. Muốn "ngửi" được nội dung server trả về thì phải dùng proxy man-in-the-middle hoặc Fiddler.
 
+| Tiêu chí | EventSource chuẩn | Client tự viết của ChatGPT |
+|---|---|---|
+| Định dạng message | Kết thúc bằng xuống dòng kép | Định dạng token riêng |
+| DevTools EventStream | Đọc được | Trống trơn |
+| Cách đọc phía client | API EventSource của browser | Fetch rồi đọc dần stream reader |
+| Độ linh hoạt | Ràng buộc theo chuẩn | Tự do định dạng truyền tải |
+
 Còn payload thì thú vị không kém:
 * Mỗi message bạn gửi có **ID duy nhất do chính client tạo** (của mình là 80), kèm theo **parent message ID**. Chuỗi liên kết này để ChatGPT nối các message trong cùng một conversation: bạn troll nó "1 + 1 = 3", nó cãi, bạn nói "sai rồi" — nó vẫn biết bạn đang nhắc tới message nào. **Về bản chất nó vẫn là stateless (không lưu trạng thái)**, nhưng các message được nối với nhau bằng link để tạo cảm giác "nhớ" ngữ cảnh.
 * Request gửi kèm model. Mình thấy một endpoint kiểu "server hỗ trợ model nào?" và câu trả lời là dùng **text-davinci-002** (dù 003 vừa mới ra mắt), với **4097 token** và được train tới **tháng 6/2021** — nên nó không biết gì sau mốc đó. Họ gọi tên định danh model là **slug**. *API này sạch sẽ đến mức mình phải khen.*
@@ -94,4 +114,77 @@ Tại sao phải nhét tất cả vào cùng một trang? Vì **cookies** — ch
 
 Kết quả: hai con bot "dạy nhau" đủ thứ — quang hợp ở thực vật, phản ứng phân hạch và nhà máy điện hạt nhân, vai trò của enzyme, ba trạng thái vật chất, phát minh quan trọng nhất lịch sử, sự khác nhau giữa millimeter/meter... Có lần chúng rơi vào vòng lặp "tôi có thể giúp gì cho bạn" mãi không dứt. Có lần một con bị hỏi câu cá nhân kiểu "môn thể thao yêu thích" liền trả lời kiểu người máy: "tôi là một language model, tôi không có sở thích" — rồi quay ngoắt về quang hợp. Access token hết hạn ngay giữa cuộc vui, nhưng các bạn hiểu ý tưởng rồi đấy.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Về bản chất, SSE là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một request-response sống rất lâu, bị chia thành nhiều logical message để client đọc dần.
+
+Giải thích: Client chỉ thấy một request-response duy nhất nhưng response cứ "nhỏ giọt" mãi.
+
+Tham chiếu: Mục Vì sao Server-Sent Events lại đi nhờ HTTP/2.
+
+</details>
+
+**Câu 2:** Vì sao SSE hợp với HTTP/2 hơn HTTP/1.1?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** HTTP/2 multiplexing nhiều request trên một connection, không chiếm chết 1 trong 6 connection ít ỏi của HTTP/1.1.
+
+Giải thích: Connection ID luôn là một và được tái sử dụng, mỗi request là một stream riêng.
+
+Tham chiếu: Mục Vì sao Server-Sent Events lại đi nhờ HTTP/2.
+
+</details>
+
+**Câu 3:** Vì sao tab EventStream trong DevTools trống trơn khi xem ChatGPT?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì ChatGPT không dùng EventSource API — họ tự viết thư viện client đọc dần response.
+
+Giải thích: DevTools chỉ đọc event stream khi gặp EventSource API của trình duyệt.
+
+Tham chiếu: Mục Mổ xẻ request hi.
+
+</details>
+
+**Câu 4:** Vì sao mình trăn trở với việc dùng random UUID cho message?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Random ID gây random access, buffer pool phải nạp/đuổi trang liên tục vì clustered primary key như MySQL — ULID phù hợp hơn cho tail performance.
+
+Giải thích: Message mang tính thời gian, tạo gần nhau nên nằm gần nhau trong data page là điều tốt.
+
+Tham chiếu: Mục Access token hết hạn, phân trang offset và câu chuyện UUID.
+
+</details>
+
+**Câu 5:** Access token của ChatGPT hết hạn thì chuyện gì xảy ra?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bạn ăn lỗi forbidden và phải tự tay refresh trang để lấy token mới — UX bị đánh giá là chưa ngon.
+
+Giải thích: Cookies chứa refresh token đổi lấy access token ngắn hạn, token được tái tạo liên tục.
+
+Tham chiếu: Mục Access token hết hạn, phân trang offset và câu chuyện UUID.
+
+</details>
+
 Điều mình muốn các bạn mang về: **SSE chỉ là một request-response sống lâu bị chẻ thành nhiều thông điệp logic**, HTTP/2 giúp nó không chiếm chết connection, còn việc "nhả chữ" từng token chính là đọc stream dần ở client. *Hiểu được cơ chế này, các bạn sẽ tự tay debug và tự tay xây được những endpoint streaming y hệt — không cần chấp nhận hộp đen.* Hẹn gặp các bạn ở video tiếp theo, nơi mình sẽ tiếp tục mổ xẻ backend! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — How ChatGPT uses Server-Sent Events](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/35952430)
+- [MDN — Using server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
+- [MDN — Server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)

@@ -1,5 +1,7 @@
 # 🧮 Hai MCP Server Đầu Tiên: Toán Học qua STDIO và Thời Tiết qua SSE
 
+> Nguồn: `132-Servers.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52632155)
+
 Chào các bạn, mình là Eden đây! 👋 Trước khi viết MCP client, chúng ta cần có "đối tác" để nó kết nối tới — nên trong bài này, chúng ta sẽ **viết trước hai MCP server thật đơn giản**. Có server trong tay rồi thì việc thử nghiệm client ở các bài sau sẽ trực quan hơn rất nhiều.
 
 ---
@@ -32,6 +34,22 @@ Cụ thể, với **SSE MCP server**:
 * Chúng ta **không cần tự xử lý** phần giao tiếp này — **MCP SDK** lo hết "out of the box".
 * Điều duy nhất cần làm là **truyền một flag chỉ định transport là SSE** khi chạy server.
 
+Hai server trong bài dùng hai kênh giao tiếp khác nhau:
+
+```mermaid
+flowchart LR
+    A[MCP Client] -->|STDIO| B[Math Server - cộng và nhân]
+    A -->|HTTP POST| C[Weather Server - get_weather]
+```
+
+| Tiêu chí | STDIO | SSE |
+|---|---|---|
+| Kênh giao tiếp | Luồng nhập/xuất chuẩn | HTTP |
+| Cách client gửi yêu cầu | Chạy server như tiến trình con | HTTP POST request |
+| Ai xử lý giao tiếp | MCP SDK lo out of the box | MCP SDK lo out of the box |
+| Ví dụ trong bài | `math_server.py` | `weather_server.py` |
+| Cổng chạy | Không cần | localhost port 8000 |
+
 Cách tạo cũng rất nhanh: mình lấy **dummy server** có sẵn trong repo mã nguồn mở của **LangChain MCP**, nó phơi tool **`get_weather`** và luôn trả về một chuỗi tĩnh. Mình chỉ đổi nội dung chuỗi cho vui thôi. File được đặt tên là **`weather_server.py`**.
 
 Chạy thử bằng **`uv run servers/weather_server.py`**, bạn sẽ thấy server chạy ở **localhost port 8000**. Muốn đổi sang port khác thì hoàn toàn được — chỉ cần chỉ định qua **MCP SDK**.
@@ -42,4 +60,78 @@ Chạy thử bằng **`uv run servers/weather_server.py`**, bạn sẽ thấy se
 
 Xong hai server rồi, mình commit phần thay đổi (chỉ có thư mục `servers` là mới) và push lên repository. Lại là tính năng sinh commit message tự động của Cursor giúp mình một tay. Giờ trên repo đã có **hai commit**: một từ bài trước và một từ bài này.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Hai MCP server trong bài phơi ra tool gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Math server phơi tool cộng và nhân hai số; weather server phơi tool `get_weather` luôn trả về một chuỗi tĩnh.
+
+Giải thích: Cả hai đều là server rất đơn giản để phục vụ việc thử client.
+
+Tham chiếu: Hai mục đầu bài.
+
+</details>
+
+**Câu 2:** Vì sao không nên đặt tên file là `math.py`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó xung đột với package `math` có sẵn của Python.
+
+Giải thích: Eden loay hoay khá lâu mới tìm ra; TLDR hãy đặt là `math_server.py`.
+
+Tham chiếu: Mục Server toán học.
+
+</details>
+
+**Câu 3:** SSE server giao tiếp với client qua kênh nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Qua HTTP — client gửi HTTP POST request đến server, khác với STDIO.
+
+Giải thích: Transport của server thời tiết là SSE.
+
+Tham chiếu: Mục Server thời tiết.
+
+</details>
+
+**Câu 4:** Ai xử lý phần giao tiếp của SSE MCP server?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** MCP SDK xử lý out of the box; ta chỉ cần truyền một flag chỉ định transport SSE khi chạy server.
+
+Giải thích: Không cần tự xử lý giao tiếp HTTP.
+
+Tham chiếu: Mục Server thời tiết.
+
+</details>
+
+**Câu 5:** Weather server chạy ở đâu và có đổi cổng được không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chạy ở localhost port 8000; đổi cổng được bằng cách chỉ định qua MCP SDK.
+
+Giải thích: Chỉ cần thêm tham số khi chạy server.
+
+Tham chiếu: Mục Server thời tiết.
+
+</details>
+
 Ở bài tiếp theo, chúng ta sẽ **đào sâu vào SSE MCP server** và quan trọng hơn là bắt đầu **tích hợp nó với LangChain MCP client đa server**. Nghe hấp dẫn rồi đấy chứ? Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Servers](https://ua.udemy.com/course/langchain/learn/lecture/52632155)
+- [MCP Specification — Transports](https://modelcontextprotocol.io/specification/2024-11-05/basic/transports)
+- [FastMCP — The FastMCP Server](https://gofastmcp.com/servers/server)
+- [LangChain MCP Adapters — GitHub](https://github.com/langchain-ai/langchain-mcp-adapters)

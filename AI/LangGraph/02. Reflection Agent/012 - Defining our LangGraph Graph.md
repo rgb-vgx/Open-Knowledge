@@ -1,5 +1,7 @@
 # 🕸️ Định nghĩa LangGraph Graph: Node, Conditional Edge và lần đầu "vẽ" graph
 
+> Nguồn: `012-Defining-our-LangGraph-Graph.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43455436)
+
 Chào các bạn, Eden đây! Sau khi các chain đã sẵn sàng, hôm nay chúng ta sẽ **dựng graph thật sự**: định nghĩa node, nối các edge — trong đó có cả một **conditional edge (cạnh có điều kiện)** — rồi compile và visualize thành quả.
 
 ### 📦 Import và làm quen với MessageGraph
@@ -21,6 +23,11 @@ Mình định nghĩa hai hằng số `reflect` và `generate` — đây sẽ là
 
 **2. Reflection node:** cũng nhận vào sequence message và invoke reflection chain theo cách tương tự. Nhưng có **một khác biệt tinh tế cực kỳ quan trọng**: response trả về từ LLM — thường mang role AI — sẽ được **đổi thành `HumanMessage`**. Ta lấy content của message đó, gán cho vai trò con người rồi trả về. Mục đích là **"đánh lừa" LLM** rằng chính con người đang gửi message này, để có một cuộc hội thoại qua lại: critique, generate, critique, generate... Cứ như thể các bạn đang chat với ChatGPT để cùng sửa một chiếc tweet vậy. Đây là **kỹ thuật rất quan trọng** khi làm việc với LangGraph.
 
+| Node | Nhận vào | Làm gì | Trả về |
+|---|---|---|---|
+| `generate` | Toàn bộ list message | Chạy generation chain | AI message được append vào state |
+| `reflect` | Toàn bộ list message | Chạy reflection chain | AI message đổi thành `HumanMessage` |
+
 ### 🔀 Conditional edge và hàm `should_continue`
 
 Mình khởi tạo `builder = MessageGraph()`, thêm hai node bằng `add_node` với key `generate` và `reflect`, rồi dùng `set_entry_point("generate")` để nói với LangGraph rằng node bắt đầu là generate.
@@ -38,6 +45,15 @@ Khi gọi `add_conditional_edges`, ta truyền vào **tham số thứ ba là m�
 
 Sau khi có feedback, ta muốn revise tweet, nên thêm một edge **từ `reflect` sang `generate`**. Thế là đã đủ node và edge cho graph.
 
+```mermaid
+flowchart TD
+    S[Start] --> G[generate node]
+    G --> C{should_continue}
+    C -->|Dưới 6 bước| R[reflect node]
+    C -->|Vượt quá 6| E[END]
+    R --> G
+```
+
 ### 🎨 Compile và visualize graph
 
 Giờ chỉ cần gọi `compile()` để có object graph hoàn chỉnh và có thể invoke được. Việc nhìn thấy graph dưới dạng hình ảnh rất quan trọng — để giải thích cho người khác hoặc để debug khi cần.
@@ -45,4 +61,77 @@ Giờ chỉ cần gọi `compile()` để có object graph hoàn chỉnh và có
 * `get_graph()` rồi gọi `draw_mermaid()` → ta nhận được một đoạn syntax "hơi dị", chỉ cần copy, dán vào **Mermaid Live** và bấm Generate, thế là graph hiện ra ở bên phải. *Lưu ý nhỏ: đôi khi bạn có thể nhận được graph khác một chút do bug, thừa một hai edge — cứ thoải mái xóa hoặc sửa trực tiếp bằng ngôn ngữ Mermaid ở khung bên trái nhé.*
 * Cách khác: dùng `print_ascii()` để in graph dưới dạng hình ASCII. Lần đầu chạy mình gặp lỗi vì thiếu package hỗ trợ, nên mình **cài thêm `grandalf` bằng Poetry** rồi chạy lại — và graph hiện ra trông rất "chuẩn".
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** `MessageGraph` đặc biệt ở điểm nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** State chỉ đơn giản là một chuỗi message; mỗi node nhận vào list message và trả về một hoặc vài message.
+
+Giải thích: Hàm `add_messages` append output vào state — đó chính là state mới.
+
+Tham chiếu: Mục Import và làm quen với MessageGraph.
+
+</details>
+
+**Câu 2:** Node `generate` làm gì mỗi lần chạy?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chạy generation chain với toàn bộ state hiện có để sinh hoặc revise tweet.
+
+Giải thích: Dù là lần chạy thứ nhất hay thứ ba, tweet vẫn được revise liên tục theo reflection.
+
+Tham chiếu: Mục Hai node.
+
+</details>
+
+**Câu 3:** Vì sao response của reflection node bị đổi thành `HumanMessage`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để "đánh lừa" LLM rằng chính con người gửi critique, tạo cuộc hội thoại qua lại.
+
+Giải thích: Kỹ thuật này giúp vòng critique — generate diễn ra tự nhiên như đang chat để sửa tweet.
+
+Tham chiếu: Mục Hai node.
+
+</details>
+
+**Câu 4:** Hàm `should_continue` quyết định dựa trên logic nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đếm số bước đã thực hiện; vượt quá 6 thì kết thúc, còn không thì đi tiếp sang node `reflect`.
+
+Giải thích: Hàm trả về string — chính là key của node mà graph nên đi tới.
+
+Tham chiếu: Mục Conditional edge.
+
+</details>
+
+**Câu 5:** Vì sao `add_conditional_edges` cần path mapping dictionary?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để ánh xạ string do hàm conditional trả về sang node thật trong graph; thiếu mapping thì LangGraph không biết route đi đâu.
+
+Giải thích: LangGraph Studio cũng cần mapping tường minh để visualize đúng các kết nối.
+
+Tham chiếu: Mục Conditional edge.
+
+</details>
+
 Các bạn đã có trong tay một graph hoàn chỉnh! Ở bài tiếp theo, chúng ta sẽ invoke graph với input thật và mở trace trên LangSmith để xem từng bước agent suy nghĩ. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Defining our LangGraph Graph](https://ua.udemy.com/course/langgraph/learn/lecture/43455436)
+- [LangGraph — Reflection example với MessageGraph gốc](https://github.com/langchain-ai/langgraph/blob/main/examples/reflection/reflection.ipynb)
+- [LangGraph Docs — Graph API overview](https://docs.langchain.com/oss/python/langgraph/graph-api)

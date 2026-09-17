@@ -1,5 +1,7 @@
 # 🛡️ Xây backend an toàn: 10 rủi ro bảo mật OWASP mà mọi developer nên nằm lòng
 
+> Nguồn: `058-Building-Secure-Backend-Applications-OWASP-recommendations.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/50437129)
+
 Nếu các bạn muốn xây dựng backend an toàn, có **mười lỗ hổng bảo mật** cần để mắt tới và đưa vào ngay từ giai đoạn thiết kế — cho cả backend lẫn frontend. Đây là danh sách do **OWASP (Open Source Web Application Security Project — tổ chức chuẩn bảo mật ứng dụng web)** đề xuất, và mình tin mọi developer đều nên có sự quen mặt với nó.
 
 Các bạn không cần implement đầy đủ mọi thứ ngay — trước hết là **biết để mà tránh**. Có thể ứng dụng của bạn không dùng SQL, không dùng XML, chẳng dính mục nào trong số này, nhưng chỉ cần có awareness là bạn đã đi trước rất nhiều người. Nào, cùng đi qua từng mục.
@@ -41,6 +43,12 @@ Có hai loại dữ liệu nhạy cảm cần bảo vệ:
 * **Data at rest** — dữ liệu nằm trong database. Có người đi tới mức **mã hóa toàn bộ**, nhưng đó là lượng công việc lớn: mã hóa rồi thì **key để ở đâu**, khi cần lại phải giải mã. Bạn có thể làm **end-to-end** để chính người dùng giải mã — nhưng như vậy backend không thể chạy các async job trên dữ liệu đó. Nghĩ kỹ thì đây *cũng là điều tốt*: chỉ bạn đọc được dữ liệu của mình.
 * **Data in transit** — dữ liệu đang di chuyển trên mạng. Bảo vệ bằng **TLS (Transport Layer Security)**, mã hóa giữa hai bên. Các bạn nên hiểu rõ thuật toán mật mã nào còn an toàn, cái nào đã hết, và sự khác nhau giữa **TLS 1.2 và TLS 1.3**.
 
+| Tiêu chí | Data at rest | Data in transit |
+|---|---|---|
+| Nằm ở đâu | Trong database | Trên đường truyền mạng |
+| Cách bảo vệ | Mã hóa, có thể end-to-end | TLS giữa hai bên |
+| Đánh đổi | Key để ở đâu, backend khó chạy async job trên dữ liệu mã hóa | Phải chọn thuật toán còn an toàn, TLS 1.2 hay 1.3 |
+
 Một web server đầu tiên từng tiên phong bật **HTTPS mặc định** đã giúp chúng ta rất nhiều trong việc này, và ngày nay gần như mọi web server đều mặc định HTTPS — điều rất đáng mừng. Nhưng công lớn thực ra đến từ **HTTP/2**: HTTP/2 buộc phải được mã hóa, *và đó không phải chuyện ngẫu nhiên*. Lý do rất thú vị: giao thức này trên đường truyền (wire protocol) là **breaking change hoàn toàn** so với HTTP cũ — có stream, có header khác biệt — khiến các **middlebox** đứng giữa phát hoảng, chặn traffic và drop packet. Giải pháp của họ là mã hóa toàn bộ, nên HTTP/2 mặc định luôn được mã hóa. *Vậy là chính sự cứng nhắc của những chiếc hộp cũ kỹ từ năm 1992 ngoài kia lại vô tình đẩy chúng ta đến một thế giới security-by-default — một kết quả tốt đẹp ngoài dự tính.*
 
 **4. XML External Entities (XXE)** — nhiều XML processor cũ hoặc cấu hình cẩu thả vẫn **đánh giá các tham chiếu external entity** trong tài liệu XML. External entity có thể bị lợi dụng để **tiết lộ file nội bộ** qua URI handler, **file share nội bộ**, **quét port nội bộ**, **remote code execution** và **denial of service**.
@@ -77,4 +85,77 @@ Nhớ lại **bug XSS trên Twitter khoảng 2010–2011**: ai đó chế ra m�
 
 **10. Insufficient Logging & Monitoring** — thiếu logging và monitoring, cộng với việc tích hợp báo cáo sự cố thiếu hoặc kém hiệu quả, cho phép kẻ tấn công tiếp tục đánh sâu hơn, duy trì hiện diện và **pivot sang nhiều hệ thống khác**. Từ đầu năm 2020 đến nay, bao nhiêu vụ outage lớn đã được bàn tới: Google, Slack, Microsoft, Amazon sập — tất cả đều thiếu monitoring và logging. Nếu có một cuộc tấn công đang diễn ra mà bạn không có log, kẻ tấn công càng dễ lẻn vào sâu hơn. Bạn cần một cách để **phát hiện tấn công** — không có nó là thảm họa. Nhìn **SolarWinds** mà xem, Microsoft đang vật lộn đến thế nào. *Mình không trách Microsoft trong chuyện này. Mình ghét gọi những kẻ đó là "hacker" — chúng là thiên tài. Phương pháp chúng dùng chưa ai trong giới bảo mật từng nghĩ tới, và đó là lý do forensics mất rất nhiều thời gian; cũng chính vì vậy Microsoft đang tăng cường mạnh forensics, logging và monitoring.*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao ứng dụng REST không nên dùng tài khoản admin của database?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì injection có thể drop nội dung, drop database, drop table — user bị cắt quyền hạn sẽ giới hạn thiệt hại.
+
+Giải thích: Best practice là database user quyền tối thiểu, mật khẩu phức tạp, chỉ cấp quyền cần thiết như `select`.
+
+Tham chiếu: Mục Injection và Broken Authentication.
+
+</details>
+
+**Câu 2:** Broken Authentication thường bị khai thác như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Credential stuffing — thử user với cả dictionary password mà không bị chặn, không khóa, không làm chậm.
+
+Giải thích: Security hygiene là tăng timeout sau mỗi lần thất bại, khóa user theo dãy kiểu Fibonacci.
+
+Tham chiếu: Mục Injection và Broken Authentication.
+
+</details>
+
+**Câu 3:** Data at rest và data in transit được bảo vệ khác nhau thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Data at rest mã hóa trong database với bài toán key để ở đâu; data in transit bảo vệ bằng TLS giữa hai bên.
+
+Giải thích: Mã hóa end-to-end thì chính người dùng giải mã, nhưng backend không chạy được async job trên dữ liệu đó.
+
+Tham chiếu: Mục Sensitive Data Exposure và XXE.
+
+</details>
+
+**Câu 4:** Cơ chế của XXE là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** XML có tính năng `SYSTEM entity` trỏ tới URI — parser cẩu thả sẽ đọc file nội bộ như `/etc/passwd` và nhét nội dung vào tài liệu trả về cho kẻ tấn công.
+
+Giải thích: Hậu quả gồm tiết lộ file nội bộ, quét port nội bộ, remote code execution, denial of service.
+
+Tham chiếu: Mục Sensitive Data Exposure và XXE.
+
+</details>
+
+**Câu 5:** Vì sao Insufficient Logging & Monitoring nguy hiểm?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không có log thì không phát hiện được tấn công, kẻ tấn công càng lẻn vào sâu hơn và pivot sang nhiều hệ thống khác.
+
+Giải thích: Các vụ outage lớn từ 2020 đến nay đều thiếu monitoring và logging.
+
+Tham chiếu: Mục Bốn mục cuối.
+
+</details>
+
 Vậy các bạn thấy sao về danh sách này, và đã implement được mục nào chưa? Có thể bạn không dùng SQL, không dùng XML, không dính đủ cả mười — **bạn không cần implement tất cả, điều quan trọng là ý thức được chúng**. Với mình, OWASP Top 10 giống như tấm bản đồ tối thiểu mà bất kỳ ai làm backend cũng nên đọc qua một lần: hiểu để thiết kế, hiểu để review, và hiểu để không tự tin mù quáng rằng "code mình chạy được thì chắc là an toàn". Hẹn gặp lại các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Building Secure Backend Applications (OWASP recommendations)](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/50437129)
+- [OWASP — OWASP Top Ten](https://owasp.org/www-project-top-ten/)
+- [OWASP — Top 10 2017](https://owasp.org/www-project-top-ten/2017/Top_10)

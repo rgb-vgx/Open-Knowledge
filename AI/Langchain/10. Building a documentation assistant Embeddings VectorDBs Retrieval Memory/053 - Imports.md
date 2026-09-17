@@ -1,5 +1,7 @@
 # 🧩 Imports & Khởi tạo: "Nạp đạn" cho Ingestion Pipeline
 
+> Nguồn: `053-Imports.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/51344527)
+
 Chào các bạn, Eden đây! Trong bài này, mình sẽ đi qua **các import và những class chính** dùng trong giai đoạn ingestion của RAG pipeline.
 
 Chúng ta sẽ khai báo **biến môi trường (environment variables)** — toàn bộ API key và cấu hình cần thiết — rồi khởi tạo **TavilyMap**, **TavilyExtract**, **OpenAI embeddings** và **Pinecone vector store**. Nào, mở code ra và bắt đầu!
@@ -51,6 +53,17 @@ Sau đó mình cấu hình **SSL context** với certificate hợp lệ qua pack
 
 *Mẹo nhỏ:* nếu bạn dùng máy công ty có **VPN** đang chạy mà vẫn gặp lỗi certificate, hãy thử **tắt VPN** để gửi request thành công nhé.
 
+Thứ tự khởi tạo trong `ingestion.py` diễn ra như sau:
+
+```mermaid
+flowchart TD
+    A[Đọc biến môi trường từ .env] --> B[Cấu hình SSL context với certifi]
+    B --> C[Khởi tạo OpenAIEmbeddings]
+    C --> D[Khởi tạo vector store Pinecone]
+    D --> E[Khởi tạo TavilyCrawl và TavilyMap]
+    E --> F[Chạy thử để kiểm tra khởi tạo]
+```
+
 ---
 
 ### ⚙️ Khởi tạo các class: chunk_size, retry và rate limiting
@@ -76,6 +89,12 @@ Rate limiting là chuyện **rất thường gặp khi đưa ứng dụng lên p
 
 Trong phần code bị comment out là khởi tạo **ChromaDB** local: **`persist_directory` = `chroma_db`** — nghĩa là DB sẽ được lưu ngay trong thư mục làm việc hiện tại của dự án, và mình truyền vào **embedding function** từ object embeddings đã tạo. Tùy bạn chọn, còn mình dùng **Pinecone** trên cloud.
 
+| Tiêu chí | ChromaDB | Pinecone |
+|---|---|---|
+| Nơi lưu trữ | Local, trong thư mục dự án | Cloud |
+| Cấu hình | `persist_directory` = `chroma_db` | Index `langchain-docs-2025`, dimension 1536, serverless |
+| Đối tượng | Muốn index ngay trên máy | Mặc định của khóa học |
+
 Với Pinecone, mình khởi tạo vector store với tên index `langchain-index-2025`, rồi vào Pinecone tạo index mới — gọi là **`langchain-docs-2025`**:
 * Embedding model: **OpenAI text-embedding-3-small**, dimension **1536** (khớp với embedding size của model).
 * Chọn option **serverless** để không phải tự lo scaling.
@@ -83,4 +102,81 @@ Với Pinecone, mình khởi tạo vector store với tên index `langchain-inde
 
 Index lên sóng ngay sau đó! Và mình cũng khởi tạo luôn object **TavilyCrawl** (nhận URL và lấy tài liệu về), cùng **TavilyExtract** & **TavilyMap** cho cách scraping thủ công hơn — sẽ để dành cho video optional.
 
+---
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** `chunk_size = 50` quy định điều gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Giới hạn số text object/document được embed trong mỗi request gửi lên OpenAI.
+
+Giải thích: Đây là cách rate limiting ở phía chúng ta — vừa đủ nhanh, vừa không bị chặn.
+
+Tham chiếu: Mục Khởi tạo các class.
+
+</details>
+
+**Câu 2:** Điều gì xảy ra nếu để `chunk_size` quá lớn hoặc quá nhỏ?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Quá lớn (ví dụ 1000) thì dễ vượt rate limit và bị chặn; quá nhỏ (ví dụ 1) thì mọi thứ chạy chậm hơn rất nhiều.
+
+Giải thích: Mỗi nhà cung cấp đều có token per limit/rate limit tùy customer tier.
+
+Tham chiếu: Mục Khởi tạo các class.
+
+</details>
+
+**Câu 3:** `retry_min_seconds` dùng để làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Quy định thời gian chờ tối thiểu sau một batch thất bại trước khi thử lại.
+
+Giải thích: Mình để 10 giây; đặt hợp lý là một heuristic giúp request "lọt qua" sau khi rate limit reset.
+
+Tham chiếu: Mục Khởi tạo các class.
+
+</details>
+
+**Câu 4:** Vì sao phải cấu hình SSL context bằng `certifi`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để gắn certificate hợp lệ cho rất nhiều request gửi lên API, tránh lỗi SSL certificate kỳ lạ.
+
+Giải thích: Đây là kiểu defensive programming (lập trình phòng ngừa).
+
+Tham chiếu: Mục Biến môi trường & SSL context.
+
+</details>
+
+**Câu 5:** Điểm hay của việc LangChain có "một interface duy nhất" là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Code gần như giống nhau cho mọi vector store và embedding model, nên có thể thay bằng ChromaDB hay bất kỳ store nào khác dễ dàng.
+
+Giải thích: `Document` là abstraction cốt lõi có thể process, split, embed hoặc index.
+
+Tham chiếu: Mục Import.
+
+</details>
+
+---
+
 *Video này khá dài rồi!* Cuối cùng, mình chạy toàn bộ code để chắc chắn mọi thứ **compile** và không có lỗi khởi tạo. Kết quả: chạy thành công, không lỗi. Tuyệt vời! Hẹn các bạn ở bài tiếp theo với Tavily Crawling nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Imports](https://ua.udemy.com/course/langchain/learn/lecture/51344527)
+- [LangChain Docs — Recursive text splitter](https://docs.langchain.com/oss/python/integrations/splitters/recursive_text_splitter)
+- [OpenAI Docs — Embeddings](https://developers.openai.com/api/docs/guides/embeddings)

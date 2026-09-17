@@ -1,5 +1,7 @@
 # 📚 Cấu trúc Khóa học & Bí kíp "Phá đảo" nền tảng Udemy (Đừng bỏ qua phần này nhé!)
 
+> Nguồn: `003-Course-Structure-How-to-get-the-best-of-Udemy-PLEASE-DO-NOT-.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37500252)
+
 Chào mừng bạn đã chính thức bước vào nền tảng Udemy! Ở phần này, mình muốn chia sẻ một vài "bí kíp" nhỏ để giúp bạn tận dụng tối đa các công cụ của Udemy và tối ưu hóa trải nghiệm học tập của bản thân.
 
 ### ⚙️ Tùy chỉnh trải nghiệm học tập của riêng bạn
@@ -60,4 +62,75 @@ Tại Discord, chúng ta có một cộng đồng sôi động với hàng ngàn
 
 Mình sẽ làm hết sức để hỗ trợ và trả lời các bạn. Thú thật, mình cực kỳ thích việc nhận tin nhắn và tương tác với học viên. **Vì vậy, đừng ngại ngùng nhé!** Chính những phản hồi của các bạn là chất liệu để mình liên tục cập nhật và làm cho khóa học ngày một xuất sắc hơn. Đây cũng là cách tuyệt vời để mình học hỏi thêm những khái niệm, thuật ngữ và chủ đề mới để đưa ngược trở lại vào giáo trình.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Khi Udemy hiện bảng yêu cầu đánh giá mà bạn chưa sẵn sàng, bạn nên làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bấm "Ask me later" (Hỏi tôi sau).
+
+Giải thích: Bạn có thể để lại đánh giá bất cứ lúc nào bạn thấy phù hợp.
+
+Tham chiếu: Mục Tùy chỉnh trải nghiệm học tập.
+
+</details>
+
+**Câu 2:** Vì sao nên học theo đúng thứ tự các section?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì kiến thức được sắp xếp mang tính kế thừa, giúp xây nền tảng vững chắc nhất.
+
+Giải thích: Đi theo lộ trình tiêu chuẩn từ Section 1, 2, 3... là cách Eden khuyên.
+
+Tham chiếu: Mục Lộ trình học và các "kho báu" tài nguyên ẩn.
+
+</details>
+
+**Câu 3:** Mục Resources ở mỗi video thường chứa những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Link Discord lớp học, code mẫu Python và link tài liệu chính thức hoặc thứ được nhắc trong video.
+
+Giải thích: Đây là phần rất quan trọng, cần kiểm tra ở từng video.
+
+Tham chiếu: Mục Lộ trình học và các "kho báu" tài nguyên ẩn.
+
+</details>
+
+**Câu 4:** Hai khu vực đặc biệt xuyên suốt khóa học là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Troubleshooting Section (phần gỡ lỗi) và Theory Section (phần lý thuyết chuyên sâu).
+
+Giải thích: Troubleshooting chứa giải pháp lỗi kỹ thuật; Theory giải thích các chủ đề hàn lâm cặn kẽ.
+
+Tham chiếu: Mục Các Section đặc biệt cần lưu ý.
+
+</details>
+
+**Câu 5:** Kênh nào được khuyến nghị đặc biệt để nhận hỗ trợ?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Máy chủ Discord của khóa học; ngoài ra có thể DM trên Udemy hoặc kết nối qua LinkedIn.
+
+Giải thích: Discord là cộng đồng sôi động với hàng ngàn học viên thảo luận mỗi ngày.
+
+Tham chiếu: Mục Kết nối cộng đồng & Hỗ trợ trực tiếp.
+
+</details>
+
 Tuyệt vời! Hẹn gặp lại bạn ở video tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Course Structure + How to get the best of Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37500252)

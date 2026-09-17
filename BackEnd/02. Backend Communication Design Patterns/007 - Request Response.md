@@ -1,5 +1,7 @@
 # 🔄 Request/Response: Pattern kinh điển nhất của backend và những chi phí ẩn bên dưới đường truyền
 
+> Nguồn: `006-Request-Response.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629344)
+
 Nếu phải chọn một pattern giao tiếp duy nhất để nói về backend, mình chọn **request/response (yêu cầu/phản hồi)** — thanh lịch, kinh điển và có mặt ở khắp mọi nơi. Nhưng "gửi request rồi nhận response" nghe đơn giản bao nhiêu thì bên dưới đường truyền lại phức tạp bấy nhiêu. Các bạn cùng mình bóc từng lớp nhé.
 
 ### 🔍 Ranh giới của một request: thứ đắt giá mà ít ai để ý
@@ -75,6 +77,13 @@ Với cách chia chunk, bạn **đánh dấu mỗi chunk bằng một unique ide
 
 Server gom các chunk và **assemble (lắp ráp)** lại. Điểm hay nữa: client có thể **lưu state local** — "tôi đã upload cái này, còn thiếu cái kia" — rồi hỏi server để hai bên **synchronize state (đồng bộ trạng thái)** với nhau. *Nhưng luôn có cái giá cho mọi thứ, và cách này không dùng được ở mọi nơi.*
 
+| Tiêu chí | Gửi nguyên khối | Chia chunk |
+|---|---|---|
+| Độ đơn giản | Đơn giản nhất, gửi thẳng toàn bộ | Cần logic đánh dấu và ghép chunk |
+| Khi đứt kết nối | Server nhận dở dang, dễ xóa sạch | Hai bên resume chính xác chỗ dừng |
+| Trạng thái hai bên | Khó biết đã nhận được tới đâu | Client lưu state local, synchronize với server |
+| File cực lớn | Có giới hạn thật sự | Chia nhỏ nên linh hoạt hơn |
+
 **Vậy request/response "không hợp" ở đâu?**
 
 * **Notification service**: ai đó vừa login, vừa upload video, vừa comment story... bạn muốn biết ngay. Nhưng client là bên phải hỏi, còn **kiến thức lại nằm ở server**. "Tôi có notification không? Không. Tôi có notification không? Không." — đó là **polling**, sẽ có bài riêng, và nó **không scale tốt**.
@@ -94,6 +103,17 @@ Nhìn vào timeline giữa client và server, các bạn sẽ thấy thời gian
 3. **Server nhận và hiểu request, rồi xử lý** — trong suốt thời gian đó client vẫn ngồi chờ.
 4. **Server viết response**, execution chạy tiếp, transfer chạy tiếp — client nhận được response, kèm cả chi phí reorder, parse response và **serialize ngược về object**.
 
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>S: DNS lookup và mở TCP connection
+    C->>S: GET / HTTP/1.1 kèm headers
+    S->>S: Parse request rồi xử lý
+    S-->>C: Response headers 301 Moved Permanently
+    S-->>C: Body HTML
+```
+
 Để thấy tận mắt, mình demo với `curl` — client library cực phổ biến do **Daniel Stenberg** phát triển — dùng `--trace` để lấy càng nhiều thông tin càng tốt, query một trang qua **HTTP thuần trên port 80** (không dùng HTTPS vì TLS xứng đáng có một bài riêng). Kết quả trong file output:
 
 1. **DNS** phân giải để lấy IP của Google.
@@ -105,4 +125,77 @@ Nhìn vào timeline giữa client và server, các bạn sẽ thấy thời gian
 
 Vậy là xong một vòng request/response: **rất đơn giản, rất thanh lịch**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao việc xác định ranh giới request lại quan trọng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì dữ liệu TCP là một dòng liên tục, server phải parse để biết request bắt đầu và kết thúc ở đâu.
+
+Giải thích: Client có thể gửi liền một lúc 3 request — không có ranh giới thì server không biết đó là 3 request hay một request lớn.
+
+Tham chiếu: Mục Ranh giới của một request.
+
+</details>
+
+**Câu 2:** Parse request khác gì thực thi request?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Parse chỉ để hiểu cấu trúc; thực thi là gọi API, query database, xử lý nghiệp vụ.
+
+Giải thích: Nhận ra một GET request và biết phải làm gì với nó là hai chuyện hoàn toàn khác nhau.
+
+Tham chiếu: Mục Ranh giới của một request.
+
+</details>
+
+**Câu 3:** Vì sao người ta bỏ SOAP/XML sang JSON REST rồi tiếp tục sang protocol buffers?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì parse XML đắt hơn JSON rất nhiều, còn JSON vẫn chậm nên protocol buffers ra đời để parse nhanh hơn.
+
+Giải thích: Đây là cuộc chiến giữa plaintext human-readable và hiệu năng — cái giá là kích thước và thời gian parse.
+
+Tham chiếu: Mục Parse, xử lý và serialize.
+
+</details>
+
+**Câu 4:** GraphQL giải quyết điểm yếu nào của request/response?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tính chatty — nó gói nhiều request khác nhau vào một.
+
+Giải thích: GraphQL dời chuỗi request từ client → backend xuống backend → database, và có thể loại bỏ một số SQL query nhờ nắm context.
+
+Tham chiếu: Mục Request/response ở khắp mọi nơi.
+
+</details>
+
+**Câu 5:** Ba chỗ request/response không hợp là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Notification service, chat app, và long-running request.
+
+Giải thích: Cả ba đều buộc client phải hỏi liên tục — polling không scale, latency cao, còn request dài thì client phải ngồi chờ.
+
+Tham chiếu: Mục Ví dụ upload ảnh.
+
+</details>
+
 Nhưng như các bạn thấy, "đơn giản" chỉ đúng ở bề mặt. Ở bài tiếp theo, chúng ta sẽ sang một mô hình đối lập hoàn toàn: **push — server chủ động đẩy dữ liệu về client**. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Request Response](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629344)
+- [MDN — Overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview)
+- [MDN — Head-of-line blocking](https://developer.mozilla.org/en-US/docs/Glossary/Head_of_line_blocking)

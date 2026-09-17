@@ -1,5 +1,7 @@
 # 🧩 Các thành phần cốt lõi của LangGraph: Nodes, Edges và State (Hiểu trước khi code!)
 
+> Nguồn: `008-LangGraph-Core-Components.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/44177740)
+
 Chào các bạn, mình là Eden đây! Trong bài này, chúng ta sẽ cùng điểm qua — từ góc nhìn lý thuyết — **những thành phần cốt lõi của LangGraph**.
 
 Đây là bài cực kỳ quan trọng, bởi vì **ngay sau bài này, chúng ta sẽ bắt tay vào hiện thực dự án bằng chính những thành phần đó!**
@@ -28,7 +30,27 @@ Ngoài ra, có **hai node đặc biệt được tích hợp sẵn (built-in)**:
 * **Start node:** điểm vào (entry point) cho quá trình thực thi graph — chúng ta sẽ bắt đầu từ đó.
 * **End node:** node cuối cùng được thực thi.
 
-Cả hai node này **không thực sự làm gì cả** — các bạn có thể xem chúng như những thao tác rỗng (no operation).
+Cả hai node này **không thực sự làm gì cả** — các bạn có thể xem chúng như những thao tác rỗng (no operation). Ghép tất cả lại, một graph cơ bản sẽ có dạng như sau:
+
+```mermaid
+flowchart TD
+    S[START] --> A[Node A]
+    A --> C{Điều kiện}
+    C -->|Nhánh 1| B[Node B]
+    C -->|Nhánh 2| D[Node D]
+    B --> E[END]
+    D --> E
+```
+
+Tóm tắt nhanh các thành phần vừa nêu:
+
+| Thành phần | Là gì | Vai trò |
+|---|---|---|
+| Node | Hàm Python — code thường, gọi LLM, hoặc LLM agent | Nhận state, trả về phần cập nhật state |
+| Edge | Kết nối giữa các node | Xác định thứ tự thực thi |
+| Conditional edge | Logic rẽ nhánh động | Quyết định đi node A hay node B |
+| START | Node tích hợp sẵn | Điểm vào của graph, không làm gì |
+| END | Node tích hợp sẵn | Node cuối cùng, không làm gì |
 
 ---
 
@@ -55,6 +77,79 @@ Còn vài khái niệm quan trọng cho phần còn lại của khóa học:
 * **Human-in-the-loop (con người can thiệp giữa vòng chạy):** nếu bạn muốn nhận **phản hồi từ con người** để quyết định hướng đi trong quá trình thực thi graph — đến node A hay node B — thì LangGraph giúp bạn hiện thực điều này rất dễ dàng.
 * **Persistence (lưu trữ bền vững):** LangGraph đi kèm những hàm tích hợp sẵn, rất gọn gàng và đơn giản, giúp **lưu state của graph**. Điều này không chỉ khiến phần mềm của bạn **robust (mạnh mẽ) và fault tolerant (chịu lỗi tốt)** hơn, mà còn cho phép hiện thực những logic rất thú vị — mình sẽ trình diễn trong khóa học — mang lại trải nghiệm người dùng tuyệt vời.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Node trong LangGraph thực chất là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là các hàm Python — có thể chứa code deterministic, code gọi LLM, hoặc thậm chí một LLM agent.
+
+Giải thích: Bạn có toàn quyền linh hoạt về việc mình muốn làm gì bên trong node.
+
+Tham chiếu: Mục Ba thành phần cốt lõi.
+
+</details>
+
+**Câu 2:** Edge và conditional edge khác nhau thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Edge nối các node với nhau trong quá trình thực thi; conditional edge giúp ra quyết định nên đi node A hay node B.
+
+Giải thích: Conditional edge năng động và có thể cực kỳ linh hoạt — chính là sức mạnh của graph.
+
+Tham chiếu: Mục Ba thành phần cốt lõi.
+
+</details>
+
+**Câu 3:** START và END có vai trò gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** START là điểm vào (entry point) của graph, END là node cuối cùng được thực thi; cả hai không thực sự làm gì.
+
+Giải thích: Có thể xem chúng như những thao tác rỗng (no operation).
+
+Tham chiếu: Mục Ba thành phần cốt lõi.
+
+</details>
+
+**Câu 4:** State là gì và node tương tác với nó ra sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** State là một dictionary chứa thông tin quan trọng của graph; mỗi node nhận state hiện tại làm đầu vào và trả về dictionary — chính là phần cập nhật của state.
+
+Giải thích: State mang tính cục bộ với graph, mọi node đều truy cập được và nó cũng hiện diện trên mỗi edge.
+
+Tham chiếu: Mục State — trái tim của mọi graph.
+
+</details>
+
+**Câu 5:** Persistence mang lại điều gì cho graph?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lưu state của graph vào bộ lưu trữ bền vững — có thể dừng luồng thực thi rồi tiếp tục lại đúng điểm đó.
+
+Giải thích: Nhờ đó phần mềm robust, fault tolerant hơn và mở ra nhiều logic thú vị.
+
+Tham chiếu: Mục Cycles, Human-in-the-loop và Persistence.
+
+</details>
+
 Với những thành phần cốt lõi này, chúng ta có thể xây dựng những thứ vô cùng nâng cao. *Nếu lý thuyết hôm nay có hơi nhiều, các bạn đừng lo — từ bài sau chúng ta sẽ bắt tay ngay vào code và mọi thứ sẽ trở nên rõ ràng!*
 
 Hẹn gặp lại các bạn ở dự án đầu tiên! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangGraph: LangGraph Core Components](https://ua.udemy.com/course/langgraph/learn/lecture/44177740)
+- [Graph API overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/graph-api)
+- [LangGraph overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/overview)

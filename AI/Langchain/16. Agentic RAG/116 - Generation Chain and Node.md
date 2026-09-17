@@ -1,5 +1,7 @@
 # ✍️ Generation Node: Đưa tài liệu vào LLM và sinh câu trả lời cuối cùng
 
+> Nguồn: `116-Creating-the-LLM-Generation-Chain-and-Node-for-LangGraph.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/51133265)
+
 Chào các bạn, Eden đây! Trong bài ngắn này, chúng ta sẽ hoàn thiện **mắt xích cuối cùng** của luồng Agentic RAG: **generation node** — nơi LLM tổng hợp tài liệu và đưa ra câu trả lời cho người dùng.
 
 ### 🎯 Node cuối cùng trong luồng RAG
@@ -26,6 +28,12 @@ Tuy nhiên, có một cập nhật quan trọng theo phiên bản LangChain mớ
 
 Cách hiện đại và được khuyến nghị hơn: **dán thẳng prompt dạng plain text vào code**. Cách này không cần network call, không cần LangSmith API key, và mình biết chính xác mình đang chạy gì. Đây cũng là cách mình đưa vào GitHub repository của khóa học.
 
+| Tiêu chí | Tải prompt từ Hub | Dán plain text vào code |
+|---|---|---|
+| Network call | Có | Không |
+| API key | Cần LangSmith | Không cần |
+| Kiểm soát nội dung | Phải review kỹ, nên pin vào commit cụ thể | Biết chính xác mình đang chạy gì |
+
 ---
 
 ### ⛓️ Generation chain và test sanity
@@ -35,6 +43,14 @@ Chain của chúng ta rất "standard": prompt → LLM → `StrOutputParser`. Tr
 * Imports: `hub` từ LangChain (theo cách cũ), `StrOutputParser`, `ChatOpenAI`.
 * Tạo instance LLM, sau đó pipe prompt vào LLM rồi vào output parser.
 * Khi invoke với `documents` và `question`, ta sẽ nhận về câu trả lời mong muốn.
+
+```mermaid
+flowchart LR
+    A[question + documents] --> B[RAG prompt]
+    B --> C[LLM]
+    C --> D[StrOutputParser]
+    D --> E[generation]
+```
 
 Về test `test_generation_chain`: mình nói thật, đây **không phải một test chắc chắn** — mình chỉ chạy chain với chủ đề "agent memory", retrieve tài liệu liên quan, rồi xem kết quả in ra. Mục đích là một **sanity check**. Kết quả pass và cho ra một đoạn tóm tắt về agent memory.
 
@@ -56,4 +72,77 @@ def generate(state: GraphState):
     return {"documents": documents, "question": question, "generation": generation}
 ```
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Generation node chạy ở thời điểm nào trong luồng RAG?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là node cuối cùng, chỉ chạy sau khi đã retrieve, lọc tài liệu và web search nếu cần.
+
+Giải thích: Khi đã có đủ tài liệu, ta augment câu hỏi gốc rồi "stuff" tất cả vào LLM.
+
+Tham chiếu: Mục Node cuối cùng trong luồng RAG.
+
+</details>
+
+**Câu 2:** RAG prompt trong bài do ai viết và gồm những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Do Lance Martin (đội ngũ LangChain) viết; gồm context là toàn bộ tài liệu retrieve hoặc kết quả web search, cùng câu hỏi gốc.
+
+Giải thích: Chain rất "standard": prompt → LLM → `StrOutputParser`.
+
+Tham chiếu: Mục RAG prompt từ LangChain Hub.
+
+</details>
+
+**Câu 3:** Vì sao LangChain deprecate object `hub` và cảnh báo bảo mật?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì prompt được coi là "executable configuration"; muốn tải public prompt phải tự bật `dangerously_pull_public_prompt=True` và nên pin vào commit cụ thể.
+
+Giải thích: Đây là tín hiệu cho thấy LangChain ngày càng chú trọng security.
+
+Tham chiếu: Mục RAG prompt từ LangChain Hub.
+
+</details>
+
+**Câu 4:** Cách hiện đại thay thế cho việc tải prompt từ Hub là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Dán thẳng prompt dạng plain text vào code.
+
+Giải thích: Không cần network call, không cần LangSmith API key, và biết chính xác mình đang chạy gì.
+
+Tham chiếu: Mục RAG prompt từ LangChain Hub.
+
+</details>
+
+**Câu 5:** Node generate cập nhật key nào vào graph state?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Key `generation` — câu trả lời LLM trả về; ngoài ra vẫn giữ `documents` và `question`.
+
+Giải thích: Node lấy `question` và `documents` từ state rồi chạy generation chain.
+
+Tham chiếu: Mục Node generate.
+
+</details>
+
 Ba node đã xong: retrieve, grade, generate! Giờ chỉ còn thiếu bước ghép nối tất cả thành một graph hoàn chỉnh. Hẹn gặp các bạn ở bài tiếp theo — chúng ta sẽ cùng kết nối và "chạy thử" agent đầu tiên! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Creating the LLM Generation Chain and Node for LangGraph](https://ua.udemy.com/course/langchain/learn/lecture/51133265)
+- [LangSmith Docs — Manage prompts programmatically](https://docs.langchain.com/langsmith/manage-prompts-programmatically)
+- [LangSmith API — pull_prompt](https://reference.langchain.com/python/langsmith/client/Client/pull_prompt)

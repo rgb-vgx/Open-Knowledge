@@ -1,5 +1,7 @@
 # 📬 Publish-Subscribe: Upload Xong Là Xong, Phần Còn Lại Giao Cho Broker
 
+> Nguồn: `012-Publish-Subscribe-PubSub.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629824)
+
 **publish-subscribe (phát-thu)** — hay gọi tắt là **pub/sub** — lại là một trong những pattern mình yêu thích nhất. Nó sinh ra để giải một bài toán rất thật: khi hàng loạt service cần nói chuyện với nhau, làm sao để chúng không phải kết nối chằng chịt thành một cái lưới. Trong bài này, mình sẽ kể các bạn nghe ví dụ YouTube, chỉ rõ chỗ request/response gãy, rồi cùng dựng thử một queue bằng RabbitMQ trên cloud để xem chuyện acknowledge message khó nhằn tới mức nào.
 
 ### 🎯 Vấn đề: kiến trúc mesh — ai cũng muốn nói chuyện với tất cả mọi người
@@ -40,10 +42,29 @@ Với pub/sub, luồng đổi hẳn:
 * Xử lý xong, compress service lại **publish** sang topic khác: "compressed video".
 * Format service consume, encode ra các bản 1080p, 720p, 4K rồi ghi vào các topic tương ứng. Notification service chỉ consume đúng topic nó cần — ví dụ "bản 4K đã sẵn sàng thì báo người dùng". Hoặc bạn có thể chọn thông báo ngay khi bản nhanh nhất xong, tuỳ bạn muốn điều khiển trải nghiệm người dùng thế nào.
 
+```mermaid
+flowchart LR
+    U[Upload service] --> T1[Topic raw MP4]
+    T1 --> CS[Compress service]
+    CS --> T2[Topic compressed video]
+    T2 --> FS[Format service]
+    FS --> T3[Topic 1080p 720p 4K]
+    T3 --> NS[Notification service]
+    FS --> T4[Topic kiểm tra bản quyền]
+    T4 --> CP[Copyright service]
+```
+
 Cách thức **giao hàng** cũng do implementation quyết định: có thể là **push**, cũng có thể là **long polling**. Đây chính là khác biệt kinh điển giữa RabbitMQ và Kafka:
 
 * **RabbitMQ** đẩy (push) message cho consumer.
 * **Kafka** để client tự **pull hoặc long pull** những gì đã sẵn sàng.
+
+| Tiêu chí | RabbitMQ | Kafka |
+|---|---|---|
+| Cách giao message | Push tới consumer | Client pull hoặc long pull |
+| Quyền chủ động | Broker đẩy ngay khi có message | Consumer tự kiểm soát nhịp đọc |
+| Rủi ro chính | Consumer không kham nổi tải | Consumer trễ nhịp đọc |
+| Mức đảm bảo | At-least-once | At-least-once |
 
 Với pub/sub, vai trò rất linh hoạt: có service chỉ publish (upload), có service vừa consume vừa publish (compress, format), có service chỉ consume (notification). Không có đúng sai — chỉ có phù hợp với bài toán của bạn hay không.
 
@@ -86,4 +107,77 @@ Acknowledge message là chuyện rất, rất tricky — và nó dẫn thẳng t
 * Muốn scale tốt hơn phải thêm broker, thêm partition — kéo theo **độ phức tạp tăng vọt**.
 * Nếu dùng polling, nhiều client cùng poll có thể gây **nghẽn mạng (network congestion)** giữa client và broker.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Pub/sub giải bài toán gì so với kiến trúc mesh?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thay vì service A phải nối tới từng service B, C, D..., mọi người cứ publish lên server trung tâm rồi ai muốn tiêu thụ thì tiêu thụ.
+
+Giải thích: Một publisher — nhiều reader, thậm chí nhiều publisher, không ai phải biết địa chỉ hay giao thức của nhau.
+
+Tham chiếu: Mục Vấn đề: kiến trúc mesh.
+
+</details>
+
+**Câu 2:** Vì sao request/response gãy trong luồng upload YouTube?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì high coupling — chỉ cần một mắt xích gãy là toàn bộ workflow gãy, và thêm một nhánh như copyright service thì mọi thứ càng rối.
+
+Giải thích: Client phải chạy song song, chaining, circuit breaking... rồi người ta mới sinh ra service mesh và sidecar proxy.
+
+Tham chiếu: Mục Ví dụ YouTube.
+
+</details>
+
+**Câu 3:** Broker và topic đóng vai trò gì trong pub/sub?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Broker là server trung tâm giữ queue và topic; topic là một nhóm mà consumer có thể subscribe vào.
+
+Giải thích: Producer và consumer không coupling với nhau — nhân tố duy nhất hai bên bận tâm là broker phải luôn online.
+
+Tham chiếu: Mục Lời giải pub/sub.
+
+</details>
+
+**Câu 4:** Vì sao consumer thứ hai không nhận được job 107 trong demo?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì consumer đầu chưa acknowledge nên RabbitMQ coi job đang được xử lý và không giao cho ai khác.
+
+Giải thích: Khi kill consumer đầu, job 107 ngay lập tức được giao lại cho consumer thứ hai.
+
+Tham chiếu: Mục Demo: RabbitMQ trên CloudAMQP.
+
+</details>
+
+**Câu 5:** Nhược điểm lớn nhất của pub/sub là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bài toán giao nhận message — làm sao biết subscriber thực sự nhận được message (two generals problem).
+
+Giải thích: Message có thể bị consume hai lần; Kafka và RabbitMQ chỉ đảm bảo at-least-once; scale tốt hơn phải thêm broker, partition — độ phức tạp tăng vọt.
+
+Tham chiếu: Mục Ưu điểm, nhược điểm.
+
+</details>
+
 Pub/sub cho bạn khả năng scale và tách rời cực tốt, nhưng đổi lại bạn phải đối mặt với bài toán giao nhận message — thứ mà mình tin là một trong những bài toán khó nhất của backend. Ở bài tiếp theo, mình sẽ nói về **multiplexing (ghép kênh) vs demultiplexing (tách kênh)** — và các bạn sẽ thấy nó len lỏi khắp nơi, từ HTTP/2 tới connection pooling. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Publish Subscribe (Pub/Sub)](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629824)
+- [RabbitMQ — AMQP 0-9-1 Model Explained](https://www.rabbitmq.com/tutorials/amqp-concepts)
+- [Kafka — KafkaConsumer API](https://kafka.apache.org/40/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html)

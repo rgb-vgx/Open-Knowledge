@@ -1,5 +1,7 @@
 # 🤖 AI Agent là gì? Góc nhìn tổng quan (bài "intro của intro")
 
+> Nguồn: `014-What-are-AI-Agents-A-High-Level-Overview.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52107223)
+
 Chào các bạn, mình là Eden đây! Trong bài này, chúng ta sẽ cùng nhau trả lời một câu hỏi tưởng dễ mà không hề dễ: **AI Agent rốt cuộc là gì?**
 
 Nếu bạn hỏi 10 người khác nhau, bạn có thể nhận về 10 câu trả lời khác nhau. Nhưng trong 10 câu trả lời đó luôn có một vài điểm chung — và đó chính là những gì mình muốn chia sẻ hôm nay, kèm theo góc nhìn cá nhân của mình.
@@ -16,6 +18,12 @@ Khác biệt cốt lõi so với chain rất đơn giản:
 * Trong **agent**, chính **LLM quyết định** cần dùng tool nào, đi bước nào để giải quyết nhiệm vụ hoặc trả lời câu hỏi.
 
 Đây chính là ranh giới lớn nhất giữa agent và chain thông thường. Điều quan trọng cần ghi nhớ: **trong agent, LLM là bên quyết định làm gì tiếp theo.**
+
+| Tiêu chí | Chain | Agent |
+|---|---|---|
+| Ai quyết định luồng chạy | Lập trình viên hard-code từng bước | LLM tự quyết định bước tiếp theo |
+| Vai trò của LLM | Chỉ đảm nhiệm một bước cố định | Reasoning engine chọn hành động kế tiếp |
+| Cách dùng tool | Không tự chọn tool | Tự chọn tool và tham số |
 
 ---
 
@@ -38,6 +46,16 @@ Luồng hoạt động gói gọn như sau:
 3. **Tools:** các hành động được hiện thực qua tools — gọi API, gọi database, hoặc chạy một hàm Python mình viết sẵn từ trước.
 4. **Lặp:** quá trình này diễn ra trong một **iterative loop (vòng lặp lặp đi lặp lại)** cho đến khi hoàn thành nhiệm vụ.
 
+```mermaid
+flowchart TD
+    A[Câu hỏi người dùng] --> B[LLM suy luận Reasoning]
+    B --> C{Cần hành động}
+    C -->|Có| D[Thực thi tool Acting]
+    D --> E[Đưa kết quả trở lại LLM]
+    E --> B
+    C -->|Không| F[Câu trả lời cuối]
+```
+
 LangChain và LangGraph cung cấp sẵn các ReAct agent dựng theo kiến trúc này, để bạn tạo và tùy biến dễ dàng. Những agent này có thể gọi tools, xử lý các workflow phức tạp và **duy trì state (trạng thái) qua những tác vụ chạy dài**.
 
 ---
@@ -48,4 +66,77 @@ Thú thật, bài này mình chỉ "vung tay" ở mức khái niệm — chưa c
 
 Ở bài tiếp theo, mình sẽ cho các bạn xem demo của một **search agent**. Trong section này, chúng ta sẽ cùng hiện thực agent đó bằng LangChain, đi qua kiến trúc ReAct — kiến trúc quan trọng nhất và là nền tảng cho mọi thứ. Mục tiêu duy nhất của section: **biết cách trang bị tools cho LLM**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Theo cách mình định nghĩa, agent là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là hệ thống phần mềm dùng LLM như một reasoning engine để quyết định làm gì tiếp theo, rồi tự thực thi hành động đó.
+
+Giải thích: Điểm cốt lõi là LLM nắm quyền quyết định bước tiếp theo, không phải lập trình viên.
+
+Tham chiếu: Mục Định nghĩa.
+
+</details>
+
+**Câu 2:** Khác biệt cốt lõi giữa chain và agent nằm ở đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Ở chain, lập trình viên hard-code toàn bộ luồng điều khiển; ở agent, LLM tự quyết định dùng tool nào, đi bước nào.
+
+Giải thích: LLM trong chain không quyết định bước tiếp theo, còn trong agent thì có.
+
+Tham chiếu: Mục Định nghĩa.
+
+</details>
+
+**Câu 3:** Tên ReAct ra đời từ paradigm nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Reasoning + acting — suy luận kết hợp hành động.
+
+Giải thích: ReAct dùng sức mạnh suy luận của LLM (kèm chain-of-thought prompting) rồi thực thi hành động qua tools.
+
+Tham chiếu: Mục ReAct Agent.
+
+</details>
+
+**Câu 4:** "Linh hồn" của agent nằm ở đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Ở tools — gọi API, tìm kiếm, đọc database, hoặc viết và chạy code.
+
+Giải thích: Trang bị tools cho LLM chính là cách biến nó thành agent có khả năng hành động.
+
+Tham chiếu: Mục Linh hồn của agent.
+
+</details>
+
+**Câu 5:** Mục tiêu duy nhất của section này là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Biết cách trang bị tools cho LLM.
+
+Giải thích: Section đi qua kiến trúc ReAct — nền tảng cho mọi thứ — rồi bóc lớp "ma thuật" ở section sau.
+
+Tham chiếu: Mục Section này chúng ta sẽ làm gì.
+
+</details>
+
 Còn "ma thuật" bên dưới hoạt động ra sao, chúng ta sẽ bóc từng lớp ở section sau nữa. Hãy thắt dây an toàn, vì đây có thể là chủ đề thú vị và quan trọng nhất trong phát triển ứng dụng LLM đấy! 😉🚀
+
+## Nguồn tham khảo
+
+- [Udemy — What are AI Agents - A High-Level Overview](https://ua.udemy.com/course/langchain/learn/lecture/52107223)
+- [LangChain Docs — Agents](https://docs.langchain.com/oss/python/langchain/agents)
+- [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)

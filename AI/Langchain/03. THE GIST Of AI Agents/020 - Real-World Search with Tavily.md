@@ -1,5 +1,7 @@
 # 🌐 Tích hợp tìm kiếm thực tế với Tavily và LangChain Tools
 
+> Nguồn: `020-Integrating-Real-World-Search-with-Tavily-and-LangChain-Tool.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/53365489)
+
 Chào các bạn, Eden đây! Đã đến lúc bỏ cái kết quả "Tokyo weather is sunny" giả lập kia đi và cho agent **tìm kiếm internet thật**.
 
 Bài này có một bài học best-practice rất đáng giá: khi nào nên tự viết tool, khi nào nên dùng tool do nhà cung cấp viết sẵn. Cùng đi từng bước nhé.
@@ -42,6 +44,15 @@ Khi tự viết tool, chúng ta — lập trình viên — phải hiểu **từn
 
 Và nên tin tưởng vendor: họ viết **description tốt hơn**, **tham số hợp lý hơn**, làm tool **chỉn chu hơn hẳn** so với bản tự chế của chúng ta.
 
+```mermaid
+flowchart LR
+    A[Cần tool search] --> B{Tự viết hay dùng vendor}
+    B -->|Tự viết| C[TavilyClient và hàm search]
+    B -->|Vendor viết| D[TavilySearch từ langchain-tavily]
+    C --> E[Phải hiểu SDK và tự viết description]
+    D --> F[Description và tham số tối ưu sẵn]
+```
+
 Nên mình làm lại:
 
 1. Thêm package **`langchain-tavily`**.
@@ -60,4 +71,84 @@ Trong trace mới, tên tool là **`_search`** — do đội Tavily đặt; còn
 
 Câu trả lời tuy tương tự lần trước nhưng **chính xác hơn**, nhờ các tool call cụ thể hơn — và vì thế cũng **grounding vào nguồn tốt hơn**.
 
+| Tiêu chí | Bản tự viết | Bản `langchain-tavily` |
+|---|---|---|
+| Tên tool | `search` | `_search` |
+| Tham số LLM tự chọn | `query` cơ bản | `include_domains`, `search_depth=advanced` |
+| Chất lượng kết quả | Cơ bản | Chính xác và grounding tốt hơn |
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Best practice quan trọng nhất của bài này là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đừng tự viết tool nếu vendor đã viết sẵn — hãy dùng tool chính chủ từ vendor.
+
+Giải thích: Vendor viết description tốt hơn, tham số hợp lý hơn và tool chỉn chu hơn bản tự chế.
+
+Tham chiếu: Mục Best practice.
+
+</details>
+
+**Câu 2:** `TavilySearch` từ `langchain_tavily` là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một `BaseTool` — tức đã là LangChain tool sẵn, chỉ cần khởi tạo object là dùng được.
+
+Giải thích: Đây là package do đội ngũ Tavily viết, bọc SDK thành tool sẵn sàng cắm vào agent.
+
+Tham chiếu: Mục Best practice.
+
+</details>
+
+**Câu 3:** Bản tool tự viết và bản vendor khác nhau ở tên tool thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bản tự viết tên `search`, còn bản vendor tên `_search`.
+
+Giải thích: Tên do đội Tavily đặt, và trace mới cho thấy tool call "giàu" thông tin hơn.
+
+Tham chiếu: Mục So sánh hai trace.
+
+</details>
+
+**Câu 4:** LLM đã tự chọn thêm những tham số nâng cao nào ở trace mới?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `include_domains=linkedin.com` và `search_depth=advanced`.
+
+Giải thích: Đây là các tham số mình không hề biết trước đó, giúp câu trả lời chính xác và grounding tốt hơn.
+
+Tham chiếu: Mục So sánh hai trace.
+
+</details>
+
+**Câu 5:** Vì sao LangChain chạy tool search tới 5 lần trong thử thách tìm việc?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì GPT-5 hỗ trợ multiple function calling — AI gọi nhiều tool trong một lượt và chúng được thực thi song song.
+
+Giải thích: Mỗi query nhắm vào một khía cạnh khác nhau, ví dụ `LinkedIn.com/jobs` cho khu vực San Francisco/San Jose.
+
+Tham chiếu: Mục Thử thách "thật".
+
+</details>
+
 Cuối bài, mình mang lại implementation dùng tool tùy chỉnh, **commit và push** toàn bộ lên repository (message: *intro to search agents*) và set upstream. Các bạn tìm branch **`project/search-agent`** trong repo là thấy đủ code nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Integrating Real-World Search with Tavily and LangChain Tools](https://ua.udemy.com/course/langchain/learn/lecture/53365489)
+- [LangChain Docs — Tavily Search integration](https://docs.langchain.com/oss/python/integrations/tools/tavily_search)
+- [Tavily Docs — LangChain integration](https://docs.tavily.com/documentation/integrations/langchain)
+- [GitHub — tavily-ai/langchain-tavily](https://github.com/tavily-ai/langchain-tavily)

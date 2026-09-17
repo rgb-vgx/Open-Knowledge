@@ -1,5 +1,7 @@
 # 🤖 Đưa LLM Agent lên Production: Những thách thức thật không ai nói trước với bạn
 
+> Nguồn: `074-LLM-Applications-in-Production.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/40592700)
+
 Chào các bạn, lại là Eden đây! Trong bài này, mình muốn nói về việc **tích hợp agent vào môi trường production (môi trường thật, phục vụ người dùng thật)** — và cụ thể hơn là những thách thức đi kèm với nó.
 
 Mình sẽ không tô hồng đâu, vì đây là những bài toán rất thật. Và tin mình đi — **tất cả các chủ đề trong bài này đều áp dụng cho mọi ứng dụng LLM**, không riêng gì agent.
@@ -13,6 +15,22 @@ Khi làm việc với agents, các bạn dùng LLM như một **reasoning engine
 Hệ quả là ta có **nhiều LLM call liên tiếp, cái sau chờ kết quả của cái trước**. Tùy độ phức tạp của tác vụ và số bước suy luận, ứng dụng có thể "chạy dài" đáng kể — các bạn cần ghi nhớ điều này khi thiết kế.
 
 *Có vài cách xử lý như dùng **semantic cache** hoặc **LLM cache**, nhưng mình sẽ không đi sâu trong khóa học này.*
+
+Toàn bộ vòng lặp suy luận và những thách thức đi kèm trông như thế này:
+
+```mermaid
+flowchart TD
+    A[User task] --> B[LLM reasoning call]
+    B --> C{Da co cau tra loi}
+    C -->|Chua| D[Chon va goi tool]
+    D --> E[Observation]
+    E --> B
+    C -->|Roi| F[Final response]
+    F --> G[Response validation]
+    B -.-> H[Context window gioi han so buoc]
+    B -.-> I[Hallucination tich luy xac suat]
+    B -.-> J[Chi phi token tang dan]
+```
 
 ---
 
@@ -56,6 +74,86 @@ Nếu các bạn biết chính xác mình muốn thực thi điều gì và có 
 
 Vậy nên lời khuyên của mình: trước khi dùng agent, hãy thật sự tự hỏi *"Mình có thể tự implement bằng code tất định không?"*. Nếu câu trả lời là có, mình không khuyên bạn dùng agent — vì như các bạn thấy, nó đi kèm vô vàn thách thức.
 
+| Tiêu chí | LLM Agent | Code tất định |
+|---|---|---|
+| Bản chất | LLM tự quyết định từng bước và tool | Luồng bước cố định do bạn định nghĩa |
+| Khi phù hợp | Tác vụ mở, không đoán trước được các bước | Biết chính xác cần thực thi điều gì |
+| Đánh đổi | Nhiều LLM call, tốn token, có xác suất sai, cần guardrails | Bền vững, rẻ, dễ kiểm chứng |
+| Lời khuyên của mình | Chỉ dùng khi không thể viết code tất định | Ưu tiên nếu tự implement được |
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao agent thường là một chuỗi LLM call tuần tự?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì mỗi bước và mỗi tool đều phải chờ một LLM call quyết định dùng tool đó.
+
+Giải thích: Các call nối tiếp nhau, cái sau chờ kết quả của cái trước.
+
+Tham chiếu: Mục Agents = rất nhiều LLM call tuần tự.
+
+</details>
+
+**Câu 2:** Nếu mỗi bước có xác suất chọn đúng tool là 0.9, sau 6 bước còn khoảng bao nhiêu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khoảng **0.59**.
+
+Giải thích: Theo luật nhân xác suất, xác suất tụt rất nhanh khi số bước tăng.
+
+Tham chiếu: Mục Ảo giác và bài toán xác suất.
+
+</details>
+
+**Câu 3:** Cách nào được nhắc để giảm hallucination?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Retrieval augmentation (RAG) — "neo" LLM vào thông tin gửi kèm trong context.
+
+Giải thích: Câu trả lời bám vào dữ liệu truy xuất thay vì chỉ đoán token.
+
+Tham chiếu: Mục Ảo giác và bài toán xác suất.
+
+</details>
+
+**Câu 4:** Vì sao cần nguyên tắc least privilege và guardrails?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì prompt injection hoặc lộ API key có thể cho kẻ xấu chạm tới tool và database.
+
+Giải thích: Tool/agent càng ít quyền, thiệt hại tiềm tàng càng nhỏ.
+
+Tham chiếu: Mục Chi phí, kiểm chứng phản hồi và bảo mật.
+
+</details>
+
+**Câu 5:** Khi nào mình khuyên KHÔNG nên dùng agent?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi bạn có thể tự implement bằng code Python tất định.
+
+Giải thích: Agent chỉ đáng dùng khi các bước không thể định nghĩa trước bằng code.
+
+Tham chiếu: Mục Đừng "overkill" với agents.
+
+</details>
+
 Và để công bằng, mình muốn nói rõ: **agents là một công nghệ tuyệt vời** với tiềm năng khổng lồ. Đi từ prototype lên production không hề dễ, nhưng **hoàn toàn khả thi**. Mình không hề nói agents chưa sẵn sàng cho production — mình chỉ nói hãy cẩn thận, vì tích hợp công nghệ lớn luôn đi kèm cái giá của nó.
 
 Hẹn gặp lại các bạn trong bài tiếp theo, nơi mình sẽ vẽ bức tranh toàn cảnh về các mẫu ứng dụng LLM hiện nay nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LLM Applications in Production](https://ua.udemy.com/course/langchain/learn/lecture/40592700)
+- [Lost in the Middle: How Language Models Use Long Contexts](https://arxiv.org/abs/2307.03172)
+- [LLM Guard — The Security Toolkit for LLM Interactions](https://github.com/protectai/llm-guard/)

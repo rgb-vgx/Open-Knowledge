@@ -1,5 +1,7 @@
 # 🔁 Recap: Data Indexing đã xong — chính thức bước sang chương Retrieval
 
+> Nguồn: `046-RECAP.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/53910509)
+
 Chào các bạn, Eden đây! Vậy là chúng ta đã chính thức **hoàn thành phần data indexing** — nạp tài liệu, chia chunk, tạo embedding và đánh chỉ mục toàn bộ vào vector database. Trong vài video tiếp theo, mình và các bạn sẽ cùng **đi thật sâu vào phần retrieval (truy hồi)** — chặng thứ hai của RAG pipeline.
 
 ### 🎯 Data indexing xong, còn gì phía trước?
@@ -18,6 +20,15 @@ Nói ngắn gọn, phần retrieval sẽ diễn ra theo trình tự:
 2. **Embed** câu hỏi đó thành một **vector**.
 3. Yêu cầu vector database trả về **top k chunk** có độ tương đồng cao nhất với vector câu hỏi.
 
+```mermaid
+flowchart LR
+    A[Câu hỏi người dùng] --> B[Embed câu hỏi]
+    B --> C[Truy vấn vector database]
+    C --> D[Top k chunk liên quan]
+    D --> E[Ghép query và chunk]
+    E --> F[LLM sinh câu trả lời grounded]
+```
+
 Sau đó, những **chunk liên quan** này sẽ được ghép cùng **query gốc của người dùng** — và đó chính là thứ được gửi đến **LLM**. Nhờ vậy, câu trả lời sinh ra sẽ được **ground (neo) vào đúng thông tin mà chúng ta muốn**, thay vì để model tự do "bịa" ra.
 
 *Nếu các bạn còn nhớ phần ingestion*, chính các **chunk** cùng **metadata source** mà chúng ta đã lưu chính là "nguyên liệu" cho bước này — giờ thì chúng ta chỉ còn thiếu phần "chọn lọc và truy vấn" mà thôi.
@@ -33,6 +44,11 @@ Trước khi đi tiếp, mình có một **heads-up** nho nhỏ: **LangChain đ�
 * **IDE:** giờ mình dùng **Cursor** thay vì PyCharm.
 * **Package manager:** giờ mình dùng **UV** thay vì **Pipenv**.
 
+| Thành phần | Trước đây | Bây giờ |
+|---|---|---|
+| IDE | PyCharm | Cursor |
+| Package manager | Pipenv | UV |
+
 *Các bạn cứ yên tâm nhé:* toàn bộ code chúng ta đã viết ở phần ingestion vẫn là **best practice** với phiên bản LangChain mới nhất — nó không thay đổi chút nào. Phần thay đổi đáng kể là **retrieval**, và đó chính là lý do mình quay lại những video này.
 
 ---
@@ -42,3 +58,9 @@ Trước khi đi tiếp, mình có một **heads-up** nho nhỏ: **LangChain đ�
 Mình cũng dự định **ghi lại cả các video đầu tiên** với **Cursor** và **UV** để mọi thứ đồng bộ và mượt mà hơn. *Mong các bạn thông cảm cho chút bất tiện nhỏ này nhé* — mình đang cố gắng hết sức để khóa học luôn đi kịp với những thay đổi của LangChain.
 
 Vậy là bức tranh đã rõ: indexing xong, retrieval đang chờ. Cùng mình bước vào bài tiếp theo để bắt đầu viết những dòng code đầu tiên của phần truy hồi nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — RECAP](https://ua.udemy.com/course/langchain/learn/lecture/53910509)
+- [LangChain Docs — Retrieval](https://docs.langchain.com/oss/python/langchain/retrieval)
+- [uv Docs — Locking and syncing](https://docs.astral.sh/uv/concepts/projects/sync)

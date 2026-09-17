@@ -1,5 +1,7 @@
 # 🖥️ MCP Server: Ba giao diện cốt lõi và bốn cách sở hữu (Cẩm nang từ A đến Z)
 
+> Nguồn: `125-Theory-MCP-Servers.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52637949)
+
 Nếu bài trước là "toàn cảnh", thì bài này mình muốn cùng các bạn đi sâu vào **MCP server** (máy chủ cung cấp tool/dữ liệu): nó thực chất là gì, expose được những gì, xây bằng cách nào, chạy ra sao, và tương lai sẽ đi về đâu.
 
 ---
@@ -13,6 +15,24 @@ MCP server thực chất là những **wrapper/interface** giúp **federate quy�
 3. **Prompts – do user điều khiển:** các **template cho những tương tác phổ biến**, được định nghĩa sẵn để user có thể gọi. Chúng giúp **chuẩn hóa những tương tác phức tạp**.
 
 *Resources và prompts có thể đang hơi mơ hồ với các bạn, nhưng mình hứa: chỉ cần xem ví dụ trong vài video tới, mọi thứ sẽ trở nên cực kỳ trực quan và thanh lịch.*
+
+Ba giao diện này khác nhau ở **ai là người điều khiển**:
+
+```mermaid
+flowchart TD
+    S[MCP Server] --> T[Tools do model điều khiển]
+    S --> R[Resources do application điều khiển]
+    S --> P[Prompts do user điều khiển]
+    T --> M[Model chủ động gọi khi cần]
+    R --> A[App cung cấp context]
+    P --> U[User chọn template có sẵn]
+```
+
+| Giao diện | Ai điều khiển | Ví dụ |
+|---|---|---|
+| Tools | Model | Gọi API, query DB, ghi dữ liệu |
+| Resources | Application | PDF, JSON, hình ảnh, dữ liệu động |
+| Prompts | User | Template tương tác dựng sẵn |
 
 ---
 
@@ -53,4 +73,76 @@ Hệ sinh thái MCP đang tiến hóa rất nhanh. Những điều đáng mong c
 * **Website mở chức năng cho agent:** giống như **robots.txt** giúp search engine index website, các web application sẽ giúp agent khám phá và điều hướng. Chuẩn dự kiến là **well-known endpoint** – một **well-known JSON** để website công bố khả năng của mình cho **MCP client**.
 * **Authentication:** hỗ trợ các protocol như **OAuth 2.0** cho truy cập an toàn vào hệ thống bên ngoài, cùng **session token** để duy trì kết nối – qua đó **tăng cường bảo mật cho MCP protocol**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Ba giao diện chính của MCP server là gì và do ai điều khiển?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tools do model điều khiển, Resources do application điều khiển, Prompts do user điều khiển.
+
+Giải thích: Tools là function AI gọi khi cần; resources là dữ liệu expose; prompts là template tương tác.
+
+Tham chiếu: Mục Ba giao diện chính.
+
+</details>
+
+**Câu 2:** Bốn cách để có một MCP server?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tự viết tay, nhờ AI sinh giúp, xài server cộng đồng, dùng tích hợp chính thức.
+
+Giải thích: Ví dụ tương ứng: vài trăm dòng Python/Node.js, Cursor/MCP generator, clone mã nguồn mở, Cloudflare/Stripe.
+
+Tham chiếu: Mục Bốn cách để có một MCP server.
+
+</details>
+
+**Câu 3:** Lời khuyên quan trọng nhất khi cần MCP server cho dịch vụ bên thứ ba?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đừng phát minh lại bánh xe — kiểm tra trước xem họ đã có server chưa.
+
+Giải thích: Nếu thiếu tính năng, liên hệ bên thứ ba hỏi roadmap thay vì tự implement lại.
+
+Tham chiếu: Mục Bốn cách để có một MCP server.
+
+</details>
+
+**Câu 4:** MCP server có thể được chạy theo những cách nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Local qua stdio, remote qua SSE hoặc SSH, hoặc đóng gói thành Docker container.
+
+Giải thích: Mỗi cách phù hợp với một tình huống triển khai khác nhau.
+
+Tham chiếu: Mục Cách chạy server, sampling và composability.
+
+</details>
+
+**Câu 5:** Sampling trong MCP là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Server có thể yêu cầu host AI system generate một completion với một loại prompt.
+
+Giải thích: Rất mạnh nhưng kéo theo vấn đề bảo mật và quyền riêng tư sẽ được cover ở phần sau.
+
+Tham chiếu: Mục Cách chạy server, sampling và composability.
+
+</details>
+
 Khi những tính năng này được hiện thực hóa, mình sẽ đào sâu ngay. Hẹn gặp lại các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — MCP Servers](https://ua.udemy.com/course/langchain/learn/lecture/52637949)
+- [Model Context Protocol — Understanding MCP servers](https://modelcontextprotocol.io/docs/learn/server-concepts)

@@ -1,5 +1,7 @@
 # 💬 Tương tác Người — Agent năm 2025: Chat đã đưa chúng ta đến đâu, và bước tiếp theo là gì?
 
+> Nguồn: `068-Agent-Human-Interaction---Part-1.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/50506465)
+
 Chào các bạn! Trong bài này, mình mang đến một cuộc trò chuyện rất thú vị về **tương tác giữa con người và agent (human — agent interaction)**: năm 2025, chúng ta đang ở đâu, và đã đi qua con đường nào để đến được trạng thái hiện tại?
 
 Nào, hãy bắt đầu từ thứ quen thuộc nhất: **chat**.
@@ -24,6 +26,12 @@ Song song đó, các tương tác **human-in-the-loop (con người can thiệp 
 
 Đó là phía chat. Còn phía bên kia — phần thú vị không kém — là để agent **sống trong toàn bộ phần còn lại của ứng dụng**.
 
+| Tiêu chí | Trong chat | Ngoài chat |
+|---|---|---|
+| Dạng tương tác | Text, generative UI, native component ngay trong khung chat | Checkbox, form, nút, popup trong ứng dụng native |
+| Vai trò | Kênh giao tiếp chính giữa người dùng và agent | Tận dụng UX sẵn có của ứng dụng |
+| Ví dụ | Rich chat với component tương tác được | Người dùng tích chọn hoặc trả lời có/không |
+
 ---
 
 ### 🔄 Agent sống trong cả ứng dụng: shared state và những "đường ống" phía sau
@@ -31,6 +39,19 @@ Song song đó, các tương tác **human-in-the-loop (con người can thiệp 
 Mọi thứ xảy ra trong ứng dụng cần **hiển thị được cho agent**, và agent cũng cần làm được nhiều việc hơn là chỉ trả lời trong chat. Một trong những yếu tố quan trọng nhất là **shared state (trạng thái chia sẻ)** giữa agent và ứng dụng — và nó mang tính **hai chiều (bidirectional)**.
 
 Tất nhiên, đằng sau đó là vô số **edge case (tình huống biên)** cần xử lý, từ việc **truyền dữ liệu hiệu quả** — chỉ gửi những **delta (phần thay đổi)** mỗi khi state được cập nhật — cho đến **bảo mật**: có những state không nên được trao đổi theo cách này hay cách khác. Đây là những "đường ống" (plumbing) mà framework đã lo sẵn, còn về cơ bản thì mọi thứ khá đơn giản: bạn có một state chia sẻ, bạn có một ứng dụng agent.
+
+Dòng chảy hai chiều của shared state giữa ứng dụng và agent diễn ra như sau:
+
+```mermaid
+sequenceDiagram
+    participant U as Người dùng
+    participant App as Ứng dụng native
+    participant A as Agent
+    A->>App: Cập nhật shared state theo delta
+    App->>U: Hiển thị component và trạng thái mới
+    U->>App: Tương tác với component
+    App->>A: Gửi dữ liệu quay lại agent
+```
 
 Bên cạnh đó còn có khoảng **năm kiểu human-in-the-loop** khác nhau mà chúng ta có thể bàn tới. Nhưng điểm cốt lõi cần nhớ là: **mọi thứ đều có biến thể "trong chat" và "ngoài chat"**, và chúng ta không nên đóng khung giao diện vào chat — đôi khi chat không phải là cách tiếp cận đúng.
 
@@ -51,4 +72,76 @@ Còn đây là ý kiến cá nhân của anh ấy, nhìn lại một năm rưỡ
 
 Và đó chính là **mental model (mô hình tư duy) tốt nhất** để xây dựng những trải nghiệm thật xuất sắc: hãy tưởng tượng có một **thực thể thông minh thứ hai** trong sản phẩm — một **copilot ngồi cạnh người dùng** và hỗ trợ họ trong mọi việc. Sẽ không có chuyện ứng dụng SaaS tương lai chỉ là một ô chat to đùng rồi hết. Điểm mạnh thật sự nằm ở việc kết hợp **kênh giao tiếp** với **UX của ứng dụng native**, và tìm ra cách biểu diễn tối ưu cho từng tương tác.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao nhìn lại, chúng ta từng chưa đánh giá đủ cao vai trò của chat?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì chat là một modality cực kỳ mạnh mẽ, đã dạy cho số đông cách giao tiếp với máy móc.
+
+Giải thích: Chat giống như Slack với một agent — kênh giao tiếp mở giữa hai thực thể thông minh.
+
+Tham chiếu: Mục Chat — modality đã "chinh phục thế giới".
+
+</details>
+
+**Câu 2:** Generative UI trong giao diện chat là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chat có thể trả về những native component đầy đủ, tương tác được và tương tác trực tiếp với ứng dụng ngay trong giao diện chat.
+
+Giải thích: Tương tác human-in-the-loop cũng được hỗ trợ bởi chính UX của ứng dụng native, dữ liệu tương tác quay trở lại agent.
+
+Tham chiếu: Mục Chat không chỉ là text.
+
+</details>
+
+**Câu 3:** Shared state giữa agent và ứng dụng có đặc điểm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó mang tính hai chiều; đằng sau là nhiều edge case như truyền delta hiệu quả và bảo mật state.
+
+Giải thích: Framework đã lo sẵn phần "đường ống" plumbing; về cơ bản bạn có một state chia sẻ và một ứng dụng agent.
+
+Tham chiếu: Mục Agent sống trong cả ứng dụng.
+
+</details>
+
+**Câu 4:** Vì sao không nên đóng khung giao diện vào chat?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì đôi khi bạn muốn checkbox, câu trả lời có/không, form... thay vì gõ text; chat khá hạn chế về trải nghiệm người dùng.
+
+Giải thích: Framework trung lập với lựa chọn này và cung cấp building block cho cả phiên bản trong chat lẫn ngoài chat.
+
+Tham chiếu: Mục "Chỉ chat là chưa đủ".
+
+</details>
+
+**Câu 5:** Mental model "copilot ngồi cạnh người dùng" nghĩa là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hãy tưởng tượng có một thực thể thông minh thứ hai trong sản phẩm, hỗ trợ người dùng trong mọi việc — chứ không chỉ là một ô chat to đùng.
+
+Giải thích: Điểm mạnh nằm ở việc kết hợp kênh giao tiếp với UX ứng dụng native, chọn cách biểu diễn tối ưu cho từng tương tác.
+
+Tham chiếu: Mục Mental model về một copilot.
+
+</details>
+
 Các bạn thấy đấy, hành trình thiết kế tương tác người — agent còn rất nhiều đất để khám phá. Hãy tiếp tục theo dõi các bài sau để xem chúng ta sẽ làm chủ nó như thế nào nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Agent Human Interaction, Part 1](https://ua.udemy.com/course/langgraph/learn/lecture/50506465)
+- [CopilotKit — Documentation](https://docs.copilotkit.ai)

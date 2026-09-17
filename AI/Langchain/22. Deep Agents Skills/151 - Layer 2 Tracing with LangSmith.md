@@ -1,5 +1,7 @@
 # 🔍 Level 2: Tracing Agent Skills với LangSmith — Chuyện gì thực sự được gửi vào LLM?
 
+> Nguồn: `151-Layer-2-Tracing-AI-Agent-Skills-with-LangSmith.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/55532751)
+
 Chào các bạn, mình là Eden đây! Ở **lớp 2** này, chúng ta sẽ **bật tracing** để tận mắt xem bên trong một lần chạy của agent: LLM được gửi những gì, skill được nạp vào lúc nào và bằng cách nào.
 
 ---
@@ -35,6 +37,17 @@ Việc nạp metadata diễn ra ở **skill middleware before agent** — chạy
 * **Find skills** — skill để tìm skill.
 * **Remotion best practices** — skill cài ở bài trước, nằm trong thư mục root tại `.agents/skills`.
 
+```mermaid
+sequenceDiagram
+    participant C as CLI
+    participant M as Skills middleware
+    participant L as LLM
+    C->>M: Mở Deep Agent, nạp metadata skill vào state
+    C->>M: Gửi prompt mới
+    M->>L: System prompt kèm skills system
+    L-->>C: Trả lời hoặc gọi read tool để đọc SKILL.md
+```
+
 Mình còn mở thư mục skill trên máy để xem bên trong: có file **`SKILL.md`** chứa **front matter** và mô tả skill; một thư mục **`rules`** đầy file markdown — ví dụ **`gifs.md`** hướng dẫn cách tạo GIF với Remotion; và thư mục **`assets`** chứa các file TypeScript mà agent có thể chạy hoặc lấy làm nguồn cảm hứng.
 
 Nhắc lại nhanh: khi mình chỉ prompt "hello", **chưa có skill nào được nạp** — system prompt chỉ chứa metadata của skill mà thôi.
@@ -54,6 +67,11 @@ Giờ hãy cùng mổ xẻ trace:
 * **LLM call thứ hai:** system prompt đã có skills system + nội dung file vừa đọc. Lúc này agent quyết định đọc thêm `animations.md`, `compositions.md` và `timings.md`. Thú vị là nó **không đọc `gif.md`** — và việc chọn file nào để đọc **hoàn toàn là trách nhiệm của LLM**.
 * Càng đọc thêm, context càng được bổ sung, LLM càng hiểu cách dùng Remotion. Sau đó nó chuyển sang kiểm tra xem đã có project Remotion hay cần tạo mới từ đầu, và đọc thêm vài file về **text animations** và **sequencing rules**.
 
+| Cơ chế | Thời điểm chạy | Nhiệm vụ | Kết quả |
+|---|---|---|---|
+| Before agent middleware | Khi mở CLI, agent khởi động | Skill discovery | Agent state có danh sách metadata skill |
+| Skills middleware wrap model call | Trước mỗi LLM call | Inject skills system vào system prompt | LLM thấy skill để tự quyết định |
+
 Mình xin dừng phần giải thích trace ở đây, vì mục tiêu của bài này là cho các bạn thấy **skill được tiết lộ dần dần (dynamic disclosure)** thế nào, chứ không phải mổ xẻ toàn bộ nội bộ deep agent.
 
 ---
@@ -67,4 +85,77 @@ Có **hai điều** diễn ra mà mình muốn các bạn ghi nhớ:
 
 Sản phẩm của quá trình này là **skills system prompt** — một phần của system prompt. Chính **sự kết hợp giữa metadata của skill và system prompt** đã vận hành toàn bộ cơ chế **progressive disclosure**, vì ngay sau đó, **quyền quyết định có nạp skill hay không nằm ở LLM**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Để bật tracing cho agent harness, cần set những biến môi trường nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** LangChain tracing, LangChain API key và tên project LangSmith; khi gặp lỗi cần thêm `LANGSMITH_TRACING=true` và `LANGSMITH_API_KEY`.
+
+Giải thích: Eden gặp thông báo lỗi vì tài liệu chưa cập nhật, phải export thêm hai biến này.
+
+Tham chiếu: Mục Bật Tracing.
+
+</details>
+
+**Câu 2:** Vì sao agent chỉ nạp metadata mà không nạp toàn bộ skill?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì skill gồm rất nhiều file, nạp toàn bộ sẽ làm phình context.
+
+Giải thích: Metadata chỉ gồm tên skill, khi nào nên dùng và skill nằm ở đâu.
+
+Tham chiếu: Mục Discovery và Injection.
+
+</details>
+
+**Câu 3:** Bốn bước của progressive disclosure pattern là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nhận diện khi nào skill phù hợp, đọc toàn bộ hướng dẫn, làm theo hướng dẫn, truy cập các file hỗ trợ.
+
+Giải thích: LLM chỉ đọc toàn bộ hướng dẫn khi thật sự cần.
+
+Tham chiếu: Mục Discovery và Injection.
+
+</details>
+
+**Câu 4:** Việc inject skills system vào system prompt diễn ra ở đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Ở skills middleware thông qua wrap model call.
+
+Giải thích: Before agent middleware chỉ làm discovery; inject thật sự diễn ra trước mỗi LLM call.
+
+Tham chiếu: Mục Đọc trace.
+
+</details>
+
+**Câu 5:** Ai quyết định đọc file nào trong skill?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** LLM — ví dụ nó đọc animations.md, compositions.md, timings.md nhưng không đọc gif.md.
+
+Giải thích: Việc chọn file để đọc hoàn toàn là trách nhiệm của LLM.
+
+Tham chiếu: Mục Đọc trace.
+
+</details>
+
 Một quy trình tương tự cũng diễn ra trong **Claude Code**, **Gemini CLI**, **Manus** hay bất kỳ agent nào hỗ trợ skill system. Ở bài tiếp theo, chúng ta sẽ mở **source code** ra xem mọi thứ được viết như thế nào. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Layer 2: Tracing AI Agent Skills with LangSmith](https://ua.udemy.com/course/langchain/learn/lecture/55532751)
+- [LangChain Docs — Tracing quickstart](https://docs.langchain.com/langsmith/observability-quickstart)
+- [LangChain Docs — LangSmith Observability](https://docs.langchain.com/langsmith/observability)

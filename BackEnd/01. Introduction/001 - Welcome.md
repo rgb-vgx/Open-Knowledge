@@ -1,5 +1,7 @@
 # 🚀 Chào mừng đến với Fundamentals of Backend Engineering: Vén bức màn "under the wire"
 
+> Nguồn: `001-Welcome.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629150)
+
 Chào các bạn! Mình là Hussein, và mình thực sự, thực sự cảm kích vì các bạn đã ghé qua khóa học này. Hy vọng các bạn sẽ thấy thích nó — vì mình đã dồn vào đây rất nhiều thứ.
 
 Mình làm software engineering đã 17, à tính ra là 18 năm rồi, kể từ năm 2004. Trong ngần ấy năm xây dựng ứng dụng — đặc biệt là backend — mình dần nhận ra những **pattern (mẫu hình)** lặp đi lặp lại. Khóa học này là cách mình hệ thống hóa tất cả những gì đã học được, và cả những gì mình vẫn đang học mỗi ngày.
@@ -61,6 +63,88 @@ Một trong những chủ đề mình rất tâm huyết là **backend execution
 3. Ứng dụng đọc request từ đâu, và **một request thực chất là gì**? — chỉ là một đống byte, nhưng công việc để hiểu nó không hề tầm thường.
 4. Chi phí bị tiêu tốn qua từng lớp như thế nào, cho tới khoảnh khắc **sự kiện on-request** được kích hoạt?
 
+Toàn bộ hành trình đó gói gọn trong sơ đồ sau:
+
+```mermaid
+flowchart TD
+    A[Client mở kết nối] --> B[Backend accept connection]
+    B --> C[Kernel chuyển connection tới process]
+    C --> D[Process đọc raw bytes]
+    D --> E[Hiểu request]
+    E --> F[Sự kiện on-request kích hoạt]
+```
+
 Mình gỡ rối toàn bộ chuỗi đó, nên khóa học này được thiết kế cho các bạn ở mức **intermediate tới advanced (trung cấp đến nâng cao)**. Lời khuyên chân thành: hãy ít nhất đã từng xây qua một ứng dụng backend — đã nếm trải "quy trình làm xúc xích" và thấy nó khó nhằn thế nào. Nếu các bạn là **full stack engineer**, đây là khóa học hoàn hảo, vì các bạn đã đi khắp nơi: database, backend, frontend.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao hiểu "under the wire" giúp bạn debug tốt hơn?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì abstraction không còn là hộp đen — khi có sự cố latency hay degradation, bạn chỉ ra ngay vấn đề nằm ở đâu.
+
+Giải thích: Hiểu cơ chế cho phép sửa đúng chỗ thay vì đoán mò.
+
+Tham chiếu: Mục Hiểu cơ chế để không còn black box.
+
+</details>
+
+**Câu 2:** Hai protocol nào được học trước cả HTTP, và vì sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** UDP và TCP, vì đây là bộ xương trần mà gần như mọi thứ khác được xây lên trên.
+
+Giải thích: Nắm TCP/UDP trước giúp mọi protocol phía sau dễ hiểu hơn.
+
+Tham chiếu: Mục Protocol: học từ những viên gạch nền móng.
+
+</details>
+
+**Câu 3:** Hussein dùng library và framework với điều kiện gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Với điều kiện hiểu chính xác nó được kiến trúc ra sao và làm gì đằng sau hậu trường.
+
+Giải thích: Tin tưởng giao việc cho nó thì phải hiểu nó làm việc đó thế nào.
+
+Tham chiếu: Mục Hiểu cơ chế để không còn black box.
+
+</details>
+
+**Câu 4:** Khi request chạm tới backend, trình tự diễn ra thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Connection được accept, kernel chuyển connection tới process, ứng dụng đọc request từ một đống byte, rồi sự kiện on-request được kích hoạt.
+
+Giải thích: Mỗi bước đều tiêu tốn chi phí qua từng lớp.
+
+Tham chiếu: Mục Chuyện gì xảy ra khi request chạm tới backend?
+
+</details>
+
+**Câu 5:** Khóa học này nhắm tới đối tượng nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Mức intermediate tới advanced; người đã từng xây ứng dụng backend; full stack engineer là ứng viên hoàn hảo.
+
+Giải thích: Cần ít nhất một lần nếm trải "quy trình làm xúc xích" để tận hưởng khóa học.
+
+Tham chiếu: Mục Chuyện gì xảy ra khi request chạm tới backend?
+
+</details>
+
 Mục tiêu của mình rất rõ: **vén bức màn lên, cho các bạn thấy điều gì thật sự diễn ra trong backend.** Còn rất nhiều thứ khác trong khóa học mà bài giới thiệu này chưa kể hết. Hy vọng các bạn sẽ thích nó — và ở bài tiếp theo, chúng ta sẽ trả lời câu hỏi: khóa học này dành cho ai. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Welcome](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629150)

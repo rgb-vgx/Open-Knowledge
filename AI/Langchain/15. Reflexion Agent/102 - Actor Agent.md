@@ -1,5 +1,7 @@
 # 🎭 Actor Agent: "Chuyên gia nghiên cứu" viết bản nháp đầu tiên với structured output
 
+> Nguồn: `102-Actor-Agent-V2.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54702755)
+
 Chào các bạn, mình là Eden đây! Hôm nay chúng ta sẽ cùng viết **actor agent (bên hành động)** — cụ thể là chain `first_responder_chain`, bước đầu tiên trong graph Reflexion. Chain này nhận câu hỏi của người dùng và tạo ra bài viết nháp đầu tiên. Trong bài này, chúng ta sẽ "bỏ túi" những kỹ thuật prompting cực hay ho cùng **output parsers** kết hợp **function calling** để nhận về **structured output (đầu ra có cấu trúc)**.
 
 ### 🎬 Chuẩn bị: imports và một "bật mí" về MessageGraph
@@ -54,7 +56,23 @@ Quay lại file `chains.py`, mình khởi tạo LLM **GPT-4 Turbo** và hai outp
 * **`JsonOutputToolsParser`** — trả về function call dưới dạng **dictionary**.
 * **`PydanticToolsOutputParser`** — tìm function-calling invocation trong phản hồi và **parse thành object `AnswerQuestion`** để chúng ta làm việc dễ dàng.
 
+| Parser | Đầu ra | Dùng khi nào |
+|---|---|---|
+| `JsonOutputToolsParser` | Dictionary/JSON | Cần nhìn raw function call |
+| `PydanticToolsParser` | Object Pydantic | Cần làm việc với field có kiểu rõ ràng |
+
 Sau đó, mình điền `first_instruction` bằng câu **"Provide a detailed 250 word answer."**, rồi tạo `first_responder_chain`: prompt template pipe vào LLM GPT-4 Turbo — nhưng **trước đó bind object `AnswerQuestion` như một tool** cho function calling. Và với **`tool_choice="AnswerQuestion"`**, LLM bị **buộc luôn luôn dùng tool này**, nhờ vậy câu trả lời được neo đúng vào object chúng ta muốn. Đây chính là kỹ thuật "grounding" đến từ object Pydantic mà ta tạo ra.
+
+Toàn bộ luồng tạo structured output gói gọn như sau:
+
+```mermaid
+flowchart LR
+    A[User query] --> B[actor prompt template]
+    B --> C[GPT-4 Turbo gắn tool AnswerQuestion]
+    C --> D[Pydantic parser]
+    D --> E[Object AnswerQuestion]
+    E --> F[answer + reflection + search_queries]
+```
 
 Giờ là lúc chạy thử chain với input:
 
@@ -69,4 +87,76 @@ Các kết quả thu được:
 * **Reflection — superfluous**: phần giải thích chi tiết về problem domain **hơi dài dòng** với những độc giả đã quen khái niệm này.
 * **Search queries** (4 truy vấn): *AI-powered SOC startup funding*, *Darktrace funding history*, *Vectra capital raised*, và *Arctic Wolf investment rounds*.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** `first_responder_chain` tạo ra những gì cho graph?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bản nháp đầu tiên của bài viết, kèm critique và các search query.
+
+Giải thích: Kết quả là object `AnswerQuestion` có cấu trúc rõ ràng — chính là logic cho responder node.
+
+Tham chiếu: Mục Function calling, chain hoàn chỉnh và kết quả thực tế.
+
+</details>
+
+**Câu 2:** Hai output parser khác nhau ở điểm nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `JsonOutputToolsParser` trả về dictionary; `PydanticToolsParser` parse thành object Pydantic `AnswerQuestion`.
+
+Giải thích: Object Pydantic giúp thao tác với các field dễ dàng hơn trong code.
+
+Tham chiếu: Mục Function calling, chain hoàn chỉnh và kết quả thực tế.
+
+</details>
+
+**Câu 3:** Class `Reflection` tập trung vào hai loại thông tin nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Missing information (thông tin bị thiếu) và superfluous information (thông tin thừa, không đóng góp giá trị).
+
+Giải thích: Khi dùng kèm function calling, class này "neo" phản hồi của LLM để cho critique cực kỳ súc tích.
+
+Tham chiếu: Mục schemas.py.
+
+</details>
+
+**Câu 4:** Vì sao `tool_choice="AnswerQuestion"` quan trọng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó buộc LLM luôn dùng tool này, nhờ đó câu trả lời được neo đúng vào object mong muốn.
+
+Giải thích: Đây là kỹ thuật "grounding" đến từ chính object Pydantic mà ta tạo ra.
+
+Tham chiếu: Mục Function calling, chain hoàn chỉnh và kết quả thực tế.
+
+</details>
+
+**Câu 5:** Lỗi thú vị ở lần chạy đầu tiên là gì và có thể xử lý ra sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Object `AnswerQuestion` thiếu field `search_queries`; có thể thêm prompt "You must provide the search queries at all costs" hoặc tách riêng một prompt độc lập.
+
+Giải thích: Vì đây chỉ là proof of concept, mình chỉ chạy lại và lần này thành công.
+
+Tham chiếu: Mục Function calling, chain hoàn chỉnh và kết quả thực tế.
+
+</details>
+
 Mở LangSmith, chúng ta thấy trace của prompt gửi OpenAI cùng câu trả lời được parse bởi Pydantic output parser. Một video dài đấy, nhưng chúng ta đã hoàn thành logic cho **responder agent** — phần sẽ chạy trong responder node, tạo câu trả lời đầu tiên kèm critique và search term. Ở bài tiếp theo, chúng ta sẽ cùng xem logic của **reviser chain** nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Actor Agent](https://ua.udemy.com/course/langchain/learn/lecture/54702755)
+- [LangChain Blog — Reflection Agents](https://www.langchain.com/blog/reflection-agents)

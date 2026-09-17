@@ -1,5 +1,7 @@
 # ⚙️ Project Setup: Dựng môi trường từ con số không (15 phút "khô khan" nhưng đáng giá!)
 
+> Nguồn: `007-Project-Setup.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52009171)
+
 Chào các bạn, Eden đây! 👋 Video này sẽ hơi dài — khoảng **15 phút** — và thành thật mà nói, khởi tạo môi trường Python không phải phần thú vị nhất của khóa học.
 
 *Nhưng đừng lo*, đây là nền móng bắt buộc để cả khóa học chạy trơn tru. Kết thúc video này, chúng ta sẽ có môi trường sẵn sàng để viết chain LangChain đầu tiên. Cùng đi từng bước nhé!
@@ -79,4 +81,89 @@ Cuối cùng:
 2. `git add` toàn bộ file, commit với message **environment setup** rồi push lên remote repository.
 3. Vào repo, tìm branch **hello world** và xem danh sách commit — commit đầu tiên "environment setup" chứa toàn bộ code chúng ta vừa viết. Link trực tiếp sẽ có trong Resources của video.
 
+Toàn bộ quy trình setup gói gọn trong sơ đồ sau:
+
+```mermaid
+flowchart TD
+    A[Clone repo khóa học] --> B[Tạo branch sạch bằng orphan]
+    B --> C[uv init]
+    C --> D[uv add langchain và provider]
+    D --> E[Tạo .gitignore và .env]
+    E --> F[Kiểm tra API key bằng load_dotenv]
+    F --> G[Format code và commit environment setup]
+```
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Cờ `--orphan` khi tạo branch có tác dụng gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tạo branch không có lịch sử commit — bắt đầu hoàn toàn mới, không dính dáng tới các commit cũ.
+
+Giải thích: Sau đó ta dùng `git rm -rf` để dọn sạch file và bắt đầu từ con số không.
+
+Tham chiếu: Mục Clone repo và tạo branch riêng.
+
+</details>
+
+**Câu 2:** Vì sao `langchain-openai` lại là package riêng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì LangChain tách các provider thành package độc lập để mỗi vendor tự bảo trì phần của mình.
+
+Giải thích: Ai chỉ dùng OpenAI thì không cần tải về hàng trăm provider khác — thiết kế decoupled rất hợp lý.
+
+Tham chiếu: Mục UV — package manager "nhanh như chớp".
+
+</details>
+
+**Câu 3:** Vì sao tuyệt đối không được commit file `.env` lên GitHub?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì file này chứa API key — kẻ xấu chuyên quét GitHub để tìm key và lạm dụng, bạn có thể bị tính hóa đơn khổng lồ.
+
+Giải thích: API key giống như mật khẩu; hãy đặt budget limit để giới hạn mức sử dụng.
+
+Tham chiếu: Mục .gitignore, .env và bài học bảo mật API key.
+
+</details>
+
+**Câu 4:** Tên biến môi trường cho OpenAI phải như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Phải chính xác tuyệt đối là `OPENAI_API_KEY`.
+
+Giải thích: LangChain sẽ tìm đúng biến này khi gửi request tới OpenAI API.
+
+Tham chiếu: Mục .gitignore, .env và bài học bảo mật API key.
+
+</details>
+
+**Câu 5:** UV khác gì so với pip?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** UV được xây trên Rust nên nhanh hơn nhiều, xử lý cài đặt/resolve/run dependency hiệu quả và quản lý luôn môi trường ảo.
+
+Giải thích: UV có các lệnh như `uv init`, `uv add` và bạn vẫn có thể dùng poetry hay pipenv nếu thích.
+
+Tham chiếu: Mục UV — package manager "nhanh như chớp".
+
+</details>
+
 Vậy là môi trường đã sẵn sàng! Ở video tiếp theo, chúng ta sẽ chính thức viết chain LangChain đầu tiên nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Project Setup](https://ua.udemy.com/course/langchain/learn/lecture/52009171)
+- [uv Docs — Astral](https://docs.astral.sh/uv)
+- [GitHub — theskumar/python-dotenv](https://github.com/theskumar/python-dotenv)

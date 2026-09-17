@@ -1,5 +1,7 @@
 # 🌐 Hết cổng TCP: câu chuyện thật về ephemeral ports và cú "đơ" của web server
 
+> Nguồn: `057-Running-out-of-TCP-Ports.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/45967577)
+
 Mình luôn tin rằng **bug chính là thứ làm nên trải nghiệm của một kỹ sư phần mềm** — chính khoảnh khắc va phải bug, vượt qua nó và xử lý nó là phần thú vị nhất của nghề. Có bug bạn sửa được, có bug bạn chỉ work around, có bug tự nhiên biến mất vì những thứ chẳng liên quan gì tới nó.
 
 Hôm nay mình muốn kể các bạn nghe về một bug cực kỳ thú vị mà mình chưa từng gặp trước đây, chỉ mới va phải trong vài tháng gần đây: **hết sạch ephemeral ports (cổng tạm thời)** trong TCP connection. Nghe khó tin đúng không, vì có tới khoảng 65.000 cổng — nhưng các bạn hoàn toàn có thể chạm ngưỡng đó nếu viết code kém hiệu quả. *Và trong ca này, chính mình là người viết code kém hiệu quả đó.*
@@ -44,6 +46,12 @@ Trong hệ thống của mình, ba thông tin đều cố định: source IP là
 
 Còn phía client kết nối vào web server thì **không bao giờ là vấn đề**: dù destination IP và port của web server cố định, nhưng source IP thay đổi liên tục — 100.000 client thì mỗi client một connection với một IP khác nhau, nên có thể "quẩy" thoải mái. Các dải ephemeral ports cũng khác nhau giữa Windows, Linux và các kernel khác.
 
+| Hướng kết nối | Source IP | Destination | Nguy cơ hết port |
+|---|---|---|---|
+| Client → web server | Thay đổi liên tục | Cố định | Không bao giờ |
+| Web server → broker | Cố định | Cố định | Có, chỉ còn khoảng 20.000–25.000 cổng nguồn |
+| Loopback trên cùng máy | Cố định | Cố định | Tệ hơn, cả hai đầu chung một máy |
+
 ---
 
 ### 🐛 Gốc rễ: mỗi request một connection mới, cộng thêm ping-pong keep-alive
@@ -51,6 +59,18 @@ Còn phía client kết nối vào web server thì **không bao giờ là vấn 
 Bug nằm trong logic kết nối tới message queue của web server. Đúng ra nó phải **tìm connection đang có và tái sử dụng**; nếu chưa có thì mới tạo mới. Nhưng trong ca này, **mỗi request lại tạo một connection mới** rồi để đó.
 
 Đáng lẽ các connection idle sẽ tự chết sau một thời gian nhờ TCP timeout — nhưng có một thứ làm mọi chuyện tệ hơn: **custom client logic cố tình giữ connection sống** bằng cơ chế kiểu **ping-pong**. Đây là **keep-alive ở tầng application (L7)**, *không phải* TCP keep-alive của kernel — tức là ứng dụng gửi qua lại những gói gần như rỗng, kiểu "tao vẫn ở đây, tao vẫn dùng kết nối này", chỉ để duy trì kết nối. Chính những "chatter" vô nghĩa đó khiến số connection không bao giờ được giải phóng, vừa tốn tài nguyên vừa thêm overhead.
+
+```mermaid
+flowchart TD
+    A[Web server gửi request] --> B[Tạo connection mới tới broker]
+    B --> C[Custom keep-alive giữ connection sống]
+    C --> D[Ephemeral port bị chiếm dần]
+    D --> E{Hết dải port}
+    E -->|Chưa| A
+    E -->|Rồi| F[Không tạo được connection mới]
+    F --> G[Request blocking bị treo]
+    G --> H[Web server ngừng phản hồi]
+```
 
 Khi chạm ngưỡng ephemeral port, request mới **mắc kẹt ngay trong kernel** — không thể tạo nổi connection. Trong khi đó, request ở web server là **synchronous (đồng bộ)**, tức là **blocking**: nó chờ cho tới khi nhận được phản hồi từ message queue mới mở block và trả kết quả về client. Thế là rơi vào bế tắc: *không thể trả lời client cho tới khi có phản hồi từ message queue, mà không thể tạo connection để gửi sang message queue.*
 
@@ -67,4 +87,77 @@ Hóa ra đây không phải vấn đề hiếm gặp: **Cloudflare có hẳn m�
 * **Trên cùng một máy sẽ tệ hơn**: ví dụ loopback `127.0.0.1` kết nối tới port 80 local, source port cũng nằm trên `127.0.0.1`, dẫn tới hết ephemeral ports cho cả kết nối loopback. Mình khuyên hạn chế dùng TCP/IP cho loopback khi có thể, dùng IPC thay thế — nhưng đôi khi không thể, nhất là khi làm side proxy: container chia sẻ loopback và cần kết nối lẫn nhau để sidecar proxying hoạt động, lúc đó buộc phải dùng TCP/IP.
 * **Kết nối tới port đích khác** (ví dụ FTP port 21, SSH port 22) về lý thuyết có thể tái sử dụng ephemeral ports vì đó là **tuple khác** — nhưng một số kernel **không cho phép**, vì điều đó đôi khi làm hỏng ứng dụng: nhiều ứng dụng coi source port là duy nhất độc lập, chứ không xét theo cả tuple. Điều này khiến bài toán thậm chí còn thú vị hơn.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Dải ephemeral ports của IPv4 trên Linux là bao nhiêu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** 32.768 đến 60.999 — khoảng 30.000 cổng, và vấn đề bắt đầu xuất hiện quanh mốc 20.000–25.000.
+
+Giải thích: Con số này khớp với những gì mình quan sát được trong hệ thống thật.
+
+Tham chiếu: Mục Giải mã ephemeral ports.
+
+</details>
+
+**Câu 2:** Vì sao phía client kết nối vào web server không bao giờ hết port?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì source IP của mỗi client khác nhau — four-tuple luôn khác nhau dù destination cố định.
+
+Giải thích: Chỉ khi cả source IP lẫn destination đều cố định thì mới cạn cổng nguồn.
+
+Tham chiếu: Mục Giải mã ephemeral ports.
+
+</details>
+
+**Câu 3:** Vì sao message broker hỗ trợ multiplexing mà web server vẫn thấy 10.000–20.000 connection?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì bug trong logic kết nối — mỗi request tạo một connection mới thay vì tái sử dụng, cộng thêm custom keep-alive tầng application cố giữ chúng sống.
+
+Giải thích: Về lý thuyết chỉ cần 1 connection, cùng lắm là 2.
+
+Tham chiếu: Mục Gốc rễ.
+
+</details>
+
+**Câu 4:** Vì sao web server treo hẳn thay vì trả lỗi cho client?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì request ở web server là synchronous, blocking — nó chờ phản hồi từ message queue, nhưng không thể tạo connection để gửi sang queue.
+
+Giải thích: Rơi vào bế tắc: không thể trả lời client khi chưa có phản hồi, mà không thể gửi để lấy phản hồi.
+
+Tham chiếu: Mục Gốc rễ.
+
+</details>
+
+**Câu 5:** Vì sao dùng TCP/IP cho loopback lại rủi ro hơn?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì source port cũng nằm trên cùng máy, dẫn tới hết ephemeral ports cho cả kết nối loopback.
+
+Giải thích: Mình khuyên hạn chế TCP/IP cho loopback, dùng IPC thay thế khi có thể — trừ sidecar proxying.
+
+Tham chiếu: Mục Cách sửa và những cạm bẫy.
+
+</details>
+
 Bug này là minh chứng rõ nhất cho triết lý của mình: viết code xong không có nghĩa là hiểu hệ thống. Hiểu TCP ở mức "under the wire" sẽ giúp các bạn nhìn ra ngay cái bẫy "mỗi request một connection" — trước khi nó làm sập production của bạn. Hẹn gặp lại các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Running out of TCP Ports](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/45967577)
+- [Cloudflare Blog — How to stop running out of ephemeral ports and start to love long-lived connections](https://blog.cloudflare.com/how-to-stop-running-out-of-ephemeral-ports-and-start-to-love-long-lived-connections)
+- [Cloudflare Blog — The quantum state of a TCP port](https://blog.cloudflare.com/the-quantum-state-of-a-tcp-port/)

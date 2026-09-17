@@ -1,5 +1,7 @@
 # 💡 Vì sao sản phẩm AI thành công? Công thức "Care" của Assaf Elovic & Harrison Chase
 
+> Nguồn: `080-Confidence-in-AI-Results-By-Assaf-Elovic-Harrison-Chase.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/50890333)
+
 Chào các bạn, Eden đây! Các bạn có bao giờ tự hỏi vì sao **một số sản phẩm AI "cất cánh" và ai cũng dùng**, trong khi những sản phẩm khác — dù công nghệ thật sự ấn tượng — lại chẳng ai mặn mà?
 
 Hóa ra **"công thức bí mật" thường ít liên quan đến độ chính xác siêu phàm hay độ phức tạp kỹ thuật của AI** hơn ta tưởng. Hai người bạn của mình là **Assaf Elovic và Harrison Chase** đã viết một bài rất hay về điều này, và hôm nay mình muốn tóm tắt lại cho các bạn.
@@ -29,6 +31,19 @@ Ba thành tố:
 Khi care cao, người ta háo hức và dùng ngay. Khi care thấp, **không ai dùng cả**. Rõ ràng và đơn giản.
 
 Điểm cực kỳ quan trọng: **care phần lớn đến từ cách thiết kế sản phẩm, chứ không chỉ từ việc model AI tốt đến đâu**. Tất nhiên, nếu AI cứ thất bại liên tục thì **value = 0 và care sụp đổ**. Nhưng câu chuyện ở đây là những thứ mà **đội product có thể chủ động kiểm soát: mức rủi ro và độ dễ sửa chữa**.
+
+```mermaid
+flowchart TD
+    A[Thiết kế sản phẩm AI] --> B[Tăng Value]
+    A --> C[Giảm Risk]
+    A --> D[Giảm Correction]
+    B --> E[Care cao]
+    C --> E
+    D --> E
+    E --> F[Người dùng tin và dùng ngay]
+    G[Preview mode] --> C
+    H[Hoàn tác dễ dàng] --> D
+```
 
 ---
 
@@ -62,4 +77,81 @@ Giải pháp chính: **thêm chế độ xem trước (preview mode)**. Cho ngư
 
 Đặc biệt ấn tượng: **tất cả những điều này không cần đổi model AI** — chỉ là thay đổi cách thiết kế sản phẩm. Những ý tưởng kiểu này cực kỳ quan trọng ở các lĩnh vực rủi ro cao như **tiền bạc hay sức khỏe**.
 
+| Sản phẩm | Risk | Correction | Value | Care |
+|---|---|---|---|---|
+| Cursor | Thấp — code nằm trong editor, không tự đổi hệ thống đang chạy | Thấp — xóa hoặc gõ đè là xong | Cao — tiết kiệm thời gian và "năng lượng não" | Rất cao |
+| Monday.com AI block | Trung bình — board là trái tim công ty, các board liên kết nhau | Trung bình — phải lục tìm và gỡ thủ công từng thay đổi | Cao — tự động hóa việc nhàm chán | Trung bình; thêm preview mode thì risk giảm và care tăng |
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** "Care" trong bài thật ra đo điều gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Niềm tin (confidence) của người dùng vào kết quả AI — những điều tốt họ nhận được so với rắc rối họ gặp phải.
+
+Giải thích: Đây là yếu tố quyết định thành bại của sản phẩm AI, và đo lường được.
+
+Tham chiếu: Mục Bí mật không nằm ở model.
+
+</details>
+
+**Câu 2:** Công thức tính care là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** **Care = Value ÷ (Risk × Correction).**
+
+Giải thích: Value càng cao, Risk và Correction càng thấp thì care càng lớn.
+
+Tham chiếu: Mục Giải phẫu công thức Care.
+
+</details>
+
+**Câu 3:** Vì sao Cursor có care rất cao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Risk thấp (code nằm trong editor, không tự đổi hệ thống), Correction thấp (xóa hoặc gõ đè), Value cao (tiết kiệm thời gian và năng lượng não).
+
+Giải thích: Đây là thiết kế sản phẩm thông minh, không phải model siêu việt.
+
+Tham chiếu: Mục Case study: Cursor.
+
+</details>
+
+**Câu 4:** Điều gì khiến care của Monday.com chỉ ở mức trung bình?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Board là trái tim công ty và liên kết với nhau, nên automation sai gây hậu quả; còn sửa sai phải lục tìm khắp nơi và gỡ thủ công từng thay đổi.
+
+Giải thích: Risk trung bình × Correction trung bình → care trung bình, người dùng chần chừ.
+
+Tham chiếu: Mục Monday.com và bài học về Preview Mode.
+
+</details>
+
+**Câu 5:** Giải pháp preview mode cải thiện care như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cho người dùng thấy chính xác AI sẽ thay đổi gì trước khi làm — giảm Risk từ trung bình xuống thấp, kéo care lên cao.
+
+Giải thích: Chỉ đổi trải nghiệm sản phẩm, không cần đổi model AI.
+
+Tham chiếu: Mục Monday.com và bài học về Preview Mode.
+
+</details>
+
 Hãy ghi nhớ công thức care khi thiết kế sản phẩm AI của mình — đôi khi **giảm rủi ro và giúp người dùng sửa lỗi dễ hơn** lại là đòn bẩy mạnh nhất. Hẹn gặp các bạn ở bài sau! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Confidence in AI Results By Assaf Elovic & Harrison Chase](https://ua.udemy.com/course/langchain/learn/lecture/50890333)
+- [LangChain Blog — The Hidden Metric That Determines AI Product Success](https://www.langchain.com/blog/the-hidden-metric-that-determines-ai-product-success)

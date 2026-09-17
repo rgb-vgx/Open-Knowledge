@@ -1,5 +1,7 @@
 # 📄 llms.txt là gì? "Bản đồ định vị" website dành cho LLM và AI Agent
 
+> Nguồn: `128-LLMtxt.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/49319577)
+
 Chào các bạn! Nếu bạn đang xây agent cần đọc tài liệu mới nhất từ internet, thì **llms.txt** là một chuẩn file rất đáng biết. Hôm nay mình sẽ giải thích nó là gì, để làm gì, và khi nào nên dùng bản đầy đủ nhé.
 
 ---
@@ -41,6 +43,13 @@ Vậy **khi nào dùng bản nào**?
 * Dùng **llms.txt** khi bạn có một AI agent hoặc **MCP server** sở hữu **web scraping tool** như **Firecrawl** để tải nội dung website. Trong context sẽ có **bản đồ toàn bộ website**, giúp biết chính xác cần tải trang nào. Ví dụ cần nội dung về **LangChain memory**, LLM sẽ chọn đúng URL để **chỉ tải phần memory** – khá giống cách hoạt động của **RAG**.
 * Dùng **llms-full.txt** khi bạn muốn **tự chunk rồi index vào vector store** (cho kết quả gần tương tự), hoặc với **LLM có context window lớn** thì có thể **gửi nguyên file**, hoặc nếu LLM hỗ trợ **context cache** thì có thể **cache** thông tin này lại.
 
+| Tiêu chí | llms.txt | llms-full.txt |
+|---|---|---|
+| Nội dung | URL và mô tả ngắn | Toàn bộ text của các trang |
+| Kích thước | Nhỏ, vừa context | Khổng lồ |
+| Cách dùng | Agent có scraping tool chọn URL | Chunk và index, gửi nguyên file, cache |
+| Ví dụ | Chỉ tải đúng trang memory | Vector store hoặc context window lớn |
+
 ---
 
 ### ⚡ Đánh đổi: thông tin real-time nhưng latency cao hơn
@@ -52,4 +61,84 @@ Pattern dùng **llms.txt** thường là kết hợp một **agent với scrapin
 3. **Fetch thêm lần nữa** để lấy nội dung trang đó rồi xử lý tiếp.
 4. Cuối cùng mới có kết quả.
 
+```mermaid
+flowchart TD
+    A[Agent tải llms.txt bằng URL scraper] --> B[LLM chọn trang cần tải]
+    B --> C[Fetch nội dung trang qua URL]
+    C --> D[Xử lý và trả kết quả cuối]
+```
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** llms.txt là gì và thường được đặt ở đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là file chuẩn Markdown máy đọc được, đặt ở thư mục gốc của website.
+
+Giải thích: File tóm tắt ngắn gọn nội dung và cấu trúc quan trọng nhất của site.
+
+Tham chiếu: Mục llms.txt là gì.
+
+</details>
+
+**Câu 2:** Website được lợi gì khi có llms.txt?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tăng độ chính xác khi AI trích xuất thông tin, tăng discoverability, cung cấp context tốt hơn và có thể cải thiện SEO.
+
+Giải thích: Nội dung dễ tiếp cận hơn với các AI-driven search engine.
+
+Tham chiếu: Mục Vì sao website nên có llms.txt.
+
+</details>
+
+**Câu 3:** llms.txt khác llms-full.txt thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** llms.txt chỉ gồm URL và mô tả ngắn; llms-full.txt chứa toàn bộ thông tin và text của các trang.
+
+Giải thích: Vì chứa toàn bộ text nên llms-full.txt là một file khổng lồ.
+
+Tham chiếu: Mục llms.txt vs llms-full.txt.
+
+</details>
+
+**Câu 4:** Khi nào nên dùng llms.txt bản ngắn?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi có AI agent hoặc MCP server sở hữu web scraping tool như Firecrawl.
+
+Giải thích: Bản đồ website nằm trong context giúp biết chính xác cần tải trang nào — khá giống RAG.
+
+Tham chiếu: Mục llms.txt vs llms-full.txt.
+
+</details>
+
+**Câu 5:** Đánh đổi của pattern dùng llms.txt là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Được thông tin real-time nhưng latency cao hơn vì phải đi qua nhiều bước fetch.
+
+Giải thích: Tải llms.txt → LLM chọn trang → fetch thêm lần nữa → mới có kết quả.
+
+Tham chiếu: Mục Đánh đổi.
+
+</details>
+
 Vì vậy **latency sẽ cao hơn một chút**. *Đừng lo nếu phần này nghe hơi trừu tượng – ở video tiếp theo chúng ta sẽ làm hands-on với llms.txt và MCP, để ứng dụng của bạn tự fetch thông tin real-time.* Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LLM.txt](https://ua.udemy.com/course/langchain/learn/lecture/49319577)
+- [llms.txt — The /llms.txt file proposal](https://llmstxt.org/)
+- [LangGraph — llms.txt](https://langchain-ai.github.io/langgraph/llms.txt)

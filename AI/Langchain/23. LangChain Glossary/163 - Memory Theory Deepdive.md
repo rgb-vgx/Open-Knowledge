@@ -1,5 +1,7 @@
 # 🗄️ Memory phần 2: Ba cách lưu ký ức và vai trò "người gác kho" của LangGraph
 
+> Nguồn: `163-LangChain-Memory-Theory-Deepdive-LangGraph.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/46177713)
+
 Chào các bạn, tiếp nối chủ đề memory, hôm nay mình và các bạn sẽ đi sâu vào **cách lưu trữ và xử lý ký ức hội thoại** theo best practice mới nhất trong hệ sinh thái LangChain. Đây là bài tổng quan quan trọng, vì memory đã trải qua rất nhiều vòng cải tiến trước khi đạt đến cách làm ngày hôm nay.
 
 ### 🧠 Bức tranh tổng thể: memory không chỉ là "tống" hết vào prompt
@@ -17,6 +19,12 @@ Hiện tại, LangChain có **ba chiến lược chính** để xử lý:
 1. **Lờ luôn vấn đề** — cứ nhồi tất cả vào lời gọi LLM. Cách này hữu ích khi cuộc trò chuyện ngắn, và cũng là cách **dễ bắt đầu nhất**.
 2. **Cắt bỏ tin nhắn cũ (trim)** — vứt đi những message ở đầu cuộc hội thoại, vì nhiều khả năng chúng không còn liên quan. Đây là một **heuristic**, tất nhiên không phải lúc nào cũng đúng.
 3. **Xử lý message** — ví dụ **tóm tắt toàn bộ tin nhắn** và chỉ giữ lại bản tóm tắt cùng **vài message gần nhất**.
+
+| Chiến lược | Cách làm | Đánh đổi |
+|---|---|---|
+| Lờ luôn vấn đề | Nhồi tất cả message vào lời gọi LLM | Dễ bắt đầu nhất, chỉ ổn với hội thoại ngắn |
+| Trim tin nhắn cũ | Cắt bỏ message ở đầu cuộc hội thoại | Tiết kiệm token nhưng là heuristic, có thể mất thông tin |
+| Xử lý message | Tóm tắt lịch sử, giữ bản tóm tắt và vài message gần nhất | Ngữ cảnh cô đọng nhưng tốn thêm bước xử lý |
 
 Nhưng còn một câu hỏi chưa được trả lời: **lưu những message đó ở đâu và persist (duy trì) chúng như thế nào?**
 
@@ -37,6 +45,16 @@ Cách dùng rất đơn giản: chỉ cần **tạo object checkpointer và truy
 Còn về **cách truyền lịch sử vào prompt**, các bạn có thể dùng **chat prompt template** với hàm **`from_messages`**: khai báo system message (chỉ thị hệ thống) và một **message placeholder** với `variable_name="messages"` — đó là cách nói với LangChain rằng "hãy **tự động inject toàn bộ lịch sử trò chuyện** vào đây". Dữ liệu truyền vào là một **dictionary** chứa danh sách các message: HumanMessage, phản hồi của AI, rồi HumanMessage tiếp theo...
 
 Trong ứng dụng thực tế, ta sẽ dùng **persistent DB** để lưu tất cả message, truy xuất lại và gửi đi. Phần "gửi" thì đơn giản như vậy — còn phần "lưu" đã có checkpointer lo.
+
+```mermaid
+flowchart LR
+    A[Message mới] --> B[LangGraph checkpointer]
+    B --> C[Database bền vững]
+    C --> D[Truy xuất lịch sử]
+    D --> E[Chat prompt template]
+    E --> F[Gọi LLM]
+    F --> A
+```
 
 ---
 
@@ -64,4 +82,77 @@ Checkpointer vẫn giữ nguyên, nhưng ta đã **xử lý dữ liệu trước
 
 Điều mình muốn các bạn ghi nhớ: bạn **không cần hiểu LangGraph ngay lúc này**. Hãy nắm các khái niệm về những gì ta lưu vào memory — **toàn bộ message gốc, message đã tỉa, hay bản tóm tắt** — và biết rằng bạn hoàn toàn có thể **tự thêm logic xử lý riêng** cho phù hợp với ứng dụng của mình. LangChain cho bạn sự tự do đó, và việc mở rộng rất dễ dàng.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Ba chiến lược xử lý memory hiện tại của LangChain là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lờ luôn vấn đề (nhồi tất cả), cắt bỏ tin nhắn cũ (trim), và xử lý message (ví dụ tóm tắt).
+
+Giải thích: Cách đầu dễ bắt đầu nhất nhưng chỉ hợp với hội thoại ngắn.
+
+Tham chiếu: Mục Bức tranh tổng thể.
+
+</details>
+
+**Câu 2:** Vì sao gửi thừa dữ liệu vẫn là vấn đề dù context window rất lớn?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì chi phí cao hơn, tốc độ chậm hơn, và kết quả có thể tệ hơn.
+
+Giải thích: Gửi một đống "rác" model không cần xử lý dẫn đến "Garbage in, garbage out".
+
+Tham chiếu: Mục Bức tranh tổng thể.
+
+</details>
+
+**Câu 3:** Checkpointer của LangGraph làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tự động lấy mỗi message và persist vào database.
+
+Giải thích: Chỉ cần tạo object checkpointer và truyền vào graph; nó lo phần ghi dữ liệu vào DB.
+
+Tham chiếu: Mục Persist bằng LangGraph checkpointer.
+
+</details>
+
+**Câu 4:** `MemorySaver` khác các DB saver ở điểm nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `MemorySaver` lưu trong memory và không persist — mất khi chương trình dừng; còn PostgreSQL, MySQL, Redis, MongoDB saver lưu bền vững.
+
+Giải thích: Đây là lý do sản phẩm thật cần persistent DB.
+
+Tham chiếu: Mục Persist bằng LangGraph checkpointer.
+
+</details>
+
+**Câu 5:** Trimmer và summarization khác nhau thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trimmer tỉa bớt message theo strategy (theo token hoặc số lượng), còn summarization tóm tắt lịch sử thành một bản duy nhất rồi lưu lại, xóa các message gốc.
+
+Giải thích: Cả hai đều nhằm tiết kiệm token, độ trễ và chi phí; checkpointer vẫn giữ nguyên vai trò persist.
+
+Tham chiếu: Mục Trimmer và Mục Tóm tắt và persist.
+
+</details>
+
 Còn việc **persist thực sự** thì do **LangGraph checkpointer** đảm nhiệm — object này chỉ đơn giản lấy dữ liệu và thực hiện các **truy vấn DB** để gửi vào database đích, không hơn không kém. Vậy là chúng ta đã đi hết bức tranh memory! Hẹn gặp lại các bạn ở bài tiếp theo. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangChain Memory Theory Deepdive (LangGraph)](https://ua.udemy.com/course/langchain/learn/lecture/46177713)
+- [LangGraph Docs — Persistence](https://docs.langchain.com/oss/python/langgraph/persistence)
+- [LangGraph Docs — Add memory](https://docs.langchain.com/oss/python/langgraph/add-memory)

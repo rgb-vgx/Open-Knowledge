@@ -1,5 +1,7 @@
 # 🎯 Yêu cầu đầu vào (Prerequisites): Hãy xem bài này trước khi đăng ký!
 
+> Nguồn: `002-Prerequisites-Please-Watch-this-before-enrolling.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43585700)
+
 Chào các bạn! Trước khi bắt đầu hành trình, mình muốn dành vài phút nói về **các yêu cầu đầu vào (prerequisites)** của khóa học — vì đây là một khóa học rất nâng cao, chúng ta sẽ làm việc với những công nghệ mới và mạnh nhất hiện nay: **LangGraph**, để hiện thực những **AI agent cực kỳ tinh vi và phức tạp**.
 
 Bài này ngắn thôi nhưng quan trọng, các bạn xem hết nhé!
@@ -44,4 +46,77 @@ Theo mình, học viên lý tưởng là người **thành thạo Python** và *
 
 Nếu các bạn cảm thấy chưa thoải mái với những chủ đề mình vừa liệt kê, khóa học này có thể sẽ khá thách thức và mình **không khuyến khích** các bạn đăng ký. *Nói thẳng như vậy để các bạn không mất thời gian và tiền bạc vào một hành trình chưa phù hợp — mình luôn muốn các bạn có trải nghiệm học tập tốt nhất.* 😉
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao khóa học này không giảng lại các chủ đề sơ đẳng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để dành 100% thời lượng tập trung vào LangGraph và những công nghệ thực sự nâng cao.
+
+Giải thích: Mục tiêu của giảng viên là đi thẳng vào nội dung chuyên sâu.
+
+Tham chiếu: Mục Vì sao prerequisites lại quan trọng.
+
+</details>
+
+**Câu 2:** Kể tên ít nhất ba kỹ năng Python được kỳ vọng ở học viên.
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** File `.env`, package management (Poetry/pip, virtualenv), cấu hình IDE với interpreter và debug, OOP, Git.
+
+Giải thích: Đây là những công cụ và kỹ năng được dùng xuyên suốt khóa học.
+
+Tham chiếu: Mục Python proficiency.
+
+</details>
+
+**Câu 3:** LangGraph được mô tả có quan hệ thế nào với LangChain?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** LangGraph là phần mở rộng (extension) của framework LangChain, thiết kế riêng cho agent flow phức tạp.
+
+Giải thích: Vì vậy không thể tránh việc phải dùng LangChain để dùng LangGraph.
+
+Tham chiếu: Mục LangChain — bệ phóng bắt buộc.
+
+</details>
+
+**Câu 4:** Những đối tượng LangChain nào sẽ được dùng trong khóa học?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Prompt templates, chains, và có thể một chút LangChain Expression Language.
+
+Giải thích: Giảng viên chỉ dùng những phần cần thiết, không có gì quá cao siêu.
+
+Tham chiếu: Mục LangChain — bệ phóng bắt buộc.
+
+</details>
+
+**Câu 5:** Học viên lý tưởng của khóa học là ai?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Người thành thạo Python và thành thạo LangChain.
+
+Giải thích: Nếu chưa thoải mái với các chủ đề nền tảng, giảng viên không khuyến khích đăng ký.
+
+Tham chiếu: Mục Học viên lý tưởng.
+
+</details>
+
 Hẹn gặp các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangGraph: Prerequisites](https://ua.udemy.com/course/langgraph/learn/lecture/43585700)
+- [LangGraph overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/overview)
+- [LangChain Expression Language — Blog LangChain](https://www.langchain.com/blog/langchain-expression-language)

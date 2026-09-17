@@ -1,5 +1,7 @@
 # 🧩 Prompt là gì? Khám phá 4 thành phần của một prompt chuẩn chỉnh
 
+> Nguồn: `066-What-is-a-Prompt-Composition-of-a-formal-prompt.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37507516)
+
 Tiếp nối hành trình Prompt Engineering, hôm nay chúng ta sẽ cùng nhau mổ xẻ một khái niệm tưởng chừng ai cũng biết nhưng ít ai định nghĩa được chính xác: **Prompt**.
 
 Mục tiêu của bài này không chỉ là hiểu prompt là gì, mà còn là **chuẩn hóa ngôn ngữ chung** để chúng ta nói chuyện với nhau về AI một cách rõ ràng nhất.
@@ -61,8 +63,104 @@ Nhưng cũng có lúc nó **hiện (explicit)** và được viết ra rõ ràng
 
 Chúng ta sẽ gặp những ví dụ cụ thể về nó rất sớm thôi!
 
+Bốn thành phần ấy cùng đổ vào model theo sơ đồ sau:
+
+```mermaid
+flowchart LR
+    A[Prompt] --> B[Instruction]
+    A --> C[Context]
+    A --> D[Input data]
+    A --> E[Output indicator]
+    B --> F[LLM]
+    C --> F
+    D --> F
+    E --> F
+    F --> G[Output]
+```
+
+Bảng tóm tắt nhanh bốn thành phần:
+
+| Thành phần | Vai trò | Ghi chú |
+|---|---|---|
+| **Instruction** | Nhiệm vụ model cần thực hiện | "Trái tim" của prompt |
+| **Context** | Thông tin bổ sung giúp model hiểu nhiệm vụ | Có tác vụ không thật sự cần |
+| **Input data** | Dữ liệu model sẽ xử lý | Có thể là văn bản, hình ảnh... |
+| **Output indicator** | Báo model rằng đang chờ câu trả lời | Có thể ẩn hoặc hiện |
+
 Nắm vững bốn thành phần này xem như bạn đã có trong tay bộ "đồ nghề" đầu tiên của một prompt engineer.
 
 Hãy ghi nhớ chúng, vì mọi kỹ thuật phía sau — zero-shot, few-shot, chain-of-thought — đều xoay quanh bốn phần này.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Trong ngữ cảnh AI language model, prompt là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là đầu vào (input) mà chúng ta đưa cho model để nó tạo ra đầu ra (output).
+
+Giải thích: Có thể hình dung prompt như tấm bản đồ chỉ đường cho model.
+
+Tham chiếu: Mục Vì sao cần định nghĩa chuẩn cho prompt.
+
+</details>
+
+**Câu 2:** Một prompt chuẩn chỉnh gồm bốn thành phần nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Instruction, context, input data và output indicator.
+
+Giải thích: Đây là bộ "đồ nghề" đầu tiên của một prompt engineer.
+
+Tham chiếu: Toàn bài.
+
+</details>
+
+**Câu 3:** Thành phần nào được ví là "trái tim" của prompt?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Instruction.
+
+Giải thích: Instruction cho model biết nhiệm vụ cần thực hiện, "dàn cảnh" cho phản hồi.
+
+Tham chiếu: Mục Instruction.
+
+</details>
+
+**Câu 4:** Context có phải lúc nào cũng cần thiết không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không. Có tác vụ context không thật sự cần, nhưng có tác vụ nó cải thiện hiệu suất đáng kể.
+
+Giải thích: Tùy tác vụ mà context phát huy vai trò khác nhau.
+
+Tham chiếu: Mục Context và Input data.
+
+</details>
+
+**Câu 5:** Output indicator "ẩn" và "hiện" nghĩa là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đôi khi nó nằm ngầm trong instruction, đôi khi được viết ra rõ ràng.
+
+Giải thích: Cả hai dạng đều báo cho model rằng ta đang chờ câu trả lời.
+
+Tham chiếu: Mục Output indicator.
+
+</details>
+
 Hẹn gặp các bạn ở bài tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — What is a Prompt? Composition of a formal prompt](https://ua.udemy.com/course/langchain/learn/lecture/37507516)
+- [Prompt Engineering Guide — Elements of a Prompt](https://www.promptingguide.ai/introduction/elements)

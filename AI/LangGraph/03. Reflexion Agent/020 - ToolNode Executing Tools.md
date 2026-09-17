@@ -1,5 +1,7 @@
 # 🔧 ToolNode: "Cỗ máy" thực thi tool giúp bạn tiết kiệm hàng tấn công việc
 
+> Nguồn: `020-ToolNode---Executing-Tools.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/49845787)
+
 Chào các bạn, mình là Eden đây! 👋 Video này đánh dấu một cột mốc quan trọng: chúng ta sẽ implement **tool executor node** (node thực thi tool) — nhân vật nhận vào **AI message** chứa các **search query** mà agent muốn tra cứu, rồi chạy **Tavily** để mang về kết quả và thông tin thời gian thực từ internet.
 
 Tin vui là sau video này, chúng ta sẽ có đủ **mọi mảnh ghép** cho graph và sẵn sàng dựng nó. Cùng vào code thôi!
@@ -27,6 +29,15 @@ Cuối cùng, mình import **`ToolNode`** từ LangGraph, cùng hai class **`Ans
 3. Xem LLM có quyết định **tool call** nào không.
 4. Nếu có, nó **thực thi đúng tool đó** — thậm chí chạy **song song (parallel)** nhiều tool một lúc.
 
+```mermaid
+flowchart TD
+    A[State với key messages] --> B[Đọc message cuối cùng]
+    B --> C{Có tool call}
+    C -->|Có| D[Thực thi tool song song]
+    D --> E[ToolMessages append vào state]
+    C -->|Không| F[Không thực thi gì]
+```
+
 *Trước đây, mọi thứ phải tự làm bằng tay.* Mình từng làm đúng như vậy trong phiên bản gốc của khóa học, nên mình giữ lại phần implementation thủ công đó dưới dạng **bài optional** — để các bạn thấy tận mắt `ToolNode` đã "gánh" giúp chúng ta những gì.
 
 ---
@@ -39,6 +50,13 @@ Nhưng mình không dùng nó "trần" như mọi khi. Từ chính tool đó, m�
 
 * **`answer_question`** — dùng ở **giai đoạn research ban đầu**, khi agent trả lời câu hỏi lần đầu.
 * **`revise_answer`** — dùng ở **giai đoạn revision**, khi agent cải thiện câu trả lời dựa trên **reflection**.
+
+Hai tool chạy chung một function nhưng khác tên, để hệ thống phân biệt rõ giai đoạn:
+
+| Tool | Giai đoạn dùng | Mục đích |
+|---|---|---|
+| `answer_question` | Research ban đầu | Trả lời câu hỏi lần đầu |
+| `revise_answer` | Revision | Cải thiện câu trả lời theo reflection |
 
 Về lý thuyết, dùng một tool duy nhất cũng chạy được. Nhưng **hai cái tên riêng** giúp hệ thống biết chính xác **search được kích hoạt ở giai đoạn nào** — research ban đầu hay research để revise — nhờ đó việc **debug và đánh giá câu trả lời** trở nên dễ dàng hơn nhiều.
 
@@ -61,4 +79,77 @@ Cuối cùng, mình khởi tạo object **`ToolNode`** và truyền vào **list 
 
 Mình format code, commit lên **branch reflection agent** của repository — như mọi khi, commit của video này nằm trong phần **Resources** nhé.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** `ToolNode` tự động làm những bước nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nhìn state ở key `messages` → kiểm tra message cuối → xem có tool call không → nếu có thì thực thi, thậm chí chạy song song nhiều tool.
+
+Giải thích: Nhờ vậy ta không phải tự viết logic thực thi tool bằng tay.
+
+Tham chiếu: Mục ToolNode.
+
+</details>
+
+**Câu 2:** Vì sao tạo hai tool khác tên từ cùng một `TavilySearch`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để biết chính xác search được kích hoạt ở giai đoạn nào — research ban đầu hay revision.
+
+Giải thích: Điều này giúp debug và đánh giá câu trả lời dễ dàng hơn nhiều.
+
+Tham chiếu: Mục Chiêu hay.
+
+</details>
+
+**Câu 3:** `max_results=5` có ý nghĩa gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Mỗi query Tavily trả về tối đa 5 kết quả.
+
+Giải thích: Object `TavilySearch` bọc sẵn chức năng search engine thành một LangChain tool.
+
+Tham chiếu: Mục Chiêu hay.
+
+</details>
+
+**Câu 4:** `StructuredTool.from_function` giúp gì cho function `run_queries`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Biến Python function thành tool có đầy đủ schema và description để LLM dùng đúng cách.
+
+Giải thích: Từ đó "đúc" ra hai tool mang tên hai class `AnswerQuestion` và `ReviseAnswer`.
+
+Tham chiếu: Mục Lắp ráp.
+
+</details>
+
+**Câu 5:** Vì sao `run_queries` thêm `**kwargs` vào chữ ký hàm?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để nếu LLM truyền thêm giá trị nào khác thì hàm cũng không bị lỗi.
+
+Giải thích: Implementation chạy tool search và dùng `batch` để thực thi đồng thời các query.
+
+Tham chiếu: Mục Lắp ráp.
+
+</details>
+
 Vậy là toàn bộ "đồ nghề" đã sẵn sàng, chúng ta có thể dựng graph được rồi! Còn một món quà nhỏ: trong các bài **optional** kế tiếp, mình sẽ đưa các bạn về "thời kỳ đồ đá" — tự tay viết tool executor mà không có `ToolNode` — để bạn thấy rõ giá trị của nó. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — ToolNode - Executing Tools](https://ua.udemy.com/course/langgraph/learn/lecture/49845787)
+- [LangGraph Reference — ToolNode](https://reference.langchain.com/python/langgraph.prebuilt/tool_node)
+- [Tavily Docs — Welcome](https://docs.tavily.com/)

@@ -1,5 +1,7 @@
 # 🛠️ Harness Engineering: Vì sao không thể "chia việc cho 100 agent" là xong?
 
+> Nguồn: `169-Harness-Engineering.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/55968663)
+
 Trong cuộc trò chuyện với Roy Miara, có một chủ đề khiến mình trăn trở mãi: **harness engineering** – cách dựng môi trường vận hành ổn định để agent làm được những việc ngày càng phức tạp. Hóa ra, con đường từ bản POC (proof of concept) đến production không hề bằng phẳng như vẻ ngoài của những sản phẩm "ra mắt nhanh".
 
 Cùng mình nghe lại những bài học xương máu mà Tenzai đã trải qua nhé!
@@ -28,6 +30,17 @@ Khi kiến trúc đầu tiên đã nằm trong tay, Tenzai chạy thử trên c�
 
 Roy lấy ví dụ: với một ứng dụng đơn giản chỉ có một trang, vài trăm hoặc vài nghìn dòng code, agent giải quyết rất tốt. Nhưng với bài toán lớn hơn **10 lần hay 100 lần** – một ứng dụng đồ sộ với rất nhiều bề mặt tấn công và rất nhiều code – thì chia việc máy móc cho hàng chục, hàng trăm agent **không đem lại kết quả**.
 
+```mermaid
+flowchart TD
+    A[Bắt đầu với concept] --> B[Chạy thử trên bài test nhỏ]
+    B --> C[Scale lên production]
+    C --> D{Chia việc cho 10 đến 100 agent}
+    D -->|Kỳ vọng ngây thơ| E[Không đem lại kết quả]
+    C --> F[Quản lý context thay vì số agent]
+    F --> G[Giữ nhiệm vụ không phá vỡ context]
+    G --> H[Agent xử lý việc phức tạp trên cùng kiến trúc]
+```
+
 ---
 
 ### 🎯 Điều bạn thực sự quản lý là context
@@ -39,6 +52,12 @@ Nói cách khác, thứ bạn cần quản lý không phải số lượng agent
 1. Khi nào thì **an toàn để phá vỡ (break) hoặc xóa (clear) context**?
 2. Khi nào bạn vẫn cần **giữ nguyên sự tập trung** của agent?
 3. **Phần nào của bài toán có thể giao phó (delegatable)**, phần nào thì không?
+
+| | Chia việc máy móc cho nhiều agent | Quản lý context |
+|---|---|---|
+| Giả định | Càng nhiều agent càng xử lý được bài toán lớn | Agent cần môi trường ổn định và context liền mạch |
+| Kết quả thực tế | Không hoạt động với bài toán lớn gấp 10 đến 100 lần | Giữ context hiệu quả, phá context đúng lúc |
+| Câu hỏi cốt lõi | Cần bao nhiêu agent | Khi nào an toàn để break hoặc clear context |
 
 Đây là những câu hỏi thực sự khó, và Tenzai mất khá nhiều thời gian để hiểu rõ rồi mới chốt được kiến trúc phù hợp.
 
@@ -54,4 +73,77 @@ Roy không nói họ "may mắn", bởi hành trình đó ngốn của họ khô
 
 Tất cả cùng nhau tạo nên **một nền móng vững chắc** để từ đó xây tiếp. *Nếu bạn đang ở giai đoạn "vá víu" đầu tiên của dự án mình – đừng nản, đó là phần không thể thiếu của hành trình.*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao Tenzai phải trải qua nhiều iteration của kiến trúc agent?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì họ bắt đầu từ concept, rồi liên tục vá hệ thống để mở rộng quy mô; đến lúc kỹ sư nhận ra kiến trúc hiện tại không còn đủ sức nâng đỡ đà tiến bộ.
+
+Giải thích: Quá trình này mất nhiều thời gian hơn người ngoài tưởng dù Tenzai ra thị trường sớm.
+
+Tham chiếu: Mục Hành trình nhiều lần lặp kiến trúc.
+
+</details>
+
+**Câu 2:** "Ảo giác về quy mô" mà Roy nói tới là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Niềm tin ngây thơ rằng cứ chia việc cho 10 hay 100 agent là mọi chuyện tự giải quyết – điều này không hoạt động trong thực tế.
+
+Giải thích: Với bài toán lớn gấp 10 đến 100 lần, chia việc máy móc không đem lại kết quả.
+
+Tham chiếu: Mục "Tâm trí agent" và ảo giác về quy mô.
+
+</details>
+
+**Câu 3:** Vì sao "agent state of mind" quan trọng khi scale?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Agent không hề biết hệ thống đang lớn dần hay có nhiều agent chạy song song, nên phải giữ nhiệm vụ ở mức không phá vỡ context quá nhiều.
+
+Giải thích: Cắt đứt context của agent có tác động tiêu cực rất rõ.
+
+Tham chiếu: Mục "Tâm trí agent" và ảo giác về quy mô.
+
+</details>
+
+**Câu 4:** Thứ bạn thực sự cần quản lý là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Context và tính hiệu quả của context, không phải số lượng agent.
+
+Giải thích: Mục tiêu là tạo môi trường ổn định để agent làm việc phức tạp hơn trên cùng một kiến trúc.
+
+Tham chiếu: Mục Điều bạn thực sự quản lý là context.
+
+</details>
+
+**Câu 5:** Ba câu hỏi cốt lõi khi quản lý context là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi nào an toàn để break hoặc clear context; khi nào cần giữ nguyên sự tập trung của agent; phần nào của bài toán có thể giao phó.
+
+Giải thích: Tenzai mất khá nhiều thời gian để trả lời những câu hỏi này trước khi chốt kiến trúc.
+
+Tham chiếu: Mục Điều bạn thực sự quản lý là context.
+
+</details>
+
 Còn một bài toán hóc búa nữa mà mình rất muốn chia sẻ: **variance và hallucination trong production agent**. Hẹn gặp các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Harness Engineering](https://ua.udemy.com/course/langchain/learn/lecture/55968663)
+- [Anthropic Engineering — Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
+- [Anthropic Engineering — Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)

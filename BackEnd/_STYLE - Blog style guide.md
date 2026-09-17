@@ -57,7 +57,7 @@
 - **Được phép sáng tạo**: tiêu đề, đề mục H3, câu chuyển ý, cách kể lại ví dụ cho mạch lạc.
 - **Không được phép**: thêm fact mới, chế số liệu, bịa tên giao thức/API/tool không có trong transcript, đổi quan điểm của giảng viên.
 - Bài không có code (khóa này chủ yếu lý thuyết + hình vẽ) → không chèn code block. Nếu transcript có nhắc lệnh/cấu hình cụ thể thì dùng inline code.
-- Các so sánh (TCP vs UDP, HTTP/1.1 vs 2 vs 3, L4 vs L7...) dùng bullet đối chiếu trong văn xuôi, KHÔNG dùng bảng.
+- Các so sánh (TCP vs UDP, HTTP/1.1 vs 2 vs 3, L4 vs L7...) có thể dùng bullet đối chiếu hoặc bảng ngắn gọn — xem mục 5d.
 
 ## 4. Quy luật ngôn ngữ
 
@@ -72,13 +72,48 @@
 
 ## 5. TUYỆT ĐỐI KHÔNG có
 
-- ~~Quiz / câu hỏi tự kiểm tra~~
-- ~~Bảng biểu~~
-- ~~Mermaid / ASCII diagram~~
 - ~~Marker `Gốc transcript:` / `Cập nhật 2026:`~~
-- ~~Mục `Nguồn tham khảo`~~
-- ~~Dòng nguồn/URL Udemy đầu bài~~
 - ~~Dòng "Bài N — ..." trong tiêu đề~~
+
+## 5b. Diagram — Mermaid đơn giản (ĐƯỢC PHÉP)
+
+- Chèn **Mermaid** khi bài có flow/architecture đáng mô tả: bắt tay TCP/TLS, request lifecycle, proxy chain, load balancing, OSI layers, socket accept flow...
+- Chỉ dùng 2 loại phổ biến: `flowchart TD` (hoặc `LR`) và `sequenceDiagram` (rất hợp cho handshake/request-response). Cấm ASCII diagram; cấm `stateDiagram`/`timeline`/`classDiagram` và syntax experimental.
+- Chỉ vẽ khi giúp hiểu nhanh hơn; diagram phải khớp nội dung đã giải thích trong bài. Không vẽ để trang trí.
+- Label node không chứa ký tự `()<>:` (dễ vỡ parser). Giữ diagram ≤ 12 node.
+- Đặt diagram ngay trong mục H3 liên quan.
+
+## 5c. Quiz tự kiểm tra (ĐƯỢC PHÉP)
+
+- Khuyến khích với bài lý thuyết/nhiều concept; có thể lược với bài ngắn kể chuyện.
+- Nếu có quiz: đúng **5 câu**, chỉ hỏi hiểu bài (concept, flow, trade-off), không hỏi vặn/chi tiết vụn.
+- Đáp án đặt trong khối (mỗi câu một khối):
+
+  ```html
+  <details>
+  <summary><b>Xem đáp án</b></summary>
+
+  **Đáp án:** ...
+  Giải thích: ...
+  Tham chiếu: Mục ...
+
+  </details>
+  ```
+
+- Đặt quiz ở cuối bài, trước đoạn kết/teaser.
+
+## 5d. Bảng đối chiếu (ĐƯỢC PHÉP)
+
+- Dùng khi có **từ 2 khái niệm/giao thức/flow trở lên** cần so sánh rõ (vd: TCP vs UDP, L4 vs L7, HTTP/1.1 vs 2 vs 3).
+- Bảng phải giúp hiểu nhanh hơn văn xuôi; không lập bảng để trang trí.
+- Tên cột ngắn gọn, tối đa ~4–5 cột, số dòng hợp lý.
+
+## 5e. Nguồn tham khảo & trích dẫn (ĐƯỢC PHÉP)
+
+- **Dòng nguồn đầu bài (khuyến khích):** `> Nguồn: \`<tên file transcript gốc>\` · [Udemy](<url>)` — URL lấy từ dòng 3 của file `.txt`.
+- **Cuối bài:** thêm `## Nguồn tham khảo` khi bài có dùng nguồn ngoài thực tế (RFC, docs Nginx/HTTP, paper...) — 1–6 link.
+- **Trích trong thân bài:** khi nêu số liệu/luận điểm lấy từ tài liệu ngoài, chèn `[tên tài liệu](url)` ngay cạnh.
+- Chỉ ghi URL đã đọc/đã xác minh. **CẤM tự chế URL.** Bài không có nguồn ngoài thì bỏ mục này — dòng nguồn đầu bài là đủ.
 
 ## 6. Quy tắc đặt tên file
 
@@ -94,7 +129,7 @@
 - [ ] 3–5 mục H3, mỗi mục một emoji, ngăn bằng `---`
 - [ ] Mọi ý chính trong transcript đều được truyền tải (không bỏ sót mục lớn)
 - [ ] Không thêm fact/số liệu ngoài transcript
-- [ ] Không có quiz, bảng, diagram, marker, nguồn tham khảo
+- [ ] Không có marker; Mermaid/bảng/quiz/nguồn tham khảo (nếu có) đúng quy định và khớp nội dung
 - [ ] Kết bài chốt ý + teaser
 - [ ] Tên file đúng chuẩn `NNN - Ten.md`
 
@@ -113,7 +148,13 @@ Chuyển transcript đính kèm thành 1 bài blog tiếng Việt theo đúng st
 - Giữ ĐỦ mọi ý chính, ví dụ, con số trong transcript; KHÔNG bịa
 - Thuật ngữ Anh kèm giải nghĩa trong ngoặc khi cần
 - Độ dài 50-120 dòng tùy bài
-- KHÔNG quiz, KHÔNG bảng, KHÔNG mermaid/ASCII, KHÔNG marker, KHÔNG nguồn tham khảo
+- KHÔNG marker
+- Được chèn Mermaid đơn giản (flowchart TD/LR hoặc sequenceDiagram) khi bài có flow;
+  label không chứa ()<>:, diagram khớp nội dung
+- Được dùng bảng đối chiếu khi có 2+ khái niệm cần so sánh
+- Nếu có quiz: 5 câu, đáp án trong <details><summary><b>Xem đáp án</b></summary>
+- Nguồn: dòng nguồn đầu bài (tên file txt + URL Udemy lấy từ dòng 3 của txt);
+  cuối bài thêm "## Nguồn tham khảo" khi có nguồn ngoài thật, chỉ URL đã xác minh
 
 Chuẩn format tham chiếu: Langchain/01. Introduction/001-004 (chỉ format, giọng văn là Hussein).
 Xuất ra file: <NNN - Ten bai.md> cùng thư mục. Không sửa file .txt gốc.

@@ -1,5 +1,7 @@
 # 🚦 HTTP Graceful Connection Shutdown: cách server tạm biệt client một cách êm ái
 
+> Nguồn: `059-HTTP-Graceful-Connection-Shutdown.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/52961639)
+
 Có rất nhiều lý do khiến một server muốn đóng connection đang mở — từ client "phá" connection, đến server quá tải, đến việc connection đã bị dùng quá lâu và tích tụ đầy rác trong bộ nhớ. Đóng thẳng tay thì dễ, nhưng làm sao để đóng mà **không đập cửa vào mặt người ta** mới là nghệ thuật: đó chính là **graceful shutdown (tắt êm)**.
 
 Trong bài này, mình sẽ nói vì sao chúng ta cần graceful shutdown, cách nó hoạt động trong **HTTP/1.1** với `Connection: close`, và cách HTTP/2 làm điều tương tự bằng **GOAWAY frame** — kèm câu chuyện về những bug đã từng khiến cả trang web bị vỡ.
@@ -50,11 +52,28 @@ Vậy nếu muốn gửi thêm request, bạn chỉ cần tạo stream mới tr�
 
 Đó là lý do khi HTTP/2 bắt đầu phổ biến: bạn chỉ cần **bật một bit** báo "server hỗ trợ HTTP/2" qua **ALPN trong TLS**, Chrome lập tức gửi ồ ạt request vì không còn hàng đợi của pool nữa — "trước đây tôi gửi sáu cái một lúc, giờ tôi gửi được 100". Backend quá tải chỉ vì một bit được bật lên, và có rất nhiều ví dụ ngoài kia. Giải pháp "thêm phần cứng, dựng thêm server" thì đúng là có tác dụng — nhưng nếu không hiểu gốc rễ, bạn sẽ mãi tự hỏi chuyện gì đã xảy ra. *Đó không phải cách mình làm việc: mình luôn muốn đi tới tận cùng của vấn đề, để không còn bị "mù" nữa.*
 
+| Tiêu chí | HTTP/1.1 | HTTP/2 |
+|---|---|---|
+| Đơn vị tái sử dụng | Connection pool theo từng domain | Một connection, nhiều stream |
+| Giới hạn đồng thời | Khoảng 6 connection mỗi domain | Max concurrent streams, thường 100–200 |
+| Cách thông báo đóng | Header `Connection: close` | GOAWAY frame kèm stream number cuối |
+| Vấn đề đi kèm | Ít, cơ chế đơn giản | Client bug không hiểu GOAWAY, không retry |
+
 ---
 
 ### 🚪 GOAWAY frame: lời tạm biệt lịch sự và những bug để đời
 
 Trong HTTP/2, cách graceful shutdown có tên là **GOAWAY frame** — một **setting frame** giống như frame server dùng để báo window size hay max concurrent streams. Trong GOAWAY, server gửi kèm **stream number cuối cùng mà nó cam kết sẽ xử lý**; mọi stream phía trên số đó, server nói thẳng: "Tôi không hứa xử lý thêm đâu".
+
+```mermaid
+sequenceDiagram
+    participant S as Server
+    participant C as Client
+    C->>S: Gửi request tới stream 101
+    S-->>C: GOAWAY 101
+    C->>S: Vẫn tạo stream 103 và 105
+    S--xC: Từ chối và đóng connection
+```
 
 Và đây là phần thú vị: **trong khoảng 2017–2018**, suốt một thời gian dài, **Chrome và Firefox mắc bug** — server gửi GOAWAY frame nhưng Chrome không hiểu đó là gì, vì tính năng chưa được implement hoặc implement sai. Có một **bug của Chrome với số hiệu 40555364** cho ai muốn tra cứu.
 
@@ -64,4 +83,77 @@ Bug thứ hai còn tệ hơn: không chỉ tiếp tục gửi request, Chrome/Fi
 
 Ngay cả khi mọi bên cư xử đúng, vẫn có một **race condition**: vì độ trễ mạng, client có thể nhận GOAWAY frame **muộn hơn**, khi nó đã gửi một loạt request sau mốc 101 rồi. Trong trường hợp đó, **client phải tự chịu trách nhiệm** graceful shutdown connection: "À, GOAWAY đã tới, connection đang đóng... mình lỡ gửi mấy request sau 101 rồi, tốt nhất nên retry chúng". Bạn có thể **tự phục hồi một cách êm ái** — nghe thật đẹp phải không?
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao server muốn đóng connection định kỳ?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì connection dùng lâu tích tụ rác và cấu trúc dữ liệu cache; đóng nó là cách bảo ứng dụng dọn dẹp và giải phóng memory.
+
+Giải thích: Đặc biệt đúng với lập trình hướng đối tượng đầy nested object nặng.
+
+Tham chiếu: Mục Vì sao server lại muốn đóng một connection.
+
+</details>
+
+**Câu 2:** Graceful shutdown khác đóng thẳng tay ở điểm nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó cho cả server lẫn client thời gian bảo trì — server xử lý nốt request đã nhận, client biết để ngừng gửi request mới.
+
+Giải thích: Thay vì đóng sầm cửa, ta thông báo trước một cách lịch sự.
+
+Tham chiếu: Mục Graceful shutdown.
+
+</details>
+
+**Câu 3:** HTTP/1.1 dùng gì để khởi tạo việc đóng connection?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Response header `Connection: close` — cả client lẫn server đều có thể gửi.
+
+Giải thích: Mặc định HTTP/1.1 là keep-alive; header này nói "tôi không muốn giữ connection nữa".
+
+Tham chiếu: Mục HTTP/1.1.
+
+</details>
+
+**Câu 4:** HTTP/2 graceful shutdown hoạt động thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Server gửi GOAWAY frame kèm stream number cuối cùng cam kết xử lý; client nên tạo connection mới và retry các stream phía trên số đó.
+
+Giải thích: Race condition xảy ra khi client nhận GOAWAY muộn — client phải tự chịu trách nhiệm phục hồi êm ái.
+
+Tham chiếu: Mục GOAWAY frame.
+
+</details>
+
+**Câu 5:** Bug của Chrome và Firefox giai đoạn 2017–2018 là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Client không hiểu GOAWAY nên tiếp tục tạo request mới, và không bao giờ retry những request nằm trên stream number cam kết — khiến trang web bị vỡ.
+
+Giải thích: Chỉ cần một file CSS hoặc JavaScript không load được là cả trang hỏng.
+
+Tham chiếu: Mục GOAWAY frame.
+
+</details>
+
 **Tóm lại:** graceful shutdown là thứ cực kỳ quan trọng và chúng ta cần nó. Vì client cư xử tệ, vì bảo trì, vì một connection cần phải "đi" — kể cả khi server không hề quá tải, ta vẫn đóng connection cũ và tạo connection mới tinh, để mọi cấu trúc dữ liệu liên quan biến mất, và thông báo cho backend dọn dẹp. Hy vọng backend đủ thông minh để tìm hết cấu trúc liên quan và xóa sạch, để cái mới được dựng lên. Chuyện cache cũ có bị bỏ hay không là quyết định của backend — có thể cache vẫn được tái sử dụng cho connection mới, tất cả tùy vào implementation. Đó là cách graceful shutdown hoạt động trong HTTP/1.1 và HTTP/2, và riêng chuyện GOAWAY thì thật sự rất đáng để các bạn đào sâu. Hẹn gặp lại các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — HTTP Graceful Connection Shutdown](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/52961639)
+- [RFC 9113 — HTTP/2, mục 6.8 GOAWAY](https://www.rfc-editor.org/rfc/rfc9113.html#section-6.8)
+- [nginx docs — keepalive_requests](https://nginx.org/en/docs/http/ngx_http_core_module.html#keepalive_requests)

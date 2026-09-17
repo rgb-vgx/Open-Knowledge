@@ -1,5 +1,7 @@
 # ⚔️ Open Source LLM vs Managed LLM: Doanh nghiệp nên chọn bên nào?
 
+> Nguồn: `079-Open-Source-LLMs-VS-Managed-LLM-Providers-Deepseek.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/48369147)
+
 Chào các bạn, Eden đây! Hôm nay mình muốn giải đáp một câu hỏi mình nhận được rất nhiều: **khi đưa LLM lên production, nên dùng open source LLM (như Deepseek, Llama 3.2) hay managed LLM (như GPT-4o mini của OpenAI, Sonnet của Anthropic, hay Google Gemini)?**
 
 Góc nhìn của mình ở đây là **góc nhìn của một tổ chức doanh nghiệp (enterprise)** và mình khuyên họ nên làm gì. Tất nhiên, **không có giải pháp "one size fits all"** — mỗi use case cần được cân nhắc độc lập. Đây chỉ là ý kiến chung của mình.
@@ -55,4 +57,94 @@ Ví dụ: **Anthropic có model trên cả AWS Bedrock và Google Cloud** — kh
 
 Cuối cùng, về **fine-tuning**: bạn hoàn toàn có thể fine-tune model độc quyền và các vendor đều cung cấp tính năng này. Nhưng cá nhân mình **không phải fan của fine-tuning**, vì đa số trường hợp **ta không thật sự cần** — nó chỉ làm tốn thời gian tạo dataset và compute để train. Với các model hiện đại ngày nay, chỉ cần **prompt đúng và một vài few-shot example**, ta đã đạt kết quả tuyệt vời mà không cần fine-tune. *(Nếu các bạn muốn mình làm một video đào sâu chủ đề này, hãy cho mình biết nhé!)*
 
+| Tiêu chí | Open source LLM | Managed LLM |
+|---|---|---|
+| Chi phí | Model miễn phí nhưng tốn GPU, engineer và ops; qua managed service thì giá không rẻ hơn đáng kể | Trả theo token; model first-party ngày càng tốt hơn, nhanh hơn, rẻ hơn |
+| Tùy biến | Fine-tune cho tác vụ hoặc domain cụ thể | Có hỗ trợ fine-tuning nhưng mình không khuyên dùng |
+| Kiểm soát và privacy | Host nội bộ, dữ liệu không rời hạ tầng — lợi thế lớn nhất | Dữ liệu gửi cho vendor; nhiều model đã có trên AWS Bedrock, Google Cloud |
+| Vận hành | Tự lo availability, durability, scalability, security | Không phải lo deployment, plug and play |
+| Compliance | Tự chứng minh với cơ quan quản lý | Phần lớn đã tuân thủ SOC 2 và HIPAA |
+
+```mermaid
+flowchart TD
+    A[Bài toán LLM production] --> B{Dữ liệu có nhạy cảm và bị quản lý chặt không}
+    B -->|Có, compliance nghiêm ngặt| C[Tự host open source]
+    B -->|Không quá nghiêm ngặt| D[Managed LLM]
+    C --> E[Toàn quyền kiểm soát nhưng tốn GPU và vận hành]
+    D --> F[Plug and play nhưng dữ liệu gửi ra vendor]
+```
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao "tiết kiệm chi phí" của open source không thật sự đúng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì triển khai phục vụ khách hàng ở quy mô lớn rất khó — tốn GPU, engineer và đội ops; còn dùng managed service host open source thì giá không rẻ hơn đáng kể.
+
+Giải thích: Nhiệm vụ bị "chệch hướng" từ phát triển ứng dụng sang vận hành model.
+
+Tham chiếu: Mục Nhưng sự thật về chi phí.
+
+</details>
+
+**Câu 2:** Lợi thế lớn nhất của open source theo bài là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kiểm soát và quyền riêng tư — host model trên server nội bộ, dữ liệu không rời hạ tầng.
+
+Giải thích: Đặc biệt quan trọng với ngân hàng, bệnh viện, tổ chức xử lý dữ liệu sức khỏe.
+
+Tham chiếu: Mục Open source LLM.
+
+</details>
+
+**Câu 3:** Vì sao dùng Groq — managed service host open source — lại làm mất lợi ích?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì điều bạn muốn là model nằm trên server của mình để riêng tư và kiểm soát nội dung sinh ra; dùng service bên ngoài là mất điều đó.
+
+Giải thích: Bạn không còn toàn quyền với dữ liệu và model nữa.
+
+Tham chiếu: Mục Nhưng sự thật về chi phí.
+
+</details>
+
+**Câu 4:** "Con voi trong phòng" của managed LLM được phản biện thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nỗi lo gửi dữ liệu nhạy cảm cho bên thứ ba — nhưng rất nhiều tổ chức đã ở trên cloud, và Anthropic có model trên AWS Bedrock lẫn Google Cloud, dữ liệu vốn đã ở đó.
+
+Giải thích: Nếu bạn đã deploy trên Google Cloud, dùng Gemini chẳng khác gì thêm một managed service khác.
+
+Tham chiếu: Mục Managed LLM.
+
+</details>
+
+**Câu 5:** Quan điểm của mình về fine-tuning là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không phải fan — đa số trường hợp không thật sự cần; chỉ cần prompt đúng và vài few-shot example là đã đạt kết quả tốt.
+
+Giải thích: Fine-tuning tốn thời gian tạo dataset và compute để train.
+
+Tham chiếu: Mục Managed LLM.
+
+</details>
+
 Chọn open source hay managed không có đáp án chung — hãy nhìn vào mức độ nhạy cảm dữ liệu, yêu cầu compliance, nguồn lực vận hành và bài toán cụ thể của mình. Hẹn gặp các bạn ở bài sau! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Open Source LLMs VS Managed LLM Providers (Deepseek)](https://ua.udemy.com/course/langchain/learn/lecture/48369147)
+- [DeepSeek — open source models trên GitHub](https://github.com/deepseek-ai/DeepSeek-R1)
+- [AWS Docs — Anthropic Claude models on Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-anthropic.html)

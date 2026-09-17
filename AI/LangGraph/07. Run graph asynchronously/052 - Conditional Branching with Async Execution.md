@@ -1,5 +1,7 @@
 # 🔀 Conditional branching với async: Rẽ nhánh theo điều kiện mà các node vẫn chạy song song
 
+> Nguồn: `052-Conditional-Branching-With-Async-Execution.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/44872303)
+
 Chào các bạn, Eden đây! 👋 Trong bài này, chúng ta sẽ kết hợp hai "tuyệt chiêu" đã học: **conditional branching (rẽ nhánh theo điều kiện)** và **async execution (chạy bất đồng bộ)**. Kết quả sẽ là một graph vừa biết "suy nghĩ" để chọn đường, vừa biết chạy song song để tiết kiệm thời gian.
 
 Topology của bài hôm nay như sau:
@@ -19,6 +21,13 @@ Topology của bài hôm nay như sau:
 
 * **`"bc"`** — chạy song song node B và node C.
 * **`"cd"`** — chạy song song node C và node D.
+
+Hai nhánh tương ứng với hai giá trị của `which`:
+
+| Giá trị `which` | Node chạy song song | Sau đó |
+|---|---|---|
+| `"bc"` | B và C | B, C → E |
+| `"cd"` | C và D | C, D → E |
 
 Giá trị này do **người dùng truyền vào lúc invoke graph**, dưới dạng string. Các bạn để ý: node C xuất hiện ở cả hai nhánh — chi tiết này khiến bài toán rẽ nhánh trở nên thú vị hơn một chút.
 
@@ -65,6 +74,93 @@ Mình comment dòng invoke để vẽ graph trước — topology in ra **chính
 
 Đổi `which` thành `"cd"` rồi chạy lại: lần này **C và D** chạy song song trước khi gom về E. Mọi thứ hoạt động chính xác với toàn bộ conditional edge.
 
+Sơ đồ topology với hai nhánh điều kiện:
+
+```mermaid
+flowchart TD
+    S[START] --> A[Node A]
+    A -->|which bc| B[Node B]
+    A -->|which bc hoặc cd| C[Node C]
+    A -->|which cd| D[Node D]
+    B --> E[Node E]
+    C --> E
+    D --> E
+    E --> F[END]
+```
+
 Các bạn có thể xem trace chi tiết của cả hai lần chạy trên **LangSmith** — cách đọc trace vẫn giống các bài trước nên mình không nhắc lại nữa. Hãy tự chạy thử trong môi trường của mình để cảm nhận rõ nhất nhé!
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Attribute `which` trong state dùng để làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Làm "công tắc" quyết định nhánh song song nào sẽ chạy, do người dùng truyền vào lúc invoke.
+
+Giải thích: `"bc"` chạy B và C; `"cd"` chạy C và D.
+
+Tham chiếu: Mục Cập nhật state.
+
+</details>
+
+**Câu 2:** Hàm conditional edge `route_bc_or_cd` trả về gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một sequence (list các string) tên các node sẽ được thực thi song song.
+
+Giải thích: `which` là `"cd"` thì trả `["c", "d"]`, ngược lại trả `["b", "c"]`.
+
+Tham chiếu: Mục Dựng node và hàm định tuyến.
+
+</details>
+
+**Câu 3:** `path_map` (biến `intermediate`) có vai trò gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Giúp LangGraph vẽ graph đúng các node có thể đi tới từ A.
+
+Giải thích: Bỏ qua nó, graph sẽ mặc định A đi tới mọi node và sinh edge thừa.
+
+Tham chiếu: Mục add_conditional_edges và bí mật của path_map.
+
+</details>
+
+**Câu 4:** Vì sao node C xuất hiện ở cả hai nhánh?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nhánh `"bc"` chạy B và C, nhánh `"cd"` chạy C và D — C là node chung của cả hai.
+
+Giải thích: Chính chi tiết này khiến bài toán rẽ nhánh thú vị hơn một chút.
+
+Tham chiếu: Mục Cập nhật state.
+
+</details>
+
+**Câu 5:** Kết quả khi invoke với `which = "cd"` là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** A chạy trước, sau đó C và D chạy song song, rồi tất cả gom về E.
+
+Giải thích: Conditional edge định tuyến dựa trên state lúc invoke.
+
+Tham chiếu: Mục Chạy thử hai kịch bản.
+
+</details>
+
 Ở bài cuối của section, chúng ta sẽ dừng lại một chút để nhìn vào **mặt trái của async execution**: những rủi ro cần đề phòng và best practice để tránh chúng. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Conditional Branching With Async Execution](https://ua.udemy.com/course/langgraph/learn/lecture/44872303)
+- [LangGraph Docs — Use the graph API](https://docs.langchain.com/oss/python/langgraph/use-graph-api)
+- [LangGraph Docs — Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)

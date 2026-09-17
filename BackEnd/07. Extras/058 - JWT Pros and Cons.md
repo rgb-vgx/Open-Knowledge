@@ -1,5 +1,7 @@
 # 🔐 JWT — "Viên đạn bạc" của xác thực stateless và cái giá không hề rẻ
 
+> Nguồn: `054-JSON-Web-Token-JWT-its-Pros-and-Cons.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/43772288)
+
 Chào các bạn! Xác thực người dùng là bài toán mà ai làm backend cũng phải giải, và mình đã chứng kiến cả một thế hệ đi từ **session-based authentication** sang **JWT** rồi lại vật lộn với refresh token. Hôm nay mình sẽ kể cho các bạn toàn bộ câu chuyện đó: session cũ có gì hay, JWT sinh ra để giải quyết gì, refresh token và asymmetric JWT là gì, kèm một ví dụ code Postgres + Express mình tự viết — và cuối cùng là pros/cons thẳng thắn.
 
 *Không có công nghệ nào hoàn hảo. Trong software engineering, mọi thứ đều có pros và cons, và bạn với vai trò kỹ sư phải đánh giá use case của mình rồi chọn cái phù hợp nhất. Đừng bao giờ gắn chặt vào một công nghệ.*
@@ -56,6 +58,20 @@ Và đây là điều cực kỳ quan trọng mà nhiều người hiểu sai: *
 
 Đăng nhập thì vẫn y hệt session: vẫn phải query database để kiểm tra username/password, vẫn dùng TLS, rồi server tạo token và trả về cho client. Client vẫn chịu trách nhiệm gửi token kèm mỗi request — qua `Authorization: Bearer`, qua cookie, gửi sao cũng được. Cách mình khuyên là **HTTP-only cookie + same-site strict**, và nếu muốn paranoid hơn nữa thì thêm `Secure`.
 
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant A as Auth Service
+    participant D as Database
+    participant S as Service khác
+    C->>A: Đăng nhập username password
+    A->>D: Query kiểm tra
+    D-->>A: Hợp lệ
+    A-->>C: Trả JWT
+    C->>S: Gửi request kèm token
+    S->>S: Verify bằng secret hoặc public key
+```
+
 Khác biệt nằm ở bước verify: server chỉ cần secret để kiểm tra signature, **hoàn toàn không hit database**. *"I didn't even have to query a database to trust you"* — đó là sức mạnh thật sự của JWT. Mang token sang bất kỳ service nào hiểu JWT, họ tự verify được; OAuth 2 cũng chạy theo cách này: bạn xác thực với Google, Google trả bạn một JWT, và bạn mang đi đâu cũng verify được cho tới khi nó hết hạn.
 
 Nhưng **nothing is free**. Secret phải được chia sẻ với mọi service muốn verify token — và ai có secret thì có thể tự tạo token cho chính mình, thậm chí tạo token không bao giờ hết hạn. Vì vậy trong kiến trúc microservices, đặc biệt là **zero trust (không ai tin ai)**, gần như không ai dùng symmetric key. Giải pháp là **asymmetric JWT**: chỉ authentication service giữ private key, còn các service khác chỉ cần public key — kể cả service bạn không tin tưởng cũng không thể làm gì ngoài việc verify.
@@ -99,6 +115,87 @@ Một lưu ý nữa: mình để secret ngay trong code — **bad idea, đừng 
 * **Revocation và kiểm soát token** gần như không thể: state nằm trong token, không sửa được, muốn thu hồi thì phải quay về centralized. Cách mình thích là server định kỳ **kiểm tra trạng thái token bất đồng bộ** — request đến vẫn nhanh, không phải gánh database mỗi lần.
 * **Thư viện implement ẩu**: có thư viện cho phép `alg: none` — signature rỗng vẫn là token hợp lệ, thế là attacker tự chế JWT và claim mình là admin. Lỗi này tồn tại đến tận năm 2015 mới bị phát hiện. Một diễn giả tên Philip có bài nói rất hay về các bad practice với JWT.
 
+| Tiêu chí | Session | JWT |
+|---|---|---|
+| State | Lưu trong database | Nằm ngay trong token |
+| Verify mỗi request | Query database | Chỉ cần secret hoặc public key |
+| Thu hồi token | Xóa session là xong | Gần như không thể |
+| Log out | Hiệu lực ngay lập tức | Chờ hết hạn hoặc giết refresh token |
+| Hợp với | Ứng dụng truyền thống | API, microservices, zero trust |
+
 *Quan điểm của mình: mình vẫn dùng JWT, thiết kế của nó đẹp. Nhưng mình không dùng refresh token — mình thấy nó không cần thiết và không muốn đẩy việc sinh token về phía client.* Cách mình thích là chỉ dùng access token **không giới hạn thời gian**, lưu token trong database, và cứ 10 phút server async kiểm tra một lần xem token còn hợp lệ không. Nếu phát hiện bất thường — request từ IP lạ, hoặc token bị báo là đã mất — mình xóa entry đó khỏi database, kẻ tấn công có thêm tối đa khoảng 15 phút trước khi mọi thứ chấm dứt. OAuth 2 thì dùng refresh token, có thể vì lý do gì đó, nhưng cá nhân mình vẫn chưa hiểu hết lý do đó — và đó cũng chỉ là ý kiến của mình, các bạn cứ thoải mái phản biện.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao nói session-based authentication vừa stateful vừa stateless?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hệ thống là stateful vì session ID lưu trong database, nhưng application là stateless vì có thể destroy server, server mới chỉ cần database là resume được.
+
+Giải thích: Database chính là state thật — nhân bản database thì scale ngang thoải mái.
+
+Tham chiếu: Mục Stateful system nhưng stateless application.
+
+</details>
+
+**Câu 2:** JWT gồm những phần nào và phần nào bảo vệ payload khỏi bị sửa?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Header, payload, signature — signature chặn việc tự sửa payload vì chỉ server có secret để tạo chữ ký hợp lệ.
+
+Giải thích: JWT không được mã hóa, chỉ được ký; payload base64 ai cũng đọc được.
+
+Tham chiếu: Mục Cấu trúc JWT.
+
+</details>
+
+**Câu 3:** Vì sao kiến trúc zero trust gần như không dùng symmetric key?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì ai có secret thì có thể tự tạo token, kể cả token không bao giờ hết hạn — nên dùng asymmetric, chỉ authentication service giữ private key.
+
+Giải thích: Các service khác chỉ cần public key để verify, không thể tạo token mới.
+
+Tham chiếu: Mục Luồng đăng nhập JWT.
+
+</details>
+
+**Câu 4:** Điểm gãy lớn nhất của JWT là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Token bị đánh cắp thì không thể thu hồi — khái niệm log out gần như không tồn tại.
+
+Giải thích: Không có database để tuyên bố token vô hiệu, phải chờ hết hạn hoặc giết refresh token.
+
+Tham chiếu: Mục Luồng đăng nhập JWT.
+
+</details>
+
+**Câu 5:** Vì sao refresh token được nói là "session trá hình"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó được lưu trong database và server phải hit database để kiểm tra — hệ thống quay lại centralized, chỉ khác là hit mỗi 15 phút thay vì mỗi request.
+
+Giải thích: Access token sống ngắn 10–15 phút, refresh token sống dài và nằm trong database.
+
+Tham chiếu: Mục Luồng đăng nhập JWT.
+
+</details>
+
 Vậy bạn chọn gì: team session ID "cổ điển" hay team JWT? Và nhớ, không có phương pháp xác thực nào là tốt nhất — tất cả phụ thuộc vào use case của bạn. Hẹn gặp các bạn ở bài tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — JSON Web Token (JWT), its Pros and Cons](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/43772288)
+- [jwt.io — Introduction to JSON Web Tokens](https://www.jwt.io/introduction)
+- [RFC 7519 — JSON Web Token (JWT)](https://www.rfc-editor.org/rfc/rfc7519)

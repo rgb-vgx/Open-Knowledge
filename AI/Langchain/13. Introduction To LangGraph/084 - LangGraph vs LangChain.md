@@ -1,5 +1,7 @@
 # ⚖️ Vì sao LangGraph ra đời? Cuộc "so găng" chi tiết với LangChain
 
+> Nguồn: `084-Why-LangGraph-LangGraph-VS-LangChain.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/50029199)
+
 Chào các bạn, Eden đây! Bài này sẽ mang hơi hướng **lý thuyết và triết lý** một chút, vì chúng ta sẽ cùng trả lời câu hỏi lớn: **động lực nào khiến đội ngũ LangChain tạo ra LangGraph?**
 
 Trước khi bắt đầu, mình muốn gửi lời cảm ơn lớn đến đội ngũ **LangChain** vì đã cung cấp một số slide và hình minh họa để mình dùng trong bài này.
@@ -25,6 +27,23 @@ Tiến thêm một bước, chúng ta có khái niệm **chaining**: lấy outpu
 3. Truy xuất những **document liên quan** có khả năng giúp trả lời câu hỏi.
 4. Lấy prompt gốc, **augment (tăng cường)** thêm ngữ cảnh rồi gửi tất cả cho LLM.
 5. LLM cuối cùng sinh ra câu trả lời.
+
+Toàn bộ luồng RAG đó được mô tả ngắn gọn bằng sơ đồ tuần tự sau:
+
+```mermaid
+sequenceDiagram
+    participant U as Người dùng
+    participant L1 as LLM đầu tiên
+    participant E as Embeddings
+    participant D as Document store
+    participant L2 as LLM cuối
+    U->>L1: Câu hỏi gốc
+    L1->>E: Embed câu hỏi
+    E->>D: Truy xuất document liên quan
+    D-->>L1: Ngữ cảnh tìm được
+    L1->>L2: Prompt gốc đã augment
+    L2-->>U: Câu trả lời cuối
+```
 
 Đây chỉ là một ví dụ; còn vô số use case và flow chain khác. Tóm lại, trong một **chain**, LLM quyết định output ở **nhiều bước** chứ không chỉ một bước.
 
@@ -74,4 +93,85 @@ Và một điều thú vị: trong LangGraph, bạn có thể viết **bất k�
 
 Một động lực khác để kiến trúc phần mềm dưới dạng graph: hầu hết các **paper về agentic application** đều minh họa hành vi agent bằng graph, nên mô tả giải pháp dưới dạng graph rất tự nhiên, **dễ đọc, dễ bảo trì, dễ test và monitor**.
 
+| Tiêu chí | LangChain | LangGraph |
+|---|---|---|
+| Loại flow | Acyclic, đi một chiều | Graph có cycles, như state machine |
+| Ai quyết định đường đi | Developer định nghĩa, LLM chỉ sinh output từng bước | Developer định nghĩa flow, LLM quyết định đi đâu trong flow |
+| Persistence | Không tích hợp sẵn | Lưu state, resume đúng điểm dừng |
+| Human-in-the-loop | Khó implement | Tích hợp sẵn |
+| Tracing và debugging | Hạn chế | LangSmith out of the box |
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao autonomous agent linh hoạt nhưng không đáng tin cậy?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì quá phụ thuộc vào LLM — thứ chỉ là cỗ máy thống kê đoán từng token.
+
+Giải thích: RGPT, GPT Engineer, BabyAGI không hướng tới production và không được dùng trong production.
+
+Tham chiếu: Mục Phổ tự chủ.
+
+</details>
+
+**Câu 2:** Điểm khác biệt chính giữa chain và agent là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chain là một chiều; agent có cycles.
+
+Giải thích: Chính các vòng lặp mang lại cho ứng dụng thuộc tính agentic.
+
+Tham chiếu: Mục Agent là gì.
+
+</details>
+
+**Câu 3:** Function calling giúp LLM quyết định bước đi như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Ta gửi kèm mô tả tool gồm arguments, title, chức năng và giá trị trả về; LLM chọn hàm cùng arguments.
+
+Giải thích: Tool decorator giúp việc gửi mô tả trở nên dễ dàng; ta chỉ việc gọi function LLM đã chọn.
+
+Tham chiếu: Mục Agent là gì.
+
+</details>
+
+**Câu 4:** LangGraph giải quyết vấn đề "quá linh hoạt" của ReAct như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thu hẹp scope, giảm một chiều tự do: developer định nghĩa flow dạng graph có cycles, LLM chỉ định đi đâu trong flow.
+
+Giải thích: Việc giảm tự do giúp tăng mạnh độ tin cậy — đủ để đưa vào production.
+
+Tham chiếu: Mục ReAct.
+
+</details>
+
+**Câu 5:** Kể tên ít nhất hai building block mà LangGraph cung cấp cho agentic application.
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Ví dụ: persistence, human-in-the-loop, time traveling, chạy node song song, tracing tích hợp LangSmith.
+
+Giải thích: Đây là lý do LangGraph rất opinionated cho agentic application thay vì dùng Airflow hay NetworkX.
+
+Tham chiếu: Mục ReAct.
+
+</details>
+
 Tóm lại: chúng ta kiểm soát flow, viết ra flow, tích hợp LLM để quyết định đi đâu và thực thi gì — kèm **cycles**. Vì là state machine nên cần có **state (trạng thái)**: state được **chia sẻ giữa các node và edge**, lưu mọi kết quả trung gian, và cung cấp thông tin hữu ích cho LLM để quyết định đường đi. Ở bài tiếp theo, chúng ta sẽ làm quen với hai khái niệm nền tảng: **graph** và **state machine** nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Why LangGraph, LangGraph VS LangChain](https://ua.udemy.com/course/langchain/learn/lecture/50029199)
+- [LangGraph overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/overview)
+- [LangChain overview — Docs by LangChain](https://docs.langchain.com/oss/python/langchain/overview)

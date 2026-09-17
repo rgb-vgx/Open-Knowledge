@@ -1,5 +1,7 @@
 # 🗂️ Cấu trúc code "chuẩn production": Để repository phản ánh đúng kiến trúc graph
 
+> Nguồn: `029-Code-Structure.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43781506)
+
 Chào các bạn, Eden đây! Trong bài này, chúng ta sẽ cùng xem qua **cấu trúc repository** để tổ chức code sao cho dễ đọc, dễ bảo trì và dễ viết test — từ đó ứng dụng của chúng ta trở nên **robust (vững chắc)** hơn.
 
 ### 🏗️ Triết lý: Repository structure phải phản ánh architecture
@@ -42,4 +44,77 @@ Test này đương nhiên phải pass. Mình chạy lệnh `pytest . -v` trong t
 
 Sau đó, mình cấu hình luôn **runner trong PyCharm**: vào **Edit configurations** ở góc trên bên phải, bấm nút **plus**, chọn **Python tests** rồi chọn **Pytest**; đặt **script path** là thư mục gốc và **parameters** là `. -v` giống như vừa rồi. Chạy thử — test thành công, và chúng ta còn xem được chi tiết quá trình thực thi. Điều này sẽ rất tiện lợi khi viết và chạy test về sau.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Triết lý chủ đạo khi tổ chức repository trong bài là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cấu trúc repository nên phản ánh kiến trúc của chính nó — ở đây là kiến trúc graph với node và edge.
+
+Giải thích: Nhờ đó code dễ đọc, dễ bảo trì và dễ viết test hơn.
+
+Tham chiếu: Mục Triết lý.
+
+</details>
+
+**Câu 2:** File `graph.py` và `state.py` đảm nhiệm vai trò gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `graph.py` kết nối các node, edge và mối liên hệ giữa chúng; `state.py` chứa graph state object bị thay đổi trong quá trình thực thi.
+
+Giải thích: `const.py` chứa hằng số, chủ yếu là tên các node.
+
+Tham chiếu: Mục Bóc tách từng thành phần trong gói graph.
+
+</details>
+
+**Câu 3:** Vì sao mỗi file trong `chains/` nên tương ứng với một node?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì mỗi node sẽ chạy một chain của LangChain.
+
+Giải thích: Sự tương ứng 1-1 này giúp cấu trúc phản ánh đúng kiến trúc graph.
+
+Tham chiếu: Mục Bóc tách từng thành phần trong gói graph.
+
+</details>
+
+**Câu 4:** Pytest tìm test theo quy tắc đặt tên nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tìm các thư mục bắt đầu bằng `tests` và các file test có tiền tố `test`.
+
+Giải thích: Vì vậy cần đặt tên cẩn thận ngay từ đầu.
+
+Tham chiếu: Mục Bóc tách từng thành phần trong gói graph.
+
+</details>
+
+**Câu 5:** Lệnh `pytest . -v` có ý nghĩa gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chạy Pytest từ thư mục hiện tại (thư mục gốc dự án) và hiển thị kết quả verbose.
+
+Giải thích: `-v` giúp hiện rõ những test đã chạy; cấu hình runner PyCharm dùng đúng tham số này.
+
+Tham chiếu: Mục Chạy thử test đầu tiên và cấu hình PyCharm.
+
+</details>
+
 Vậy là xong cấu trúc dự án! Các bạn có thể đối chiếu toàn bộ code ở branch **two project structure**. Trong video tiếp theo, chúng ta sẽ triển khai **ingestion vào ChromaDB**. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Code Structure](https://ua.udemy.com/course/langgraph/learn/lecture/43781506)
+- [pytest documentation](https://pytest.org/en/stable)
+- [PyCharm — Pytest](https://www.jetbrains.com/help/pycharm/pytest.html)

@@ -1,5 +1,7 @@
 # 🔌 WebSocket Proxying: Khi Layer 4 và Layer 7 "đối đầu" qua một đường hầm hai chiều
 
+> Nguồn: `051-WebSocket-Proxying.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/49445455)
+
 Đây là phần "thịt" của khóa học mà mình rất thích: chúng ta sẽ nói về **WebSocket proxying** ở **layer 4** và **layer 7**. Khi mình nói "proxying" trong bài này, các bạn hiểu là **reverse proxying** cho chính xác — load balancing, API gateway chỉ là những tập con của nó.
 
 Chúng ta sẽ đi từ nền tảng TCP/IP, rồi xem từng byte chảy qua "trên dây" như thế nào trong hai cấu hình. Đi hết bài này, các bạn sẽ thấy rõ vì sao cùng là WebSocket mà cách xử lý lại khác nhau một trời một vực.
@@ -46,6 +48,20 @@ Giờ hãy xem kịch bản có TLS trên port 443:
 4. Client và server có chung một **symmetric key**. Điều quan trọng: **các middle box (kể cả nginx) không bao giờ biết key này** — trừ khi làm trò gì đó mờ ám. Nghĩa là **mã hóa end-to-end hoàn toàn**.
 5. Client gửi **upgrade handshake (bắt tay nâng cấp giao thức)** để chuyển kết nối lên WebSocket. Nginx thậm chí không biết đó là upgrade request — nó chỉ thấy dữ liệu đi qua port được cấu hình để tunnel. Backend hiểu giao thức WebSocket, xử lý `switching protocol`, và nginx chuyển tiếp packet về client.
 6. Từ đây là **giao tiếp hai chiều (bidirectional)**: client gửi gì, nginx chuyển mù xuống backend; backend trả lời, nginx chuyển về client.
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant N as nginx Layer 4
+    participant B as Backend
+    C->>N: Mở connection tới port 443
+    N->>B: Tunnel mù xuống backend
+    C->>B: TLS handshake xuyên qua nginx
+    B-->>C: Certificate và tham số Diffie-Hellman
+    C->>B: Upgrade handshake
+    B-->>C: Switching protocol
+    C->>B: Dữ liệu hai chiều
+```
 
 Có một chi tiết cực kỳ quan trọng ở cấu hình này: bạn **phải chỉnh timeout** để nginx không tự đóng connection chỉ vì lâu rồi không ai gửi dữ liệu. Đây là chỗ khá "khoai", bạn sẽ phải chỉnh config một chút. Khi client đóng kết nối, backend mới có thể đóng connection private của mình một cách an toàn.
 
@@ -102,10 +118,90 @@ Và câu hỏi kinh điển: **load balancing khác gì proxying?** *Y hệt nha
 * Load balancing diễn ra ở **cấp connection**: connection mới có thể đi sang server khác. Nhưng **từng message WebSocket thì không bao giờ được rải sang server khác** — server sẽ không hiểu nổi, thứ tự (order) phải được giữ nguyên, và đây là bài toán stateful. Gửi message cho server này rồi message kế cho server khác là "all bets are off".
 * Nếu bạn thực sự muốn một **message-by-message load balancer** ở cấp WebSocket, bạn phải **tự xây từ đầu**. Ví dụ: một centralized server nơi mọi message đổ về — cách này đôi khi còn hiệu quả hơn. Nhưng tất cả phụ thuộc vào use case.
 
+| Tiêu chí | Layer 4 proxy | Layer 7 proxy |
+|---|---|---|
+| TLS | Tunnel mù, end-to-end | Terminate TLS, giữ cert + private key |
+| Nhìn nội dung | Không | Có — thấy header, đường dẫn, message |
+| Route theo path | Không | Có, ví dụ `/chat`, `/media` |
+| Load balancing | Cấp connection | Cấp connection, theo cấu hình backend |
+| Pooling | N client → N backend connection | Cũng không pooling cho WebSocket |
+
 *Bài học lớn nhất mình muốn các bạn mang về: bạn có thể làm được rất nhiều trò nếu hiểu rõ chuyện gì đang diễn ra bên dưới đường truyền, và hiểu chính xác mình muốn gì.*
 
 ---
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Layer 4 proxy có cần hiểu giao thức WebSocket không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không — nó chỉ là một "dumb tunnel", tunnel mọi thứ về backend.
+
+Giải thích: HTTP, gRPC hay WebSocket với nó đều chỉ là byte.
+
+Tham chiếu: Mục Layer 4 proxy cho WebSocket.
+
+</details>
+
+**Câu 2:** Trong cấu hình layer 4 có TLS, ai biết được symmetric key?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chỉ client và backend — các middle box kể cả nginx không bao giờ biết key.
+
+Giải thích: TLS handshake đi thẳng qua tunnel, mã hóa end-to-end.
+
+Tham chiếu: Mục Layer 4 proxy cho WebSocket.
+
+</details>
+
+**Câu 3:** Vì sao layer 7 proxy cần certificate và private key?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để terminate TLS với client, giải mã và nhìn thấy nội dung trước khi mở connection tới backend.
+
+Giải thích: Mọi API gateway đều làm chính xác điều này.
+
+Tham chiếu: Mục Layer 7 proxy cho WebSocket.
+
+</details>
+
+**Câu 4:** Vì sao từng message WebSocket không thể rải sang server backend khác nhau?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì đây là bài toán stateful — server khác sẽ không hiểu, và thứ tự message phải được giữ nguyên.
+
+Giải thích: Muốn vậy phải tự xây message-by-message load balancer.
+
+Tham chiếu: Mục WebSocket load balancing.
+
+</details>
+
+**Câu 5:** N client WebSocket mở qua proxy tạo ra bao nhiêu backend connection?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** N backend connection bị reserve — không có pooling, không chia sẻ.
+
+Giải thích: Connection sau khi upgrade là private cho từng client.
+
+Tham chiếu: Mục WebSocket load balancing.
+
+</details>
+
 Vậy là chúng ta đã đi hết hành trình WebSocket proxying: **layer 4** tunnel mù, giữ mã hóa end-to-end nhưng không thông minh; **layer 7** giải mã để route, cache và áp logic — nhưng phải giữ cert, tốn kém hơn và cần hiểu giao thức. Chọn cái nào hoàn toàn phụ thuộc vào bài toán của các bạn.
 
 Còn rất nhiều điều thú vị phía trước trong hành trình Proxying and Load Balancing này. Hẹn gặp lại các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — WebSocket Proxying](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/49445455)
+- [nginx docs — WebSocket proxying](https://nginx.org/en/docs/http/websocket.html)

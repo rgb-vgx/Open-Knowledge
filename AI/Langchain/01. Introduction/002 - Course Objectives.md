@@ -1,5 +1,7 @@
 # 🎯 Mục tiêu Khóa học & Đối tượng phù hợp: Bạn sẽ nhận được gì và cần chuẩn bị những gì?
 
+> Nguồn: `002-Course-Objectives.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/46164881)
+
 Tiếp tục hành trình khám phá khóa học LangChain, chúng ta hãy cùng nhau đi qua phần **Mục tiêu khóa học (Course Objectives)** nhé.
 
 Mục tiêu số một của mình khi thiết kế khóa học này vô cùng đơn giản: **Đảm bảo rằng sau khi hoàn thành, bạn sẽ đủ tự tin để tự tay xây dựng các ứng dụng tích hợp LLM của riêng mình bằng LangChain.**
@@ -61,6 +63,80 @@ Cuối cùng, điều quan trọng bạn cần biết là khóa học này đi k
 
 Nếu bạn cảm thấy khóa học này không phù hợp với mình, cứ thoải mái yêu cầu hoàn tiền. Bạn sẽ nhận lại tiền 100% mà không có bất kỳ câu hỏi hay sự khó dễ nào cả. Thậm chí, nếu vì lý do gì đó mà 30 ngày đã trôi qua nhưng bạn vẫn muốn hoàn tiền, đừng ngần ngại liên hệ trực tiếp với mình – mình sẽ cá nhân hóa việc hoàn tiền cho bạn với một tinh thần vô cùng thoải mái, không vướng bận điều gì.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Mục tiêu số một của khóa học này là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Sau khi hoàn thành, bạn đủ tự tin để tự tay xây dựng các ứng dụng tích hợp LLM bằng LangChain.
+
+Giải thích: Mọi nội dung đều xoay quanh việc giúp bạn làm được thật, chứ không chỉ hiểu lý thuyết.
+
+Tham chiếu: Đoạn mở bài.
+
+</details>
+
+**Câu 2:** Hai loại ứng dụng LLM được khóa học đào sâu là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Agents và RAG (Retrieval-Augmented Generation).
+
+Giải thích: Khóa học cung cấp kiến thức chuyên sâu và hướng dẫn triển khai từ A đến Z cho cả hai.
+
+Tham chiếu: Đoạn mở bài.
+
+</details>
+
+**Câu 3:** Bạn có cần kiến thức nền về Machine Learning không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không. Bạn chỉ cần kinh nghiệm lập trình phần mềm.
+
+Giải thích: Chính Eden khởi đầu với 0 năm kinh nghiệm ML, và LangChain giúp việc xây ứng dụng LLM trở nên dễ tiếp cận.
+
+Tham chiếu: Mục Khóa học này dành cho ai.
+
+</details>
+
+**Câu 4:** Ba kiến thức nền tảng được mặc định bạn đã biết là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Python cơ bản, Git cơ bản và môi trường ảo (virtual environment) kèm cách thiết lập biến môi trường.
+
+Giải thích: Đây là các prerequisites cần có; khóa học không dạy lại Python từ đầu.
+
+Tham chiếu: Mục Khóa học này KHÔNG dành cho ai.
+
+</details>
+
+**Câu 5:** Chính sách hoàn tiền của khóa học như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hoàn tiền trong vòng 30 ngày, nhận lại 100% mà không bị khó dễ; quá 30 ngày vẫn có thể liên hệ trực tiếp.
+
+Giải thích: Eden cá nhân hóa việc hoàn tiền với tinh thần vô cùng thoải mái.
+
+Tham chiếu: Mục Cam kết từ tâm.
+
+</details>
+
 Thế nào, mình hy vọng phần giải đáp này không làm bạn quá "hợp đồng" hay sợ hãi chứ? 😉
 
 Mọi thứ đã sẵn sàng. Còn bây giờ, hãy thắt dây an toàn và **chính thức bước vào khóa học thôi nào!** 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Course Objectives](https://ua.udemy.com/course/langchain/learn/lecture/46164881)
+- [LangChain Docs — Overview](https://docs.langchain.com/oss/python/langchain/overview)
+- [LangSmith Docs](https://docs.langchain.com/langsmith)
+- [LangGraph Docs — Overview](https://docs.langchain.com/oss/python/langgraph/overview)

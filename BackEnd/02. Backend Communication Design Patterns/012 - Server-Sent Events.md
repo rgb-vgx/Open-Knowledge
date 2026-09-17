@@ -1,5 +1,7 @@
 # 📡 Server-Sent Events: Một Request, Nhưng Phản Hồi Không Bao Giờ Kết Thúc
 
+> Nguồn: `011-Server-Sent-Events.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629822)
+
 Đây là một trong những pattern mình yêu thích nhất, đến mức mình từng lưỡng lự không biết có nên xếp nó vào phần design pattern hay không. Khi lần đầu hiểu ra **server-sent events (sự kiện đẩy từ server)**, mình chỉ nghĩ: "Ai thiết kế ra thứ này đúng là thiên tài". Hôm nay mình sẽ mổ xẻ cái trick cực kỳ đơn giản nhưng cực kỳ thanh lịch phía sau nó, kèm theo một cạm bẫy mà các bạn sẽ gặp ngay khi dùng nó trong thực tế.
 
 ### 🎯 Cái trick: một request, một response không có điểm kết thúc
@@ -10,6 +12,18 @@
 * Server trả về **một response rất, rất dài** — về mặt kỹ thuật nó **không bao giờ kết thúc**, vì server không ghi hai dòng cuối để đóng response lại.
 * Thay vì trả một cục dữ liệu hoàn chỉnh, server liên tục ghi vào response những **mini message (message nhỏ)**.
 * Client đủ thông minh để **parse từng chunk** và tách ra các message/event riêng biệt nằm giữa dòng dữ liệu đó.
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>S: GET /stream kèm Accept text/event-stream
+    S-->>C: Header Content-Type text/event-stream
+    loop Mỗi khi có event mới
+        S-->>C: data kèm nội dung event
+    end
+    Note over S,C: Response không bao giờ được đóng
+```
 
 Điểm mấu chốt: HTTP vẫn là giao thức có khởi đầu và kết thúc, nhưng server-sent events biến nó thành **streaming model một chiều từ server xuống client**. Client cứ lắng nghe dòng chảy đó và "nhặt" ra từng sự kiện.
 
@@ -78,4 +92,84 @@ Nhưng nó cũng có **nhược điểm**:
 * Client có thể không theo kịp đống message server đẩy xuống — cùng vấn đề như push: client có thể ngắt kết nối, còn server thì phải gánh trạng thái và tài nguyên để giữ kết nối đó, tạo áp lực lên backend.
 * Nếu client quá nhẹ, không đủ "thông minh" để xử lý stream, **polling (dài hoặc ngắn)** lại là lựa chọn hợp lý hơn.
 
+| Tiêu chí | Polling | Long polling | Server-Sent Events |
+|---|---|---|---|
+| Cơ chế | Hỏi vòng liên tục | Server giữ request tới khi có kết quả | Một request, response không bao giờ kết thúc |
+| Giao thức | HTTP | HTTP | HTTP với `text/event-stream` |
+| Real-time | Thấp | Gần real-time | Real-time thực sự |
+| Điểm yếu | Chatty, tốn bandwidth | Có khoảng trễ giữa hai lần poll | Client phải online, tốn connection giữ stream |
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Trick cốt lõi của server-sent events là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Client gửi một request duy nhất, server trả về một response rất dài và không bao giờ kết thúc.
+
+Giải thích: Server liên tục ghi các mini message vào response, client parse từng chunk để tách ra từng event.
+
+Tham chiếu: Mục Cái trick.
+
+</details>
+
+**Câu 2:** Vì sao nói SSE vẫn là "thuần HTTP"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó dùng chính request/response với header `Content-Type: text/event-stream`, chạy trên mọi TCP server thông thường.
+
+Giải thích: Bạn không cần dựng một WebSocket server mới để dùng SSE.
+
+Tham chiếu: Mục Cái trick.
+
+</details>
+
+**Câu 3:** SSE khác WebSocket ở điểm hạn chế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** WebSocket cho server đẩy message bất ngờ nhưng client phải nói chuyện bằng giao thức hoàn toàn khác; SSE giữ nguyên HTTP và chỉ streaming một chiều từ server.
+
+Giải thích: Đó là lý do SSE tương thích hơn với hạ tầng web sẵn có.
+
+Tham chiếu: Mục Vì sao lại cần nó.
+
+</details>
+
+**Câu 4:** Cạm bẫy "sáu kết nối" nguy hiểm thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chrome giới hạn 6 TCP connection tới một domain; HTTP/1.1 khiến mỗi connection chạy một request — 6 SSE request giữ cả 6 connection busy vĩnh viễn.
+
+Giải thích: Mọi request khác trên cùng domain bị đói tài nguyên, đến file JavaScript cũng không tải nổi.
+
+Tham chiếu: Mục Cạm bẫy.
+
+</details>
+
+**Câu 5:** HTTP/2 giải quyết cạm bẫy đó ra sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cho phép vô số stream trên cùng một connection — khoảng 200 stream và có thể cấu hình.
+
+Giải thích: Một connection, nhiều dòng dữ liệu song song, không còn cảnh 6 connection bị chiếm sạch.
+
+Tham chiếu: Mục Cạm bẫy.
+
+</details>
+
 Hiểu được những đánh đổi đó, các bạn mới chọn đúng pattern cho đúng bài toán. Còn bây giờ, mình sẽ dẫn các bạn sang một pattern cũng thuộc hàng "ruột" của mình: **publish-subscribe (phát-thu)** — cách để các service nói chuyện với nhau mà không cần biết mặt nhau. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Server Sent Events](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629822)
+- [MDN — EventSource](https://developer.mozilla.org/en-US/docs/Web/API/EventSource)
+- [MDN — Using server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)

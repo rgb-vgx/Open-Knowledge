@@ -1,5 +1,7 @@
 # 🔍 Corrective RAG (RAG tự sửa): Nâng tầm chất lượng câu trả lời khi truy xuất tài liệu
 
+> Nguồn: `027-Improving-RAG-Quality-with-the-Corrective-RAG-Flow.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43844196)
+
 Chào các bạn, Eden đây! Trong vài video tới, chúng ta sẽ cùng nhau triển khai **CRAG — Corrective RAG** dựa trên bài báo nghiên cứu cùng tên. Đây là một **kỹ thuật RAG nâng cao (advanced RAG technique)** giúp chúng ta nhận được câu trả lời chất lượng hơn khi thực hiện **retrieval, augmentation, generation**.
 
 ### 🧠 Ý tưởng cốt lõi: tự phản chiếu trước khi trả lời
@@ -28,6 +30,29 @@ Nếu phát hiện ra những tài liệu không liên quan đến query, chúng
 
 Sau đó, chúng ta **augment prompt với nguồn thông tin thời gian thực (real-time)** vừa lấy được từ internet, rồi gửi tất cả cho LLM.
 
+Hai nhánh được tóm tắt nhanh như sau:
+
+| Nhánh | Điều kiện | Hành động |
+|---|---|---|
+| Happy flow | Tất cả tài liệu đều relevant với query | Augment prompt gốc rồi gửi cho LLM như RAG thường |
+| External search | Có tài liệu không liên quan | Lọc tài liệu nhiễu + tìm kiếm internet, augment nguồn real-time |
+
+Toàn bộ CRAG flow gói gọn như sau:
+
+```mermaid
+flowchart TD
+    A[User query] --> B[Vector semantic search]
+    B --> C[Tài liệu retrieve được]
+    C --> D[Self-reflect và critique]
+    D --> E{Tất cả tài liệu relevant}
+    E -->|Đúng| F[Augment prompt gốc]
+    E -->|Không| G[Lọc tài liệu nhiễu]
+    G --> H[External search trên internet]
+    H --> I[Augment nguồn real-time]
+    F --> J[Gửi cho LLM]
+    I --> J
+```
+
 ---
 
 ### 💡 Vì sao kỹ thuật này đáng học?
@@ -38,4 +63,77 @@ Nhờ việc lọc bỏ tài liệu nhiễu và bổ sung dữ liệu thời gia
 
 *Đừng lo nếu luồng xử lý nghe hơi nhiều bước — mình sẽ hiện thực hóa toàn bộ bằng LangGraph ngay trong các video tiếp theo, từng bước một.*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** CRAG là viết tắt của gì và được xây dựng dựa trên gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Corrective RAG — kỹ thuật RAG nâng cao dựa trên bài báo nghiên cứu cùng tên.
+
+Giải thích: CRAG giúp câu trả lời chất lượng hơn khi thực hiện retrieval, augmentation, generation.
+
+Tham chiếu: Đoạn mở đầu.
+
+</details>
+
+**Câu 2:** Bước đầu tiên của Corrective RAG là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lấy query của người dùng và thực hiện vector semantic search để truy xuất tài liệu liên quan.
+
+Giải thích: Đây vẫn là bước retrieval quen thuộc của RAG.
+
+Tham chiếu: Mục Ý tưởng cốt lõi.
+
+</details>
+
+**Câu 3:** Sau khi truy xuất tài liệu, hệ thống làm gì tiếp theo?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tự phản chiếu (self-reflect), phê bình tài liệu xem chúng có thực sự liên quan đến query gốc hay không.
+
+Giải thích: Đây là điểm mấu chốt — không tin tưởng mù quáng vào kết quả truy xuất.
+
+Tham chiếu: Mục Ý tưởng cốt lõi.
+
+</details>
+
+**Câu 4:** Happy flow của CRAG xử lý như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi mọi tài liệu đều relevant, ta augment prompt gốc rồi gửi tất cả cho LLM như RAG thông thường.
+
+Giải thích: Không cần bước sửa chữa nào vì ngữ cảnh đã đạt yêu cầu.
+
+Tham chiếu: Mục Hai nhánh xử lý.
+
+</details>
+
+**Câu 5:** Khi phát hiện tài liệu không liên quan, CRAG làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lọc bỏ tài liệu rác và thực hiện external search trên internet để bổ sung thông tin thời gian thực.
+
+Giải thích: Sau đó augment prompt với nguồn real-time rồi mới gửi cho LLM.
+
+Tham chiếu: Mục Hai nhánh xử lý.
+
+</details>
+
 Giờ thì cùng bắt tay vào code thôi. Hẹn gặp lại các bạn ở bài sau! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Improving RAG Quality with the Corrective RAG Flow](https://ua.udemy.com/course/langgraph/learn/lecture/43844196)
+- [arXiv — Corrective Retrieval Augmented Generation](https://arxiv.org/abs/2401.15884)
+- [LangGraph Overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/overview)

@@ -1,5 +1,7 @@
 # 🔍 Bộ lọc Độ liên quan cho RAG: Dạy LLM "chấm điểm" tài liệu trước khi trả lời (Đừng bỏ qua nhé!)
 
+> Nguồn: `033-Building-a-Relevance-Filter-for-RAG-using-LangChains-Structu.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43831588)
+
 Chào các bạn, mình là Eden đây! Sau khi đã hoàn thành **retrieve node**, chúng ta đã có trong tay một loạt tài liệu lấy từ vector store. Nhưng câu hỏi lớn là: *liệu tất cả chúng có thực sự liên quan đến câu hỏi của người dùng hay không?*
 
 Trong bài này, mình và các bạn sẽ cùng xây dựng **document grader node (nút chấm điểm tài liệu)** — trái tim của bộ lọc độ liên quan, sử dụng sức mạnh của **structured output (đầu ra có cấu trúc)** trong LangChain.
@@ -33,6 +35,14 @@ class GradeDocuments(BaseModel):
 structured_llm_grader = llm.with_structured_output(GradeDocuments)
 retrieval_grader = grade_prompt | structured_llm_grader
 ```
+
+Điểm khác biệt so với cách trả lời text thông thường:
+
+| Tiêu chí | Text tự do | Structured output |
+|---|---|---|
+| Kiểu trả về | Chuỗi lộn xộn, phải tự parse | Pydantic object đúng schema |
+| Độ ổn định | Dễ "trôi", khó ép giá trị | Field description giúp enforce schema |
+| Cơ chế bên dưới | Sinh text thuần | Function calling của LLM |
 
 Vài lưu ý quan trọng mình muốn các bạn ghi nhớ:
 
@@ -77,6 +87,93 @@ Cuối cùng, mình tạo file **`grade_documents.py`** trong thư mục `nodes`
 * Với mỗi tài liệu: gọi **retrieval grader** để chấm điểm. Nếu `yes` → thêm vào `filtered_docs`; nếu `no` → bật `web_search = True` và bỏ qua tài liệu đó.
 * Cập nhật lại **graph state**: `documents` là danh sách đã lọc, `question` giữ nguyên câu hỏi gốc, và cờ `web_search` được cập nhật.
 
+Toàn bộ luồng chấm điểm và lọc tài liệu gói gọn như sau:
+
+```mermaid
+flowchart TD
+    A[State có retrieved documents] --> B[Lấy question và documents]
+    B --> C{Còn tài liệu để chấm}
+    C -->|Còn| D[Retrieval grader chấm điểm]
+    D -->|yes| E[Thêm vào filtered_docs]
+    D -->|no| F[Bật cờ web_search]
+    E --> C
+    F --> C
+    C -->|Hết| G[Cập nhật state với documents đã lọc]
+```
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Nhiệm vụ của document grader node là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Duyệt từng tài liệu đã retrieve, xác định tài liệu có liên quan đến câu hỏi hay không rồi lọc bỏ tài liệu không liên quan.
+
+Giải thích: Chỉ những tài liệu hữu ích mới được giữ lại trong `filtered_docs`.
+
+Tham chiếu: Mục Vì sao phải chấm điểm tài liệu.
+
+</details>
+
+**Câu 2:** Vì sao description của field `binary_score` lại quan trọng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì LLM dựa vào description để quyết định, nó giúp enforce schema để điểm chỉ có thể là `yes` hoặc `no`.
+
+Giải thích: Description chính là "mệnh lệnh" định hướng cho LLM khi sinh structured output.
+
+Tham chiếu: Mục Retrieval Grader chain.
+
+</details>
+
+**Câu 3:** Khi nào cờ `web_search` được bật lên `True`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi có ít nhất một tài liệu không liên quan — tức không phải tất cả tài liệu đều vượt qua vòng chấm điểm.
+
+Giải thích: Đây là heuristic để quyết định khi nào cần tìm thêm thông tin từ bên ngoài.
+
+Tham chiếu: Mục Vì sao phải chấm điểm tài liệu.
+
+</details>
+
+**Câu 4:** Để `with_structured_output` chạy được, LLM của bạn cần hỗ trợ gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Function calling.
+
+Giải thích: LangChain dùng function calling ở bên dưới; model không hỗ trợ thì mọi thứ sẽ "đổ sập".
+
+Tham chiếu: Mục Retrieval Grader chain.
+
+</details>
+
+**Câu 5:** Vì sao viết test cho ứng dụng LLM-based lại khó?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đầu ra mang tính xác suất nên không idempotent, phụ thuộc dịch vụ bên thứ ba (availability, rate limiting) và tốn tiền token.
+
+Giải thích: Vì vậy chỉ chạy test thủ công cũng đã là một sanity check quý giá.
+
+Tham chiếu: Mục Viết test cho ứng dụng LLM.
+
+</details>
+
 Vậy là chúng ta đã có một "trạm kiểm duyệt" tài liệu thực sự nghiêm khắc. Vector store không còn có thể "tuồn" thông tin nhiễu cho LLM nữa! 🎉
 
 Ở bài tiếp theo, mình sẽ cùng các bạn xây dựng **web search node** với **Tavily** — "pha cứu cánh" mỗi khi vector store bó tay. Hẹn gặp các bạn ở đó! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Building a Relevance Filter for RAG using LangChain's Structured Output](https://ua.udemy.com/course/langgraph/learn/lecture/43831588)
+- [LangChain Docs — Structured output](https://docs.langchain.com/oss/python/langchain/structured-output)
+- [LangGraph Docs — Build a custom RAG agent with LangGraph](https://docs.langchain.com/oss/python/langgraph/agentic-rag)

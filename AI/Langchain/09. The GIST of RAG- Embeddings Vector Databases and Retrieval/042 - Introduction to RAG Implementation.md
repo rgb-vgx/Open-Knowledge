@@ -1,5 +1,7 @@
 # 🔍 Embeddings, Vector Database & RAG: Toàn cảnh lý thuyết trước khi bắt tay vào code
 
+> Nguồn: `042-Introduction-to-RAG-Implementation.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52242139)
+
 Chào các bạn, mình là Eden đây! 👋 Hôm nay chúng ta sẽ cùng nhau làm quen với một loạt chủ đề cực kỳ thú vị: **vector databases, embeddings, text splitters** và còn nhiều thứ hay ho khác nữa. Đây là phần giới thiệu những khái niệm sẽ theo chúng ta suốt chặng đường xây dựng ứng dụng LLM.
 
 ### 🗺️ Những chủ đề mới chúng ta sắp chạm mặt
@@ -57,6 +59,11 @@ Một ví dụ khác: câu hỏi *"how tall is the Burj Khalifa?"* và đoạn m
 
 **Vector database** là nơi lưu những embeddings ấy và có khả năng trả về **những vector gần nhất với vector chúng ta muốn** trong chớp mắt. Nó được sinh ra để **lưu trữ lâu dài (persist)** và giúp chúng ta tái sử dụng embeddings dễ dàng.
 
+| Khái niệm | Là gì | Vai trò trong RAG |
+|---|---|---|
+| Embeddings | Dãy số biểu diễn ngữ nghĩa của text | Đo độ tương đồng giữa query và chunk |
+| Vector database | Kho lưu embeddings kèm khả năng tìm kiếm | Persist vector và trả về vector gần nhất |
+
 Ghép tất cả lại, pipeline của chúng ta sẽ là:
 
 1. Cắt file khổng lồ thành **hàng nghìn hoặc hàng triệu chunk** — LangChain giúp việc này rất dễ dàng.
@@ -66,8 +73,93 @@ Ghép tất cả lại, pipeline của chúng ta sẽ là:
 5. Tìm những vector gần nhất — chúng chính là các chunk liên quan.
 6. Gửi **query + context** trong prompt cho LLM và nhận câu trả lời.
 
+```mermaid
+flowchart LR
+    A[Tài liệu lớn] --> B[Cắt thành nhiều chunk]
+    B --> C[Embed từng chunk]
+    C --> D[Lưu vào vector database]
+    E[Query người dùng] --> F[Embed query]
+    F --> G[Tìm vector gần nhất]
+    D --> G
+    G --> H[Ghép query và context]
+    H --> I[LLM trả lời]
+```
+
 *Hít một hơi thật sâu nhé — đây là rất nhiều thông tin, và hoàn toàn bình thường nếu bạn chưa nắm hết. Mình gợi ý các bạn xem lại video này thêm một lần, và đừng lo, vì chúng ta sẽ implement toàn bộ những gì vừa bàn.*
 
 *Nghe có vẻ đáng sợ, nhưng sự thật là nó khá đơn giản — và khi nhìn vào code, bạn sẽ thấy LangChain đang làm phần việc nặng nhọc cho chúng ta. Đó là lý do LangChain tuyệt vời đến vậy!*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Document loader giúp ích gì cho chúng ta?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó là abstraction load dữ liệu từ nhiều nguồn (Google Drive, Notion, file system...) về cùng một dạng Document thống nhất.
+
+Giải thích: Nhờ interface chung, ta chỉ cần đổi loader chứ không đổi cách làm việc với dữ liệu.
+
+Tham chiếu: Mục Document loaders.
+
+</details>
+
+**Câu 2:** Text splitter giải quyết vấn đề gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chia text dài thành các chunk nhỏ để không vượt token limit, đồng thời cố giữ các phần liên quan về mặt ngữ nghĩa.
+
+Giải thích: Splitter cũng hỗ trợ ghép lại (reassemble) khi cần.
+
+Tham chiếu: Mục Text splitters.
+
+</details>
+
+**Câu 3:** Embedding model hoạt động như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó như một hộp đen: text đi vào, vector đi ra; câu có ngữ nghĩa tương tự sẽ cho vector rất gần nhau.
+
+Giải thích: Khoảng cách giữa các vector mang ý nghĩa ngữ nghĩa.
+
+Tham chiếu: Mục Embeddings, vector database và cách RAG vận hành.
+
+</details>
+
+**Câu 4:** Vì sao cần vector database thay vì tự lưu vector?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó lưu trữ lâu dài và trả về những vector gần nhất với vector truy vấn trong chớp mắt.
+
+Giải thích: Pinecone là ví dụ vector database có free tier mà khóa học dùng.
+
+Tham chiếu: Mục Embeddings, vector database và cách RAG vận hành.
+
+</details>
+
+**Câu 5:** Pipeline RAG gồm những bước nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cắt tài liệu thành chunk, embed từng chunk, lưu vào vector database, embed query, tìm vector gần nhất, rồi gửi query kèm context cho LLM.
+
+Giải thích: Đây là toàn bộ luồng ingestion và retrieval mà ta sẽ implement end-to-end.
+
+Tham chiếu: Mục Embeddings, vector database và cách RAG vận hành.
+
+</details>
+
 Trong các video tiếp theo, chúng ta sẽ cùng nhau **hiện thực hóa toàn bộ pipeline RAG end-to-end**. Hẹn gặp lại các bạn ở video implementation nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Introduction to RAG Implementation](https://ua.udemy.com/course/langchain/learn/lecture/52242139)
+- [LangChain Docs — Retrieval](https://docs.langchain.com/oss/python/langchain/retrieval)
+- [OpenAI — Vector embeddings](https://platform.openai.com/docs/guides/embeddings)

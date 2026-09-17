@@ -1,5 +1,7 @@
 # 🔌 WebSockets: Kênh hai chiều thời gian thực được xây trên nền HTTP
 
+> Nguồn: `025-WebSockets.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630276)
+
 Chào các bạn! Hôm nay chúng ta cùng mổ xẻ **WebSockets (kênh giao tiếp hai chiều dành cho web)**. Câu hỏi mình luôn đặt ra ở đầu bài là: TCP vốn đã là giao thức hai chiều rồi, tại sao chúng ta không mang thẳng nó ra cho trình duyệt dùng? Câu trả lời sẽ dẫn chúng ta đi qua toàn bộ cơ chế thú vị đằng sau WebSocket — từ handshake cho tới cái bug "disconnect" mà mình cố tình để lộ trong demo.
 
 ### 🎯 Vì sao không thể "phơi" TCP thẳng ra trình duyệt?
@@ -28,6 +30,20 @@ Chính việc giữ connection sống đã mở ra cơ hội làm WebSocket:
 4. Xong việc thì đóng kết nối.
 
 *Với HTTP/1.0 — nơi kết nối bị đóng sau mỗi request — WebSocket sẽ không bao giờ hoạt động được, các bạn ạ.*
+
+Toàn cảnh cú upgrade từ HTTP sang WebSocket:
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>S: GET /chat kèm Upgrade websocket
+    S-->>C: 101 Switching Protocols
+    Note over C,S: Kết nối không còn là HTTP
+    C->>S: Message bất kỳ
+    S->>C: Message trả lời
+    S->>C: Server push chủ động
+```
 
 Chi tiết handshake rất đáng để soi kỹ. Phía client gửi `GET /chat` — method, path, protocol, host như một request bình thường, kèm thêm vài thứ đặc biệt:
 
@@ -63,6 +79,16 @@ Còn đây là những cái giá:
 
 Vậy có nhất thiết phải dùng WebSocket không? **Tuyệt đối không.** Nguyên tắc của mình rất đơn giản: bạn có *thực sự* cần giao tiếp hai chiều không? Nếu không, hãy dùng **long polling** hoặc **server-sent events (sự kiện đẩy từ server)** — long polling suy cho cùng vẫn là HTTP nên tương thích với mọi thứ; còn WebSocket kéo theo header phụ và đủ thứ phải quản lý. *Không cần thì đừng dùng.*
 
+Bảng đối chiếu nhanh HTTP và WebSocket:
+
+| Tiêu chí | HTTP | WebSocket |
+|---|---|---|
+| Mô hình | request/response | Hai chiều đồng thời |
+| Vòng đời connection | Ephemeral, đóng rồi mở cái khác | Stateful, sống lâu, gắn với đúng connection |
+| Server chủ động đẩy | Không, trừ long polling và SSE | Có, push trực tiếp |
+| Scale ngang | Dễ | Khó hơn, thường dùng L4 load balancing |
+| Firewall | Qua cổng 80/443 | Cũng qua 80/443 nhờ upgrade |
+
 ---
 
 ### 🧩 Demo: chat server, push notification và bài học từ bug disconnect
@@ -80,4 +106,77 @@ Gửi "hi" từ một client, server rebroadcast ngay lập tức, mọi client 
 
 Còn đây là bug đáng giá nhất của buổi demo: khi một client biến mất (đóng trình duyệt), server vẫn loop và gửi vào connection đã chết, thậm chí có thể crash. Trong demo, state của connection cho thấy `connected` chuyển thành false. Cách sửa: thêm điều kiện "nếu còn connected thì mới gửi", và hay hơn nữa là dùng map hoặc loại connection chết khỏi mảng — chứ loop qua những connection đã ngắt là lãng phí. *Code không hoàn hảo, và đó mới là phần thú vị: các bạn cứ thử và tự tay sửa nó.*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao không thể "phơi" thẳng TCP ra cho trình duyệt?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì TCP cho phép kết nối tới mọi dịch vụ; mở toang cho browser là cực kỳ nguy hiểm — chỉ cần có link là ai cũng lấy được JavaScript.
+
+Giải thích: Vì vậy web được bảo vệ dưới chiếc ô HTTP, không phải muốn hai chiều là được.
+
+Tham chiếu: Mục Vì sao không thể phơi TCP thẳng ra trình duyệt.
+
+</details>
+
+**Câu 2:** WebSocket handshake tận dụng cơ chế nào của HTTP/1.1?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kết nối persistent (keep-alive) — rồi gửi một HTTP request đặc biệt với Upgrade header.
+
+Giải thích: HTTP/1.0 đóng kết nối sau mỗi request nên WebSocket không thể tồn tại ở thời đó.
+
+Tham chiếu: Mục Handshake.
+
+</details>
+
+**Câu 3:** Vì sao server trả về một key trong response handshake?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để đảm bảo client thật sự hiểu giao thức — không phải ai muốn là upgrade được.
+
+Giải thích: Key là kết quả phép toán phía server, đòi hỏi client có logic phức tạp hơn một chút.
+
+Tham chiếu: Mục Handshake.
+
+</details>
+
+**Câu 4:** Ưu điểm hạ tầng lớn nhất của WebSocket là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thân thiện với firewall vì đi qua cổng 80/443 — gần như không ai dám chặn hai cổng đó.
+
+Giải thích: Nếu tự dựng TCP với cổng riêng, cổng đó hoàn toàn có thể bị chặn.
+
+Tham chiếu: Mục Ưu điểm và những cái giá phải trả.
+
+</details>
+
+**Câu 5:** Vì sao WebSocket khó scale ngang hơn HTTP?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó stateful — connection vĩnh viễn bị khóa vào một backend, thường phải dùng L4 load balancing.
+
+Giải thích: HTTP connection là ephemeral nên đóng rồi mở cái khác chẳng ai bận tâm.
+
+Tham chiếu: Mục Ưu điểm và những cái giá phải trả.
+
+</details>
+
 Tóm lại, chúng ta đã đi qua WebSocket là gì, vì sao không thể phơi TCP trực tiếp cho browser, handshake diễn ra thế nào, dùng ở đâu, ưu nhược điểm ra sao, và một demo push notification chạy thật. Hiểu được những thứ "dưới đường truyền" như thế này thì khi latency tăng hay connection rớt, các bạn sẽ biết phải tìm ở đâu. Hẹn gặp lại ở bài tiếp theo — **HTTP/2** — nơi chúng ta xem người ta tiến hóa giao thức như thế nào nhé. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — WebSockets](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630276)
+- [RFC 6455 — The WebSocket Protocol](https://www.rfc-editor.org/rfc/rfc6455.html)
+- [MDN — WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)

@@ -1,5 +1,7 @@
 # 🔄 Toàn cảnh luồng chạy của MCP: Một câu hỏi đi qua những "trạm" nào?
 
+> Nguồn: `124-Theory-The-GIST-of-the-Protocol-with-Tool-Calling.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52632217)
+
 Chào các bạn, Eden đây! Trong bài này, mình sẽ chỉ cho các bạn **"gist" của giao thức MCP**: mọi component tương tác với nhau ra sao – client nói gì với server, host nằm ở đâu, user và LLM tham gia lúc nào, và tất cả ráp lại thành một luồng hoàn chỉnh như thế nào.
 
 ---
@@ -35,6 +37,27 @@ LLM sau đó phản hồi theo một trong hai hướng:
 
 Nhớ nhé: **MCP chỉ hoạt động với những LLM biết tool calling**. Tool call sẽ nói rõ **tool nào cần gọi** và **arguments nào cần truyền vào** – đủ thông tin để thực thi.
 
+Toàn bộ hành trình của một câu hỏi được tóm gọn trong sơ đồ:
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant App as Host App
+    participant C as MCP Client
+    participant S as MCP Server
+    participant L as LLM
+    U->>App: Đặt câu hỏi
+    App->>L: Câu hỏi kèm danh sách tool
+    L-->>App: Tool call
+    App->>C: Chuyển tool call
+    C->>S: Yêu cầu thực thi
+    S-->>C: Kết quả tool
+    C-->>App: Trả kết quả
+    App->>L: Câu hỏi gốc kèm kết quả
+    L-->>App: Câu trả lời cuối
+    App-->>U: Hiển thị kết quả
+```
+
 ---
 
 ### ⚙️ Khác biệt then chốt: tool chạy ở MCP server, không chạy trong app
@@ -43,6 +66,13 @@ Nhớ nhé: **MCP chỉ hoạt động với những LLM biết tool calling**. 
 
 * Với **LangChain**, mọi thứ được **thực thi ngay trong application layer** của bạn.
 * Với **MCP**, ta **gửi tool call tới MCP server** – qua **stdio** hoặc **Server-Sent Events** – và **server sẽ chạy tool đó**. Tool execution diễn ra trong **runtime của server**, không phải trong graph agent hay app Cursor.
+
+| Tiêu chí | LangChain | MCP |
+|---|---|---|
+| Nơi thực thi tool | Application layer | Runtime của MCP server |
+| Giao tiếp | Gọi hàm nội bộ | stdio hoặc Server-Sent Events |
+| Tách rời tool | Gắn trong app và agent | Tool là service riêng |
+| Scale và monitor | Phụ thuộc app | Thuận lợi hơn nhờ decouple |
 
 Vì sao điều này đáng giá? Vì nó **tách rời (decouple) MCP server và việc thực thi tool khỏi agent**. Tương lai muốn **scale** lên **Kubernetes**, chạy **serverless**, hay **monitor** trong một hệ thống riêng – mọi thứ đều thuận lợi hơn. Mình sẽ bàn sâu khi nói về **system design** ở phần sau của khóa học.
 
@@ -62,4 +92,77 @@ Lợi ích rất rõ ràng:
 
 Và một điểm cộng nữa: **agent chịu trách nhiệm orchestration** (khi nào gọi tool, có gọi thêm tool không, khi nào hỏi lại user để lấy feedback...), còn **server chịu trách nhiệm thực thi tool**. Nhờ đó, ta có thể **cập nhật server động**, deploy phiên bản mới, và thiết lập để client **khởi tạo lại định kỳ** – agent sẽ nhận tool mới theo cơ chế **dynamic tool calling** mà **không cần redeploy**. Quá tiện!
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Khi application vừa được load, các MCP client làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kết nối tới các MCP server đã tích hợp, khởi tạo kết nối qua MCP protocol.
+
+Giải thích: Sau khi server xác nhận, server thông báo cho client biết nó expose những gì.
+
+Tham chiếu: Mục Bước khởi động.
+
+</details>
+
+**Câu 2:** Khi user đặt câu hỏi, LLM nhận được gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Câu hỏi gốc + danh sách tool khả dụng.
+
+Giải thích: Đây chính là "system prompt đặc biệt" — MCP chỉ hoạt động với LLM biết tool calling.
+
+Tham chiếu: Mục Khi user đặt câu hỏi.
+
+</details>
+
+**Câu 3:** LLM có thể phản hồi theo những hướng nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trả về câu trả lời cuối cùng, hoặc trả về một tool call cần thực thi.
+
+Giải thích: Tool call nói rõ tool nào cần gọi và arguments nào cần truyền.
+
+Tham chiếu: Mục Khi user đặt câu hỏi.
+
+</details>
+
+**Câu 4:** Khác biệt then chốt giữa MCP và LangChain về nơi thực thi tool?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** LangChain thực thi trong application layer; MCP gửi tool call tới server và server chạy tool.
+
+Giải thích: Giao tiếp qua stdio hoặc Server-Sent Events, tool execution diễn ra trong runtime của server.
+
+Tham chiếu: Mục Khác biệt then chốt.
+
+</details>
+
+**Câu 5:** Việc tách rời (decouple) tool khỏi agent đem lại lợi ích gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Debug, logging, tính cost và scaling đều thuận lợi hơn; cập nhật server động không cần redeploy.
+
+Giải thích: Agent lo orchestration, server lo execution — client khởi tạo lại định kỳ để nhận tool mới.
+
+Tham chiếu: Mục Vì sao decouple lại hay.
+
+</details>
+
 Ở video tiếp theo, chúng ta sẽ **tự tay implement một MCP client bên trong agent** để hiểu tường tận những gì vừa bàn. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — The GIST of the Protocol with Tool Calling](https://ua.udemy.com/course/langchain/learn/lecture/52632217)
+- [Model Context Protocol — Architecture overview](https://modelcontextprotocol.io/docs/learn/architecture)
+- [LangChain Docs — Model Context Protocol](https://docs.langchain.com/oss/python/langchain/mcp)

@@ -1,5 +1,7 @@
 # 🧩 Context Engineering cho System Prompt: Bài học từ "vùng Goldilocks"
 
+> Nguồn: `073-Context-Engineering-a-System-Prompt.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52803023)
+
 Hey các bạn, Eden đây! Nếu bạn từng lướt Twitter hay LinkedIn, chắc hẳn đã đọc câu này cả nghìn lần: **"system prompt rất quan trọng, hãy chăm chút và lặp đi lặp lại cho nó thật tốt"**. Thú thật, nói "system prompt quan trọng" là lời khuyên **chung chung nhất trong AI engineering**.
 
 Nên hôm nay, thay vì nhắc lại điều đó, mình muốn **cho các bạn xem tận mắt** system prompt của những **state-of-the-art agent** đang chạy ngoài kia — và rút ra bài học để tự viết nên một system prompt chất lượng.
@@ -65,6 +67,12 @@ Không có framework, không có cấu trúc để tiếp cận vấn đề mộ
 
 Vấn đề lớn nhất: nó cơ bản chỉ nói *"hãy làm điều đúng đắn"* mà **không định nghĩa "đúng" là gì** trong ngữ cảnh.
 
+| Tiêu chí | Quá cụ thể | Vùng Goldilocks | Quá mơ hồ |
+|---|---|---|---|
+| Triết lý | Hard-code logic như máy trạng thái tất định | Dạy principles, trao quyền cho agent | Giả định sai về shared context |
+| Ví dụ | "Hỏi đúng 3 câu tiếp theo" | Mục tiêu + khung phản hồi 4 bước | "Hỗ trợ theo tinh thần thương hiệu" |
+| Hệ quả | Khó bảo trì, ép model đi theo lối mòn | Linh hoạt, nén gọn, ít mâu thuẫn | Hành vi bất nhất quán |
+
 ---
 
 ### 🏆 "Vùng Goldilocks": Mổ xẻ một system prompt chuẩn
@@ -76,6 +84,15 @@ Vấn đề lớn nhất: nó cơ bản chỉ nói *"hãy làm điều đúng đ
 * **Cung cấp reasoning framework, không phải flowchart:** prompt có một **khung phản hồi 4 bước** — (1) xác định vấn đề cốt lõi, (2) thu thập ngữ cảnh cần thiết, (3) đưa ra giải pháp rõ ràng, (4) xác nhận mức độ hài lòng của khách hàng. Đây là **guidance (hướng dẫn)** hoạt động được qua rất nhiều tình huống, chứ không phải **logic rẽ nhánh cứng nhắc**.
 * **Thiết lập boundaries và principles:** nếu có nhiều giải pháp, **chọn giải pháp đơn giản nhất**. Đây là một **heuristic** — và thú vị là nó làm mình liên tưởng đến **greedy algorithm (thuật toán tham lam)** trong khoa học máy tính.
 
+Khung phản hồi 4 bước đó diễn ra như sau:
+
+```mermaid
+flowchart LR
+    A[Xác định vấn đề cốt lõi] --> B[Thu thập ngữ cảnh cần thiết]
+    B --> C[Đưa ra giải pháp rõ ràng]
+    C --> D[Xác nhận mức độ hài lòng]
+```
+
 Vì sao prompt "ở giữa" này vượt trội? Prompt **quá cụ thể** cố **suy nghĩ thay** model, và càng tệ hơn khi tình huống không khớp đúng kịch bản. Prompt **quá mơ hồ** không cho LLM đủ dữ kiện để làm việc.
 
 Còn prompt **Goldilocks** tận dụng đúng thứ mà các LLM state-of-the-art thực sự giỏi: **nhận diện quy luật (recognize patterns) và áp dụng nguyên tắc chung vào tình huống cụ thể**. Cụ thể:
@@ -86,4 +103,77 @@ Còn prompt **Goldilocks** tận dụng đúng thứ mà các LLM state-of-the-a
 
 Hy vọng qua bài này, các bạn đã "thấy" được vì sao system prompt quan trọng thay vì chỉ nghe nói suông — và có trong tay một tấm gương để soi lại prompt của chính mình: **nó đang quá cụ thể, quá mơ hồ, hay vừa đúng vùng Goldilocks?**
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** "Vùng Goldilocks" của system prompt là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là điểm cân bằng giữa quá cụ thể và quá mơ hồ — rõ ràng, cụ thể nhưng cung cấp vừa đủ thông tin.
+
+Giải thích: Đây là cách Anthropic gọi điểm ngọt khi viết system prompt.
+
+Tham chiếu: Mục Phép so sánh.
+
+</details>
+
+**Câu 2:** Vấn đề cốt lõi của prompt quá cụ thể là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đối xử với LLM như máy trạng thái tất định và hard-code logic vào prompt.
+
+Giải thích: Liệt kê triệt để mọi kịch bản là bất khả thi, khó bảo trì, và có thể một workflow truyền thống mới là thứ cần thiết.
+
+Tham chiếu: Mục Hai thái cực cần tránh.
+
+</details>
+
+**Câu 3:** Vấn đề cốt lõi của prompt quá mơ hồ là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không đủ tín hiệu để hành vi nhất quán, giả định sai rằng có một shared context, và ranh giới không xác định.
+
+Giải thích: Nó cơ bản chỉ nói "hãy làm điều đúng đắn" mà không định nghĩa "đúng" là gì.
+
+Tham chiếu: Mục Hai thái cực cần tránh.
+
+</details>
+
+**Câu 4:** Khung phản hồi 4 bước của prompt Goldilocks gồm những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** (1) xác định vấn đề cốt lõi, (2) thu thập ngữ cảnh cần thiết, (3) đưa ra giải pháp rõ ràng, (4) xác nhận mức độ hài lòng của khách hàng.
+
+Giải thích: Đây là reasoning framework áp dụng được cho nhiều tình huống, thay vì flowchart cứng nhắc.
+
+Tham chiếu: Mục Vùng Goldilocks.
+
+</details>
+
+**Câu 5:** Vì sao prompt Goldilocks vượt trội hơn hai thái cực?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó tận dụng điểm mạnh của LLM state-of-the-art: nhận diện quy luật và áp dụng nguyên tắc chung vào tình huống cụ thể.
+
+Giải thích: Nhờ đó xử lý tình huống mới tốt, hiệu quả và không có chỉ dẫn mâu thuẫn.
+
+Tham chiếu: Mục Vùng Goldilocks.
+
+</details>
+
 Nếu bạn thích kiểu nội dung lý thuyết thế này, hãy cho mình biết nhé, mình sẽ làm thêm nhiều bài tương tự! Hẹn gặp lại các bạn ở video tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Context Engineering a System Prompt](https://ua.udemy.com/course/langchain/learn/lecture/52803023)
+- [GitHub — System Prompts and Models of AI Tools](https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools)
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)

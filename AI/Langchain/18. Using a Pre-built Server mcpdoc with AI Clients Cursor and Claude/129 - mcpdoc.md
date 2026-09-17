@@ -1,5 +1,7 @@
 # 🔬 Thực hành mcpdoc: Từ clone repo đến câu trả lời "grounded" trong Claude Desktop
 
+> Nguồn: `129-mcpdoc.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/49375709)
+
 Chào các bạn, Eden đây! Sau khi đã nắm lý thuyết, hôm nay chúng ta sẽ **chạy thật**: đi từ GitHub repo của **MCP Doc**, khởi động server, soi nó bằng **MCP Inspector**, rồi cắm vào **Claude Desktop**. Và như mọi hành trình thực chiến, sẽ có vài lỗi "dở khóc dở cười" để chúng ta cùng gỡ.
 
 ---
@@ -35,6 +37,11 @@ Sau đó, mình mở **terminal thứ hai** để chạy **MCP Inspector**:
 * Bấm **list tools** → có **2 tool**: **`list doc sources`** (hiển thị URL tới file llms.txt để ta HTTP request và scrape) và **`fetch docs`** (nhận một URL rồi **retrieve toàn bộ nội dung bằng cách scrape**).
 * Chạy thử **`fetch docs`** với llms.txt → ta nhận được **toàn bộ nội dung file llms.txt của LangGraph**, gồm các URL. Agent sẽ **trích xuất URL** từ đây rồi gọi `fetch docs` cho đúng URL cần thiết.
 
+| Transport | Kiểu kết nối | Dùng ở đâu trong bài |
+|---|---|---|
+| SSE | Remote qua HTTP | Server chạy port 8082, nối từ MCP Inspector |
+| stdio | Local qua standard input/output | Claude Desktop chạy qua UVX, port 8081 |
+
 ---
 
 ### 🖥️ Tích hợp vào Claude Desktop: hai lần gỡ lỗi "nhớ đời"
@@ -61,4 +68,89 @@ Sau khi sửa xong, luồng chạy diễn ra như sau:
 3. Từ danh sách đó, agent tìm **URL phù hợp về memory**, rồi gọi lại **`fetch docs`** với URL mới – lần này là **langgraph/concepts/memory**.
 4. Kết quả: bản tóm tắt về **LangGraph memory** được **grounded vào thông tin real-time**, lấy trực tiếp từ **tài liệu chính thức của LangGraph**.
 
+```mermaid
+sequenceDiagram
+    participant A as Agent
+    participant M as mcpdoc server
+    A->>M: list doc sources
+    M-->>A: URL llms.txt của LangGraph
+    A->>M: fetch docs với URL llms.txt
+    M-->>A: Danh sách chủ đề và URL
+    A->>M: fetch docs với URL trang memory
+    M-->>A: Nội dung trang memory
+```
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** mcpdoc hoạt động theo hai bước nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Truy cập llms.txt để lấy danh sách URL kèm mô tả, rồi xác định URL phù hợp và fetch nội dung bằng curl request.
+
+Giải thích: Mình ví von llms.txt như trang đầu cuốn sách gồm mục lục từng chương.
+
+Tham chiếu: Mục Cách mcpdoc hoạt động.
+
+</details>
+
+**Câu 2:** Vì sao server scrape tài liệu trực tiếp thay vì index thủ công?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì tài liệu open-source, đặc biệt trong GenAI, thay đổi liên tục — index thủ công sẽ lỗi thời rất nhanh.
+
+Giải thích: Scrape từ website chính thức giúp không còn tài liệu cũ kỹ.
+
+Tham chiếu: Mục Cách mcpdoc hoạt động.
+
+</details>
+
+**Câu 3:** Lỗi ENOENT khi restart Claude Desktop được sửa thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kích hoạt virtual environment, lấy đường dẫn đầy đủ của UVX rồi dán vào config.
+
+Giải thích: Lỗi nằm ở lệnh UVX không chạy được.
+
+Tham chiếu: Mục Tích hợp vào Claude Desktop.
+
+</details>
+
+**Câu 4:** Vì sao cần chỉ định absolute path tới nơi lưu code?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì ta không biết lệnh UVX sẽ được chạy từ thư mục nào.
+
+Giải thích: Sửa xong và restart thì tool được kích hoạt — khoảnh khắc "boom".
+
+Tham chiếu: Mục Tích hợp vào Claude Desktop.
+
+</details>
+
+**Câu 5:** Khi chưa cắm MCP server, Claude Desktop trả lời câu hỏi về LangGraph memory thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Dựa trên dữ liệu huấn luyện — không được grounded vào dữ liệu real-time và sẽ lỗi thời nhanh.
+
+Giải thích: Sau khi cắm mcpdoc, câu trả lời được grounded vào tài liệu chính thức.
+
+Tham chiếu: Mục Tích hợp vào Claude Desktop.
+
+</details>
+
 Và đó chính là sức mạnh của MCP: **giữ câu trả lời của agent luôn bám sát tài liệu thật, tại thời điểm thật**. Mình thấy điều này cực kỳ thú vị, và hy vọng các bạn cũng vậy. Hẹn gặp lại ở bài tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — mcpdoc](https://ua.udemy.com/course/langchain/learn/lecture/49375709)
+- [GitHub — langchain-ai/mcpdoc](https://github.com/langchain-ai/mcpdoc)
+- [Model Context Protocol — MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector)

@@ -1,5 +1,7 @@
 # 🧠 Context Engineering: Bước tiến hóa của Prompt Engineering (và vì sao agent cần nó)
 
+> Nguồn: `072-Context-Engineering.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/51759795)
+
 Hey các bạn, Eden đây! Chắc hẳn nhiều bạn đã từng làm việc với **AI agent** — có thể là các **coding agent** như Cursor hay Claude Code, hoặc tự phát triển agent cho công ty/cho chính mình.
 
 Nhưng có một sự thật mà mình muốn chúng ta cùng nhìn thẳng: tất cả rốt cuộc cũng quy về **một prompt được gửi đến LLM và rất nhiều công sức engineering xung quanh nó**.
@@ -49,6 +51,17 @@ Hệ quả:
 2. **Tăng chi phí (cost)** và **độ trễ (latency)**.
 3. Cuối cùng, nếu không xử lý, **hiệu suất agent bị suy giảm (degrade)**.
 
+Vòng xoáy tích lũy context đó có thể mô tả như sau:
+
+```mermaid
+flowchart TD
+    A[Nguồn context từ developer, user, lịch sử] --> B[Đưa vào context window]
+    B --> C[LLM gọi tool và nhận kết quả]
+    C --> B
+    C --> D[Context window phình to dần]
+    D --> E[Tăng cost, latency và suy giảm hiệu năng]
+```
+
 ---
 
 ### ☠️ Ba kiểu "hư hại context" bạn cần đề phòng
@@ -58,6 +71,12 @@ Sự suy giảm hiệu suất có nhiều nguyên nhân, và mình muốn bạn 
 1. **Context poisoning (nhiễm độc ngữ cảnh):** xảy ra khi một tool call hoặc một lời gọi đưa vào context một **ảo giác (hallucination)**, và nó bắt đầu làm hỏng hệ thống.
 2. **Context confusion (nhầm lẫn ngữ cảnh):** xảy ra khi ta đưa vào những **ngữ cảnh không cần thiết** cho tác vụ, khiến chúng ảnh hưởng đến câu trả lời.
 3. **Context clash (xung đột ngữ cảnh):** xảy ra khi **các phần của context mâu thuẫn nhau**.
+
+| Kiểu hư hại | Dấu hiệu nhận biết |
+|---|---|
+| Context poisoning | Một hallucination lọt vào context qua tool call và bắt đầu làm hỏng hệ thống |
+| Context confusion | Ngữ cảnh không cần thiết cho tác vụ xuất hiện và ảnh hưởng đến câu trả lời |
+| Context clash | Các phần của context mâu thuẫn nhau |
 
 ---
 
@@ -74,4 +93,76 @@ Trong bài tiếp theo, mình sẽ trình bày **các kỹ thuật** giúp mang 
 
 Một ví dụ tuyệt vời cho các kỹ thuật này — cả từ phía developer lẫn phía user — chính là các coding agent như **Claude Code**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Context Engineering là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là cách đưa cho LLM đúng ngữ cảnh — sự tiến hóa tự nhiên nhưng sâu sắc hơn của Prompt Engineering.
+
+Giải thích: Prompt là tĩnh, còn các mảnh context lại cực kỳ động.
+
+Tham chiếu: Mục Prompt tĩnh, context động.
+
+</details>
+
+**Câu 2:** Vì sao prompt tĩnh không còn đủ?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì context đến từ nhiều nguồn động (developer, user, tương tác trước, tool calls) và tăng lên mỗi ngày, nên cần một hệ thống động.
+
+Giải thích: Garbage in, garbage out — agent không hoạt động đúng nếu thiếu context đúng.
+
+Tham chiếu: Mục Prompt tĩnh, context động.
+
+</details>
+
+**Câu 3:** Hệ quả khi context window bị lấp đầy bởi kết quả tool call?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Có thể vượt kích thước context window, tăng chi phí và độ trễ, cuối cùng làm hiệu suất agent suy giảm.
+
+Giải thích: Tác vụ dài và phức tạp tích lũy phản hồi tool call theo thời gian.
+
+Tham chiếu: Mục Bài toán context window.
+
+</details>
+
+**Câu 4:** Ba kiểu "hư hại context" cần đề phòng là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Context poisoning (hallucination lọt vào context và làm hỏng hệ thống), context confusion (ngữ cảnh không cần thiết ảnh hưởng câu trả lời), context clash (các phần context mâu thuẫn nhau).
+
+Giải thích: Đây là ba trường hợp chính gây suy giảm hiệu suất.
+
+Tham chiếu: Mục Ba kiểu hư hại context.
+
+</details>
+
+**Câu 5:** Vì sao ngay cả người không phải lập trình viên cũng cần biết Context Engineering?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì người dùng cũng có rất nhiều ảnh hưởng đến ngữ cảnh được cung cấp cho LLM và câu trả lời nhận được.
+
+Giải thích: Một số kỹ thuật nằm ở phía developer, số khác nằm ở phía user.
+
+Tham chiếu: Mục Tóm lại.
+
+</details>
+
 Hẹn gặp lại các bạn ở bài tiếp theo, nơi mình sẽ hướng dẫn cách **engineering context tốt hơn**! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Context Engineering](https://ua.udemy.com/course/langchain/learn/lecture/51759795)
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)

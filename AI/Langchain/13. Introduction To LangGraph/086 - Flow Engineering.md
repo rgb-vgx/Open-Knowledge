@@ -1,5 +1,7 @@
 # 🧠 Flow Engineering là gì? Nghệ thuật "vẽ" luồng cho AI thay vì để AI tự bơi
 
+> Nguồn: `086-LangGraph-Flow-Engineering.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/43592714)
+
 Chào các bạn, Eden đây! Chúng ta sẽ cùng bàn về **flow engineering (kỹ thuật thiết kế luồng)** — một ý tưởng mới đang được thảo luận sôi nổi trong cộng đồng **generative AI** gần đây.
 
 Mình xin "cảnh báo trước": đây là một bài **rất lý thuyết**, khái niệm flow engineering còn khá **trừu tượng** và **chưa được định hình hoàn chỉnh**. Nếu bạn chưa hiểu hết mọi thứ ngay lúc này, *đừng lo lắng nhé* — mình hứa đến cuối khóa học, các bạn sẽ hiểu tường tận flow engineering là gì và vì sao nó quan trọng.
@@ -13,6 +15,17 @@ Mục tiêu thiết yếu của nó là **quản lý và tối ưu cách các h�
 Điểm mấu chốt: những flow này **không chỉ là tuyến tính**. Chúng có thể chứa các **decision-making node (nút ra quyết định)** phức tạp, nơi AI sinh ra nhiều output khác nhau, và những output này thường được **đánh giá rồi tinh chỉnh trong một vòng lặp (iterative cycle)**.
 
 Nói cách khác, flow engineering là một **quy trình có cấu trúc**, dẫn dắt AI đi qua từng bước được định nghĩa rõ ràng để **nâng cao chất lượng output** của hệ thống AI. Nó đưa vào các **pha lập kế hoạch và testing có hệ thống**, mô phỏng quy trình phát triển của con người — tất cả nhằm **tăng độ tin cậy và tính năng hữu dụng** cho các giải pháp do AI tạo ra.
+
+Vòng lặp "sinh output rồi đánh giá để tinh chỉnh" mà mình vừa nói trông như thế này:
+
+```mermaid
+flowchart TD
+    A[Developer định nghĩa flow] --> B[LLM quyết định node tiếp theo]
+    B --> C[LLM sinh output]
+    C --> D[Đánh giá output]
+    D -->|Chưa đạt| B
+    D -->|Đạt| E[Phát hành cho người dùng]
+```
 
 ---
 
@@ -45,6 +58,12 @@ Tuy nhiên, chúng ta **có thể tích hợp LLM** để quyết định nên �
 
 Vậy LangGraph nằm ở đâu trong bức tranh này? Nó đang implement **vùng trung gian (middle ground)** của flow engineering: giữa một bên là **autonomous agent hoàn toàn** — tự quyết làm gì và làm thế nào, với một bên là **LangChain chain** — hoàn toàn deterministic, **không có chút linh hoạt nào trong flow**.
 
+| Tiêu chí | Autonomous agent | Flow engineering | LangChain chain |
+|---|---|---|---|
+| Ai định nghĩa flow | Agent tự quyết mọi thứ | Developer định nghĩa, LLM chọn bước | Developer hardcode toàn bộ |
+| Độ linh hoạt | Rất cao, khó đoán | Trung bình, có kiểm soát | Thấp |
+| Độ tin cậy | Thấp, chưa production-ready | Cao hơn nhờ scope rõ ràng | Cao, deterministic |
+
 Với flow engineering, chúng ta có thể đạt được những **giải pháp agentic phức tạp**, đòi hỏi xây dựng một state machine để định nghĩa các bước của flow. Và chúng ta có thể dùng LLM theo hai cách:
 
 * **Là một phần của bước** — ví dụ gọi LLM để sinh một tweet.
@@ -64,4 +83,76 @@ Mình tin rằng trong tương lai gần, khi phát triển phần mềm AI và 
 2. **35% cho fine-tuning** — làm cho model thật sự chuyên biệt cho những task chúng ta cần giải quyết.
 3. **5% cho prompt engineering**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Flow engineering là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cách tiếp cận có hệ thống và chiến lược để phát triển phần mềm có AI dẫn dắt việc ra quyết định, thông qua định nghĩa flow rõ ràng.
+
+Giải thích: Mục tiêu là quản lý và tối ưu cách hệ thống LLM xử lý nhiệm vụ, tăng độ tin cậy cho output.
+
+Tham chiếu: Mục Flow Engineering: Định nghĩa.
+
+</details>
+
+**Câu 2:** Vấn đề lớn nhất của AutoGPT và BabyAGI là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Long-term planning — chúng tự chia task rồi subtask của subtask và trên thực tế không hoạt động hiệu quả.
+
+Giải thích: Kiểu AI tự nghĩ ra "nỗ lực tưởng tượng" rất dễ phát sinh vấn đề và vượt khỏi tầm kiểm soát.
+
+Tham chiếu: Mục Bài học từ AutoGPT và BabyAGI.
+
+</details>
+
+**Câu 3:** Trong flow engineering, developer giữ vai trò gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Định nghĩa task, scope và bản thiết kế (blueprint) cho LLM đi theo.
+
+Giải thích: LLM chỉ ra quyết định bên trong flow do chúng ta tạo — ví dụ output đã sẵn sàng phát hành chưa, bước tiếp theo là gì.
+
+Tham chiếu: Mục Bài học từ AutoGPT và BabyAGI.
+
+</details>
+
+**Câu 4:** LLM có thể được dùng theo hai cách nào trong một state machine?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là một phần của bước (ví dụ sinh một tweet) hoặc là người chỉ đường (cho biết nên đi tới bước nào).
+
+Giải thích: Dù ở vai trò nào, developer vẫn là người định nghĩa flow và nắm toàn quyền kiểm soát.
+
+Tham chiếu: Mục State Machine.
+
+</details>
+
+**Câu 5:** Eden dự đoán tỷ lệ phân bổ thời gian tương lai giữa flow engineering, fine-tuning và prompt engineering là bao nhiêu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** 60% flow engineering và kiến trúc, 35% fine-tuning, 5% prompt engineering.
+
+Giải thích: Phần lớn công sức sẽ dành cho state machine, các node và quyết định nhúng LLM vào đâu.
+
+Tham chiếu: Mục Tương lai.
+
+</details>
+
 Mình biết bài này **siêu trừu tượng** và chắc hẳn các bạn chưa hiểu hết mọi thứ. **Đừng lo nhé!** Đây là một chủ đề mới và còn khá mơ hồ, nhưng mình cam kết rằng đến cuối khóa học, các bạn sẽ hiểu chính xác flow engineering là gì — và vì sao nó quan trọng đến vậy khi xây dựng những agent tiên tiến. Hẹn gặp lại ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangGraph Flow Engineering](https://ua.udemy.com/course/langchain/learn/lecture/43592714)
+- [LangGraph overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/overview)

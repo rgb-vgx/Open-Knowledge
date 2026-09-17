@@ -1,5 +1,7 @@
 # 🚀 Chạy LangGraph Cloud API trên máy bạn: Từ langgraph.json đến web server "tự sinh"
 
+> Nguồn: `056-LangGraph-Cloud-API---Environment-Setup-Local.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/45217665)
+
 Chào các bạn, Eden đây! 👋
 Ở bài trước chúng ta đã chơi với LangGraph Studio. Hôm nay, mình sẽ đưa các bạn đi từ **LangSmith** tới việc **tự tay dựng một web server API từ graph** ngay trên máy local, chỉ với **LangGraph CLI**.
 
@@ -45,6 +47,14 @@ Mình chạy thử và nhận về một **Dockerfile** với điểm đáng ch�
 * **`langgraph build`** — build image cho bạn.
 * **`langgraph up`** — nếu chưa có Dockerfile thì tạo luôn, build image và **chạy container**.
 
+Bảng phân biệt nhanh ba lệnh CLI chính:
+
+| Lệnh | Việc nó làm |
+|---|---|
+| `langgraph dockerfile` | Sinh Dockerfile cho LangGraph API server |
+| `langgraph build` | Build Docker image từ Dockerfile |
+| `langgraph up` | Tạo Dockerfile nếu chưa có, build image và chạy container |
+
 ---
 
 ### 🌐 Web server "tự sinh" — không viết một dòng API nào
@@ -58,6 +68,89 @@ Mình mở thêm một màn hình terminal để xem các container đang chạy
 * Container **`langgraph-course-langgraph-api`** — chính là API mà LangChain tạo ra, sử dụng graph của chúng ta.
 * Một **container Postgres** — nơi **lưu state** của graph.
 
+Luồng từ graph tới web server:
+
+```mermaid
+flowchart LR
+    A[Compiled graph] --> B[langgraph up]
+    B --> C[LangGraph API server]
+    C --> D[Docs tự sinh tại /docs]
+    C --> E[Postgres lưu state]
+```
+
 Nhờ container Postgres này, chúng ta có thể **debug, đặt breakpoint và lưu state** như đã thấy ở bài về LangGraph Studio.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** File `langgraph.json` chứa những thông tin gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đường dẫn tới environment variables, đường dẫn tới graph, và các dependencies của ứng dụng.
+
+Giải thích: Đây là trung tâm của toàn bộ quy trình test local rồi deploy.
+
+Tham chiếu: Mục Bắt đầu từ LangSmith.
+
+</details>
+
+**Câu 2:** Lệnh `langgraph dockerfile` làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Sinh Dockerfile cho LangGraph API server, với base image dựng sẵn của LangChain tên là `langgraph-api`.
+
+Giải thích: Nhờ đó ta không phải tự viết Dockerfile — việc vốn phiền phức và nhàm chán.
+
+Tham chiếu: Mục Chuẩn bị môi trường.
+
+</details>
+
+**Câu 3:** `langgraph build` và `langgraph up` khác nhau thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `build` tạo image; `up` tạo Dockerfile nếu chưa có, build image rồi chạy container.
+
+Giải thích: `up` là lệnh "tất cả trong một" để có server chạy local.
+
+Tham chiếu: Mục Chuẩn bị môi trường.
+
+</details>
+
+**Câu 4:** Sau khi chạy `langgraph up`, ta có gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** API chạy tại `localhost:8123` và tài liệu tại `localhost:8123/docs`, đều do LangChain tự sinh.
+
+Giải thích: Ta không hề viết API nào cả, chỉ viết graph thôi!
+
+Tham chiếu: Mục Web server tự sinh.
+
+</details>
+
+**Câu 5:** Những container nào chạy sau `langgraph up` và state được lưu ở đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Container `langgraph-course-langgraph-api` và container Postgres; state được lưu trong Postgres.
+
+Giải thích: Nhờ Postgres, ta có thể debug, đặt breakpoint và lưu state như ở LangGraph Studio.
+
+Tham chiếu: Mục Web server tự sinh.
+
+</details>
+
 Còn bây giờ, cùng mình mở **tài liệu API** và xem LangChain đã "tặng" chúng ta những gì nhé. Ở bài tiếp theo, mình sẽ mổ xẻ thật sâu vào **Assistants, Threads và Runs**. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangGraph Cloud API - Environment Setup (Local)](https://ua.udemy.com/course/langgraph/learn/lecture/45217665)
+- [LangChain Docs — LangGraph CLI](https://docs.langchain.com/langsmith/cli)
+- [LangChain Docs — Agent Server](https://docs.langchain.com/langsmith/agent-server)

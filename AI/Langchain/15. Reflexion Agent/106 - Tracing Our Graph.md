@@ -1,5 +1,7 @@
 # 📊 Tracing Our Graph: Đọc "nhật ký hành trình" của Reflexion Agent trên LangSmith
 
+> Nguồn: `106-Tracing-Our-Graph.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54197723)
+
 Chào các bạn, mình là Eden đây! Graph đã chạy thành công, và hôm nay chúng ta sẽ cùng mở **LangSmith** để **review toàn bộ trace** của Reflexion Agent. Đây là lúc để thấy rõ kiến trúc mà chúng ta thiết kế "sống dậy" như thế nào trong thực tế — và cũng là lúc phát hiện một "cú twist" khá thú vị. Cùng bắt đầu nhé!
 
 ### 📈 Tổng quan trace: 50 giây và 35K tokens
@@ -27,6 +29,12 @@ Giờ hãy cùng đối chiếu trace với kiến trúc của chúng ta:
 3. Sau khi chạy xong node này, ta có một **AI message chứa hàng loạt kết quả tool call**. Tiếp đó là **Reviser node**: nó nhận toàn bộ lịch sử tool execution cùng search results, cùng câu trả lời đầu tiên và critique, rồi **revise câu trả lời dựa trên kết quả tìm kiếm**, tạo thêm **critique mới** và **thêm trích dẫn (citation)**. Phản hồi trả về là một **revised answer** — cũng là một tool call, và nếu đào sâu hơn sẽ thấy một **LLM call** với schema của `ReviseAnswer` đầy đủ chi tiết.
 4. Tiếp theo là **conditional loop (event_loop)**: nếu đếm được nhiều hơn 2 tool call thì kết thúc; nếu chưa thì lặp thêm một vòng với **bộ search query mới**. Lần này, event_loop trả về "đi tiếp execute tools" — và các query mới hoàn toàn khác lần đầu: *AI SOC ROI case studies*, *autonomous SOC market size in 2025*, và *industry adoption in AI SOC*.
 
+| Bước | Vai trò | Tool call |
+|---|---|---|
+| Responder | Tạo draft kèm critique và search queries | 1 |
+| Execute tools | Chạy 3 search query song song | Không tạo |
+| Revisor | Revise dựa trên search results và thêm citation | +1 |
+
 ---
 
 ### ⏱️ Cú twist: MAX_ITERATIONS = 2 nhưng chạy... 3 vòng!
@@ -36,6 +44,19 @@ Giờ hãy cùng đối chiếu trace với kiến trúc của chúng ta:
 * Tool call thứ nhất: từ responder (đầu quá trình).
 * Tool call thứ hai: từ reviser.
 * Và những chỗ khác **không phải là tool call** (vì tool node không tạo tool call).
+
+Diễn biến thực tế của graph như sau:
+
+```mermaid
+flowchart TD
+    A[Draft - tool call 1] --> B[Execute tools vòng 1]
+    B --> C[Revised - tool call 2]
+    C --> D{Event loop lần 1}
+    D -->|Chưa vượt ngưỡng| E[Execute tools vòng 2]
+    E --> F[Revised - tool call 3]
+    F --> G{Event loop lần 2}
+    G -->|Vượt ngưỡng| H[END]
+```
 
 Vậy tại sao graph vẫn đi tiếp? Nguyên nhân nằm ở **thời điểm cập nhật state**: khi `event_loop` chạy lần thứ hai, **revised node vẫn chưa hoàn tất** — nghĩa là state chưa được cập nhật với tool call mới. Vì thế số đếm vẫn **nhỏ hơn `MAX_ITERATIONS`**, và graph lại rẽ vào **execute tools** thêm một lần nữa.
 
@@ -51,4 +72,77 @@ Vậy là chúng ta vừa hoàn thành kiến trúc **Reflexion** và rút ra m�
 
 Ở section tiếp theo, chúng ta sẽ thay thế `max_iterations` bằng **một LLM đóng vai trò trọng tài (LLM as a judge)** — để chính LLM quyết định xem có nên lặp thêm một vòng nữa hay không. Kiến trúc này nằm trong section **Agentic RAG**, với tài liệu chính thức trong LangGraph Agentic RAG — hứa hẹn sẽ là chương hấp dẫn tiếp theo của hành trình.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Trace cho thấy toàn bộ quá trình chạy tốn bao lâu và bao nhiêu token?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Gần 50 giây và 35K tokens.
+
+Giải thích: Một cái giá khá "chát" nhưng hợp lý cho kiến trúc nhiều vòng lặp.
+
+Tham chiếu: Mục Tổng quan trace.
+
+</details>
+
+**Câu 2:** Làm sao biết ba search query đầu tiên chạy đồng thời?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì thời điểm bắt đầu (start time) của chúng giống hệt nhau.
+
+Giải thích: `ToolNode` hỗ trợ chạy nhiều tool song song.
+
+Tham chiếu: Mục Đọc trace theo kiến trúc.
+
+</details>
+
+**Câu 3:** Với `MAX_ITERATIONS = 2`, thực tế graph đã chạy bao nhiêu vòng revision?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** 3 vòng revision, chứ không phải 2.
+
+Giải thích: Đây là "cú twist" — tác giả xác nhận đó là lỗi của mình và gửi lời xin lỗi.
+
+Tham chiếu: Mục Cú twist.
+
+</details>
+
+**Câu 4:** Vì sao event loop không dừng đúng lúc theo lý thuyết?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì khi event_loop chạy lần thứ hai, revised node vẫn chưa hoàn tất nên state chưa được cập nhật tool call mới; số đếm vẫn nhỏ hơn `MAX_ITERATIONS`.
+
+Giải thích: Sau khi execute tools chạy xong, state mới cập nhật từ node revise và event_loop mới thấy số tool call lớn hơn 2.
+
+Tham chiếu: Mục Cú twist.
+
+</details>
+
+**Câu 5:** Hướng khắc phục vấn đề đếm vòng lặp sẽ xuất hiện ở section nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Section Agentic RAG — thay `max_iterations` bằng một LLM đóng vai trò trọng tài (LLM as a judge).
+
+Giải thích: LLM sẽ quyết định có lặp thêm một vòng nữa hay không, thay vì dựa vào con số.
+
+Tham chiếu: Mục Bài học và hướng đi.
+
+</details>
+
 Cảm ơn các bạn đã đồng hành qua section Reflexion đầy "cam go" này. Nghỉ ngơi một chút, rồi chúng ta lại lên đường nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Tracing Our Graph](https://ua.udemy.com/course/langchain/learn/lecture/54197723)
+- [LangSmith Docs — Trace LangChain applications](https://docs.langchain.com/langsmith/trace-with-langchain)
+- [LangChain Docs — Build a custom RAG agent with LangGraph](https://docs.langchain.com/oss/python/langgraph/agentic-rag)

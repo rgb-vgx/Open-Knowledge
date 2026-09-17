@@ -1,5 +1,7 @@
 # 🔍 Retrieval Agent: Chắp cánh cho Documentation Helper
 
+> Nguồn: `060-Retrieval-Agent-Implementation.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54055321)
+
 Chào các bạn, lại là Eden đây! Sau khi đã có dữ liệu nằm gọn trong vector store, hôm nay chúng ta sẽ **implement phần retrieval (truy hồi)** — linh hồn của toàn bộ RAG pipeline. Mình sẽ xây dựng một **retrieval agent**: một agent được trang bị đúng một công cụ truy hồi tài liệu, và tự quyết định khi nào cần dùng nó.
 
 Cả pipeline sẽ nằm gọn trong `backend/core.py` với một package backend chỉn chu. Bắt tay vào code thôi!
@@ -38,6 +40,11 @@ Giờ đến trái tim của bài học. Mình định nghĩa hàm **`retrieve_c
 
 Mình đặt **`response_format = "content_and_artifact"`**. Đây là chi tiết đáng chú ý: response format có thể là `content` (mặc định — tool chỉ trả về **một** giá trị) hoặc `content_and_artifact` (tool trả về **hai** giá trị). Lựa chọn thứ hai cho phép chúng ta đính kèm thêm thông tin phục vụ **downstream application (ứng dụng phía sau)** mà **không gửi cho LLM**. *Nghe hơi khó hiểu, nhưng cứ tin mình — khi vào chế độ debug, các bạn sẽ thấy khác biệt ngay!*
 
+| Response format | Giá trị trả về | Gửi tới LLM | Mục đích |
+|---|---|---|---|
+| `content` | 1 giá trị | Toàn bộ | Tool đơn giản, mặc định |
+| `content_and_artifact` | 2 giá trị | Chỉ phần `content` | Artifact giữ ở application để render/debug |
+
 Mô tả (description) của tool như sau:
 
 > "Retrieve relevant documentation to help answer user queries about LangChain"
@@ -50,6 +57,20 @@ Phần thân hàm diễn ra đúng theo luồng retrieval kinh điển:
 2. Gọi **`invoke()`** — với retriever, method này thực hiện **similarity search (tìm kiếm tương đồng)**. Ta truyền vào **query string** để embed, kèm tham số **`k=4`** quy định tối đa **4 tài liệu** trả về.
 3. **Serialize** kết quả: lặp qua từng document, lấy **content** và **source**, ghép thành một **chuỗi lớn** để gắn vào prompt — đây chính là **prompt augmentation (tăng cường prompt)**.
 4. Trả về **hai giá trị**: chuỗi đã serialize (phần **content** — sẽ đi tới LLM) và danh sách documents gốc dạng LangChain Document (phần **artifact** — **chỉ ở lại trong application**, không gửi cho LLM, nhưng hiển thị đầy đủ trong trace khi debug).
+
+```mermaid
+sequenceDiagram
+    participant U as Người dùng
+    participant A as Agent
+    participant T as Tool retrieve_context
+    participant V as Vector store
+    U->>A: Đặt câu hỏi
+    A->>T: Gọi tool với query
+    T->>V: Similarity search với k=4
+    V-->>T: 4 documents liên quan
+    T-->>A: content và artifact
+    A-->>U: Câu trả lời kèm nguồn
+```
 
 Vì sao phải tách hai phần như vậy? Vì nếu chỉ trả về chuỗi văn bản, mình sẽ **không còn document object** để thao tác ở tầng ứng dụng nữa. Giữ lại artifact giúp ta có một **object Python "chuẩn bài"** để xử lý tiếp.
 
@@ -78,4 +99,77 @@ Cách lấy documents từ artifact: mình khởi tạo một **list rỗng**, l
 
 Khép lại hàm bằng việc trả về **answer** và **context** — danh sách documents lấy từ artifact. Cuối cùng, mình tạo ví dụ chạy thử trong **`if __name__ == '__main__':`** với câu hỏi **"what are deep agents?"** và in kết quả ra, sẵn sàng cho màn debug.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao embedding model khi retrieval phải trùng với lúc indexing?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì kích thước vector phải khớp với vector store đã khởi tạo trên Pinecone.
+
+Giải thích: Luôn dùng cùng một embedding model — ở đây là `text-embedding-3-small`.
+
+Tham chiếu: Mục Khởi tạo embeddings.
+
+</details>
+
+**Câu 2:** `init_chat_model` có gì tiện lợi?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nhận vào một chuỗi và trả về đúng chat model tương ứng.
+
+Giải thích: Chỉ cần khai báo provider OpenAI và model mong muốn; đổi sang Gemini chỉ cần đổi chuỗi.
+
+Tham chiếu: Mục Khởi tạo chat model.
+
+</details>
+
+**Câu 3:** Tham số `k=4` trong retriever nghĩa là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trả về tối đa 4 tài liệu liên quan nhất từ similarity search.
+
+Giải thích: `invoke()` trên retriever thực hiện similarity search với query string.
+
+Tham chiếu: Mục Tool retrieve_context.
+
+</details>
+
+**Câu 4:** Vì sao cần tách content và artifact thay vì chỉ trả chuỗi văn bản?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để giữ **document object** cho tầng ứng dụng xử lý tiếp, không gửi cho LLM.
+
+Giải thích: Artifact là object Python "chuẩn bài" phục vụ render/debug; content mới đi tới LLM.
+
+Tham chiếu: Mục Tool retrieve_context.
+
+</details>
+
+**Câu 5:** Câu cuối trong system prompt có vai trò gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Yêu cầu agent nói thẳng nếu không tìm thấy câu trả lời — chống hallucination.
+
+Giải thích: "If you cannot find the answer..., say so" là lá chắn quan trọng của Documentation Helper.
+
+Tham chiếu: Mục Agent run_llm.
+
+</details>
+
 *Đừng lo nếu phần artifact còn hơi trừu tượng — sang bài sau, mình sẽ debug từng bước và mọi thứ sẽ sáng tỏ ngay!* Hẹn gặp các bạn ở màn chạy thực tế! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Retrieval Agent Implementation](https://ua.udemy.com/course/langchain/learn/lecture/54055321)
+- [LangChain Docs — Agents, create_agent](https://docs.langchain.com/oss/python/langchain/agents)
+- [LangChain Reference — init_chat_model](https://reference.langchain.com/python/langchain/chat_models/init_chat_model)

@@ -1,5 +1,7 @@
 # ⚡ Chạy bất đồng bộ trong LangGraph: Fan-out/Fan-in "có sẵn" mà không cần asyncio hay multithreading
 
+> Nguồn: `050-Implementing-Async-Execution.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/44823401)
+
 Chào các bạn, Eden đây! 👋 Trong bài này, mình sẽ giới thiệu một phần rất quan trọng của LangGraph: **chạy bất đồng bộ (async execution)**. Với các ứng dụng production-grade (chuẩn môi trường thực tế), ta cần khả năng chạy task bất đồng bộ hoặc thực thi song song để tiết kiệm thời gian — quan trọng nhất là **trả kết quả về cho người dùng thật nhanh**.
 
 Tin vui là LangGraph khiến việc này dễ đến bất ngờ, vì nó **hỗ trợ sẵn (out of the box)**.
@@ -65,6 +67,18 @@ builder.add_edge("b", "d")
 builder.add_edge("c", "d")
 ```
 
+Sơ đồ topology của graph:
+
+```mermaid
+flowchart TD
+    S[START] --> A[Node A]
+    A --> B[Node B]
+    A --> C[Node C]
+    B --> D[Node D]
+    C --> D
+    D --> E[END]
+```
+
 Mình in graph ra file **`async.png`** để kiểm tra topology, chạy thử và xác nhận nó đúng như hình dung: A tỏa ra B, C rồi gom về D.
 
 Và các bạn để ý nhé — ta **không hề viết một hàm async nào**, cũng **không tạo thread nào cả**. LangGraph làm hết! Điểm mấu chốt của graph này chỉ là minh họa cách B và C có thể chạy đồng thời.
@@ -89,4 +103,76 @@ Và trên **LangSmith**, trace còn rõ ràng hơn nữa:
 * Node B chạy lúc **7:04:35**, node C chạy **đúng cùng thời điểm**.
 * Node D chạy muộn hơn 1 giây, lúc **7:04:36**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao LangGraph chạy song song được mà ta không cần viết code async?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chỉ cần định nghĩa node/edge để fan out — LangGraph tự suy luận đây là async flow và lo phần còn lại.
+
+Giải thích: Graph A → B và A → C khiến B, C được xếp chạy cùng lúc.
+
+Tham chiếu: Mục Fan-out rồi fan-in.
+
+</details>
+
+**Câu 2:** Fan-out và fan-in khác nhau thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Fan-out là một node tỏa ra nhiều node; fan-in là nhiều node gom về một node.
+
+Giải thích: A → B, A → C là fan-out; B → D, C → D là fan-in.
+
+Tham chiếu: Mục Fan-out rồi fan-in.
+
+</details>
+
+**Câu 3:** Class `ReturnNodeValue` dùng kỹ thuật gì để trở thành node?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Override `__call__` để object trở nên callable, nhận `state` và trả về update.
+
+Giải thích: Nhờ vậy cùng một hành vi được tái sử dụng cho nhiều node.
+
+Tham chiếu: Mục Dựng file `async.py`.
+
+</details>
+
+**Câu 4:** Bằng chứng nào cho thấy B và C chạy đồng thời?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `time.sleep(1)` cùng timestamp trên LangSmith: B và C cùng thời điểm, D chạy sau đúng 1 giây.
+
+Giải thích: Nếu chạy tuần tự, tổng thời gian sẽ dài hơn hẳn.
+
+Tham chiếu: Mục Kiểm chứng trên LangSmith.
+
+</details>
+
+**Câu 5:** `aggregate` được gom giá trị từ các node bằng cách nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Mỗi node trả về list `[self._value]`; state dùng `Annotated` cùng `operator` để cộng dồn thay vì ghi đè.
+
+Giải thích: Nhờ đó kết quả của mọi node đều được giữ lại trong state.
+
+Tham chiếu: Mục Dựng file `async.py`.
+
+</details>
+
 Đó chính là async execution trong LangGraph: gọn gàng, trực quan và hiệu quả. Ở bài tiếp theo, chúng ta sẽ thêm một bước phụ sau node B để graph "khó nhằn" hơn một chút — và xem fan-out/fan-in xử lý ra sao nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Implementing Async Execution](https://ua.udemy.com/course/langgraph/learn/lecture/44823401)
+- [LangGraph Docs — Use the graph API](https://docs.langchain.com/oss/python/langgraph/use-graph-api)

@@ -1,5 +1,7 @@
 # 🧭 Backend Communication Design Patterns: Những "first principles" mình đúc kết sau 17–18 năm làm backend
 
+> Nguồn: `005-Backend-Communication-Design-Patterns-Intro.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629352)
+
 Chào mừng các bạn đến với section đầu tiên của khóa học! Mình rất hào hứng được bắt đầu hành trình này cùng các bạn — và trước khi đi vào từng pattern cụ thể, mình muốn kể các bạn nghe vì sao section này lại đáng để học.
 
 ### 🧱 17–18 năm làm backend và những pattern cứ lặp lại
@@ -49,4 +51,76 @@ Tin hay không thì mình bắt đầu thấy chúng xuất hiện trong chính 
 
 Các pattern trong section này là **bộ khung tư duy** — hiểu rồi, các bạn sẽ nhận ra chúng xuất hiện ở khắp nơi, từ HTTP, DNS cho tới các hệ thống chat hay notification.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao mình nói đây không phải một danh sách pattern đóng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì pattern mới có thể xuất hiện bất cứ lúc nào, thậm chí do chính người học phát minh.
+
+Giải thích: Điều đáng giá là nắm first principles để hiểu được cả những pattern chưa ra đời.
+
+Tham chiếu: Mục Đây không phải một danh sách đóng.
+
+</details>
+
+**Câu 2:** Bốn nhóm pattern chính của section này là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Request/response, synchronous vs asynchronous, push/poll/long poll, và publish/subscribe.
+
+Giải thích: Đây là bản đồ nội dung — mỗi pattern giải quyết một kiểu bài toán giao tiếp khác nhau.
+
+Tham chiếu: Mục Bản đồ những gì chúng ta sẽ đi qua.
+
+</details>
+
+**Câu 3:** Vì sao multiplexing và demultiplexing lại nằm trong section backend?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì chúng xuất hiện trong chính các backend communication protocol.
+
+Giải thích: Tưởng thuần networking nhưng lại khớp trực tiếp với cách backend giao tiếp.
+
+Tham chiếu: Mục Vì sao networking lại có mặt trong section backend.
+
+</details>
+
+**Câu 4:** Mình đúc kết các pattern này từ những nguồn nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kinh nghiệm cá nhân, các bài viết từng đọc, và quan sát cách Netflix, Google, Twitter xây dựng ứng dụng.
+
+Giải thích: Pattern đến từ trải nghiệm thực chiến, không phải lý thuyết suông.
+
+Tham chiếu: Mục 17–18 năm làm backend.
+
+</details>
+
+**Câu 5:** Vì sao backend application gần như luôn phải giao tiếp với client?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì phục vụ client chính là bản chất công việc của "back"end.
+
+Giải thích: Giao tiếp với client là lý do backend tồn tại và cũng là lý do các pattern giao tiếp cứ lặp lại.
+
+Tham chiếu: Mục 17–18 năm làm backend.
+
+</details>
+
 Và bài đầu tiên chúng ta chạm tới sẽ là mô hình kinh điển nhất của mọi backend: **request/response**. Hẹn gặp các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Backend Communication Design Patterns Intro](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629352)
+- [MDN — Overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview)

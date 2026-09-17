@@ -1,5 +1,7 @@
 # 🧩 LangGraph Cloud API Deep Dive: Assistants, Threads và Runs — bộ ba "linh hồn" của mọi ứng dụng LLM
 
+> Nguồn: `057-LangSmith-Deployment-API-Deep-Dive---Assistants-Threads-Runs.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/45217585)
+
 Chào các bạn, Eden đây! 👋
 Ở bài trước, chúng ta đã có một web server API chạy local. Lần này, mình sẽ cùng các bạn **mổ xẻ nội dung** của API đó — bộ **LangGraph Cloud API** với những khái niệm có thể còn mới, nhưng sẽ theo các bạn suốt hành trình xây dựng ứng dụng LLM production.
 
@@ -63,6 +65,14 @@ Khi đã gắn thread và bật **persistence (lưu trữ bền vững)** với 
 
 Khi tạo thread, mình **không truyền ID và cũng không truyền assistant ID** — thread **có thể được chia sẻ giữa nhiều assistant**, vì nó lưu thông tin của tất cả các invocation. Chạy Test Request, ta nhận về **thread ID** — nhớ lưu lại để dùng cho bước sau.
 
+Bảng đối chiếu nhanh bộ ba khái niệm:
+
+| Khái niệm | Là gì | Vai trò |
+|---|---|---|
+| Assistant | Instance của compiled graph kèm configuration | Chọn cấu hình graph để chạy |
+| Thread | State tích lũy của một nhóm runs | Bộ nhớ xuyên các lần chạy |
+| Run | Lần invocation thực sự với input | Kích hoạt graph thực thi |
+
 ---
 
 ### 🏃 Runs — phát súng khai hỏa
@@ -78,12 +88,101 @@ Cuối cùng: **run** chính là **lần invocation thực sự của graph vớ
 7. **`multitask_strategy`** — đặt là **`reject`**. *Thú thật, mình chưa biết chính xác field này làm gì — ai có giải thích rõ hơn thì báo cho mình nhé!*
 8. **`input`** — một trong những phần quan trọng nhất: **đúng dictionary mà bạn dùng để invoke graph**, ví dụ `{"question": "what is agent memory"}`.
 
+Luồng một lần chạy qua API diễn ra như sau:
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant A as LangGraph Cloud API
+    participant G as Compiled graph
+    participant P as Postgres
+    C->>A: POST run với assistant_id và thread_id
+    A->>G: Thực thi graph
+    G->>P: Ghi state và checkpoint
+    C->>A: GET thread
+    A->>C: Trả values chứa generation
+```
+
 Gửi request, ta nhận về **run ID, thread ID, assistant ID, thời điểm tạo, status `pending`**, input, tags, metadata... Gọi **List Runs** với run ID, giờ ta thấy **status: success** — graph đã chạy xong.
 
 *Nhưng này, câu trả lời đâu?* Bạn để ý sẽ không thấy answer trong run. **Câu trả lời nằm trong thread** — vì thread mới là nơi **tổng hợp state của tất cả các run**. Gọi API lấy thread ID, mở key **`values`**, ta thấy **state đầy đủ**, trong đó field **`generation`** chứa câu trả lời — đúng kiểu **cướp biển** mà chúng ta đã "chỉnh nóng" ở bài trước!
 
 Và đây nữa: **trace của toàn bộ quá trình graph thực thi** — bạn thấy **tag `hidden`**, thời điểm invocation, **LLM đã trả lời gì, những node nào đã chạy theo thứ tự nào, tool result ra sao**...
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Assistant là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là abstraction của một instance của compiled graph, chứa configuration để run graph về sau.
+
+Giải thích: Có thể tạo nhiều assistant cùng graph nhưng khác configuration, thậm chí trỏ tới graph khác nhau.
+
+Tham chiếu: Mục Assistants.
+
+</details>
+
+**Câu 2:** Thread là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Abstraction chứa toàn bộ state tích lũy của một nhóm invocations (một nhóm runs).
+
+Giải thích: Thread có thể được chia sẻ giữa nhiều assistant.
+
+Tham chiếu: Mục Threads.
+
+</details>
+
+**Câu 3:** Run là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là lần invocation thực sự của graph với input bạn cung cấp.
+
+Giải thích: Payload tạo run cần `assistant_id` bắt buộc; `thread_id` nên gắn cho mỗi run.
+
+Tham chiếu: Mục Runs.
+
+</details>
+
+**Câu 4:** Vì sao câu trả lời không nằm trong run mà nằm trong thread?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì thread tổng hợp state của tất cả các run; mở key `values` sẽ thấy state đầy đủ, gồm field `generation` chứa câu trả lời.
+
+Giải thích: Run chỉ là một lần chạy đơn lẻ.
+
+Tham chiếu: Mục Runs.
+
+</details>
+
+**Câu 5:** Khi chạy local, thông tin assistant/thread/run được lưu ở đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trong container Postgres do LangGraph Cloud API tạo khi chạy `langgraph up`.
+
+Giải thích: Ở production, việc tự vận hành database là cả một vấn đề — đó là lúc LangGraph Cloud ra tay.
+
+Tham chiếu: Mục Assistants.
+
+</details>
+
 Mình biết bài này cùng các bài trước có **rất nhiều ý tưởng và thuật ngữ mới**. Việc đầu tiên mình muốn các bạn làm: **dừng lại, hít một hơi thật sâu** — vì không hiểu hết ngay lần đầu là **hoàn toàn bình thường**. Hồi mới gặp những khái niệm này, chính mình cũng chật vật y như vậy. Việc thứ hai: **xem lại vài video gần đây**, mọi thứ sẽ thấm hơn nhiều.
 
 Ở bài tới, chúng ta sẽ **deploy lên cloud** và xem cách **LangGraph Cloud** — giải pháp managed đang mở cho tất cả mọi người — vận hành. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangSmith Deployment API Deep Dive - Assistants, Threads, Runs](https://ua.udemy.com/course/langgraph/learn/lecture/45217585)
+- [LangChain Docs — Agent Server API reference](https://docs.langchain.com/langsmith/server-api-ref)
+- [LangChain Docs — Agent Server](https://docs.langchain.com/langsmith/agent-server)
+- [LangChain Docs — Runs](https://docs.langchain.com/langsmith/runs)

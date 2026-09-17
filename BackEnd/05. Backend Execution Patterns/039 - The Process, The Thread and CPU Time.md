@@ -1,5 +1,7 @@
 # 🧠 Process và Thread: Cuộc chiến giành từng mili-giây CPU
 
+> Nguồn: `038-The-Process-and-The-Thread-and-how-they-compete-for-CPU-time.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34647874)
+
 Trước khi bước vào bất kỳ chủ đề execution nào, mình cần các bạn trả lời được một câu: **process (tiến trình) và thread (luồng) khác nhau ở đâu?** Khi mình nói "process", các bạn phải có một hình ảnh trong đầu; khi mình nói "thread", phải là một hình ảnh khác. Lẫn lộn hai từ này thì mọi thứ về multi-process, multithreading hay single-threaded phía sau sẽ rối tung hết.
 
 ### 🧩 Process là gì, nhìn từ con mắt CPU?
@@ -27,6 +29,14 @@ Trên Linux — nền tảng cho hầu hết giải thích của mình — threa
 * Thread cũng có ID duy nhất, vì xét cho cùng nó cũng là một process — chỉ là bản nhẹ, không cần cấu trúc memory pointer riêng.
 * Và tất nhiên, thread cũng được schedule vào CPU để giành lấy thời gian quý giá.
 
+| Tiêu chí | Process | Thread |
+|---|---|---|
+| Vùng memory | Riêng, cách ly, không ai đọc ngoài nó | Kế thừa và chia sẻ với process cha |
+| Chi phí memory | Tốn hơn khi fork | Nhẹ hơn, không cần cấu trúc memory riêng |
+| Đồng bộ | Không chia sẻ memory nên không đụng nhau | Tranh nhau memory, cần mutex/lock |
+| Định danh | PID do OS gán | ID riêng, vì cũng là một process |
+| Ví dụ | Redis, Nginx worker | Apache, Envoy, SQL Server |
+
 ---
 
 ### ⚖️ CPU là tài nguyên khan hiếm: bao nhiêu process là quá nhiều?
@@ -44,6 +54,16 @@ Trên Linux — nền tảng cho hầu hết giải thích của mình — threa
 * Ngược lại, spin up **100 process** trên máy 4 core không hề làm app nhanh hơn. Bạn gom request vào 100 process? Chắc chắn rồi. Nhưng ngay sau đó chúng ngồi chờ CPU time không tồn tại: 4 process chạy trên 4 core, còn **94 process đứng đợi**.
 * Tệ hơn, process trên core bị **context switch (chuyển ngữ cảnh)** vô cớ vì scheduler thấy những process khác đang đói.
 * Đây là chỗ **scheduler (bộ lập lịch)** trở thành một bộ môn nghệ thuật: khi nào đá một process ra, khi nào đưa process khác vào, process được chờ bao lâu... đều là bài toán khó.
+
+```mermaid
+flowchart TD
+    A[Process được schedule lên CPU] --> B[Thực thi instruction]
+    B --> C{Cần fetch memory}
+    C -->|Không| B
+    C -->|Có| D[Bị đá khỏi CPU]
+    D --> E[Process khác chạy]
+    E --> A
+```
 
 ---
 
@@ -78,6 +98,79 @@ Trên Linux — nền tảng cho hầu hết giải thích của mình — threa
 * Sau khi hiểu ra, tụi mình chuyển sang **dồn các lệnh ghi trên cùng một connection** thay vì nhiều session. SQL Server đủ thông minh để dùng **một thread duy nhất**: lock một lần, insert 10 row, rồi unlock. Hết cảnh nhiều thread giành nhau cái leaf page cuối.
 * Nếu muốn, bạn có thể tắt threading theo từng instance — dùng **MAXDOP 1** để chỉ tạo một thread.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Thread khác process ở điểm cốt lõi nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thread chia sẻ memory với process cha, không có vùng memory riêng.
+
+Giải thích: Trên Linux thread còn được gọi là lightweight process (LWP).
+
+Tham chiếu: Mục "Thread là gì?".
+
+</details>
+
+**Câu 2:** Khi nào một instruction bị đá khỏi CPU?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khoảnh khắc nó đòi fetch memory location — đọc biến, đọc dữ liệu, đặc biệt là đọc memory lớn hoặc đọc từ đĩa.
+
+Giải thích: Hàng trăm process khác đang đói CPU; đọc memory/đĩa khiến process bị đá ra ngay.
+
+Tham chiếu: Mục "CPU là tài nguyên khan hiếm".
+
+</details>
+
+**Câu 3:** Quy tắc ngón tay để chọn số process là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Số process ≈ số core/hardware thread của máy.
+
+Giải thích: Máy 4 core thì spin khoảng 4 process, mỗi process gắn một core mới tối ưu.
+
+Tham chiếu: Mục "CPU là tài nguyên khan hiếm".
+
+</details>
+
+**Câu 4:** Vì sao spin 100 process trên máy 4 core không nhanh hơn?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì 4 process chạy trên 4 core còn 94 process đứng đợi, kèm context switch vô cớ.
+
+Giải thích: Gom được nhiều request nhưng CPU time không tồn tại thì cũng vô ích.
+
+Tham chiếu: Mục "CPU là tài nguyên khan hiếm".
+
+</details>
+
+**Câu 5:** Copy-on-write giúp Redis snapshot như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Fork process backup; OS chỉ copy page sắp bị thay đổi, còn hai process cùng trỏ vào memory khi cả hai chỉ đọc.
+
+Giải thích: Nhờ vậy master vẫn ghi bình thường mà snapshot vẫn giữ trạng thái gốc nhất quán.
+
+Tham chiếu: Mục "Hai câu chuyện thực chiến".
+
+</details>
+
 *Hiểu được những chuyện như thế này là thứ khiến bạn trở thành một backend engineer giỏi hơn hẳn — vì bạn có thể đi vòng qua vấn đề ngay khi hiểu gốc rễ của nó.*
 
 Đó là toàn bộ cuộc chiến process vs thread! Giờ các bạn đã có hình ảnh rõ ràng trong đầu, bài tiếp theo tụi mình đi vào câu hỏi cực kỳ thú vị: **backend thật sự accept connection như thế nào?** Hẹn gặp lại ở bài sau. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — The Process and The Thread and how they compete for CPU time](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34647874)
+- [Redis Docs — Persistence](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/)
+- [Microsoft Learn — Configure the max degree of parallelism server configuration option](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/configure-the-max-degree-of-parallelism-server-configuration-option?view=sql-server-ver17)

@@ -1,5 +1,7 @@
 # 📖 Đọc và Gửi Dữ Liệu Trên Socket: Chặng Cuối Trước Khi Request Chạm Tới Code Của Bạn
 
+> Nguồn: `040-Reading-and-Sending-Socket-Data.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34647884)
+
 Chúng ta đã nói về SYN queue, accept queue và cách backend nhận connection — nhưng lúc đó chưa có một byte dữ liệu nào được truyền đi, mới chỉ là thiết lập connection. Giờ là lúc nói về việc **đọc và ghi dữ liệu trên socket (ổ cắm mạng)**: đọc request để hiểu khách hàng muốn gì, ghi response để trả lời. Đây chính là điểm giao thoa mà **công việc của kernel kết thúc** và **công việc của backend process bắt đầu**.
 
 Nhiều bạn sẽ nói: "Mình có làm mấy thứ này đâu?" Đúng — vì **library làm hộ các bạn**. Nhưng biết library làm gì và mình làm gì là điều bắt buộc nếu muốn debug được latency và performance. Đi thôi!
@@ -12,6 +14,16 @@ Khi client gửi dữ liệu trên một connection đã thiết lập, nó bắ
 2. OS parse tiếp để tìm port — lưu ý **port nằm trong segment chứ không nằm trong IP packet**.
 3. Kernel match connection với **receive buffer (bộ đệm nhận)** tương ứng và đặt dữ liệu vào **receive queue**. Kernel làm việc này **không cần app yêu cầu** — nó cứ nhận rồi cất đó cho backend process tiêu thụ.
 4. Kernel **acknowledge (xác nhận)** dữ liệu và cập nhật **flow control window (cửa sổ điều khiển luồng)**. Nếu **delayed acknowledgement (acknowledgement trì hoãn)** được bật, kernel sẽ không ack từng byte một mà chờ thêm dữ liệu rồi ack một lần.
+
+```mermaid
+flowchart TD
+    A[Client write vào socket] --> B[NIC nhận frame]
+    B --> C[Kernel đặt dữ liệu vào receive queue]
+    C --> D[Kernel ack và cập nhật window]
+    D --> E[App gọi read]
+    E --> F[Copy sang userspace]
+    F --> G[Decrypt TLS rồi parse HTTP]
+```
 
 Ví dụ mình hay dùng: receive buffer giới hạn **1000 byte**, vừa nhận **500 byte** — nhưng không còn đúng 500 byte trống, vì bản thân data structure còn chiếm chỗ cho metadata. Kernel sẽ báo cho client: "Tôi chỉ còn chừng này chỗ thôi" và window thu nhỏ lại. Tại sao buffer đầy? **Vì backend process lười — nó chưa chịu gọi read.** Và nếu buffer hết chỗ, kernel **drop packet** luôn: "Xin lỗi, hết chỗ". Đó là lý do **application phải gọi read càng nhanh càng tốt** để giải phóng receive queue. Client chậm, backend chậm — tất cả đều trả giá.
 
@@ -47,6 +59,13 @@ Nếu buffer đang rỗng mà bạn gọi read thì bạn sẽ **bị block (ch�
 * **Readiness model (mô hình sẵn sàng) — epoll/select:** bạn đưa cho OS một loạt file descriptors và nói "khi nào bất kỳ cái nào ready thì báo tôi". Process chỉ read khi thật sự có dữ liệu, nên không lãng phí thời gian copy trong lúc chờ.
 * **io_uring:** bạn đưa yêu cầu read vào một **ring**, kernel làm hộ, và khi xong thì dữ liệu được đặt vào **vùng shared giữa kernel và userspace** — nhờ vậy zero copy mới khả thi.
 
+| Tiêu chí | epoll/select | io_uring |
+|---|---|---|
+| Mô hình | Readiness — báo khi fd sẵn sàng | Completion — kernel làm hộ |
+| Cách chờ | Đưa danh sách fd, chờ cái nào ready | Đưa yêu cầu read vào ring |
+| Kết quả | App tự gọi read rồi copy | Dữ liệu đặt vào vùng shared |
+| Zero copy | Không | Khả thi nhờ shared memory |
+
 ---
 
 ### 📤 Gửi dữ liệu: send buffer, MSS và Nagle's algorithm
@@ -61,6 +80,79 @@ Muốn trả response, app gọi kiểu `response.end()` hoặc `write` — như
 
 Và nhớ nhé: **send gần như là bất đồng bộ**. Gọi send không có nghĩa dữ liệu đã bay đi ngay — kernel đợi đủ dữ liệu, gửi đi, client ack xong mới có thể bỏ nó khỏi buffer. Đó là **sliding window (cửa sổ trượt)** mà chúng ta đã bàn ở phần TCP.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Kernel cất dữ liệu nhận được vào đâu, và có cần app yêu cầu không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vào receive buffer/receive queue; kernel cứ nhận rồi cất, không cần app yêu cầu.
+
+Giải thích: App chỉ tiêu thụ sau bằng cách gọi read.
+
+Tham chiếu: Mục "Receive buffer".
+
+</details>
+
+**Câu 2:** Vì sao backend phải gọi read càng nhanh càng tốt?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nếu buffer đầy, kernel hết chỗ và drop packet; window thu nhỏ, client bị chậm.
+
+Giải thích: "Vì backend process lười — nó chưa chịu gọi read" là cách mình hay diễn tả.
+
+Tham chiếu: Mục "Receive buffer".
+
+</details>
+
+**Câu 3:** Gọi read copy dữ liệu từ đâu sang đâu, và vì sao người ta mơ zero copy?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Copy từ receive buffer (kernel space) sang memory của process (userspace) — tốn kém khi cộng dồn.
+
+Giải thích: Zero copy cho backend trỏ thẳng vào vùng shared giữa kernel và userspace.
+
+Tham chiếu: Mục "Gọi read".
+
+</details>
+
+**Câu 4:** Sau khi copy, backend phải làm gì trước khi parse HTTP?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Decrypt TLS bằng symmetric key mà backend giữ — đây là CPU work thật sự.
+
+Giải thích: Dữ liệu vừa copy chỉ là bytes thô và còn được mã hóa.
+
+Tham chiếu: Mục "Sau khi copy".
+
+</details>
+
+**Câu 5:** `send` có thật sự đồng bộ không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không. Send gần như là bất đồng bộ: kernel chờ đủ MSS, gửi đi, chờ client ack rồi mới bỏ khỏi buffer.
+
+Giải thích: Đó là sliding window đã bàn ở phần TCP.
+
+Tham chiếu: Mục "Gửi dữ liệu".
+
+</details>
+
 Tóm lại, cả hai chiều đều có thể vỡ: nếu backend **không đọc đủ nhanh**, receive buffer đầy → kernel hết chỗ → drop packet → client chịu khổ và chậm dần. Nghe có vẻ OS sẽ không bao giờ "bỏ rơi" bạn, nhưng đây là khóa intermediate-to-advanced — chúng ta phải nói cả những điều không vui này.
 
 Các bạn đã hiểu kernel đọc/ghi hộ mình những gì. Bài tiếp theo, mình sẽ đặt tên và tách vai cho từng phần công việc đó: **listener (bộ lắng nghe)**, **acceptor (bộ chấp nhận kết nối)** và **reader**. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Reading and Sending Socket Data](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34647884)
+- [Linux man page — epoll(7)](https://www.man7.org/linux/man-pages/man7/epoll.7.html)
+- [Linux man page — io_uring(7)](https://man7.org/linux/man-pages/man7/io_uring.7.html)

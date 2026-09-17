@@ -1,5 +1,7 @@
 # 🪆 OSI Model: Bảy tầng của mọi kết nối — tấm bản đồ bạn phải đọc được
 
+> Nguồn: `018-OSI-Model.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629836)
+
 Chào các bạn, mình là Hussein đây! Cách đây 20 năm, khi còn ngồi trên giảng đường đại học, mình đã học **OSI model (mô hình 7 tầng, Open Systems Interconnection)** — và mình thú thật: *mình chẳng hiểu gì cả*. Hồi đó mình chỉ mê viết C, C++, làm giao diện ứng dụng, nên mình học vẹt, thi qua môn rồi quên hết — dù thầy dạy rất tốt. Giờ nhìn lại mình rất hối hận, và mình viết bài này để các bạn không lặp lại sai lầm đó: **bất kỳ software engineer nào muốn chạm vào networking đều phải hiểu OSI model** — không cần hiểu mọi thứ, chỉ cần hiểu 7 tầng và trả lời được: *ứng dụng của bạn sống ở tầng nào?*
 
 Vì sao câu hỏi đó quan trọng? Vì nếu ứng dụng của bạn là cầu nối giữa hai ứng dụng khác, bạn phải biết mình đang nhìn thấy gì: MAC address hay IP packet (gói tin IP)? Segment (đoạn dữ liệu)? Port (cổng)? TCP options? Hay bạn đang giải mã, đọc JSON, đối chiếu chứng chỉ (certificate)? Mỗi tầng có ý nghĩa riêng, và mọi reverse proxy, load balancer (bộ cân bằng tải), API gateway đều phải "sống" ở một hoặc nhiều tầng trong số đó.
@@ -39,6 +41,18 @@ Mình không mong các bạn thuộc lòng mọi chi tiết — chỉ cần nắ
 
 **7. Layer 1 — Physical (tầng vật lý).** Tín hiệu điện (Ethernet), ánh sáng (cáp quang), sóng radio (WiFi/LTE). Frame được chuyển thành chuỗi bit 101010... rồi thành tín hiệu. Và ở đầu nhận, ai đó phải chuyển tín hiệu ngược trở lại: tín hiệu → bit → frame → IP packet → TCP segment → session → giải mã → gửi lên application để phục vụ request HTTP của bạn.
 
+Bảng tra nhanh 7 tầng — đơn vị dữ liệu và ví dụ:
+
+| Tầng | Tên | Đơn vị dữ liệu | Ví dụ |
+|---|---|---|---|
+| 7 | Application | Dữ liệu | HTTP, FTP, gRPC |
+| 6 | Presentation | Dữ liệu | JSON, UTF-8 |
+| 5 | Session | Session | TLS, connection |
+| 4 | Transport | Segment hoặc datagram | TCP, UDP, QUIC |
+| 3 | Network | Packet | IP |
+| 2 | Data Link | Frame | Ethernet, WiFi |
+| 1 | Physical | Bit | Cáp quang, sóng radio |
+
 *Lưu ý: mọi thứ không hề rạch ròi như vậy. Các tầng có thể "kế thừa" lẫn nhau, và con người đã xây nên mô hình này chứ nó không tự nhiên sinh ra — đừng biến nó thành giáo điều cứng nhắc.*
 
 ---
@@ -54,6 +68,18 @@ Ví dụ: ứng dụng của bạn gửi một **POST request** (có body JSON) 
 5. **Network**: đóng xuống IP packet, thêm IP nguồn/đích — muốn có IP đích thì phải **DNS resolve** tên miền.
 6. **Data Link**: mỗi packet vào một frame, thêm MAC nguồn/đích — muốn có MAC thì cần **ARP**.
 7. **Physical**: frame thành chuỗi bit, thành sóng radio, tín hiệu điện hay ánh sáng — tùy môi trường.
+
+Toàn bộ hành trình đi xuống của request gói gọn như sau:
+
+```mermaid
+flowchart TD
+    A[Application - gửi POST request] --> B[Presentation - serialize JSON]
+    B --> C[Session - TLS và TCP SYN]
+    C --> D[Transport - đóng gói segment]
+    D --> E[Network - thêm IP nguồn và đích]
+    E --> F[Data Link - thêm MAC nguồn và đích]
+    F --> G[Physical - bit và tín hiệu]
+```
 
 Phía nhận làm ngược lại từ dưới lên: nhận tín hiệu vật lý trước (thú vị chưa — server nối bằng cáp quang vẫn nhận được dữ liệu gửi từ WiFi!), chuyển thành bit → frame → IP packet. "Gói này gửi cho mình đúng không?" — mỗi router cũng tự hỏi câu đó. Rồi tới TCP segment: xử lý flow control, congestion control, truyền lại, phân biệt gói SYN với gói cũ, sắp xếp thứ tự. Nếu segment là SYN, ta *không cần đi lên trên* — chỉ cần tới session để thiết lập kết nối. Khi đã có kết nối, request JSON tiếp theo đi hết lên trên: session → presentation (chuỗi JSON được deserialize ngược thành object — có thể serialize từ JavaScript rồi deserialize ở Python, từ C# sang Go, không quan trọng) → application, nơi handler của route POST trong Express được kích hoạt: đi database, xử lý, rồi trả response về client.
 
@@ -84,4 +110,78 @@ Client không kết nối thẳng tới server. Ở giữa có switch, router, p
 * **TCP/IP model** gộp 5, 6, 7 thành một application layer — đơn giản hơn nhiều, nhưng mình có cảm xúc lẫn lộn về chuyện này, tùy các bạn quyết. Nếu dùng TCP/IP model thì **đừng đánh số tầng**: layer 3, layer 4 trùng với OSI, còn "layer 5" của TCP/IP là application, trong khi "layer 5" của OSI là session — rất dễ lẫn. Và hãy nhớ bản thân TCP/IP về cơ bản là TCP + IP + data link (MAC address).
 * Điểm mấu chốt nhất khi viết ứng dụng mạng: **biết ứng dụng của mình nằm ở đâu**. Nếu dữ liệu chảy qua ứng dụng của bạn, hãy biết nó đang nhìn thấy gì — MAC, IP packet, segment, port, TCP options, JSON hay cả chứng chỉ — để biết mình có thể tối ưu gì, có quyền truy cập vào đâu, cải thiện được gì. Tầng 5 có ca sử dụng thật (Linkerd, Envoy — tự quản lý session/kết nối, và nhắc lại cho vui: Linkerd là một proxy), còn layer 6 thì gần như chẳng ai nhắc tới. Mỗi thiết bị không nhất thiết map cứng với cả 7 tầng — ranh giới vốn mờ, hãy dùng mô hình như một ngôn ngữ để tư duy, đừng dùng như kinh thánh.
 
+---
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Mục tiêu lớn nhất của OSI model là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Xây dựng được những ứng dụng không phụ thuộc hạ tầng (agnostic application) — tách rời ứng dụng khỏi môi trường truyền dẫn để đổi mới diễn ra độc lập ở từng tầng.
+
+Giải thích: Nhờ chuẩn chung, ứng dụng chạy được trên mọi môi trường từ WiFi, Ethernet, LTE tới cáp quang.
+
+Tham chiếu: Mục Vì sao chúng ta cần một communication model?
+
+</details>
+
+**Câu 2:** Dân backend "sống" ở những tầng nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Layer 4 (Transport) và layer 7 (Application) — chỉ khi làm thêm DevOps mới để ý nhiều hơn tới layer 3 và layer 2.
+
+Giải thích: Ứng dụng của bạn cần biết mình đang nhìn thấy gì ở tầng đó để tối ưu và debug.
+
+Tham chiếu: Mục Bảy tầng OSI.
+
+</details>
+
+**Câu 3:** Đơn vị dữ liệu ở layer 2, layer 3 và layer 4 được gọi là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Layer 2 gửi frame, layer 3 gửi packet, layer 4 gửi segment với TCP và datagram với UDP.
+
+Giải thích: Đây là câu mình sẽ lặp lại triệu lần trong khóa học — gọi đúng tên đơn vị dữ liệu từng tầng.
+
+Tham chiếu: Mục Bảy tầng OSI.
+
+</details>
+
+**Câu 4:** Encapsulation được mình ví như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Như những con búp bê Nga matryoshka lồng trong nhau — nội dung nằm trong TCP segment, segment nằm trong IP packet, packet nằm trọn trong frame.
+
+Giải thích: Mỗi lần "mở búp bê" tốn nano giây, và những nano giây đó cực kỳ quan trọng.
+
+Tham chiếu: Mục Một POST request JSON đi hết 7 tầng.
+
+</details>
+
+**Câu 5:** Reverse proxy khác forward proxy ở điểm nào, và Google là ví dụ gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Với reverse proxy, client tưởng nó là đích cuối nhưng đích thật là backend server phía sau — Google vận hành đúng như vậy. Với forward proxy, bạn biết đích cuối của mình, proxy chỉ gửi request thay bạn.
+
+Giải thích: Kết nối client↔proxy và proxy↔backend là hai session khác hẳn nhau.
+
+Tham chiếu: Mục Giữa đường truyền có gì?
+
+</details>
+
 Còn rất nhiều thứ đẹp đẽ phía trước: các tầng đã có, giờ đến lượt tầng 3 với nhân vật chính **Internet Protocol (IP)** — nơi địa chỉ và định tuyến trở thành tâm điểm. Nhớ rằng mình thích độ chi tiết của OSI hơn, nhưng dù bạn chọn OSI hay TCP/IP, *điều duy nhất không thể thương lượng là: hiểu bên dưới đường truyền, đừng bao giờ chấp nhận hộp đen.* Hẹn gặp các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — OSI Model](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629836)
+- [ISO/IEC 7498-1:1994 — OSI Basic Reference Model](https://www.iso.org/standard/20269.html)

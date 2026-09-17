@@ -1,5 +1,7 @@
 # 🌐 Internet Protocol: Bóc Tách "Chiếc Xe Chở Hàng" Của Toàn Bộ Internet
 
+> Nguồn: `019-Internet-Protocol.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34648342)
+
 Chào các bạn! Hôm nay chúng ta nói về thứ mà mình hay gọi là **"phương tiện giao thông của Internet"** — Internet Protocol (giao thức Internet), hay IP. Dù bạn gửi request từ client hay backend trả response, dù bên trong là HTTP, gRPC, TCP hay UDP, thì cuối cùng dữ liệu cũng phải nằm gọn trong một thứ gọi là **IP packet (gói IP)**. Hiểu được nó, các bạn sẽ tự tay giải thích được rất nhiều hiện tượng latency mà người khác chỉ biết... cầu trời.
 
 ### 🧱 Những viên gạch nền: IP packet, địa chỉ IP và subnet
@@ -25,6 +27,16 @@ Khi máy A muốn gửi dữ liệu cho máy B, nó tự hỏi: *B có cùng sub
 
 1. Nếu **cùng subnet**, A gửi trực tiếp host-to-host bằng **MAC address** — đơn giản vì hai máy nằm cùng một mạng.
 2. Nếu **khác subnet**, A không biết đường, và mọi thứ được đẩy cho **default gateway** (router). Câu thần chú: *cái gì mình không biết thì gửi cho gateway*.
+
+Quyết định gửi trực tiếp hay qua gateway diễn ra như sau:
+
+```mermaid
+flowchart TD
+    A[Máy A muốn gửi cho máy B] --> B{Cùng subnet không}
+    B -->|Có| C[Gửi trực tiếp bằng MAC address]
+    B -->|Không| D[Đẩy cho default gateway]
+    D --> E[Router chuyển tiếp theo IP]
+```
 
 Có một chi tiết rất hay: khi hai máy cùng subnet nhưng vẫn đi qua router, router chỉ đọc tới **layer 2** và hoạt động như một switch — nó không cần đụng tới địa chỉ IP. Còn khi đi ra ngoài subnet, A phải biết MAC address của router để gửi packet cho nó. *Và đây chính là mảnh đất của ARP poisoning (đầu độc ARP): kẻ tấn công giả làm router thì mọi packet đều chảy qua nó.*
 
@@ -59,6 +71,13 @@ Cuối cùng là **ECN (Explicit Congestion Notification)** — viên ngọc c�
 
 1. Phân mảnh: 1500 byte vào frame thứ nhất, 500 byte vào frame thứ hai. Vấn đề là các frame **có thể đến không đúng thứ tự**, nên host phải gom và ráp lại — phức tạp, và một frame mất thì phải gửi lại một phần, vô cùng rối rắm. Nguy hiểm hơn, **fragment có thể bị giả mạo** — đây là một điểm tấn công bảo mật nghiêm trọng.
 2. Không phân mảnh: nếu bạn đã bật cờ **DF** và packet vẫn quá lớn, thiết bị mạng sẽ gửi thông báo ICMP "packet too large / fragmentation needed" và packet bị drop — trách nhiệm chọn kích thước phù hợp thuộc về client.
+
+Hai lựa chọn khi packet vượt MTU:
+
+| Lựa chọn | Cách xử lý | Hệ quả |
+|---|---|---|
+| Phân mảnh | Cắt packet thành nhiều frame theo MTU | Frame có thể đến lệch thứ tự, phải gom ráp, fragment dễ bị giả mạo |
+| Không phân mảnh với cờ DF | Drop packet và gửi ICMP packet too large | Client phải tự chọn kích thước phù hợp |
 
 Chính vì những hệ lụy trên mà **QUIC tắt hẳn IP fragmentation**. *Khi nghi ngờ, đừng phân mảnh — hãy để nó fail.*
 
@@ -98,6 +117,79 @@ Nhưng bi kịch của ICMP là bị các firewall chặn vì lý do bảo mật
 
 ---
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao mình gọi IP là "phương tiện giao thông của Internet"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì mọi protocol — HTTP, gRPC, TCP hay UDP — cuối cùng dữ liệu đều phải nằm gọn trong một IP packet; router chỉ thấy IP packet với địa chỉ nguồn/đích và chuyển tiếp.
+
+Giải thích: Router không biết gì về port, header HTTP hay mã hóa.
+
+Tham chiếu: Mục Những viên gạch nền.
+
+</details>
+
+**Câu 2:** Máy A quyết định "B có cùng subnet với mình không" bằng cách nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lấy subnet mask của mình đem AND với địa chỉ của mình và của B. Cùng subnet thì gửi trực tiếp host-to-host bằng MAC address; khác subnet thì đẩy cho default gateway.
+
+Giải thích: Router lúc này là thiết bị "sống hai cuộc đời" với một IP trong mỗi mạng.
+
+Tham chiếu: Mục Subnet mask và default gateway.
+
+</details>
+
+**Câu 3:** Vì sao mình khuyên đừng đặt database ở subnet khác với application?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chỉ cần router giữa hai subnet bị nghẽn, buffer đầy lên là câu SQL bị kẹt trong router, ứng dụng chậm vài mili-giây mà không ai hiểu vì sao.
+
+Giải thích: Giải pháp là dùng switch hiệu năng cao cho application và database, đừng bắt router làm việc của switch.
+
+Tham chiếu: Mục Subnet mask và default gateway.
+
+</details>
+
+**Câu 4:** TTL hoạt động thế nào và traceroute tận dụng nó ra sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Mỗi packet mang bộ đếm 8 bit, mỗi router/host giảm đi 1; ai giảm về 0 thì drop và gửi ICMP về nguồn. Traceroute gửi packet với TTL = 1, 2, 3... để từng router "hiện nguyên hình" địa chỉ IP.
+
+Giải thích: TTL là "state đi theo dữ liệu" — chống routing loop vì router stateless. Lưu ý firewall có thể chặn ICMP và đường đi có thể thay đổi giữa các lần dò.
+
+Tham chiếu: Mục Fragmentation và TTL.
+
+</details>
+
+**Câu 5:** "TCP blackhole" là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi firewall chặn ICMP, thông báo "packet too large" không bao giờ tới client — kết nối TCP mở hoàn toàn nhưng dữ liệu kèm cờ DF không đi đâu được.
+
+Giải thích: Đây là hậu quả nghiêm trọng của việc chặn ICMP vì lý do bảo mật.
+
+Tham chiếu: Mục ICMP.
+
+</details>
+
 Tóm lại, IP chính là chiếc xe chở mọi thứ: địa chỉ nguồn/đích, subnet và gateway quyết định đường đi, còn header với TTL, fragmentation, ECN và ICMP lo phần vận hành sao cho packet đến nơi mà không kẹt vĩnh viễn trên Internet. Nắm được "under the wire" ở tầng này, các bạn sẽ debug latency nhanh hơn bất kỳ dashboard nào.
 
 Còn bây giờ, chiếc xe đã có rồi — vậy hành khách ngồi trên đó là ai? Hẹn gặp các bạn ở bài tiếp theo về **UDP**, giao thức đơn giản đến mức khó tin mà lại gánh cả video call, DNS và game online. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Internet Protocol](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34648342)
+- [RFC 791 — Internet Protocol](https://www.rfc-editor.org/rfc/rfc791.html)
+- [RFC 792 — Internet Control Message Protocol](https://www.rfc-editor.org/rfc/rfc792.html)

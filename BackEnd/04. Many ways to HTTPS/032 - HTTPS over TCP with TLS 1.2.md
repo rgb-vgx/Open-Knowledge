@@ -1,5 +1,7 @@
 # 🔐 HTTPS over TCP với TLS 1.2: Hai Chuyến Bắt Tay Cổ Điển
 
+> Nguồn: `031-HTTPS-over-TCP-with-TLS-12.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630854)
+
 Hôm nay chúng ta bắt đầu với công thức phổ biến nhất, thứ mà các bạn gặp ở khắp mọi nơi: **HTTPS over TCP với TLS 1.2**. Nghe dài dòng vậy thôi, chứ trình tự chỉ có ba bước: thiết lập kết nối TCP, bắt tay TLS, rồi mới gửi dữ liệu.
 
 Và các bạn để ý nhé, chính vì HTTPS phải "nằm trên" TCP mà câu chuyện mới có tới hai chuyến bắt tay. Hiểu được cái gì đang xảy ra dưới đường truyền, các bạn sẽ tự tin cấu hình và debug được mọi thứ.
@@ -56,6 +58,96 @@ Về mặt kỹ thuật, client có thể bắt đầu mã hóa ngay, nhưng c�
 
 Server nhận vào một luồng dữ liệu mã hóa, giải mã bằng đúng key đó, nhìn thấy một GET request đẹp đẽ, xử lý và trả về **200 OK** kèm kết quả.
 
+Cả hai chuyến bắt tay gộp lại trông như thế này:
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>S: SYN
+    S->>C: SYN-ACK
+    C->>S: ACK
+    C->>S: Client Hello - buffet cipher va key exchange
+    S->>C: Server Hello - chon cipher va public parameters
+    C->>S: Public parameters cua client
+    S->>C: Xac nhan da co symmetric key
+    C->>S: GET request da ma hoa
+    S->>C: 200 OK
+```
+
 *Đó chính là TLS 1.2 trong toàn bộ vinh quang và cả sự cồng kềnh của nó: TCP handshake một chuyến, TLS handshake thêm hai vòng khứ hồi nữa, rồi mới tới dữ liệu thật.*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao HTTPS over TCP có tới hai chuyến bắt tay?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì TLS nằm trên TCP — phải thiết lập TCP trước, rồi mới bắt tay TLS, sau đó mới gửi dữ liệu.
+
+Giải thích: Chính vì HTTPS "nằm trên" TCP mà câu chuyện mới có hai chuyến bắt tay.
+
+Tham chiếu: Mục Bước 1: Ba cái bắt tay của TCP.
+
+</details>
+
+**Câu 2:** Vì sao khóa học không nhắc TLS 1.0 và 1.1?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chúng đã deprecated và không còn an toàn, chỉ tồn tại vì backward compatibility.
+
+Giải thích: TLS 1.2 là phiên bản tối thiểu được bàn trong khóa học.
+
+Tham chiếu: Mục Bước 1: Ba cái bắt tay của TCP.
+
+</details>
+
+**Câu 3:** Vì sao không thể để client tự sinh symmetric key rồi gửi thẳng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì key đó đi dưới dạng plaintext, bất kỳ ai đứng giữa đều có thể sniff được; phải dùng key exchange algorithm.
+
+Giải thích: Thuật toán trao đổi khóa chạy ngay trong Client Hello và Server Hello.
+
+Tham chiếu: Mục Tại sao hai bên phải "thỏa thuận" một khóa chung?
+
+</details>
+
+**Câu 4:** Client Hello và Server Hello trao đổi những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Client dâng buffet cipher, key exchange và TLS extension; server chọn cipher rồi gửi kèm parameters cho phần key exchange.
+
+Giải thích: Hai bên đàm phán trước khi bắt đầu mã hóa.
+
+Tham chiếu: Mục Client Hello và Server Hello: cuộc đàm phán kiểu buffet.
+
+</details>
+
+**Câu 5:** Khi nào client gửi GET request đầu tiên?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Sau khi client tính ra symmetric key, gửi public parameters về, và server xác nhận bắt đầu mã hóa.
+
+Giải thích: Server nhận luồng dữ liệu mã hóa, giải mã bằng đúng key và trả về 200 OK.
+
+Tham chiếu: Mục Chốt khóa và gửi request đầu tiên.
+
+</details>
+
 Ở bài sau, TLS 1.3 sẽ cắt bớt một vòng khứ hồi — và các bạn sẽ thấy nó gọn gàng hơn hẳn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — HTTPS over TCP with TLS 1.2](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630854)
+- [RFC 5246 — The Transport Layer Security (TLS) Protocol Version 1.2](https://www.rfc-editor.org/rfc/rfc5246)
+- [MDN — HTTPS](https://developer.mozilla.org/en-US/docs/Glossary/HTTPS)

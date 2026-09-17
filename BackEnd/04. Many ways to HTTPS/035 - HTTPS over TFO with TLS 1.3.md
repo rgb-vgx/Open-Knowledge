@@ -1,5 +1,7 @@
 # 🍪 HTTPS over TFO (TCP Fast Open) với TLS 1.3: Ý Tưởng Lý Thuyết Mình Tự Nghĩ Ra
 
+> Nguồn: `034-HTTPS-over-TFO-with-TLS-13.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630860)
+
 Đây là một bài đặc biệt: **HTTPS over TFO (TCP Fast Open)** ghép với TLS 1.3. Mình nói trước luôn cho các bạn khỏi bất ngờ — đây là một kịch bản **lý thuyết do chính mình thiết kế**, mình không chắc nó có khả thi về mặt kỹ thuật hay không, và mình cũng chưa từng thấy nó ngoài thực tế.
 
 Nhưng nó là một bài tập tư duy cực kỳ hay về round trip, nên mình vẫn đưa vào để các bạn cùng suy nghĩ.
@@ -26,6 +28,12 @@ Và dữ liệu đó là gì? Chính là **Client Hello** của TLS 1.3. Vậy l
 
 Điểm thú vị là cơ chế này không đợi three-way handshake xong mới cho dữ liệu lên đường — nó dựa vào cookie để bắt đầu sớm.
 
+| Tiêu chí | TCP handshake thường | TCP Fast Open |
+|---|---|---|
+| Gửi dữ liệu trước khi handshake xong | Không được | Gửi ngay trong SYN nếu có cookie |
+| Cơ chế | SYN, SYN-ACK, ACK | Cookie đã lưu từ phiên trước |
+| Bảo mật | Được thiết kế cho kết nối tin cậy | Không được thiết kế cho bảo mật |
+
 ---
 
 ### 📨 Server nói "được" — cả handshake lẫn kết nối xong cùng lúc
@@ -35,6 +43,17 @@ Nếu server support và chấp nhận yêu cầu đó, nó có thể **SYN-ACK 
 Nói cách khác, phần chờ đợi đắt giá nhất gần như biến mất. Nghe rất hấp dẫn phải không?
 
 Để ý nhé: server vừa xác nhận kết nối, vừa trả dữ liệu trong cùng một lượt — điều mà một kết nối TCP thông thường không cho phép.
+
+Toàn bộ lượt đi về gói gọn trong sơ đồ:
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>S: TFO cookie + Client Hello + du lieu
+    S->>C: SYN-ACK + response
+    C->>S: ACK - handshake hoan tat
+```
 
 ---
 
@@ -48,4 +67,76 @@ Còn nếu các bạn từng tự hỏi vì sao TFO nghe rất hay mà ít gặp
 
 Mình nghĩ đây cũng là một bài tập tốt để các bạn tự phác ra giấy: thử vẽ lại các lượt gửi và tự đếm xem tiết kiệm được bao nhiêu vòng khứ hồi.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vấn đề gốc mà TCP Fast Open tìm cách giải quyết là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** TCP không cho gửi dữ liệu trước khi three-way handshake hoàn tất; nếu kết nối từng tồn tại, TFO khôi phục thay vì thiết lập lại từ đầu.
+
+Giải thích: Ý tưởng giống session resumption — dùng lại thứ đã có sẵn.
+
+Tham chiếu: Mục Vấn đề gốc: chưa bắt tay xong thì chưa được gửi dữ liệu.
+
+</details>
+
+**Câu 2:** TFO cookie là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một encrypted hash do server định nghĩa sẵn; client có cookie có thể gửi kèm request và gửi luôn dữ liệu ngay.
+
+Giải thích: Cookie dùng để resume kết nối đã tồn tại trước đó.
+
+Tham chiếu: Mục TCP Fast Open và chiếc cookie đánh thức kết nối cũ.
+
+</details>
+
+**Câu 3:** Trong kịch bản lý thuyết này, dữ liệu được gửi sớm là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Client Hello của TLS 1.3 — gửi cùng cookie trong cùng một hơi thở.
+
+Giải thích: Nhờ vậy cả handshake lẫn kết nối gần như xong cùng lúc.
+
+Tham chiếu: Mục TCP Fast Open và chiếc cookie đánh thức kết nối cũ.
+
+</details>
+
+**Câu 4:** Vì sao Hussein chưa từng thấy TFO + TLS 1.3 ngoài thực tế?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì TCP Fast Open không thực sự an toàn — ngay từ đầu nó không được thiết kế cho bảo mật.
+
+Giải thích: TFO có tồn tại, nhưng ghép với TLS 1.3 theo kiểu này thì chưa ai làm.
+
+Tham chiếu: Mục Vì sao mình chưa từng thấy nó ngoài thực tế.
+
+</details>
+
+**Câu 5:** Vì sao bài tập "tại sao điều này chưa xảy ra" có giá trị?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì hiểu lý do một thứ chưa thành công đôi khi còn giá trị hơn cả việc nó thành công.
+
+Giải thích: Đây là kiểu bài tập Hussein rất thích: ghép hai công nghệ rồi tự hỏi vì sao.
+
+Tham chiếu: Mục Vì sao mình chưa từng thấy nó ngoài thực tế.
+
+</details>
+
 Ở bài sau, chúng ta sẽ quay lại với một thứ có thật và đang ngày càng phổ biến: **TLS 1.3 với 0-RTT (gửi dữ liệu ngay vòng đầu)**. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — HTTPS over TFO with TLS 1.3](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630860)
+- [RFC 7413 — TCP Fast Open](https://www.rfc-editor.org/rfc/rfc7413)

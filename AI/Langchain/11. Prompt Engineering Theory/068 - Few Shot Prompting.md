@@ -1,5 +1,7 @@
 # 🎯 Few Shot Prompting: "Dạy" AI bằng vài ví dụ để có kết quả như ý
 
+> Nguồn: `068-Few-Shot-Prompting.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37507526)
+
 Nếu zero-shot là cách hỏi AI "chay" không ví dụ, thì hôm nay mình sẽ giới thiệu với các bạn kỹ thuật kế tiếp mạnh mẽ hơn: **Few Shot Prompting (prompt với một vài ví dụ mẫu)**.
 
 Chúng ta sẽ cùng xem một ví dụ thực tế cực kỳ trực quan: so sánh kết quả của **zero-shot, one-shot và few-shot** trên cùng một tác vụ, để thấy rõ sự khác biệt giữa chúng.
@@ -22,6 +24,14 @@ Trong few-shot prompting, chúng ta có các biến thể:
 * **Few-shot prompt:** model được cho một **số lượng nhỏ ví dụ**.
 
 Nói cách khác, **one-shot là một tập con (subset) của few-shot**: ở one-shot, **n bằng 1**; còn ở few-shot, **n lớn hơn 1**.
+
+Cơ chế cốt lõi của few-shot gói gọn như sau:
+
+```mermaid
+flowchart LR
+    A[Prompt kèm ví dụ mẫu] --> B[Model nhận diện pattern]
+    B --> C[Sinh dữ liệu tương tự ví dụ]
+```
 
 ---
 
@@ -71,6 +81,12 @@ Sau đó mình mang cả ba mô tả đi đưa vào Blue Willow để xem ảnh 
 * **Ảnh từ one-shot:** trong ngữ cảnh này, mình đánh giá nó **không tốt hơn hẳn** so với ảnh đầu tiên.
 * **Ảnh từ few-shot:** đây là **ảnh mình thích nhất**, vì model tạo ra đúng thứ chúng ta muốn — màu sắc chú chó xuất hiện ngay đầu mô tả. Nếu chạy lại query nhiều lần, bạn sẽ nhận được những màu sắc khác nhau cho chú chó.
 
+| Kỹ thuật | Số ví dụ | Kết quả với chú chó Yorkshire | Nhận xét của Eden |
+|---|---|---|---|
+| Zero-shot | 0 | Mô tả chi tiết, dùng được, model tự do sáng tạo | Khá tốt |
+| One-shot | 1 | Súc tích hơn nhờ yêu cầu compressed, nhiều tính từ hơn | Không tốt hơn hẳn ảnh zero-shot |
+| Few-shot | 3 ví dụ: chó xanh, chó đỏ, chó xanh lá | "a vivacious violet Yorkshire dog", lông tung bay | Ảnh thích nhất, đúng gu |
+
 ---
 
 ### 📌 Bài học cốt lõi
@@ -85,4 +101,77 @@ Càng nhiều câu trả lời và ví dụ mẫu để model "học" theo dữ 
 
 Đó là lý do vì sao các bạn nên nắm thật chắc sự khác biệt giữa zero-shot, one-shot và few-shot. Ở bài tiếp theo, chúng ta sẽ tiến thêm một bước với **Chain of Thought Prompting** — kỹ thuật giúp AI suy luận từng bước như con người.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Few-shot prompt hoạt động bằng cách nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trình cho model một số ít ví dụ về tác vụ kèm prompt/instruction, rồi model dùng chúng để tạo mới hoặc phân loại dữ liệu tương tự.
+
+Giải thích: Đặc biệt hữu ích khi dữ liệu cho tác vụ còn hạn chế.
+
+Tham chiếu: Mục Few-shot prompt hoạt động như thế nào.
+
+</details>
+
+**Câu 2:** Quan hệ giữa one-shot và few-shot là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** One-shot là một tập con của few-shot, với n bằng 1; còn few-shot có n lớn hơn 1.
+
+Giải thích: One-shot cho đúng một ví dụ, few-shot cho một số lượng nhỏ ví dụ.
+
+Tham chiếu: Mục Few-shot prompt hoạt động như thế nào.
+
+</details>
+
+**Câu 3:** Few-shot đặc biệt hữu ích trong tình huống nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi dữ liệu cho tác vụ hạn chế — ví dụ ngôn ngữ hay domain mới — và khi cần nhanh chóng thích nghi model mà không cần nhiều dữ liệu.
+
+Giải thích: Có thể dùng để tinh chỉnh model có sẵn.
+
+Tham chiếu: Mục Few-shot prompt hoạt động như thế nào.
+
+</details>
+
+**Câu 4:** Vì sao model trả về "a vivacious violet Yorkshire dog"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì ba ví dụ (chó xanh, chó đỏ, chó xanh lá) đã dạy model rằng ta muốn một màu sắc mô tả chú chó.
+
+Giải thích: Model còn đổi trạng thái từ "sweating", "crying" sang "fur is fluttering".
+
+Tham chiếu: Mục So sánh ba kỹ thuật.
+
+</details>
+
+**Câu 5:** Đánh đổi khi tăng số lượng ví dụ trong few-shot là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Model ít tự do sáng tạo hơn, nhưng kết quả chính xác hơn và hợp gu bạn hơn.
+
+Giải thích: Càng nhiều ví dụ mẫu, model càng biết cách điều chỉnh theo hướng bạn muốn.
+
+Tham chiếu: Mục Bài học cốt lõi.
+
+</details>
+
 Hẹn gặp lại nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Few-Shot Prompting](https://ua.udemy.com/course/langchain/learn/lecture/37507526)
+- [arXiv — Language Models are Few-Shot Learners](https://arxiv.org/abs/2005.14165)
+- [Prompt Engineering Guide — Basics of Prompting](https://www.promptingguide.ai/introduction/basics)

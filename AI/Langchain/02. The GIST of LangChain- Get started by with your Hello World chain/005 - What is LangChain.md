@@ -1,5 +1,7 @@
 # 🧭 LangChain là gì? Giải mã framework "xương sống" của ứng dụng LLM trong 6 phút
 
+> Nguồn: `005-What-is-LangChain-LangChain-Under-6-Minutes.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37494286)
+
 Chào mọi người, mình là Eden đây! 👋 Trước khi lao vào những dòng code đầu tiên, mình muốn dành vài phút để trả lời một câu hỏi mà rất nhiều bạn tò mò: **LangChain thực chất là gì, và vì sao nó lại quan trọng đến vậy?**
 
 Hãy cùng mình gói gọn câu chuyện đó trong đúng 6 phút nhé.
@@ -55,5 +57,78 @@ Trong khóa học, chúng ta sẽ:
 3. Bàn cách đưa ứng dụng LLM lên **production**, bao gồm **tracing (theo dõi luồng chạy)** và **monitoring (giám sát)** qua **LangSmith** — công cụ cực kỳ tiện lợi để debug và trace ứng dụng LLM.
 4. Cùng xây một **ứng dụng AI thực tế**, qua đó làm quen với mọi khái niệm và thuật ngữ cần biết về LangChain.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** LangChain thực chất là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một framework mã nguồn mở giúp đơn giản hóa việc xây dựng các ứng dụng được trợ lực bởi LLM.
+
+Giải thích: Nó cung cấp bộ công cụ và lớp trừu tượng để việc xây ứng dụng LLM phức tạp trở nên dễ dàng hơn.
+
+Tham chiếu: Mục LangChain — "chất keo" kết nối mọi thứ.
+
+</details>
+
+**Câu 2:** Vì sao LangChain được ngành công nghiệp đón nhận rộng rãi?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì lập trình viên có thể xây ứng dụng trên nền LLM mà không cần hiểu sâu về Machine Learning.
+
+Giải thích: Họ chỉ cần dùng model như một "hộp đen" (black box).
+
+Tham chiếu: Mục LangChain — "chất keo" kết nối mọi thứ.
+
+</details>
+
+**Câu 3:** Module Chat models mang lại lợi ích gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Mọi nhà cung cấp LLM dùng chung một interface, giúp đổi model dễ dàng và không bị "trói chân" vào một LLM duy nhất.
+
+Giải thích: Bạn chỉ cần import đúng model muốn dùng — như "đổi tất".
+
+Tham chiếu: Mục Những module cốt lõi làm nên sức mạnh của LangChain.
+
+</details>
+
+**Câu 4:** Document loaders quy dữ liệu từ nhiều nguồn về đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Về một interface chung là LangChain document.
+
+Giải thích: Nhờ đó việc xử lý dữ liệu trước khi đưa vào LLM trở nên cực kỳ đơn giản.
+
+Tham chiếu: Mục Những module cốt lõi làm nên sức mạnh của LangChain.
+
+</details>
+
+**Câu 5:** Hệ sinh thái agent trao cho LLM "siêu năng lực" gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khả năng suy luận (reasoning) gắn với các tool có thể gọi như tìm kiếm internet, truy vấn database, gửi email.
+
+Giải thích: Được triển khai qua các abstraction như tools, agent executor và LangGraph.
+
+Tham chiếu: Mục Những module cốt lõi làm nên sức mạnh của LangChain.
+
+</details>
+
 Và ở cuối hành trình, bạn sẽ có thể tự xây dựng những ứng dụng mới cho chính mình. Hãy thắt dây an toàn và hẹn gặp lại ở bài tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — What is LangChain? LangChain Under 6 Minutes](https://ua.udemy.com/course/langchain/learn/lecture/37494286)
+- [LangChain Docs — Overview](https://docs.langchain.com/oss/python/langchain/overview)
+- [GitHub — langchain-ai/langchain](https://github.com/langchain-ai/langchain)
 

@@ -1,5 +1,7 @@
 # 🏃 Chạy thử ReAct Agent trên LangGraph: Nhìn tận mắt từng Tool Call trong LangSmith
 
+> Nguồn: `045-Running-Our-LangGraph-React-Agent-with-Function-Calling.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/50679371)
+
 Chào các bạn, mình là Eden đây! 👋
 
 Bài cuối của section này là phần thú vị nhất: chúng ta sẽ **invoke graph** và xem agent thật sự hoạt động. Sau đó, mình mở **LangSmith** để cùng các bạn mổ xẻ từng node, từng tool call — để thấy rõ "bộ máy" bên trong chạy như thế nào.
@@ -47,6 +49,27 @@ Giờ cùng xem trace theo thứ tự:
 * **Tool node** thực thi triple tool với input `15`, kết quả trả về **45** — phần này đơn giản nên mình không đi sâu.
 * Node cuối cùng được chạy lại là **`agent_reason`**: lần này nó quyết định **không cần làm gì thêm** → kết thúc.
 
+```mermaid
+sequenceDiagram
+    participant U as Người dùng
+    participant A as agent_reason
+    participant T as ToolNode
+    U->>A: Hỏi nhiệt độ Tokyo và nhân ba
+    A->>T: Search tool current temperature in Tokyo
+    T-->>A: Kết quả không có nhiệt độ
+    A->>T: Search lại cùng query
+    T-->>A: Kết quả 15 độ C
+    A->>T: Triple tool num 15
+    T-->>A: 45
+    A-->>U: Câu trả lời cuối cùng
+```
+
+| Tiêu chí | `agent_reason` | `should_continue` |
+|---|---|---|
+| Loại | Node trong graph | Conditional edge function, không phải node |
+| Nhiệm vụ | Gọi LLM để suy luận | Kiểm tra message cuối và định tuyến |
+| Xuất hiện trong trace | Có, như một node | Có, ở vai trò điều hướng |
+
 Mình có đính kèm trace này trong tài nguyên của video và đã để chế độ **public** để các bạn xem lại.
 
 ---
@@ -57,4 +80,76 @@ Mình commit code với tên **graph** và push lên repository — code của c
 
 Mục tiêu của section là cho các bạn thấy **implement ReAct agent bằng graph dễ như thế nào**. Chúng ta không chỉ dùng graph, mà còn **tận dụng function calling** — và chính điều này mang lại cho ReAct agent của chúng ta **độ ổn định (stability)** cùng **hiệu năng tốt hơn**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao search tool bị gọi tới hai lần?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì kết quả search lần đầu không chứa nhiệt độ Tokyo; agent nhận ra và chạy lại cho tới khi có câu trả lời.
+
+Giải thích: Hành vi này khá thường gặp vì search result không phải lúc nào cũng đúng.
+
+Tham chiếu: Mục Mổ xẻ trace trên LangSmith.
+
+</details>
+
+**Câu 2:** Mẹo thêm `max_results` cho search tool có tác dụng gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tăng số lượng kết quả trả về (ví dụ 5) để heuristic có một kết quả chứa câu trả lời — nhưng không đảm bảo 100%.
+
+Giải thích: Đây chỉ là mẹo tiết kiệm bớt tool call.
+
+Tham chiếu: Mục Mổ xẻ trace trên LangSmith.
+
+</details>
+
+**Câu 3:** `should_continue` là node hay là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là conditional edge function, không phải node.
+
+Giải thích: Nó nhận input, kiểm tra message cuối và quyết định node kế tiếp.
+
+Tham chiếu: Mục Mổ xẻ trace trên LangSmith.
+
+</details>
+
+**Câu 4:** Agent lấy giá trị `15` để gọi triple tool từ đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trích xuất từ kết quả search hợp lệ ở tool call trước đó.
+
+Giải thích: Đúng chính xác điều mình muốn khi thiết kế luồng.
+
+Tham chiếu: Mục Mổ xẻ trace trên LangSmith.
+
+</details>
+
+**Câu 5:** Điều gì mang lại độ ổn định và hiệu năng tốt hơn cho ReAct agent?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Dùng graph kết hợp tận dụng function calling.
+
+Giải thích: Đây là mục tiêu của cả section.
+
+Tham chiếu: Mục Commit và tổng kết section.
+
+</details>
+
 Section khép lại ở đây. Hẹn gặp lại các bạn ở chặng tiếp theo, nơi chúng ta đi sâu vào **persistence (lưu trữ trạng thái của graph)** và những kỹ thuật production-grade khác! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Running Our LangGraph React Agent with Function Calling](https://ua.udemy.com/course/langgraph/learn/lecture/50679371)
+- [Trace LangGraph applications — Docs by LangChain](https://docs.langchain.com/langsmith/trace-with-langgraph)

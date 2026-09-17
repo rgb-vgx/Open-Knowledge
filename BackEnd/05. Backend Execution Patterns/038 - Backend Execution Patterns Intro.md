@@ -1,5 +1,7 @@
 # 🔥 Backend Execution Patterns: Bước vào nơi backend thật sự "chạy"
 
+> Nguồn: `037-Backend-Execution-Patterns-Intro.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630868)
+
 Chào các bạn, chúng ta đã đi qua một chặng đường dài từ client tới server, và giờ là lúc mình đưa các bạn vào chính giữa "trận chiến": **bên trong backend**. Đây là section mình thích nhất trong toàn bộ khóa học, vì nó trả lời câu hỏi mà ít ai chịu dạy: khi request đến, backend **accept (chấp nhận), dispatch (điều phối) và execute (thực thi)** nó như thế nào?
 
 Nói thẳng: đây là phần khó tìm tài liệu nhất. Nhưng một khi hiểu, các bạn sẽ debug được những thứ mà người khác chỉ biết... khởi động lại server.
@@ -14,6 +16,14 @@ Trước khi lao vào, mình điểm lại những gì đã học, vì mọi th�
 * Sau đó tụi mình lấy **HTTPS** ra làm ví dụ và chỉ ra tận **7 cách** một giao tiếp HTTPS diễn ra: HTTPS over TLS 1.2, TLS 1.3, zero round-trip, HTTPS over QUIC...
 
 Đó là một biển kiến thức. Theo mình, mọi backend engineer nên có "shallow knowledge" (hiểu bề mặt) về tất cả những thứ này, rồi chọn một lĩnh vực để đào sâu — đó là cách các bạn tạo khác biệt.
+
+```mermaid
+flowchart LR
+    A[Design pattern giao tiếp] --> B[Protocol cụ thể]
+    B --> C[HTTPS và các biến thể]
+    C --> D[Backend Execution Patterns]
+    D --> E[Process và Thread]
+```
 
 ---
 
@@ -52,4 +62,75 @@ Mình nói thật lòng: rất khó để biết backend thật sự được th
 4. **Idempotency (tính bất biến khi lặp)** — vì sao nó cực kỳ quan trọng với backend.
 5. **Điển cứu thực tế**: mình sẽ "mở nắp" một số backend application phổ biến để xem chúng quản lý execution ra sao — và ít nhất một lần, chúng ta sẽ chạm tới cả kernel.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao phải nắm process vs thread trước khi học các execution pattern?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì accept, dispatch và execute request đều xoay quanh process và thread.
+
+Giải thích: Không có hình ảnh rõ ràng về hai khái niệm này thì mọi kiến trúc phía sau sẽ rối.
+
+Tham chiếu: Đoạn mở bài và mục "Accept connection".
+
+</details>
+
+**Câu 2:** "Accept connection" có đơn giản như nhiều người nghĩ?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không. Đó là quan hệ cộng sinh giữa backend application và kernel, có thể trở nên độc hại nếu hai bên "cãi nhau" quá nhiều.
+
+Giải thích: Connection đến thì kernel xử lý gì, backend xử lý gì là câu hỏi trung tâm của section.
+
+Tham chiếu: Mục "Accept connection".
+
+</details>
+
+**Câu 3:** Vì sao kiến thức "under the wire" khó tìm?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì chi tiết kiến trúc bên trong các hệ thống lớn như Envoy, Memcached, Nginx gần như không được thảo luận đại chúng; phải đọc paper và nghe chính developer kể.
+
+Giải thích: Đó là lý do mình làm section này.
+
+Tham chiếu: Mục "Kiến thức under the wire".
+
+</details>
+
+**Câu 4:** Section này sẽ mổ xẻ những nội dung nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Process vs thread, các kiến trúc thực thi, đọc/ghi connection, idempotency, và điển cứu backend thật — có chạm tới cả kernel.
+
+Giải thích: Đây là một trong những section quan trọng nhất khóa học.
+
+Tham chiếu: Mục "Section này sẽ mổ xẻ những gì".
+
+</details>
+
+**Câu 5:** Triết lý xuyên suốt của section là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hiểu under the wire, không chấp nhận hộp đen — hiểu cơ chế để debug thay vì chỉ biết khởi động lại server.
+
+Giải thích: Đây cũng là tinh thần của cả khóa học.
+
+Tham chiếu: Đoạn mở bài và mục "Kiến thức under the wire".
+
+</details>
+
 Nếu các bạn tò mò muốn thấy backend vận hành thật sự bên dưới lớp vỏ, hãy theo mình vào section này. Sẽ rất vui! Hẹn gặp các bạn ở bài tiếp theo, nơi tụi mình mổ xẻ process vs thread. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Backend Execution Patterns Intro](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630868)

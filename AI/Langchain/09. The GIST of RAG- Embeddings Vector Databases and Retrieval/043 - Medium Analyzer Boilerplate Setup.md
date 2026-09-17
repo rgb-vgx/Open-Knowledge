@@ -1,5 +1,7 @@
 # 🛠️ Medium Analyzer: Boilerplate Setup — Chuẩn bị "bệ phóng" cho cả pipeline RAG
 
+> Nguồn: `043-Medium-Analyzer--Boilerplate-Project-Setup.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/53949869)
+
 Chào các bạn, mình là Eden đây! 👋 Trong video này, chúng ta sẽ cùng nhau làm phần **boilerplate setup** — thiết lập môi trường cho project mà ở đó mình sẽ trình diễn **toàn bộ pipeline RAG từ ingestion đến retrieval**. Nghe có vẻ nhàm chán, nhưng đây là bước đệm không thể thiếu, nên hãy cùng làm cho thật gọn gàng nhé!
 
 ### ⚙️ Bắt đầu từ repository và commit khởi tạo
@@ -11,6 +13,15 @@ Mình đang ở trong **repository của khóa LangChain**, và branch chúng ta
 1. **Clone repository** về máy: mở terminal, đi tới Desktop và chạy `git clone` với URL của repository.
 2. **Đi vào thư mục repo** vừa clone bằng lệnh `cd`.
 3. **Tạo branch mới từ đúng commit khởi tạo:** chạy `git checkout -b project/rag-gist` kèm theo **hash của commit** mà chúng ta muốn bắt đầu.
+
+```mermaid
+flowchart LR
+    A[Clone repository] --> B[Checkout commit khởi tạo]
+    B --> C[Chạy uv lock và uv sync]
+    C --> D[Chọn interpreter trong IDE]
+    D --> E[Tạo file .env]
+    E --> F[Tạo Pinecone index]
+```
 
 Sau đó, mình mở **Cursor** — lúc này đang dùng cấu hình mặc định — và mở sidebar để xem toàn bộ file. Mở tab Git, các bạn sẽ thấy chúng ta đang đứng đúng ở commit *initial commit*. *Chính xác là nơi chúng ta muốn!*
 
@@ -69,6 +80,88 @@ Tiếp theo là **vector store** — chúng ta dùng **Pinecone**, một **manag
 5. **Cloud provider và region:** với tutorial này mình không quan tâm lắm, nhưng các doanh nghiệp có ràng buộc về **compliance và privacy** thường muốn chạy trên một cloud provider nhất định — và Pinecone hỗ trợ cả **ba nhà cung cấp lớn**. Về region, hãy nhớ một nguyên tắc khi đưa ứng dụng lên **production**: **đặt vector store cùng region với RAG application**, vì ứng dụng sẽ liên tục gọi request tới vector store — khác region sẽ phát sinh **chi phí egress (truyền dữ liệu ra ngoài)**.
 6. Tạo index, copy tên index vào biến môi trường, và tạo một **API key** mới đặt tên **`PINECONE_API_KEY`**. *Tên biến này rất quan trọng* — vì đó chính là cái tên mà **LangChain Pinecone integration tìm kiếm** khi khởi tạo.
 
+| Cấu hình index | Lựa chọn của mình | Ghi chú |
+|---|---|---|
+| Vector type | Dense | Còn có Sparse, hợp cho lexical search |
+| Metric | COSINE | Ngoài ra có Euclidean và dotproduct |
+| Dimension | 1536 | Mặc định 512, mình tăng để giữ nhiều thông tin hơn |
+| Capacity mode | Serverless | Còn tùy chọn dedicated read nodes |
+| Region | Cùng region với app | Tránh chi phí egress khi production |
+
 Cuối cùng, mình thêm một dòng `print` truy cập `os.environ['PINECONE_API_KEY']` để kiểm tra: lần đầu chạy gặp lỗi vì **quên lưu file `.env`**, lưu lại và chạy tiếp — *boom*, giá trị key được in ra thành công!
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao dùng `uv lock` và `uv sync` thay vì cài package thủ công?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `uv lock` tạo lock file với đúng phiên bản mới nhất của mọi dependency, còn `uv sync` cài toàn bộ dependencies từ lock file vào môi trường `.venv`.
+
+Giải thích: `.venv` không bị Git theo dõi nhờ `.gitignore`, và terminal mới trong Cursor sẽ tự load môi trường này.
+
+Tham chiếu: Mục Đồng bộ dependencies với uv.
+
+</details>
+
+**Câu 2:** Vì sao `ingestion.py` báo lỗi dù đã cài đủ package?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì IDE chưa được trỏ về virtual environment chứa các package.
+
+Giải thích: Chạy `which Python3` để lấy đường dẫn interpreter rồi chọn interpreter đó qua Command+Shift+P.
+
+Tham chiếu: Mục Đồng bộ dependencies với uv.
+
+</details>
+
+**Câu 3:** Vì sao file `.env` phải nằm trong `.gitignore`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để API key không bị commit lên GitHub.
+
+Giải thích: `.gitignore` liệt kê những file không commit và không theo dõi trên repo.
+
+Tham chiếu: Mục Điểm danh các file trong project.
+
+</details>
+
+**Câu 4:** Mình cấu hình index Pinecone như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Dimension 1536, vector type Dense, metric COSINE, capacity mode serverless.
+
+Giải thích: Model `text-embedding-3-small` mặc định 512 chiều, mình đổi thành 1536 để giữ nhiều thông tin hơn.
+
+Tham chiếu: Mục Cấu hình biến môi trường và Pinecone vector store.
+
+</details>
+
+**Câu 5:** Vì sao nên đặt vector store cùng region với ứng dụng RAG?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì ứng dụng liên tục gọi request tới vector store; khác region sẽ phát sinh chi phí egress truyền dữ liệu ra ngoài.
+
+Giải thích: Đây là nguyên tắc cần nhớ khi đưa ứng dụng lên production.
+
+Tham chiếu: Mục Cấu hình biến môi trường và Pinecone vector store.
+
+</details>
+
 Vậy là môi trường đã sẵn sàng. Đây là phần nhàm chán nhất của khóa học, và từ video sau chúng ta sẽ **ingest bài blog**: chạy ingestion pipeline để **cắt blog thành các mảnh text nhỏ**, **embed từng mảnh thành vector**, rồi **lưu toàn bộ vector vào Pinecone vector store**. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Medium Analyzer: Boilerplate Project Setup](https://ua.udemy.com/course/langchain/learn/lecture/53949869)
+- [Pinecone Docs — Create a serverless index](https://docs.pinecone.io/guides/indexes/create-an-index)
+- [uv Docs — Locking and syncing](https://docs.astral.sh/uv/concepts/projects/sync)
+- [LangChain — Pinecone vector store integration](https://docs.langchain.com/oss/python/integrations/vectorstores/pinecone)

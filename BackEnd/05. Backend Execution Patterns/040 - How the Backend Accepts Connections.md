@@ -1,5 +1,7 @@
 # 📬 Backend Accept Connection Như Thế Nào? Hành Trình Từ SYN Đến File Descriptor
 
+> Nguồn: `039-How-The-Backend-Accepts-Connections.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34647880)
+
 Có một câu hỏi mình nhận được rất nhiều: **"Làm sao backend accept connection?"** Nghe thì đơn giản — cứ gọi accept là xong — nhưng sự thật hoàn toàn khác. Trước khi có connection để đọc, kernel (nhân hệ điều hành) và backend application đã chia nhau một loạt công việc mà nếu không hiểu, các bạn sẽ không bao giờ gỡ nổi bài toán performance.
 
 Hôm nay mình sẽ zoom thật sâu vào backend: từ lúc packet chạm card mạng, qua hai hàng đợi bên trong kernel, cho đến khoảnh khắc application gọi `accept()`. Biết đâu sau bài này, vài bạn sẽ còn hứng thú đóng góp cho chính Linux kernel — vì công việc ở đó vẫn chưa hoàn thành đâu.
@@ -60,6 +62,19 @@ Khi bạn listen, kernel tạo cho bạn **hai hàng đợi nằm trong kernel**
 4. Tìm thấy → xóa entry khỏi SYN queue, đưa connection hoàn chỉnh sang **accept queue (hàng đợi chấp nhận)**. Một **file descriptor** được tạo cho connection đó.
 5. Backend gọi **`accept()`** → kernel bê connection ra khỏi accept queue và giao fd cho application.
 
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant K as Kernel
+    participant A as Backend application
+    C->>K: SYN
+    K->>C: SYN-ACK và lưu entry vào SYN queue
+    C->>K: ACK khớp source IP và port
+    K->>K: Chuyển connection sang accept queue
+    A->>K: Gọi accept
+    K->>A: Trả file descriptor
+```
+
 Vài chi tiết cực quan trọng:
 
 * Bạn accept 10 connection thì phải gọi `accept()` **10 lần**.
@@ -68,6 +83,13 @@ Vài chi tiết cực quan trọng:
 * Đó cũng là lý do đừng nhồi database, reverse proxy và web server lên cùng một máy. Chúng sẽ **starve (đói)** lẫn nhau vì tranh CPU. Chạy thử thì không sao, nhưng đo performance thì đó là ý tồi.
 * Kích thước hai queue được chỉnh qua **backlog (hàng đợi kết nối)** khi gọi listen. Node.js không expose API này — đây là C stuff, rất gần "kim loại". Muốn chạm vào, bạn cần C, Rust hoặc Go. *Node.js không hề tệ, nó chỉ không được sinh ra cho việc tinh chỉnh networking cao cấp.*
 * Bên dưới, có những **smart NIC** (card mạng thông minh) được Intel phát triển với công nghệ họ gọi là DDP — họ đẩy logic TCP xuống thẳng card mạng để CPU rảnh tay làm việc khác. Cách này có cả ưu và nhược điểm.
+
+| Tiêu chí | SYN queue | Accept queue |
+|---|---|---|
+| Chứa gì | Entry SYN chưa xác nhận | Connection đã handshake xong |
+| Entry xuất hiện khi | Kernel nhận SYN | Kernel nhận ACK khớp SYN |
+| Entry biến mất khi | ACK khớp đến | Backend gọi accept lấy fd |
+| Kích thước | Hữu hạn, chỉnh qua backlog | Hữu hạn, chỉnh qua backlog |
 
 ---
 
@@ -82,4 +104,78 @@ Khi accept queue đầy, connection mới không còn chỗ. Kernel thậm chí 
 * **Backlog quá nhỏ** cũng là vấn đề: backlog 5-6 thì vài connection là đầy. Mình nhớ default là **1000**, nhưng bạn có thể cần cấu hình lại. Tăng backlog nghĩa là cấu trúc dữ liệu lớn hơn, **tốn memory hơn** — có phù hợp với kiến trúc backend của bạn hay không, đó là câu hỏi của bạn.
 * Và đây là mảnh ghép cuối: khi bạn ngồi nhìn trình duyệt quay mãi không load, **có cả triệu thứ có thể đang xảy ra**: connection chưa được thiết lập, handshake TLS thất bại, request không được gửi tới vì CPU backend đang bận, hoặc request đã được xử lý nhưng response chưa về. Chính vì thế, **đoán mò là vô dụng** — bạn cần tooling và sự hiểu biết để chẩn đoán đúng chỗ. Đó chính là nghệ thuật troubleshooting, và cũng là mục đích của khóa học này.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Ai thực hiện TCP handshake — kernel hay application?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kernel làm handshake, không phải application.
+
+Giải thích: App chỉ nói "listen trên address và port này"; kernel tự trả SYN-ACK và tạo connection.
+
+Tham chiếu: Mục "Kernel làm gì và backend làm gì?".
+
+</details>
+
+**Câu 2:** Listen trên "port 8080" (không kèm address) nghĩa là gì và vì sao nguy hiểm?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là listen trên mọi interface (`0.0.0.0`) — bad practice, dễ phơi API nội bộ hoặc database ra public Internet.
+
+Giải thích: Đây là lý do cứ vài hôm lại có tin Elasticsearch, MongoDB bị lộ dữ liệu.
+
+Tham chiếu: Mục "Listen không chỉ là một cái port".
+
+</details>
+
+**Câu 3:** Socket và connection khác nhau ra sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Socket là cái bạn listen lên; connection là thứ bạn nhận khi ai đó kết nối tới. Một socket sinh ra được hàng trăm connection.
+
+Giải thích: Ví như ổ cắm gắn tường và từng thiết bị cắm vào đó.
+
+Tham chiếu: Mục "Kernel làm gì và backend làm gì?".
+
+</details>
+
+**Câu 4:** Kernel match ACK với SYN dựa trên gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Source IP và source port.
+
+Giải thích: Có thể đang có cả chục SYN nằm trong queue, mỗi nguồn là duy nhất.
+
+Tham chiếu: Mục "Hai hàng đợi trong kernel".
+
+</details>
+
+**Câu 5:** Vì sao accept queue tồn tại và ai sinh ra để giải quyết vấn đề đó?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì backend application không accept connection đủ nhanh; reverse proxy như Nginx, Envoy sinh ra để đứng ở edge accept nhanh nhất có thể.
+
+Giải thích: Khi accept queue đầy, kernel thậm chí không gửi SYN-ACK trở lại.
+
+Tham chiếu: Mục "Khi hàng đợi đầy".
+
+</details>
+
 Đến đây các bạn đã thấy connection đi qua những gì trước khi chạm tới code của mình. Hiểu được ranh giới kernel ↔ application, các bạn sẽ nhìn ra ngay bottleneck nằm ở đâu. Bài tiếp theo tụi mình sẽ nói về **cách backend đọc và gửi dữ liệu trên socket** — đừng bỏ lỡ nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — How The Backend Accepts Connections](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34647880)
+- [Linux man page — listen(2)](https://www.man7.org/linux/man-pages/man2/listen.2.html)
+- [Linux man page — tcp(7)](https://www.man7.org/linux/man-pages/man7/tcp.7.html)
+- [Cloudflare Blog — SYN packet handling in the wild](https://blog.cloudflare.com/syn-packet-handling-in-the-wild/)

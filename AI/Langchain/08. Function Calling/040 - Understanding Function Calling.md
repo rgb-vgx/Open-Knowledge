@@ -1,5 +1,7 @@
 # 📚 Hiểu tường tận Function Calling cho LLM: Từ JSON đẹp đến "hộp đen" reasoning
 
+> Nguồn: `040-Theory-Understanding-Function-Calling-for-LLMs.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52587633)
+
 Xin chào, Eden đây! Video này thuần **lý thuyết** — mình giới thiệu khái niệm **function calling** (hay **tool calling**). Chúng ta sẽ hands-on rất sớm thôi, nên đây là lúc nắm thật chắc nền tảng.
 
 ### 🧩 Function calling chính xác là gì?
@@ -26,6 +28,19 @@ Hãy tưởng tượng người dùng hỏi model: *"what's the weather in Paris
 * **arguments**: **location = Paris**, cùng **unit** là Fahrenheit hoặc Celsius.
 
 Ứng dụng của chúng ta sau đó **parse JSON này và thực thi** hàm `get_current_weather` — vốn tồn tại trong app. Ta lấy response của hàm, **plug ngược trở lại LLM** và tiếp tục như vậy.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant App
+    participant LLM
+    User->>App: what is the weather in Paris
+    App->>LLM: Request kèm function get_current_weather đã bind
+    LLM-->>App: JSON có name và arguments
+    App->>App: Parse JSON và thực thi hàm
+    App->>LLM: Plug kết quả trở lại
+    LLM-->>User: Câu trả lời cuối cùng
+```
 
 ---
 
@@ -64,4 +79,83 @@ Bên cạnh việc kết nối LLM với **external tools**, function calling c�
 * Developer chỉ thấy **tên function và arguments cuối cùng**, không thấy **lý do (justification)**.
 * Function calling trở thành quyết định kiểu **hộp đen**, không có **intermediate rationale** → **debugging và auditing khó hơn**, vì ta không biết vì sao model chọn function đó với đúng arguments đó.
 
+| Ưu điểm | Điểm trừ |
+|---|---|
+| Output JSON machine-readable, tên function và arguments rõ ràng, ít bị hiểu sai | Reasoning trở thành hộp đen, ở lại bên trong LLM |
+| Model fine-tune tuân thủ nghiêm schema, giảm lỗi format ngẫu nhiên | Không thấy chain of thought hay justification của quyết định |
+| Tiết kiệm token, không cần output toàn bộ chain of thought | Debugging và auditing khó hơn |
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Function calling chính xác là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là khả năng của model sinh ra một lời gọi hàm có cấu trúc tới external function kèm các arguments, ở một vị trí đặc biệt trong response.
+
+Giải thích: Thay vì chỉ sinh plain text, model tạo câu trả lời có cấu trúc rất dễ parse.
+
+Tham chiếu: Mục Function calling chính xác là gì.
+
+</details>
+
+**Câu 2:** Developer cần cung cấp gì cho model?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Danh sách function definitions gồm tên, tham số và mô tả của từng function.
+
+Giải thích: Model có thể chọn trả về JSON object ghi rõ gọi function nào với arguments nào.
+
+Tham chiếu: Mục Function calling chính xác là gì.
+
+</details>
+
+**Câu 3:** Vì sao các vendor tạo ra function calling?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì ReAct prompt không thực sự đáng tin cậy — output đôi khi khó parse khiến chương trình fail.
+
+Giải thích: Function calling đáng tin cậy và mang tính deterministic hơn, vendor làm hết phần việc nặng.
+
+Tham chiếu: Mục Vì sao các vendor lại tạo ra function calling.
+
+</details>
+
+**Câu 4:** Ngoài kết nối external tools, function calling còn mở ra khả năng gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lấy structured output từ LLM — trích xuất thông tin vào các field nhất định và trả về JSON có tổ chức.
+
+Giải thích: Ta có thể chuyển nó thành Pydantic object rồi đưa xuống application downstream.
+
+Tham chiếu: Mục Vì sao các vendor lại tạo ra function calling.
+
+</details>
+
+**Câu 5:** Điểm trừ duy nhất của function calling là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Quy trình reasoning trở nên mờ đục — developer chỉ thấy tên function và arguments cuối cùng, không thấy lý do đằng sau.
+
+Giải thích: Điều này khiến debugging và auditing khó hơn.
+
+Tham chiếu: Mục Ưu điểm và điểm trừ.
+
+</details>
+
 *Tuy vậy, đánh đổi này hoàn toàn xứng đáng.* Function calling hiện đã là **de facto standard**: gần như không ai còn dùng ReAct prompt thô nữa, mà dùng tính năng function calling của LLM. Các vendor như OpenAI, Google, Anthropic đã **hoàn thiện function calling**, cho ta câu trả lời đáng tin cậy hơn hẳn — mở đường cho những **AI agent và AI application robust hơn**. Hẹn gặp lại các bạn trong các video hands-on! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Understanding Function Calling for LLMs](https://ua.udemy.com/course/langchain/learn/lecture/52587633)
+- [OpenAI Docs — Function calling](https://platform.openai.com/docs/guides/function-calling)
+- [arXiv — ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)

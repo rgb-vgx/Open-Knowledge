@@ -1,5 +1,7 @@
 # 🔄 Tự tay viết ReAct Agent Loop trong LangChain: Từ Thought đến Final Answer
 
+> Nguồn: `029-Understanding-the-ReAct-Agent-Loop-in-Langchain.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54882097)
+
 Sau khi đã có tool và biết cách bind tool vào model, hôm nay chúng ta sẽ implement **agent loop** — "trái tim" của mọi AI agent. Mình sẽ chạy debug từng bước để các bạn thấy rõ cách LLM suy nghĩ, chọn tool, thực thi và quay lại vòng lặp như thế nào.
 
 *Đây là bài quan trọng nhất của Layer 1, nên mình sẽ đi thật kỹ nhé!*
@@ -12,6 +14,18 @@ Vòng lặp của chúng ta hoạt động như sau: mình sẽ lặp từ **1 �
 2. Lấy kết quả của tool **gửi ngược lại cho LLM**.
 3. LLM tiếp tục các vòng lặp như vậy **cho đến khi không còn tool call nào** — đó cũng là lúc LLM quyết định đã có câu trả lời.
 4. Mình in ra số thứ tự của từng vòng lặp để dễ theo dõi.
+
+Toàn bộ vòng lặp gói gọn trong sơ đồ sau:
+
+```mermaid
+flowchart TD
+    A[User input] --> B[Gọi LLM với messages]
+    B --> C{Có tool call}
+    C -->|Có| D[Thực thi tool]
+    D --> E[Tool message observation]
+    E --> B
+    C -->|Không| F[Final Answer]
+```
 
 Tiếp theo là **thought step**: gọi LLM (đã kèm tools) với toàn bộ messages và nhận về một **AI message**. Message này sẽ chứa **quyết định gọi tool** của LLM, hoặc **content** — trong trường hợp model đã có câu trả lời và không muốn gọi tool nữa. Khi phần tool calls rỗng, nghĩa là LLM không cần thực thi tool → mình in ra "final answer", in luôn nội dung AI message và return giá trị này.
 
@@ -42,6 +56,12 @@ Chạy debug, ta thấy mọi thứ diễn ra đúng như mong đợi: LLM chọ
 * **AI message** — chứa tool call, tức quyết định của LLM.
 * **Tool message** — chứa kết quả tool (observation) và **tool call ID** để phục vụ tracing.
 
+| Thành phần | Chứa gì | Vai trò trong loop |
+|---|---|---|
+| AI message | Tool call + content suy nghĩ | Quyết định của LLM |
+| Tool message | Kết quả tool + tool call ID | Observation cho LLM đọc ở vòng sau |
+| `tools` dictionary | Tên tool → hàm Python | Tra cứu hàm để `invoke` |
+
 Nhờ vậy, mỗi lần xử lý input, agent đều nhìn thấy **mọi bước nó đã làm trong quá khứ** — chính điều này tạo ra **agent capability**.
 
 Vòng lặp kỳ vọng LLM sẽ kết thúc ở một thời điểm nào đó và không còn tool call, báo hiệu đã có đáp án. Nếu không, số vòng sẽ cứ tăng mãi — nên ta giới hạn 10 lần rồi dừng. Trong trường hợp đó, mình in thông báo lỗi rằng đã **max out số vòng lặp** và return rỗng.
@@ -60,4 +80,76 @@ Trên LangSmith, trace cho thấy rõ từng bước: gọi Ollama với hai too
 
 *Bài tập cho các bạn:* hãy lấy **diagram của ReAct loop** và **map từng đoạn code** vào đó — đâu là thought process, đâu là tool invocation, khi nào LLM quyết định có final answer, và mỗi mũi tên trong state machine được implement như thế nào?
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vòng lặp ReAct kết thúc khi nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi AI message không còn tool call nào.
+
+Giải thích: LLM không gọi tool nữa nghĩa là nó đã có câu trả lời cuối cùng.
+
+Tham chiếu: Mục Bước Thought.
+
+</details>
+
+**Câu 2:** Vì sao vòng lặp bị giới hạn `max_iterations`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để tránh lặp vô hạn khi LLM cứ gọi tool mãi không dừng.
+
+Giải thích: Chạm trần thì in thông báo max out và trả về rỗng.
+
+Tham chiếu: Mục Ghi nhớ lịch sử.
+
+</details>
+
+**Câu 3:** Tool call ID để làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khớp ToolMessage với đúng tool call khi tracing/debug.
+
+Giải thích: Trên LangSmith, ID hai bên phải khớp nhau.
+
+Tham chiếu: Mục Thực thi tool call và Observation.
+
+</details>
+
+**Câu 4:** Vì sao phải append cả AI message lẫn Tool message vào lịch sử?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để mỗi vòng LLM thấy được quyết định cũ và kết quả tool — tạo "agent capability".
+
+Giải thích: Thiếu lịch sử thì agent như mất trí nhớ.
+
+Tham chiếu: Mục Ghi nhớ lịch sử.
+
+</details>
+
+**Câu 5:** Đoạn code agent loop này liên quan gì tới `create_agent`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `create_agent` implement logic tương tự — đây chính là lớp abstraction mà nó bọc lại.
+
+Giải thích: Hiểu loop thủ công thì hiểu luôn vì sao LangChain hữu ích.
+
+Tham chiếu: Đoạn kết bài.
+
+</details>
+
 Những gì ta làm hôm nay chính là **lớp đầu tiên của việc bóc tách abstraction của agent**. Hàm `create_agent` của LangChain thực chất implement logic rất giống đoạn code này. Ở video tiếp theo, mình sẽ implement lại **hoàn toàn raw, không dùng LangChain** — khi đó các bạn sẽ thực sự thấy vì sao LangChain hữu ích và những vấn đề nó giải quyết cho chúng ta. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Understanding the ReAct Agent Loop in Langchain](https://ua.udemy.com/course/langchain/learn/lecture/54882097)
+- [LangChain Docs — Agents](https://docs.langchain.com/oss/python/langchain/agents)

@@ -1,8 +1,17 @@
 # 🛡️ Use Cases của Middleware: Context, Reliability, Cost và Security
 
+> Nguồn: `156-Middleware-Usecases-Security-Reliability.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/57763585)
+
 Sau khi đã nắm middleware là gì và vì sao agent loop cần nhiều checkpoint, câu hỏi tiếp theo là: **middleware giúp ích gì trong thực tế?** Trong bài này, mình sẽ đưa ra một loạt use case khiến agent và agent harness của các bạn trở nên **tốt hơn, an toàn hơn và đáng tin cậy hơn**.
 
 Điểm hay là tất cả những điều này đều đến từ cùng một cơ chế bạn vừa học. Cùng xem nhé!
+
+| Nhóm use case | Middleware giúp gì | Ví dụ |
+|---|---|---|
+| Context Engineering | Thay đổi những gì model nhìn thấy ở mỗi lần gọi | User-specific instructions, chọn model theo độ phức tạp, tóm tắt tin nhắn cũ |
+| Reliability | Làm agent bớt mong manh | Retry, xử lý lỗi 429, retry tool, exponential backoff, fallback model |
+| Cost | Kiểm soát chi phí và vòng chạy | Theo dõi thời gian chạy, phát hiện gọi tool quá nhiều, dừng khi chạm ngưỡng |
+| Security và Governance | Thực thi chính sách bảo mật ngay gần hành động được bảo vệ | PII middleware, tool authorization middleware, human approval |
 
 ---
 
@@ -64,6 +73,78 @@ Cuối cùng, quay về **safe zone** của mình – bảo mật và quản tr�
 
 Mình có đi sâu vào chủ đề này trong **khóa học về AI agent security** của mình – và toàn bộ giải pháp mình trình bày ở đó đều được hiện thực **thông qua LangChain middleware**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Middleware giúp gì cho context engineering?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thêm chỉ dẫn theo từng người dùng, chọn model theo độ phức tạp, chỉ mở tool phù hợp, tóm tắt tin nhắn cũ, inject application logic vào ngữ cảnh.
+
+Giải thích: Tất cả diễn ra tại mỗi lifecycle event quan trọng trong vòng chạy của agent.
+
+Tham chiếu: Mục Context Engineering.
+
+</details>
+
+**Câu 2:** Kể vài việc middleware làm để tăng reliability.
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Retry khi model lỗi tạm thời, xử lý lỗi 429, retry tool thất bại, exponential backoff, fallback sang model khác, biến lỗi thô thành thông báo dễ hiểu.
+
+Giải thích: Middleware thường chứa code giúp tăng độ tin cậy của toàn bộ ứng dụng.
+
+Tham chiếu: Mục Reliability.
+
+</details>
+
+**Câu 3:** Ví dụ về kiểm soát cost trong bài là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nếu agent đã gọi model 100 lần trong một lượt chạy mà vẫn chưa có câu trả lời, có lẽ đã đến lúc dừng agent lại.
+
+Giải thích: Middleware theo dõi thời gian, chi phí và số lần gọi tool để dừng khi chạm ngưỡng.
+
+Tham chiếu: Mục Cost.
+
+</details>
+
+**Câu 4:** PII middleware kiểm tra ở đâu và xử lý thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kiểm tra input của người dùng, output của model lẫn kết quả từ tool, rồi block, redact hoặc cho đi tiếp tùy chính sách.
+
+Giải thích: Đây là policy enforcement point tự nhiên cho dữ liệu nhạy cảm.
+
+Tham chiếu: Mục Security và Governance.
+
+</details>
+
+**Câu 5:** Tool authorization middleware xác minh những gì trước khi chạy tool nhạy cảm?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Người dùng có được phép dùng tool không, thao tác có được phép không, tham số có an toàn không, hành động có cần human approval không.
+
+Giải thích: Kiểm tra bảo mật được đặt càng gần hành động được bảo vệ càng tốt.
+
+Tham chiếu: Mục Security và Governance.
+
+</details>
+
 *Nghe có vẻ nhiều thứ phải nhớ, nhưng đừng lo – tất cả đều xoay quanh một ý tưởng duy nhất: đặt hành vi nhất quán vào đúng checkpoint.*
 
 Ở các bài tiếp theo, chúng ta sẽ cùng đi sâu hơn vào cách middleware hoạt động trong LangChain. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Middleware Use Cases Security Reliability](https://ua.udemy.com/course/langchain/learn/lecture/57763585)
+- [LangChain Docs — Middleware overview](https://docs.langchain.com/oss/python/langchain/middleware/overview)

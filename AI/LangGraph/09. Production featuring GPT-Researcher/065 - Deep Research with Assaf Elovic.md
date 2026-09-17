@@ -1,5 +1,7 @@
 # 🎙️ Deep Research cùng Assaf Elovic: Tương lai của research agent, Human-in-the-Loop và bài học từ GPT Researcher
 
+> Nguồn: `065-Deep-Research-with-Assaf-Elovic.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/48913535)
+
 Chào các bạn, Eden đây! 👋 Trong bài đặc biệt này, mình có cuộc trò chuyện với **Assaf Elovic** — tác giả của **GPT Researcher**. Đây là một phiên rất dài nhưng vô cùng thú vị, bởi chúng mình đã bàn về rất nhiều chủ đề nóng: **AI engineering, deep research, phát triển agentic và multi-agent, evaluation (đánh giá), human-in-the-loop (con người can thiệp giữa vòng chạy), LangGraph** và còn nhiều hơn thế. Bài này sẽ khác một chút so với phần còn lại của khóa học vì là dạng phỏng vấn — mình hy vọng các bạn sẽ thấy hữu ích!
 
 ---
@@ -22,6 +24,18 @@ Trước thời deep research, cách làm phổ biến là: research task đư�
 
 Deep research khác ở chỗ: **tìm kiếm → nắm thông tin → tự hỏi "đã đủ chưa?" → nếu chưa, tạo research task mới → lặp lại** cho tới khi thật sự hài lòng.
 
+Vòng lặp đó có thể mô tả như sau:
+
+```mermaid
+flowchart TD
+    A[Research task ban đầu] --> B[Tìm kiếm thông tin]
+    B --> C[Nắm và xử lý thông tin]
+    C --> D{Đã đủ chưa}
+    D -->|Chưa| E[Tạo research task mới]
+    E --> B
+    D -->|Rồi| F[Viết câu trả lời hoặc báo cáo]
+```
+
 Điều thú vị là GPT Researcher **đã có cơ chế tương tự từ hai năm trước** — từ node publisher, bạn có thể quyết định quay lại loop. Vậy khác biệt nằm ở đâu?
 
 * GPT Researcher đi theo hướng **breadth (bề rộng) — "wide"**: sinh thêm các research question phụ để có cái nhìn bao quát, research **song song (parallel)**, rồi **aggregate (tổng hợp)** tất cả và viết báo cáo.
@@ -30,6 +44,12 @@ Deep research khác ở chỗ: **tìm kiếm → nắm thông tin → tự hỏi
 Cộng đồng đã đánh giá GPT Researcher trên **SimpleQA benchmark của OpenAI** và nhận ra: ngay cả với concept "đi rộng" cũ, nó **vẫn dẫn đầu về chất lượng** so với tất cả các deep research product khác. Và mới đây, chỉ vài tuần trước, cộng đồng đã bổ sung luôn **khả năng deep research** vào GPT Researcher — giờ nó vừa rộng vừa sâu. Việc đánh giá còn dang dở vì **mỗi lượt chạy mất khoảng 5 phút** và tốn **nửa đô**, nên chạy trọn bộ SimpleQA sẽ rất lâu.
 
 À, một chi tiết đáng chú ý: **search engine mặc định của GPT Researcher là Tavily**. Assaf chọn nó vì Tavily không chỉ dựa vào một index của internet, mà biết lấy **nhiều candidate khác nhau rồi tinh lọc qua vài bước** để ra những **nguồn đáng tin cậy nhất** — rất hợp với sứ mệnh factuality của dự án.
+
+| Tiêu chí | GPT Researcher truyền thống | Deep research |
+|---|---|---|
+| Hướng đi | Breadth — đi rộng | Đi sâu qua nhiều vòng lặp |
+| Cách làm | Sinh câu hỏi phụ, research song song rồi aggregate | Lặp trên research task gốc tới khi đủ nội dung |
+| Đánh giá | Dẫn đầu SimpleQA so với các deep research product | Đã được bổ sung vào GPT Researcher gần đây |
 
 ---
 
@@ -75,4 +95,78 @@ Cuối buổi trò chuyện, Assaf chia sẻ vài con số ấn tượng của d
 
 *Thật truyền cảm hứng khi thấy một dự án mã nguồn mở thu hút được nhiều người cùng chung tay đến vậy!*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Deep research lặp lại điều gì cho tới khi dừng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lặp trên research task gốc — liên tục tạo research task mới cho tới khi hệ thống tự kết luận đã đủ nội dung.
+
+Giải thích: Khác với cách research một lần vào search engine rồi để LLM viết câu trả lời.
+
+Tham chiếu: Mục Deep research là gì.
+
+</details>
+
+**Câu 2:** Vì sao deep research dễ rơi vào vòng lặp vô hạn?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì LLM được huấn luyện để "làm chúng ta hài lòng" — 95% tới 99% trường hợp nó chọn tạo thêm research task thay vì dừng.
+
+Giải thích: Với hướng dẫn kiểu "nếu học được gì mới đáng research, hãy research tiếp", nó gần như luôn đi tiếp.
+
+Tham chiếu: Mục Thách thức của deep research.
+
+</details>
+
+**Câu 3:** Guardrail deterministic có trade-off gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó dừng đúng lúc số vòng chạm trần, nhưng có thể dừng sai lúc — cắt ngang khi LLM còn muốn đi sâu thêm.
+
+Giải thích: Đánh đổi giữa việc chặn lặp vô hạn và tối ưu năng lực của LLM.
+
+Tham chiếu: Mục Thách thức của deep research.
+
+</details>
+
+**Câu 4:** Vì sao nhóm Assaf chọn LangGraph?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì concept "workflow là một graph" chia bài toán thành các micro agents chuyên biệt, kiểm soát chất lượng từng node được, dễ scale và mở cho cộng đồng đóng góp; LangGraph cũng ít opinionated hơn CrewAI.
+
+Giải thích: Nhờ kiến trúc micro agents chuyên biệt, chất lượng cải thiện 30%.
+
+Tham chiếu: Mục Vì sao GPT Researcher chọn LangGraph.
+
+</details>
+
+**Câu 5:** Phương án HITL tối ưu mà Assaf mô tả là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hybrid — để AI tự làm các bước đầu, nhưng khi gặp xung đột thì gọi con người.
+
+Giải thích: Kiểu như customer support khi knowledge base có hai nguồn mâu thuẫn; LangGraph đã có dynamic interrupt để hỗ trợ.
+
+Tham chiếu: Mục Human-in-the-loop.
+
+</details>
+
 Đó là toàn bộ cuộc trò chuyện của mình với Assaf. Hy vọng những chia sẻ này hữu ích cho hành trình xây dựng agent của chính các bạn: hãy giữ tư duy **developer-first**, tối ưu context, cân nhắc HITL ngay từ đầu và đừng ngại chọn công cụ trao cho bạn nhiều quyền kiểm soát. Hẹn gặp lại các bạn ở những bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Deep Research with Assaf Elovic](https://ua.udemy.com/course/langgraph/learn/lecture/48913535)
+- [GPT Researcher — GitHub](https://github.com/assafelovic/gpt-researcher)
+- [OpenEvals — LangChain](https://github.com/langchain-ai/openevals)
+- [LangGraph — Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)

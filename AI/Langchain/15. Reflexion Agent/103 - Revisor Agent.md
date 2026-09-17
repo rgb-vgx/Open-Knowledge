@@ -1,5 +1,7 @@
 # ✍️ Revisor Agent: Vòng lặp "đọc phê bình – thêm nguồn – viết lại"
 
+> Nguồn: `103-Revisor-Agent.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/51122519)
+
 Chào các bạn, mình là Eden đây! Mình biết bài trước là một video dài, nhưng tin vui là hôm nay mọi chuyện **ngắn gọn hơn rất nhiều**. Chúng ta sẽ cùng triển khai **Revisor Agent (bên duyệt lại)**. Vì phần lớn hạ tầng đã sẵn sàng, công việc của chúng ta chỉ gồm: thêm một instruction mới vào prompt và tạo một class mới cho response — thế là xong!
 
 Nhiệm vụ của agent này: nhận **bài viết mới nhất**, dùng **critique** để sửa lại bài viết, rồi xuất ra cho chúng ta một **bài viết tốt hơn**.
@@ -23,6 +25,11 @@ Và đây là "chiêu" tái sử dụng: instruction này sẽ được "cắm" 
 Tiếp theo, mình mở file `schemas.py` và tạo class mới cho câu trả lời đã được revise, đặt tên là **`ReviseAnswer`**. Điểm đáng chú ý: nó **kế thừa từ class `AnswerQuestion`**, nên thừa hưởng toàn bộ field cũ — `answer`, `reflection`, `search_queries`.
 
 Nhưng `ReviseAnswer` còn có thêm một thứ nữa: field **`references`** — một **danh sách các string**, chính là các **trích dẫn URL** chủ yếu lấy từ search engine.
+
+| Schema | Kế thừa từ | Các field |
+|---|---|---|
+| `AnswerQuestion` | Pydantic `BaseModel` | `answer`, `reflection`, `search_queries` |
+| `ReviseAnswer` | `AnswerQuestion` | thêm `references` — danh sách URL trích dẫn |
 
 *Còn chuyện search engine sẽ hoạt động ra sao thì chúng ta chưa bàn tới — đừng lo, mình sẽ giải thích cặn kẽ ở video tiếp theo!*
 
@@ -49,4 +56,88 @@ Cùng điểm lại những gì chúng ta vừa làm:
 * Agent sẽ **revise** câu trả lời dựa trên critique đã viết, kết hợp thêm kết quả tìm kiếm từ Tavily vào nội dung.
 * Và tất nhiên, nó sẽ **trích dẫn (cite)** toàn bộ nguồn tài nguyên đã dùng từ internet.
 
+Vòng lặp của revisor được mô tả như sau:
+
+```mermaid
+flowchart TD
+    A[Critique trước đó] --> C[Revision chain]
+    B[Kết quả Tavily] --> C
+    C --> D[ReviseAnswer]
+    D --> E[Bài viết đã revise]
+    D --> F[Critique và search queries mới]
+    D --> G[References - trích dẫn URL]
+```
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Nhiệm vụ của Revisor Agent là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nhận bài viết mới nhất, dùng critique để sửa lại và xuất ra một bài viết tốt hơn.
+
+Giải thích: Đây là bước cải thiện câu trả lời dựa trên phản hồi đã có.
+
+Tham chiếu: Đoạn mở bài.
+
+</details>
+
+**Câu 2:** Bộ revision instructions gồm những yêu cầu chính nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Revise bằng thông tin mới; dùng critique để bổ sung thông tin quan trọng; bắt buộc numerical citations; thêm reference section dạng URL không tính vào giới hạn chữ; loại bỏ thông tin thừa để không vượt quá 250 chữ.
+
+Giải thích: Đây là "đề bài" khó tính giúp bản revise vừa đủ ý vừa kiểm chứng được.
+
+Tham chiếu: Mục Revision instructions.
+
+</details>
+
+**Câu 3:** Làm sao tái sử dụng actor prompt template cho revisor?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Điền revision instructions vào placeholder `first_instruction` của template cũ.
+
+Giải thích: Cùng một template, chỉ thay "đề bài" đầu vào — không phải viết prompt mới từ đầu.
+
+Tham chiếu: Mục Revision instructions.
+
+</details>
+
+**Câu 4:** `ReviseAnswer` thêm field gì so với `AnswerQuestion`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Field `references` — danh sách các trích dẫn URL chủ yếu lấy từ search engine.
+
+Giải thích: Nó kế thừa toàn bộ `answer`, `reflection`, `search_queries` từ `AnswerQuestion`.
+
+Tham chiếu: Mục ReviseAnswer.
+
+</details>
+
+**Câu 5:** Điều gì đảm bảo LLM trả về đúng schema `ReviseAnswer`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cung cấp tool là `ReviseAnswer` và đặt `tool_choice` là `ReviseAnswer`.
+
+Giải thích: Điều này ép buộc schema của object Pydantic, khiến LLM phải "dính" câu trả lời vào đúng dạng object đó.
+
+Tham chiếu: Mục Revision chain.
+
+</details>
+
 Ở bài tiếp theo, chúng ta sẽ xử lý phần **thực thi công cụ (tool executions)** — tìm hiểu cách Tavily search hoạt động và cách đưa kết quả vào bài viết đã revise. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Revisor Agent](https://ua.udemy.com/course/langchain/learn/lecture/51122519)
+- [LangChain Blog — Reflection Agents](https://www.langchain.com/blog/reflection-agents)

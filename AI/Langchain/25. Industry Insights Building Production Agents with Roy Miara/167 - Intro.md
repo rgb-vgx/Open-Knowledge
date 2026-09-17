@@ -1,5 +1,7 @@
 # 🤝 Gặp gỡ Roy Miara: Người xây dựng "hacker tự động" tại Tenzai
 
+> Nguồn: `167-Intro.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/55968659)
+
 Chào mừng các bạn đến với một chuyên mục hoàn toàn mới của khóa học: **Industry Insights – Building Production Agents**. Trong series này, mình sẽ trò chuyện cùng những kỹ sư đang trực tiếp xây dựng AI Agent ngoài thực tế, và vị khách đầu tiên là **Roy Miara**.
 
 Roy hiện là **Member of Technical Staff tại Tenzai**, đồng thời là một người có nhiều năm kinh nghiệm trong lĩnh vực AI. Cùng mình lắng nghe câu chuyện của anh ấy nhé!
@@ -41,3 +43,8 @@ Nếu các bạn đang tự hỏi liệu những nguyên tắc xây dựng agent
 Roy còn rất nhiều chia sẻ hấp dẫn về các cuộc thi hacking, harness engineering và bài toán hallucination trong production. *Đừng lo nếu các khái niệm này còn mới – chúng ta sẽ cùng gặp lại chúng ở các bài tiếp theo, kèm giải thích chi tiết.*
 
 Hãy thắt dây an toàn và cùng mình bước vào cuộc trò chuyện với Roy nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Intro](https://ua.udemy.com/course/langchain/learn/lecture/55968659)
+- [Tenzai](https://www.tenzai.com/)

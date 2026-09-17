@@ -66,13 +66,48 @@
 
 ## 5. TUYỆT ĐỐI KHÔNG có
 
-- ~~Quiz / câu hỏi tự kiểm tra~~
-- ~~Bảng biểu~~
-- ~~Mermaid / ASCII diagram~~
 - ~~Marker `Gốc transcript:` / `Cập nhật 2026:`~~
-- ~~Mục `Nguồn tham khảo`~~
-- ~~Dòng nguồn/URL Udemy đầu bài~~
 - ~~Dòng "Bài N — ..." trong tiêu đề~~
+
+## 5b. Diagram — Mermaid đơn giản (ĐƯỢC PHÉP)
+
+- Chèn **Mermaid** khi bài có flow/architecture đáng mô tả: LangGraph StateGraph, node/edge/state, checkpoint, reflection loop, RAG flow, multi-agent...
+- Chỉ dùng 2 loại phổ biến: `flowchart TD` (hoặc `LR`) và `sequenceDiagram`. Cấm ASCII diagram; cấm `stateDiagram`/`timeline`/`classDiagram` và syntax experimental.
+- Chỉ vẽ khi giúp hiểu nhanh hơn; diagram phải khớp nội dung đã giải thích trong bài. Không vẽ để trang trí.
+- Label node không chứa ký tự `()<>:` (dễ vỡ parser). Giữ diagram ≤ 12 node.
+- Đặt diagram ngay trong mục H3 liên quan.
+
+## 5c. Quiz tự kiểm tra (ĐƯỢC PHÉP)
+
+- Khuyến khích với bài lý thuyết/nhiều concept; có thể lược với bài ngắn kể chuyện.
+- Nếu có quiz: đúng **5 câu**, chỉ hỏi hiểu bài (concept, flow, trade-off), không hỏi vặn/chi tiết vụn.
+- Đáp án đặt trong khối (mỗi câu một khối):
+
+  ```html
+  <details>
+  <summary><b>Xem đáp án</b></summary>
+
+  **Đáp án:** ...
+  Giải thích: ...
+  Tham chiếu: Mục ...
+
+  </details>
+  ```
+
+- Đặt quiz ở cuối bài, trước đoạn kết/teaser.
+
+## 5d. Bảng đối chiếu (ĐƯỢC PHÉP)
+
+- Dùng khi có **từ 2 khái niệm/API/flow trở lên** cần so sánh rõ (vd: LangChain vs LangGraph, router vs graph, checkpoint vs memory...).
+- Bảng phải giúp hiểu nhanh hơn văn xuôi; không lập bảng để trang trí.
+- Tên cột ngắn gọn, tối đa ~4–5 cột, số dòng hợp lý.
+
+## 5e. Nguồn tham khảo & trích dẫn (ĐƯỢC PHÉP)
+
+- **Dòng nguồn đầu bài (khuyến khích):** `> Nguồn: \`<tên file transcript gốc>\` · [Udemy](<url>)` — URL lấy từ dòng 3 của file `.txt`.
+- **Cuối bài:** thêm `## Nguồn tham khảo` khi bài có dùng nguồn ngoài thực tế (docs chính thức LangGraph/LangChain, paper...) — 1–6 link.
+- **Trích trong thân bài:** khi nêu số liệu/luận điểm lấy từ tài liệu ngoài, chèn `[tên tài liệu](url)` ngay cạnh.
+- Chỉ ghi URL đã đọc/đã xác minh. **CẤM tự chế URL.** Bài không có nguồn ngoài thì bỏ mục này — dòng nguồn đầu bài là đủ.
 
 ## 6. Quy tắc đặt tên file
 
@@ -88,7 +123,7 @@
 - [ ] 2–4 mục H3, mỗi mục một emoji, ngăn bằng `---`
 - [ ] Mọi chi tiết trong transcript đều được truyền tải
 - [ ] Không thêm fact/số liệu ngoài transcript
-- [ ] Không có quiz, bảng, diagram, marker, nguồn tham khảo
+- [ ] Không có marker; Mermaid/bảng/quiz/nguồn tham khảo (nếu có) đúng quy định và khớp nội dung
 - [ ] Kết bài động viên + teaser
 - [ ] Tên file đúng chuẩn `NNN - Ten.md`
 
@@ -109,8 +144,13 @@ Chuyển transcript đính kèm thành 1 bài blog tiếng Việt theo đúng st
 - Thuật ngữ Anh để trong ngoặc khi cần: state (trạng thái), checkpoint...
 - Code block chỉ khi transcript thực sự đọc code, giữ nguyên không cải tiến
 - Độ dài 40-90 dòng
-- KHÔNG quiz, KHÔNG bảng, KHÔNG mermaid/ASCII, KHÔNG marker
-  "Gốc transcript"/"Cập nhật 2026", KHÔNG mục Nguồn tham khảo
+- KHÔNG marker "Gốc transcript"/"Cập nhật 2026"
+- Được chèn Mermaid đơn giản (flowchart TD/LR hoặc sequenceDiagram) khi bài có flow;
+  label không chứa ()<>:, diagram khớp nội dung
+- Được dùng bảng đối chiếu khi có 2+ khái niệm cần so sánh
+- Nếu có quiz: 5 câu, đáp án trong <details><summary><b>Xem đáp án</b></summary>
+- Nguồn: dòng nguồn đầu bài (tên file txt + URL Udemy lấy từ dòng 3 của txt);
+  cuối bài thêm "## Nguồn tham khảo" khi có nguồn ngoài thật, chỉ URL đã xác minh
 
 Bài mẫu tham chiếu: Langchain/01. Introduction/001-004.
 Xuất ra file: <NNN - Ten bai.md> cùng thư mục. Không sửa file .txt gốc.

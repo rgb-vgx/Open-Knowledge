@@ -1,5 +1,7 @@
 # 🎨 Generative UI: Khi giao diện trở thành "cầu nối niềm tin" giữa người dùng và AI
 
+> Nguồn: `066-Generative-UI.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/46421717)
+
 Xin chào các bạn, Eden đây! 👋
 
 Sau khi đã dành rất nhiều thời gian cho phần backend của các ứng dụng AI, hôm nay mình muốn nói về một nửa còn lại của bức tranh: **trải nghiệm người dùng (UX) và giao diện người dùng (UI) trong các ứng dụng generative AI**.
@@ -52,6 +54,94 @@ Một ứng dụng LangGraph có **rất nhiều thứ chuyển động cùng l�
 
 Nghe đến đây thôi đã thấy... "ác mộng" rồi, đúng không? *Nhưng đừng lo lắng!* CopilotKit đã làm rất tốt việc triển khai các component cho tất cả những gì mình vừa kể, và tất cả đều được xây dựng trên nền ứng dụng LangGraph. Nhờ đó, việc tích hợp LangGraph với CopilotKit trở nên vô cùng đơn giản.
 
+Luồng tương tác giữa backend LangGraph và giao diện CopilotKit diễn ra như sau:
+
+```mermaid
+sequenceDiagram
+    participant U as Người dùng
+    participant UI as CopilotKit UI
+    participant LG as LangGraph Backend
+    LG->>UI: Stream state và kết quả trung gian
+    UI->>U: Hiển thị tiến trình và component
+    LG->>UI: interrupt khi cần người dùng
+    U->>UI: Nhập câu trả lời
+    UI->>LG: Gửi dữ liệu và resume graph
+```
+
 Một điều mình muốn nói rõ: **mình không có bất kỳ liên kết hay lợi ích nào từ CopilotKit cả**. Mình thật sự tin đây là một dự án tốt, và họ đang làm rất xuất sắc trong lĩnh vực generative UI.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao backend tốt vẫn chưa đủ để tạo nên ứng dụng hoàn chỉnh?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì còn cần một giao diện đẹp và trải nghiệm người dùng tự nhiên, cũng như xây dựng niềm tin với người dùng.
+
+Giải thích: Người dùng biết các ứng dụng generative AI còn "thất thường"; ta phải chủ động xây dựng niềm tin chứ không thể chờ nó tự đến.
+
+Tham chiếu: Mục Backend tốt vẫn chưa đủ.
+
+</details>
+
+**Câu 2:** Transparency cần cho người dùng thấy những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Với agent: agent có tool nào, đang dùng tool nào, vì sao chọn tool đó và cả quá trình suy luận; với RAG: những document nào đã được dùng.
+
+Giải thích: Mục tiêu là để người dùng biết câu trả lời "đến từ đâu".
+
+Tham chiếu: Mục Transparency.
+
+</details>
+
+**Câu 3:** Vì sao build frontend cho LangGraph được ví là "ác mộng"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì state liên tục thay đổi với kết quả trung gian, nhiều node có thể chạy song song, và có human-in-the-loop phải dừng graph để chờ input.
+
+Giải thích: Có rất nhiều thứ chuyển động cùng lúc khiến việc hiển thị chúng trở nên phức tạp.
+
+Tham chiếu: Mục Vì sao build frontend cho LangGraph khó.
+
+</details>
+
+**Câu 4:** CopilotKit hỗ trợ gì cho ứng dụng LangChain/LangGraph?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một loạt component và hook frontend, starter kit, cùng CoAgents tích hợp liền mạch với backend LangGraph.
+
+Giải thích: Nhờ đó việc xây dựng generative UI cho ứng dụng AI trở nên cực kỳ dễ dàng.
+
+Tham chiếu: Mục Gặp gỡ CopilotKit.
+
+</details>
+
+**Câu 5:** Mình có liên kết lợi ích gì với CopilotKit không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không — mình không có bất kỳ liên kết hay lợi ích nào từ CopilotKit.
+
+Giải thích: Mình chỉ thật sự tin đây là dự án tốt và họ làm rất xuất sắc trong lĩnh vực generative UI.
+
+Tham chiếu: Mục Vì sao build frontend cho LangGraph khó.
+
+</details>
+
 Nếu các bạn muốn ứng dụng AI của mình không chỉ "chạy đúng" mà còn khiến người dùng cảm thấy an tâm và tin tưởng, đây chính là hướng đi đáng để đầu tư. Hẹn gặp lại các bạn ở bài tiếp theo, nơi chúng ta sẽ đi sâu hơn vào human-in-the-loop với CopilotKit nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Generative UI](https://ua.udemy.com/course/langgraph/learn/lecture/46421717)
+- [CopilotKit — Documentation](https://docs.copilotkit.ai)
+- [CopilotKit — GitHub](https://github.com/CopilotKit/CopilotKit)
+- [LangGraph — Tài liệu chính thức](https://docs.langchain.com/oss/python/langgraph/overview)

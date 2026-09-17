@@ -1,5 +1,7 @@
 # 📐 Graph và State Machine: Hai khái niệm nền tảng trước khi bước vào LangGraph
 
+> Nguồn: `085-What-are-Graphs.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/50029225)
+
 Chào các bạn, Eden đây! Trước khi lao vào LangGraph, mình muốn cùng các bạn đi qua **hai khái niệm lý thuyết và thuật ngữ** mà chúng ta sẽ dùng liên tục trong suốt khóa học.
 
 Đó là **graph (đồ thị)** — một cấu trúc dữ liệu, và **state machine (máy trạng thái)**. Nghe có vẻ hàn lâm, nhưng mình hứa là rất dễ hình dung thôi!
@@ -34,6 +36,18 @@ Bằng cách định nghĩa các trạng thái khác nhau và **luật chuyển 
 
 Điểm rất hay: **state machine có thể được biểu diễn dưới dạng graph**, trong đó **states là nodes** và **transitions là edges**. Cách trực quan hóa này giúp chúng ta hiểu rõ luồng chạy của state machine và quản lý độ phức tạp của nó.
 
+```mermaid
+flowchart LR
+    A[State A] -->|transition 1| B[State B]
+    B -->|transition 2| C[State C]
+    C -->|transition 3| A
+```
+
+| Khái niệm | Định nghĩa | Thành phần chính | Ví dụ |
+|---|---|---|---|
+| Graph | Đối tượng toán học biểu diễn các mối quan hệ | Nodes và edges | Mạng xã hội, bản đồ giao thông |
+| State machine | Mô hình tính toán với các trạng thái | States và transitions | Luồng xử lý nhiều bước trong phần mềm |
+
 ---
 
 ### 🕸️ Và đây là lúc LangGraph xuất hiện
@@ -42,4 +56,77 @@ Bằng cách định nghĩa các trạng thái khác nhau và **luật chuyển 
 
 Trong khóa học, các bạn sẽ thấy chúng ta mô tả những agent rất cao cấp và phức tạp — viết bằng LangGraph sẽ **rất dễ dàng** và chạy cũng rất mượt.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Graph gồm những thành phần cơ bản nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nodes (vertices) và edges.
+
+Giải thích: Graph là đối tượng toán học mô tả quan hệ giữa các đỉnh qua các cạnh; định nghĩa hình thức là G(V, E).
+
+Tham chiếu: Mục Graph là gì.
+
+</details>
+
+**Câu 2:** State machine là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một mô hình tính toán gồm các states và các transition giữa chúng.
+
+Giải thích: Nhờ định nghĩa trạng thái và luật chuyển đổi, nó quản lý được chuỗi trình tự phức tạp.
+
+Tham chiếu: Mục State Machine.
+
+</details>
+
+**Câu 3:** State machine liên hệ với graph như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** State machine biểu diễn được dưới dạng graph: states là nodes, transitions là edges.
+
+Giải thích: Cách trực quan hóa này giúp hiểu luồng chạy và quản lý độ phức tạp.
+
+Tham chiếu: Mục State Machine.
+
+</details>
+
+**Câu 4:** Eden kể ví dụ thực tế nào về ứng dụng graph trong bảo mật?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Dùng graph database để tìm và mô tả attack vector của tài nguyên trên public cloud như AWS, GCP, Azure.
+
+Giải thích: Graph giúp trả lời câu hỏi như web server có internet-facing và kết nối vào database hay không, phục vụ cloud security posture management.
+
+Tham chiếu: Mục Graph là gì.
+
+</details>
+
+**Câu 5:** LangGraph là gì và giúp chúng ta làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thư viện mạnh xây trên nền LangChain, cho phép mô tả flow bằng nodes và edges để xây agentic application.
+
+Giải thích: Nhờ đó việc hiện thực các agent phức tạp trở nên dễ dàng và chạy mượt.
+
+Tham chiếu: Mục Và đây là lúc LangGraph xuất hiện.
+
+</details>
+
 Bài này đến đây là hết. Mình tin rằng việc **thống nhất** xem graph là gì và state machine là gì là bước quan trọng trước khi chúng ta đi vào **Flow Engineering** và LangGraph ở các bài tiếp theo. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — What are Graphs](https://ua.udemy.com/course/langchain/learn/lecture/50029225)
+- [Graph API overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/graph-api)
+- [LangGraph overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/overview)

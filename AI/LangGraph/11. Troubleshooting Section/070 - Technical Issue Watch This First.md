@@ -1,5 +1,7 @@
 # 🆘 Gặp lỗi kỹ thuật? Xem ngay bài này trước khi tự "vật lộn" hàng giờ!
 
+> Nguồn: `070-Have-a-technical-issue-WATCH-THIS-FIRST-I-Promise-this-will-.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43457268)
+
 Nếu bạn đang gặp bất kỳ vấn đề gì, hãy cho mình **2 phút rưỡi** thôi. Mình hứa bài viết này sẽ giúp bạn giải quyết vấn đề nhanh hơn rất nhiều so với việc ngồi mò mẫm một mình đấy!
 
 Trong khóa học này, mình luôn muốn các bạn nhớ rằng **bạn không bao giờ phải chiến đấu một mình với lỗi**. Cùng xem những "trạm cứu hộ" mình đã chuẩn bị cho các bạn nhé.
@@ -40,3 +42,7 @@ Mình đã thử hỏi Kappa cách **tích hợp Pinecone vào ứng dụng Pyth
 Các bạn có thể hỏi Kappa **rất nhiều thứ về LangChain** và nó sẽ trả lời bạn. Theo mình, đây là một công cụ cực kỳ giá trị. Và đặc biệt hơn: **đến cuối khóa học này, các bạn sẽ hiểu rõ hơn cách để tự triển khai một hệ thống như vậy cho chính mình!**
 
 Còn bây giờ, nếu có bất kỳ trục trặc nào, hãy nhớ: Discord chính là người bạn đồng hành của bạn. Đừng ngần ngại hỏi, và hẹn gặp các bạn ở bài tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Have a technical issue? WATCH THIS FIRST](https://ua.udemy.com/course/langgraph/learn/lecture/43457268)

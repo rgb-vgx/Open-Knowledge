@@ -1,5 +1,7 @@
 # 🚀 Hành trình của một request từ Front-end tới Back-end: 6 bước mà không ai nghĩ là phải trả giá
 
+> Nguồn: `053-The-Journey-of-a-Request-to-the-Backend-Video.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/42286998)
+
 Hôm nay mình muốn đưa các bạn đi trọn một hành trình: từ khoảnh khắc một **request (yêu cầu)** được sinh ra ở front-end cho tới lúc nó "đáp" xuống một process hay thread ở backend. Có rất nhiều bước ở giữa mà chúng ta thường gộp chung vào một chữ — "handle" — và chính vì gộp chung như vậy nên chúng ta không bao giờ trả lời nổi câu hỏi muôn thuở: *backend của bạn chịu được bao nhiêu request mỗi giây?*
 
 Hiểu được từng bước này, các bạn sẽ nhìn ra ngay những chi phí ẩn đang ngốn latency và performance của hệ thống, và biết chính xác cần tối ưu ở đâu.
@@ -11,6 +13,15 @@ Hiểu được từng bước này, các bạn sẽ nhìn ra ngay những chi p
 Trong bài viết "The Journey of a Request to the Backend" mà mình từng đăng trên Medium (kèm một graphic mình tự vẽ), mình chia hành trình này thành **6 bước**. Đây là cách trừu tượng hóa của riêng mình — các bạn hoàn toàn có thể tách một bước thành nhiều sub-step, hoặc gộp chúng lại, tùy cách nhìn.
 
 Vấn đề nằm ở chữ **handle**: khi ai đó hỏi "backend mày handle được bao nhiêu request mỗi giây?", họ thường muốn nói tới bước xử lý cuối cùng. Nhưng sự thật là còn bao nhiêu công đoạn phía trước mà chúng ta không hề tính đến, và cái gì cũng có giá của nó. *Không có gì miễn phí cả — và nhiệm vụ của mình là chỉ thẳng vào những khoản phí ẩn đó.*
+
+```mermaid
+flowchart TD
+    A[Bước 1 Chấp nhận kết nối] --> B[Bước 2 Đọc raw bytes]
+    B --> C[Bước 3 Giải mã]
+    C --> D[Bước 4 Parse protocol]
+    D --> E[Bước 5 Decode body]
+    E --> F[Bước 6 Xử lý]
+```
 
 ---
 
@@ -57,4 +68,77 @@ Request đã thành hình, nhưng chưa xong. Một request có thể có **head
 
 ---
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** 6 bước trong hành trình của một request là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Accept, read, decrypt, parse, decode, process.
+
+Giải thích: Đây là cách trừu tượng hóa của mình — có thể tách hoặc gộp tùy cách nhìn.
+
+Tham chiếu: Mục Handle nghĩa là gì.
+
+</details>
+
+**Câu 2:** Vì sao connection acceptance là "cơm áo gạo tiền" của proxy và web server?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì muốn gửi request phải có đường ống, và đường ống phải được chấp nhận — có thể cần tới hàng nghìn process cùng accept.
+
+Giải thích: Không có connection thì không có gì để xử lý.
+
+Tham chiếu: Mục Bước 1.
+
+</details>
+
+**Câu 3:** Vì sao đọc raw bytes chưa phải là đọc request?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Ở tầng thấp chỉ có byte — không HTTP, không JWT; phải parse và (thường là) giải mã mới hiểu được request.
+
+Giải thích: Giải mã là khoản phí thứ hai ngay sau khoản phí đọc dữ liệu.
+
+Tham chiếu: Mục Bước 2 và 3.
+
+</details>
+
+**Câu 4:** Parse protocol khác nhau thế nào giữa các phiên bản HTTP?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** HTTP/1.1 là text thuần, còn HTTP/2 và HTTP/3 là binary, có stream — parse vất vả hơn hẳn.
+
+Giải thích: Khi "hiểu" request, thư viện mới tạo request object trên heap — cũng có chi phí.
+
+Tham chiếu: Mục Bước 4.
+
+</details>
+
+**Câu 5:** Trong lúc chờ database trả lời, vì sao backend single-thread vẫn "cày" được khối lượng lớn?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì trong lúc chờ bất đồng bộ, thread duy nhất vẫn quay vòng accept, đọc, giải mã, parse request mới.
+
+Giải thích: Nếu bước xử lý ngốn CPU thì mới cần tách ra thread hoặc process riêng.
+
+Tham chiếu: Mục Bước 5 và 6.
+
+</details>
+
 Nhìn lại 6 bước — accept, read, decrypt, parse, decode, process — các bạn sẽ thấy mỗi bước đều có cái giá của nó, và cả 6 bước đều có thể trở thành nút thắt cổ chai. Trả lời được câu hỏi "handle là handle cái gì" chính là bước đầu tiên để nhìn thấu latency của hệ thống. *Mỗi bước xứng đáng có một video riêng, và mình hứa sẽ đào sâu từng bước ở những video sau.* Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — The Journey of a Request to the Backend](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/42286998)
+- [Medium — The Journey of a Request to the Backend (Hussein Nasser)](https://medium.com/@hnasr/the-journey-of-a-request-to-the-backend-c3de704de223)
+- [HAProxy — Anatomy of a Request: Beyond backend processing](https://www.haproxy.com/user-spotlight-series/anatomy-of-a-request-beyond-backend-processing)

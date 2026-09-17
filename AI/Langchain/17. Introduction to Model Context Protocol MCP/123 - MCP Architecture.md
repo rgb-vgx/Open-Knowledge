@@ -1,5 +1,7 @@
 # 🏗️ Kiến trúc MCP: Host, Client, Server (Và câu chuyện nhờ Cursor đặt đồ ăn)
 
+> Nguồn: `123-Theory-MCP-Architecture.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52638003)
+
 Trước khi đi vào từng component của MCP, mình muốn cùng các bạn điểm qua **kiến trúc tổng thể và mục tiêu của giao thức này**. Và để thấy nó thú vị cỡ nào, chúng ta sẽ bắt đầu bằng một ví dụ khó tin nhưng có thật: dùng AI application để... đặt đồ ăn.
 
 ---
@@ -40,4 +42,99 @@ Các component cốt lõi của MCP gồm:
 * **MCP server:** component **expose** resource, tool, prompt ra ngoài – đóng vai trò **proxy/gateway**. Để làm được điều đó, server phải implement đúng protocol với các hàm như **list prompts, get prompt, list tools, call tool, list resource templates, progress notification** – mình sẽ đi sâu ở phần xây dựng server.
 * **MCP client (bên gọi server):** nằm **bên trong MCP host**, chịu trách nhiệm giao tiếp với MCP server thông qua **MCP protocol**. Ví dụ: kết nối **weather MCP server** vào **Claude Desktop**. Một điểm rất quan trọng: quan hệ giữa client và server là **1-1** – một client không nói chuyện với nhiều server. Muốn cắm host vào nhiều server, host phải chứa **nhiều client** bên trong.
 
+Mối quan hệ 1-1 đó được mô tả như sau:
+
+```mermaid
+flowchart LR
+    subgraph H[MCP Host]
+        C1[Client 1]
+        C2[Client 2]
+    end
+    C1 --> S1[MCP Server A]
+    C2 --> S2[MCP Server B]
+    S1 --> T[Tools]
+    S1 --> R[Resources]
+    S2 --> P[Prompts]
+```
+
+Tóm tắt vai trò của từng thành phần:
+
+| Thành phần | Nằm ở đâu | Vai trò chính |
+|---|---|---|
+| MCP host | Application | Mở rộng app, quản lý các client |
+| MCP client | Bên trong host | Giao tiếp 1-1 với một server |
+| MCP server | Component riêng | Expose tools, resources, prompts |
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** MCP được sinh ra để chuẩn hóa điều gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cách các application cung cấp context cho LLM.
+
+Giải thích: Context có thể là thông tin bổ sung cho prompt, tool nên invoke, hoặc chính là prompt.
+
+Tham chiếu: Mục MCP chuẩn hóa cách ứng dụng cung cấp ngữ cảnh.
+
+</details>
+
+**Câu 2:** Hai lợi ích cốt lõi của MCP là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hệ sinh thái tích hợp khổng lồ plug-and-play, và không bị ràng buộc với một LLM vendor hay AI application builder.
+
+Giải thích: Viết tool một lần rồi di chuyển, tái sử dụng ở nhiều vendor.
+
+Tham chiếu: Mục Hai lợi ích cốt lõi.
+
+</details>
+
+**Câu 3:** Quan hệ giữa MCP client và MCP server là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** 1-1 — một client không nói chuyện với nhiều server.
+
+Giải thích: Muốn cắm host vào nhiều server, host phải chứa nhiều client bên trong.
+
+Tham chiếu: Mục Bộ ba Host – Client – Server.
+
+</details>
+
+**Câu 4:** MCP host là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Application mà ta muốn mở rộng — Claude Desktop, Cursor, Windsurf, hoặc agent do ta viết.
+
+Giải thích: Host có thể được cấp thêm tool, data source và cả prompt.
+
+Tham chiếu: Mục Bộ ba Host – Client – Server.
+
+</details>
+
+**Câu 5:** Ví dụ MCP server đặt đồ ăn trên Cursor chứng minh điều gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Server mã nguồn mở có thể cắm sang AI application khác như Claude Desktop hay Windsurf mà vẫn chạy ngon.
+
+Giải thích: Vì MCP giống USB-C, còn MCP server giống thiết bị ngoại vi — miễn tuân thủ protocol là plug-and-play.
+
+Tham chiếu: Mục MCP chuẩn hóa cách ứng dụng cung cấp ngữ cảnh.
+
+</details>
+
 Điểm "game-changing" nằm ở đây: viết functionality **một lần**, rồi cắm vào được **rất nhiều MCP host**. Quá tiện! Hẹn gặp lại các bạn ở video tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — MCP Architecture](https://ua.udemy.com/course/langchain/learn/lecture/52638003)
+- [Model Context Protocol — Architecture overview](https://modelcontextprotocol.io/docs/learn/architecture)

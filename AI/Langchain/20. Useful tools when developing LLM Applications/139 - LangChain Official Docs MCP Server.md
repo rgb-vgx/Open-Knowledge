@@ -1,5 +1,7 @@
 # ⚠️ Đừng Để AI Viết Code "Cũ": LangChain Official MCP Server Cứu Bạn
 
+> Nguồn: `139-New-Important-Stop-Writing-Deprecated-Code-LangChains-Offici.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54083603)
+
 Chào các bạn, mình là Eden đây! 👋 Hôm nay mình muốn chỉ cho các bạn một công cụ **cực kỳ hữu dụng** khi phát triển agent trong hệ sinh thái LangChain — đặc biệt với những ai đang dùng **AI coding editor** để viết code.
 
 Nếu bạn đang dùng **Cursor**, **Claude Code** hay bất kỳ trình soạn thảo AI nào, tin mình đi: hiểu được vấn đề và giải pháp dưới đây sẽ giúp bạn tiết kiệm rất nhiều thời gian.
@@ -33,9 +35,28 @@ Nếu bạn chọn **Copy MCP Server** (ví dụ trong **Cursor**), điều này
 * Đây là **MCP server công khai** do LangChain tạo — **không cần API key**, không cần gì cả, bạn chỉ việc truy vấn và nhận về tài liệu **mới nhất**.
 * Sau khi cài, bạn sẽ thấy nó có **một tool duy nhất** tên là **`SearchDocsByLangChain`**.
 
+Luồng hoạt động khi coding agent viết code LangChain mới:
+
+```mermaid
+sequenceDiagram
+    participant Dev as Lập trình viên
+    participant Agent as Coding Agent
+    participant MCP as LangChain Docs MCP Server
+    Dev->>Agent: Viết agent LangChain theo docs mới nhất
+    Agent->>MCP: SearchDocsByLangChain
+    MCP-->>Agent: Tài liệu mới nhất với create_agent
+    Agent-->>Dev: Code đúng chuẩn hiện hành
+```
+
 Tool này nhận đầu vào là một **query** và tự mô tả mình như sau: *tìm kiếm trên toàn bộ knowledge base tài liệu của LangChain để tìm thông tin liên quan, ví dụ code, tham chiếu API và hướng dẫn; dùng khi bạn cần trả lời câu hỏi về Docs By LangChain, tìm tài liệu cụ thể, hiểu cách một tính năng hoạt động, hoặc xác định chi tiết triển khai; kết quả trả về nội dung theo ngữ cảnh kèm tiêu đề và liên kết trực tiếp tới trang tài liệu.*
 
 Một điểm cần lưu ý: trong demo, mình **tắt `context7` đi** — vì `context7` làm điều tương tự nhưng cho **rất nhiều thư viện** khác nhau. Sự khác biệt là **`DocsByLangChain` được thiết kế riêng cho LangChain và hệ sinh thái LangChain**, còn `context7` thì tổng quát hơn. Nếu bạn viết code LangChain bằng coding editor, mình khuyên dùng MCP server này.
+
+| Tiêu chí | DocsByLangChain | context7 |
+|---|---|---|
+| Phạm vi tài liệu | Riêng LangChain và hệ sinh thái | Nhiều thư viện khác nhau |
+| Tool | Một tool `SearchDocsByLangChain` | Bộ tool tìm kiếm tài liệu riêng |
+| Cách dùng của Eden | Bật và dùng | Tắt trong demo |
 
 ---
 
@@ -69,4 +90,77 @@ Mình dán đúng câu hỏi lúc nãy vào, và nhận được **câu trả l�
 
 Được tận mắt thấy **MCP, LangChain và coding agent** kết nối với nhau như vậy thật sự rất thú vị.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao coding agent có thể viết code LangChain lỗi thời?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì LLM được huấn luyện tại một thời điểm cố định, còn LangChain thay đổi liên tục với API mới và deprecated.
+
+Giải thích: Chỉ sau vài tháng, hệ sinh thái có thể thay đổi chóng mặt.
+
+Tham chiếu: Mục Vấn đề.
+
+</details>
+
+**Câu 2:** LangChain Docs MCP Server là loại server gì và có cần API key không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là streamable HTTP server trỏ tới LangChain Docs MCP, công khai và không cần API key.
+
+Giải thích: Bạn chỉ việc truy vấn và nhận tài liệu mới nhất.
+
+Tham chiếu: Mục Giải pháp.
+
+</details>
+
+**Câu 3:** Tool duy nhất của server này tên là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `SearchDocsByLangChain`.
+
+Giải thích: Tool nhận đầu vào là một query và trả về nội dung kèm tiêu đề, liên kết tới trang tài liệu.
+
+Tham chiếu: Mục Giải pháp.
+
+</details>
+
+**Câu 4:** Khi tắt hết MCP, Cursor trả về những gì cho câu hỏi về agent?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `initialize_agent` — deprecated từ rất lâu, rồi loanh quanh tìm kiếm và cuối cùng trả về `create_react_agent` — cũng đã deprecated.
+
+Giải thích: Đây là minh chứng cho việc thiếu MCP server thì code dễ sai và lỗi thời.
+
+Tham chiếu: Mục Thử nghiệm.
+
+</details>
+
+**Câu 5:** Chat LangChain chính thức dùng gì để trả lời?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chính `SearchDocsByLangChain` — gọi hai lần: tìm về agents và OSS troubleshooting.
+
+Giải thích: Xem trace sẽ thấy rõ các lượt gọi tool, có một lượt tìm cho `create_agent`.
+
+Tham chiếu: Mục Bonus.
+
+</details>
+
 Vậy nên, lời nhắn cuối cùng của mình dành cho các bạn: **nếu bạn dùng coding agent, hãy dùng LangChain MCP server!** Vài phút cài đặt hôm nay sẽ tiết kiệm cho bạn hàng giờ sửa code lỗi thời về sau. Hẹn gặp lại các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Stop Writing Deprecated Code: LangChain's Official MCP Server](https://ua.udemy.com/course/langchain/learn/lecture/54083603)
+- [Docs by LangChain — Use docs programmatically](https://docs.langchain.com/use-these-docs)
+- [LangChain Docs MCP Server](https://docs.langchain.com/mcp)

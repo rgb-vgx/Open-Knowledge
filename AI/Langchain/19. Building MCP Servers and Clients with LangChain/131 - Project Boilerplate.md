@@ -1,5 +1,7 @@
 # 🧰 Boilerplate Dự Án MCP: Khởi Tạo, Cấu Hình và Sẵn Sàng Lên Đường
 
+> Nguồn: `131-Boilerplate.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52632233)
+
 Chào các bạn, mình là Eden đây! 👋 Đây là video "dựng sườn" cho dự án của chúng ta — bài học chuẩn bị để mọi thứ sẵn sàng trước khi viết những dòng code MCP đầu tiên.
 
 Trong bài này, chúng ta sẽ **tạo mới một project bằng UV**, **tạo môi trường ảo (virtual environment)**, **cài đặt dependencies**, và **commit lên GitHub**. Nghe thì nhiều bước, nhưng mình sẽ đi nhanh thôi, vì phần thú vị nhất đang chờ ở phía sau.
@@ -20,7 +22,25 @@ Còn nếu bạn muốn bắt đầu từ con số không như mình, đây là 
 2. Tạo một branch mới bằng `git checkout --orphan project/langchain-mcp-adapters` — cách này giúp branch "tách hẳn" khỏi repo gốc và bắt đầu với lịch sử sạch.
 3. Dọn sạch file cũ bằng `git rm -rf .` để có một khởi đầu tinh khôi.
 
+Các bước dựng boilerplate đi theo luồng sau:
+
+```mermaid
+flowchart TD
+    A[Clone repo MCP crash course] --> B[Tạo branch orphan]
+    B --> C[Dọn file cũ bằng git rm]
+    C --> D[uv init tạo project]
+    D --> E[uv venv tạo môi trường ảo]
+    E --> F[Cài dependencies]
+    F --> G[Cấu hình .env và .gitignore]
+    G --> H[Commit và push lên GitHub]
+```
+
 *Các bạn cứ yên tâm: repo chính của khóa học được tổ chức gọn gàng hơn nhiều, nên đừng bối rối nếu trong video bạn thấy cây thư mục hơi "bừa" nhé!*
+
+| Cách bắt đầu | Các bước chính | Dành cho ai |
+|---|---|---|
+| Chạy lệnh có sẵn | Clone repo khóa học, checkout branch và commit của giảng viên | Muốn có đúng code như trong video |
+| Tự làm từ số 0 | Clone repo MCP crash course, tạo branch orphan, `git rm -rf .`, `uv init`... | Muốn thực hành từng bước |
 
 ---
 
@@ -64,4 +84,77 @@ Cuối cùng, mình tạo file **`.gitignore`** để không commit file `.env` 
 
 Mọi thứ đã chạy ổn, mình commit toàn bộ code. Một tính năng mình rất thích ở Cursor là **tự động sinh commit message bằng AI** — chỉ một cú click. Sau đó mình set upstream và push lên GitHub, rồi mở branch `project/langchain-mcp-adapters` trên GitHub để kiểm tra: `main.py`, `uv.lock`, `pyproject.toml`... đều đã ở trên đó.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao mình dùng `git checkout --orphan` khi tạo branch?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để branch tách hẳn khỏi repo gốc và bắt đầu với lịch sử sạch.
+
+Giải thích: Sau đó còn dọn sạch file cũ bằng `git rm -rf .`.
+
+Tham chiếu: Mục Bắt đầu từ trang giấy trắng.
+
+</details>
+
+**Câu 2:** `uv init` tạo ra những file boilerplate nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một file `README` rỗng, `main.py` và `pyproject.toml`.
+
+Giải thích: Đây là bộ khung để bắt đầu làm việc trong Cursor.
+
+Tham chiếu: Mục Khởi tạo với UV.
+
+</details>
+
+**Câu 3:** Vì sao không cài trực tiếp gói `mcp`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì khi cài `langchain-mcp-adapters`, gói `mcp` sẽ tự động được cài kèm.
+
+Giải thích: LangChain adapters đã khai báo dependency này.
+
+Tham chiếu: Mục Khởi tạo với UV.
+
+</details>
+
+**Câu 4:** File `uv.lock` có vai trò gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lưu phiên bản chính xác của mọi gói trong môi trường — ví dụ `langchain-core` 0.3.5.
+
+Giải thích: Bạn có thể có phiên bản mới hơn và điều đó hoàn toàn bình thường.
+
+Tham chiếu: Mục Khởi tạo với UV.
+
+</details>
+
+**Câu 5:** Vì sao chuyển `main.py` sang coroutine `async` ngay từ đầu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì code MCP client sắp tới là bất đồng bộ, cần làm quen trước với `async` và `asyncio.run`.
+
+Giải thích: Đây là bước chuẩn bị cho các bài sau.
+
+Tham chiếu: Mục Làm quen code async.
+
+</details>
+
 Vậy là bộ khung đã hoàn tất! Ở bài tiếp theo, chúng ta sẽ bắt tay vào việc thực sự thú vị: **viết những MCP server đầu tiên** — một server toán học giao tiếp qua STDIO và một server thời tiết giao tiếp qua SSE. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Boilerplate](https://ua.udemy.com/course/langchain/learn/lecture/52632233)
+- [LangChain MCP Adapters — GitHub](https://github.com/langchain-ai/langchain-mcp-adapters)
+- [Docs by LangChain — Model Context Protocol](https://docs.langchain.com/oss/python/langchain/mcp)

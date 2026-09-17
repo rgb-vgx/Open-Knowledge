@@ -1,5 +1,7 @@
 # 🎯 Khóa học này dành cho ai? (Khi ứng dụng chạy được nhưng bạn không hiểu vì sao)
 
+> Nguồn: `002-Who-is-this-course-for.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629332)
+
 "Vậy khóa học này dành cho ai?" — mình nghĩ đây là câu hỏi quan trọng nhất trước khi các bạn bỏ thời gian ra học. Và câu trả lời của mình rất cụ thể.
 
 Mình thiết kế khóa học này cho những **backend engineer** đang ở **năm thứ nhất hoặc năm thứ hai** làm nghề: đã từng xây ứng dụng, đã từng làm cho một ứng dụng backend chạy được và **scale (mở rộng quy mô)**, đã nếm trải đủ mọi đau khổ trong quá trình đó — rồi ngồi xuống và tự hỏi: *"Khoan đã, rốt cuộc nó hoạt động như thế nào?"*
@@ -57,4 +59,75 @@ Tóm gọn lại, khóa học này dành cho:
 * **Network engineer** muốn nhìn vùng giao thoa giữa network và backend từ cả hai phía.
 * **Người chưa từng xây gì** — hãy xây một ứng dụng backend trước đã, rồi quay lại.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Khóa học nhắm chính xác tới ai?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Backend engineer năm thứ nhất hoặc thứ hai — đã xây app, đã scale, và đang có một mớ black box trong đầu.
+
+Giải thích: Họ đã làm cho mọi thứ chạy được nhưng vẫn bối rối vì không hiểu vì sao.
+
+Tham chiếu: Mục Nỗi đau mang tên "black box".
+
+</details>
+
+**Câu 2:** Vì sao full stack engineer rất hợp với khóa học?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì họ đã đi khắp database, backend, frontend và giờ muốn hiểu sâu hơn về backend communication.
+
+Giải thích: Khóa học là điểm nối tự nhiên cho người đã chạm cả ba mảng.
+
+Tham chiếu: Mục Full stack và frontend engineer — nghe kỹ nhé.
+
+</details>
+
+**Câu 3:** Lời khuyên dành cho người chưa từng xây gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hãy tự xây một ứng dụng backend trước đã; nếu không khóa học sẽ là một cú đẩy khá khó nhằn.
+
+Giải thích: Cần nền tảng để tận hưởng thay vì vật lộn với nội dung.
+
+Tham chiếu: Mục Nếu bạn chưa từng xây gì thì sao?
+
+</details>
+
+**Câu 4:** Network engineer được gì từ khóa học này?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thấy cây cầu nối network và backend được xây từ cả hai phía, xóa nhòa ranh giới giữa hai bên.
+
+Giải thích: Khóa này bắc cầu từ phía backend sang, còn khóa networking bắc từ phía network sang.
+
+Tham chiếu: Mục Còn nếu bạn là network engineer?
+
+</details>
+
+**Câu 5:** Mục tiêu cá nhân Hussein nhắc trong bài là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Mỗi ngày trở thành một engineer tốt hơn một chút, trám hết những lỗ hổng kiến thức từng khiến bản thân bất an.
+
+Giải thích: Anh từng đứng đúng vị trí người học — app chạy được nhưng không hiểu vì sao.
+
+Tham chiếu: Mục Nỗi đau mang tên "black box".
+
+</details>
+
 Vậy là các bạn đã biết mình tạo khóa học này cho ai, và vì sao. Ở bài tiếp theo, mình sẽ dẫn các bạn đi qua **toàn bộ course outline (đề cương khóa học)** — từng section một, để các bạn thấy hành trình trước mắt rõ ràng như thế nào. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Who is this course for?](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629332)

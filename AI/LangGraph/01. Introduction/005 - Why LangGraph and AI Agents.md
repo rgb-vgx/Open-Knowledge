@@ -1,5 +1,7 @@
 # 🤖 Vì sao LangGraph ra đời? Hành trình đi tìm sự cân bằng giữa tự do và đáng tin cậy
 
+> Nguồn: `005-Why-LangGraph-and-AI-Agents-Applications.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/45771257)
+
 Chào các bạn, mình là Eden đây! Bài này sẽ hơi **lý thuyết và triết lý một chút**, nhưng mình tin nó là một trong những bài quan trọng nhất của khóa học: chúng ta sẽ cùng lý giải **động lực thực sự khiến framework LangGraph được tạo ra**. Trước khi bắt đầu, mình muốn gửi lời cảm ơn đến nhóm đã cung cấp slide và hình minh họa để mình sử dụng trong bài giảng này. 🙏
 
 ### 🎚️ Phổ tự chủ: hai thái cực của hệ thống AI
@@ -30,7 +32,16 @@ Tóm lại: autonomous agent **linh hoạt nhưng không đáng tin cậy**.
 
 Một chi tiết rất quan trọng: trên sơ đồ có một **đường nét đứt**, và **phía dưới đường nét đứt chính là thứ được coi là agent hay agentic application**. Trong khi đó, **mọi thứ phía trên đường đó đều đã được LangChain hiện thực rất tốt**. Mình là fan cứng của LangChain và tin rằng chỉ với những building block đó, ta đã có thể xây dựng hệ thống rất nâng cao.
 
-Và đây là "spoiler" của mình: **khoảng trống giữa LLM router và autonomous agent — chính là nơi LangGraph tọa lạc.**
+Và đây là "spoiler" của mình: **khoảng trống giữa LLM router và autonomous agent — chính là nơi LangGraph tọa lạc.** Nhìn trên phổ tự chủ, toàn cảnh sẽ như thế này:
+
+```mermaid
+flowchart LR
+    A[Code deterministic] --> B[Một LLM call]
+    B --> C[Chaining RAG]
+    C --> D[LLM router]
+    D --> E[LangGraph]
+    E --> F[Autonomous agent]
+```
 
 ---
 
@@ -43,6 +54,12 @@ Theo mình, hiện nay định nghĩa về agent rất "mềm" và chưa có câ
 Nếu đơn giản hóa đến tận gốc, **một agent về bản chất là một control flow (luồng điều khiển) mà LLM quyết định sẽ đi hướng nào.** Ví dụ cơ bản: LLM quyết định đi bước 1 hay bước 2 — ta đang dùng năng lực suy luận của LLM để chọn hướng đi trong luồng.
 
 **Vậy agent khác chain (và router chain) ở đâu?** Khác biệt chính là: **chain chỉ có một chiều** — chúng ta đi từ trái sang phải. Còn **agent có cycles (chu trình)** — và chính các cycles này mang lại **thuộc tính agentic (agentic properties)** cho ứng dụng.
+
+| Tiêu chí | Chain | Agent |
+|---|---|---|
+| Hướng luồng | Một chiều, đi từ trái sang phải | Có cycles, có thể lặp lại |
+| Ai quyết định hướng đi | Lập trình viên viết sẵn luồng | LLM dùng reasoning/function calling để chọn |
+| Thuộc tính agentic | Không có | Có, nhờ các cycles |
 
 Ngày nay, agent dùng **function calling (gọi hàm)** để quyết định các bước. Ngoài câu hỏi gửi cho LLM, ta gửi kèm **mô tả của các tool (công cụ)** — những hàm ta có thể thực thi trong backend và điều phối. Ta gửi cho LLM mô tả hàm, tham số, tên, chức năng và giá trị trả về. Với **tool decorator**, việc này rất dễ dàng: nếu thấy phù hợp, LLM sẽ bảo ta cần gọi hàm nào với tham số nào; ta gọi hàm và nhận lại câu trả lời mong muốn.
 
@@ -87,4 +104,77 @@ Một điểm thú vị: **bên trong LangGraph, bạn có thể viết bất k�
 
 Tóm lại: chúng ta kiểm soát luồng và viết ra luồng; ta tích hợp LLM để quyết định đi đâu và thực thi gì. Vì đây là một **state machine**, ta cần có **state (trạng thái)** — thứ được **chia sẻ giữa các node và các edge**, lưu mọi kết quả trung gian và cung cấp thông tin hữu ích cho LLM để quyết định hướng đi.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Hai đầu mút của phổ tự chủ là gì, và trade-off của chúng ra sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Code deterministic (kiên cường, đáng tin nhưng hoàn toàn không linh hoạt) và autonomous agent (siêu linh hoạt nhưng không đáng tin cậy).
+
+Giải thích: Mọi điểm ở giữa là các mức độ trung gian như một LLM call, chaining, LLM router.
+
+Tham chiếu: Mục Phổ tự chủ.
+
+</details>
+
+**Câu 2:** Vì sao autonomous agent chưa thể đưa vào production?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì chúng quá linh hoạt và ta không kiểm soát được khi phụ thuộc quá nhiều vào LLM.
+
+Giải thích: LLM là những "sinh vật thống kê" đoán từng token nên dễ lan man, không trả về đúng thứ cần.
+
+Tham chiếu: Mục Phổ tự chủ.
+
+</details>
+
+**Câu 3:** Agent khác chain ở điểm cốt lõi nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chain chỉ có một chiều; agent có cycles (chu trình) — thứ mang lại thuộc tính agentic.
+
+Giải thích: Về bản chất, agent là control flow mà LLM quyết định sẽ đi hướng nào.
+
+Tham chiếu: Mục Vậy thế nào là một agent.
+
+</details>
+
+**Câu 4:** Vấn đề của ReAct agent là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Quá linh hoạt — mọi hoán vị gọi tool đều được phép, kể cả hoán vị "lặp vô hạn" khiến agent kẹt.
+
+Giải thích: Nguyên nhân có thể do định nghĩa tool sai, LLM phi xác định, chọn sai tool/tham số, hoặc ảo giác ra tool không tồn tại.
+
+Tham chiếu: Mục Vậy thế nào là một agent.
+
+</details>
+
+**Câu 5:** Vì sao chọn LangGraph thay vì Airflow hay NetworkX?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì LangGraph "opinionated" cho ứng dụng agentic, cung cấp sẵn controllability, chạy node song song, conditional branching, persistence, human-in-the-loop, time traveling và tracing.
+
+Giải thích: Đây đều là những building block được thiết kế đúng cho bài toán agent.
+
+Tham chiếu: Mục LangGraph: giảm một chiều tự do.
+
+</details>
+
 Đó là bức tranh toàn cảnh về động lực tạo ra LangGraph! *Nếu bài này có hơi nặng lý thuyết, các bạn cứ yên tâm — mọi khái niệm sẽ sáng tỏ khi chúng ta bắt tay vào thực hành.* Hẹn gặp lại các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangGraph: Why LangGraph and AI Agents Applications](https://ua.udemy.com/course/langgraph/learn/lecture/45771257)
+- [LangGraph overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/overview)
+- [ReAct: Synergizing Reasoning and Acting in Language Models — arXiv](https://arxiv.org/abs/2210.03629)

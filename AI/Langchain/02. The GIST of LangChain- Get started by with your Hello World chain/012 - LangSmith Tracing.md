@@ -1,5 +1,7 @@
 # 🛰️ Tích hợp LangSmith: Nhìn xuyên suốt mọi bước chạy của chain
 
+> Nguồn: `012-Integrating-LangSmith-for-LangChain-Application-Tracing.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52016043)
+
 Chào các bạn, Eden đây! Ứng dụng của chúng ta đã chạy, đã biết đổi model — nhưng làm sao để **nhìn thấy toàn bộ những gì diễn ra bên trong** mỗi lần chain thực thi? Câu trả lời là **LangSmith tracing**.
 
 Trong bài này, chúng ta sẽ cấu hình LangSmith và xem lại trace của những chain đã gọi.
@@ -27,6 +29,15 @@ Trong dashboard, có nút **"Set up tracing"**. Các bước hiện ra khá tr�
 * **`LANGSMITH_API_KEY`** — API key vừa generate.
 * **`LANGSMITH_PROJECT`** — tên project, một chuỗi do bạn tự đặt; nó sẽ chứa toàn bộ trace của bạn trên nền tảng LangSmith. Ở đây mình đặt là **Hello World**.
 
+Tóm gọn bốn biến cần nhớ:
+
+| Biến môi trường | Giá trị | Vai trò |
+|---|---|---|
+| `LANGSMITH_TRACING` | `true` | Bật tracing |
+| `LANGSMITH_ENDPOINT` | Endpoint region EU nếu ở ngoài nước Mỹ | Tránh lỗi authentication |
+| `LANGSMITH_API_KEY` | API key vừa generate | Xác thực với LangSmith |
+| `LANGSMITH_PROJECT` | Tên project, ví dụ Hello World | Chứa toàn bộ trace của bạn |
+
 *Lưu ý cực kỳ quan trọng:* nếu bạn ở ngoài nước Mỹ mà **không set biến endpoint**, bạn sẽ gặp **lỗi authentication** khi LangChain cố gắng trace ứng dụng. Đừng bỏ qua bước nhỏ này nhé!
 
 Mình mở file `.env`, dán các giá trị vào. Một chi tiết nhỏ: giá trị `true` **không cần dấu ngoặc kép** vẫn hoạt động tốt. *API key của mình sẽ được thu hồi ngay sau khi quay xong video, các bạn cứ yên tâm.*
@@ -53,6 +64,19 @@ Bạn cũng có thể **tùy biến trace** bằng cách thêm **tags** để fi
 
 Một điểm mình muốn các bạn chú ý: trace hiển thị rõ **các object LangChain**. Runnable sequence này gồm **prompt template** chạy trước để format string, rồi lấy **prompt value** đầu ra "cắm" vào chat model và gửi đi — đúng như những gì chúng ta đã học ở các bài trước.
 
+Dòng chảy của một lần trace diễn ra như sau:
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant LangChain
+    participant LangSmith
+    App->>LangChain: invoke chain
+    LangChain->>LangChain: Format prompt và gọi model
+    LangChain-->>LangSmith: Gửi trace tự động
+    LangSmith-->>App: Hiển thị run và metadata
+```
+
 ---
 
 ### 📊 So sánh các lần chạy và tận dụng bộ lọc
@@ -78,4 +102,76 @@ Về phần code: mình chạy `git status` để xem các file thay đổi, `gi
 
 ---
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Biến môi trường nào dùng để bật tracing?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `LANGSMITH_TRACING`, đặt thành `true`.
+
+Giải thích: Giá trị `true` không cần dấu ngoặc kép vẫn hoạt động tốt.
+
+Tham chiếu: Mục Cấu hình biến môi trường.
+
+</details>
+
+**Câu 2:** Người ở ngoài nước Mỹ cần lưu ý điều gì với `LANGSMITH_ENDPOINT`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bắt buộc phải set biến này để trỏ sang region EU — cùng URL nhưng thêm tiền tố `eu` ở đầu.
+
+Giải thích: Nếu không set, bạn sẽ gặp lỗi authentication khi LangChain cố trace ứng dụng.
+
+Tham chiếu: Mục Cấu hình biến môi trường.
+
+</details>
+
+**Câu 3:** `LANGSMITH_PROJECT` dùng để làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đặt tên project — một chuỗi do bạn tự chọn — nơi chứa toàn bộ trace của bạn trên nền tảng LangSmith.
+
+Giải thích: Trong video, Eden đặt tên project là Hello World.
+
+Tham chiếu: Mục Cấu hình biến môi trường.
+
+</details>
+
+**Câu 4:** Một trace trên LangSmith hiển thị những thông tin nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Runnable sequence, lệnh gọi model, input/output message, start time, end time, thời gian lấy token đầu tiên, status và tổng số token.
+
+Giải thích: Bạn cũng có thể tùy biến trace bằng tags để filter về sau.
+
+Tham chiếu: Mục Đọc một trace chạy.
+
+</details>
+
+**Câu 5:** Eden so sánh các lần chạy GPT-5 và Ollama như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Comment dòng Ollama, bỏ comment dòng GPT-5 rồi chạy lại; trace cho thấy lần chạy GPT-5 mất 16 giây, có thể filter và xem thống kê như error rate, median tokens, P90, P50.
+
+Giải thích: Đây là lý do LangSmith được đánh giá là nền tảng tracing tốt nhất cho ứng dụng LLM.
+
+Tham chiếu: Mục So sánh các lần chạy và tận dụng bộ lọc.
+
+</details>
+
 LangSmith sẽ là người bạn đồng hành đắc lực của bạn từ giờ. Hẹn gặp lại ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Integrating LangSmith for LangChain Application Tracing](https://ua.udemy.com/course/langchain/learn/lecture/52016043)
+- [LangSmith Docs](https://docs.langchain.com/langsmith)

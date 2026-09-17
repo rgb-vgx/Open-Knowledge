@@ -1,5 +1,7 @@
 # 🗂️ Ingestion Implementation: Nạp trọn bộ Medium Blog vào Vector Database
 
+> Nguồn: `045-Medium-Analyzer--Ingestion-Implementation.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/57091191)
+
 Chào các bạn, Eden đây! Chúng ta đã nắm đủ lý thuyết về **embeddings (vector biểu diễn ngữ nghĩa)** và vector store, giờ là lúc **viết code thật** cho phần **ingestion (nạp dữ liệu)** của dự án Medium Analyzer.
 
 Trong bài này, mình sẽ cùng các bạn load file blog Medium, chia nhỏ thành các chunk, tạo embedding và đẩy toàn bộ vào Pinecone. Nghe dài vậy thôi chứ mọi thứ diễn ra khá gọn gàng nhờ các abstraction của LangChain.
@@ -24,6 +26,11 @@ Sau khi gọi `loader.load`, mình nhận về một **list các LangChain Docum
 
 * **`page_content`:** toàn bộ nội dung đã nạp.
 * **`metadata`:** mặc định lưu **source** — chính là đường dẫn file.
+
+| Thuộc tính | Chứa gì | Vai trò trong RAG |
+|---|---|---|
+| page_content | Toàn bộ nội dung text đã nạp | Nguyên liệu để chunk và embed |
+| metadata | Mặc định là source — đường dẫn file | Grounding và filter, tách dữ liệu về sau |
 
 Trường metadata này cực kỳ quan trọng với RAG: nó cho ta biết **thông tin đến từ đâu**, LLM đã được "neo" (ground) vào nguồn nào. Các bạn cũng có thể thêm bất kỳ cặp key-value nào vào metadata để **filter** hoặc **tách dữ liệu** về sau — rất hữu ích khi triển khai production và xây dựng các hệ RAG nâng cao.
 
@@ -57,10 +64,94 @@ Giờ đến phần ingest. Mình khởi tạo **OpenAIEmbeddings** với API ke
 
 Tự viết logic này có được không? Hoàn toàn được, vì nó không hề phức tạp. Nhưng LangChain cho ta **một interface duy nhất** để linh hoạt đổi embeddings model hay thậm chí đổi cả vector store khi cần tìm cái phù hợp nhất. Quan trọng hơn, họ đã cài sẵn **threading**, **Async IO** để chạy song song và xử lý **rate limit** — đúng kiểu boilerplate mà ta cần cho production. Nhìn vào source code, các bạn sẽ thấy vòng lặp tạo embedding rồi **upsert** vào vector store theo **batch**, chạy bất đồng bộ được, và tất cả vector store đều hỗ trợ.
 
+```mermaid
+flowchart LR
+    A[mediamblog] --> B[TextLoader]
+    B --> C[Document]
+    C --> D[CharacterTextSplitter]
+    D --> E[20 chunk]
+    E --> F[OpenAIEmbeddings]
+    F --> G[Pinecone upsert theo batch]
+```
+
 Chạy thử: trước đó index đang trống, sau khi chạy file ingestion và refresh Pinecone, các bạn sẽ thấy **20 vector** đã được nạp. Cấu trúc dữ liệu lưu trong Pinecone gồm:
 
 * **text:** `page_content` của Document — chính là nội dung chunk.
 * **source:** đường dẫn của chunk — bằng chứng cho việc grounding.
 * **vector:** danh sách các con số biểu diễn ngữ nghĩa.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao lúc load mình đặt `max_characters` tới 1 triệu ký tự?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để nạp nguyên file thành một document duy nhất trước khi chia nhỏ.
+
+Giải thích: Sau đó mới dùng splitter để cắt thành các chunk phù hợp.
+
+Tham chiếu: Mục Một lời nhắn nhỏ trước khi bắt đầu.
+
+</details>
+
+**Câu 2:** Metadata source quan trọng thế nào với RAG?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó cho biết thông tin đến từ đâu — bằng chứng cho việc grounding, và có thể dùng để filter hoặc tách dữ liệu.
+
+Giải thích: Bạn cũng có thể thêm bất kỳ cặp key-value nào vào metadata cho mục đích này.
+
+Tham chiếu: Mục Bên trong một LangChain Document.
+
+</details>
+
+**Câu 3:** Vì sao mình chọn `chunk_size = 1.000` và `chunk_overlap = 0`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** 1.000 là heuristic — đủ nhỏ để nhét vừa context window, đủ lớn để con người hiểu được; overlap để 0 cho đơn giản.
+
+Giải thích: Chunk quá nhỏ thì LLM không trả lời đúng; overlap hữu ích khi muốn giữ ngữ cảnh nối giữa các chunk.
+
+Tham chiếu: Mục Chunking.
+
+</details>
+
+**Câu 4:** Vì sao vẫn phải chunk dù model hiện nay nuốt được cả triệu token?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì garbage in, garbage out — gửi nhiều thông tin không liên quan thì càng tốn tiền và cho kết quả tệ hơn.
+
+Giải thích: Chỉ dùng đúng context, đúng chunk liên quan sẽ cho câu trả lời tốt hơn.
+
+Tham chiếu: Mục Chunking.
+
+</details>
+
+**Câu 5:** `PineconeVectorStore.from_documents` lưu những gì cho mỗi chunk?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** text là page_content của Document, source là đường dẫn chunk, và vector là dãy số biểu diễn ngữ nghĩa.
+
+Giải thích: `from_documents` nhận list documents, embeddings object và index name; có ở mọi vector store của LangChain.
+
+Tham chiếu: Mục Đưa tất cả vào Pinecone.
+
+</details>
+
 Vậy là xong phần **ingestion** — phần đầu tiên của RAG, dùng LangChain để **load → split → embed → store** vào vector database. Phần thứ hai chính là **retrieval**: lấy câu hỏi của người dùng, embed thành vector, tìm các vector liên quan nhất trong vector store, augment câu hỏi gốc với các chunk đó rồi gửi cho LLM để có câu trả lời được grounding. Hẹn gặp các bạn ở bài tiếp theo — chúng ta bắt đầu truy hồi thôi! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Medium Analyzer: Ingestion Implementation](https://ua.udemy.com/course/langchain/learn/lecture/57091191)
+- [LangChain — Document loader integrations](https://docs.langchain.com/oss/python/integrations/document_loaders)
+- [Pinecone Docs — Create a serverless index](https://docs.pinecone.io/guides/indexes/create-an-index)
+- [OpenAI — Vector embeddings](https://platform.openai.com/docs/guides/embeddings)

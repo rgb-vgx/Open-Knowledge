@@ -1,5 +1,7 @@
 # 🧠 Chào mừng đến với Deep Agents: Khi AI Agent bước vào kỷ nguyên "chạy đường dài"
 
+> Nguồn: `143-Introduction-to-Deep-Agents-Section.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54737161)
+
 Chào mọi người, lại là Eden đây! 👋 Trong section mới này, chúng ta sẽ cùng nhau bước vào một trong những chủ đề thú vị nhất của khóa học: **Deep Agents**.
 
 Đây là những agent có thể xử lý đa dạng tác vụ, nhưng điểm đặc biệt nhất là chúng giải quyết được các **long-horizon tasks (tác vụ dài hơi)** — những bài toán phức tạp, cần nhiều vòng lặp và nhiều thời gian xử lý. Các **coding agent** như **Claude Code**, **Cursor CLI**, hay chính **LangChain Deep Agents** đều thuộc nhóm này.
@@ -24,6 +26,13 @@ Trong section này, mình và các bạn sẽ cùng nhau đi qua ba chặng:
 2. **Định nghĩa ở mức tổng quan (high-level overview)** điều gì khiến một agent trở thành deep agent, cùng những đặc điểm nổi bật của chúng.
 3. **Đi sâu vào LangChain Deep Agents harness** — bộ khung (harness) mà LangChain đã xây dựng cho deep agents.
 
+```mermaid
+flowchart TD
+    A[Taxonomy các loại agent] --> B[Tổng quan deep agent]
+    B --> C[LangChain Deep Agents harness]
+    C --> D[Mổ xẻ source code under the hood]
+```
+
 ---
 
 ### ⚙️ Từ người dùng đến tận mã nguồn
@@ -43,3 +52,9 @@ Section này hứa hẹn sẽ cực kỳ hấp dẫn, bởi vì chúng ta sẽ �
 Đây là cơ hội để chúng ta hiểu tường tận bên trong những coding agent đang dẫn dắt ngành — những thứ mà nếu chỉ dùng ở mức bề mặt, bạn sẽ mãi không thấy được.
 
 Nếu bạn từng tò mò vì sao các agent này có thể tự viết code, tự chạy test hay tự sửa lỗi xuyên suốt hàng giờ đồng hồ, thì đây chính là section dành cho bạn. Hãy thắt dây an toàn và hẹn gặp lại các bạn ở bài tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Introduction to Deep Agents Section](https://ua.udemy.com/course/langchain/learn/lecture/54737161)
+- [LangChain Docs — Deep Agents overview](https://docs.langchain.com/oss/python/deepagents/overview)
+- [GitHub — langchain-ai/deepagents](https://github.com/langchain-ai/deepagents)

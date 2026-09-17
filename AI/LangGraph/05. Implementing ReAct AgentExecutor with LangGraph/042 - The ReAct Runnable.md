@@ -1,5 +1,7 @@
 # 🧠 Lập trình "bộ não" của Agent: Hiện thực ReAct Runnable với Function Calling
 
+> Nguồn: `042-Coding-the-Agents-Brain-Implementing-the-ReAct-Runnable.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/50657813)
+
 Chào các bạn, mình là Eden đây! 👋
 
 Trong bài này chúng ta sẽ implement file **`react.py`** — nơi chứa **toàn bộ logic suy luận (reasoning logic)** mà graph sẽ dùng. Nói ngắn gọn (TL;DR): chúng ta sẽ dùng **function calling (gọi hàm)** làm **reasoning engine (bộ máy suy luận)** để agent tự quyết định gọi tool nào.
@@ -42,9 +44,24 @@ Giờ hãy bàn về khả năng suy luận của LLM: làm sao nó biết đư�
 
 Thứ mình đang nói tới là **function calling**: một tính năng có trong hầu hết các LLM hiện đại. Khi khởi tạo LLM, chúng ta truyền cho nó **định nghĩa, hướng dẫn và thông tin chi tiết của các tool**; LLM sẽ trả về trong response xem có cần gọi hàm nào và với **arguments (đối số)** gì.
 
+| Tiêu chí | ReAct prompt | Function calling |
+|---|---|---|
+| Cách chọn tool | Prompt đặc biệt hướng dẫn LLM suy luận | LLM trả về function call field trong response |
+| Ai parse response | Chúng ta tự xử lý trong code | Vendor parse và đặt vào key riêng |
+| Lượng code | Nhiều hơn | Ít hơn hẳn |
+| Trạng thái hiện nay | Cách làm thời kỳ đầu | Cách hiện đại, vendor tinh chỉnh liên tục |
+
 Chúng ta thực sự không "thấy" phần implementation bên trong của các nhà cung cấp LLM — mỗi vendor làm một kiểu. Nhiều khả năng đó là một **system prompt đặc biệt** tương tự ReAct prompt, giúp LLM chọn tool và trả kết quả đúng định dạng. Điểm khác biệt lớn: **vendor chịu trách nhiệm parse response**, sắp xếp mọi thứ gọn gàng và đặt function call vào đúng key trong response trả về.
 
 *Đừng lo nếu các bạn chưa hiểu hết phần này.* Điều cần nhớ là: đây chính là **cách hiện đại để chọn tool**, và chúng ta đang **"outsource" việc chọn tool cho LLM vendor**. Nhờ đó code ít hơn hẳn so với trước, và kết quả chỉ ngày càng tốt lên vì các vendor có những kỹ sư chuyên trách tinh chỉnh việc này.
+
+```mermaid
+flowchart LR
+    A[Định nghĩa tool với decorator tool] --> B[bind_tools vào ChatOpenAI]
+    B --> C[Tool descriptions gửi kèm mỗi request]
+    C --> D[LLM chọn hàm và arguments]
+    D --> E[Vendor parse function call vào key riêng]
+```
 
 ---
 
@@ -62,4 +79,77 @@ Phương thức **`bind_tools`** sẽ đưa danh sách tool vào LLM. LangChain 
 
 Mình chạy thử script để chắc chắn mọi thứ không lỗi (dù hiện tại chưa chạy gì cả), rồi **commit** với tên **function calling reasoning** và push lên repository — các bạn có thể xem code trong commit đó.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Function calling được dùng làm gì trong bài này?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Làm reasoning engine để agent tự quyết định gọi tool nào.
+
+Giải thích: Đây là TL;DR của cả file `react.py`.
+
+Tham chiếu: Đoạn mở đầu.
+
+</details>
+
+**Câu 2:** `bind_tools` làm gì với LLM?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đưa danh sách tool vào LLM; LangChain gửi kèm tool descriptions trong mỗi request.
+
+Giải thích: Nhờ đó LLM có thể trả về function call field với đúng hàm cần gọi.
+
+Tham chiếu: Mục Bind tools vào LLM.
+
+</details>
+
+**Câu 3:** Vì sao không cần ReAct prompt nữa?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì function calling để vendor parse response và đặt function call vào key riêng.
+
+Giải thích: Code ít hơn hẳn và kết quả tốt lên nhờ vendor tinh chỉnh liên tục.
+
+Tham chiếu: Mục Từ ReAct prompt đến Function Calling.
+
+</details>
+
+**Câu 4:** Tool description ảnh hưởng gì tới LLM?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Description được propagate tới LLM để nó quyết định có dùng hàm hay không.
+
+Giải thích: Cả search tool lẫn triple tool đều có description đi kèm.
+
+Tham chiếu: Mục Imports và hai tool của agent.
+
+</details>
+
+**Câu 5:** `TavilySearch(max_results=1)` nghĩa là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Giới hạn search chỉ trả về đúng một kết quả.
+
+Giải thích: Tool này có description dựng sẵn do nhóm maintainer viết và cũng được truyền tới LLM.
+
+Tham chiếu: Mục Imports và hai tool của agent.
+
+</details>
+
 Bài sau chúng ta sẽ implement các **LangGraph node** — những "executable" sẽ chạy trong quá trình thực thi. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Coding the Agent's Brain: Implementing the ReAct Runnable](https://ua.udemy.com/course/langgraph/learn/lecture/50657813)
+- [Tools — Docs by LangChain](https://docs.langchain.com/oss/python/langchain/tools)
+- [bind_tools — langchain_openai Reference](https://reference.langchain.com/python/langchain-openai/chat_models/base/BaseChatOpenAI/bind_tools)

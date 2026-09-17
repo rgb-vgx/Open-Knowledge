@@ -1,5 +1,7 @@
 # 🧠 Lời khuyên sau một năm phát hành: Cứ "ngâm" kiến thức, rồi bạn sẽ thấy mọi thứ đều là first principle
 
+> Nguồn: `004-Course-Notes.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/40597978)
+
 Chào các bạn! Đã **một năm kể từ ngày mình phát hành Fundamentals of Backend Engineering** — đúng cái khóa mà các bạn đang học. Mình thêm video này vào đầu phần introduction vì nhận được một số phản hồi, và mình muốn các bạn biết: **mình đã cải thiện khóa học kể từ ngày nó ra mắt.**
 
 ### 🛠️ Vì sao mình thêm video này vào đầu khóa?
@@ -59,4 +61,75 @@ Họ đến chỗ làm và nói: *"Khoan đã — giờ mình thật sự hiểu
 
 Còn nếu các bạn thấy ngợp ở những bài đầu — hãy cứ "ngâm" nó, ghi chú lại, rồi quay lại sau. Mình hứa rồi nó sẽ sáng tỏ.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao Hussein thêm video này vào đầu khóa học?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khóa đã phát hành một năm và được cải thiện, đồng thời anh muốn giải đáp phản hồi của học viên ngay từ đầu.
+
+Giải thích: Video này là lời dặn dò trước khi lao vào bài học chính.
+
+Tham chiếu: Mục Vì sao mình thêm video này vào đầu khóa?
+
+</details>
+
+**Câu 2:** Khi gặp protocol lạ ở section đầu, nên xử lý thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cứ "hít vào, ngấm nó" — không cần hiểu hết ngay; các section sau sẽ mổ xẻ chi tiết từng protocol, quay lại ôn sẽ thấy dính hơn hẳn.
+
+Giải thích: Các khái niệm ở đầu chỉ là bước đệm để làm quen dần.
+
+Tham chiếu: Mục Học protocol giống như trẻ con học ngôn ngữ.
+
+</details>
+
+**Câu 3:** Ví dụ trẻ con học ngôn ngữ minh họa điều gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Học bằng cách tiếp xúc và nói trước, ngữ pháp sau — protocol cũng học theo cách tương tự.
+
+Giải thích: Bố mẹ không dạy ngữ pháp trước mà cứ nói chuyện với ta.
+
+Tham chiếu: Mục Học protocol giống như trẻ con học ngôn ngữ.
+
+</details>
+
+**Câu 4:** Nhãn "intermediate" có nghĩa beginner không học được?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không — đó là thách thức nhưng hoàn toàn khả thi; cảm giác lạc lối không phải dấu hiệu bạn kém cỏi.
+
+Giải thích: Đó chỉ là dấu hiệu bạn đang học một ngôn ngữ mới.
+
+Tham chiếu: Mục Nhãn "intermediate" và chuyện người mới có học được không.
+
+</details>
+
+**Câu 5:** Phần thưởng lớn nhất với Hussein là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Học viên mang kiến thức vào công việc hàng ngày, thôi sợ code backend của chính mình và thấy mọi thứ đều là first principle.
+
+Giải thích: Khoảnh khắc ai đó thôi sợ backend là phần thưởng lớn nhất.
+
+Tham chiếu: Mục Điều khiến mình vui nhất: kiến thức được mang ra dùng thật.
+
+</details>
+
 Hy vọng các bạn thật sự tận hưởng nó. Hẹn gặp lại ở những bài học phía trước — nơi mình sẽ bắt đầu vén từng lớp một của backend. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Course Notes](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/40597978)

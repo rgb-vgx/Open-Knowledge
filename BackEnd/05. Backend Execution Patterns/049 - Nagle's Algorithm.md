@@ -1,5 +1,7 @@
 # 🐢 Nagle's Algorithm: Thủ Phạm Của Những Độ Trễ "Không Có Lý Do" Trong App
 
+> Nguồn: `048-Nagles-Algorithm.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34676506)
+
 Nếu bạn từng thấy app của mình **chậm một cách khó hiểu** — mạng tốt, mọi thứ đều ổn, nhưng packet cứ tới trễ một cách ngẫu nhiên, không đoán trước được — thì rất có thể bạn đã gặp **Nagle's algorithm (thuật toán gộp gói tin)**. Nhiều người gặp nó theo cách không vui chút nào. Hôm nay mình sẽ kể các bạn nghe nó từ đâu tới, nó chờ cái gì, và vì sao gần như cả thế giới đã tắt nó.
 
 ### 🕰️ Nguồn gốc: từ thời Telnet và nỗi đau 40 byte
@@ -23,6 +25,17 @@ Ví dụ cụ thể với MSS mặc định **1460 byte**:
 1. Ứng dụng gọi API send để gửi **500 byte**. Nó nói với OS: "Gửi hộ 500 byte này" — và OS **không gửi**.
 2. Vì 500 < 1460, dữ liệu nằm chờ trong buffer. Nagle nói: "Đợi thêm đã".
 3. Ứng dụng gửi thêm **960 byte** nữa — và thật tình cờ (theo ví dụ của mình), 500 + 960 = **1460**, vừa khít một MSS. Segment được gửi đi ngay.
+
+```mermaid
+flowchart TD
+    A[App gọi send] --> B{Dữ liệu đã đầy MSS}
+    B -->|Đầy| C[Gửi ngay]
+    B -->|Chưa đầy| D{Có dữ liệu đang chờ ack}
+    D -->|Không| C
+    D -->|Có| E[Nằm chờ trong buffer]
+    E --> F[Gửi thêm dữ liệu]
+    F --> B
+```
 
 Vậy là có **một khoảng delay** ở giữa — nhưng chờ bao lâu? *Không xác định được.* Tùy lượng dữ liệu và tùy mạng.
 
@@ -65,6 +78,87 @@ Chốt lại cho các bạn dễ nhớ:
 3. Nếu bạn vừa gửi một segment và giờ chỉ còn **3 byte** muốn gửi thêm — chúng sẽ phải nằm chờ. Đó là cảm giác của latency.
 4. Ví dụ đau nhất phía server: server đang trả kết quả **query SQL** — gửi rồi gửi thêm, còn đúng một byte cuối mà không đẩy đi được vì phải chờ acknowledgement.
 
+| Tình huống | Nagle làm gì |
+|---|---|
+| Segment đã đầy MSS | Gửi ngay |
+| Chưa đầy MSS, không có gì chờ ack | Gửi ngay |
+| Chưa đầy MSS, có dữ liệu chờ ack | Chờ gộp thêm rồi mới gửi |
+| Gửi 5000 byte, dư 620 byte | 620 byte chờ ACK của segment trước |
+
 Vì vậy hãy bật **TCP_NODELAY** ở cả backend lẫn client — đây là cấu hình cực kỳ quan trọng nếu bạn muốn sản phẩm của mình nhanh hơn, với chi phí gần như bằng không. Đánh đổi băng thông để lấy latency là lựa chọn của bạn — nhưng phần lớn chúng ta sẽ chọn **không chờ đợi vô ích**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Nagle's algorithm sinh ra để giải quyết vấn đề gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Overhead 40 byte (20 byte TCP header + 20 byte IP header) khi gửi lượng dữ liệu nhỏ, điển hình là Telnet gõ từng ký tự.
+
+Giải thích: Gửi một byte kèm 40 byte overhead là lãng phí băng thông khủng khiếp.
+
+Tham chiếu: Mục "Nguồn gốc: từ thời Telnet".
+
+</details>
+
+**Câu 2:** Khi nào Nagle gửi dữ liệu ngay lập tức?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi segment đã đầy MSS, hoặc khi không có dữ liệu nào đang trên đường cần ack.
+
+Giải thích: Nagle chỉ "chờ" khi có dữ liệu chưa được acknowledge.
+
+Tham chiếu: Mục "Cơ chế: chờ đầy MSS".
+
+</details>
+
+**Câu 3:** Vì sao segment 620 byte cuối cùng trong ví dụ 5000 byte bị delay?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó chưa đầy MSS và phải chờ acknowledgement của các segment trước — chỉ khi ACK quay về mới được đẩy đi.
+
+Giải thích: Càng nhiều latency giữa A và B thì delay càng dài.
+
+Tham chiếu: Mục "Gửi dữ liệu lớn".
+
+</details>
+
+**Câu 4:** Delay của Nagle phụ thuộc vào gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lượng dữ liệu và mạng — không xác định được chính xác; mạng càng xa thì chờ ack một vòng càng lâu.
+
+Giải thích: Có 2 cách xử lý: tắt Nagle hoặc lấp đầy segment thật khéo — cách sau gần như bất khả thi.
+
+Tham chiếu: Mục "Cơ chế" và "Gửi dữ liệu lớn".
+
+</details>
+
+**Câu 5:** Vì sao curl tắt Nagle's algorithm mặc định từ năm 2016?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Sau nhiều giờ truy tìm nguyên nhân TLS handshake chậm, hóa ra thủ phạm là TCP_NODELAY không được bật — Daniel Stenberg đổi mặc định và cho phép ứng dụng tự tắt.
+
+Giải thích: Đây là thay đổi ở phía gửi, và server cũng gửi dữ liệu nên cũng cần bật.
+
+Tham chiếu: Mục "TCP_NODELAY".
+
+</details>
+
 *Còn mình, mình chọn tắt Nagle: thà tốn thêm vài byte còn hơn để người dùng nhìn màn hình quay. Hẹn gặp các bạn ở bài tiếp theo!* 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Nagle's Algorithm](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34676506)
+- [RFC 896 — Congestion Control in IP/TCP Internetworks](https://www.rfc-editor.org/info/rfc896/)
+- [curl commit — CURLOPT_TCP_NODELAY now enabled by default (2016)](https://github.com/curl/curl/commit/4732ca5724072f132876f520c8f02c7c5b654d95)
+- [Linux man page — tcp(7) (TCP_NODELAY)](https://www.man7.org/linux/man-pages/man7/tcp.7.html)

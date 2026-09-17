@@ -1,5 +1,7 @@
 # ⚙️ Get Started: Dựng môi trường cho dự án ReAct Agent (Poetry, API keys & cấu trúc thư mục)
 
+> Nguồn: `041-Get-Started-Setting-Up-Your-ReAct-Agent-Project-Environment.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/50657811)
+
 Chào các bạn, mình là Eden đây! 👋
 
 Trước khi lao vào code logic agent, chúng ta cần hoàn tất phần **boilerplate setup (cài đặt nền tảng)**. Bài này sẽ nhanh và gọn thôi: dựng **virtual environment (môi trường ảo) bằng Poetry**, cài toàn bộ dependencies, và điền đầy đủ API keys vào file `.env`. Xong bài này là chúng ta sẵn sàng implement ReAct graph.
@@ -58,4 +60,76 @@ Chúng ta sẽ implement hai file này trong các video kế tiếp.
 
 Mình commit toàn bộ thay đổi với tên **Project Setup** rồi push lên repository. Nếu muốn xem code tham khảo, các bạn cứ vào repository, chọn nhánh **`project/react-async-function-calling`** và xem trong danh sách commit — commit này chứa đầy đủ mọi thứ chúng ta làm trong bài hôm nay.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** File `.gitignore` chuẩn của Python giúp gì cho các API keys?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đảm bảo file `.env` không bao giờ bị đẩy lên GitHub, nhờ đó API keys không bị lộ.
+
+Giải thích: Đây là điểm mình quan tâm nhất khi thêm `.gitignore` ngay từ đầu.
+
+Tham chiếu: Mục Khởi tạo project và cài dependencies.
+
+</details>
+
+**Câu 2:** Những package chính nào được cài cho project?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `langchain`, `langchain-openai`, `langchain-tavily`, `langgraph`, `python-dotenv`, cùng `black` và `isort` để format code.
+
+Giải thích: `langchain-tavily` phục vụ search, `python-dotenv` để load biến môi trường.
+
+Tham chiếu: Mục Khởi tạo project và cài dependencies.
+
+</details>
+
+**Câu 3:** Vì sao cần LangChain API key và `LANGCHAIN_TRACING_V2=true`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để bật LangChain tracing phiên bản 2, gom trace của graph và các API call vào đúng project.
+
+Giải thích: Tên project ở đây là `react function calling`.
+
+Tham chiếu: Mục File .env và các API key cần thiết.
+
+</details>
+
+**Câu 4:** Hai file logic được tạo ra có nhiệm vụ gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `react.py` chứa reasoning engine, `node.py` chứa implementation của các graph node.
+
+Giải thích: Hai file này sẽ được implement trong các video kế tiếp.
+
+Tham chiếu: Mục Kiểm tra nhanh và tạo skeleton code.
+
+</details>
+
+**Câu 5:** Vì sao mình xóa dòng in OpenAI API key sau khi kiểm tra?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì đó chỉ là phép thử để chắc chắn `.env` được load đúng; kiểm tra xong thì không để key trong code.
+
+Giải thích: In key ra chỉ phục vụ sanity check ban đầu.
+
+Tham chiếu: Mục Kiểm tra nhanh và tạo skeleton code.
+
+</details>
+
 Vậy là môi trường đã sẵn sàng! Bài sau chúng ta sẽ bắt đầu "lắp não" cho agent. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Get Started: Setting Up Your ReAct Agent Project Environment](https://ua.udemy.com/course/langgraph/learn/lecture/50657811)
+- [Trace LangGraph applications — Docs by LangChain](https://docs.langchain.com/langsmith/trace-with-langgraph)

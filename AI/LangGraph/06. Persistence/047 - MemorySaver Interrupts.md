@@ -1,5 +1,7 @@
 # ⏸️ Dừng đúng lúc, chạy tiếp đúng chỗ: MemorySaver + Interrupts cho Human-in-the-loop
 
+> Nguồn: `047-MemorySaver-Interrupts-Human-In-The-Loop.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/44765385)
+
 Chào các bạn, lại là Eden đây! 👋 Ở bài trước chúng ta đã hiểu vì sao **persistence (lưu trữ bền vững)** là tính năng sống còn. Còn hôm nay, mình sẽ cùng các bạn dựng thử một graph có **interrupt (ngắt giữa chừng)** để lấy **human feedback (phản hồi từ con người)**, rồi dùng **MemorySaver** để lưu state lại.
 
 Đây là bài "dựng hạ tầng" thuần túy: graph của chúng ta **sẽ không gọi LLM**, mục tiêu duy nhất là để các bạn thấy LangGraph hỗ trợ luồng human-in-the-loop (con người can thiệp giữa vòng chạy) tiện lợi như thế nào.
@@ -17,6 +19,15 @@ Kiến trúc rất đơn giản, đi đúng theo sơ đồ:
 5. Tiếp tục thực thi sang **step three**, rồi tới **end**.
 
 Mục tiêu cuối cùng là để các bạn xây được ứng dụng thực tế: **dừng graph, lấy phản hồi từ người dùng, rồi chạy tiếp với phản hồi đó.**
+
+```mermaid
+flowchart TD
+    A[START] --> B[step one in ra màn hình]
+    B --> C[Interrupt trước human feedback]
+    C --> D[Nhận feedback và cập nhật state]
+    D --> E[step three]
+    E --> F[END]
+```
 
 ---
 
@@ -59,4 +70,77 @@ Cuối cùng, mình in và vẽ graph bằng `get_graph().draw_mermaid()`, xuấ
 
 ---
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao graph trong bài này không gọi LLM?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì mục tiêu duy nhất là cho các bạn thấy LangGraph hỗ trợ luồng human-in-the-loop tiện lợi như thế nào.
+
+Giải thích: Đây là bài "dựng hạ tầng" thuần túy.
+
+Tham chiếu: Đoạn mở đầu.
+
+</details>
+
+**Câu 2:** MemorySaver là gì và lưu state ở đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là một checkpointer lưu state sau mỗi lần node thực thi, nhưng lưu trong bộ nhớ (in-memory).
+
+Giải thích: Kiểu lưu này là ephemeral, chương trình kết thúc là mất sạch.
+
+Tham chiếu: Mục Dựng graph và gắn MemorySaver.
+
+</details>
+
+**Câu 3:** `interrupt before` human feedback có tác dụng gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trước khi chạy node human feedback, graph sẽ dừng thực thi lại.
+
+Giải thích: State đã được checkpoint kèm điểm dừng nên có thể lấy input rồi resume.
+
+Tham chiếu: Mục Interrupt trước khi hỏi người dùng.
+
+</details>
+
+**Câu 4:** State của graph trong bài gồm những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Input từ người dùng và user feedback.
+
+Giải thích: Feedback sẽ được thu thập trong lúc graph chạy.
+
+Tham chiếu: Mục Dựng graph và gắn MemorySaver.
+
+</details>
+
+**Câu 5:** Luồng thực thi của graph diễn ra theo thứ tự nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** START → step one → human feedback → step three → END, với interrupt trước node human feedback.
+
+Giải thích: Cả ba node đều chỉ in ra, đúng mục tiêu tập trung vào hạ tầng.
+
+Tham chiếu: Mục Dựng graph và gắn MemorySaver.
+
+</details>
+
 Vậy là hạ tầng đã xong! Ở bài tiếp theo, chúng ta sẽ **chạy thật** graph này, quan sát từng state được checkpoint, và tự tay cập nhật state với phản hồi của người dùng. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — MemorySaver + Interrupts = Human In The Loop](https://ua.udemy.com/course/langgraph/learn/lecture/44765385)
+- [Interrupts — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/interrupts)
+- [Persistence — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/persistence)

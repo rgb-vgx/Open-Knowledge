@@ -1,5 +1,7 @@
 # 🧮 Chain of Thought Prompting: Dạy AI suy luận từng bước như con người
 
+> Nguồn: `069-Chain-of-Thought-Prompting.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37493912)
+
 Chào các bạn! Chúng ta đã đi qua zero-shot, one-shot và few-shot. Hôm nay, mình muốn giới thiệu kỹ thuật được xem là một trong những bước ngoặt lớn nhất của prompt engineering: **Chain of Thought (CoT) Prompting — chuỗi suy nghĩ**.
 
 Đây là kỹ thuật giúp các LLM giải quyết những bài toán mà trước đây chúng "bó tay", bằng cách bắt chước chính cách con người chúng ta tư duy.
@@ -59,6 +61,15 @@ Kết quả: với CoT prompting, model trả về **đáp án đúng** và còn
 * Vậy mỗi ngày cần **10 × 0.5 = 5 giờ**.
 * Một tuần có **7 ngày**, nên phép tính là **5 × 7 = 35 giờ**.
 
+Các bước suy luận mà model tự trình bày có thể hình dung như sau:
+
+```mermaid
+flowchart LR
+    A[10 chú chó] --> B[Mỗi chó nửa giờ mỗi ngày]
+    B --> C[10 x 0.5 = 5 giờ mỗi ngày]
+    C --> D[5 x 7 = 35 giờ mỗi tuần]
+```
+
 Quy trình suy nghĩ ở cả hai câu hỏi giống hệt nhau: lấy phép tính cần giải và **chia nhỏ thành hai phép tính con**.
 
 Chain of Thought là một bước phát triển quan trọng của prompt engineering vì nó cho phép LLM tiếp cận việc giải quyết vấn đề theo cách **giống con người hơn**, và cho phép model phân rã bài toán phức tạp thành các bước trung gian được giải quyết độc lập. Đây là cánh cửa mở ra khả năng giải quyết rất nhiều bài toán mới.
@@ -83,6 +94,84 @@ Lần này, bạn **đưa kèm câu trả lời thật mà bạn mong đợi** c
 
 Model sẽ tiếp nhận, xử lý, "học" cách làm, rồi có thể **suy ra và áp dụng chuỗi suy nghĩ ấy cho những bài toán khác** — giải được những bài **tương tự nhưng không hoàn toàn giống** theo đúng cách bạn muốn.
 
+| Biến thể | Cách làm | Model nhận được gì | Điểm đáng chú ý |
+|---|---|---|---|
+| Zero-shot CoT | Chỉ thêm câu "let's think step by step" | Tự do sáng tạo, tự chọn cách giải | Quan sát được quá trình suy luận, nhưng không có prior knowledge về dạng bài |
+| Few-shot CoT | Đưa câu trả lời mẫu kèm giải thích các bước | Học cách làm từ ví dụ mẫu | Áp dụng được cho bài tương tự nhưng không hoàn toàn giống |
+
 Đến đây, bạn đã nắm được bộ kỹ thuật prompting nền tảng nhất. Bài tiếp theo sẽ cực kỳ thú vị: **ReAct Prompting** — nơi AI không chỉ suy luận mà còn **hành động** để kết nối với thế giới bên ngoài.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Chain of Thought giải quyết vấn đề gì cho LLM?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Giúp model phân rã bài toán đa bước thành các bước trung gian, cải thiện khả năng suy luận phức tạp.
+
+Giải thích: Các tác vụ như math word problems hay common sense reasoning vốn là điểm yếu của prompting tiêu chuẩn.
+
+Tham chiếu: Mục Vì sao LLM giỏi mà vẫn ngã ngựa.
+
+</details>
+
+**Câu 2:** Vì sao standard prompting trả lời sai bài toán "John và 10 chú chó"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Model trả về 50 (10 × 5) mà bỏ qua bước nhân với 7 ngày; đáp án đúng là 35 giờ.
+
+Giải thích: Standard prompting không yêu cầu model trình bày các bước trung gian.
+
+Tham chiếu: Mục Ví dụ từ bài báo.
+
+</details>
+
+**Câu 3:** CoT được giới thiệu bởi ai và ở đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Các nhà nghiên cứu tại Google, trong một bài báo nghiên cứu chính thức (research paper).
+
+Giải thích: Link được để trong phần tài nguyên của khóa học.
+
+Tham chiếu: Mục Google đã giải quyết bài toán này như thế nào.
+
+</details>
+
+**Câu 4:** Zero-shot CoT hoạt động ra sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chỉ cần thêm câu "let's think step by step" vào prompt, không đưa ví dụ; model tự do chọn cách giải.
+
+Giải thích: Lợi ích là quan sát được quá trình suy luận, nhưng model không có prior knowledge về dạng bài.
+
+Tham chiếu: Mục Zero-shot CoT và Few-shot CoT.
+
+</details>
+
+**Câu 5:** Few-shot CoT khác zero-shot CoT ở điểm nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bạn đưa kèm câu trả lời thật mong đợi cùng chuỗi suy nghĩ mẫu, để model "học" cách làm rồi áp dụng cho bài tương tự.
+
+Giải thích: Kết quả giải được các bài tương tự nhưng không hoàn toàn giống theo đúng cách bạn muốn.
+
+Tham chiếu: Mục Zero-shot CoT và Few-shot CoT.
+
+</details>
+
 Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Chain of Thought Prompting](https://ua.udemy.com/course/langchain/learn/lecture/37493912)
+- [arXiv — Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903)
+- [arXiv — Large Language Models are Zero-Shot Reasoners](https://arxiv.org/abs/2205.11916)

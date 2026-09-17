@@ -1,5 +1,7 @@
 # 🎭 ReAct Prompting: Khi AI vừa suy luận vừa hành động như con người
 
+> Nguồn: `070-ReAct-Prompting.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37493790)
+
 Chào các bạn! Chúng ta vừa học xong Chain of Thought — cách để AI suy luận từng bước. Nhưng nếu AI chỉ "nghĩ" mà không thể "làm" gì với thế giới bên ngoài thì sao?
 
 Hôm nay mình sẽ giới thiệu kỹ thuật đã truyền cảm hứng cho cả một framework huyền thoại: **ReAct Prompting**. Cái tên này ra đời từ hai chữ: **Re** = Reasoning (suy luận), **Act** = Acting (hành động).
@@ -38,6 +40,13 @@ Kết quả với các phương pháp thông thường:
 * **Chain of Thought** (yêu cầu model mô tả cách suy nghĩ): model trả về **iPhone, iPad, iPod**, v.v. — vẫn không đúng.
 * **Act-only** (chỉ áp dụng được với LLM có thể tương tác với thế giới bên ngoài): prompt yêu cầu **search (tìm kiếm)** thông tin về Apple Remote rồi liệt kê các quan sát. Kết quả cuối cùng là "**yes**" — đơn giản là không phải câu trả lời cho câu hỏi.
 
+| Phương pháp | Cách tiếp cận | Kết quả |
+|---|---|---|
+| Zero-shot | Hỏi trực tiếp, không kèm ví dụ | Trả lời **iPad** — sai |
+| Chain of Thought | Yêu cầu model mô tả cách suy nghĩ | Trả về **iPhone, iPad, iPod** — vẫn sai |
+| Act-only | Chỉ tìm kiếm và liệt kê quan sát | Trả về "**yes**" — không phải câu trả lời |
+| ReAct | Xen kẽ suy luận và hành động | Chính xác: **keyboard function keys** |
+
 Cả ba phương pháp đều thất bại. Nhưng khi dùng model dựa trên **ReAct paradigm**, câu trả lời nhận được là **chính xác**: **các phím chức năng trên bàn phím (keyboard function keys)**!
 
 ---
@@ -45,6 +54,16 @@ Cả ba phương pháp đều thất bại. Nhưng khi dùng model dựa trên *
 ### 🔄 Mổ xẻ vòng lặp Thought → Act → Observation
 
 Vậy điều gì đã xảy ra bên trong? Hãy cùng theo dõi từng bước:
+
+```mermaid
+flowchart TD
+    A[Câu hỏi] --> B[Thought - suy luận bước tiếp theo]
+    B --> C{Cần hành động}
+    C -->|Có| D[Act - gọi công cụ tìm kiếm]
+    D --> E[Observation - thông tin trả về]
+    E --> B
+    C -->|Không| F[Câu trả lời cuối]
+```
 
 1. **Thought (suy nghĩ):** LLM cần **search thông tin về Apple Remote** và tìm xem chương trình nó được thiết kế để tương tác ban đầu là gì.
 2. **Act (hành động):** Nó sinh ra một hành động cần thực hiện để truy cập tài nguyên bên ngoài — cú pháp **search for the Apple Remote**.
@@ -72,4 +91,76 @@ Và đây chính là nền tảng của **LangChain** — framework phổ biến
 
 Bạn vừa nắm được kỹ thuật quan trọng bậc nhất đứng sau các AI agent hiện đại! Ở bài tiếp theo, chúng ta sẽ tổng hợp loạt **Prompt Engineering Quick Tips** — những "mẹo nhanh" dễ áp dụng mà hiệu quả bất ngờ.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** ReAct là viết tắt của hai chữ nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Re = Reasoning (suy luận), Act = Acting (hành động).
+
+Giải thích: Cái tên phản ánh việc kết hợp suy luận với hành động.
+
+Tham chiếu: Đoạn mở bài.
+
+</details>
+
+**Câu 2:** ReAct kết hợp ba năng lực nào của LLM?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tự sinh tác vụ, suy luận để theo dõi và cập nhật kế hoạch, thực thi các bước để lấy thêm thông tin từ nguồn bên ngoài.
+
+Giải thích: Kết hợp Chain of Thought với hành động và nguồn dữ liệu ngoài.
+
+Tham chiếu: Mục Con người xử lý việc phức tạp như thế nào.
+
+</details>
+
+**Câu 3:** Vì sao zero-shot, CoT và Act-only đều thất bại ở ví dụ Apple Remote?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Zero-shot trả lời iPad, CoT liệt kê iPhone/iPad/iPod, Act-only trả về "yes" — thiếu sự kết hợp giữa suy luận và hành động để lần ra Front Row.
+
+Giải thích: Chỉ ReAct mới trả lời đúng "keyboard function keys".
+
+Tham chiếu: Mục Ví dụ huyền thoại.
+
+</details>
+
+**Câu 4:** "Phép thuật" đằng sau ReAct thực chất là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tích hợp một chút code với Chain of Thought: tra từ khóa như "search", thực thi, rồi chạy lại prompt với các quan sát — lặp đến khi có lời giải.
+
+Giải thích: Không có phép thuật nào ở đây cả.
+
+Tham chiếu: Mục Phép thuật đằng sau ReAct.
+
+</details>
+
+**Câu 5:** ReAct có liên hệ thế nào với LangChain?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chính kỹ thuật ReAct đã khai sinh ra LangChain.
+
+Giải thích: LangChain là framework phổ biến để xây dựng ứng dụng LLM tương tác nguồn dữ liệu ngoài.
+
+Tham chiếu: Mục Con người xử lý việc phức tạp như thế nào và đoạn kết.
+
+</details>
+
 Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — ReAct Prompting](https://ua.udemy.com/course/langchain/learn/lecture/37493790)
+- [arXiv — ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)

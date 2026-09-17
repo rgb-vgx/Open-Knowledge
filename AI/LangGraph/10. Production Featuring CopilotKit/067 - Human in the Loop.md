@@ -1,5 +1,7 @@
 # 🔁 Human-in-the-Loop với CopilotKit: Hai kiểu can thiệp, vô vàn cách triển khai (Đừng bỏ qua!)
 
+> Nguồn: `067-HIL.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/50465971)
+
 **Human-in-the-loop (con người can thiệp giữa vòng chạy)** là một phần cực kỳ quan trọng của bất kỳ ứng dụng agent nào. Trong bài này, mình đã mang đến một cuộc trò chuyện với đội ngũ CopilotKit để các bạn hiểu rõ: **chúng ta đang có những hỗ trợ gì**, và **làm sao biến nó thành một trải nghiệm người dùng thật mượt mà**.
 
 Cùng bắt đầu nhé!
@@ -12,6 +14,11 @@ Câu trả lời đầu tiên khá thú vị: hệ thống hỗ trợ cả hai k
 
 * **Human-in-the-loop:** người dùng **tham gia trực tiếp như một bước** trong quá trình agent đang chạy.
 * **Human-on-the-loop:** agent cứ chạy, và người dùng **có cơ hội nhảy vào khi cần thiết**.
+
+| Tiêu chí | Human-in-the-loop | Human-on-the-loop |
+|---|---|---|
+| Cách con người tham gia | Trực tiếp như một bước trong quá trình agent chạy | Có cơ hội nhảy vào khi cần thiết |
+| Trạng thái agent | Tạm dừng ở bước cần con người | Cứ chạy liên tục |
 
 Cả hai đều cần thiết cho một ứng dụng hoàn chỉnh. Và bên trong mỗi kiểu lại có rất nhiều **biến thể (variant)**, khác nhau cả về mặt kỹ thuật lẫn góc nhìn trải nghiệm người dùng.
 
@@ -40,6 +47,19 @@ Về mặt kỹ thuật, hành động của con người có thể được kh�
 
 Ví dụ kinh điển là một **agent chăm sóc khách hàng (customer support)**: khi nhận thấy thiếu thông tin về người dùng, nó có thể tự chọn hỏi những câu cần thiết — chẳng hạn "Vấn đề của bạn là gì?", "Số điện thoại của bạn là gì?" — để xác minh đúng người. Agent tự quyết định hỏi gì, và câu hỏi sẽ được hiển thị qua kênh phù hợp mà lập trình viên toàn quyền kiểm soát.
 
+Dòng chảy của một lượt human-in-the-loop đi qua ba thành phần như sau:
+
+```mermaid
+sequenceDiagram
+    participant LG as LangGraph graph
+    participant FE as Frontend CopilotKit
+    participant U as Người dùng
+    LG->>FE: interrupt hoặc tool call cần con người
+    FE->>U: Hiển thị câu hỏi trong hoặc ngoài chat
+    U->>FE: Trả lời bằng text hoặc component
+    FE->>LG: Gửi kết quả và tiếp tục graph
+```
+
 ---
 
 ### 🧩 Hai "cần gạt" chính: useInterrupt và useCopilotAction
@@ -53,4 +73,77 @@ Cách `useCopilotAction` hoạt động cũng rất dễ hiểu: hook này đị
 
 *Đây là cách giải thích có phần đơn giản hóa*, vì mỗi thứ đều có vài biến thể. Ví dụ, thay vì trả kết quả đồng bộ (synchronous), bạn có thể dùng phiên bản **bất đồng bộ (asynchronous)**: người dùng làm gì đó, rồi gọi một **callback** để hoàn tất.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Human-in-the-loop và human-on-the-loop khác nhau thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** HITL là người dùng tham gia trực tiếp như một bước trong quá trình agent chạy; human-on-the-loop là agent cứ chạy và người dùng nhảy vào khi cần.
+
+Giải thích: Cả hai kiểu đều cần thiết cho một ứng dụng hoàn chỉnh.
+
+Tham chiếu: Mục Phân biệt hai kiểu can thiệp.
+
+</details>
+
+**Câu 2:** Tương tác human-in-the-loop có thể diễn ra dưới những hình thức nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chỉ với text, với native UX component như JSON question render thành component tùy ý, và đều có phiên bản trong chat lẫn ngoài chat.
+
+Giải thích: Ví dụ ngoài chat là pop-up, dấu chỉ vào phần tử, hay dấu tick sẵn cạnh một element.
+
+Tham chiếu: Mục Góc nhìn trải nghiệm.
+
+</details>
+
+**Câu 3:** Về mặt kỹ thuật, hành động của con người được khởi tạo theo hai cách nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lập trình viên chủ động gọi hàm `interrupt` của LangGraph, hoặc dựa trên tool call do LLM quyết định.
+
+Giải thích: Ở cách thứ hai, con người đóng vai trò chính là tool mà agent gọi tới.
+
+Tham chiếu: Mục Góc nhìn kỹ thuật.
+
+</details>
+
+**Câu 4:** `useInterrupt` được dùng để làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là React hook dùng để "bắt" các lệnh `interrupt` do lập trình viên khởi tạo thủ công.
+
+Giải thích: Đây là một trong hai "cần gạt" chính của CopilotKit cho human-in-the-loop.
+
+Tham chiếu: Mục Hai "cần gạt" chính.
+
+</details>
+
+**Câu 5:** `useCopilotAction` hoạt động như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hook định nghĩa một closure "nằm chờ sẵn"; khi agent cần tương tác, khối code đó chạy, trả về giá trị và giá trị được chuyển ngược lại vào agent.
+
+Giải thích: Có phiên bản bất đồng bộ — người dùng làm gì đó rồi gọi callback để hoàn tất.
+
+Tham chiếu: Mục Hai "cần gạt" chính.
+
+</details>
+
 Khi graph bị dừng bởi một `interrupt` mà lập trình viên đã định trước, `useCopilotAction` sẽ trao quyền cho người dùng nhập thông tin cần thiết, rồi tiếp tục cho graph chạy từ đúng điểm dừng đó. Các bạn thấy đấy, "phép thuật" ở đây thực ra chỉ là những cơ chế rất rõ ràng. Hẹn gặp lại ở bài tiếp theo, chúng ta sẽ cùng mổ xẻ sâu hơn hành trình tương tác người — agent nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Human in the Loop](https://ua.udemy.com/course/langgraph/learn/lecture/50465971)
+- [CopilotKit — Documentation](https://docs.copilotkit.ai)
+- [LangGraph — Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)

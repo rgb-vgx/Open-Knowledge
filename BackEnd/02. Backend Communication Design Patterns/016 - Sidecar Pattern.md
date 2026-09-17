@@ -1,5 +1,7 @@
 # 🚗 Sidecar Pattern: Nâng Cấp Giao Thức Mà Không Đổi Một Dòng Code
 
+> Nguồn: `015-Sidecar-Pattern.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629830)
+
 Mình cũng từng lưỡng lự khi thêm **sidecar (container phụ trợ)** vào phần design pattern, nhưng kiến trúc của nó thật sự "nói chuyện" với mình. Nó giải một bài toán rất thật: mỗi giao thức đều cần một library, và library thì ngày càng phình to, ngày càng khó nâng cấp. Sidecar là cách bạn **đẩy toàn bộ trách nhiệm giao tiếp sang một app khác** — và mọi thứ trở nên nhẹ nhõm.
 
 ### 🧱 Mỗi giao thức cần một library — và library làm app phình to
@@ -50,6 +52,13 @@ Twitter chuyển từ **monolith trên VM** sang **microservices**: tách tweet 
 * Client chỉ cần một library **cực mỏng** để nói chuyện với proxy — và HTTP/1.1 thì **không bao giờ thay đổi**, một thiết kế đẹp và bền.
 * Proxy muốn nói gì với backend, bằng ngôn ngữ nào, giao thức nào — mặc kệ nó.
 
+```mermaid
+flowchart LR
+    A[App client] -->|HTTP/1.1 qua loopback| B[Sidecar proxy phía client]
+    B -->|HTTP/2 hoặc TLS 1.3 trên đường truyền| C[Sidecar proxy phía server]
+    C -->|HTTP/1.1 qua loopback| D[Server app]
+```
+
 Cụ thể với mô hình đơn giản: client HTTP/1.1 cần gọi HTTP/1.1 server. Bạn cấu hình trong app rằng **mọi request HTTP sẽ đi qua sidecar proxy**. Vì sao gọi là "sidecar"? Vì nó **nằm ngay trong cùng máy** — cả hai nói chuyện qua **loopback**. Đây cũng chính là cách các proxy debug như **Fiddler hay Charles** hoạt động: dựng một proxy lên, cho request chảy qua đó để log lại.
 
 Cách vận hành:
@@ -81,4 +90,84 @@ Client vẫn tưởng mình đang gọi trực tiếp đích cuối, nhưng th�
 * **Độ phức tạp**: hệ thống phức tạp hơn, khó hiểu hơn, khó biết cái gì đang hỏng. *Chúc may mắn khi debug một hệ microservices.*
 * **Latency**: bạn vừa thêm **hai hop** không hề tồn tại trước đó — một hop tới proxy phía client, một hop tới reverse proxy phía server. Dù các hop này là local, vẫn tốn chi phí: viết lại request, hiểu request, nâng cấp giao thức, tracing, service discovery, caching... **không có gì miễn phí cả**.
 
+| Tiêu chí | Library nằm trong app | Sidecar proxy |
+|---|---|---|
+| Nâng cấp giao thức | Phải đổi và retest toàn bộ | Chỉ cần nâng cấp proxy |
+| Ngôn ngữ | Khóa vào library của từng ngôn ngữ | Polyglot, app chỉ nói HTTP/1.1 |
+| Bảo mật | Mỗi app tự lo mã hoá | Bọc ở tầng proxy, áp cho mọi app |
+| Chi phí | Không thêm hop | Thêm hai hop và độ phức tạp |
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao mỗi giao thức cần một library, và điều đó gây ra chuyện gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Library phải biết ghi vào socket theo đúng ngôn ngữ giao thức và parse ngược lại — càng nhiều giao thức, client càng dày, backend càng dày hơn.
+
+Giải thích: Library chồng lên library: HTTP/2 library gọi TLS library, TLS library gọi tiếp OpenSSL để làm crypto.
+
+Tham chiếu: Mục Mỗi giao thức cần một library.
+
+</details>
+
+**Câu 2:** Câu chuyện Finagle của Twitter dạy bài học gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi mọi người buộc phải dùng chung một library, bạn bị khóa vào ngôn ngữ mà library đó hỗ trợ (mình nhớ mang máng là Scala).
+
+Giải thích: Hệ quả là không thể viết microservice bằng ngôn ngữ khác vì mọi logic networking, retry, circuit breaking đều nằm trong library đó.
+
+Tham chiếu: Mục Twitter 2010 và Finagle.
+
+</details>
+
+**Câu 3:** Sidecar pattern vận hành như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Giao việc giao tiếp cho một proxy; client chỉ cần library cực mỏng nói HTTP/1.1 với proxy qua loopback.
+
+Giải thích: Proxy sở hữu rich library và muốn nói gì với backend — HTTP/2, TLS 1.3 — mặc kệ nó; client vẫn tưởng đang gọi trực tiếp đích cuối.
+
+Tham chiếu: Mục Sidecar pattern.
+
+</details>
+
+**Câu 4:** Ưu điểm bảo mật của sidecar là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bạn có thể "bọc" bảo mật ở tầng sidecar: phát hiện TLS library dùng cipher yếu thì cấu hình proxy đừng dùng cipher đó nữa, mọi app nhận thay đổi mới nhất.
+
+Giải thích: Áp dụng được kể cả khi từng service đang chạy không mã hoá.
+
+Tham chiếu: Mục Ưu và nhược.
+
+</details>
+
+**Câu 5:** Cái giá của sidecar pattern là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Độ phức tạp và latency — thêm hai hop không hề tồn tại trước đó, khó biết cái gì đang hỏng.
+
+Giải thích: Dù các hop là local, vẫn tốn chi phí viết lại request, tracing, service discovery, caching... không có gì miễn phí cả.
+
+Tham chiếu: Mục Ưu và nhược.
+
+</details>
+
 Đó cũng là bài cuối cùng của section này. Sidecar phải là **layer 7** — nó decrypt mọi thứ, nhìn thấy mọi thứ, rồi mã hoá lại phía backend; bản chất nó chính là application. Layer 7 và layer 4 khác nhau ra sao là chuyện mình sẽ đào sâu ở **phần protocol** — vì theo mình, **mô hình OSI là một trong những thứ quan trọng nhất của backend engineering**. Hẹn gặp các bạn ở đó! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Sidecar Pattern](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629830)
+- [Istio — Installing the Sidecar](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/)
+- [gRPC — Core concepts, architecture and lifecycle](https://grpc.io/docs/what-is-grpc/core-concepts/)

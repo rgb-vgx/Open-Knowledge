@@ -1,5 +1,7 @@
 # 🔀 Multiplexing vs Demultiplexing: Gộp Kênh, Tách Kênh và Nghệ Thuật Connection Pooling
 
+> Nguồn: `013-Multiplexing-vs-Demultiplexing-h2-proxying-vs-Connection-Poo.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629826)
+
 Đây là chủ đề thuần về networking, nhưng mình thấy nó khớp một cách hoàn hảo khi bàn về backend communication. **Multiplexing (ghép kênh)** và **demultiplexing (tách kênh)** xuất hiện khắp nơi: trong HTTP, trong QUIC, trong **connection pooling (gộp kết nối)**, và cả trong giao thức mới mang tên multipath TCP. Hiểu hai khái niệm này, các bạn sẽ nhìn ra bản chất của rất nhiều vấn đề hiệu năng mình gặp hằng ngày.
 
 ### 🎯 Định nghĩa: gộp nhiều thành một, tách một thành nhiều
@@ -19,6 +21,14 @@ Nghe đơn giản, nhưng tính ứng dụng cực kỳ rộng. Ví dụ **multi
 
 **Với HTTP/2:** chỉ còn **một connection duy nhất**, và ba request được **multiplex thành ba stream** trên cùng một đường ống đi tới server. Đây là lời giải cho giới hạn sáu connection mà mình đã nhắc ở bài server-sent events.
 
+```mermaid
+flowchart LR
+    C[Client mở 3 TCP connection] --> P[Reverse proxy]
+    P -->|Gộp thành 1 connection HTTP/2| B[Backend server]
+    B -->|Response quay lại đúng kênh| P
+    P -->|Demultiplex về từng connection| C
+```
+
 **Ở tầng backend**, câu chuyện còn thú vị hơn với reverse proxy:
 
 * Front-end của proxy (ví dụ Envoy hay Nginx) nói **HTTP/1.1**; back-end của nó nói **HTTP/2**.
@@ -26,6 +36,13 @@ Nghe đơn giản, nhưng tính ứng dụng cực kỳ rộng. Ví dụ **multi
 * Proxy thiết lập **một connection HTTP/2 duy nhất** (trên TCP) và multiplex cả ba request vào đó.
 
 Lợi ích: số connection giảm mạnh. Nhưng có giá của nó: HTTP/2 khiến **CPU server phải làm việc nhiều hơn** vì phải parse nhiều request đến từ cùng một connection. Bạn có **throughput cao hơn, nhưng đổi bằng tài nguyên**.
+
+| Tiêu chí | HTTP/1.1 | HTTP/2 |
+|---|---|---|
+| Số connection | Nhiều connection song song, giới hạn 6 mỗi domain | Một connection duy nhất |
+| Cách request đi | Pipeline lần lượt trên từng connection | Multiplex thành nhiều stream trên một đường ống |
+| Chi phí | Tốn tài nguyên mở connection | CPU server parse nhiều request hơn |
+| Lợi ích | Đơn giản, dễ vận hành | Throughput cao hơn, giảm số connection |
 
 ---
 
@@ -73,4 +90,77 @@ Nhìn vào ID connection, các bạn sẽ thấy đúng **sáu connection** — 
 
 Đảo ngược lại, đây cũng là lúc **demultiplexing** thể hiện giá trị: client nói HTTP/2 với proxy phía trước, rồi proxy **tách (demultiplex)** từng request ra thành connection riêng tới server — mỗi request có **flow control và congestion control riêng**, không ảnh hưởng lẫn nhau. Còn khi dùng chung một TCP connection, tất cả phải tuân theo cùng một bộ luật. *Tuy nhiên, với QUIC thì điều này không còn đúng nữa* — và đó là lý do mình muốn các bạn nắm chắc hai khái niệm này trước khi bước vào phần giao thức.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Multiplexing và demultiplexing khác nhau thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Multiplexing là gộp nhiều đường tín hiệu vào một đường duy nhất; demultiplexing là tách một đường ra nhiều đích khác nhau.
+
+Giải thích: Ví dụ multiplexing: ba TCP connection gộp thành một; demultiplexing: một connection mang ba request tách ra ba đích.
+
+Tham chiếu: Mục Định nghĩa.
+
+</details>
+
+**Câu 2:** Vì sao không thể nhồi nhiều SQL query lên cùng một connection?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì bạn không biết response nào ứng với query nào — không có gì bảo đảm thứ tự.
+
+Giải thích: Query 1 mất 7 giây, query 3 xong trước; PostgreSQL 14 mới bắt đầu hỗ trợ pipeline nhận response đúng thứ tự.
+
+Tham chiếu: Mục Vì sao không nhồi nhiều SQL query.
+
+</details>
+
+**Câu 3:** Connection pooling thực chất là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Multiplexing dưới một cái tên hoành tráng hơn — giữ sẵn pool connection "nóng" và chọn connection rảnh cho từng request.
+
+Giải thích: Khi cả pool đều bận, request mới vào được backend nhưng bị block cho tới khi có connection được giải phóng.
+
+Tham chiếu: Mục Connection pooling.
+
+</details>
+
+**Câu 4:** Demo sáu connection cho thấy điều gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi 6 connection đều bận vì long polling, submit job — việc lẽ ra trả lời ngay — cũng bị chặn đứng; request stall hơn 1,2 phút.
+
+Giải thích: Stall xảy ra ở phía client; browser không mở thêm connection vì hết tài nguyên, nên tái sử dụng connection cực kỳ quan trọng.
+
+Tham chiếu: Mục Demo: sáu connection chặn cả hệ thống.
+
+</details>
+
+**Câu 5:** Demultiplexing ở proxy mang lại lợi ích gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Mỗi request được tách ra thành connection riêng tới server, có flow control và congestion control riêng, không ảnh hưởng lẫn nhau.
+
+Giải thích: Dùng chung một TCP connection thì tất cả phải tuân theo cùng một bộ luật — tuy nhiên với QUIC thì điều này không còn đúng nữa.
+
+Tham chiếu: Mục Demo: sáu connection chặn cả hệ thống.
+
+</details>
+
 Hiểu được khi nào nên gộp kênh, khi nào nên tách kênh, các bạn sẽ tự trả lời được rất nhiều câu hỏi hiệu năng trong công việc. Hẹn gặp các bạn ở bài tiếp theo: **stateful (lưu trạng thái) vs stateless (không lưu trạng thái)**. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Multiplexing vs Demultiplexing (h2 proxying vs Connection Pooling)](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629826)
+- [MDN — HTTP/2](https://developer.mozilla.org/en-US/docs/Glossary/HTTP_2)
+- [MDN — Overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview)

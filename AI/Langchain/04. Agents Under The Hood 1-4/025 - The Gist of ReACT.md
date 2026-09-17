@@ -1,5 +1,7 @@
 # 🔁 Góc nhìn tổng quan về ReAct: vòng lặp đằng sau mọi autonomous agent
 
+> Nguồn: `025-Theory-The-Gist-of-ReACT.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54896313)
+
 Chào các bạn, Eden đây! Bài này chúng ta sẽ có một **cái nhìn tổng quan về agent loop** — còn gọi là **ReAct loop** hay **thuật toán ReAct**. Mình sẽ dùng các thuật ngữ này thay phiên nhau, các bạn đừng bối rối nhé.
 
 Và tin được không: thuật toán này tuy **đơn giản**, nhưng lại là thứ đang vận hành những agent hiện đại nhất như **Claude Code, Gemini CLI, Codex hay Devin**.
@@ -42,6 +44,22 @@ Sau khi LLM quyết định, ta nhận được **tool nào cần chạy**. Bư�
 
 Rồi ta **đưa tất cả lịch sử trở lại** cho LLM: query của người dùng, quyết định gọi tool, và observation mới. Phần lịch sử này thường được gọi là **scratchpad (bản nháp ghi chú diễn biến)**.
 
+```mermaid
+flowchart TD
+    A[Query người dùng] --> B[Thought - LLM quyết định]
+    B --> C{Cần gọi tool}
+    C -->|Có| D[Action - thực thi tool]
+    D --> E[Observation - kết quả tool]
+    E --> B
+    C -->|Không| F[Câu trả lời cuối]
+```
+
+| Bước | Ai thực hiện | Ý nghĩa |
+|---|---|---|
+| Thought | LLM | Quyết định gọi tool nào hoặc trả lời luôn |
+| Action | Ứng dụng của chúng ta | Thực thi hàm/tool mà LLM yêu cầu |
+| Observation | Tool | Kết quả trả về, được ghi vào scratchpad |
+
 ---
 
 ### 🔄 Ví dụ 3 vòng lặp với chiếc laptop hạng gold
@@ -54,4 +72,77 @@ Rồi ta **đưa tất cả lịch sử trở lại** cho LLM: query của ngư�
 
 Và đó chính là thuật toán agent ở mức tổng quan: một **`while` loop** liên tục prompt LLM, tận dụng khả năng suy luận, nhận về **tool call cần chạy hoặc câu trả lời**, rồi thực thi trong ứng dụng. Vòng lặp chỉ **kết thúc khi LLM quyết định không cần gọi tool nào nữa**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Thuật toán ReAct xuất hiện lần đầu ở đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trong bài báo "ReAct: Synergizing Reasoning and Acting in Language Models" — công trình chung giữa Đại học Princeton và các kỹ sư nghiên cứu của Google.
+
+Giải thích: Năm 2023, bài báo này đặt nền móng cho mọi agent hiện đại.
+
+Tham chiếu: Mục Một chút lịch sử.
+
+</details>
+
+**Câu 2:** Bước Thought dựa trên năng lực gì của LLM?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Năng lực suy luận — ta gửi prompt gồm system message và toàn bộ thông tin về các tool.
+
+Giải thích: LLM xử lý rồi trả về việc cần làm tiếp theo: gọi một tool hoặc trả câu trả lời.
+
+Tham chiếu: Mục Thought.
+
+</details>
+
+**Câu 3:** Trong bước Action, ai thật sự thực thi hàm?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Ứng dụng của chúng ta — LLM chỉ trả về một chuỗi mô tả gọi hàm nào, tham số nào.
+
+Giải thích: LLM không tự chạy tool; chính chúng ta là bên thực thi.
+
+Tham chiếu: Mục Action và Observation.
+
+</details>
+
+**Câu 4:** Observation là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kết quả của tool sau khi chạy xong.
+
+Giải thích: Nó được đưa trở lại cùng lịch sử để LLM tiếp tục vòng lặp.
+
+Tham chiếu: Mục Action và Observation.
+
+</details>
+
+**Câu 5:** Scratchpad là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Phần lịch sử gồm query của người dùng, quyết định gọi tool và observation — được gửi trở lại LLM.
+
+Giải thích: Vòng lặp chỉ kết thúc khi LLM quyết định không cần gọi tool nào nữa.
+
+Tham chiếu: Mục Action và Observation.
+
+</details>
+
 *Bài này nghe hơi trừu tượng — mình biết!* Nhưng ở bài sau, chúng ta sẽ **code thuật toán này từ số 0, không dùng bất kỳ abstraction nào**, và mọi thứ sẽ trở nên rõ như ban ngày. Hẹn gặp các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Theory - The Gist of ReACT](https://ua.udemy.com/course/langchain/learn/lecture/54896313)
+- [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)
+- [ReAct project page](https://react-lm.github.io/)

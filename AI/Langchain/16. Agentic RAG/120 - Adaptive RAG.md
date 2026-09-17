@@ -1,5 +1,7 @@
 # 🧭 Adaptive RAG: Chiếc "bộ định tuyến" đưa câu hỏi đi đúng luồng
 
+> Nguồn: `120-Adaptive-RAG.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/51288853)
+
 Chúng ta đã đi đến phần cuối cùng của section Agentic RAG rồi! Trong bài này, mình sẽ triển khai một phiên bản **Adaptive RAG**, dựa trên một **research paper** — nghe "kêu" vậy thôi chứ thực chất nó là cách nói hoa mỹ của việc dùng **question router** (bộ định tuyến câu hỏi) để đưa câu hỏi vào những luồng RAG khác nhau.
 
 ### 🎯 Hai luồng RAG trong bài
@@ -10,6 +12,11 @@ Trong bài, chúng ta dùng **hai luồng RAG**:
 2. **Retrieval augmentation:** tận dụng kho tài liệu trong **vector store**.
 
 Luồng xử lý rất tự nhiên: nhận câu hỏi người dùng → quyết định xem thông tin trả lời có nằm trong vector store hay không → nếu không, ta chuyển hướng sang **web search** và trả lời từ đó.
+
+| Luồng | Nguồn thông tin | Khi nào router chọn |
+|---|---|---|
+| Retrieval augmentation | Vector store — tài liệu về agents, prompt engineering, adversarial attacks | Câu hỏi thuộc các chủ đề này |
+| Web search | Internet qua Tavily | Mọi thứ khác |
 
 Nhiệm vụ chính hôm nay: viết **question router chain**. Mình cũng sẽ viết test cho nó và tích hợp vào graph bằng **conditional entry point** (điểm vào có điều kiện).
 
@@ -65,8 +72,96 @@ Mình viết hàm `route_question(state)`:
 * Lấy câu hỏi từ graph state, chạy `question_router` và lưu kết quả vào biến `source` kiểu `RouteQuery` (nhớ là chain trả về object nhờ structured output).
 * Nếu `data_source` là web search → return node **web search**; nếu là vector store → return node **retrieve** để chạy retrieval augmentation.
 
+Toàn bộ luồng Adaptive RAG sau khi thêm conditional entry point:
+
+```mermaid
+flowchart TD
+    A[Câu hỏi người dùng] --> B[route_question]
+    B -->|vectorstore| C[retrieve]
+    B -->|web_search| D[web search]
+    C --> E[grade_documents]
+    E --> F{decide_to_generate}
+    F -->|cờ web_search bật| D
+    F -->|tài liệu hợp lệ| G[generate]
+    D --> G
+    G --> H[Câu trả lời]
+```
+
 Sau đó mình gọi `set_conditional_entry_point(route_question, path_map)` với path map: web search → web search, retrieve → retrieve. Phần còn lại của graph giữ nguyên như cũ — không thêm node nào mới, chỉ thêm một conditional edge từ entry point.
 
 Chạy thử với "what is agent memory" → câu hỏi được route vào **vector store**, chạy retrieval augmentation rồi theo đúng luồng quen thuộc, cuối cùng trả về đáp án như mong muốn; các bạn có thể xem toàn bộ trace trên **LangSmith**. Đổi query sang **"how to make pizza"** → lần này route thẳng sang **web search**, Tavily chạy và flow tiếp tục đến câu trả lời.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Adaptive RAG thực chất là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là cách dùng question router để định tuyến câu hỏi vào những luồng RAG khác nhau.
+
+Giải thích: Tên nghe "kêu" nhưng bản chất chỉ là routing — bài dựa trên một research paper.
+
+Tham chiếu: Đoạn mở bài.
+
+</details>
+
+**Câu 2:** `Literal` trong typing có tác dụng gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cho phép khai báo một biến chỉ nhận một tập giá trị định trước.
+
+Giải thích: Rất hữu ích cho validation và type checking, ví dụ `data_source` chỉ được là `vectorstore` hoặc `web_search`.
+
+Tham chiếu: Mục Router chain với Literal và structured output.
+
+</details>
+
+**Câu 3:** Dấu `...` (ellipsis) khi khởi tạo `Field` có ý nghĩa gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Field đó là bắt buộc khi tạo object.
+
+Giải thích: `RouteQuery` chỉ có một attribute `data_source` bắt buộc, description hướng dẫn router chọn nguồn.
+
+Tham chiếu: Mục Router chain với Literal và structured output.
+
+</details>
+
+**Câu 4:** Conditional entry point là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là một conditional edge gắn với node đầu tiên của entry point, đóng vai trò định tuyến.
+
+Giải thích: Graph bắt đầu từ start node rồi rẽ vào retrieve hoặc web search tùy router.
+
+Tham chiếu: Mục Conditional entry point và chạy thử.
+
+</details>
+
+**Câu 5:** Câu hỏi "how to make pizza" được route đi đâu và vì sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Route thẳng sang web search vì vector store chỉ chứa tài liệu về agents, prompt engineering và adversarial attacks.
+
+Giải thích: Tavily chạy rồi flow tiếp tục đến câu trả lời; còn "what is agent memory" đi vào vectorstore.
+
+Tham chiếu: Mục Test định tuyến.
+
+</details>
+
 Vậy là chúng ta đã hoàn thành luồng **Adaptive RAG**! Chỉ với một conditional edge ở entry point, agent đã biết tự chọn "đúng cửa" cho từng câu hỏi. Chặng đường Agentic RAG khép lại ở đây — hãy tự hào vì các bạn đã đi qua một trong những chủ đề khó nhất của khóa học. Hẹn gặp lại ở những bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Adaptive RAG](https://ua.udemy.com/course/langchain/learn/lecture/51288853)
+- [Adaptive-RAG paper — Learning to Adapt Retrieval-Augmented LLMs through Question Complexity](https://arxiv.org/abs/2403.14403)
+- [LangGraph API — set_conditional_entry_point](https://reference.langchain.com/python/langgraph/graph/state/StateGraph/set_conditional_entry_point)

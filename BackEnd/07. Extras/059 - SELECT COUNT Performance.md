@@ -1,5 +1,7 @@
 # 📊 SELECT COUNT(*) — Thao tác tưởng vô hại nhưng có thể bóp nghẹt backend của bạn
 
+> Nguồn: `055-SELECT-COUNT-can-impact-your-Backend-Application-performance.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/48398845)
+
 Các bạn có bao giờ để ý rằng một câu `SELECT COUNT(*)` trên bảng vài chục triệu dòng có thể làm cả API đứng im không? Mình thì gặp chuyện này suốt: người ta đếm số likes, số followers, số bản ghi... như thể database đếm là chuyện nhỏ, trong khi đằng sau nó là một đống việc nặng.
 
 Trong bài này mình sẽ mổ xẻ chuyện **count chậm tại sao**, `COUNT(*)` có thật sự phải đọc từng field không, rồi chỉ các bạn cách lấy **ước lượng (estimate)** khi không cần con số chính xác — kèm demo thực tế hơn 2 phút so với 300 mili giây.
@@ -22,6 +24,18 @@ Lý do rất tinh tế: `COUNT(g)` chỉ đếm các giá trị **không null**,
 
 Rất nhiều người tưởng `COUNT(*)` là database phải fetch hết mọi field rồi đếm — **không đúng nữa**. Gần như không database nào làm vậy. `COUNT(*)` chỉ đơn giản là "đếm xem có bao nhiêu entry", và nếu đang quét index thì nó bao gồm cả các dòng null.
 
+```mermaid
+flowchart TD
+    Q[Query COUNT] --> P[Planner chọn plan]
+    P --> I[Index only scan]
+    I --> V{Visibility map sạch}
+    V -->|Có| R[Kết quả nhanh]
+    V -->|Không| H[Heap fetches quay lại bảng]
+    H --> S[Count chậm hơn]
+    S --> X[Vacuum cập nhật visibility map]
+    X --> R
+```
+
 Khi thử `SELECT COUNT(*)` cho cùng khoảng dữ liệu, kết quả cao hơn hẳn, và plan lần này là **index only scan** — thứ *luôn* tốt hơn index scan thường vì không cần quay lại bảng. Vậy là xong? Chưa đâu, mình vừa "phá" nó bằng một câu `UPDATE grades SET g = 20 WHERE id BETWEEN 1000 AND 4000`.
 
 Sau khi update, count lại, mọi thứ trông vẫn ổn: vẫn báo index only scan. Nhưng nhìn kỹ sẽ thấy **heap fetches: 6002 lần**. Nghĩa là index đã được quét, nhưng database vẫn phải quay lại bảng hàng nghìn lần. Vì sao?
@@ -43,6 +57,12 @@ Cơ sở của con số đó là **statistics (thống kê) của bảng**:
 1. Database liên tục lưu thống kê nội bộ về bảng — ước lượng được khoảng bao nhiêu dòng sẽ trả về mà không cần nhìn toàn bộ dữ liệu.
 2. `ANALYZE` cập nhật lại thống kê này; bạn có thể chạy tay, hoặc database tự chạy định kỳ.
 3. Statistics cũng chính là thứ planner dựa vào để chọn plan — ví dụ `EXPLAIN SELECT * FROM grades` sẽ cho bạn thấy nó định **sequential scan (full table scan — quét toàn bảng)** với số dòng ước lượng.
+
+| Cách đếm | Cơ chế | Độ chính xác | Chi phí |
+|---|---|---|---|
+| `COUNT(g)` | Index scan rồi quay lại heap kiểm tra null | Chính xác | Cao |
+| `COUNT(*)` | Index only scan, đếm entry | Chính xác | Tăng tuyến tính theo dữ liệu |
+| `EXPLAIN` ước lượng | Planner dùng statistics, không thực thi query | Lệch vài trăm đến hàng triệu | Rất thấp |
 
 Nếu bạn đang xây Instagram, đếm likes hay followers, thì 3,1 triệu so với 3,11 triệu — hoặc 3,5 triệu so với 3,2 triệu — có ai quan tâm đâu? Không ai ngồi đếm chính xác cả. Đánh đổi độ chính xác để lấy hiệu năng là hoàn toàn hợp lý.
 
@@ -68,6 +88,79 @@ Backend dùng Postgres + Express: tạo pool kết nối, trả về `index.html
 
 Frontend thì "xịn xò" đến mức mình đùa là dùng đủ Tailwind, Bootstrap, React, Vue lẫn Angular — thực ra chỉ là một cái bảng HTML với hai nút và chút cell padding kiểu "boomer" 1999. Mình gọi 10 endpoint song song bằng `Promise.all`; điều mình muốn mà chưa làm được là **cập nhật từng label ngay khi mỗi request xong** thay vì đợi tất cả — nếu bạn biết cách "chain hai event trên cùng một promise" thì mách mình nhé.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao `COUNT(g)` trả về 2900 thay vì khoảng 3000?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì `COUNT(g)` chỉ đếm giá trị không null, và trong khoảng đó có vài dòng `g` bị null.
+
+Giải thích: Database phải quay lại heap để xem từng dòng `g` có null hay không — đây là index scan thường.
+
+Tham chiếu: Mục Count trên bảng lớn.
+
+</details>
+
+**Câu 2:** `COUNT(*)` có phải fetch mọi field rồi đếm không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không — nó chỉ đếm số entry, và nếu quét index thì bao gồm cả dòng null.
+
+Giải thích: Gần như không database nào fetch hết mọi field để đếm nữa.
+
+Tham chiếu: Mục COUNT(*) và cạm bẫy heap fetches.
+
+</details>
+
+**Câu 3:** Vì sao sau `UPDATE`, index only scan vẫn xuất hiện heap fetches?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì visibility map báo các dòng có thể đã bị update hoặc delete, nên scanner phải quay lại heap kiểm tra độ khả kiến; MVCC giữ lại tuple cũ.
+
+Giải thích: Chạy vacuum để cập nhật visibility map thì heap fetches về 0.
+
+Tham chiếu: Mục COUNT(*) và cạm bẫy heap fetches.
+
+</details>
+
+**Câu 4:** Làm sao lấy con số ước lượng mà không thực thi query?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chạy `EXPLAIN` không kèm `ANALYZE` — nó trả về plan kèm số dòng dự kiến dựa trên statistics.
+
+Giải thích: `ANALYZE` cập nhật thống kê, còn `EXPLAIN` đơn thuần chỉ đọc thống kê có sẵn.
+
+Tham chiếu: Mục Khi bạn không cần con số chính xác.
+
+</details>
+
+**Câu 5:** Đánh đổi của cách đếm ước lượng là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kết quả có thể lệch hàng trăm nghìn đến cả triệu — nhưng bù lại chỉ mất khoảng 300 mili giây thay vì hơn 2 phút.
+
+Giải thích: Với các con số hiển thị như lượt xem, lượt thích, không ai cần chính xác từng đơn vị.
+
+Tham chiếu: Mục Demo thực tế.
+
+</details>
+
 *Còn về thực hành: nếu bảng còn ít dòng, cứ count thật thoải mái. Nhưng nếu bảng sẽ phình to, hãy tránh `SELECT COUNT(*)` và để planner ước lượng cho bạn.*
 
 Count là một ví dụ kinh điển cho triết lý của mình: hiểu thứ xảy ra bên dưới đường truyền, hiểu cái plan, hiểu visibility map — thì bạn mới debug được hiệu năng. Hẹn gặp các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — SELECT COUNT(*) can impact your Backend Application performance](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/48398845)
+- [PostgreSQL Wiki — Slow Counting](https://wiki.postgresql.org/wiki/Slow_Counting)
+- [PostgreSQL Wiki — Count estimate](https://wiki.postgresql.org/wiki/Count_estimate)

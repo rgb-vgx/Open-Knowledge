@@ -1,5 +1,7 @@
 # ⚡ Synchronous vs Asynchronous: Câu hỏi duy nhất quyết định cách backend vận hành
 
+> Nguồn: `008-Synchronous-vs-Asynchronous-workloads.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629806)
+
 Trong suốt sự nghiệp làm backend của mình, chủ đề lặp đi lặp lại nhiều nhất — ở cả code ứng dụng, operating system lẫn database — chính là **synchronous (đồng bộ) vs asynchronous (bất đồng bộ)**. Tất cả thu về một câu hỏi duy nhất: **khi mình gửi một request và đang chờ kết quả, mình có thể xử lý việc khác được không?** Nắm được câu trả lời này, các bạn sẽ nắm được gần như mọi thứ vận hành phía dưới đường truyền.
 
 ### 🎯 Gốc rễ: "in sync" thực ra là gì?
@@ -28,12 +30,28 @@ Trải nghiệm thời thập niên 90: dựng ứng dụng **VB5** (ngôn ngữ
 
 Với **asynchronous IO**, caller gửi request rồi **tiếp tục làm việc** cho tới khi có response. Nhưng làm sao biết response đã về? Có **hai trường phái**:
 
+```mermaid
+flowchart TD
+    A[Caller gửi request] --> B{Có chờ kết quả không}
+    B -->|Sync thì block| C[Đứng hình tới khi có response]
+    B -->|Async thì không block| D[Làm việc khác trong lúc chờ]
+    D --> E[Readiness hoặc completion báo kết quả]
+```
+
 1. **Kiểm tra readiness (trạng thái sẵn sàng)** — dòng họ **poll/select** rồi **epoll** trên Linux: "đây là một đám file descriptor, báo tôi khi chúng sẵn sàng đọc". Đây là kiểm tra non-blocking, nhưng để ý: **ready khác với complete** — nó chỉ báo "có dữ liệu đang chờ trong kernel".
 2. **Chờ completion (hoàn tất)** — **I/O completion ports** trên Windows hay **io_uring** trên Linux: "khi nào xong thì ghi kết quả vào hàng đợi completion này".
 
 Node.js dùng **epoll** trên Linux và **completion ports** trên Windows. Khi cả hai cách đều không tiện, nó chơi bài **"để người khác bị block thay mình"**: main thread biết đọc file là blocking nên **spin up một thread phụ** đọc file hộ, còn main thread vẫn tự do chạy event loop, phục vụ request, phản hồi UI. Thread phụ bị OS đá ra khỏi CPU, nhưng main thread vẫn nằm nguyên ở đó.
 
 Node.js mặc định có khoảng **4 worker threads** xoay quanh thư viện nền tảng, có thể cấu hình — nhưng đừng vượt quá số CPU vì vô nghĩa. Biết workload của mình là **IO-bound hay CPU-bound** sẽ giúp các bạn chỉnh con số này hợp lý. *Máy tính vốn "ngốc", còn phần mềm thì đầy trò lừa — và chúng ta chơi trò đó với chúng.*
+
+| Tiêu chí | Synchronous | Asynchronous |
+|---|---|---|
+| Hành vi caller | Block tới khi có kết quả | Làm việc khác trong lúc chờ |
+| Cách biết kết quả | Chờ trực tiếp | Readiness hoặc completion báo về |
+| Ví dụ trong code | `readFileSync` | Callback, promise, async/await |
+| Hệ quả khi chờ IO | Lãng phí thời gian chờ | Tận dụng thời gian để chạy việc khác |
+| Độ phức tạp | Dễ suy luận | Phức tạp hơn, cần event loop |
 
 ---
 
@@ -83,4 +101,77 @@ Sự khác biệt nằm ở **thứ tự thực thi** — và đó chính là as
 
 *Đây là bài học mình muốn các bạn khắc cốt: nếu không hiểu mọi thứ vận hành thế nào, bạn không thể tối ưu được bất cứ thứ gì — chỉ ngồi nhìn hệ thống chậm mà không biết vì sao.*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Ở mức request/response, synchronicity là thuộc tính của phía nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Phía client — "tôi có chờ được không, hay tôi làm việc khác trong lúc chờ?".
+
+Giải thích: Ngày nay gần như không còn client library gọi mạng kiểu synchronous; fetch, Axios đều asynchronous.
+
+Tham chiếu: Mục Synchronicity là thuộc tính của client.
+
+</details>
+
+**Câu 2:** Readiness khác completion ở chỗ nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Readiness (poll/select/epoll) chỉ báo có dữ liệu sẵn sàng trong kernel; completion (IOCP, io_uring) báo khi tác vụ xong và ghi kết quả vào hàng đợi.
+
+Giải thích: Ready khác với complete — sẵn sàng đọc không có nghĩa là toàn bộ tác vụ đã hoàn tất.
+
+Tham chiếu: Mục Asynchronous IO.
+
+</details>
+
+**Câu 3:** Node.js xử lý IO blocking thế nào khi epoll/completion ports không tiện?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó spin up thread phụ để đọc file hộ, còn main thread vẫn chạy event loop phục vụ request.
+
+Giải thích: Node.js mặc định có khoảng 4 worker threads, không nên vượt quá số CPU.
+
+Tham chiếu: Mục Asynchronous IO.
+
+</details>
+
+**Câu 4:** `async/await` có thật sự block không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không — nó chỉ là syntactic sugar trông như đồng bộ.
+
+Giải thích: Phần code phía dưới trông như bị chặn, nhưng thực tế không hề block, chỉ để dễ đọc khi code sau phụ thuộc giá trị phía trước.
+
+Tham chiếu: Mục Synchronicity là thuộc tính của client.
+
+</details>
+
+**Câu 5:** Async commit ở Postgres đánh đổi điều gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trả success ngay mà không chờ WAL flush xuống disk — đổi lấy rủi ro mất dữ liệu và dirty read.
+
+Giải thích: Nếu write thất bại sau đó hoặc server crash khi WAL còn trong memory, dữ liệu đã hứa là commit sẽ biến mất.
+
+Tham chiếu: Mục Async ở khắp nơi.
+
+</details>
+
 Và nhớ nhé: **asynchronous execution có mặt ở khắp mọi nơi**. Ở bài tiếp theo, mình sẽ chỉ các bạn pattern giao tiếp đầu tiên tận dụng chính nó: **polling (hỏi vòng)**. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Synchronous vs Asynchronous workloads](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629806)
+- [Node.js — Don't Block the Event Loop (or the Worker Pool)](https://nodejs.org/learn/asynchronous-work/dont-block-the-event-loop)
+- [Node.js — Overview of Blocking vs Non-Blocking](https://nodejs.org/learn/asynchronous-work/overview-of-blocking-vs-non-blocking)

@@ -1,5 +1,7 @@
 # 🏭 Đưa Agent lên Production: Những thách thức thật sự và lời khuyên "tỉnh táo" từ mình
 
+> Nguồn: `059-Agents-In-Production.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43511228)
+
 Chào các bạn, Eden đây! 👋 Sau khi đã cùng nhau xây dựng đủ loại agent, hôm nay mình muốn nói về chặng đường phía sau: **tích hợp agent vào môi trường production**. Đây là chủ đề mình rất tâm huyết, vì nó chính là khoảng cách lớn nhất giữa một bản demo chạy được và một ứng dụng thật sự phục vụ người dùng.
 
 ---
@@ -11,6 +13,18 @@ Khi làm việc với agent, các bạn sẽ thấy mình dùng rất nhiều LM
 * Rất nhiều LM call cho một tác vụ.
 * Các call này **diễn ra tuần tự**: cái sau phải chờ kết quả của cái trước.
 * Tùy độ phức tạp và số reasoning step, ứng dụng có thể biến thành **long-running application (chạy rất lâu)**.
+
+Để dễ hình dung, đây là chuỗi bước tuần tự của một lượt agent:
+
+```mermaid
+flowchart TD
+    A[Nhận yêu cầu] --> B[LM call chọn hành động]
+    B --> C[Thực thi tool]
+    C --> D[LM call đọc kết quả và suy luận tiếp]
+    D --> E{Còn bước xử lý}
+    E -->|Có| B
+    E -->|Không| F[Trả câu trả lời cuối]
+```
 
 *Có vài workaround cho việc này — ví dụ dùng **semantic cache (bộ đệm ngữ nghĩa)** hoặc **LM cache** — nhưng trong khóa học mình sẽ không đi sâu.*
 
@@ -42,6 +56,17 @@ Về bảo mật: trong ứng dụng lớn, ta trao cho agent quyền chạy que
 2. **Đặt guardrails cho prompt:** cho phép hoặc chặn một số dạng prompt trước khi gửi tới agent.
 3. **Dùng giải pháp có sẵn:** có nhiều lựa chọn open source; mình khuyên dùng **LLM Guard** — một dự án rất hứa hẹn với nhiều tính năng bảo mật cho LLM.
 
+Nhìn lại toàn bài, đây là bảng tóm tắt các thách thức và hướng giảm nhẹ tương ứng:
+
+| Thách thức | Hệ quả | Hướng giảm nhẹ |
+|---|---|---|
+| Chuỗi LM call tuần tự | Ứng dụng chạy rất lâu | Semantic cache, LM cache |
+| Context window giới hạn | Số bước agent bị chặn trần | Tối ưu lượng thông tin gửi vào LM |
+| Xác suất chọn đúng tool | Sai số nhân dần qua từng bước | Fine-tuning cho tool selection |
+| Hóa đơn token | Chi phí lớn khi chạy quy mô lớn | Semantic cache, retrieval cho tool selection |
+| Kiểm chứng phản hồi | Sai format là đủ làm hỏng ứng dụng | Chưa có giải pháp thật sự robust |
+| Bảo mật | Prompt injection, lộ API key chạm tới tool | Least privilege, guardrails, LLM Guard |
+
 ---
 
 ### ⚖️ Lời khuyên cuối: đừng "overkill" với agent
@@ -50,6 +75,79 @@ Agent phát huy sức mạnh khi ta có một chuỗi bước **non-deterministi
 
 Mình từng gặp không ít cá nhân và công ty cố dùng LM agent cho những bài toán mà giải pháp thật sự bền vững chỉ là một đoạn **code Python deterministic**. Lời khuyên của mình: trước khi dùng agent, hãy tự hỏi liệu mình có thể tự implement bằng code deterministic không — nếu có, mình thật lòng không khuyên các bạn dùng agent, vì như các bạn đã thấy, nó kèm theo rất nhiều thách thức.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao ứng dụng agent thường là long-running application?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì agent dùng rất nhiều LM call diễn ra tuần tự.
+
+Giải thích: Mỗi tool call chỉ xảy ra sau khi LM đã suy luận và quyết định; cái sau chờ cái trước nên càng nhiều reasoning step càng lâu.
+
+Tham chiếu: Mục Vì sao agent khó lên production.
+
+</details>
+
+**Câu 2:** Context window ảnh hưởng thế nào tới agent?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó giới hạn số bước agent có thể thực hiện.
+
+Giải thích: Mỗi lần reasoning phải gửi một prompt khổng lồ; model phổ biến xử lý khoảng 32K token nên con số này bị vượt rất dễ.
+
+Tham chiếu: Mục Vì sao agent khó lên production.
+
+</details>
+
+**Câu 3:** Vì sao xác suất chọn đúng tool 0.9 vẫn đáng lo?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì theo luật nhân xác suất, qua nhiều bước con số tụt rất nhanh — chỉ 6 bước còn khoảng 0.59.
+
+Giải thích: Muốn cải thiện thì fine-tuning cho tool selection là hướng đã được research chứng minh.
+
+Tham chiếu: Mục Hallucination, xác suất và hóa đơn token.
+
+</details>
+
+**Câu 4:** Ba việc cần làm để bảo mật ứng dụng agent là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tuân thủ least privilege, đặt guardrails cho prompt, và dùng giải pháp có sẵn như LLM Guard.
+
+Giải thích: Kẻ xấu tấn công bằng prompt injection hoặc lấy API key có thể chạm tới database và API mà agent được cấp quyền.
+
+Tham chiếu: Mục Kiểm chứng phản hồi và bảo mật.
+
+</details>
+
+**Câu 5:** Khi nào mình khuyên KHÔNG nên dùng agent?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi bài toán có thể giải quyết bằng code Python deterministic.
+
+Giải thích: Agent chỉ phát huy sức mạnh với chuỗi bước non-deterministic; còn biết chính xác cần làm gì thì code deterministic bền vững hơn.
+
+Tham chiếu: Mục Lời khuyên cuối.
+
+</details>
+
 Một lời "disclaimer" nho nhỏ để kết bài: agent là công nghệ tuyệt vời với tiềm năng khổng lồ. Đi từ prototype tới production **hoàn toàn khả thi**, chỉ là không hề dễ. Mình *không* hề nói agent chưa sẵn sàng cho production — mình chỉ muốn các bạn thật cẩn trọng, vì một công nghệ vĩ đại luôn đi kèm cái giá của nó.
 
 Ở bài tiếp theo, hãy chuẩn bị tinh thần "so găng" nhé: chúng ta sẽ đặt **LangGraph** lên bàn cân với **CrewAI**. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Agents In Production](https://ua.udemy.com/course/langgraph/learn/lecture/43511228)
+- [Lost in the Middle: How Language Models Use Long Contexts](https://arxiv.org/abs/2307.03172)
+- [LLM Guard — GitHub](https://github.com/protectai/llm-guard)

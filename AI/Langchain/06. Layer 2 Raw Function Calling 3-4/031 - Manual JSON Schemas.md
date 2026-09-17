@@ -1,5 +1,7 @@
 # 📋 Manual JSON Schemas: Tự tay "đóng gói" tool khi rời bỏ LangChain
 
+> Nguồn: `031----------Layer-2-Manual-JSON-Schemas-vs-LangChain-Tool-Abstr.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54882733)
+
 Chào mừng các bạn đến với **Layer 2: Raw Function Calling**! Chúng ta bắt đầu hành trình bóc tách abstraction bằng việc nói lời tạm biệt với các object của LangChain — và ngay lập tức, một công việc "nặng nhọc" mà LangChain vẫn làm thay ta sẽ lộ diện.
 
 ### 🧹 Dọn dẹp LangChain khỏi file mới
@@ -46,6 +48,12 @@ Trong source code, **tools** có thể là:
 
 Vậy là có hai lựa chọn: sửa docstring theo chuẩn Google để dùng hàm trực tiếp, hoặc tự viết JSON schema.
 
+| Cách truyền tools | Yêu cầu | Ghi chú |
+|---|---|---|
+| JSON schema dạng dictionary | Viết tay đúng cấu trúc | Đúng thứ tài liệu cURL mô tả |
+| Ollama tool object | Dùng object của Ollama | Tương tự LangChain tool nhưng là phiên bản Ollama |
+| Python function | Docstring chuẩn Google style | Ollama tự sinh schema giúp, điều kiện không được nêu rõ trong tài liệu |
+
 Và nhớ nhé — mọi thứ mình vừa trình bày **chỉ đúng với Ollama**. Sang **Anthropic**, cách định nghĩa tool cũng dùng JSON schema nhưng **cấu trúc khác hẳn**. Cursor hay Claude Code có thể sinh giúp, nhưng nếu bạn muốn **chuyển đổi qua lại giữa nhiều vendor**, **chi phí phát triển sẽ rất cao** — tốn thời gian cho từng tích hợp, trong khi dùng **interface của LangChain** thì mọi thứ có sẵn **out of the box**.
 
 ---
@@ -67,4 +75,85 @@ Tóm lại, các bạn vừa thấy hai sự thật thú vị:
 1. Ollama **có thể tự sinh schema** nếu ta truyền thẳng function làm tool — với điều kiện dùng **Google-style docstring**.
 2. Nhưng mình cố tình chọn cách **viết JSON schema thủ công** để các bạn thấy rõ **LangChain tool decorator đã làm gì cho chúng ta**: nó tự sinh **JSON schema chuẩn theo từng vendor** — Anthropic một kiểu, Ollama một kiểu, mỗi bên có style, keyword và format khác nhau.
 
+```mermaid
+flowchart LR
+    A[LangChain tool decorator] --> B[Tự sinh JSON schema theo từng vendor]
+    B --> C[Gửi kèm request tới LLM]
+    D[Raw Ollama] --> E[Tự viết JSON schema thủ công]
+    E --> C
+```
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Khi bỏ LangChain, hai hàm Python còn thiếu gì để LLM dùng được?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** JSON schema mô tả tường minh tên tool, các argument nhận vào và giá trị trả về.
+
+Giải thích: Không còn decorator tự sinh giúp nên ta phải tự viết tay.
+
+Tham chiếu: Mục Tìm hiểu JSON schema trong tài liệu Ollama.
+
+</details>
+
+**Câu 2:** Ollama có thể tự sinh schema khi nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi ta truyền thẳng Python function làm tool kèm docstring chuẩn Google style.
+
+Giải thích: Điều kiện này không được nêu rõ trong tài liệu, phải mò vào source code mới thấy.
+
+Tham chiếu: Mục Python SDK và "cú lừa" mang tên Google-style docstring.
+
+</details>
+
+**Câu 3:** Vì sao tác giả vẫn chọn viết JSON schema thủ công?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để thấy rõ LangChain tool decorator đã tự sinh JSON schema chuẩn theo từng vendor cho chúng ta như thế nào.
+
+Giải thích: Anthropic một kiểu, Ollama một kiểu — mỗi bên có style, keyword, format khác nhau.
+
+Tham chiếu: Mục Viết schema cho get_product_price.
+
+</details>
+
+**Câu 4:** Vấn đề của tài liệu Ollama là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không có formal definition về JSON schema, chỉ có một ví dụ duy nhất.
+
+Giải thích: Developer phải tự mò hoặc nhờ Cursor, Claude Code sinh schema giúp.
+
+Tham chiếu: Mục Tìm hiểu JSON schema trong tài liệu Ollama.
+
+</details>
+
+**Câu 5:** Vì sao chuyển đổi giữa nhiều vendor tốn kém khi không có LangChain?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Mỗi vendor định nghĩa tool bằng cấu trúc JSON schema và convention khác nhau, phải viết lại cho từng tích hợp.
+
+Giải thích: Dùng interface của LangChain thì mọi thứ có sẵn out of the box.
+
+Tham chiếu: Mục Python SDK và "cú lừa" mang tên Google-style docstring.
+
+</details>
+
 Đó chính là **giá trị của LangChain tool abstraction**. Ở video tiếp theo, chúng ta sẽ dùng những schema này để dựng lại agent loop với Ollama SDK thuần. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Manual JSON Schemas vs LangChain Tool Abstraction](https://ua.udemy.com/course/langchain/learn/lecture/54882733)
+- [Ollama Docs — Tool calling](https://docs.ollama.com/capabilities/tool-calling)
+- [Ollama Python SDK trên GitHub](https://github.com/ollama/ollama-python)

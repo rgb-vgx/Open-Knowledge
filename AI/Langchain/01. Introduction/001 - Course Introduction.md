@@ -1,5 +1,7 @@
 # 🚀 Chào mừng bạn đến với Khóa học LangChain: Xây dựng AI Agent với LangChain & LangGraph (Phiên bản Mới Nhất!)
 
+> Nguồn: `001-Course-Introduction.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37474628)
+
 **Tác giả:** Eden Marcus
 
 **Chuyên mục:** Trí tuệ nhân tạo (AI) / Khóa học
@@ -53,3 +55,7 @@ Mình có một niềm tin mãnh liệt rằng, LangChain đã đóng một vai 
 Đó là tất cả cho phần giới thiệu ngày hôm nay! Hy vọng bạn đã có một cái nhìn rõ ràng hơn về hành trình tuyệt vời mà chúng ta sắp sửa bước vào.
 
 Hãy thắt dây an toàn và hẹn gặp lại các bạn ở bài học tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Course Introduction](https://ua.udemy.com/course/langchain/learn/lecture/37474628)

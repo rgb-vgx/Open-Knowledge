@@ -1,5 +1,7 @@
 # 🧱 Building Our Graph: Lắp ráp Reflexion Agent hoàn chỉnh với LangGraph 1.x
 
+> Nguồn: `105-Building-Our-LangGraph-Graph.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54152099)
+
 Chào các bạn, mình là Eden đây! Hôm nay là ngày hội lớn: chúng ta sẽ **lắp ráp tất cả các mảnh ghép** thành một graph LangGraph hoàn chỉnh cho Reflexion Agent. Trước khi bắt đầu, một lưu ý quan trọng: video này được **quay lại** để khớp với phiên bản mới nhất của LangGraph — cụ thể là **1.0.5** và được cập nhật theo chuẩn **LangGraph 1.+**. Các bạn yên tâm là mọi thứ đều được điều chỉnh cho phù hợp!
 
 ### 🧩 Imports & MessageState có sẵn
@@ -46,6 +48,12 @@ Vậy làm sao để đếm? Vì chúng ta dùng **function calling** để tạ
 * Khi chạy tool node → **không** tạo tool call nào (không có LLM nào gọi tool ở đây cả).
 * Khi chạy reviser chain → **thêm một tool call** nữa.
 
+| Node | Tool call tạo ra | Ghi chú |
+|---|---|---|
+| draft | 1 | `first_responder_chain` dùng function calling |
+| execute tools | 0 | Chỉ chạy Tavily, không có LLM gọi tool |
+| revised | +1 | `reviser_chain` dùng function calling |
+
 Điều kiện kết thúc graph: nếu số tool call **lớn hơn 2** thì dừng. Vòng đầu có 1, 2 tool call; khi bước sang vòng hai, ta sẽ có 3 rồi 4 tool call — vượt ngưỡng và kết thúc.
 
 Mình implement logic này trong conditional edge tên **`event_loop`**:
@@ -68,6 +76,18 @@ Giờ là lúc ráp mọi thứ lại:
 3. Nối các edge: **START → draft**, **draft → execute tools**, **execute tools → revise**.
 4. Từ revised node, thêm **conditional edge** với logic **`event_loop`**, kèm argument thứ ba là danh sách các node có thể đi tới: **`execute tools`** và **`END`** — những giá trị này phải **khớp chính xác** với các giá trị chúng ta return trong `Literal`. Việc khai báo danh sách này giúp ích khi **trực quan hóa graph**.
 
+Graph hoàn chỉnh trông như sau:
+
+```mermaid
+flowchart TD
+    S[START] --> A[draft node]
+    A --> B[execute tools node]
+    B --> C[revised node]
+    C --> D{event_loop}
+    D -->|execute_tools| B
+    D -->|END| E[END]
+```
+
 Sau khi **compile graph**, mình in nó ra bằng **`draw_mermaid()`**, rồi dán vào **mermaid.live** để ngắm thành quả. Trong sơ đồ, các bạn sẽ thấy rõ **conditional edge từ revised node**: sau khi revise xong, hoặc là kết thúc, hoặc là chạy thêm một search query mới rồi tiếp tục revise theo query đó.
 
 Cuối cùng, mình **invoke graph** với một dictionary chứa key `messages`, trong đó **role là `user`** (LangChain sẽ tự cast thành human message) và nội dung là:
@@ -85,4 +105,77 @@ Mình viết đoạn code kiểm tra: nếu message cuối là AI message có to
 * **Autonomous SOC** mở rộng phản ứng rủi ro thấp — cách ly email, cô lập endpoint, cấu hình lại firewall — rút ngắn **dwell time và MTTR xuống dưới 5 phút** trong lĩnh vực tài chính và y tế (MTTR = Median Time To Respond).
 * **Startup theo mức độ trưởng thành**: nhóm **leaders** gồm **Darktrace, Vectra**; nhóm **Scale Up** gồm **Exabeam, Cybereason**; nhóm **Innovators** gồm **Deep Instinct, SecBI và Blumira**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** `MessageState` được lấy từ đâu và vì sao dùng nó?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Từ `langgraph.prebuilt` — state chỉ giữ một danh sách message, đúng như state ta tự viết ở section Reflection trước.
+
+Giải thích: Thay vì tự implement từ đầu, LangGraph cung cấp sẵn prebuilt để dùng trực tiếp.
+
+Tham chiếu: Mục Imports & MessageState có sẵn.
+
+</details>
+
+**Câu 2:** `MAX_ITERATIONS = 2` nghĩa là gì và có hạn chế gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Giới hạn tối đa hai vòng "draft → revision → draft → revision".
+
+Giải thích: Đây là heuristic; có thể nâng cấp bằng LLM-as-a-judge để LLM quyết định có lặp tiếp không.
+
+Tham chiếu: Mục Event loop.
+
+</details>
+
+**Câu 3:** Vì sao event loop đếm số tool call để quyết định dừng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì mỗi phản hồi structured output đi kèm một tool call; responder tạo 1, reviser tạo thêm 1, còn tool node không tạo tool call nào.
+
+Giải thích: Khi số tool call lớn hơn 2 thì dừng; chưa vượt thì trả về `"execute_tools"`.
+
+Tham chiếu: Mục Event loop.
+
+</details>
+
+**Câu 4:** Draft node làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nhận state, gọi `first_responder_chain` và append object `AnswerQuestion` vào key `messages`.
+
+Giải thích: Object gồm `answer`, `reflection` và `search_queries` để chạy tìm kiếm sau này.
+
+Tham chiếu: Mục Hai node: draft và revise.
+
+</details>
+
+**Câu 5:** Câu trả lời thật của graph nằm ở đâu trong kết quả?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trong `args` của tool call `ReviseAnswer` thuộc AI message cuối cùng.
+
+Giải thích: Đoạn code kiểm tra message cuối là AI message có tool call, lấy tool call đầu tiên và in key `answer`.
+
+Tham chiếu: Mục Lắp graph, vẽ Mermaid và chạy thử.
+
+</details>
+
 Một video dài nhưng thành quả thật xứng đáng, đúng không nào? Ở bài tiếp theo, chúng ta sẽ cùng "soi" toàn bộ hành trình này trên **LangSmith**. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Building Our LangGraph Graph](https://ua.udemy.com/course/langchain/learn/lecture/54152099)
+- [LangChain Docs — LangGraph overview](https://docs.langchain.com/oss/python/langgraph/overview)
+- [LangChain Blog — Reflection Agents](https://www.langchain.com/blog/reflection-agents)

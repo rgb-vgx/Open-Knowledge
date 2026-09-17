@@ -1,8 +1,25 @@
 # 🗺️ Toàn cảnh ứng dụng LLM: Bốn mẫu bài toán mình thường thấy
 
+> Nguồn: `075-LLM-Application-Development-landscape.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/39894132)
+
 Chào các bạn, Eden đây! Trong bài này, mình muốn chia sẻ **góc nhìn của mình về bức tranh toàn cảnh của các ứng dụng LLM (LLM application development landscape)** — tức là mọi ứng dụng LLM hôm nay có thể được xếp vào những nhóm nào.
 
 Mình thích phân loại thành **bốn nhóm chính**, đi từ đơn giản đến phức tạp. Và mục tiêu của khóa học này chính là trang bị cho các bạn khả năng tự tay implement cả bốn mẫu đó.
+
+```mermaid
+flowchart LR
+    A[Goi LLM don gian] --> B[Vector store va RAG]
+    B --> C[Agents]
+    C --> D[Agents ket hop vector store]
+    D --> E[Autonomous agents tien phong]
+```
+
+| Nhóm | Đặc điểm chính | Ví dụ |
+|---|---|---|
+| 1. Gọi LLM đơn giản | Gửi input, nhận phản hồi, hiển thị cho người dùng | Ứng dụng tạo truyện thiếu nhi |
+| 2. Vector store + RAG | Semantic search trên dữ liệu để trả lời câu hỏi chuyên sâu | Quiver — "second brain" |
+| 3. Agents | LLM reasoning, chạy code phi tất định, tự chọn tool | Socrates của Torq |
+| 4. Agents + vector store | Long-term memory, tự trị, tác vụ phức tạp | AutoGPT, GPT Engineer, Baby AGI |
 
 ---
 
@@ -36,6 +53,78 @@ Mẫu cuối cùng là **kết hợp agents với vector store và semantic sear
 
 Cần nói thật lòng: **AutoGPT, GPT Engineer, Baby AGI vẫn đang ở giai đoạn rất, rất sơ khai** — họ là những người tiên phong mở đường cho cái gọi là **autonomous agents (tác tử tự trị)**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Bốn nhóm ứng dụng LLM theo cách phân loại của mình là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Gọi LLM đơn giản; Vector store + RAG; Agents; Agents + vector store (autonomous agents).
+
+Giải thích: Xếp theo độ phức tạp tăng dần, từ một LLM call đến tự trị hoàn toàn.
+
+Tham chiếu: Mục mở đầu và bốn nhóm.
+
+</details>
+
+**Câu 2:** Nhóm 1 tuy đơn giản nhưng vì sao vẫn đáng làm?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì thường mang lại rất nhiều giá trị cho khách hàng và người dùng.
+
+Giải thích: Không phức tạp không có nghĩa là không hữu ích.
+
+Tham chiếu: Mục Nhóm 1.
+
+</details>
+
+**Câu 3:** RAG kết hợp vector store và semantic search để làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lấy ra các đoạn dữ liệu liên quan để trả lời câu hỏi rất chuyên sâu về một domain.
+
+Giải thích: Ví dụ Quiver index mọi thứ rồi cho phép QA trên chính dữ liệu của bạn.
+
+Tham chiếu: Mục Nhóm 2.
+
+</details>
+
+**Câu 4:** Agent khác gì về bản chất so với một luồng code thông thường?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Agent chạy code phi tất định — tự quyết định dùng tool nào vào thời điểm nào.
+
+Giải thích: LLM đóng vai reasoning engine thay vì thực thi một chuỗi bước cố định.
+
+Tham chiếu: Mục Nhóm 3.
+
+</details>
+
+**Câu 5:** AutoGPT, GPT Engineer, Baby AGI đang ở giai đoạn nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vẫn rất, rất sơ khai — đang tiên phong mở đường cho autonomous agents.
+
+Giải thích: Kết hợp agents với vector store để có long-term memory và hành vi phức tạp.
+
+Tham chiếu: Mục Nhóm 4.
+
+</details>
+
 Tóm lại, **mọi ứng dụng LLM hôm nay đều có thể xếp vào một trong bốn nhóm trên**. Mục tiêu của mình trong khóa học này là dạy các bạn tự implement những pattern đó: chúng ta đã học về agents, về vector store, cách tương tác với LLM và cả lý thuyết phía sau — để các bạn có thể ra ngoài và tự xây dựng ứng dụng của riêng mình.
 
 Hẹn gặp các bạn ở bài tiếp theo, khi chúng ta nói về những thách thức khi đưa mọi thứ lên production! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LLM Application Development landscape](https://ua.udemy.com/course/langchain/learn/lecture/39894132)
+- [AutoGPT — The open-source platform for AI agents](https://github.com/Significant-Gravitas/AutoGPT)

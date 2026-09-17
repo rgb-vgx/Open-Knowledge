@@ -1,5 +1,7 @@
 # 🖥️ Frontend với Streamlit: Giao diện "chớp nhoáng" cho RAG Agent
 
+> Nguồn: `062-Frontend-with-Streamlit-UI.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37610242)
+
 Chào các bạn, Eden đây! RAG agent đã chạy ngon lành, nhưng hiện tại chúng ta vẫn phải gọi nó qua code. Hôm nay, mình và các bạn sẽ dựng một **giao diện người dùng đơn giản** để **test và QA trực quan** toàn bộ pipeline — và tất cả chỉ với **Python**, không cần một dòng JavaScript nào.
 
 Công cụ chúng ta dùng là **Streamlit** — một package mã nguồn mở cực kỳ phổ biến, giúp tạo giao diện người dùng trực quan và đơn giản bằng Python. Kết quả sẽ giống hệt những chat app mà các bạn thấy trong phần **playground** của Streamlit.
@@ -9,6 +11,12 @@ Công cụ chúng ta dùng là **Streamlit** — một package mã nguồn mở 
 Streamlit khởi đầu là công cụ để **các nhà khoa học dữ liệu trực quan hóa dữ liệu** — vẽ biểu đồ từ dữ liệu chỉ với vài dòng Python, cực kỳ trực quan. Và các bạn thấy đấy, để dựng một chat application tương tự playground, chúng ta cũng chỉ cần vài dòng code.
 
 **Một disclaimer quan trọng:** Streamlit **không dành cho production**. Mình không khuyến khích dùng nó nếu bạn muốn **expose (công khai)** một chat application thực tế. Cho mục đích đó, mình sẽ làm một video riêng về **generative UI** với **TypeScript và Next.js**.
+
+| Tiêu chí | Streamlit | Generative UI production |
+|---|---|---|
+| Ngôn ngữ | Python thuần | TypeScript, Next.js |
+| Mục đích | Prototype, test và QA | Expose cho người dùng thật |
+| Trạng thái agent | Không phản ánh | Hiển thị agent đang làm gì |
 
 ---
 
@@ -67,6 +75,19 @@ Cuối cùng, mình tạo ô nhập liệu với **`st.chat_input`**, placeholde
 2. Hiển thị ngay tin nhắn đó bằng `st.chat_message` (role `user`) dạng Markdown.
 3. Tạo khối **assistant message** để chứa câu trả lời của agent.
 
+```mermaid
+sequenceDiagram
+    participant U as Người dùng
+    participant S as Streamlit app
+    participant B as Backend run_llm
+    U->>S: Nhập câu hỏi
+    S->>S: Lưu user message vào session state
+    S->>B: Gọi run_llm với prompt
+    B-->>S: answer và context
+    S->>S: Format sources và render
+    S-->>U: Câu trả lời kèm Sources
+```
+
 Vì RAG agent có thể thất bại, mình bọc trong **try/except**: dùng **`st.error`** và **`st.exception`** để hiển thị lỗi — *mục tiêu là app không bao giờ "sập" trước mặt người dùng*. Trong lúc chờ, một **`st.spinner`** hiện dòng chữ *"Retrieving docs and generating answer."* báo hiệu hệ thống đang làm việc.
 
 Sau khi `run_llm` trả về:
@@ -90,4 +111,77 @@ Sau khi thêm, lịch sử hội thoại được giữ nguyên qua nhiều lư�
 
 Toàn bộ code nằm ở branch **`3-frontend-finish`** (mình chạy `git add main`, commit với message **"added frontend"** rồi push). Các bạn có thể vào repo, chọn branch và xem file **`main.py`**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** `session_state` trong Streamlit là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một dictionary lưu kết quả trung gian và dữ liệu từ các tương tác trước đó.
+
+Giải thích: Toàn bộ tin nhắn qua lại giữa người dùng và LLM được lưu ở đây.
+
+Tham chiếu: Mục Sidebar và session state.
+
+</details>
+
+**Câu 2:** Nút "Clear chat" xóa lịch sử bằng cách nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Gọi `.pop("messages")` trên `session_state` rồi rerun ứng dụng.
+
+Giải thích: Ứng dụng quay về trạng thái ban đầu từ trang giấy trắng.
+
+Tham chiếu: Mục Sidebar và session state.
+
+</details>
+
+**Câu 3:** Vì sao cần `st.error` và `st.exception` trong try/except?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để hiển thị lỗi khi RAG agent thất bại — app không bao giờ "sập" trước mặt người dùng.
+
+Giải thích: `st.spinner` báo hiệu hệ thống đang làm việc trong lúc chờ.
+
+Tham chiếu: Mục Nhận câu hỏi và gọi RAG agent.
+
+</details>
+
+**Câu 4:** Bug "câu trả lời cũ biến mất" nguyên nhân là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Quên append message mới vào session state.
+
+Giải thích: Sửa bằng cách append role `assistant`, content là answer, source là danh sách đã format.
+
+Tham chiếu: Mục Một bug nhỏ đáng yêu.
+
+</details>
+
+**Câu 5:** Vì sao Streamlit không dành cho production?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó không truyền đạt được trạng thái agent cho người dùng.
+
+Giải thích: Generative UI với TypeScript và Next.js mới là hướng production.
+
+Tham chiếu: Mục Streamlit là gì và khi nào nên dùng.
+
+</details>
+
 Giao diện này rất tiện để chạy thử RAG agent — nhưng như đã nói, nó **chưa phải production grade**. Điểm yếu lớn nhất: nó **không phản ánh cho người dùng biết agent đang làm gì**. Khi xây dựng AI agent, việc **truyền đạt trạng thái cho người dùng** cực kỳ quan trọng: agent đang chạy bước nào, tool nào đang hoạt động, kết quả của tool ra sao — tất cả để người dùng **tin tưởng** vào output. Chủ đề này gọi là **generative UI**, và trong video tiếp theo, mình sẽ giới thiệu một cách làm phức tạp hơn nhưng "kể chuyện" được toàn bộ những gì agent đang làm! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — "Frontend" with Streamlit (UI)](https://ua.udemy.com/course/langchain/learn/lecture/37610242)
+- [Streamlit Docs — Chat elements](https://docs.streamlit.io/develop/api-reference/chat)
+- [Streamlit Docs — Build a basic LLM chat app](https://docs.streamlit.io/develop/tutorials/chat-and-llm-apps/build-conversational-apps)

@@ -1,5 +1,7 @@
 # 🔧 gRPC: Khi một protocol cố "thống trị" mọi giao tiếp client - server
 
+> Nguồn: `028-gRPC.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630280)
+
 Chào các bạn! Hôm nay chúng ta nói về **gRPC** (viết tắt của Google RPC — gọi thủ tục từ xa). Nó được xây trên **HTTP/2** và tận dụng tối đa các stream để cho bạn đủ thứ: bidirectional streaming, unidirectional streaming, request/response. Điều khiến nó cực kỳ hấp dẫn là bên cạnh nó còn có **protocol buffers (định dạng tuần tự hóa nhị phân)** — schema gọn gàng, hỗ trợ nhiều ngôn ngữ, compile được ra ngôn ngữ bạn muốn.
 
 ### 🎯 Động lực: vấn đề nằm ở client library, không phải ở protocol
@@ -22,6 +24,17 @@ Bên dưới, gRPC dùng **HTTP/2** như một implementation hoàn toàn ẩn: 
 2. **Server streaming**: client gửi request, server stream nội dung về. Ví dụ tải file lớn, hoặc "cho tôi tiến trình công việc", "cho tôi mọi event đang diễn ra".
 3. **Client streaming**: ví dụ upload file lớn, server hầu như không nói gì lại.
 4. **Bidirectional streaming**: cả client và server cùng nói chuyện với nhau.
+
+Một cuộc gọi unary cơ bản diễn ra như sau:
+
+```mermaid
+sequenceDiagram
+    participant C as Client stub
+    participant S as gRPC server
+    C->>S: CreateTodo với text Do laundry
+    Note over C,S: Chạy trên HTTP/2 stream nhị phân
+    S-->>C: TodoItem id 1
+```
 
 ### ⚙️ Dựng từ số 0: proto file, server và client
 
@@ -74,6 +87,88 @@ Rồi tới `readTodos`: client gửi empty object (message rỗng lúc nãy), s
 * **Không có native browser support**: browser không expose API stream của HTTP/2 (cố ý trừu tượng hóa), nên bạn cần một gRPC-web proxy — web app trỏ vào proxy, proxy chuyển request thành gRPC thật, kiểu **sidecar pattern**.
 * **Timeout**: kết nối chạy lâu dễ bị kill vì "không ai dùng"; và vì HTTP/2 chạy trên TCP nên connection có thể chết bất cứ lúc nào. Nếu connection chết khi bạn có 7 streams đủ loại — unary, bidirectional, server-side, client-side — tất cả phải thiết lập lại từ đầu. *Đặt hết trứng vào một rổ.*
 
+Bảng đối chiếu nhanh gRPC và REST:
+
+| Tiêu chí | gRPC | REST |
+|---|---|---|
+| Định dạng dữ liệu | Nhị phân với protocol buffers | JSON dạng text linh hoạt |
+| Schema | Bắt buộc, compile từ proto file | Không bắt buộc |
+| Client library | Một library sinh tự động cho nhiều ngôn ngữ | Mỗi bên tự xử lý |
+| Streaming | Bốn chế độ, kể cả bidirectional | Chủ yếu request/response |
+| Browser | Cần gRPC-web proxy kiểu sidecar | Gọi trực tiếp |
+
 **Tự viết protocol riêng thì sao?** Hoàn toàn được chứ. Spotify từng làm **Hermes** — một giao thức tuyệt vời, không có vấn đề gì. Nhưng chỉ Spotify dùng nó: mỗi nhân viên mới vào đều phải được dạy về Hermes, không ai bên ngoài biết đến nó, cũng chẳng rõ có open source không. Kết quả là Spotify **chuyển sang gRPC** không phải vì Hermes dở, mà vì ai cũng biết gRPC. *Đôi khi độ phổ biến thắng — giống như ai cũng làm web app vì HTTP có mặt khắp nơi vậy.*
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vấn đề gốc mà gRPC sinh ra để giải quyết là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Gánh nặng client library — mỗi giao thức, mỗi ngôn ngữ cần một library riêng phải bảo trì và vá lỗi.
+
+Giải thích: gRPC sinh stub tự động cho ngôn ngữ bạn chọn từ một file proto duy nhất.
+
+Tham chiếu: Mục Động lực.
+
+</details>
+
+**Câu 2:** Kể tên bốn chế độ giao tiếp của gRPC.
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Unary (request/response), server streaming, client streaming và bidirectional streaming.
+
+Giải thích: Một giao thức làm được mọi kiểu giao tiếp — đó là điểm khác biệt của gRPC.
+
+Tham chiếu: Mục Bốn chế độ của gRPC.
+
+</details>
+
+**Câu 3:** Vì sao protocol buffers cần một message rỗng thay vì `void`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì protocol buffers không có khái niệm "không tham số"; `void` là từ reserve nên phải định nghĩa message rỗng như `NoParams`.
+
+Giải thích: Mình từng đặt tên `void` và ăn lỗi "unexpected token void".
+
+Tham chiếu: Mục Dựng từ số 0.
+
+</details>
+
+**Câu 4:** Vì sao không thể gửi mảng "trần" qua gRPC?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì schema phải khớp chính xác từng chữ — mảng phải bọc trong object đúng khóa như `items`.
+
+Giải thích: Schema là hợp đồng, không thể "xấp xỉ" được; trả cả mảng lớn một lần còn rất tốn CPU, nên stream sẽ tốt hơn.
+
+Tham chiếu: Mục Call object, callback và kỷ luật schema.
+
+</details>
+
+**Câu 5:** Vì sao Spotify chuyển từ Hermes sang gRPC?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì ai cũng biết gRPC — nhân viên mới không cần được dạy một protocol riêng, còn Hermes chỉ mình Spotify dùng.
+
+Giải thích: Đôi khi độ phổ biến thắng, giống như HTTP có mặt khắp nơi vậy.
+
+Tham chiếu: Mục Ưu điểm, nhược điểm và câu chuyện Spotify.
+
+</details>
+
 Tóm lại, gRPC đã giải bài toán "một giao thức cho mọi nhu cầu": microservices ngày nay gần như mặc định dùng nó — request/response, stream log, stream event, upload file lớn, tất cả đều gRPC. Vì đứng trên HTTP/2 nên chỉ một connection là đủ. Trong kiến trúc cloud native với service mesh, ứng dụng của bạn có thể chỉ nói HTTP/1.1 còn sidecar container và proxy lo phần gRPC giúp bạn — library không còn là vấn đề nữa. Nhưng nếu chỉ xây một ứng dụng đơn giản, gRPC có thể là **overkill**. Hẹn gặp các bạn ở bài tiếp theo — **WebRTC** — để xem giao thức thời gian thực này giải quyết bài toán kết nối peer-to-peer như thế nào nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — gRPC](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34630280)
+- [gRPC — Core concepts, architecture and lifecycle](https://grpc.io/docs/what-is-grpc/core-concepts/)

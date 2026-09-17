@@ -1,5 +1,7 @@
 # 🎨 LangGraph Studio: "IDE" giúp bạn nhìn thấy agent đang chạy và debug nhanh gấp nhiều lần
 
+> Nguồn: `055-LangGraph-Studio-AKA-LangGraph-IDE.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/45128227)
+
 Chào các bạn, Eden đây! 👋
 Hy vọng các bạn vẫn đang thấy khóa học thú vị. Trong bài này, mình muốn giới thiệu một thứ **rất mới**: **LangGraph Studio**, hay còn gọi là **LangGraph IDE** — dịch vụ mới của đội ngũ LangChain, có thể **chạy ngay trên máy bạn**.
 
@@ -56,6 +58,17 @@ Khi mở project trong LangGraph Studio, quá trình load sẽ mất **khoảng 
 3. **Dockerize ứng dụng của các bạn** và build image.
 4. Chạy một container chứa graph của các bạn.
 
+Quá trình "hậu trường" đó gói gọn như sau:
+
+```mermaid
+flowchart TD
+    A[Mở project trong Studio] --> B[Tải image LangGraph debugger]
+    B --> C[Tạo container debugger]
+    C --> D[Dockerize ứng dụng]
+    D --> E[Chạy container chứa graph]
+    E --> F[Postgres lưu state sau mỗi node]
+```
+
 Kiểm tra bằng `docker ps`, mình thấy đang có **3 container chạy**: **LangGraph debugger**, một **container Postgres**, và **container của ứng dụng**. Các bạn không cần biết Docker để dùng Studio, nhưng mình vẫn muốn cho thấy "hậu trường" để các bạn có góc nhìn đầy đủ hơn — và vì theo mình, **quản lý, xử lý deployment cũng là một phần công việc của AI engineer**.
 
 Trong giao diện Studio (đang chạy tại `localhost:56784` và ở trạng thái online), bên trái là **graph Advanced RAG** của chúng ta. Ở ô input phía trên, các bạn nhập giá trị vào **field `question`** rồi submit.
@@ -74,6 +87,13 @@ Giờ tới phần thú vị: giả sử mình **không muốn chạy web search
 
 Tiếp theo, mình tạo một **thread mới** và thử đặt **interrupt**. Chúng ta sẽ nói kỹ hơn về interrupts ở section sau, nhưng hiểu đơn giản: đây là cách **dừng graph trước khi một node bất kỳ chạy**. Bạn có thể chọn **bất kỳ node nào** để chặn lại.
 
+Phân biệt nhanh hai thao tác debug quan trọng trong Studio:
+
+| Thao tác | Làm gì | Dùng khi nào |
+|---|---|---|
+| Fork | Tạo thread ID mới, resume sau một node với state đã sửa | Muốn thử kịch bản khác mà không chạy lại từ đầu |
+| Interrupt | Dừng graph ngay trước một node bất kỳ | Muốn kiểm tra state rồi mới cho graph chạy tiếp |
+
 Mình chọn interrupt tại **grade documents**. Chạy với câu hỏi **"what is agent memory"**, graph retrieve xong thông tin rồi **dừng ngay trước grade documents** — sau đó chỉ cần bấm tiếp tục để nó chạy nốt. *Các bạn có thể hình dung việc debug ứng dụng LLM trở nên dễ dàng và tiện lợi đến mức nào rồi đấy!*
 
 Mình thử thêm một thread mới với câu **"how to make pizza"** — và đúng như dự đoán, **nó chỉ đi qua web search** rồi trả kết quả về.
@@ -82,4 +102,77 @@ Còn đây là "điểm nhấn" cuối: **thay đổi code khi graph đang chạ
 
 Quay lại IDE, tạo thread mới và hỏi **"what is agent memory"**, chờ graph chạy xong… và câu trả lời cuối cùng **nghe y như cướp biển thật**, với "arr" ở đầu và "me hearties, arr" ở cuối. Đó chính là sức mạnh của việc lặp nhanh trong Studio!
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** LangGraph Studio là gì và giúp ích gì cho developer?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là "IDE" trực quan giúp visualize và debug graph, từ đó rút ngắn vòng đời phát triển agent.
+
+Giải thích: Giá trị thật sự nằm ở những vòng lặp phát triển thật nhanh.
+
+Tham chiếu: Mục LangGraph Studio là gì.
+
+</details>
+
+**Câu 2:** Điều kiện nền tảng hiện tại để dùng Studio là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chỉ hỗ trợ máy Mac dùng chip Apple silicon, cần Docker đang chạy và tài khoản LangSmith.
+
+Giải thích: Công cụ đang ở giai đoạn beta nên có thể gặp vài trục trặc nhỏ.
+
+Tham chiếu: Mục Cài đặt và cấu hình.
+
+</details>
+
+**Câu 3:** File `langgraph.json` khai báo những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Graph cần debug và cách chạy, đường dẫn tới compiled graph, file môi trường `.env`, và dependencies.
+
+Giải thích: Phần trước dấu hai chấm là đường dẫn file, phần sau là tên biến giữ compiled graph.
+
+Tham chiếu: Mục Cài đặt và cấu hình.
+
+</details>
+
+**Câu 4:** Fork khác interrupt ở điểm nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Fork tạo thread ID mới và resume sau một node với state đã sửa; interrupt dừng graph ngay trước node bất kỳ.
+
+Giải thích: Fork phù hợp để thử kịch bản khác mà không chạy lại từ đầu.
+
+Tham chiếu: Mục Chạy thử và Interrupts.
+
+</details>
+
+**Câu 5:** Điều gì khiến tính năng fork và rerun hoạt động được?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Container Postgres lưu state sau mỗi lần node thực thi, kèm toàn bộ dữ liệu thứ tự các node đã chạy.
+
+Giải thích: State được persist bền vững trong Postgres DB — "không có phép thuật nào ở đây cả"!
+
+Tham chiếu: Mục Chạy thử.
+
+</details>
+
 LangGraph Studio đúng là một bổ sung tuyệt vời cho hệ sinh thái LangGraph. Ở bài tiếp theo, chúng ta sẽ bước ra khỏi local và làm quen với **LangGraph Cloud API** — nơi graph của bạn được "hóa thân" thành một web server hoàn chỉnh. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangGraph Studio (AKA LangGraph IDE)](https://ua.udemy.com/course/langgraph/learn/lecture/45128227)
+- [LangChain Docs — LangSmith Studio](https://docs.langchain.com/langsmith/studio)
+- [LangGraph Docs — LangGraph Studio](https://docs.langchain.com/oss/python/langgraph/studio)

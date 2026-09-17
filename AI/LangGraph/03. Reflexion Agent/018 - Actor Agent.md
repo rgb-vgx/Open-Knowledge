@@ -1,5 +1,7 @@
 # 🎭 Actor Agent: "First responder chain" viết bản nháp đầu tiên kèm critique và search query
 
+> Nguồn: `018-Actor-Agent.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/54703107)
+
 Chào các bạn, mình là Eden đây! 👋 Trong video này, chúng ta sẽ implement **actor agent** — còn gọi là **first responder chain**, bước đầu tiên của graph. Nhiệm vụ của nó rất rõ ràng: nhận **user query** và tạo ra **bài viết đầu tiên**.
 
 Đây là video dài và nhiều "đồ chơi" kỹ thuật, chúng ta sẽ cùng đi qua **prompt engineering**, **output parsers** và đặc biệt là **function calling** để ép LLM trả về **structured output (đầu ra có cấu trúc)**. Code vẫn có sẵn trong phần **Resources** như mọi khi nhé.
@@ -13,6 +15,13 @@ Bắt đầu với các import:
 * **datetime** — để truyền ngày giờ hiện tại cho agent.
 * `load_dotenv` — nạp biến môi trường.
 * **JSONOutputToolsParser** và **PydanticToolsParser** từ LangChain output parsers — hai "phiên dịch viên" cho kết quả **function calling**: một cái biến response thành **JSON/dictionary**, một cái biến thành **Pydantic object**.
+
+Hai parser này khác nhau ở đầu ra, nên chọn đúng cái cho đúng việc:
+
+| Parser | Kết quả trả về | Dùng khi nào |
+|---|---|---|
+| `JSONOutputToolsParser` | JSON / dictionary | Cần xử lý thô, thao tác như dict |
+| `PydanticToolsParser` | Pydantic object | Cần attribute có kiểu, ví dụ `AnswerQuestion` |
 * **HumanMessage**, **ChatPromptTemplate** và **MessagesPlaceholder** — nơi chứa toàn bộ lịch sử các vòng lặp của agent, đồng thời làm chỗ trống cho các message mới.
 * **ChatOpenAI** — mình dùng **GPT-4 Turbo**.
 
@@ -56,6 +65,16 @@ Mình điền vào ô first instruction câu lệnh: **"Provide a detailed 250 w
 * prompt template → pipe vào **LLM GPT-4 Turbo** đã được `bind_tools` với **AnswerQuestion**.
 * Đặt **tool_choice = "AnswerQuestion"** — buộc LLM **luôn luôn** gọi tool này, nhờ đó câu trả lời bị **neo chặt** vào object chúng ta muốn.
 
+Toàn bộ first responder chain chạy theo luồng:
+
+```mermaid
+flowchart LR
+    A[Prompt template kèm first instruction] --> B[LLM GPT-4 Turbo]
+    B --> C[bind_tools với AnswerQuestion]
+    C --> D[tool_choice AnswerQuestion]
+    D --> E[AnswerQuestion object gồm answer reflection search_queries]
+```
+
 Với `if __name__ == "__main__"`, mình chạy chain với prompt: *"Write about AI-Powered SOC / autonomous SOC problem domain, list startups that have raised capital on this"* và truyền **HumanMessage** vào key `messages`.
 
 ---
@@ -72,4 +91,77 @@ Kết quả nhận được là một **AnswerQuestion object**:
 
 Mình cũng chỉ ra hai điểm cần cải thiện: response có **thông tin dư**, và dữ liệu về startup đến từ **parametric knowledge** (kiến thức LLM học trong quá trình training) — vì vậy cần **ground bằng dữ liệu bên ngoài**. Cuối cùng, mở **LangSmith** xem trace, ta thấy rõ prompt đã gửi cho OpenAI và answer được parse bằng **Pydantic output parser**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Actor agent còn được gọi là gì và nhận input gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là **first responder chain** — bước đầu tiên của graph, nhận **user query** và tạo bài viết đầu tiên.
+
+Giải thích: Đây là node khởi tạo toàn bộ vòng reflexion.
+
+Tham chiếu: Đoạn mở đầu.
+
+</details>
+
+**Câu 2:** Prompt chính gồm ba nhiệm vụ nào ở phần output indicator?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** First instructions (yêu cầu cụ thể), reflect and critique nghiêm khắc, và recommend search queries.
+
+Giải thích: Critique sẽ được Revisor dùng lại; search queries sẽ chạy qua Tavily ở tool execution node.
+
+Tham chiếu: Mục Prompt chính.
+
+</details>
+
+**Câu 3:** Vì sao đặt `tool_choice = "AnswerQuestion"`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Buộc LLM luôn gọi tool này, nhờ đó câu trả lời bị neo chặt vào đúng schema mong muốn.
+
+Giải thích: Đây là cách ép **structured output** đáng tin cậy qua function calling.
+
+Tham chiếu: Mục First responder chain.
+
+</details>
+
+**Câu 4:** Class Reflection chứa hai field nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** **missing** (thông tin quan trọng bị thiếu) và **superfluous** (thông tin thừa).
+
+Giải thích: Eden còn phải tra từ điển mới biết nghĩa từ "superfluous".
+
+Tham chiếu: Mục Schemas.py.
+
+</details>
+
+**Câu 5:** Vì sao cần ground câu trả lời bằng dữ liệu bên ngoài?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì dữ liệu về startup đến từ **parametric knowledge** (kiến thức LLM học khi training), có thể thiếu số liệu hoặc lỗi thời.
+
+Giải thích: Reflection chỉ ra phần missing — cần số vốn gọi được cụ thể của từng startup.
+
+Tham chiếu: Mục Kết quả thực tế.
+
+</details>
+
 Wow, một video dài đúng chất hands-on! *Nếu có đoạn nào hơi nặng, cứ xem lại — đây là phần lõi của cả agent.* Chúng ta đã có logic cho **responder node**; video tiếp theo sẽ đến với **Revisor chain** nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Actor Agent](https://ua.udemy.com/course/langgraph/learn/lecture/54703107)
+- [LangChain Docs — Structured output](https://docs.langchain.com/oss/python/langchain/structured-output)
+- [LangChain Reference — bind_tools](https://reference.langchain.com/python/langchain-core/language_models/chat_models/BaseChatModel/bind_tools)

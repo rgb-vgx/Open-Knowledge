@@ -1,5 +1,7 @@
 # 🔨 Xây chain đầu tiên: Tóm tắt và "đào" sự thật thú vị về Elon Musk
 
+> Nguồn: `009-Building-a-LangChain-Chain-to-Summarize-Text.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52015765)
+
 Chào các bạn, Eden đây! Lý thuyết đã đủ rồi — giờ là lúc **viết chain LangChain đầu tiên** của chúng ta. Nhiệm vụ: lấy thông tin về Elon Musk, gửi cho LLM để **tóm tắt** và tạo ra **hai sự thật thú vị** về ông ấy.
 
 Cùng mình đi qua từng bước nhé, mọi thứ đều rất trực quan.
@@ -37,6 +39,13 @@ Mình khởi tạo object `PromptTemplate` với template vừa viết, kèm dan
 * **Tái sử dụng và rõ ràng:** prompt có thể dùng lại trong một chain khác.
 * **First-class citizen:** đây là công dân hạng nhất trong LangChain — nó được **log lại, trace lại**, giúp việc debug dễ thở hơn nhiều.
 * **An toàn hơn trước prompt injection:** nó có thể áp đặt format và cấu trúc nghiêm ngặt, đặc biệt mạnh khi kết hợp với **output parsers**.
+
+| Tiêu chí | f-string | Prompt Template |
+|---|---|---|
+| Ràng buộc biến | Không kiểm tra, dễ gửi prompt hỏng | Bắt cung cấp đúng biến, báo lỗi rõ ràng |
+| Tái sử dụng | Khó dùng lại ở chain khác | Dùng lại được, prompt là first-class citizen |
+| Tracing và debug | Không được log/trace | Được log lại, trace lại đầy đủ |
+| Prompt injection | Dễ bị nhồi text tùy ý | Áp format chặt, mạnh khi ghép output parser |
 
 f-string khuyến khích ta cứ "nhồi" text vào — cũng chẳng sao, nhưng nếu muốn code **đáng tin cậy (reliable)**, hãy dùng prompt template. *Nghe hơi nhiều buzzword phải không? Cứ từ từ, cuối khóa bạn sẽ nắm hết.*
 
@@ -89,6 +98,16 @@ Khi bạn chạy `chain.invoke`, chuỗi sự kiện diễn ra như sau:
 3. String này được pipe vào `invoke` của **LLM**.
 4. Prompt cuối cùng được gửi tới model.
 
+Luồng chạy của chain trông như sau:
+
+```mermaid
+flowchart LR
+    A[Information] --> B[PromptTemplate]
+    B --> C[PromptValue]
+    C --> D[ChatOpenAI]
+    D --> E[AIMessage]
+```
+
 Đó là cách "nối chuỗi" thông minh — và cũng chính là ý nghĩa cái tên **LangChain**.
 
 Mình nói thật lòng: **LCEL là thứ khó tiêu hóa nhất trong LangChain.** *Không hiểu ngay từ lần đầu là chuyện hoàn toàn bình thường!* Chúng ta sẽ đào sâu vào implementation và có thêm nhiều ví dụ xuyên khóa. Ở thời điểm này, chỉ cần hiểu ở mức cao: ta lấy biến `information`, nhét nó vào string, và gửi string đó cho LLM.
@@ -99,4 +118,76 @@ Cuối cùng, chạy code thôi. GPT-5 khá chậm nên mình tua nhanh một ch
 
 ---
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao nên dùng PromptTemplate thay vì f-string?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì template ràng buộc chặt biến (báo lỗi rõ ràng), tái sử dụng được, được log/trace, và an toàn hơn trước prompt injection.
+
+Giải thích: f-string dễ khiến ta "nhồi" text và gửi prompt hỏng âm thầm; template giúp code đáng tin cậy hơn.
+
+Tham chiếu: Mục Bước 2 — Viết prompt template.
+
+</details>
+
+**Câu 2:** Temperature thấp (0 – 0.3) phù hợp với việc gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Tóm tắt, viết code, hướng dẫn, viết test — nơi cần kết quả deterministic (xác định), khách quan và lặp lại được.
+
+Giải thích: Nhiệt độ thấp giảm độ ngẫu nhiên của phản hồi.
+
+Tham chiếu: Mục Bước 3 — Khởi tạo Chat Model.
+
+</details>
+
+**Câu 3:** Temperature cao (trên 0.8) dùng cho việc gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thơ ca, tiểu thuyết và những ý tưởng đột phá — vì kết quả cực kỳ sáng tạo.
+
+Giải thích: Đây là mặt đối lập với các tác vụ cần tính xác định ở nhiệt độ thấp.
+
+Tham chiếu: Mục Bước 3 — Khởi tạo Chat Model.
+
+</details>
+
+**Câu 4:** Pipe operator `|` trong LCEL làm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nối output của component bên trái thành input của component bên phải, tạo ra một runnable chain.
+
+Giải thích: Đây chính là cách "nối chuỗi" làm nên ý nghĩa cái tên LangChain.
+
+Tham chiếu: Mục Bước 4 — Nối chain bằng pipe operator.
+
+</details>
+
+**Câu 5:** PromptValue là gì trong luồng chạy của chain?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là kết quả của prompt template sau khi format — nôm na là một "string xịn" — được pipe vào invoke của LLM.
+
+Giải thích: Sau đó prompt cuối cùng mới được gửi tới model.
+
+Tham chiếu: Mục Bước 4 — Nối chain bằng pipe operator.
+
+</details>
+
 Ở video tiếp theo, chúng ta sẽ **debug, mổ xẻ các object** và **trace toàn bộ quá trình này với LangSmith** để bạn thấy tận mắt mọi thứ diễn ra bên trong. Hẹn gặp lại nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Building a LangChain Chain to Summarize Text](https://ua.udemy.com/course/langchain/learn/lecture/52015765)
+- [LangChain Docs — Overview](https://docs.langchain.com/oss/python/langchain/overview)

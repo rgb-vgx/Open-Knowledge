@@ -1,5 +1,7 @@
 # 🗂️ Cấu trúc Code "chuẩn production": Repository phải phản chiếu kiến trúc của bạn
 
+> Nguồn: `110-Code-Structure.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/51132391)
+
 Chào các bạn, mình là Eden đây! 👋 Trong video này, chúng ta sẽ cùng "dọn dẹp nhà cửa" một chút: review và tổ chức lại cấu trúc repository.
 
 Mục tiêu rất rõ ràng: code phải **dễ đọc (readable)**, **dễ bảo trì (maintainable)** và **dễ viết test**, từ đó giúp ứng dụng của chúng ta trở nên **robust (vững chắc)** hơn.
@@ -31,6 +33,18 @@ Ngoài ra, chúng ta cũng cần:
 * **tests/** — nơi viết test, với file **test_chains** để kiểm thử các chain.
 * **ingestion** — file ở thư mục gốc, chứa logic **tải thông tin về và index vào vector store**.
 
+Bảng tóm tắt vai trò từng thành phần trong repository:
+
+| Thành phần | Vai trò |
+|---|---|
+| **graph.py** | Kết nối tất cả node và edge lại với nhau |
+| **state.py** | Chứa graph state object, bị thay đổi trong suốt quá trình graph thực thi |
+| **const.py** | Hằng số dùng trong phần hiện thực, chủ yếu là tên các node |
+| **nodes/** | Subpackage chứa hiện thực các node; mỗi file là một node |
+| **chains/** | Mỗi file là một chain, tương ứng với các node |
+| **tests/** | Nơi viết test, có file test_chains để kiểm thử chain |
+| **ingestion** | Logic tải thông tin về và index vào vector store |
+
 ---
 
 ### 🧪 Viết test đầu tiên với Pytest
@@ -57,4 +71,76 @@ Trước khi kết thúc, mình muốn nói rõ: cấu trúc này **hiệu quả
 
 Các bạn sẽ thấy, khi phát triển ứng dụng theo cách này, việc mở rộng, thêm node/edge mới hay bổ sung test đều rất dễ dàng.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao Eden phải refactor lại so với tutorial gốc của LangChain?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì tutorial gốc tập trung nhiều vào Jupyter notebook, còn mình cần phần mềm đủ vững chắc để chạy trong môi trường production.
+
+Giải thích: Mục tiêu là code dễ đọc, dễ bảo trì, dễ test và robust hơn.
+
+Tham chiếu: Mục Vì sao mình phải refactor lại.
+
+</details>
+
+**Câu 2:** Câu châm ngôn của Eden về cấu trúc repository là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cấu trúc repository phải phản chiếu kiến trúc của chính nó — ở đây là kiến trúc graph với node và edge.
+
+Giải thích: Đó là lý do các file được chia theo node, chain, state.
+
+Tham chiếu: Mục Vì sao mình phải refactor lại.
+
+</details>
+
+**Câu 3:** File state.py chứa gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Graph state object — đối tượng sẽ bị thay đổi trong suốt quá trình graph thực thi.
+
+Giải thích: State là dữ liệu trung tâm mà các node đọc và ghi.
+
+Tham chiếu: Mục Bố cục thư mục.
+
+</details>
+
+**Câu 4:** Pytest tìm test theo quy ước đặt tên nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Các thư mục bắt đầu bằng `tests` và các file test có prefix là `test`.
+
+Giải thích: Vì vậy Eden tạo dummy test với hàm `test_foo` assert `1 == 1`.
+
+Tham chiếu: Mục Viết test đầu tiên với Pytest.
+
+</details>
+
+**Câu 5:** Lệnh `pytest .` và cờ `-v` có tác dụng gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `pytest .` bảo Pytest chạy từ thư mục hiện tại (thư mục gốc project); `-v` (verbose) liệt kê rõ những test đã chạy.
+
+Giải thích: Eden còn cấu hình runner Pytest trong PyCharm với script path là thư mục gốc và tham số `-v`.
+
+Tham chiếu: Mục Viết test đầu tiên với Pytest.
+
+</details>
+
 *Đừng lo nếu bạn chưa quen với việc "chia ô" code như thế này* — vài video nữa thôi, mọi thứ sẽ vào guồng. Nếu muốn đối chiếu hoặc tải code, các bạn ghé branch **2-project-structure** nhé. Video tiếp theo, chúng ta sẽ hiện thực **ingestion vào ChromaDB** — hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Code Structure](https://ua.udemy.com/course/langchain/learn/lecture/51132391)
+- [LangGraph — Graph API overview](https://docs.langchain.com/oss/python/langgraph/graph-api)

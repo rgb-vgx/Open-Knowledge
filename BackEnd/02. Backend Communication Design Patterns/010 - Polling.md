@@ -1,5 +1,7 @@
 # 📊 Polling (hỏi vòng): Pattern giao tiếp đơn giản nhất mà backend nào cũng dùng
 
+> Nguồn: `009-Polling.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629816)
+
 Sau khi đã nắm synchronous (đồng bộ) vs asynchronous (bất đồng bộ), chúng ta bước sang một pattern giao tiếp khác: **polling (hỏi vòng)** — hay khi mọi người nói polling thì thường ý là **short polling (hỏi vòng ngắn)**. Đây là một trong những pattern rất phổ biến, dễ implement nhất, và mình sẽ chỉ các bạn cách nó vận hành, giá phải trả, cùng một demo chạy thật.
 
 ### 🎯 Vì sao gọi là "short polling"?
@@ -21,6 +23,19 @@ Luồng đi của short polling rất rõ ràng:
 2. **Server trả lời ngay lập tức** bằng một **handle** — thường là unique identifier (định danh duy nhất) tương ứng với request đó.
 3. **Backend tự do xử lý theo cách của nó**: xếp vào queue, persist xuống disk, giữ trong memory rồi chạy sau — request **không được thực thi ngay**.
 4. **Client dùng handle để poll trạng thái**: "xong chưa?" — "chưa" — "xong chưa?" — "chưa" — ... tới khi job hoàn tất, lần poll kế tiếp nhận luôn response.
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>S: Gửi request xử lý job
+    S-->>C: Trả handle ngay lập tức
+    S->>S: Xử lý job ở background
+    C->>S: Poll trạng thái lần 1
+    S-->>C: Chưa xong
+    C->>S: Poll trạng thái lần 2
+    S-->>C: Xong kèm kết quả
+```
 
 Nhìn hẹp thì **mỗi lần poll chính là một request-response**. Nhưng toàn bộ hệ thống là asynchronous: ta đã **chia nhỏ một request-response lớn thành nhiều request-response nhỏ**, và chúng hiện ra trước mắt chúng ta dưới dạng các lần poll.
 
@@ -61,4 +76,76 @@ Mình dựng một app đơn giản bằng **Express** (chọn Node.js vì nó p
 
 Chạy thử bằng curl: POST vào `localhost:8080/submit` để nhận job ID, rồi GET `check status` và nhìn tiến độ nhảy **40%, 50%, 90%, 100%**. Cứ mỗi 5 giây poll một lần — đúng như một browser có timer đang hỏi vòng. Submit thêm job thứ hai thì có **hai job chạy song song**, và mình kiểm tra từng job độc lập. Toàn bộ code mình sẽ chia sẻ cho các bạn.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao pattern này được gọi là "short" polling?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì mỗi lần poll diễn ra cực nhanh, chỉ để trả lời một câu hỏi duy nhất: "việc này xong chưa?".
+
+Giải thích: Short ở đây nói về độ ngắn của từng lượt hỏi, không phải thời gian sống của job.
+
+Tham chiếu: Mục Vì sao gọi là short polling.
+
+</details>
+
+**Câu 2:** Short polling thường đi kèm pattern nào, và "handle" là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đi kèm asynchronous backend processing; handle là future, job ID hay task ID mà server trả về ngay.
+
+Giải thích: Request chạy lâu được đẩy sang xử lý nền, client dùng handle để hỏi thăm trạng thái dần.
+
+Tham chiếu: Mục Vì sao gọi là short polling.
+
+</details>
+
+**Câu 3:** Vì sao nói client disconnect an toàn với short polling?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì client lưu được ID xuống disk, respawn lên thì đọc lại danh sách pending jobs và poll tiếp.
+
+Giải thích: Với request-response thuần, client disconnect giữa chừng là mất luôn một response đẹp.
+
+Tham chiếu: Mục Cơ chế hoạt động.
+
+</details>
+
+**Câu 4:** Vì sao short polling bị coi là quá "chatty"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì mỗi app có thể poll 10–40 lần, khoảng 99% request vô ích do job chưa xong.
+
+Giải thích: Các con số cộng dồn khi scale, gây nghẽn mạng và đốt bandwidth — tài nguyên quý ở backend.
+
+Tham chiếu: Mục Nhược điểm.
+
+</details>
+
+**Câu 5:** Trong demo, vì sao lấy timestamp làm job ID bị gọi là "bad idea"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì hai người chạy cùng một millisecond sẽ sinh ra ID trùng nhau.
+
+Giải thích: Demo bỏ qua vấn đề này, nhưng production thì ID phải thật sự unique.
+
+Tham chiếu: Mục Demo.
+
+</details>
+
 Short polling **rất đơn giản, rất elegant** — nhưng nhớ cho: *cái giá của nó là chi phí mạng*. Ở bài sau, mình sẽ giới thiệu cách tiếp cận tốt hơn mà **Kafka** đang dùng: **Long Polling (hỏi vòng kéo dài)**. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Polling](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629816)
+- [Node.js — Overview of Blocking vs Non-Blocking](https://nodejs.org/learn/asynchronous-work/overview-of-blocking-vs-non-blocking)

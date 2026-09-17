@@ -1,5 +1,7 @@
 # 💾 SqliteSaver: Nâng cấp bộ nhớ tạm thành state "bám trụ" trên đĩa
 
+> Nguồn: `049-SqliteSaver.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/44768411)
+
 Chào các bạn, Eden đây! 👋 Ở bài trước, **MemorySaver** đã giúp chúng ta làm quen với state được checkpoint. Nhưng nó là **ephemeral (tạm thời)**, nằm trong bộ nhớ và **mất sạch thông tin sau mỗi lần chương trình chạy**.
 
 Hôm nay chúng ta sẽ chuyển sang **SqliteSaver** để persist state xuống **storage** và vào hẳn một **database SQLite**. Và các bạn sẽ thấy việc chuyển đổi này **dễ đến mức khó tin**!
@@ -24,6 +26,22 @@ Phần chuyển đổi thực sự rất gọn:
 
 Nhìn kỹ vào implementation của SqliteSaver trong LangGraph, bạn sẽ thấy có một phương thức cho phép **tạo checkpointer class từ một connection string**. Connection string đó có thể trỏ đến **database remote** như **Google Cloud SQL, AWS RDS, Supabase** — bất kỳ DB nào bạn dùng bản managed trên cloud — hoặc đơn giản là lưu xuống **ổ đĩa local** bằng cách để **`checkpoints.sqlite`** trong connection string. Đó chính xác là những gì chúng ta đang làm.
 
+| Tiêu chí | MemorySaver | SqliteSaver |
+|---|---|---|
+| Nơi lưu state | Trong bộ nhớ | Database SQLite, mặc định file `checkpoints.sqlite` |
+| Độ bền | Ephemeral, mất sạch sau mỗi lần chạy | Persist xuống đĩa, dừng và resume được |
+| Cài đặt | Có sẵn trong `langgraph` | Cài thêm `langgraph-checkpoint-sqlite` |
+| Khởi tạo | `MemorySaver()` | `SqliteSaver(connection)` |
+
+```mermaid
+flowchart TD
+    A[Cài langgraph-checkpoint-sqlite] --> B[sqlite3.connect tới checkpoints.sqlite]
+    B --> C[Bật cờ check_same_thread False]
+    C --> D[Tạo SqliteSaver với connection]
+    D --> E[Compile graph với checkpointer]
+    E --> F[State persist xuống file DB]
+```
+
 ---
 
 ### 🗄️ Kiểm chứng: file DB đã ra đời
@@ -47,4 +65,77 @@ Giờ **chạy tiếp** từ đúng chỗ dừng: comment hết phần đầu, b
 
 ---
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao chuyển từ MemorySaver sang SqliteSaver?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì MemorySaver là ephemeral, nằm trong bộ nhớ và mất sạch thông tin sau mỗi lần chương trình chạy.
+
+Giải thích: SqliteSaver persist state xuống database SQLite.
+
+Tham chiếu: Đoạn mở đầu.
+
+</details>
+
+**Câu 2:** Package cần cài là gì và có lưu ý gì cho checkpointer khác?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `langgraph-checkpoint-sqlite`; mỗi loại checkpointer khác sẽ có subpackage riêng.
+
+Giải thích: Cách tách third-party implementation này quen thuộc nếu bạn từng làm với LangChain.
+
+Tham chiếu: Mục Cài đặt & import.
+
+</details>
+
+**Câu 3:** Vì sao phải bật `check_same_thread=False`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để có thể thao tác database từ nhiều thread khác nhau, vì các lần chạy graph nằm trên những thread khác nhau.
+
+Giải thích: Không đặt cờ này thành false sẽ gặp lỗi khi chỉnh sửa DB từ các thread khác.
+
+Tham chiếu: Mục Thay MemorySaver bằng SqliteSaver.
+
+</details>
+
+**Câu 4:** Phương thức tạo checkpointer từ connection string cho phép gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trỏ tới database remote như Google Cloud SQL, AWS RDS, Supabase, hoặc lưu xuống ổ đĩa local với `checkpoints.sqlite`.
+
+Giải thích: Đó chính xác là những gì chúng ta đang làm trong bài.
+
+Tham chiếu: Mục Thay MemorySaver bằng SqliteSaver.
+
+</details>
+
+**Câu 5:** Làm sao kiểm chứng state đã được persist?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** File `checkpoints.sqlite` xuất hiện, mở DB tool xem bảng `checkpoints`; đổi thread ID thành 777 thấy entry mới, và LangSmith ghi metadata thread ID cùng mục threads.
+
+Giải thích: Khác biệt quan trọng nhất là state nằm dưới đĩa nên dừng và resume được.
+
+Tham chiếu: Mục Kiểm chứng file DB đã ra đời, mục Đổi thread ID.
+
+</details>
+
 MemorySaver giúp ta "cảm" được persistence, còn SqliteSaver cho ta một nền tảng thật sự để dừng — chạy tiếp — tra cứu lịch sử bất cứ lúc nào. Hành trình về persistence vẫn còn nhiều điều thú vị phía trước, hẹn gặp lại các bạn ở bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — SqliteSaver](https://ua.udemy.com/course/langgraph/learn/lecture/44768411)
+- [SqliteSaver — langgraph.checkpoint.sqlite Reference](https://reference.langchain.com/python/langgraph.checkpoint.sqlite/SqliteSaver)
+- [Checkpoints — langgraph Reference](https://reference.langchain.com/python/langgraph/checkpoints)

@@ -1,5 +1,7 @@
 # 💛 Lời nhắn cá nhân từ Eden: Một đánh giá nhỏ, một động lực rất lớn
 
+> Nguồn: `015-Personal-Message.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43457316)
+
 Chào các bạn, lại là Eden đây! Lần này mình không dạy code, chỉ muốn gửi tới các bạn một **lời nhắn cá nhân** — ngắn thôi, nhưng mình thật lòng mong các bạn dành chút thời gian đọc hết.
 
 ### 🙏 Nếu các bạn muốn ủng hộ mình
@@ -32,3 +34,7 @@ Nếu các bạn không phiền, hãy làm theo các bước sau nhé:
 3. Để lại một **review trên Udemy**.
 
 Cảm ơn các bạn rất nhiều vì đã đồng hành cùng mình trong hành trình này. Hẹn gặp lại các bạn ở video tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Personal Message](https://ua.udemy.com/course/langgraph/learn/lecture/43457316)

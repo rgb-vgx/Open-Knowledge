@@ -1,5 +1,7 @@
 # 🗄️ Pipeline Ingestion cho Vector Store: Từ bài viết trên web đến ChromaDB
 
+> Nguồn: `111-LangChain-Vector-Store-Ingestion-Pipeline-Unstructured-Chrom.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/51132395)
+
 Chào các bạn, mình là Eden đây! 👋 Như các bạn đã biết, trước khi hiện thực một giải pháp RAG nâng cao, việc đầu tiên luôn là **index tài liệu vào vector store**.
 
 Trong video này, chúng ta sẽ viết file **ingestion.py**: load các bài viết thành **LangChain Documents**, **chunk** chúng thành những mảnh nhỏ hơn, rồi **embed** và lưu tất cả vào **ChromaDB** — vector store mã nguồn mở.
@@ -38,10 +40,101 @@ Chạy thử — và đúng như mong đợi, thư mục **.chroma** xuất hi�
 
 Điều cuối cùng: tạo một **retriever object** từ ChromaDB. Mình khởi tạo object của class **Chroma**, rồi gọi phương thức **`as_retriever()`** để biến nó thành **LangChain retriever** phục vụ **similarity search**. Mình nạp lại từ đĩa bằng collection name và persistent directory đã khai báo, kèm **embedding function**.
 
+Cả pipeline gói gọn trong sơ đồ sau:
+
+```mermaid
+flowchart LR
+    A[Danh sách URL] --> B[Unstructured loader]
+    B --> C[Flatten thành 3 documents]
+    C --> D[Recursive character splitter]
+    D --> E[Chunk size 250 không overlap]
+    E --> F[OpenAI embeddings]
+    F --> G[ChromaDB collection RAG-Chroma]
+    G --> H[as_retriever similarity search]
+```
+
 ---
 
 ### 💾 Đừng index lại từ đầu mỗi lần chạy
 
 Sau khi mọi thứ hoạt động, mình **comment đoạn code indexing lại**, vì chúng ta không muốn index lại từ đầu mỗi lần chạy chương trình — chỉ cần **load mọi thứ từ đĩa**. Chạy lại chương trình một lần nữa để chắc chắn không có lỗi.
 
+| Giai đoạn | Thao tác | Mục đích |
+|---|---|---|
+| Lần chạy đầu | Dùng `from_documents` trên các chunk, đặt `persist_directory` là ./.chroma | Index và lưu vector xuống đĩa |
+| Các lần chạy sau | Khởi tạo Chroma với collection name và persist_directory, bỏ qua code indexing | Load lại từ đĩa, không index lại từ đầu |
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Pipeline ingestion trong bài gồm những bước chính nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Load document từ web, transform và chunk, embed rồi index vào vector store.
+
+Giải thích: Đây là các bước tiêu chuẩn trước khi làm retrieval.
+
+Tham chiếu: Mục Một lời disclaimer về pipeline ingestion.
+
+</details>
+
+**Câu 2:** Ba bài viết được scrape nói về chủ đề gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Autonomous agents (memory, planning, reasoning); prompt engineering (zero-shot, few-shot, chain-of-thought, ReAct); adversarial attacks on LLM security (prompt hacking).
+
+Giải thích: Ba bài này tạo thành nguồn tri thức cho vector store.
+
+Tham chiếu: Mục Load và chunk ba bài viết.
+
+</details>
+
+**Câu 3:** Text splitter được cấu hình như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Recursive character text splitter với `from_tiktoken_encoder`, chunk size 250 và không overlap; kết quả gần 200 chunk.
+
+Giải thích: Chạy thử trong debug cho thấy số mảnh thu được.
+
+Tham chiếu: Mục Load và chunk ba bài viết.
+
+</details>
+
+**Câu 4:** ChromaDB được cấu hình với collection, embedding và thư mục lưu nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Collection **RAG-Chroma**, OpenAI embeddings (mặc định text-embedding-3-small), `persist_directory` là ./.chroma, chạy local.
+
+Giải thích: Dữ liệu được lưu xuống đĩa sau khi index.
+
+Tham chiếu: Mục Index vào ChromaDB và tạo retriever.
+
+</details>
+
+**Câu 5:** Vì sao sau đó phải comment đoạn code indexing?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để không index lại từ đầu mỗi lần chạy chương trình — chỉ cần load mọi thứ từ đĩa.
+
+Giải thích: Retriever được nạp lại bằng collection name, persist_directory và embedding function.
+
+Tham chiếu: Mục Đừng index lại từ đầu mỗi lần chạy.
+
+</details>
+
 Toàn bộ code nằm ở branch **3-ingestion** trên repository GitHub — các bạn cứ tự do so sánh và dùng lại nhé. *Đừng lo nếu phần ingestion này có vẻ "đơn giản quá"* — vì phần hay ho nhất, tức **retrieval với LangGraph**, vẫn đang chờ chúng ta ở phía trước. Video tiếp theo, chúng ta sẽ nói về **GraphState**. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangChain Vector Store Ingestion Pipeline (Unstructured, ChromaDB)](https://ua.udemy.com/course/langchain/learn/lecture/51132395)
+- [LangChain — Retrieval](https://docs.langchain.com/oss/python/langchain/retrieval)
+- [Chroma — Storage Layout (persist_directory)](https://cookbook.chromadb.dev/core/storage-layout)

@@ -1,5 +1,7 @@
 # 🔀 Proxy và Reverse Proxy: Hai khái niệm nền tảng mà mọi backend engineer phải nằm lòng
 
+> Nguồn: `049-Proxy-vs-Reverse-Proxy.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34648574)
+
 Khi các bạn bắt đầu xem khóa học và gửi câu hỏi cho mình, một trong những câu hỏi mình thấy xuất hiện nhiều nhất là: "Proxy và **reverse proxy** khác nhau thế nào?". Đây là khóa học về networking, nhưng mình vẫn dành hẳn một bài cho chủ đề này, bởi nó chính là **cây cầu nối vào thế giới backend**. Là backend engineer, các bạn *phải* hiểu hai khái niệm này — vì API gateway, load balancer, sidecar container, service mesh, Envoy... tất cả đều hoặc là cái này, hoặc là cái kia.
 
 Hãy cùng mổ xẻ từ định nghĩa cho tới chuyện gì thực sự xảy ra bên dưới đường truyền.
@@ -45,6 +47,15 @@ Với proxy: client biết server, server không biết client. Với **reverse 
 * Bạn nói chuyện với `Google.com` như thể đó là đích cuối cùng — nhưng `Google.com` có thể chỉ là một reverse proxy, và bạn hoàn toàn không biết nó đang nói chuyện với một server Google khác ở phía sau.
 * Server phía sau đó được gọi là **back server**, có nơi gọi là **front end server** hay **edge server**.
 
+```mermaid
+flowchart LR
+    C1[Client] --> P[Proxy]
+    P --> S1[Server đích]
+    C2[Client] --> R[Reverse Proxy]
+    R --> B1[Backend 1]
+    R --> B2[Backend 2]
+```
+
 Từ đây, hàng loạt use case tuyệt vời được sinh ra. Ví dụ đầu tiên: **load balancing (cân bằng tải)**. Với một **load balancer (bộ cân bằng tải)**, `Google.com` có thể gửi request thứ nhất cho server này, request thứ hai cho server khác, cứ thế xoay vòng (round robin). Thậm chí thông minh hơn: dựa vào **đường dẫn (path)** bạn đang gọi để chọn server phù hợp.
 
 Ví dụ mình hay kể về API gateway:
@@ -52,6 +63,14 @@ Ví dụ mình hay kể về API gateway:
 * Bạn gọi `POST` tới đường dẫn post → đi tới **post server** với database phục vụ ghi.
 * Bạn gọi đường dẫn đọc messages → đi tới **read server** với database phục vụ đọc.
 * Hai server, hai database hoàn toàn khác nhau: một cái là **row store**, một cái là **column store** chuyên cho analytics — cứ thế mà thiết kế.
+
+| Tiêu chí | Proxy | Reverse proxy |
+|---|---|---|
+| Ai biết ai | Server không biết client | Client không biết server thật |
+| Ai cấu hình | Chính client | Phía server, client mù tịt |
+| Che giấu | Địa chỉ IP của client | Danh tính backend |
+| Use case chính | Ẩn danh, caching, chặn website, debug | Load balancing, CDN, API gateway, canary |
+| Ví dụ | Fiddler, SOCKS proxy | nginx, HAProxy, Fastly |
 
 *Một câu mình muốn các bạn thuộc lòng: **load balancer là reverse proxy, nhưng không phải reverse proxy nào cũng là load balancer** — vì reverse proxy chỉ cần gửi request tới backend giúp bạn, chưa chắc đã có logic cân bằng tải.*
 
@@ -79,6 +98,79 @@ Nhưng nhớ này: với canary, ứng dụng của bạn **phải được vi�
 
 ---
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Trong mô hình proxy, ai biết ai?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Client biết server đích, nhưng server chỉ thấy proxy.
+
+Giải thích: Proxy đứng ra gửi request thay client, nên server chỉ biết địa chỉ IP của proxy.
+
+Tham chiếu: Mục Proxy là gì.
+
+</details>
+
+**Câu 2:** Vì sao proxy ở tunnel mode không đọc được nội dung?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì client dùng `CONNECT` để proxy mở một ống dẫn rỗng, TLS diễn ra end-to-end.
+
+Giải thích: Proxy chỉ ghi thẳng segment vào ống, không giải mã được gì.
+
+Tham chiếu: Mục Vài câu hỏi mình nhận được nhiều nhất.
+
+</details>
+
+**Câu 3:** Vì sao "mọi load balancer là reverse proxy" nhưng ngược lại không đúng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Load balancer là reverse proxy có thêm logic cân bằng tải; reverse proxy chỉ cần chuyển request tới backend.
+
+Giải thích: Không phải reverse proxy nào cũng có logic chọn server.
+
+Tham chiếu: Mục Reverse proxy.
+
+</details>
+
+**Câu 4:** Canary testing đòi hỏi ứng dụng viết theo kiểu gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Stateless.
+
+Giải thích: Request thứ nhất có thể vào server mới, request thứ hai vào server cũ — code giữ state sẽ vỡ.
+
+Tham chiếu: Mục Use case kinh điển của reverse proxy.
+
+</details>
+
+**Câu 5:** Proxy khác VPN ở tầng hoạt động thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** VPN hoạt động ở tầng IP và mã hóa IP packet; proxy hoạt động từ layer 4 trở lên nên phải hiểu giao thức.
+
+Giải thích: Đó là lý do có HTTP proxy, SOCKS proxy... đủ loại.
+
+Tham chiếu: Mục Vài câu hỏi mình nhận được nhiều nhất.
+
+</details>
+
 Vậy là chúng ta đã tách bạch được **proxy** và **reverse proxy**: một bên che giấu client khỏi server, một bên che giấu server khỏi client. Nắm được hai khái niệm này, các bạn sẽ thấy mọi thứ "hoa mỹ" trong thế giới software engineering — API gateway, service mesh, ingress, sidecar — đều quy về vài nguyên lý cơ bản.
 
 Bài tiếp theo, mình sẽ đào sâu vào **layer 4 và layer 7 proxy/reverse proxy/load balancer**: khác nhau thế nào, mạnh yếu ra sao và khi nào nên dùng cái nào. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Proxy vs Reverse Proxy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34648574)
+- [MDN — Proxy servers and tunneling](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Proxy_servers_and_tunneling)
+- [MDN — CONNECT request method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/CONNECT)

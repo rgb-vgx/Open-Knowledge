@@ -1,5 +1,7 @@
 # ⚡ Tool Executor thời "tiền ToolNode" (Phần B): Parse tool calls và chạy Tavily song song
 
+> Nguồn: `022-Optional-Tool-Executor-Agent-Part-B--Life-Before-ToolNode.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43550814)
+
 Chào các bạn, mình là Eden đây! 👋 Tiếp nối Phần A, hôm nay chúng ta sẽ "đánh thức" function `execute_tools`: lôi các **search query** ra khỏi **tool call** của LLM, chạy **Tavily** song song và xem kết quả thực tế trông như thế nào.
 
 ---
@@ -44,9 +46,27 @@ Chạy debug một lượt: `tool_invocations` có **3 phần tử** — cùng m
 
 Giờ mình định nghĩa **Tavily search tool** thật sự. Biến **`search`** là object của class **`TavilySearchAPIWrapper`** — một **wrapper** bao quanh API của Tavily. Nhưng wrapper thì chưa phải tool, nên mình bọc thêm một lớp: **`TavilySearchResults`** — class nhận vào API wrapper cùng **số kết quả tối đa** mà ta muốn từ search engine.
 
+Hai lớp này khác nhau ở vai trò:
+
+| Thành phần | Bản chất | Vai trò |
+|---|---|---|
+| `TavilySearchAPIWrapper` | Wrapper | Bọc API của Tavily |
+| `TavilySearchResults` | LangChain tool, kế thừa `BaseTool` | Có `name`/`description`, dùng được như mọi tool |
+
 Ngó qua implementation trong LangChain, ta thấy `TavilySearchResults` **kế thừa `BaseTool`** — nghĩa là nó đúng chuẩn một **LangChain tool** với **name** và **description**, dùng được ngay như mọi tool khác.
 
 Việc cuối cùng: tạo object **`ToolExecutor`**. Vì sao cần nó? Bởi chúng ta sẽ có **nhiều invocation** tới Tavily API và muốn chúng chạy **song song**, chứ không tuần tự cho chậm. `ToolExecutor` có phương thức **`batch`**, nhận toàn bộ tool invocations đã gom lại và **thực thi bằng thread pool** — mọi thứ chạy song song nên nhanh hơn hẳn.
+
+Toàn bộ đường đi từ tool call của LLM tới kết quả search:
+
+```mermaid
+flowchart TD
+    A[AI message chứa tool_calls] --> B[JSONOutputToolsParser parse ra dictionary]
+    B --> C[Tạo list ToolInvocation]
+    C --> D[ToolExecutor batch]
+    D --> E[Thread pool chạy song song]
+    E --> F[Kết quả Tavily cho từng query]
+```
 
 Một điểm thú vị khi mở source code: `ToolExecutor` là một object của **LangGraph**, và bản thân nó **không tự định nghĩa** `batch` — nó **thừa hưởng** từ class `Runnable`. Lục trong `Runnable`, ta thấy hàm `batch` chính là nơi các tool được invoke song song — và dòng then chốt chính là chỗ dùng **thread pool**. *Đủ rồi, quay lại code thôi!*
 
@@ -63,4 +83,77 @@ Mình thử kiểm chứng một entry: content viết rằng **Radiant Security
 
 Việc cuối cùng của function là **"massage"** lại output: biến nó thành một **list of ToolMessages**, trong đó **một `ToolMessage`** chứa cả **3 search**, mỗi search gồm **5 kết quả**. Nghe thì đơn giản, nhưng đây là phần parsing khá "khô khan" — mình sẽ để dành làm ở video tiếp theo nhé!
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Parser nào được dùng để parse tool invocation và nó biến đổi dữ liệu thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `JSONOutputToolsParser` trong `chains.py` — nhận tool output từ LLM và chuyển từ JSON sang dictionary.
+
+Giải thích: Vì function calling có thể trả nhiều invocation, mình gọi phương thức số nhiều `parse_tool_calls`.
+
+Tham chiếu: Mục Parse tool calls.
+
+</details>
+
+**Câu 2:** Object `ToolInvocation` gồm hai thứ gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** `tool` (tên tool cần chạy) và `tool_input` (input truyền vào, chính là search query).
+
+Giải thích: Ở đây tool là `tavily_search_results_json`, còn input là từng search query.
+
+Tham chiếu: Mục ToolInvocation.
+
+</details>
+
+**Câu 3:** Vì sao cần `ToolExecutor` thay vì chạy từng tool tuần tự?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì có nhiều invocation tới Tavily API, cần chúng chạy song song cho nhanh.
+
+Giải thích: Phương thức `batch` nhận toàn bộ invocation và thực thi đồng thời.
+
+Tham chiếu: Mục ToolExecutor.
+
+</details>
+
+**Câu 4:** `ToolExecutor` thực thi song song nhờ đâu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó thừa hưởng `batch` từ class `Runnable`, và bên trong dùng **thread pool**.
+
+Giải thích: `ToolExecutor` là object của LangGraph nhưng không tự định nghĩa `batch`.
+
+Tham chiếu: Mục ToolExecutor.
+
+</details>
+
+**Câu 5:** Mỗi kết quả Tavily trả về gồm những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Mỗi query cho 5 kết quả, mỗi kết quả gồm URL nguồn và content tóm tắt ngắn.
+
+Giải thích: Eden kiểm chứng entry về Radiant Security gọi 15 triệu USD — bài báo legit từ tháng 11 năm 2023.
+
+Tham chiếu: Mục Kết quả thực tế.
+
+</details>
+
 Chúng ta đã đi gần hết "thời kỳ tiền ToolNode"! Chỉ còn đóng gói kết quả thành `ToolMessage` nữa là xong. Hẹn gặp lại các bạn ở phần tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Tool Executor Agent (Part B): Life Before ToolNode](https://ua.udemy.com/course/langgraph/learn/lecture/43550814)
+- [Tavily Docs — API Reference](https://docs.tavily.com/documentation/api-reference)
+- [LangGraph Reference — langgraph.prebuilt](https://reference.langchain.com/python/langgraph.prebuilt)

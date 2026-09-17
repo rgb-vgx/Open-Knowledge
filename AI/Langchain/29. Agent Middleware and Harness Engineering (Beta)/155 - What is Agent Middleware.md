@@ -1,5 +1,7 @@
 # 🔌 Agent Middleware là gì? Từ FastAPI đến vòng lặp của AI Agent
 
+> Nguồn: `155-What-is-Agent-Middleware.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/57763549)
+
 Nếu các bạn từng làm việc với FastAPI hay Express, chắc hẳn đã nghe qua khái niệm **middleware (lớp trung gian)**. Bài hôm nay, mình sẽ nối tiếp trực giác đó để giải thích **agent middleware trong LangChain** – và chỉ ra điểm khác biệt căn bản khiến nó thú vị hơn hẳn.
 
 Cùng bắt đầu từ ví dụ web quen thuộc nhé!
@@ -51,6 +53,12 @@ Trong một web application, dòng chảy có thể diễn ra như sau:
 
 Hệ quả: **một request duy nhất của người dùng có thể sinh ra rất nhiều model call và tool call**.
 
+| Tiêu chí | Web middleware | Agent middleware |
+|---|---|---|
+| Luồng xử lý | Request vào, endpoint chạy, response ra | Vòng lặp model và tool tiếp diễn nhiều lần |
+| Số lần can thiệp | Một lần cho mỗi request | Nhiều checkpoint trong một request |
+| Điểm can thiệp | Trước và sau endpoint | Trước và sau agent, trước và sau model, bọc tool call, khi kết thúc |
+
 ---
 
 ### 🎯 Vì thế agent middleware cần nhiều checkpoint hơn
@@ -63,8 +71,93 @@ Bởi agent loop phức tạp như vậy, agent middleware phải có **nhiều 
 * **Bọc (wrap) mỗi tool call**, thêm logic **trước hoặc sau** khi gọi tool.
 * Chạy một lần nữa **khi agent kết thúc**.
 
+```mermaid
+flowchart TD
+    A[User request] --> B[Middleware trước agent]
+    B --> C[Gọi model]
+    C --> D[Middleware sau model]
+    D --> E{Model còn gọi tool}
+    E -->|Có| F[Middleware bọc tool call]
+    F --> G[Thực thi tool]
+    G --> C
+    E -->|Không| H[Middleware khi agent kết thúc]
+    H --> I[Final answer]
+```
+
 LangChain mang đến cho chúng ta chính sự linh hoạt này. Cá nhân mình thích nhìn middleware như **một cơ chế cho phép đặt những hành vi phải chạy nhất quán mà không cần nhúng chúng vào business logic cốt lõi của agent**.
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Middleware trong thế giới web giải quyết vấn đề gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chạy logic xuyên suốt nhiều request như log, xác thực, rate limit mà không lặp code ở từng endpoint.
+
+Giải thích: Nhét logic vào từng endpoint gây trùng lặp code và không phải best practice.
+
+Tham chiếu: Mục Middleware trong thế giới web.
+
+</details>
+
+**Câu 2:** Vì sao agent middleware cần nhiều checkpoint hơn web middleware?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì agent chạy trong vòng lặp: một request có thể sinh ra rất nhiều model call và tool call.
+
+Giải thích: Web request chỉ đi thẳng vào endpoint rồi ra, còn agent lặp liên tục cho tới khi có câu trả lời.
+
+Tham chiếu: Mục Nhưng AI agent không đi theo đường thẳng.
+
+</details>
+
+**Câu 3:** Kể tên các checkpoint chính của agent middleware.
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Trước khi agent bắt đầu, trước mỗi lần gọi model, sau mỗi phản hồi của model, bọc mỗi tool call và khi agent kết thúc.
+
+Giải thích: Đây là những nơi middleware có thể chèn logic trong vòng chạy.
+
+Tham chiếu: Mục Vì thế agent middleware cần nhiều checkpoint hơn.
+
+</details>
+
+**Câu 4:** Middleware can thiệp vào response như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi ứng dụng tạo response, response đi ngược qua middleware trước khi trả về client.
+
+Giải thích: Middleware có thể inspect, modify, reject hoặc allow cả request lẫn response.
+
+Tham chiếu: Mục Middleware trong thế giới web.
+
+</details>
+
+**Câu 5:** Vì sao middleware giúp tránh nhúng logic vào business logic cốt lõi?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó cho phép đặt những hành vi phải chạy nhất quán vào đúng checkpoint, tách khỏi logic nghiệp vụ của agent.
+
+Giải thích: Đây là cách nhìn của tác giả về giá trị cốt lõi của middleware.
+
+Tham chiếu: Mục Vì thế agent middleware cần nhiều checkpoint hơn.
+
+</details>
 
 *Và đây mới chỉ là phần khái niệm – các ví dụ và use case cụ thể đang chờ các bạn ở bài tiếp theo!*
 
 Hẹn gặp lại các bạn ngay sau đây! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — What is Agent Middleware](https://ua.udemy.com/course/langchain/learn/lecture/57763549)
+- [LangChain Docs — Middleware overview](https://docs.langchain.com/oss/python/langchain/middleware/overview)

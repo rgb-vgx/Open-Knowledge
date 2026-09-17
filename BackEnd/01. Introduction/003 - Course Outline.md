@@ -1,5 +1,7 @@
 # 🗺️ Toàn cảnh khóa học: Từ design pattern, protocol đến proxy và load balancer
 
+> Nguồn: `003-Course-Outline.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629334)
+
 Được rồi, chúng ta hãy cùng điểm qua **course outline (đề cương khóa học)** để biết chính xác các bạn sẽ đi qua những gì. Mình luôn muốn các bạn nhìn thấy tấm bản đồ trước khi lên đường.
 
 Một việc nhỏ nhưng quan trọng trước tiên: sau khi học xong phần introduction, các bạn hãy vào **lecture stage** và **tải slides** xuống. Việc gom mọi thứ — nội dung, code, source code, slides — về một chỗ sẽ giúp các bạn theo dõi khóa học thuận tiện hơn rất nhiều.
@@ -96,4 +98,75 @@ Và cuối cùng — sẽ không còn là một khóa backend nữa nếu không
 
 Đó cũng là section khép lại khóa học. Dĩ nhiên, như mọi khóa học khác của mình, **mình luôn bổ sung nội dung mới** — nên khi các bạn xem, có thể sẽ thấy thêm những section mới. Còn đây là thiết kế ban đầu của khóa học.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Section Backend Communication Design Patterns dạy những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Các cách client kết nối tới backend: request/response, publish/subscribe, sync/async, stateful/stateless, pull/push, long polling, server-sent events, sidecar và multiplexing.
+
+Giải thích: Chỉ có một vài cách để client giao tiếp với backend, mỗi cách có ưu nhược điểm riêng.
+
+Tham chiếu: Mục Section 1: Backend Communication Design Patterns.
+
+</details>
+
+**Câu 2:** Vì sao backend engineer buộc phải hiểu OSI model?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để hiểu những khái niệm như layer 4 proxy vs layer 3 switch vs layer 7 gRPC reverse proxy — OSI là chuẩn hiện hành giúp mọi thứ rõ ràng hơn.
+
+Giải thích: Không có model thì không thể đi tiếp.
+
+Tham chiếu: Mục Section 2: Concrete Protocols.
+
+</details>
+
+**Câu 3:** TCP được mổ xẻ ở những khía cạnh nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Handshake, flow control, congestion control và các thuộc tính của một kết nối reliable.
+
+Giải thích: TCP là một trong những protocol "chính chủ" của section 2.
+
+Tham chiếu: Mục Section 2: Concrete Protocols.
+
+</details>
+
+**Câu 4:** Section Backend Execution Patterns trả lời câu hỏi gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chuyện gì xảy ra under the hood khi backend thực thi — accept connection, lấy raw bytes từ kernel vào process, process vs thread, shared memory model.
+
+Giải thích: Đây là section Hussein thích nhất vì thấy kernel gánh bao nhiêu việc.
+
+Tham chiếu: Mục Section 4: Backend Execution Patterns.
+
+</details>
+
+**Câu 5:** Vì sao nói proxy phải hiểu "hai ngôn ngữ"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì proxy nói chuyện với cả hai phía — một bên có thể là HTTP, bên kia có thể là gRPC.
+
+Giải thích: Hiểu được điều này là hiểu một khái niệm cực kỳ then chốt của backend engineering.
+
+Tham chiếu: Mục Section 5: Proxies & Load Balancers.
+
+</details>
+
 Hy vọng các bạn thấy hứng khởi với tấm bản đồ này. Vậy thì... bắt đầu thôi, các bạn nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Course Outline](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629334)

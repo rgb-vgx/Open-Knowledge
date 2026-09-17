@@ -1,5 +1,7 @@
 # 🧩 Định nghĩa Graph theo chuẩn LangGraph 1.0: State, Reducer và Typed State
 
+> Nguồn: `013-Defining-our-LangGraph-Graph.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/52505575)
+
 Chào các bạn, Eden đây! Trước khi vào bài, mình xin "bật mí" một chút: video này được **quay lại** để khớp với phiên bản **LangGraph 1.0** mới nhất, nên IDE sẽ đổi sang **Cursor** — nhưng đừng lo, toàn bộ logic code vẫn như cũ.
 
 Ở bài này, chúng ta sẽ định nghĩa **workflow** của mình: các node sẽ chạy những chain đã viết, nối các node lại bằng edge, và quan trọng nhất là định nghĩa **state (trạng thái)** mà graph sẽ làm việc trên đó.
@@ -13,6 +15,17 @@ Luồng chạy của chúng ta trông như thế này:
 3. Chạy **reflection chain** để phản chiếu output vừa sinh ra.
 4. Lấy output của reflect node để **sinh lại (regenerate)**.
 5. Lặp lại vòng này cho tới khi thỏa một điều kiện nhất định.
+
+Toàn bộ workflow trông như sau:
+
+```mermaid
+flowchart TD
+    S[Start] --> G[generate node]
+    G --> C{should_continue}
+    C -->|Dưới 6 message| R[reflect node]
+    C -->|Đạt 6 message| E[END]
+    R --> G
+```
 
 Mỗi node đều có quyền truy cập **state**: state là input của node, và khi node chạy xong, nó cập nhật state. Trong trường hợp của chúng ta, state đơn giản là **một danh sách message** mà ta liên tục append thêm.
 
@@ -62,6 +75,11 @@ Về phần edge:
 * **Deterministic edge:** `reflect` → `generate` — sau khi phản chiếu, luôn quay lại sinh tweet mới dựa trên reflection.
 * **Conditional edge:** `generate` → `reflect` hoặc `END` — được vẽ bằng **nét đứt** trong diagram.
 
+| Loại edge | Cách hoạt động | Ví dụ trong bài |
+|---|---|---|
+| Deterministic | Luôn đi từ node A sang node B | `reflect` → `generate` |
+| Conditional | Gọi hàm routing để rẽ nhánh | `generate` → `reflect` hoặc `END` |
+
 Hàm `should_continue` nhận state và trả về một string là tên node. Nó được gọi sau mỗi lần chạy node để "điện tín" xem đi đâu tiếp. Logic ở đây rất đơn giản: **đếm số message; nếu đạt 6 thì kết thúc, nếu dưới 6 thì sang `reflect`** — như vậy ta có **hai vòng lặp reflection**. Tất nhiên, thay vì logic này, các bạn hoàn toàn có thể đặt một **LLM để quyết định** có cần thêm vòng lặp hay đã hài lòng với kết quả. Đó chính là vẻ đẹp của LangGraph: ta — những developer — định nghĩa luồng và node nào sẽ chạy, rồi có thể đặt LLM vào để chọn đường đi. Mình gọi đó là tư duy **flow engineering (kỹ thuật thiết kế luồng)**. Con số 6 chỉ là ví dụ; có thể là bất kỳ con số hay logic nào khác.
 
 *Một điểm rất dễ nhầm:* `should_continue` **không phải là một node** — nó là hàm của conditional edge. Nó không return dictionary mà return **string**, và string đó **phải khớp với tên node**; nếu không khớp, ta sẽ nhận lỗi.
@@ -70,4 +88,77 @@ Mình gọi `add_conditional_edges` với node nguồn và hàm routing, rồi t
 
 Cuối cùng là compile và vẽ graph. Ban đầu, mình chỉ vẽ bằng `get_graph().draw_mermaid()` rồi dán vào **Excalidraw** (qua tính năng mermaid-to-excalidraw): nhìn vào diagram, ta thấy **thiếu conditional edge từ generate sang reflect và end**. *Đây không phải bug mà là "feature"* — graph vẫn chạy đúng nếu ta invoke, chỉ là vấn đề hiển thị. Nguyên nhân: LangGraph không tự biết `should_continue` sẽ trả về gì. Cách sửa rất đơn giản: thêm **path map** (dictionary ánh xạ output của hàm sang node cụ thể) vào `add_conditional_edges` — `END` → `END`, `reflect` → `reflect`. Chạy lại và dán lại vào Excalidraw, ta thấy đầy đủ conditional edge như mong muốn. Ngoài ra, `print_ascii()` cũng cho ta bản vẽ graph bằng ASCII.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao LangGraph yêu cầu typed state?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để biết dữ liệu nào chảy vào và ra khỏi graph; `TypedDict` + `Annotated` mô tả schema và reducer cho từng key.
+
+Giải thích: State được duy trì xuyên suốt quá trình thực thi, lưu intermediate result và LLM response.
+
+Tham chiếu: Mục State schema.
+
+</details>
+
+**Câu 2:** Reducer `add_messages` làm gì cho state?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Đảm bảo message mới được append vào lịch sử hội thoại thay vì ghi đè.
+
+Giải thích: Annotation này nói cho LangGraph biết cách xử lý cập nhật state; ta cũng có thể viết reducer riêng.
+
+Tham chiếu: Mục State schema.
+
+</details>
+
+**Câu 3:** Vì sao reflection node cast response AI thành `HumanMessage`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì đây là heuristic — LLM được huấn luyện với hội thoại của con người, gắn nhãn critique là human hy vọng nhận kết quả tốt hơn.
+
+Giải thích: Ta muốn LLM nghĩ critique đó do người dùng viết ra.
+
+Tham chiếu: Mục Hai node.
+
+</details>
+
+**Câu 4:** `should_continue` có phải là một node không, và nó trả về gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không phải node — nó là hàm của conditional edge, trả về string tên node và phải khớp với path map.
+
+Giải thích: Nếu string không khớp tên node, graph sẽ báo lỗi.
+
+Tham chiếu: Mục Ghép tất cả lại.
+
+</details>
+
+**Câu 5:** Vì sao diagram ban đầu thiếu conditional edge từ generate sang reflect và end?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì LangGraph không tự biết `should_continue` sẽ trả về gì; đây là vấn đề hiển thị, không phải bug chạy.
+
+Giải thích: Thêm path map vào `add_conditional_edges` thì diagram hiện đầy đủ conditional edge.
+
+Tham chiếu: Mục Ghép tất cả lại.
+
+</details>
+
 Vậy là graph đã hoàn chỉnh và ta nhìn thấy rõ luồng chạy. Ở bài tiếp theo, chúng ta sẽ invoke nó với dữ liệu thật và mổ xẻ từng bước trên LangSmith cho tới chiếc tweet cuối cùng. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Defining our LangGraph Graph (Refilmed)](https://ua.udemy.com/course/langgraph/learn/lecture/52505575)
+- [LangGraph Docs — Graph API overview](https://docs.langchain.com/oss/python/langgraph/graph-api)
+- [LangGraph Docs — Use the graph API](https://docs.langchain.com/oss/python/langgraph/use-graph-api)

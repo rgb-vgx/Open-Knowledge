@@ -1,5 +1,7 @@
 # 🌉 LangChain MCP Adapter: Cầu Nối Giữa Hai Thế Giới Tool
 
+> Nguồn: `135-Bridging-the-Gap-The-LangChain-MCP-Adapter-Explained.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/49563259)
+
 Chào các bạn, mình là Eden đây! 👋 Trước khi lao vào code client ở bài sau, chúng ta dành một chút thời gian để hiểu **bản chất**: `tool` trong LangChain và trong MCP giống và khác nhau thế nào, và **LangChain MCP adapter** giải quyết vấn đề gì. Nắm chắc phần này rồi, code sẽ trở nên "dễ thở" hơn rất nhiều.
 
 ---
@@ -45,7 +47,23 @@ Các ứng dụng này bên dưới cũng có một LLM, nhưng chúng ta **khô
 1. **MCP server** giao tiếp danh sách tool cho **MCP client**.
 2. **MCP client** mới là thứ inject vào LLM trong ứng dụng những chỉ dẫn về các tool cần gọi.
 
+Luồng đi của thông tin tool trong kiến trúc MCP:
+
+```mermaid
+flowchart LR
+    A[MCP Server] -->|gửi danh sách tool| B[MCP Client]
+    B -->|inject mô tả tool| C[LLM trong ứng dụng AI]
+    C -->|quyết định gọi tool| B
+```
+
 Sự "trung gian hóa" này khiến kiến trúc MCP linh hoạt hơn, đổi lại là nhiều lớp hơn.
+
+| Tiêu chí | LangChain bind_tools | MCP |
+|---|---|---|
+| Đối tượng được bind | LLM | Ứng dụng AI như Cursor, Windsurf, Claude |
+| Phơi ra những gì | Tools | Tools, resources và prompts |
+| Số lớp trung gian | Ít, bind trực tiếp vào model | Server và client ở giữa |
+| Khái niệm tập hợp tool | Toolkit | MCP server |
 
 ---
 
@@ -65,4 +83,79 @@ Sau khi đã hiểu điểm chung và khác biệt, hãy nói về **LangChain M
 
 ---
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Tool trong cả LangChain và MCP được định nghĩa là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là những hàm viết bên ngoài hệ thống AI và LLM, do lập trình viên viết, có tham số đầu vào và giá trị trả về.
+
+Giải thích: Ví dụ hàm `multiply` nhận các số rồi trả về tích.
+
+Tham chiếu: Mục Điểm chung.
+
+</details>
+
+**Câu 2:** Khi định nghĩa tool, ta phải chỉ rõ ba điều gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Hàm nhận tham số gì, khi nào nên gọi hàm, và hàm trả về cái gì.
+
+Giải thích: "Khi nào nên gọi" nằm trong description của hàm.
+
+Tham chiếu: Mục Điểm chung.
+
+</details>
+
+**Câu 3:** Vì sao description của tool cực kỳ quan trọng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó được truyền tới LLM qua `bind_tools` hoặc MCP client, giúp model quyết định nên gọi tool nào.
+
+Giải thích: Description chính là giao diện để model tương tác với tool.
+
+Tham chiếu: Mục Điểm chung.
+
+</details>
+
+**Câu 4:** Toolkit của LangChain tương ứng với khái niệm nào bên MCP?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** MCP server — cả hai đều là tập hợp các tool.
+
+Giải thích: Đây là điểm tương đồng thứ hai giữa hai hệ sinh thái.
+
+Tham chiếu: Mục Điểm chung.
+
+</details>
+
+**Câu 5:** Khác biệt lớn nhất giữa hai bên nằm ở đối tượng được bind — cụ thể là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** LangChain bind tool trực tiếp vào LLM; MCP bind vào ứng dụng AI như Cursor, Windsurf, Claude với vài lớp trừu tượng ở giữa.
+
+Giải thích: MCP server gửi danh sách tool cho MCP client, client mới inject vào LLM của ứng dụng.
+
+Tham chiếu: Mục Điểm khác biệt.
+
+</details>
+
+---
+
 Nắm được bức tranh toàn cảnh này rồi, các bạn sẽ thấy LangChain MCP adapter không chỉ là một thư viện tiện dụng, mà là **cây cầu nối hai hệ sinh thái tool mạnh mẽ nhất hiện nay**. Hãy sẵn sàng cho bài tiếp theo — nơi chúng ta đưa cây cầu này vào vận hành thực tế! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Bridging the Gap: The LangChain MCP Adapter Explained](https://ua.udemy.com/course/langchain/learn/lecture/49563259)
+- [LangChain MCP Adapters — GitHub](https://github.com/langchain-ai/langchain-mcp-adapters)
+- [Docs by LangChain — Model Context Protocol](https://docs.langchain.com/oss/python/langchain/mcp)

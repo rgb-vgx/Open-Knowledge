@@ -1,5 +1,7 @@
 # 🧠 Stateful vs Stateless: Đừng Học Định Nghĩa, Hãy Nhìn Hệ Quả
 
+> Nguồn: `014-Stateful-vs-Stateless.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629828)
+
 Mình muốn bắt đầu bài này bằng một lời cảnh báo: đây là chủ đề **gây tranh cãi** nhất trong giới engineering. Người ta cãi nhau về định nghĩa **stateful (lưu trạng thái)** và **stateless (không lưu trạng thái)** suốt ngày, nhưng với mình, định nghĩa chẳng quan trọng. Cái quan trọng là **hệ quả của nó** — và đó là thứ mình muốn các bạn mang theo sau bài này.
 
 ### 🧠 Định nghĩa chỉ là trò chơi chữ — hệ quả mới đáng nói
@@ -10,6 +12,13 @@ Cách mình nhìn nhận vấn đề: đây là **cách bạn lưu trạng thái
 * **Stateless backend**: không lưu trạng thái về client trên server; **client có trách nhiệm mang theo trạng thái trong mỗi request**. Nếu backend crash, bạn vẫn dựng lại được mọi thứ mà không cần "nhớ" gì cả.
 
 Bạn có thể áp dụng cách nhìn này cho cả **hệ thống, backend, một function, hay một giao thức**. Nó phụ thuộc vào cách bạn nhìn.
+
+| Tiêu chí | Stateful | Stateless |
+|---|---|---|
+| Trạng thái client | Lưu trong bộ nhớ của backend | Client mang theo trong mỗi request |
+| Khi backend restart | Mất session, client quay về trang login | Client hoàn thành workflow bình thường |
+| Ví dụ | Session trong memory, sticky session | Session trong database, JWT |
+| Điểm gãy | Load balancing đưa request sai server | Khó vô hiệu hoá token bị đánh cắp |
 
 Một điều thú vị: backend **stateless vẫn có thể ghi dữ liệu ra chỗ khác** — như database, như log. Bạn ghi log vào DB, tắt app, bật lại, chẳng sao cả — vẫn là stateless. Ngược lại, một app stateful cũng có thể lưu state ra ngoài (ví dụ database):
 
@@ -44,6 +53,16 @@ Nhưng đây là chỗ nó gãy:
 * Backend restart hoặc crash → session trong memory **biến mất**.
 * Người dùng refresh trang → backend không tìm thấy session → **trả về trang login**.
 * Hồi thập niên 90, bạn login xong, bấm refresh là bay về trang login. Có lúc được, có lúc không.
+
+```mermaid
+flowchart TD
+    A[Client đăng nhập thành công] --> B[Session lưu trong memory của backend]
+    B --> C{Backend restart hoặc crash}
+    C -->|Session còn nguyên| D[Request sau được chấp nhận]
+    C -->|Session biến mất| E[Client bị trả về trang login]
+    E --> F[Giải pháp lưu session vào database]
+    F --> G[Backend nào cũng xác thực được]
+```
 
 Vì sao "có lúc được, có lúc không"? Vì khi phát triển, bạn chạy **một máy duy nhất** nên luôn trúng cùng một backend, không bao giờ thấy vấn đề. Nhưng khi có **load balancing**, request lúc trúng server có session, lúc trúng server không có — thế là gãy.
 
@@ -89,4 +108,77 @@ Một hệ thống **hoàn toàn stateless** rất hiếm gặp: trạng thái p
 
 Cuối cùng, hãy dùng **TLS** để mã hoá mọi thứ, và cư xử cẩn thận nhất có thể.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Phép thử của mình để xác định một backend có stateless hay không là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cho backend nghỉ rồi restart — nếu client đang kết nối vẫn hoàn thành workflow mà không hề hấn gì thì đó là stateless.
+
+Giải thích: Nếu client gãy, tồn tại một state store ở đâu đó đã bị mất — đó chính là vấn đề.
+
+Tham chiếu: Mục Phép thử của mình.
+
+</details>
+
+**Câu 2:** Vì sao session trong memory gãy khi có load balancing?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì request lúc trúng server có session, lúc trúng server không có session.
+
+Giải thích: Khi phát triển trên một máy duy nhất thì không bao giờ thấy vấn đề — đó là lý do "có lúc được, có lúc không".
+
+Tham chiếu: Mục Session login.
+
+</details>
+
+**Câu 3:** Sticky session là gì, mình từng dùng khi nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là cấu hình load balancer để mọi request từ một client luôn đi về cùng một backend.
+
+Giải thích: Mình từng dùng khi làm ứng dụng gaming để giảm số lần ghi database trong khoảng thời gian ngắn.
+
+Tham chiếu: Mục Session login.
+
+</details>
+
+**Câu 4:** Vì sao UDP là stateless còn QUIC là stateful?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** UDP là message-based, không lưu gì cả; QUIC gửi connection ID để định danh và hành xử như TCP với đủ loại trạng thái.
+
+Giải thích: QUIC mang trạng thái đi xuyên qua chính giao thức stateless bên dưới (UDP).
+
+Tham chiếu: Mục Giao thức cũng stateful hoặc stateless.
+
+</details>
+
+**Câu 5:** Vì sao JWT khó vô hiệu hoá khi bị đánh cắp?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì JWT không nói chuyện với server nào cả — không có chỗ để đánh dấu invalid, kẻ gian cứ dùng token đến khi hết hạn.
+
+Giải thích: Refresh token ra đời để giảm rủi ro, nhưng nếu refresh token bị đánh cắp thì lại về bài toán cũ.
+
+Tham chiếu: Mục JWT, hệ thống stateless thật sự.
+
+</details>
+
 Xin đừng nghĩ mọi thứ trong backend engineering đã được giải quyết hết. Nhiều kỹ sư nói như thể họ biết tuốt, nhưng **không phải vậy** — còn rất nhiều lỗ hổng. Người ta chỉ nói về vấn đề khi nó nổ ra, còn những lỗ hổng âm thầm thì có người biết, có người không. Cách duy nhất để trở thành backend engineer giỏi hơn là hiểu rõ hệ thống hiện tại và **những giới hạn của nó**. Biết giới hạn, bạn tìm cách lách qua — đó là điều tốt nhất có thể làm ở thời điểm hiện tại. *Và định nghĩa thì chẳng đi tới đâu cả — hãy cầm muối mà ăn.* Hẹn gặp các bạn ở bài cuối của section: **sidecar pattern (container phụ trợ)** — nâng cấp giao thức mà không cần đụng vào code. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Stateful vs Stateless](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629828)
+- [JWT.io — JSON Web Token Introduction](https://jwt.io/)
+- [RFC 7519 — JSON Web Token (JWT)](https://datatracker.ietf.org/doc/html/rfc7519)

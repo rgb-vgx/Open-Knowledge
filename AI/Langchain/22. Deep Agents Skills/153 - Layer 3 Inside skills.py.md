@@ -1,5 +1,7 @@
 # 🧬 Level 3: Bên trong `skills.py` — Cơ chế Progressive Disclosure
 
+> Nguồn: `153-Layer-3-Inside-skillspy--The-Mechanics-of-Progressive-Disclo.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/55545431)
+
 Chào các bạn, mình là Eden đây! Hôm nay chúng ta sẽ chạm tới **tầng sâu nhất** có thể khi nói về agent skills: đọc trực tiếp **mã nguồn** của agent harness trong **LangChain Deep Agents** để xem cơ chế progressive disclosure được viết ra sao.
 
 ---
@@ -11,6 +13,15 @@ Mình đang ở **GitHub repository của Deep Agents**. Toàn bộ logic skill 
 Và đây là điều thú vị: **toàn bộ logic của cơ chế skill và dynamic disclosure** trong bản triển khai của LangChain chỉ gói gọn trong **khoảng 800 dòng code**. Chúng ta cùng xem nhé.
 
 *Nhắc lại một chút về **agent loop**: mọi thứ bắt đầu từ một LLM call, rồi LLM quyết định có gọi tool hay không, thực thi tool, và tiếp tục suy luận.*
+
+```mermaid
+flowchart TD
+    A[before_agent] --> B[Nạp skill một lần mỗi session]
+    B --> C[SkillsState lưu metadata]
+    C --> D[wrap_model_call]
+    D --> E[modify_request tạo skill section]
+    E --> F[Append vào system prompt]
+```
 
 ---
 
@@ -42,6 +53,11 @@ Cụ thể, hàm **`modify_request`** thực hiện logic chèn skill:
 2. Tạo **skill section** — phần sẽ được **nối (append) vào system prompt**.
 3. Điền dữ liệu vào template system prompt mang tên **`SKILLS_SYSTEM_PROMPT`** — một đoạn **boilerplate** chứa đầy đủ **hướng dẫn xử lý skill và progressive disclosure**, cùng hai chỗ trống là **`skill_locations`** và **`skills_list`** mà agent đã có sẵn.
 
+| Hàm | Chạy khi nào | Nhiệm vụ | Kết quả |
+|---|---|---|---|
+| `before_agent` | Bắt đầu session | Nạp skill từ các nguồn, parse YAML front matter | `SkillsState` chứa metadata |
+| `wrap_model_call` | Trước mỗi LLM call | Sửa request, điền template `SKILLS_SYSTEM_PROMPT` | System prompt có skill section |
+
 Và việc này diễn ra **trước mỗi request** gửi tới agent.
 
 ---
@@ -50,6 +66,79 @@ Và việc này diễn ra **trước mỗi request** gửi tới agent.
 
 Có một điều cực kỳ quan trọng: **khi agent quyết định nạp gì từ skill, quyền quyết định hoàn toàn thuộc về LLM.** Chính vì thế, chúng ta cần viết file `SKILL.md` **như một bảng mục lục (index)** — thật dễ tiếp cận, thật dễ hiểu, để LLM có thể chọn đúng file cần progressive disclosure.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** `before_agent` làm gì với skill?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nạp skill một lần mỗi session từ tất cả các nguồn đã cấu hình và cập nhật `SkillsState`.
+
+Giải thích: Nếu metadata đã tồn tại thì bị bỏ qua; nguồn sau ghi đè nguồn trước khi trùng tên.
+
+Tham chiếu: Mục before_agent.
+
+</details>
+
+**Câu 2:** Vì sao harness hỗ trợ nhiều backend lại quan trọng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì skill có thể nằm trên file system cục bộ, Firestore, BigTable hay bất kỳ backend nào khác.
+
+Giải thích: Điều này cực kỳ linh hoạt nếu muốn có skill "trên mây".
+
+Tham chiếu: Mục before_agent.
+
+</details>
+
+**Câu 3:** `list_skills` trả về gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Metadata của skill sau khi quét thư mục con, tải nội dung và parse YAML front matter.
+
+Giải thích: Code lặp qua từng skill, lấy tên làm key và metadata làm value, gom thành một list lớn.
+
+Tham chiếu: Mục before_agent.
+
+</details>
+
+**Câu 4:** `modify_request` chèn gì vào system prompt?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Skill section được tạo từ metadata, điền vào template `SKILLS_SYSTEM_PROMPT` cùng `skill_locations` và `skills_list`.
+
+Giải thích: Việc này diễn ra trước mỗi request gửi tới agent.
+
+Tham chiếu: Mục wrap_model_call và modify_request.
+
+</details>
+
+**Câu 5:** Ai quyết định nạp file nào từ skill, và điều đó nghĩa là gì khi viết `SKILL.md`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** LLM quyết định — vì thế `SKILL.md` cần được viết như một bảng mục lục dễ hiểu.
+
+Giải thích: Harness chỉ chuẩn bị metadata sẵn; trách nhiệm chọn đúng file thuộc về LLM.
+
+Tham chiếu: Mục Bài học đẹp nhất.
+
+</details>
+
 Tóm lại, phần lớn code trong file chỉ là **duyệt file system và parse YAML front matter** — không có gì cao siêu, nhưng là **smart engineering**. Và theo mình, điều đẹp nhất của bản triển khai này là: **trách nhiệm chọn đúng file thuộc về LLM**, còn agent harness — ở đây là LangChain Deep Agents — chỉ **chuẩn bị sẵn metadata** và để LLM tự quyết định.
 
 Hết section rồi! Hy vọng các bạn thấy phần này thú vị và hẹn gặp lại ở những section tiếp theo của khóa học. 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Layer 3: Inside skills.py](https://ua.udemy.com/course/langchain/learn/lecture/55545431)
+- [GitHub — deepagents/libs/deepagents/deepagents/middleware/skills.py](https://github.com/langchain-ai/deepagents/blob/main/libs/deepagents/deepagents/middleware/skills.py)
+- [LangChain Reference — SkillsMiddleware](https://reference.langchain.com/python/deepagents/middleware/skills)

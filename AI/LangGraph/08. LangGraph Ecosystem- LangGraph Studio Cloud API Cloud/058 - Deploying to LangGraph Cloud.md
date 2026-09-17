@@ -1,5 +1,7 @@
 # ☁️ Deploy lên LangGraph Cloud: Đưa agent "lên mây" chỉ với vài cú click
 
+> Nguồn: `058-Deploying-to-LangSmith-Deployment.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/45218765)
+
 Chào các bạn, Eden đây! 👋
 Sau khi đã chạy LangGraph Cloud API ngay trên máy mình, hôm nay chúng ta sẽ **deploy dự án Advanced Track lên cloud** bằng **LangGraph Cloud Managed service** — nhanh đến mức chỉ cần **một vài cú click**.
 
@@ -20,6 +22,13 @@ Về **loại deployment**, có hai lựa chọn đáng chú ý:
 
 * **Development instance:** phục vụ **tối đa 50 requests/giây**, **không có backup hay storage**.
 * **Production deployment type:** dành cho khi bạn cần **compute ổn định và mạnh mẽ hơn hẳn**.
+
+So sánh nhanh hai loại deployment:
+
+| Loại deployment | Đặc điểm |
+|---|---|
+| Development instance | Tối đa 50 requests/giây, không có backup hay storage |
+| Production deployment type | Compute ổn định và mạnh mẽ hơn hẳn |
 
 ---
 
@@ -53,6 +62,19 @@ Ta được chuyển tới trang **deployments** và thấy một **deployment r
 2. **Build image từ Dockerfile** đó và **lưu vào artifact registry** dành cho Docker image, chạy trên cloud.
 3. **Deploy và chạy container trên cloud**, rồi cho bạn một **URL** để tương tác.
 
+Toàn bộ pipeline deploy gói gọn như sau:
+
+```mermaid
+flowchart TD
+    A[New Deployment trong Console] --> B[Kết nối repository]
+    B --> C[Chọn repo và branch main]
+    C --> D[Paste environment variables]
+    D --> E[LangGraph Cloud mask secrets]
+    E --> F[Build Docker image]
+    F --> G[Deploy container lên cloud]
+    G --> H[URL công khai cho front-end]
+```
+
 Sau **vài phút**, quá trình hoàn tất và ứng dụng của chúng ta đã **deployed**. Click vào link, bạn sẽ được dẫn tới ứng dụng — giờ đã **public trên internet**.
 
 Ứng dụng báo lỗi một chút vì đây mới là **base URL** — thêm **`/docs`** vào là xong. Và đây: **tài liệu API của ứng dụng đã deploy**, y như những gì ta thấy ở local. Thậm chí, bấm vào **LangGraph Studio**, chúng ta thấy **graph y hệt trong LangGraph IDE**!
@@ -72,4 +94,77 @@ Giờ thử thách hơn một chút:
 
 Và tất nhiên, **traces** cũng có sẵn — mình mở thử một trace để các bạn xem. Quay lại **LangGraph Cloud Console**, bấm vào service vừa tạo, bạn sẽ thấy **toàn bộ trace của mọi lần chạy** ở phía dưới. Nếu muốn tạo phiên bản mới, chỉ cần bấm **New Revision** — rất đơn giản và trực tiếp.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Bước đầu tiên khi tạo deployment mới là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kết nối repository chứa graph với LangGraph Cloud Console.
+
+Giải thích: Sau đó chọn repo, đặt tên, chỉ định `langgraph.json` và chọn branch muốn deploy.
+
+Tham chiếu: Mục Bước 1.
+
+</details>
+
+**Câu 2:** Vì sao phải xóa LangSmith API key, `LANGCHAIN_TRACING_V2`, `LANGCHAIN_PROJECT` và `PYTHONPATH` khỏi biến môi trường?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì Cloud tự lấy key từ tài khoản đang đăng nhập, tự động trace, tự đặt tên project — còn `PYTHONPATH` chỉ có ý nghĩa ở local.
+
+Giải thích: Giữ lại các biến này sẽ gây lỗi.
+
+Tham chiếu: Mục Bước 2.
+
+</details>
+
+**Câu 3:** LangGraph Cloud làm gì khi bạn bấm Deploy?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Build Docker image, lưu image vào artifact registry trên cloud, deploy và chạy container rồi cấp URL.
+
+Giải thích: Gần như y hệt những gì diễn ra ở local.
+
+Tham chiếu: Mục Hậu trường.
+
+</details>
+
+**Câu 4:** Development instance khác Production deployment type thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Development giới hạn tối đa 50 requests/giây và không có backup hay storage; production cho compute ổn định, mạnh mẽ hơn hẳn.
+
+Giải thích: Chọn theo nhu cầu thực tế của ứng dụng.
+
+Tham chiếu: Mục Bước 1.
+
+</details>
+
+**Câu 5:** Muốn tạo phiên bản mới cho deployment đã có thì làm thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Bấm **New Revision** trong LangGraph Cloud Console.
+
+Giải thích: Rất đơn giản và trực tiếp.
+
+Tham chiếu: Mục Chạy thử trên cloud.
+
+</details>
+
 Vậy là agent của chúng ta đã chính thức "sống" trên cloud, sẵn sàng phục vụ front-end với một **production endpoint** thật thụ. Các bạn vừa đi hết một hành trình lớn: từ **LangGraph Studio**, qua **LangGraph Cloud API chạy local**, tới **deploy lên cloud**. Hãy tự thưởng cho mình một tràng pháo tay, và hẹn gặp lại ở những bài tiếp theo! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Deploying to LangSmith Deployment](https://ua.udemy.com/course/langgraph/learn/lecture/45218765)
+- [LangChain Docs — Deployment reference overview](https://docs.langchain.com/langsmith/deploy-reference-overview)
+- [LangChain Docs — LangGraph CLI](https://docs.langchain.com/langsmith/cli)

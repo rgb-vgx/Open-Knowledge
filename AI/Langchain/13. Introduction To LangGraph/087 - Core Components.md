@@ -1,5 +1,7 @@
 # 🧩 Giải phẫu LangGraph: Nodes, Edges, State và những viên gạch đầu tiên
 
+> Nguồn: `087-LangGraph-Core-Components.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/50029219)
+
 Chào các bạn, Eden đây! Trong bài này, chúng ta sẽ cùng điểm qua **các component cốt lõi của LangGraph** dưới góc độ lý thuyết.
 
 Đây là bài **cực kỳ quan trọng**, bởi vì ngay sau đây, chúng ta sẽ bắt tay vào implement một dự án thực tế bằng chính những component này.
@@ -18,6 +20,24 @@ Với LangGraph, chúng ta sẽ implement một **control flow (luồng điều 
 **Edges** kết nối các node trong quá trình thực thi graph. Còn **conditional edges** giúp đưa ra quyết định nên đi tới **node A** hay **node B** — việc này mang tính **động (dynamic)** và cực kỳ linh hoạt.
 
 Và đây chính là **sức mạnh của LangGraph**: chúng ta kiểm soát hoàn toàn cách graph thực thi và di chuyển.
+
+Một graph tối giản với đầy đủ start node, hai node xử lý và conditional edge sẽ trông như sau:
+
+```mermaid
+flowchart TD
+    A[Start node] --> B[Node A]
+    B --> C{Conditional edge}
+    C -->|điều kiện 1| D[Node B]
+    C -->|điều kiện 2| E[End node]
+    D --> E
+```
+
+| Thành phần | Là gì | Vai trò |
+|---|---|---|
+| Nodes | Python function bất kỳ | Nhận state, thực thi code, trả về cập nhật state |
+| Edges | Đường nối các node | Quyết định node nào chạy tiếp theo |
+| Conditional edges | Edge động | Chọn node A hay node B dựa trên state |
+| State | Dictionary dùng chung | Lưu kết quả, chat history; mọi node đều truy cập được |
 
 ---
 
@@ -66,4 +86,77 @@ Bên cạnh đó, có thêm vài khái niệm sẽ theo chúng ta suốt khóa h
 2. **Human-in-the-loop:** khi muốn lấy **phản hồi từ con người** để quyết định nên đi tới node A hay node B trong graph, LangGraph cũng giúp implement rất dễ dàng.
 3. **Persistence:** LangGraph đi kèm những built-in function gọn gàng và mạnh mẽ để **lưu state của graph**, giúp phần mềm **robust (mạnh mẽ) hơn, chịu lỗi tốt hơn (fault-tolerant)**, đồng thời mở ra những logic rất hay để mang lại **trải nghiệm người dùng tuyệt vời** — các bạn sẽ thấy trong khóa học.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Ba core component của LangGraph là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nodes, edges và conditional edges.
+
+Giải thích: Chúng tạo nên control flow rõ ràng, bên trong đó LLM giữ vai trò quyết định bước tiếp theo.
+
+Tham chiếu: Mục Bộ ba cốt lõi.
+
+</details>
+
+**Câu 2:** Node trong LangGraph thực chất là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một Python function chứa code bất kỳ — deterministic code, LLM call hay cả LLM agent.
+
+Giải thích: Node luôn nhận state hiện tại và luôn trả về dictionary cập nhật cho state.
+
+Tham chiếu: Mục Bộ ba cốt lõi và Mục Node luôn nhận state.
+
+</details>
+
+**Câu 3:** Conditional edge làm được gì mà edge thường không làm được?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Quyết định động nên đi tới node A hay node B dựa trên state.
+
+Giải thích: Đây là phần mang tính dynamic, giúp graph linh hoạt và là sức mạnh của LangGraph.
+
+Tham chiếu: Mục Bộ ba cốt lõi.
+
+</details>
+
+**Câu 4:** State của LangGraph có phạm vi hoạt động như thế nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cục bộ với graph — mọi node và edge đều truy cập được; ngoài ra có thể persist để dừng và resume.
+
+Giải thích: State là dictionary chứa kết quả, temporary results hoặc chat history.
+
+Tham chiếu: Mục State.
+
+</details>
+
+**Câu 5:** Start node và end node có điểm gì đặc biệt?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Là built-in node, đóng vai trò entry point và node cuối, nhưng không thực sự làm gì — như no operation.
+
+Giải thích: Chúng đánh dấu điểm bắt đầu và kết thúc của quá trình thực thi graph.
+
+Tham chiếu: Mục Start Node, End Node.
+
+</details>
+
 Nào, lý thuyết đã đủ rồi! Hãy cùng bước sang phần **hands-on** để xây dựng dự án đầu tiên với LangGraph nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangGraph Core Components](https://ua.udemy.com/course/langchain/learn/lecture/50029219)
+- [Graph API overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/graph-api)
+- [Use the graph API — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/use-graph-api)

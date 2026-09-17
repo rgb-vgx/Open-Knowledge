@@ -1,5 +1,7 @@
 # 🗺️ Defining Our Graph: Lắp "vòng lặp hoàn hảo" cho Reflection Agent với LangGraph
 
+> Nguồn: `098-Defining-our-LangGraph-Graph.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/52505041)
+
 Chào các bạn, mình là Eden đây! Sau khi đã có trong tay hai chain "phê bình" và "viết lại", hôm nay chúng ta sẽ làm điều thú vị nhất: **lắp ráp toàn bộ chúng thành một graph LangGraph hoàn chỉnh**. Đây là bài hands-on dài và nhiều "đồ nghề" nhất trong section này, nên các bạn cứ thong thả, từng bước một nhé!
 
 ### 🧱 Nodes, edges và state — bộ ba của mọi graph
@@ -33,6 +35,11 @@ Tiếp theo là các import từ LangChain và LangGraph:
 
 Một import cực kỳ quan trọng nữa là **`add_messages`** — một **reducer function** của LangGraph. Toàn bộ mục đích của nó là **đảm bảo các message mới được nối thêm (append) vào lịch sử hội thoại hiện có thay vì ghi đè lên nó**.
 
+| Cách cập nhật state | Hành vi | Hệ quả |
+|---|---|---|
+| Không khai báo reducer | Ghi đè giá trị mới lên key cũ | Lịch sử hội thoại bị mất |
+| Dùng `add_messages` | Nối thêm message mới vào danh sách | Giữ đầy đủ lịch sử hội thoại |
+
 Cuối cùng, mình import `generate_chain` và `reflect_chain` từ file `chains.py` đã viết ở bài trước — mỗi node trong graph sẽ chạy một chain khác nhau. Xong phần import, mình chạy thử file để đảm bảo không có gì "vỡ".
 
 ---
@@ -59,6 +66,15 @@ Giờ là lúc "stitch" mọi thứ lại. Mình tạo một object `StateGraph`
 2. **Đặt entry point** bằng `set_entry_point("generate")`. Điều thú vị: mọi graph trong LangGraph đều bắt đầu từ một **start node tích hợp sẵn** — khi gọi `set_entry_point`, thực chất ta tạo một edge từ start node đến `generate`.
 3. **Nối các edge**: một edge **deterministic** từ `reflect` về `generate` (sau khi reflect xong, luôn quay lại tạo tweet mới dựa trên phản hồi), và một **conditional edge** từ `generate` đi tới `reflect` hoặc `END` (thể hiện bằng mũi tên nét đứt trong sơ đồ).
 
+```mermaid
+flowchart TD
+    S[START] --> G[generate node]
+    G --> C{should_continue}
+    C -->|reflect| R[reflect node]
+    R --> G
+    C -->|end| E[END]
+```
+
 Với conditional edge, mình viết hàm **`should_continue`** — nhận state và trả về **một chuỗi tên node** để "điện báo" bước đi tiếp theo. Logic rất đơn giản: **đếm số lượng message**, nếu bằng **6** thì kết thúc, nếu dưới 6 thì đi reflect — như vậy ta có **hai vòng lặp reflection**. *Các bạn đừng lo nếu thấy logic này hơi "thô" — đây là một trong những graph đầu tiên của khóa học, và hoàn toàn có thể thay bằng một LLM đứng ra quyết định nên lặp tiếp hay dừng. Đó chính là vẻ đẹp của LangGraph: chúng ta định nghĩa luồng, định nghĩa node nào chạy, và có thể đặt LLM vào bất kỳ điểm quyết định nào.*
 
 Một điểm **cực kỳ quan trọng** cần làm rõ: `should_continue` **không phải là một node**, nó chỉ là hàm logic của conditional edge. Hàm này trả về **string** (không phải dictionary), và string đó **phải khớp với tên node** — nếu không khớp, bạn sẽ gặp lỗi.
@@ -67,4 +83,77 @@ Sau khi compile graph và in bằng `get_graph().draw_mermaid()`, mình dán cod
 
 Cách khắc phục rất đơn giản: thêm **argument thứ ba — path map** vào `add_conditional_edges`, một dictionary ánh xạ các output có thể có của hàm về node đích (`"end"` → `END`, `"reflect"` → `reflect`). Sau khi khai báo tường minh, vẽ lại Mermaid là thấy ngay conditional edge từ `generate` tỏa ra hai hướng. Ngoài Mermaid, các bạn còn có thể in graph dưới dạng ASCII bằng `print_ascii()` nữa đấy.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Trong graph này, "state" là gì và mỗi node tương tác với nó ra sao?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** State là danh sách message; mỗi node nhận state làm input và cập nhật lại state sau khi chạy.
+
+Giải thích: Ở đây state chỉ có một key `messages` và liên tục được nối thêm.
+
+Tham chiếu: Mục Nodes, edges và state.
+
+</details>
+
+**Câu 2:** Vì sao cần reducer `add_messages`?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để message mới được append vào lịch sử thay vì ghi đè lên nó.
+
+Giải thích: Annotation này là metadata cho LangGraph biết cách cập nhật state.
+
+Tham chiếu: Mục Imports và state schema.
+
+</details>
+
+**Câu 3:** `should_continue` có phải là một node không?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không — nó là hàm logic của conditional edge.
+
+Giải thích: Hàm trả về string tên node, và string đó phải khớp với tên node nếu không sẽ lỗi.
+
+Tham chiếu: Mục Lắp ráp graph.
+
+</details>
+
+**Câu 4:** Vì sao conditional edge từ `generate` không hiển thị trên sơ đồ Mermaid?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì LangGraph không biết trước `should_continue` có thể trả về node nào.
+
+Giải thích: Thêm path map (`"end"` → `END`, `"reflect"` → `reflect`) là conditional edge hiện ra ngay.
+
+Tham chiếu: Mục Lắp ráp graph.
+
+</details>
+
+**Câu 5:** Điều kiện để graph kết thúc là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi số lượng message bằng 6 thì kết thúc; dưới 6 thì đi reflect.
+
+Giải thích: Cách đếm đơn giản này cho ta hai vòng lặp reflection.
+
+Tham chiếu: Mục Lắp ráp graph.
+
+</details>
+
 Vậy là chiếc graph hoàn chỉnh đã sẵn sàng! Ở bài tiếp theo, chúng ta sẽ **chạy thử và quan sát từng bước suy nghĩ** của nó trên LangSmith. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Defining our LangGraph Graph](https://ua.udemy.com/course/langchain/learn/lecture/52505041)
+- [LangChain Docs — LangGraph overview](https://docs.langchain.com/oss/python/langgraph/overview)
+- [LangChain Blog — Reflection Agents](https://www.langchain.com/blog/reflection-agents)

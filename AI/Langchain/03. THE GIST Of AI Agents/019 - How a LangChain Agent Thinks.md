@@ -1,5 +1,7 @@
 # 🧠 Từ câu hỏi đến câu trả lời: bên trong "cái đầu" của LangChain Agent
 
+> Nguồn: `019-From-Query-to-Answer-How-a-LangChain-Agent-Thinks.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/53365487)
+
 Chào các bạn, Eden đây! Ở bài trước agent đã chạy được — nhưng nó **thực sự làm gì** để ra câu trả lời? Bài này chúng ta sẽ mổ xẻ từng bước một.
 
 Chạy lại chương trình, bạn sẽ thấy **print từ bên trong tool** in ra tham số mà agent truyền vào: **"weather in Tokyo"**. Và phần response trả về thì có "một đống" thứ. *Đừng lo — đến cuối khóa bạn sẽ hiểu hết chúng!*
@@ -45,6 +47,22 @@ Rồi LangChain thực hiện **một cuộc gọi LLM nữa**, lần này trong
 2. Quyết định gọi tool của LLM.
 3. Kết quả sau khi tool chạy.
 
+```mermaid
+sequenceDiagram
+    participant U as Người dùng
+    participant LC as LangChain
+    participant L as LLM
+    participant T as Tool search
+    U->>LC: Câu hỏi thời tiết Tokyo
+    LC->>L: Messages và danh sách tools
+    L-->>LC: Tool call search kèm tham số
+    LC->>T: Thực thi tool
+    T-->>LC: Kết quả thời tiết
+    LC->>L: Gửi lại lịch sử kèm kết quả
+    L-->>LC: Câu trả lời cuối
+    LC-->>U: Messages kết quả
+```
+
 Có đầy đủ thông tin, lần này LLM **không gọi tool nữa** mà trả về câu trả lời cuối: **"The weather in Tokyo is currently sunny."**
 
 Và thế là "bó đũa" message trở nên rõ nghĩa:
@@ -54,10 +72,90 @@ Và thế là "bó đũa" message trở nên rõ nghĩa:
 * **ToolMessage:** cấu trúc dữ liệu đại diện cho kết quả thực thi tool.
 * **AIMessage cuối:** câu trả lời tự nhiên vì đã đủ dữ kiện.
 
+| Message | Nội dung | Vai trò |
+|---|---|---|
+| HumanMessage | Câu hỏi của người dùng | Input ban đầu |
+| AIMessage | Quyết định gọi tool và tham số | Reasoning engine phán quyết |
+| ToolMessage | Kết quả thực thi tool | Dữ liệu để LLM đọc ở lần gọi sau |
+| AIMessage cuối | Câu trả lời tự nhiên | Kết quả trả về cho người dùng |
+
 Đây chính là bức tranh tổng quát: **một reasoning engine quyết định gọi tool gì** + **một agent execution runtime thật sự chạy tool và nhận kết quả**. Hai vai diễn, phối hợp với nhau.
 
 ---
 
 ### 🔁 Đổi model sang GPT-5
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao phải gọi LLM tới hai lần cho một câu hỏi?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lần một để LLM quyết định gọi tool nào; sau khi tool chạy, lần hai để LLM trả lời dựa trên đầy đủ dữ kiện.
+
+Giải thích: Ở lần hai, prompt đã có input ban đầu, quyết định gọi tool và kết quả tool.
+
+Tham chiếu: Mục LangChain thực thi tool.
+
+</details>
+
+**Câu 2:** Phản hồi của LLM ở lần gọi đầu tiên chứa gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Nó chỉ nói gọi tool nào, với tham số gì, kèm một tool call ID — không phải kết quả của tool.
+
+Giải thích: Đây là điểm rất quan trọng, và việc đó diễn ra nhờ function calling.
+
+Tham chiếu: Mục Mở trace trên LangSmith.
+
+</details>
+
+**Câu 3:** Ai là bên thực sự chạy tool?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** LangChain — agent execution runtime — chứ không phải LLM.
+
+Giải thích: Một reasoning engine quyết định gọi tool, một runtime thực thi và nhận kết quả: hai vai diễn phối hợp.
+
+Tham chiếu: Mục LangChain thực thi tool.
+
+</details>
+
+**Câu 4:** ToolMessage đại diện cho điều gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Cấu trúc dữ liệu đại diện cho kết quả thực thi tool.
+
+Giải thích: Nó nằm giữa các message và chính là "những gì agent đã làm" để có câu trả lời.
+
+Tham chiếu: Mục Debug mode.
+
+</details>
+
+**Câu 5:** Model mặc định của LangChain tại thời điểm quay video là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** GPT-3.5 — chứ không phải GPT-5.
+
+Giải thích: Sau đó mình đổi sang GPT-5 và trace mới chỉ khác tên model, chạy chậm hơn một chút.
+
+Tham chiếu: Mục Mở trace trên LangSmith.
+
+</details>
+
 Cuối cùng, mình đổi model thành **GPT-5** và chạy lại. Lần này chậm hơn một chút — vì **GPT-5 chậm hơn GPT-3.5 Turbo**. Trace lần chạy mới gần như y hệt, chỉ khác **tên model**. Và chúng ta sẽ còn "làm dày" con search agent này thêm nữa ở bài sau! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — From Query to Answer - How a LangChain Agent Thinks](https://ua.udemy.com/course/langchain/learn/lecture/53365487)
+- [LangSmith Docs — Observability](https://docs.langchain.com/langsmith/observability)
+- [LangChain Docs — Agents](https://docs.langchain.com/oss/python/langchain/agents)

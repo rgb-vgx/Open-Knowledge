@@ -1,5 +1,7 @@
 # 🧠 Khi state "biết nói": Generative UI động, transparency và bài toán niềm tin với agent
 
+> Nguồn: `069-Agent-Human-Interaction---Part-2.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/50527921)
+
 Chào các bạn! Ở phần 2 của cuộc trò chuyện về tương tác người — agent, chúng ta sẽ đi vào những câu hỏi rất "đời": **khi state thay đổi thì giao diện có thay đổi theo không?** và **làm sao để người dùng tin tưởng một agent có thể chạy hàng phút, thậm chí hàng ngày?**
 
 Cùng mình mổ xẻ nhé!
@@ -16,6 +18,12 @@ Câu trả lời là: **hoàn toàn được!** CopilotKit gọi đây là một
 
 Điểm khác biệt cốt lõi nằm ở chữ "state": state là thứ **chỉ tồn tại trong agent**, chứ không hề tồn tại trong một lời gọi LLM đơn thuần — *các lời gọi LLM thì không có state*. Và đôi khi, bạn muốn **render cho người dùng thấy agent đang làm gì ngay tại thời điểm nó làm**.
 
+| Tiêu chí | Lời gọi LLM đơn thuần | Agent state trong LangGraph |
+|---|---|---|
+| Trạng thái | Không có state | Chứa nhiều field với đủ loại kiểu dữ liệu |
+| Khả năng render động | Chỉ trả về ngôn ngữ tự nhiên | Render component động theo giá trị state |
+| Cập nhật giao diện | Không có cơ chế reactive sẵn | Reactive — có dữ liệu mới là giao diện đổi ngay |
+
 Ví dụ cực kỳ phổ biến: agent đang **tìm kiếm trên web** hàng loạt thông tin, và trong lúc tìm, nó liên tục cập nhật — "à, mình tìm được nguồn này rồi", "tìm được nguồn kia rồi" — và bạn muốn cho người dùng biết **chuyện gì đang diễn ra**.
 
 Cách triển khai thì **rất, rất đơn giản**:
@@ -25,6 +33,19 @@ Cách triển khai thì **rất, rất đơn giản**:
 3. Function đó trả về **bất kỳ React component nào**.
 
 Phần **streaming và bảo mật** đã được xử lý sẵn, nên mọi thứ sẽ được cập nhật **theo cơ chế reactive**, hễ có dữ liệu mới là giao diện thay đổi ngay trong thời gian thực. Tất cả những gì render ra có thể được hiển thị **trong khung chat**, hoặc bạn chỉ dùng nó như **state trong ứng dụng** và muốn làm gì với nó cũng được. Đây chắc chắn là một **building block (khối xây dựng)** quan trọng.
+
+Luồng render động và khả năng quay lui khi agent đi lệch hướng:
+
+```mermaid
+flowchart TD
+    A[Agent state thay đổi] --> B[CopilotKit callback]
+    B --> C[Function trả về React component]
+    C --> D[UI cập nhật theo thời gian thực]
+    D --> E{Người dùng thấy đúng hướng}
+    E -->|Không| F[Time travel về good state]
+    F --> A
+    E -->|Có| G[Tiếp tục dùng kết quả]
+```
 
 ---
 
@@ -54,4 +75,77 @@ Vậy CopilotKit hỗ trợ người dùng can thiệp bằng cách nào? Hiện
 
 Nếu các bạn từng dùng **Android Studio**, hay những sản phẩm dành cho kỹ sư như **v0.dev, Cursor, Bolt**... chắc hẳn đã thấy abstraction này: khả năng **roll back về trạng thái tốt gần nhất** để thử lại theo hướng khác. CopilotKit đang mang chính ý tưởng đó vào thế giới agent.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** CopilotKit cho phép render component động dựa trên gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Dựa trên giá trị của agent state — một dạng callback mà CopilotKit gọi là generative UI dựa trên state.
+
+Giải thích: Chỉ cần một field thay đổi, như boolean yes/no hay một indicator, giao diện có thể phản ứng tương ứng.
+
+Tham chiếu: Mục Câu hỏi mở màn.
+
+</details>
+
+**Câu 2:** Vì sao state là điểm khác biệt so với một lời gọi LLM đơn thuần?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì state chỉ tồn tại trong agent, còn lời gọi LLM thì không có state.
+
+Giải thích: Nhờ state, ta mới render được cho người dùng thấy agent đang làm gì ngay tại thời điểm nó làm.
+
+Tham chiếu: Mục Câu hỏi mở màn.
+
+</details>
+
+**Câu 3:** Cách triển khai render state đơn giản gồm những bước nào?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Lấy agent state, cung cấp một function duy nhất, function đó trả về bất kỳ React component nào.
+
+Giải thích: Streaming và bảo mật đã được xử lý sẵn; giao diện cập nhật reactive theo thời gian thực.
+
+Tham chiếu: Mục Câu hỏi mở màn.
+
+</details>
+
+**Câu 4:** Hai lý do render state của agent quan trọng là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Giữ người dùng tập trung thay vì nhìn "spinning wheel", và minh bạch với agent để người dùng đủ tự tin sử dụng kết quả.
+
+Giải thích: AI đã đủ tốt để đưa vào production nhưng chưa đủ đáng tin để chạy mù quáng — xây dựng lòng tin là phần rất lớn của AI hiện tại.
+
+Tham chiếu: Mục Transparency.
+
+</details>
+
+**Câu 5:** Điều gì được quan sát thấy về agent càng tự chủ và nhu cầu can thiệp?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Agent càng tự chủ bao nhiêu, người ta càng muốn xây nhiều cơ hội can thiệp bấy nhiêu — chứ không phải ít hơn.
+
+Giải thích: Nếu agent chạy 10 phút, một ngày hay hai ngày, bạn càng cần visibility và khả năng nudge, time travel để tránh nhận báo cáo tuyệt vời nhưng sai chủ đề.
+
+Tham chiếu: Mục Transparency và Time travel.
+
+</details>
+
 Các bạn thấy đấy, một agent "biết nói" — biết khoe tiến trình, biết nhận phản hồi và biết quay lui khi cần — chính là kiểu agent mà người dùng dám tin tưởng giao việc. Hãy theo dõi các bài tiếp theo để xem chúng ta sẽ áp dụng những building block này vào dự án thực tế như thế nào nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Agent Human Interaction, Part 2](https://ua.udemy.com/course/langgraph/learn/lecture/50527921)
+- [CopilotKit — Documentation](https://docs.copilotkit.ai)
+- [LangGraph — Time travel](https://docs.langchain.com/oss/python/langgraph/use-time-travel)

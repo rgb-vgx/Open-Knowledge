@@ -1,5 +1,7 @@
 # 🧭 RAG Architecture: Two-step, RAG Agent hay Hybrid?
 
+> Nguồn: `064-RAG-Architecture.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54176973)
+
 Đến thời điểm này, chúng ta đã đi qua **hai cách triển khai RAG** trong khóa học. Nhưng câu hỏi lớn vẫn còn treo lơ lửng: **cách nào tốt nhất?** Trong bài này, mình sẽ đặt hai kiến trúc lên bàn cân, phân tích ưu nhược điểm, rồi giới thiệu kiến trúc mà mình tin là "chân ái" cho môi trường production.
 
 ### 🔁 Kiến trúc 1: Two-step RAG
@@ -26,12 +28,27 @@ Và đây là câu trả lời mình muốn dành cho các bạn: **hybrid archi
 
 Vậy approach nào tốt hơn? Câu trả lời trung thực là: **tùy vào use case của bạn**. Tuy nhiên, theo kinh nghiệm làm việc với **production systems** và khách hàng **doanh nghiệp**, kiến trúc hybrid thường **giành chiến thắng và được dùng phổ biến nhất** — ít nhất là ở thời điểm hiện tại.
 
+| Kiến trúc | Cách chạy | Kiểm soát | Linh hoạt | Latency |
+|---|---|---|---|---|
+| Two-step RAG | Retrieval luôn trước generation | Cao | Thấp | Nhanh |
+| RAG Agent | LLM tự quyết định khi nào retrieve | Thấp | Cao | Chậm hơn |
+| Hybrid RAG | Kết hợp cả hai, thêm bước validation | Trung bình | Trung bình | Trung bình |
+
 Hybrid RAG bổ sung các **bước trung gian (intermediate steps)** như:
 
 1. **Query pre-processing** — tiền xử lý truy vấn.
 2. **Retrieval** — truy hồi tài liệu.
 3. **Validation** — kiểm chứng tài liệu.
 4. **Post-generation checks** — hậu kiểm sau khi sinh câu trả lời.
+
+```mermaid
+flowchart LR
+    A[Câu hỏi] --> B[Query pre-processing]
+    B --> C[Retrieval]
+    C --> D[Validation]
+    D --> E[Generation]
+    E --> F[Post-generation checks]
+```
 
 Kiến trúc này **linh hoạt hơn pipeline cố định**, nhưng vẫn **duy trì kiểm soát** ở mức cần thiết. Ba lợi ích cụ thể:
 
@@ -49,4 +66,77 @@ Vậy mình khuyên các bạn nên dùng gì trong thực tế? **Hybrid RAG** 
 
 Còn về **use case của RAG**: thông thường chúng ta dùng RAG cho **hỏi đáp trên tài liệu** — tài liệu nội bộ, documentation, hay knowledge base — những nơi ta muốn "neo" câu trả lời vào dữ liệu tin cậy. Với những bài toán đó, **một agent là quá mức cần thiết (overkill)**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Two-step RAG có ưu điểm gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Kiểm soát tốt thời điểm retrieval và cực kỳ nhanh.
+
+Giải thích: Không cần LLM "quyết định" có retrieve hay không — nhưng kém linh hoạt vì luôn retrieve.
+
+Tham chiếu: Mục Kiến trúc 1.
+
+</details>
+
+**Câu 2:** Vì sao RAG agent chậm hơn two-step RAG?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì có thêm một hoặc vài LLM call trước khi retrieval.
+
+Giải thích: LLM phải reasoning để quyết định khi nào và bằng cách nào truy hồi.
+
+Tham chiếu: Mục Kiến trúc 2.
+
+</details>
+
+**Câu 3:** Ba lợi ích của Hybrid RAG là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Query enhancement, document validation, answer validation.
+
+Giải thích: Tăng cường truy vấn, kiểm chứng tài liệu và kiểm tra câu trả lời không bịa đặt.
+
+Tham chiếu: Mục Kiến trúc 3.
+
+</details>
+
+**Câu 4:** Vì sao agent là "overkill" cho hỏi đáp trên tài liệu?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì use case này chỉ cần "neo" câu trả lời vào dữ liệu tin cậy — không cần quá nhiều tự do.
+
+Giải thích: RAG agent trao toàn bộ quyền tự do cho LLM, điều nhiều ứng dụng production không mong muốn.
+
+Tham chiếu: Mục Dùng RAG khi nào.
+
+</details>
+
+**Câu 5:** Kiến trúc nào mình khuyên dùng cho production?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** **Hybrid RAG** — đang được dùng trong các hệ thống production của doanh nghiệp.
+
+Giải thích: Linh hoạt hơn pipeline cố định nhưng vẫn duy trì kiểm soát; sẽ được triển khai từ đầu ở phần LangGraph.
+
+Tham chiếu: Mục Dùng RAG khi nào.
+
+</details>
+
 Tóm lại: RAG agent mà chúng ta vừa triển khai **không phải giải pháp tốt nhất**, và mình **nhất định không dùng nó trong production**. Còn đâu là lộ trình mình đề xuất? Hãy học tốt **hybrid RAG** — và phần LangGraph sắp tới sẽ trang bị cho các bạn đầy đủ công cụ để hiện thực hóa nó. Hẹn gặp lại! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — RAG Architecture](https://ua.udemy.com/course/langchain/learn/lecture/54176973)
+- [LangChain Docs — Retrieval overview: 2-Step, Agentic và Hybrid RAG](https://docs.langchain.com/oss/python/langchain/retrieval)
+- [LangChain Docs — Build a custom RAG agent with LangGraph](https://docs.langchain.com/oss/python/langgraph/agentic-rag)

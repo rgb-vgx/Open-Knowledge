@@ -1,5 +1,7 @@
 # ⚡ Push: Khi server chủ động đẩy dữ liệu về client — nhanh nhất, nhưng có cái giá
 
+> Nguồn: `007-Push.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629814)
+
 Nếu các bạn muốn client nhận kết quả **nhanh nhất có thể, ngay lập tức**, thì push là một trong những pattern nổi tiếng nhất để làm điều đó ở backend. Nhưng như mọi thứ khác, nó có ưu điểm lẫn nhược điểm — và mình sẽ mổ xẻ cả hai trong bài này.
 
 ### 📬 Vì sao cần push: khi request/response hết "jive"
@@ -25,6 +27,15 @@ Nói cách khác, nó gần như một **unidirectional stream (luồng một ch
 * **RabbitMQ** chọn đúng model này: khi bạn submit message vào queue system, có các client consume queue đó — nhưng thay vì để consumer tự kéo, RabbitMQ **đẩy nội dung của queue đi ngay khi có entry mới** tới các client đang kết nối. **Kafka thì chọn cách khác** — mình sẽ nói ở phần nhược điểm.
 * **gRPC** cũng hỗ trợ mode này: **unidirectional server-side streaming** — client không yêu cầu gì mà vẫn nhận dữ liệu. Rất thú vị, và ta có thể "chơi chiêu" để request/response làm việc chung với push.
 * **Timeline**: client — server — một **bidirectional connection** đã mở sẵn. Backend nhận một message "từ hư không" (out of the blue), vì ở phía đầu kia đang có chuyện xảy ra: người ta gửi message, gửi request, upload file. Nhiều client khác cũng đang kết nối tới đó. Khoảnh khắc có message — "ai đó vừa upload video YouTube" — ta đẩy kết quả đó về **tất cả client đang kết nối**.
+
+```mermaid
+flowchart LR
+    C1[Client 1] <--> S[Server trung tâm]
+    C2[Client 2] <--> S
+    E[Sự kiện xảy ra] --> S
+    S -->|đẩy ngay khi event phát sinh| C1
+    S -->|đẩy ngay khi event phát sinh| C2
+```
 
 *Push thật ra không hề ma thuật: bạn có một kết nối, và bạn đang ghi trực tiếp vào socket của client.* Ta gọi nó là push vì kết quả được đẩy đi ngay khi event phát sinh — **bạn không chờ, không đợi client hỏi**.
 
@@ -58,6 +69,13 @@ Vậy YouTube làm khác: họ **đẩy notification tới Apple hoặc Android 
 
 Còn **polling** thì được ưu tiên cho những **client nhẹ**: client tự kéo theo nhịp của mình, chỉ gửi request khi biết mình kham nổi. Nếu chỉ có một video được upload hay một sự kiện nhỏ, bạn chẳng bận tâm — nhưng khi **khối lượng dữ liệu lớn**, nó cộng dồn lại và trở thành vấn đề thật sự.
 
+| Tiêu chí | Request/Response | Polling | Push |
+|---|---|---|---|
+| Ai chủ động | Client gửi request | Client hỏi vòng | Server đẩy |
+| Tính real-time | Chỉ khi client hỏi | Phụ thuộc nhịp hỏi | Ngay khi event phát sinh |
+| Client phải online | Chỉ lúc gửi request | Chỉ lúc poll | Phải duy trì kết nối |
+| Rủi ro chính | Chờ lâu, đứt là mất response | Chatty, tốn bandwidth | Client không kham nổi tải |
+
 ---
 
 ### 💻 Demo: WebSocket chat — thấy push bằng mắt thường
@@ -88,4 +106,76 @@ Code này chưa hoàn hảo: nếu client disconnect, server cần biết cách 
 
 Vậy là push cần **bidirectional**; nếu xây được unidirectional từ server thì bạn cũng có push. Khác hẳn với việc dùng `curl` hỏi liên tục "có message chưa? có message chưa?" — theo cách này, **kết quả được đẩy tới bạn**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Khi nào push model tỏa sáng?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Khi có event xảy ra mà chỉ server biết — ví dụ ai đó vừa login, upload video, hoặc gửi tin nhắn chat.
+
+Giải thích: Client không có kiến thức về event nên chỉ server mới đẩy được kết quả đi ngay lập tức.
+
+Tham chiếu: Mục Vì sao cần push.
+
+</details>
+
+**Câu 2:** Push cần điều kiện kỹ thuật gì để hoạt động?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một kết nối đã được thiết lập sẵn, và protocol hai chiều là lựa chọn tốt hơn.
+
+Giải thích: TCP có thể làm push, nhưng protocol bidirectional như WebSocket hỗ trợ việc đẩy dữ liệu tốt hơn.
+
+Tham chiếu: Mục Push hoạt động thế nào.
+
+</details>
+
+**Câu 3:** Vì sao YouTube tắt push notification mặc định?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì duy trì kết nối cho 100 triệu subscriber là bất khả thi, và phải loop push từng người.
+
+Giải thích: YouTube đẩy notification qua Apple/Android cloud để nền tảng đó chịu trách nhiệm đẩy tiếp xuống client.
+
+Tham chiếu: Mục Scale chỗ này không đùa.
+
+</details>
+
+**Câu 4:** Vì sao Kafka không chọn push model như RabbitMQ?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì consumer có thể không xử lý nổi khối lượng message bị đẩy tới.
+
+Giải thích: Push là "đây là data, tôi đẩy cho bạn và tôi không cần biết" — ép quá nhiều có thể làm client crash.
+
+Tham chiếu: Mục Ưu và nhược điểm.
+
+</details>
+
+**Câu 5:** Trong demo WebSocket, mình dùng gì làm unique identifier cho user?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Remote port của connection.
+
+Giải thích: Trong một TCP connection, source port luôn khác nhau nên đủ để định danh từng client.
+
+Tham chiếu: Mục Demo WebSocket chat.
+
+</details>
+
 Còn rất nhiều thứ đang chờ phía trước — bài tiếp theo chúng ta sẽ bàn về **synchronous vs asynchronous (đồng bộ vs bất đồng bộ)** trong workload backend. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Push](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34629814)
+- [gRPC — Core concepts, architecture and lifecycle](https://grpc.io/docs/what-is-grpc/core-concepts/)

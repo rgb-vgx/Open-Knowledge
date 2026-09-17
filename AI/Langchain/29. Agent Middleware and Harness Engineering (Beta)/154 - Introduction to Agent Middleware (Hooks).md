@@ -1,5 +1,7 @@
 # 🪝 Agent Middleware (Hooks): Chiếc chìa khóa để hiểu mọi Agent Harness
 
+> Nguồn: `154-Introduction-to-Agent-Middleware-Hooks.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/57762497)
+
 Chào các bạn, lại là Eden đây! Trong vài video tới, chúng ta sẽ cùng nhau bước vào một chủ đề mình rất tâm đắc: **agent middleware**. Đây là một **building block (viên gạch nền)** cực kỳ quan trọng trong **harness engineering và agent engineering** – và khi hiểu nó, các bạn sẽ có góc nhìn sâu sắc hơn hẳn về những agent harness nổi tiếng như Claude Code.
 
 Cùng mình xem vì sao nhé!
@@ -23,6 +25,11 @@ Middleware không phải là một khái niệm "tùy chọn cho vui". Theo mìn
 * Trong **Claude Code**, middleware được gọi là **hooks (điểm móc can thiệp)**.
 * Xét cho cùng, **cả middleware lẫn hooks đều thể hiện chung một ý tưởng** – cho phép bạn chèn logic vào những thời điểm định trước trong vòng chạy của agent.
 
+| Khái niệm | Tên gọi | Hệ sinh thái tiêu biểu |
+|---|---|---|
+| Chèn logic vào checkpoint định trước trong vòng chạy agent | Middleware | LangChain |
+| Cùng một ý tưởng, cách gọi khác | Hooks | Claude Code |
+
 Chính vì vậy, mình sẽ dành trọn section này để **đi sâu vào cả hai cách nhìn** này. *Đừng lo nếu thuật ngữ "middleware" nghe hơi hàn lâm – mình sẽ bắt đầu từ ví dụ web quen thuộc rồi dẫn dắt tới agent từng bước một.*
 
 ---
@@ -38,3 +45,9 @@ Trong các bài tiếp theo của section, chúng ta sẽ lần lượt trả l�
 Đây đều là những mảnh ghép nằm trong cùng một bức tranh: **dựng khung vận hành cho agent (harness engineering)**, và middleware chính là viên gạch đầu tiên.
 
 Nghe tới đây, mình tin các bạn đã thấy tò mò rồi đúng không? Hãy cùng mình đi tiếp vào bài học đầu tiên – gặp lại các bạn ngay sau đây! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Introduction to Agent Middleware Hooks](https://ua.udemy.com/course/langchain/learn/lecture/57762497)
+- [LangChain Docs — Middleware overview](https://docs.langchain.com/oss/python/langchain/middleware/overview)
+- [Claude Code Docs — Hooks reference](https://code.claude.com/docs/en/hooks)

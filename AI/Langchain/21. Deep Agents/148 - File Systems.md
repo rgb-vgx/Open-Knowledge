@@ -1,5 +1,7 @@
 # 📂 File Systems: "Cỗ máy" Context Engineering của Deep Agents
 
+> Nguồn: `148-Deep-Agents-File-Systems.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/54737163)
+
 Chào các bạn, mình là Eden đây! Hôm nay chúng ta cùng tìm hiểu một đặc điểm cốt lõi khác của deep agents: **khả năng truy cập file system (hệ thống tệp)**.
 
 ---
@@ -16,6 +18,14 @@ Deep Agents có các tool để **tìm kiếm file, đọc file, cập nhật v�
 * **glob và grep tool:** tìm file và tìm nội dung bên trong file.
 
 Nếu mở tài liệu của deep agents, các bạn sẽ thấy chúng phơi ra một **file system interface** rất giống Claude Code: `ls`, `read_file`, `write_file`, `edit_file`, `glob`, và `grep`.
+
+| Chức năng | Claude Code | Deep Agents interface |
+|---|---|---|
+| Đọc file | read tool | `read_file` |
+| Tạo và ghi đè file | write tool | `write_file` |
+| Sửa file | edit tool | `edit_file` |
+| Tìm file | glob tool | `glob` |
+| Tìm nội dung | grep tool | `grep` |
 
 ---
 
@@ -57,4 +67,84 @@ File system giúp chúng ta hai việc quan trọng:
 1. **Ghi context vào bộ lưu trữ bền vững (persistent storage):** file tạm, kết quả tạm, hay thông tin lấy từ internet đều được lưu lại — nhờ đó **không làm ô nhiễm context**, vì mọi thứ nằm ở nơi lưu trữ lâu dài.
 2. **Chọn lọc context để truy xuất:** cơ chế chính là **glob tool** (tìm file theo pattern) và **grep tool** (tìm nội dung file bằng biểu thức chính quy — regular expression).
 
+```mermaid
+flowchart LR
+    A[Agent] -->|write_file ghi kết quả| B[Persistent storage]
+    B -->|glob và grep truy xuất| C[Chọn đúng context cho vòng xanh]
+    C --> A
+```
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao deep agents cần quyền truy cập file system?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Để quản lý context — ghi kết quả trung gian ra ngoài và chọn lọc context cần truy xuất.
+
+Giải thích: File system chính là "động cơ" giúp agent tiến tới điểm ngọt của vòng xanh.
+
+Tham chiếu: Mục File System: cỗ máy ghi và chọn context.
+
+</details>
+
+**Câu 2:** Bộ file operations tools của Claude Code gồm những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** read tool, write tool, edit tool, glob tool và grep tool.
+
+Giải thích: read đọc file; write tạo và ghi đè; edit thay thế chuỗi chính xác; glob tìm file; grep tìm nội dung.
+
+Tham chiếu: Mục File System Tools.
+
+</details>
+
+**Câu 3:** Deep agents chỉ phơi ra interface hay ràng buộc backend?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Chỉ phơi ra interface; backend hoàn toàn tự do — Firestore, DynamoDB hay bất kỳ backend nào.
+
+Giải thích: Mọi thứ linh hoạt tuyệt đối.
+
+Tham chiếu: Mục Interface mở.
+
+</details>
+
+**Câu 4:** Bốn tình huống dở khóc dở cười của context engineering là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Under-retrieval, over-retrieval, misaligned retrieval và context window limit.
+
+Giải thích: Điểm ngọt là vòng đỏ nhỏ nhất mà vẫn phủ trọn vòng xanh.
+
+Tham chiếu: Mục Context Engineering.
+
+</details>
+
+**Câu 5:** Vì sao nói "cấu trúc thông tin còn quan trọng hơn cả prompt"?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì chất lượng agent bị chặn trên bởi việc nó có đúng thông tin trong context window hay không.
+
+Giải thích: Model suy luận tốt nhất vẫn trả lời sai nếu context sai.
+
+Tham chiếu: Mục Context Engineering.
+
+</details>
+
 Nói cách khác, file system đang hiện thực hóa hai phần quan trọng của triết lý context engineering: **ghi context** và **chọn context**. Hẹn gặp lại các bạn ở section tiếp theo nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Deep Agents File Systems](https://ua.udemy.com/course/langchain/learn/lecture/54737163)
+- [LangChain Docs — Deep Agents overview](https://docs.langchain.com/oss/python/deepagents/overview)
+- [LangChain Docs — Deep Agents backends](https://docs.langchain.com/oss/python/deepagents/backends)

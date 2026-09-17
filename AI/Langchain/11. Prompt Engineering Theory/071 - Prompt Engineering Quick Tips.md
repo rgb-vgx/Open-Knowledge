@@ -1,5 +1,7 @@
 # 💡 Prompt Engineering Quick Tips: 3 mẹo "low hanging fruit" thay đổi chất lượng prompt
 
+> Nguồn: `071-Prompt-Engineering-Quick-Tips.txt` · [Udemy](https://ua.udemy.com/course/langchain/learn/lecture/37554570)
+
 Chào các bạn, lại là mình đây! Sau khi đã đi qua các kỹ thuật prompting nền tảng, hôm nay mình muốn chia sẻ những **tips (mẹo)** cực kỳ dễ áp dụng để bạn bắt đầu chế tạo những prompt chất lượng cao.
 
 Mình gọi chúng là **low hanging fruit (quả chín ở tầm với)** — nghĩa là siêu dễ đưa vào prompt, nhưng một khi áp dụng, prompt của bạn sẽ tốt lên trông thấy và câu trả lời từ LLM cũng cải thiện rõ rệt.
@@ -72,6 +74,17 @@ Trong prompt engineering, iteration bao gồm:
 2. **Kiểm thử và đánh giá output** (testing & evaluating).
 3. **Mỗi vòng lặp dựa trên output của vòng trước** để tiếp tục refine.
 
+Vòng lặp cải tiến đó diễn ra như sau:
+
+```mermaid
+flowchart LR
+    A[Viết prompt] --> B[Chạy và đánh giá output]
+    B --> C{Đã đúng gu chưa}
+    C -->|Chưa| D[Tinh chỉnh prompt]
+    D --> B
+    C -->|Rồi| E[Prompt tối ưu]
+```
+
 Quá trình này sẽ dẫn đến một **prompt tối ưu đúng gu bạn**: sau khi lặp và tinh chỉnh, bạn có được prompt hoàn hảo cho ra kết quả hoàn hảo.
 
 ---
@@ -84,4 +97,76 @@ Mình biết rất dễ bị cám dỗ viết vội vài chữ rồi bấm Enter
 
 Theo mình, **prompt engineering chính là chế tạo và tạo ra prompt hoàn hảo để có được chính xác thứ bạn muốn**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao không nên bỏ quên context khi viết prompt?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì không có context, bạn đang đẩy nhiệm vụ tạo context cho LLM — nó sẽ tự đoán và cho câu trả lời lạc đề, thiếu liên quan.
+
+Giải thích: Context mang lại tính liên quan, giúp câu trả lời mạch lạc và chính xác.
+
+Tham chiếu: Mục Mẹo 1.
+
+</details>
+
+**Câu 2:** Task mập mờ dẫn đến hậu quả gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Task bị diễn giải theo vô số cách, gây nhầm lẫn, thiếu rõ ràng và hiệu suất tổng thể thấp hơn.
+
+Giải thích: Prompt mập mờ thiếu hướng dẫn cụ thể và metrics đánh giá thành công.
+
+Tham chiếu: Mục Mẹo 2.
+
+</details>
+
+**Câu 3:** Ví dụ về task rõ ràng hơn trong bài là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** "Identify and address specific pain points in the user experience of the e-commerce website to increase customer satisfaction and sales conversion rates."
+
+Giải thích: Nêu cụ thể task (xác định và xử lý pain points) và mục tiêu để đánh giá thành công.
+
+Tham chiếu: Mục Mẹo 2.
+
+</details>
+
+**Câu 4:** Iteration trong prompt engineering bao gồm những gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Refine prompt, kiểm thử và đánh giá output, và mỗi vòng lặp dựa trên output của vòng trước.
+
+Giải thích: Quá trình này dẫn đến prompt tối ưu đúng gu bạn.
+
+Tham chiếu: Mục Mẹo 3.
+
+</details>
+
+**Câu 5:** Thông điệp cốt lõi mà Eden muốn bạn mang theo là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Thời gian bạn dành để viết và tinh chỉnh prompt cực kỳ quan trọng; đầu tư thời gian sẽ cho kết quả tốt hơn và tổng thể tiết kiệm thời gian.
+
+Giải thích: Đừng viết vội vài chữ rồi bấm Enter.
+
+Tham chiếu: Mục Điều cốt lõi.
+
+</details>
+
 Ở bài tiếp theo, chúng ta sẽ bước sang một tầng sâu hơn: **Context Engineering** — bước tiến hóa tự nhiên của Prompt Engineering. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Prompt Engineering Quick Tips](https://ua.udemy.com/course/langchain/learn/lecture/37554570)
+- [OpenAI — Prompt engineering guide](https://developers.openai.com/api/docs/guides/prompt-engineering)

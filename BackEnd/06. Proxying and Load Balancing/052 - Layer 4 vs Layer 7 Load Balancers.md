@@ -1,5 +1,7 @@
 # ⚖️ Layer 4 vs Layer 7 Load Balancer: Hiểu sai một tầng là trả giá cả hệ thống
 
+> Nguồn: `050-Layer-4-vs-Layer-7-Load-Balancers.txt` · [Udemy](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34648576)
+
 Ở bài trước chúng ta đã nói về **proxy** và **reverse proxy** — chuyện gì xảy ra khi bạn dùng proxy, kết nối nào được tạo ra, ai đang nói chuyện với ai. Nắm được điều đó là cực kỳ quan trọng với backend engineer, đặc biệt nếu các bạn dùng nó mỗi ngày. Nhưng còn một khái niệm quan trọng không kém: **layer 4 và layer 7 proxy / reverse proxy / load balancer**.
 
 Các bạn có thể thay chữ "load balancer" bằng "reverse proxy" trong gần như toàn bộ bài này và mọi thứ vẫn đúng. Nhưng khác biệt giữa hai tầng thì không thể xem nhẹ. Cùng đi vào chi tiết.
@@ -39,6 +41,19 @@ Ví dụ cụ thể các bạn hay thấy:
 1. Client gửi gói tin tới địa chỉ của load balancer (giả sử `4.4.1.2`). Với client, đây chính là đích cuối — một reverse proxy.
 2. Dữ liệu được lấy ra và **ghi lại thành một kết nối TCP hoàn toàn mới** tới backend (ví dụ `4.4.1.3`). Lúc này source chính là load balancer. Client **không hề hay biết**.
 3. Backend xử lý (app đọc từ socket, gRPC, database... tùy hệ thống), rồi trả lời. Đích lúc này quay về load balancer; nó dựa vào bảng mapping để trả tiếp về đúng connection của client.
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant LB as Layer 4 Load Balancer
+    participant B as Backend
+    C->>LB: Mở TCP connection
+    LB->>B: Mở connection riêng phía backend
+    C->>LB: Gửi segment dữ liệu
+    LB->>B: Ghi lại segment
+    B-->>LB: Trả response
+    LB-->>C: Trả response về client
+```
 
 Một chế độ khác là **NAT mode**: mọi thứ gộp thành **một kết nối TCP duy nhất**. Khi đó load balancer đóng vai gateway của client, hành xử gần như một router — chỉ đổi địa chỉ IP đích (và có thể cả port) sang backend.
 
@@ -105,8 +120,89 @@ Một ví dụ đáng nhớ: ba segment hợp thành một request `GET` — c�
 * Buffer khiến backend phải chờ; nếu buffer quá nhiều request cùng lúc, load balancer có thể trở thành **nút thắt cổ chai (bottleneck)**.
 * **Phải hiểu giao thức**. Đó là lý do bạn thấy mọi người liên tục hỏi: "nginx ơi support WebSocket đi", "support gRPC đi", "support Postgres đi"... Bởi vì không hiểu giao thức thì **không thể** làm layer 7 load balancing.
 
+| Tiêu chí | Layer 4 | Layer 7 |
+|---|---|---|
+| Dữ liệu nhìn thấy | IP, port, segment | Toàn bộ nội dung ứng dụng |
+| Cân bằng tải | Theo connection | Theo từng request, theo path |
+| TLS | Không cần giải mã | Phải terminate TLS, giữ cert + key |
+| Cache | Không | Có, vì đã đọc nội dung |
+| Hợp với | Mọi giao thức, workload đơn giản | Microservices, API gateway |
+
 ---
+
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Layer 4 load balancer dựa vào thông tin gì để cân bằng tải?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Port, địa chỉ IP và segment — nó không được phép parse dữ liệu.
+
+Giải thích: Mọi thứ bên trong gói tin đều là hộp đen với layer 4.
+
+Tham chiếu: Mục Layer 4 load balancer vận hành như thế nào.
+
+</details>
+
+**Câu 2:** Vì sao mọi segment của một connection phải đi trên cùng một connection backend?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì TCP là giao thức stateful — rải segment sang connection khác sẽ làm sequence lệch và dữ liệu hỏng.
+
+Giải thích: Layer 4 gắn connection vào đúng một connection backend như một "khế ước".
+
+Tham chiếu: Mục Layer 4 load balancer vận hành như thế nào.
+
+</details>
+
+**Câu 3:** Vì sao layer 7 load balancer phải giữ certificate và private key?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó phải terminate TLS để đọc nội dung, và phải "đóng vai" chính website của bạn với client.
+
+Giải thích: Không có cert thì không thể giả danh website để giải mã.
+
+Tham chiếu: Mục Layer 7 load balancer.
+
+</details>
+
+**Câu 4:** Khi một connection HTTP được nâng cấp lên WebSocket qua layer 7, điều gì xảy ra với các rule layer 7?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Load balancer thường hạ cấp xuống layer 4 để tunnel, và mọi rule layer 7 biến mất — không chặn user, không kiểm tra header hay authentication.
+
+Giải thích: Một khi đã tunnel ở layer 4, nó không còn nhìn thấy nội dung nữa.
+
+Tham chiếu: Mục Ưu và nhược điểm của Layer 4 load balancer.
+
+</details>
+
+**Câu 5:** Vì sao layer 7 load balancer có thể route `/pictures` và `/comments` tới các server khác nhau?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì nó đọc và hiểu protocol — nhìn được method, đường dẫn, header sau khi buffer và giải mã request.
+
+Giải thích: Layer 4 không bao giờ làm được vì không được phép nhìn vào dữ liệu.
+
+Tham chiếu: Mục Ưu nhược Layer 7 và lời khuyên của mình.
+
+</details>
 
 Tóm lại, chúng ta đã đi qua: load balancer là gì, layer 4 hoạt động ra sao với ưu nhược điểm, và layer 7 thông minh hơn nhưng cũng đắt hơn như thế nào. *Không có đúng sai tuyệt đối — mỗi loại load balancer đều có chỗ đứng của nó, tùy bài toán.*
 
 Bài tiếp theo sẽ rất thú vị: chúng ta sẽ áp dụng tất cả những gì vừa học vào **WebSocket proxying** — nơi layer 4 và layer 7 thể hiện khác biệt rõ rệt nhất. Hẹn gặp lại các bạn! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — Layer 4 vs Layer 7 Load Balancers](https://ua.udemy.com/course/fundamentals-of-backend-communications-and-protocols/learn/lecture/34648576)
+- [NGINX Docs — HTTP Load Balancing](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer)
+- [NGINX Docs — TCP and UDP Load Balancing](https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-udp-load-balancer)

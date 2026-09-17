@@ -1,5 +1,7 @@
 # 🔍 LangGraph là gì và vì sao nó khác biệt với LangChain? (Câu chuyện về những vòng lặp)
 
+> Nguồn: `004-What-is-LangGraph.txt` · [Udemy](https://ua.udemy.com/course/langgraph/learn/lecture/43446194)
+
 Chào các bạn, mình là Eden đây! Trong bài này, chúng ta sẽ cùng trả lời ba câu hỏi: **LangGraph là gì, vì sao chúng ta cần nó, và nó khác gì so với LangChain**.
 
 Đây là phần lý thuyết quan trọng, giúp các bạn hiểu rõ "linh hồn" của LangGraph trước khi bắt tay vào code đấy nhé.
@@ -45,6 +47,12 @@ Vậy giới hạn nằm ở đâu?
 * Chúng ta **không thể lặp lại (iterate)**, không thể quay về node ban đầu và bắt đầu lại quy trình.
 * LangChain có những hiện thực cho việc này, nhưng đều là **ad hoc (tùy nghi)**, ví dụ thuật toán **ReAct** — nơi trong mã nguồn thực sự có một vòng lặp `while`.
 
+| Tiêu chí | LangChain Expression Language | LangGraph |
+|---|---|---|
+| Loại đồ thị | Acyclic — không có chu trình | Có thể chứa cycles (chu trình) |
+| Khả năng lặp | Không thể iterate, không quay về node đầu | Quay về điểm bắt đầu để tiếp tục được |
+| Cách hiện thực vòng lặp | Ad hoc, ví dụ vòng `while` trong ReAct | Chu trình là một phần của mô hình graph |
+
 Và đây chính xác là lúc **LangGraph** bước vào cuộc chơi!
 
 ---
@@ -59,6 +67,88 @@ Khái niệm này gắn liền với **flow engineering (kỹ thuật thiết k�
 * LLM có thể **hòa vào luồng đó** và giúp quyết định: đi flow A hay flow B, kết thúc, hay quay lại điểm bắt đầu để tiếp tục?
 * Chính các **cycles** mang lại nguồn tự do to lớn này.
 
+```mermaid
+flowchart TD
+    A[Đầu vào] --> B[LLM quyết định hướng đi]
+    B --> C[Thực thi bước]
+    C --> D{Đã đủ tốt chưa}
+    D -->|Chưa| B
+    D -->|Rồi| E[Kết quả]
+```
+
 Trong tài liệu của LangGraph, nó được mô tả là **"building language agents as graphs" (xây dựng language agent dưới dạng đồ thị)** — toàn bộ logic, toàn bộ luồng của agent được biểu diễn như một graph, thậm chí là graph có chu trình. Với LangGraph, việc hiện thực những giải pháp này **vô cùng thanh lịch và dễ dàng**.
 
+### 🎯 Tự kiểm tra nhanh
+
+**Câu 1:** Vì sao autonomous agent kiểu AutoGPT chưa dùng được trong production?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Vì quá linh hoạt và phụ thuộc quá nhiều vào LLM.
+
+Giải thích: LLM cơ bản là những "sinh vật thống kê" đoán từng token, nên dễ lan man và không trả về đúng thứ ta muốn.
+
+Tham chiếu: Mục Phổ tự chủ.
+
+</details>
+
+**Câu 2:** LLM router là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một loại chain dùng LLM để quyết định nên đi hướng nào.
+
+Giải thích: Ví dụ chạy nhánh code số 1 hay số 2, tìm trong database hay tìm kiếm trên web.
+
+Tham chiếu: Mục LLM router.
+
+</details>
+
+**Câu 3:** Giới hạn lớn nhất của LangChain Expression Language là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Không thể tạo cycles — chỉ tạo được acyclic graph viết sẵn từ trước.
+
+Giải thích: Hệ quả là không thể lặp lại hay quay về node ban đầu; các vòng lặp hiện có như ReAct đều là ad hoc.
+
+Tham chiếu: Mục LLM router và giới hạn không có cycles.
+
+</details>
+
+**Câu 4:** Cycles mang lại điều gì cho agent?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Một chiều không gian tự do và phức tạp mới — agent có thể quay lại điểm bắt đầu để tiếp tục.
+
+Giải thích: Lập trình viên định nghĩa luồng, còn LLM quyết định đi flow A hay B, kết thúc hay lặp lại.
+
+Tham chiếu: Mục LangGraph: xây dựng language agent như những đồ thị.
+
+</details>
+
+**Câu 5:** "Building language agents as graphs" nghĩa là gì?
+
+<details>
+<summary><b>Xem đáp án</b></summary>
+
+**Đáp án:** Toàn bộ logic, toàn bộ luồng của agent được biểu diễn như một graph — thậm chí là graph có chu trình.
+
+Giải thích: Cách biểu diễn này khiến các giải pháp phức tạp trở nên thanh lịch và dễ hiện thực.
+
+Tham chiếu: Mục LangGraph: xây dựng language agent như những đồ thị.
+
+</details>
+
 Và chúng ta sẽ cùng xây dựng những hệ thống rất nâng cao như vậy ngay trong khóa học này! Hãy tiếp tục theo dõi nhé! 🚀
+
+## Nguồn tham khảo
+
+- [Udemy — LangGraph: What is LangGraph](https://ua.udemy.com/course/langgraph/learn/lecture/43446194)
+- [LangGraph overview — Docs by LangChain](https://docs.langchain.com/oss/python/langgraph/overview)
+- [langchain-ai/langgraph — GitHub](https://github.com/langchain-ai/langgraph)
