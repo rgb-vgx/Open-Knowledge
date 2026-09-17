@@ -1,247 +1,134 @@
-Before we continue with the course,
+---
+title: 'Bài 002 — Mục Tiêu Khóa Học'
+course: 'langchain'
+lesson: 2
+status: edited-verified
+source: '002 - Course Objectives.md'
+verified_date: '2026-09-17'
+langchain_version: '1.x'
+categories:
+- AI
+tags: []
+doc_refs:
+- 'https://docs.langchain.com/oss/python/langchain/overview'
+- 'https://docs.langchain.com/oss/python/langchain/agents'
+---
 
-I think it's important
+# Bài 002 — Mục Tiêu Khóa Học
 
-to go through the course's objectives,
+> Biên soạn từ transcript "002 - Course Objectives.md".
+>
+> Đã đối chiếu với docs ngày 2026-09-17 (LangChain 1.x).
 
-and my number one goal is that, by the end of this course,
+## Mục tiêu bài học
 
-you'll be competent to develop
+Sau bài này bạn có thể:
 
-your own LLM-powered application with LangChain.
+- Phân biệt hai loại ứng dụng LLM mà khóa học bao phủ: agents và RAG applications.
+- Mô tả vị trí của LangSmith và LangGraph trong hệ sinh thái LangChain.
+- Liệt kê các chủ đề production-ready được đề cập: testing, logging, monitoring, alerting, security.
+- Chuẩn bị đúng prerequisites: Python, Git cơ bản, virtual environment, environment variables.
 
-And I like to categorize LLM applications into two types:
+## 1. Mục tiêu số một của khóa học
 
-agents and RAG applications.
+Giảng viên nêu rõ mục tiêu duy nhất:
 
-And I elaborately talk about this distinction
+> Cuối khóa học, bạn đủ năng lực tự phát triển LLM-powered application của riêng mình bằng LangChain.
 
-in this video here.
+Ông chia ứng dụng LLM thành hai loại:
 
-Anyways, this course is going to give you
+| Loại | Ý nghĩa trong khóa học |
+|---|---|
+| **agents** | Ứng dụng mà LLM tự quyết định gọi tools theo task |
+| **RAG applications** | Ứng dụng gắn LLM với dữ liệu riêng chưa từng được train |
 
-an elaborate coverage of those two topics,
+Khóa học bao phủ cả hai, không chỉ cách build mà còn cách chúng vận hành under the hood. Giảng viên nhấn mạnh sẽ dive vào LangChain source code để không còn "magic".
 
-and you'll know exactly how to implement an agent
+## 2. Hệ sinh thái đi kèm: LangSmith và LangGraph
 
-and how to implement a RAG application.
+Ngoài LangChain core, học viên sẽ thành thạo:
 
-And it's not just about building those type of applications,
+- **LangSmith** — dùng cho tracing.
+- **LangGraph** — dùng cho workflow engineering.
 
-but rather understanding how they work under the hood.
+Giảng viên hứa ban đầu nghe chưa hiểu cũng không sao, cuối khóa sẽ hiểu hết.
 
-During this course,
+## 3. Prompt engineering và lịch sử prompting
 
-we'll dive into the LangChain source code,
+Khóa học còn bao phủ prompt engineering-based practices, prompt engineering techniques và lịch sử của prompting — được mô tả là nền tảng của mọi ứng dụng GenAI hiện nay.
 
-and we'll understand exactly what LangChain is doing,
+## 4. Góc nhìn production của software engineer
 
-and there will be no magic.
+Xuất thân enterprise software, giảng viên cam kết lồng ghép xuyên suốt các chủ đề production-ready:
 
-We'll understand everything inside the process
+1. testing
+2. logging
+3. monitoring
+4. alerting
+5. security
 
-of building those type of applications,
+Kèm thảo luận các real-world scenarios.
 
-which will provide us with a solid foundation
+## 5. Đối tượng và prerequisites
 
-for the LLM application development field.
+Đối tượng chính ban đầu: software engineers và data scientists muốn vào Generative AI, không cần machine learning background. Giảng viên tự kể bản thân năm 2023 có zero ML experience, và cho rằng AI nay là commodity, LangChain là accelerator lớn.
 
-And, as a bonus,
+Tuy vậy khóa học rất technical, yêu cầu học viên thoải mái với code: biết viết code, debug code. Đã từng có lawyers, doctors học và thích khóa học, nhưng đó là ngoại lệ.
 
-you'll also be proficient
+Prerequisites bắt buộc:
 
-within the LangChain ecosystem stack,
+- **Python**: chạy chương trình, viết functions, classes — thành thạo ở mức Python course chuẩn.
+- **Git**: `git clone`, `git commit` — không cần fancy.
+- **Virtual environment** và **environment variables**.
+- Toàn bộ source code quản lý trên GitHub, project bootstrap từ zero step by step, nhưng không dạy lại Python basics.
 
-like using LangSmith for tracing,
+Cuối video giảng viên nhắc chính sách 30-days money back guarantee, kể cả sau 30 ngày có thể liên hệ trực tiếp để refund.
 
-or LangGraph for workflow engineering.
+## Đối chiếu với tài liệu mới nhất
 
-And don't worry if you don't understand
+| Nội dung trong transcript | Hiện nay (docs 1.x) | Kết luận | Nguồn |
+|---|---|---|---|
+| Ứng dụng LLM chia thành agents và RAG | Docs overview giữ đúng hai nhóm: agents (model + tools loop) và RAG/workflow với retrieval | Vẫn đúng | [LangChain overview](https://docs.langchain.com/oss/python/langchain/overview) |
+| LangSmith dùng cho tracing | LangSmith là observability suite: inspect traces, tool activity, latency | Vẫn đúng | [LangSmith observability](https://docs.langchain.com/langsmith/observability) |
+| LangGraph dùng cho workflow engineering / agents | `create_agent` được powered bởi LangGraph ReAct agent under the hood; LangGraph dùng cho production-grade orchestration | Vẫn đúng | [LangChain agents](https://docs.langchain.com/oss/python/langchain/agents) |
+| Chỉ cần software experience, không cần ML | Docs hướng tới developers dùng models as black box, không yêu cầu train models | Vẫn đúng | [LangChain overview](https://docs.langchain.com/oss/python/langchain/overview) |
 
-anything I'm saying right now,
+Code cập nhật (nếu có): không có — bài này không chứa code.
 
-I promise you you'll understand everything
+## Tóm tắt một trang
 
-by the end of this course.
+| Vấn đề ↔ Giải pháp (phiên bản mới) | |
+|---|---|
+| Muốn build LLM app mà không biết ML | Dùng LangChain như black-box framework cho developers |
+| Chưa phân biệt agents vs RAG | Agents = model gọi tools theo vòng lặp; RAG = gắn dữ liệu riêng vào LLM |
+| Thiếu tracing khi lên production | Dùng LangSmith observability |
+| Cần workflow bền vững cho agent | Dùng LangGraph / `create_agent` |
+| Thiếu nền tảng prompting | Học prompt engineering techniques kèm lịch sử prompting |
 
-We'll also cover prompt engineering-based practices,
+**Một câu chốt:** Khóa học lấy năng lực tự build agents và RAG hiểu rõ under the hood làm chuẩn đầu ra, kèm hệ sinh thái LangSmith, LangGraph và tư duy production-ready.
 
-prompt engineering techniques,
+## Câu hỏi tự kiểm tra
 
-and really the history of prompting,
+1. Hai loại ứng dụng LLM mà khóa học bao phủ là gì?
+2. LangSmith và LangGraph phục vụ nhu cầu nào?
+3. Vì sao khóa học dive vào source code thay vì chỉ dạy cách dùng?
+4. Prerequisites Python/Git nào là bắt buộc?
+5. Những chủ đề production-ready nào được lồng ghép xuyên suốt?
 
-which is very interesting and is the foundation
+<details><summary><b>Xem đáp án</b></summary>
 
-for all of the Gen AI apps we're seeing right now.
+**1.** agents và RAG applications — hai nhóm chính của LLM-powered applications theo giảng viên và docs overview hiện nay.
 
-And, as a software engineer
+**2.** LangSmith cho tracing/monitoring; LangGraph cho workflow engineering và orchestration agent production-grade, `create_agent` chạy trên LangGraph under the hood.
 
-who used to write software for the enterprise,
+**3.** Để không còn "magic": hiểu exactly LangChain làm gì trong quá trình build, tạo nền tảng vững cho lĩnh vực LLM application development.
 
-I will be covering those production-ready topics
+**4.** Python (chạy code, functions, classes), Git (`clone`, `commit`), virtual environment, environment variables — ở mức standard Python course.
 
-like testing, logging, monitoring, alerting, security,
+**5.** testing, logging, monitoring, alerting, security, thảo luận theo real-world scenarios.
 
-and I like to continuously follow up on those topics
+</details>
 
-along the course to discuss some real-world scenarios.
+## Bước tiếp theo
 
-All right, and I think it's also important to discuss
-
-who is the target audience I was making this course for.
-
-So, at the beginning,
-
-this course was mainly for software engineers
-
-and data scientists who want to get into Generative AI
-
-and to build LLM applications.
-
-So no prior knowledge in machine learning is needed,
-
-and I teach everything you need to know in this course.
-
-And I'll be honest with you,
-
-when I started my Gen AI journey,
-
-I had zero machine learning experience.
-
-I always felt inconfident about my knowledge gap
-
-in this field,
-
-and it was always scary to dive into machine learning,
-
-and I never really took this jump.
-
-However, now, AI is a commodity,
-
-and, in my opinion, LangChain was a huge accelerator
-
-in this process.
-
-Anyways, you don't need to know machine learning
-
-in order to take this course.
-
-You just need software experience.
-
-So having said that, this course is very technical,
-
-and I do assume that you have software experience,
-
-so you know how to write code, to debug code,
-
-and, overall, that you're comfortable around code,
-
-so the sector of software engineers
-
-or data scientists were the main ones.
-
-However, I did have very surprising students
-
-who took this course and enjoyed it.
-
-I had lawyers who took this course,
-
-and even doctors who actually enjoyed it.
-
-So you should know that this was my target audience
-
-when making this course.
-
-However, this course is not for everyone.
-
-Yes, I said that, not for everyone.
-
-And this is why I do assume some concepts
-
-which I'm not going to cover.
-
-Those are the prerequisites,
-
-and, without you knowing them,
-
-then this course will be challenging for you.
-
-So I do assume that you have some Python knowledge,
-
-and you know how to run a Python program,
-
-and to write Python functions, and classes,
-
-and, general, you are proficient in Python.
-
-Now, we're not going to do anything crazy with Python.
-
-We're just going to use the LangChain library in Python,
-
-and the entire source code is being managed in GitHub,
-
-so I do assume some basic Git command
-
-like git clone and git commit,
-
-nothing fancy over here.
-
-I do assume you're familiar with the concept
-
-of a virtual environment in Python,
-
-and how to set environment variables.
-
-And, to be honest,
-
-I think every standard Python course is going to cover
-
-all of those topics.
-
-And you will see me bootstrapping from zero
-
-the entire project,
-
-and you'll see me doing everything step by step.
-
-However, I'm not going to explain everything
-
-right from the basics.
-
-So this is not a Python course,
-
-it's a LangChain course.
-
-And this is why I don't cover the basics.
-
-So it'll give us the flexibility to dive deep
-
-right into LangChain and to starting learning it in depth.
-
-And it's also important to note
-
-that this course has a 30-days money back guarantee.
-
-So if you find this course is not for you,
-
-feel free to ask for a refund.
-
-You will get one without any questions asked.
-
-And, if for some reason, 30 days have passed
-
-and you still want a refund,
-
-feel free to contact me directly,
-
-and I will personally give you a refund
-
-with no hard feelings.
-
-All right, so that's pretty much it.
-
-I hope I didn't scare you too much.
-
-And with that being said,
-
-let's go to the course.
+Bài 007 — *What are we building: LangChain Hello World Chain* — chain đầu tiên tóm tắt thông tin Elon Musk (bỏ qua các bài hành chính 003–005).
