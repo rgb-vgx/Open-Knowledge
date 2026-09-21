@@ -71,6 +71,34 @@ tool_node = ToolNode(tools)
 
 ### ✅ Chốt lại và commit
 
+---
+
+### 💻 Code mẫu đầy đủ — `node.py`
+
+Toàn bộ hai node của graph nằm trong file `node.py` (tham khảo từ repo chính thức của khóa học):
+
+```python
+from dotenv import load_dotenv
+from langgraph.graph import MessagesState
+from langgraph.prebuilt import ToolNode
+
+from react import llm, tools
+
+load_dotenv()
+
+SYSTEM_MESSAGE = "You are a helpful assistant with access to tools that you can use to answer the question."
+
+
+def agent_reason(state: MessagesState) -> MessagesState:
+    response = llm.invoke(
+        [{"role": "system", "content": SYSTEM_MESSAGE}, *state["messages"]]
+    )
+    return {"messages": [response]}
+
+
+tool_node = ToolNode(tools)
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** `MessagesState` là gì?

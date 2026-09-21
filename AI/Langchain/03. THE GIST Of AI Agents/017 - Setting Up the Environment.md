@@ -59,6 +59,28 @@ Trong file **`.env`**, mình có:
 
 Quay lại file **`main.py`**, mình chạy thử đoạn boilerplate để chắc chắn mọi thứ hoạt động, rồi bắt đầu phần import: nạp hàm **`load_dotenv`** và gọi nó ngay đầu file để load toàn bộ biến môi trường từ `.env`.
 
+---
+
+### 💻 Code mẫu đầy đủ — `main.py`
+
+Toàn bộ code của bài nằm trong file `main.py` (tham khảo từ repo chính thức của khóa học):
+
+```python
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+def main():
+    print("Hello from langchain-course!")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+---
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Code của section này nằm ở branch nào?

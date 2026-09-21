@@ -68,6 +68,39 @@ Cuối cùng, mình dùng **`StructuredTool.from_function`** để tạo hai too
 
 Cả hai đều chạy ở **tool mode**. Nhắc lại một chút về `ToolNode`: nó sẽ **soi vào state, kiểm tra message cuối cùng**, và nếu có tool call thì **thực thi tool tương ứng** cho chúng ta.
 
+---
+
+### 💻 Code mẫu đầy đủ — `tool_executor.py`
+
+Toàn bộ code của bài nằm trong file `tool_executor.py` (tham khảo từ repo chính thức của khóa học):
+
+```python
+from dotenv import load_dotenv
+
+load_dotenv()
+
+from langchain_core.tools import StructuredTool
+from langchain_tavily import TavilySearch
+from langgraph.prebuilt import ToolNode
+
+from schemas import AnswerQuestion, ReviseAnswer
+
+tavily_tool = TavilySearch(max_results=5)
+
+
+def run_queries(search_queries: list[str], **kwargs):
+    """Run the generated queries."""
+    return tavily_tool.batch([{"query": query} for query in search_queries])
+
+
+execute_tools = ToolNode(
+    [
+        StructuredTool.from_function(run_queries, name=AnswerQuestion.__name__),
+        StructuredTool.from_function(run_queries, name=ReviseAnswer.__name__),
+    ]
+)
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** `ToolNode` hoạt động như thế nào?

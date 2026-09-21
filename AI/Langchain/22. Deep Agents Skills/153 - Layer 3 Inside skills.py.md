@@ -66,6 +66,50 @@ Và việc này diễn ra **trước mỗi request** gửi tới agent.
 
 Có một điều cực kỳ quan trọng: **khi agent quyết định nạp gì từ skill, quyền quyết định hoàn toàn thuộc về LLM.** Chính vì thế, chúng ta cần viết file `SKILL.md` **như một bảng mục lục (index)** — thật dễ tiếp cận, thật dễ hiểu, để LLM có thể chọn đúng file cần progressive disclosure.
 
+---
+
+### 💻 Trích đoạn code — `SkillsState` và `before_agent` trong `skills.py`
+
+Hai phần cốt lõi của cơ chế skill trong repo **LangChain Deep Agents** (`libs/deepagents/deepagents/middleware/skills.py`). *Lưu ý: bản trên GitHub hiện tại đã dài hơn bản trong video, nhưng logic `before_agent` vẫn đúng như mình phân tích:*
+
+```python
+class SkillsState(AgentState):
+    """State for the skills middleware."""
+
+    skills_metadata: NotRequired[Annotated[list[SkillMetadata] | None, OmitFromOutput]]
+    """List of loaded skill metadata from configured sources."""
+    skills_load_errors: NotRequired[Annotated[list[str], PrivateStateAttr]]
+    """Skill source loading errors."""
+
+
+def before_agent(self, state: SkillsState, runtime: Runtime, config: RunnableConfig) -> SkillsStateUpdate | None:
+    """Load skills metadata before agent execution (synchronous)."""
+    # Skip if skills are already loaded (even if empty); None requests a reload
+    if state.get("skills_metadata") is not None:
+        return None
+
+    backend = self._backend
+    all_skills: dict[str, SkillMetadata] = {}
+    skills_load_errors: list[str] = []
+
+    # Load skills from each source in order
+    # Later sources override earlier ones (last one wins)
+    for source_path in self.sources:
+        source_skills, source_error = _list_skills_with_errors(backend, source_path)
+        if source_error is not None:
+            skills_load_errors.append(source_error)
+        for skill in source_skills:
+            all_skills[skill["name"]] = skill
+
+    if skills_load_errors:
+        logger.warning("Skills load errors: %s", skills_load_errors)
+    return SkillsStateUpdate(
+        skills_metadata=list(all_skills.values()), skills_load_errors=skills_load_errors
+    )
+```
+
+---
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** `before_agent` làm gì với skill?

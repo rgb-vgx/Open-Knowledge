@@ -78,6 +78,47 @@ Hàm trả về dictionary cập nhật **graph state**: key `documents` chứa 
 
 Một chi tiết nhỏ nhưng đáng làm: mình đổi tên file thành `web_search.py` (thêm dấu gạch dưới) cho đúng quy ước đặt tên trong Python.
 
+---
+
+### 💻 Code mẫu đầy đủ — `web_search.py`
+
+Toàn bộ code của bài nằm trong file `graph/nodes/web_search.py` (tham khảo từ repo chính thức của khóa học):
+
+```python
+from typing import Any, Dict
+
+from dotenv import load_dotenv
+from langchain_core.documents import Document
+from langchain_tavily import TavilySearch
+
+from graph.state import GraphState
+
+load_dotenv()
+web_search_tool = TavilySearch(max_results=3)
+
+
+def web_search(state: GraphState) -> Dict[str, Any]:
+    print("---WEB SEARCH---")
+    question = state["question"]
+    # "documents" is not populated yet if the router sent us straight to web search
+    documents = state["documents"] if "documents" in state else None
+
+    tavily_results = web_search_tool.invoke({"query": question})["results"]
+    joined_tavily_result = "\n".join(
+        [tavily_result["content"] for tavily_result in tavily_results]
+    )
+    web_results = Document(page_content=joined_tavily_result)
+    if documents is not None:
+        documents.append(web_results)
+    else:
+        documents = [web_results]
+    return {"documents": documents, "question": question}
+
+
+if __name__ == "__main__":
+    web_search(state={"question": "agent memory", "documents": None})
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Vì sao node web search chỉ chạy sau khi grade documents hoàn tất?

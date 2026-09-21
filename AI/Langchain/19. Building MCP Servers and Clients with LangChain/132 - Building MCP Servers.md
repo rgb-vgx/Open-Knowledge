@@ -60,6 +60,58 @@ Chạy thử bằng **`uv run servers/weather_server.py`**, bạn sẽ thấy se
 
 Xong hai server rồi, mình commit phần thay đổi (chỉ có thư mục `servers` là mới) và push lên repository. Lại là tính năng sinh commit message tự động của Cursor giúp mình một tay. Giờ trên repo đã có **hai commit**: một từ bài trước và một từ bài này.
 
+---
+
+### 💻 Code mẫu đầy đủ — `math_server.py` và `weather_server.py`
+
+Toàn bộ code của bài nằm trong hai file `servers/math_server.py` và `servers/weather_server.py` (tham khảo từ repo chính thức của khóa học):
+
+**`math_server.py`**
+
+```python
+# math_server.py
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("Math")
+
+
+@mcp.tool()
+def add(a: int, b: int) -> int:
+    """Add two numbers"""
+    return a + b
+
+
+@mcp.tool()
+def multiply(a: int, b: int) -> int:
+    """Multiply two numbers"""
+    return a * b
+
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
+```
+
+**`weather_server.py`**
+
+```python
+from typing import List
+
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("Weather")
+
+
+@mcp.tool()
+async def get_weather(location: str) -> str:
+    """Get weather for location."""
+    print("This is a log from the SSE Server")
+    return "Hot as hell"
+
+
+if __name__ == "__main__":
+    mcp.run(transport="sse")
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Hai MCP server trong bài phơi ra tool gì?

@@ -51,6 +51,27 @@ flowchart TD
 
 Nếu muốn lấy code chính xác của video này, các bạn ghé branch **5-retrieve-node** trên GitHub — toàn bộ những gì mình vừa trình bày đều nằm ở đó.
 
+---
+
+### 💻 Code mẫu đầy đủ — `retrieve.py`
+
+Toàn bộ code của bài nằm trong file `graph/nodes/retrieve.py` (tham khảo từ repo chính thức của khóa học):
+
+```python
+from typing import Any, Dict
+
+from graph.state import GraphState
+from ingestion import retriever
+
+
+def retrieve(state: GraphState) -> Dict[str, Any]:
+    print("---RETRIEVE---")
+    question = state["question"]
+
+    documents = retriever.invoke(question)
+    return {"documents": documents, "question": question}
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Nhiệm vụ của retrieve node là gì?

@@ -61,6 +61,33 @@ Và thế là xong! State của chúng ta chỉ đơn giản như vậy. Tuy ng�
 
 Nếu muốn xem code chính xác, các bạn cứ ghé repository GitHub và tìm branch **4-state**. Ở đó, bên trong package **graph**, các bạn sẽ thấy file **state.py** với đúng phần hiện thực mình vừa viết.
 
+---
+
+### 💻 Code mẫu đầy đủ — `state.py`
+
+Toàn bộ code của bài nằm trong file `graph/state.py` (tham khảo từ repo chính thức của khóa học):
+
+```python
+from typing import List, TypedDict
+
+
+class GraphState(TypedDict):
+    """
+    Represents the state of our graph.
+
+    Attributes:
+        question: question
+        generation: LLM generation
+        web_search: whether to add search
+        documents: list of documents
+    """
+
+    question: str
+    generation: str
+    web_search: bool
+    documents: List[str]
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Vì sao graph cần một state?

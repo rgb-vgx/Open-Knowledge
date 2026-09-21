@@ -76,6 +76,41 @@ Sau khi định nghĩa xong **node**, **entry point** và **edge**, mình **comp
 
 Chạy lần đầu, chúng ta gặp lỗi: **không import được `MessagesState`** — hóa ra mình thiếu một chữ **S** (thành `MessageState`). *Đúng kiểu lỗi nhỏ mà Cursor đôi khi gây ra.* Mình sửa lại, và nhận ra phải cập nhật luôn phần còn lại của code — cả trong hàm `should_continue` — để dùng đúng `MessagesState`. Chạy lại: thành công, và bản vẽ graph hiện ra đúng như sơ đồ mình trình bày trong video.
 
+---
+
+### 💻 Code mẫu đầy đủ — `main.py`
+
+Toàn bộ phần dựng graph nằm trong file `main.py` (tham khảo từ repo chính thức của khóa học). Lưu ý: trong code thật của repo, đích kết thúc được biểu diễn bằng hằng số **`END`** của LangGraph thay vì chuỗi `"end"`:
+
+```python
+from dotenv import load_dotenv
+from langchain_core.messages import HumanMessage
+from langgraph.graph import END, MessagesState, StateGraph
+
+from node import agent_reason, tool_node
+
+load_dotenv()
+
+AGENT_REASON = "agent_reason"
+ACT = "act"
+LAST = -1
+
+
+def should_continue(state: MessagesState) -> str:
+    if state["messages"][LAST].tool_calls:
+        return ACT
+    return END
+
+
+flow = StateGraph(MessagesState)
+flow.add_node(AGENT_REASON, agent_reason)
+flow.add_node(ACT, tool_node)
+flow.set_entry_point(AGENT_REASON)
+flow.add_conditional_edges(AGENT_REASON, should_continue, {ACT: ACT, END: END})
+flow.add_edge(ACT, AGENT_REASON)
+app = flow.compile()
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** `StateGraph` được khởi tạo với gì trong bài?

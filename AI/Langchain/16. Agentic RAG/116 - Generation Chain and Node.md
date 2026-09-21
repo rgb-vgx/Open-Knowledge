@@ -72,6 +72,58 @@ def generate(state: GraphState):
     return {"documents": documents, "question": question, "generation": generation}
 ```
 
+---
+
+### 💻 Code mẫu đầy đủ — `generation.py` và `generate.py`
+
+Toàn bộ code của bài nằm trong hai file `graph/chains/generation.py` (chain) và `graph/nodes/generate.py` (node), tham khảo từ repo chính thức của khóa học. Prompt được dán thẳng dạng plain text thay cho `hub.pull("rlm/rag-prompt")` như tinh thần bảo mật trong bài.
+
+**`generation.py`**
+
+```python
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(temperature=0)
+
+# Inline equivalent of hub.pull("rlm/rag-prompt") — the hub module was removed
+# from the langchain package, and pulling public prompts now requires a
+# LangSmith API key.
+prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "human",
+            "You are an assistant for question-answering tasks. "
+            "Use the following pieces of retrieved context to answer the question. "
+            "If you don't know the answer, just say that you don't know. "
+            "Use three sentences maximum and keep the answer concise.\n"
+            "Question: {question} \nContext: {context} \nAnswer:",
+        )
+    ]
+)
+
+generation_chain = prompt | llm | StrOutputParser()
+```
+
+**`generate.py`**
+
+```python
+from typing import Any, Dict
+
+from graph.chains.generation import generation_chain
+from graph.state import GraphState
+
+
+def generate(state: GraphState) -> Dict[str, Any]:
+    print("---GENERATE---")
+    question = state["question"]
+    documents = state["documents"]
+
+    generation = generation_chain.invoke({"context": documents, "question": question})
+    return {"documents": documents, "question": question, "generation": generation}
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Generation node chạy ở thời điểm nào trong luồng RAG?

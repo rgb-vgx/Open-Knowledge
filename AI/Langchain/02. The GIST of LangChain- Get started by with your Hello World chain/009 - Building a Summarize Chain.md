@@ -12,6 +12,18 @@ Cùng mình đi qua từng bước nhé, mọi thứ đều rất trực quan.
 
 Đầu tiên, mình định nghĩa một biến tên `information` để chứa dữ liệu. Mình lên Google tìm "Elon Musk", lấy đoạn thông tin đầu tiên từ **Wikipedia** và dán vào biến này.
 
+```python
+from dotenv import load_dotenv
+
+load_dotenv()
+
+information = """Elon Reeve Musk is a businessman and investor known for his roles at Tesla,
+SpaceX, and X Corp. He is also involved in ventures such as Neuralink, the Boring Company,
+and xAI."""
+```
+
+Hai dòng đầu là phần "khởi động" quen thuộc từ bài Project Setup: nạp API key từ file `.env` trước khi làm bất cứ điều gì. Còn biến `information` chính là dữ liệu thô — bạn thay bằng đoạn tiểu sử đầy đủ lấy từ Wikipedia cũng được, dài bao nhiêu cũng chẳng sao.
+
 Đây sẽ là dữ liệu được "chảy" vào LLM — nhưng không phải trực tiếp, mà thông qua một **prompt template**.
 
 ---
@@ -21,11 +33,13 @@ Cùng mình đi qua từng bước nhé, mọi thứ đều rất trực quan.
 Tiếp theo, mình viết template với một placeholder nằm trong dấu ngoặc nhọn:
 
 ```python
+from langchain_core.prompts import PromptTemplate
+
 template = """Given the information {information} about a person I want you to create a short summary and two interesting facts about them"""
 
 summary_prompt_template = PromptTemplate(
     input_variables=["information"],
-    template=template
+    template=template,
 )
 ```
 
@@ -56,6 +70,8 @@ f-string khuyến khích ta cứ "nhồi" text vào — cũng chẳng sao, nhưn
 Giờ đến lượt model. Mình tạo một **OpenAI chat model** và đặt tên biến là `llm`:
 
 ```python
+from langchain_openai import ChatOpenAI
+
 llm = ChatOpenAI(temperature=0, model="gpt-5")
 ```
 
@@ -115,6 +131,47 @@ Mình nói thật lòng: **LCEL là thứ khó tiêu hóa nhất trong LangChain
 *(Fun fact: hiểu và implement agents còn dễ hơn hiểu pipe operator của chain expression language đấy!)*
 
 Cuối cùng, chạy code thôi. GPT-5 khá chậm nên mình tua nhanh một chút, và ở cuối ta in ra `response.content` — chính là string LLM trả về. Kết quả: một **bản tóm tắt ngắn** và **hai sự thật thú vị** về Elon Musk. Tuyệt vời!
+
+---
+
+### 🧪 Code mẫu đầy đủ — copy là chạy
+
+Toàn bộ những gì chúng ta vừa làm nằm gọn trong một file `main.py` dưới đây. Bạn thay đoạn `information` bằng tiểu sử đầy đủ trên Wikipedia, và nhớ đã cài `langchain`, `langchain-openai`, `python-dotenv` cùng file `.env` chứa `OPENAI_API_KEY` như bài Project Setup nhé!
+
+```python
+from dotenv import load_dotenv
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+
+load_dotenv()
+
+information = """Elon Reeve Musk is a businessman and investor known for his roles at Tesla,
+SpaceX, and X Corp. He is also involved in ventures such as Neuralink, the Boring Company,
+and xAI."""
+
+template = """Given the information {information} about a person I want you to create a short summary and two interesting facts about them"""
+
+summary_prompt_template = PromptTemplate(
+    input_variables=["information"],
+    template=template,
+)
+
+llm = ChatOpenAI(temperature=0, model="gpt-5")
+
+chain = summary_prompt_template | llm
+
+response = chain.invoke({"information": information})
+print(response.content)
+```
+
+Đối chiếu nhanh với 4 bước phía trên:
+
+1. **Dữ liệu đầu vào:** biến `information` — bạn cứ dán đoạn text dài bao nhiêu cũng được.
+2. **Prompt template:** `PromptTemplate` với đúng một input variable là `information`.
+3. **Chat model:** `ChatOpenAI(temperature=0, model="gpt-5")` — temperature thấp cho kết quả ổn định.
+4. **Chain:** `summary_prompt_template | llm`, rồi `invoke` với dict `{"information": information}` và in `response.content`.
+
+*Mẹo nhỏ: `input_variables` có thể bỏ trống cũng chạy — LangChain tự suy ra từ template — nhưng mình cứ khai báo tường minh cho rõ ràng, đúng tinh thần "reliable" của prompt template.*
 
 ---
 

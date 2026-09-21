@@ -88,6 +88,32 @@ Mở file `graph.png` ra, bạn sẽ thấy đúng sơ đồ mình vẽ. Còn tr
 
 Cuối cùng, nếu muốn xem code, các bạn ghé **GitHub repository** ở branch **LangGraph** — toàn bộ implementation vừa rồi nằm ở đó, đã được cập nhật với phiên bản LangChain và LangGraph mới nhất.
 
+---
+
+### 💻 Code mẫu đầy đủ — `const.py` và `nodes/__init__.py`
+
+Toàn bộ code của phần khai báo hằng số và export node nằm trong hai file dưới đây (tham khảo từ repo chính thức của khóa học; repo đặt tên file là `consts.py` và dùng giá trị `"websearch"` — ở đây mình giữ cách gọi thống nhất với bài).
+
+**`const.py`**
+
+```python
+RETRIEVE = "retrieve"
+GRADE_DOCUMENTS = "grade_documents"
+GENERATE = "generate"
+WEBSEARCH = "web_search"
+```
+
+**`nodes/__init__.py`**
+
+```python
+from graph.nodes.generate import generate
+from graph.nodes.grade_documents import grade_documents
+from graph.nodes.retrieve import retrieve
+from graph.nodes.web_search import web_search
+
+__all__ = ["generate", "grade_documents", "retrieve", "web_search"]
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Vì sao mình tách các tên node vào file `const.py`?

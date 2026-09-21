@@ -64,6 +64,140 @@ Một ví dụ kỹ thuật với **Claude Code**: nó có thể tạo một **e
 
 Mình biết mình đang nói khá nhiều lý thuyết, "vung tay" khá nhiều mà chưa đụng đến phần triển khai. *Các bạn đừng lo nhé — phần implementation chắc chắn sẽ đến, và chúng ta sẽ thấy chính xác cách hiện thực hóa những "phép màu" đó.*
 
+---
+
+### 💻 Code mẫu đầy đủ — `03_subagents.py`
+
+Toàn bộ code của bài nằm trong file `03_subagents.py` (tham khảo từ repo chính thức của khóa học; chạy kèm `models.py` cùng repo):
+
+**`models.py`**
+
+```python
+"""Model configuration for the Agent Harnesses chapter.
+
+Every example in this project does `from models import model` and hands that
+`model` straight to `create_deep_agent(...)`. Keeping the model in one place means
+you swap providers or model names here once, and all five examples follow.
+
+Default: OpenAI `gpt-5.6-sol`. Requires `OPENAI_API_KEY` in your `.env` (see
+`.env.example`). To use a different model, change the string below — for example
+`"openai:gpt-5.6-mini"` for a cheaper run, or an Anthropic model such as
+`"anthropic:claude-haiku-4-5"` (set `ANTHROPIC_API_KEY` instead).
+"""
+
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=Path(__file__).resolve().parent / ".env", override=True)
+
+from langchain.chat_models import init_chat_model
+
+# The single model shared by every example in this project.
+# Requires OPENAI_API_KEY in .env.
+model = init_chat_model("openai:gpt-5.6-sol", reasoning_effort="none")
+```
+
+**`03_subagents.py`**
+
+```python
+"""03 · Subagents and hierarchical delegation.
+
+The second knob: `subagents=`. A deep agent can spawn specialized workers, each
+with its OWN system prompt and its OWN tools, that run in an isolated context and
+return only their final result — not their intermediate reasoning. This is the
+delegation pattern from the chapter: the main agent hands off a scoped job, the
+subagent does the messy work in its own context window, and the main agent's
+context stays clean.
+
+Here a coordinator delegates individual topic lookups to a `fact-researcher`
+subagent. The researcher owns the lookup tool; the coordinator does not. It can
+only get facts by delegating through the built-in `task` tool. We use a small
+in-memory knowledge base so the example runs with no key beyond OPENAI_API_KEY.
+"""
+
+from deepagents import create_deep_agent
+from langchain_core.tools import tool
+
+from models import model
+
+# --- The subagent's private tool -------------------------------------------
+# A stand-in for a real search / database tool. It belongs ONLY to the
+# researcher subagent (see `tools=` below), so the coordinator cannot call it.
+_KNOWLEDGE_BASE = {
+    "planning tool": "Deep agents externalize a structured todo list (write_todos) "
+    "with per-item status, updated between steps, instead of planning implicitly.",
+    "subagents": "Deep agents spawn specialized workers with their own prompt and "
+    "tools that run in an isolated context and return only a final result.",
+    "filesystem": "Deep agents write intermediate artifacts to a virtual filesystem "
+    "so bulky material stays out of the model's context window.",
+    "system prompt": "Deep agents rely on a large, curated system prompt that "
+    "encodes identity, scope, a reasoning framework, and heuristics.",
+}
+
+
+@tool
+def lookup_fact(topic: str) -> str:
+    """Look up a factual summary about a deep-agent topic from the knowledge base.
+    Recognizes any topic that contains a known keyword (e.g. 'the filesystem
+    capability' matches 'filesystem')."""
+    print(f"    >> [researcher] lookup_fact(topic='{topic}')")
+    key = topic.lower().strip()
+    for name, fact in _KNOWLEDGE_BASE.items():
+        if name in key or key in name:
+            return fact
+    return f"No entry found for '{topic}'."
+
+
+# --- The specialized subagent ----------------------------------------------
+# Note the key is `system_prompt` (its own brain, never inherited) and `tools`
+# overrides the inherited set with just the lookup tool.
+fact_researcher = {
+    "name": "fact-researcher",
+    "description": (
+        "Look up a factual summary for ONE deep-agent topic and return a single "
+        "polished sentence. Delegate one topic per call."
+    ),
+    "system_prompt": (
+        "You research one topic at a time. Call lookup_fact with the given "
+        "topic, then return ONE clear sentence based only on what it returns. "
+        "Do not add facts of your own."
+    ),
+    "tools": [lookup_fact],
+}
+
+
+# --- The coordinator (main agent) ------------------------------------------
+COORDINATOR_PROMPT = (
+    "You are a coordinator. You do NOT look up facts yourself — you have no "
+    "lookup tool. For each topic the user asks about, delegate to the "
+    "fact-researcher subagent using the task tool (one topic per delegation). "
+    "Collect the returned sentences and combine them into a short bulleted "
+    "summary. Keep your own context focused on coordination."
+)
+
+agent = create_deep_agent(
+    model=model,
+    system_prompt=COORDINATOR_PROMPT,
+    subagents=[fact_researcher],
+)
+
+result = agent.invoke(
+    {
+        "messages": [
+            {
+                "role": "user",
+                "content": "Summarize two deep-agent capabilities: subagents "
+                "and the filesystem.",
+            }
+        ]
+    }
+)
+
+print("\n=== Coordinator's assembled summary ===")
+print(result["messages"][-1].content)
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Hierarchical delegation trong deep agents nghĩa là gì?

@@ -77,6 +77,96 @@ Câu trả lời tuy tương tự lần trước nhưng **chính xác hơn**, nh
 | Tham số LLM tự chọn | `query` cơ bản | `include_domains`, `search_depth=advanced` |
 | Chất lượng kết quả | Cơ bản | Chính xác và grounding tốt hơn |
 
+---
+
+### 💻 Code mẫu đầy đủ — `main.py`
+
+Toàn bộ code của bài nằm trong file `main.py` (tham khảo từ repo chính thức của khóa học).
+
+**`main.py` — bước 1: tool tự viết với `TavilyClient`:**
+
+```python
+from dotenv import load_dotenv
+
+load_dotenv()
+from langchain.agents import create_agent
+from langchain.tools import tool
+from langchain_core.messages import HumanMessage
+from langchain_openai import ChatOpenAI
+from tavily import TavilyClient
+
+tavily = TavilyClient()
+
+
+@tool
+def search(query: str) -> str:
+    """
+    Tool that searches over internet
+    Args:
+        query: The query to search for
+    Returns:
+        The search result
+    """
+    print(f"Searching for {query}")
+    return tavily.search(query=query)
+
+
+llm = ChatOpenAI(model="gpt-5")
+tools = [search]
+agent = create_agent(model=llm, tools=tools)
+
+
+def main():
+    print("Hello from langchain-course!")
+    result = agent.invoke(
+        {
+            "messages": HumanMessage(
+                content="search for 3 job postings for an ai engineer using langchain in the bay area on linkedin and list their details"
+            )
+        }
+    )
+    print(result)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+**`main.py` — bước 2: thay bằng tool vendor `TavilySearch`:**
+
+```python
+from dotenv import load_dotenv
+
+load_dotenv()
+from langchain.agents import create_agent
+from langchain_core.messages import HumanMessage
+from langchain_openai import ChatOpenAI
+from langchain_tavily import TavilySearch
+
+
+llm = ChatOpenAI(model="gpt-5")
+tools = [TavilySearch()]
+agent = create_agent(model=llm, tools=tools)
+
+
+def main():
+    print("Hello from langchain-course!")
+    result = agent.invoke(
+        {
+            "messages": HumanMessage(
+                content="search for 3 job postings for an ai engineer using langchain in the bay area on linkedin and list their details?"
+            )
+        }
+    )
+    print(result)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+---
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Best practice quan trọng nhất của bài này là gì?

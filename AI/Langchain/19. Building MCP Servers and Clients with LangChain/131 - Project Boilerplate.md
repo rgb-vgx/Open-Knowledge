@@ -84,6 +84,50 @@ Cuối cùng, mình tạo file **`.gitignore`** để không commit file `.env` 
 
 Mọi thứ đã chạy ổn, mình commit toàn bộ code. Một tính năng mình rất thích ở Cursor là **tự động sinh commit message bằng AI** — chỉ một cú click. Sau đó mình set upstream và push lên GitHub, rồi mở branch `project/langchain-mcp-adapters` trên GitHub để kiểm tra: `main.py`, `uv.lock`, `pyproject.toml`... đều đã ở trên đó.
 
+---
+
+### 💻 Code mẫu đầy đủ — `main.py`
+
+Toàn bộ code của bài nằm trong file `main.py` (tham khảo từ repo chính thức của khóa học, branch `project/langchain-mcp-adapters`; đây là phiên bản `main.py` sau khi MCP client trong dự án đã được hoàn thiện — dòng `import os` còn lại từ bước sanity check ban đầu):
+
+```python
+import asyncio
+import os
+
+from dotenv import load_dotenv
+from langchain_core.messages import HumanMessage
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain_openai import ChatOpenAI
+from langgraph.prebuilt import create_react_agent
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+load_dotenv()
+
+llm = ChatOpenAI()
+
+stdio_server_params = StdioServerParameters(
+    command="python",
+    args=["servers/math_server.py"],
+)
+
+async def main():
+    async with stdio_client(stdio_server_params) as (read,write):    
+        async with ClientSession(read_stream=read, write_stream=write) as session:
+            await session.initialize()
+            print("session initialized")
+            tools = await load_mcp_tools(session)
+
+
+            agent = create_react_agent(llm,tools)
+
+            result = await agent.ainvoke({"messages": [HumanMessage(content="What is 54 + 2 * 3?")]})
+            print(result["messages"][-1].content)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Vì sao mình dùng `git checkout --orphan` khi tạo branch?

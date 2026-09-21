@@ -102,6 +102,28 @@ Về phần code: mình chạy `git status` để xem các file thay đổi, `gi
 
 ---
 
+### 💻 Code mẫu — file `.env`
+
+Toàn bộ phần cấu hình nằm gọn trong file `.env` (đặt cạnh `main.py`):
+
+```bash
+# Bật tracing
+LANGSMITH_TRACING=true
+
+# API key tạo từ dashboard LangSmith
+LANGSMITH_API_KEY=lsv2_pt_...
+
+# Tên project chứa toàn bộ trace
+LANGSMITH_PROJECT=Hello World
+
+# Chỉ cần bỏ comment dòng dưới nếu bạn ở NGOÀI nước Mỹ (region EU)
+# LANGSMITH_ENDPOINT=https://eu.api.smith.langchain.com
+```
+
+Không cần đổi gì trong code Python: chỉ cần `load_dotenv()` như cũ, LangChain sẽ tự đọc các biến này và trace mọi lần chain chạy.
+
+---
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Biến môi trường nào dùng để bật tracing?

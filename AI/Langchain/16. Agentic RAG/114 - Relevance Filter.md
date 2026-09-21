@@ -97,6 +97,87 @@ Giờ mình tạo file `grade_documents.py` trong thư mục `nodes`. Hàm nhậ
   * `no` → bật `web_search = true` và bỏ qua tài liệu đó.
 * Cuối cùng cập nhật **graph state**: `documents` là danh sách đã lọc, `question` giữ nguyên, kèm cờ `web_search`.
 
+---
+
+### 💻 Code mẫu đầy đủ — `retrieval_grader.py` và `grade_documents.py`
+
+Toàn bộ code của bài nằm trong hai file `graph/chains/retrieval_grader.py` (chain) và `graph/nodes/grade_documents.py` (node lọc tài liệu), tham khảo từ repo chính thức của khóa học.
+
+**`retrieval_grader.py`**
+
+```python
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+llm = ChatOpenAI(temperature=0)
+
+
+class GradeDocuments(BaseModel):
+    """Binary score for relevance check on retrieved documents."""
+
+    binary_score: str = Field(
+        description="Documents are relevant to the question, 'yes' or 'no'"
+    )
+
+
+structured_llm_grader = llm.with_structured_output(GradeDocuments)
+
+system = """You are a grader assessing relevance of a retrieved document to a user question. \n 
+    If the document contains keyword(s) or semantic meaning related to the question, grade it as relevant. \n
+    Give a binary score 'yes' or 'no' score to indicate whether the document is relevant to the question."""
+grade_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system),
+        ("human", "Retrieved document: \n\n {document} \n\n User question: {question}"),
+    ]
+)
+
+retrieval_grader = grade_prompt | structured_llm_grader
+```
+
+**`grade_documents.py`**
+
+```python
+from typing import Any, Dict
+
+from graph.chains.retrieval_grader import retrieval_grader
+from graph.state import GraphState
+
+
+def grade_documents(state: GraphState) -> Dict[str, Any]:
+    """
+    Determines whether the retrieved documents are relevant to the question
+    If any document is not relevant, we will set a flag to run web search
+
+    Args:
+        state (dict): The current graph state
+
+    Returns:
+        state (dict): Filtered out irrelevant documents and updated web_search state
+    """
+
+    print("---CHECK DOCUMENT RELEVANCE TO QUESTION---")
+    question = state["question"]
+    documents = state["documents"]
+
+    filtered_docs = []
+    web_search = False
+    for d in documents:
+        score = retrieval_grader.invoke(
+            {"question": question, "document": d.page_content}
+        )
+        grade = score.binary_score
+        if grade.lower() == "yes":
+            print("---GRADE: DOCUMENT RELEVANT---")
+            filtered_docs.append(d)
+        else:
+            print("---GRADE: DOCUMENT NOT RELEVANT---")
+            web_search = True
+            continue
+    return {"documents": filtered_docs, "question": question, "web_search": web_search}
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Vì sao description của field `binary_score` lại quan trọng?

@@ -81,6 +81,38 @@ Vậy nên nếu bạn muốn dùng open-weights model cho khóa học này, mì
 
 ---
 
+### 💻 Code mẫu đầy đủ — `main.py`
+
+Code y hệt bài xây chain đầu tiên, chỉ thay **duy nhất một dòng** khởi tạo `llm` (tham khảo từ repo chính thức của khóa học):
+
+```python
+from dotenv import load_dotenv
+from langchain_core.prompts import PromptTemplate
+from langchain_ollama import ChatOllama
+
+load_dotenv()
+
+information = """Elon Reeve Musk is a businessman and investor known for his roles at Tesla,
+SpaceX, and X Corp. He is also involved in ventures such as Neuralink, the Boring Company,
+and xAI."""
+
+template = """Given the information {information} about a person I want you to create a short summary and two interesting facts about them"""
+
+summary_prompt_template = PromptTemplate(
+    input_variables=["information"],
+    template=template,
+)
+
+llm = ChatOllama(temperature=0, model="gemma3:270m")
+
+chain = summary_prompt_template | llm
+
+response = chain.invoke({"information": information})
+print(response.content)
+```
+
+---
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Vì sao nói LangChain cho phép "đổi LLM như đổi tất"?

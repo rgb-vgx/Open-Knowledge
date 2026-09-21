@@ -80,6 +80,24 @@ Tiếp theo, mình tạo file **.env** chứa toàn bộ biến môi trường:
 
 Cuối cùng, mình tạo file **main** với đoạn boilerplate đơn giản: **load environment variables** rồi in ra dòng `Hello Advanced RAG`. Chạy thử như một **sanity check** — và mọi thứ hoạt động trơn tru!
 
+---
+
+### 💻 Code mẫu đầy đủ — `main.py`
+
+Toàn bộ code của bài nằm trong file `main.py` (tham khảo từ repo chính thức của khóa học; đây là phiên bản sau khi graph đã được ghép nối — dòng `Hello Advanced RAG` được in khi chạy trực tiếp):
+
+```python
+from dotenv import load_dotenv
+
+load_dotenv()
+
+from graph.graph import app
+
+if __name__ == "__main__":
+    print("Hello Advanced RAG")
+    print(app.invoke(input={"question": "agent memory?"}))
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Poetry được dùng để làm gì trong project?

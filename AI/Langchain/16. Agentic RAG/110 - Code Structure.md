@@ -71,6 +71,19 @@ Trước khi kết thúc, mình muốn nói rõ: cấu trúc này **hiệu quả
 
 Các bạn sẽ thấy, khi phát triển ứng dụng theo cách này, việc mở rộng, thêm node/edge mới hay bổ sung test đều rất dễ dàng.
 
+---
+
+### 💻 Code mẫu đầy đủ — `test_chains.py`
+
+File test nằm ở `graph/chains/tests/test_chains.py` (tham khảo từ repo chính thức của khóa học). Đúng như video, mình chỉ tạo một **dummy test** để "khởi động" project:
+
+```python
+def test_foo() -> None:
+    assert 1 == 1
+```
+
+*Ở các bài sau, file này sẽ được bổ sung dần các test thật cho từng chain — retrieval grader, generation chain, router...*
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Vì sao Eden phải refactor lại so với tutorial gốc của LangChain?

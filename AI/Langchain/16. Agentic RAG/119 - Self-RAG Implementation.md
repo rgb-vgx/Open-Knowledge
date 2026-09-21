@@ -106,6 +106,76 @@ Một điểm rất hay: chính những string này sẽ được hiển thị t
 
 Cuối cùng, mình chạy `main.py` với câu hỏi "what is agent memory" — đúng như kỳ vọng, đây là **happy flow**: câu trả lời grounded trong tài liệu và giải quyết đúng câu hỏi. Nhìn vào log, các bạn thấy rõ từng bước; còn trên **LangSmith**, trace cho thấy sau node generate, node `grade_generation...` được kích hoạt — nó gọi LLM **2 lần** (một cho grounding, một cho việc trả lời đúng câu hỏi) trước khi quyết định trả câu trả lời cho người dùng.
 
+---
+
+### 💻 Code mẫu đầy đủ — `hallucination_grader.py` và `answer_grader.py`
+
+Toàn bộ code của bài nằm trong hai file `graph/chains/hallucination_grader.py` (lớp phản chiếu grounding) và `graph/chains/answer_grader.py` (lớp phản chiếu answer), tham khảo từ repo chính thức của khóa học.
+
+**`hallucination_grader.py`**
+
+```python
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableSequence
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+llm = ChatOpenAI(temperature=0)
+
+
+class GradeHallucinations(BaseModel):
+    """Binary score for hallucination present in generation answer."""
+
+    binary_score: bool = Field(
+        description="Answer is grounded in the facts, 'yes' or 'no'"
+    )
+
+
+structured_llm_grader = llm.with_structured_output(GradeHallucinations)
+
+system = """You are a grader assessing whether an LLM generation is grounded in / supported by a set of retrieved facts. \n 
+     Give a binary score 'yes' or 'no'. 'Yes' means that the answer is grounded in / supported by the set of facts."""
+hallucination_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system),
+        ("human", "Set of facts: \n\n {documents} \n\n LLM generation: {generation}"),
+    ]
+)
+
+hallucination_grader: RunnableSequence = hallucination_prompt | structured_llm_grader
+```
+
+**`answer_grader.py`**
+
+```python
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableSequence
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+
+class GradeAnswer(BaseModel):
+
+    binary_score: bool = Field(
+        description="Answer addresses the question, 'yes' or 'no'"
+    )
+
+
+llm = ChatOpenAI(temperature=0)
+structured_llm_grader = llm.with_structured_output(GradeAnswer)
+
+system = """You are a grader assessing whether an answer addresses / resolves a question \n 
+     Give a binary score 'yes' or 'no'. Yes' means that the answer resolves the question."""
+answer_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system),
+        ("human", "User question: \n\n {question} \n\n LLM generation: {generation}"),
+    ]
+)
+
+answer_grader: RunnableSequence = answer_prompt | structured_llm_grader
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** Vì sao chọn conditional branching thay vì tách mỗi kiểm tra vào một node riêng?

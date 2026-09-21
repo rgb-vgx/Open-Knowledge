@@ -83,6 +83,35 @@ flowchart TD
 
 Mình chạy thử script để chắc chắn không có lỗi (dù chưa thực sự gọi gì), rồi **commit** với tên **"function calling reasoning"** và **push** lên repo. Bạn có thể vào mục commits để xem lại toàn bộ code của video này.
 
+---
+
+### 💻 Code mẫu đầy đủ — `react.py`
+
+Toàn bộ "bộ não" của agent nằm gọn trong file `react.py` (tham khảo từ repo chính thức của khóa học):
+
+```python
+from dotenv import load_dotenv
+from langchain_core.tools import tool
+from langchain_openai import ChatOpenAI
+from langchain_tavily import TavilySearch
+
+load_dotenv()
+
+
+@tool
+def triple(num: float) -> float:
+    """
+    param num: a number to triple
+    returns: the triple of the input number
+    """
+    return float(num) * 3
+
+
+tools = [TavilySearch(max_results=1), triple]
+
+llm = ChatOpenAI().bind_tools(tools)
+```
+
 ### 🎯 Tự kiểm tra nhanh
 
 **Câu 1:** File `react.py` chứa gì cho agent?
