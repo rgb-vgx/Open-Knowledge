@@ -12,7 +12,9 @@ import {
   chapterNeighbours,
   docContentUrl,
   docRoute,
+  docsInSeries,
   formatDate,
+  groupBySection,
   readingTime,
   relatedDocs,
   seriesBySlug,
@@ -78,10 +80,19 @@ export default function DocPage({ index }: { index: DocsIndex }) {
   const [md, setMd] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [activeAnchor, setActiveAnchor] = useState('');
+  const [seriesOpen, setSeriesOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const lessonsRef = useRef<HTMLDivElement>(null);
+  const activeLessonRef = useRef<HTMLAnchorElement>(null);
 
   const doc = useMemo(() => index.docs.find((d) => d.id === id) ?? null, [index, id]);
   const series = doc?.seriesSlug ? seriesBySlug(index, doc.seriesSlug) : undefined;
+  const seriesDocs = useMemo(
+    () => (doc?.seriesSlug ? docsInSeries(index, doc.seriesSlug) : []),
+    [index, doc?.seriesSlug],
+  );
+  const seriesGroups = useMemo(() => groupBySection(seriesDocs), [seriesDocs]);
+  const seriesPosition = doc ? seriesDocs.findIndex((d) => d.id === doc.id) : -1;
 
   useEffect(() => {
     setMd(null);
@@ -132,6 +143,20 @@ export default function DocPage({ index }: { index: DocsIndex }) {
     headings.forEach((h) => obs.observe(h));
     return () => obs.disconnect();
   }, [md, toc]);
+
+  // Đưa chương đang đọc vào giữa danh sách series.
+  useEffect(() => {
+    const nav = lessonsRef.current;
+    const el = activeLessonRef.current;
+    if (!nav || !el) return;
+    const group = el.closest('details');
+    const summary = group?.querySelector('summary') as HTMLElement | null;
+    if (summary && el.offsetTop - summary.offsetTop < nav.clientHeight - 44) {
+      nav.scrollTo({ top: Math.max(0, summary.offsetTop - 4) });
+      return;
+    }
+    nav.scrollTo({ top: Math.max(0, el.offsetTop - 56) });
+  }, [doc?.id, seriesOpen]);
 
   if (!doc) {
     return (
@@ -209,6 +234,79 @@ export default function DocPage({ index }: { index: DocsIndex }) {
         </header>
 
         <hr className="post-divider" />
+
+        {series && seriesDocs.length > 1 && (
+          <aside
+            className={`series-lessons${seriesOpen ? ' is-open' : ''}`}
+            aria-label={`Danh sách bài học trong series ${series.title}`}
+          >
+            <button
+              className="series-lessons-toggle"
+              type="button"
+              aria-expanded={seriesOpen}
+              onClick={() => setSeriesOpen((v) => !v)}
+            >
+              <ListBullets size={16} aria-hidden="true" />
+              <span>Toàn bộ series</span>
+              <span className="series-lessons-toggle-count">{seriesDocs.length} bài</span>
+              <span className="series-lessons-chevron" aria-hidden="true">{seriesOpen ? '−' : '+'}</span>
+            </button>
+
+            <div className="series-lessons-body">
+              <div className="series-lessons-head">
+                <span className="series-lessons-eyebrow">Series</span>
+                <Link className="series-lessons-name" to={seriesRoute(series.slug)}>
+                  {series.title}
+                </Link>
+                <span className="series-lessons-progress" aria-hidden="true">
+                  <span
+                    style={{
+                      width: `${seriesPosition >= 0 ? ((seriesPosition + 1) / seriesDocs.length) * 100 : 0}%`,
+                    }}
+                  />
+                </span>
+                <span className="series-lessons-meta">
+                  Chương {seriesPosition >= 0 ? seriesPosition + 1 : 1}/{seriesDocs.length}
+                </span>
+              </div>
+
+              <div className="series-lessons-nav" ref={lessonsRef}>
+                {seriesGroups.map((group) => {
+                  const isCurrent = group.docs.some((d) => d.id === doc.id);
+                  return (
+                    <details
+                      className="series-lessons-group"
+                      key={group.name}
+                      open={isCurrent || seriesGroups.length === 1}
+                    >
+                      <summary>
+                        <span className="series-lessons-group-name">{group.name}</span>
+                        <span className="series-lessons-group-count">{group.docs.length}</span>
+                      </summary>
+                      <ul>
+                        {group.docs.map((d) => (
+                          <li key={d.id}>
+                            <Link
+                              ref={d.id === doc.id ? activeLessonRef : undefined}
+                              className={`series-lesson${d.id === doc.id ? ' is-current' : ''}`}
+                              to={docRoute(d)}
+                              aria-current={d.id === doc.id ? 'page' : undefined}
+                            >
+                              <span className="series-lesson-num">
+                                {String(d.chapter).padStart(2, '0')}
+                              </span>
+                              <span className="series-lesson-title">{d.title}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  );
+                })}
+              </div>
+            </div>
+          </aside>
+        )}
 
         {toc.length > 1 && (
           <aside className="post-toc" aria-label="Mục lục">
