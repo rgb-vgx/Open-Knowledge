@@ -50,12 +50,12 @@ Bảng **Table 18** có nội dung tương tự, các bạn tự tra thêm.
 
 Compute capability xác định GPU chạy được **phiên bản CUDA toolkit** nào. CC cao hơn hỗ trợ toolkit mới hơn, nhiều tính năng và tối ưu hơn.
 
-Có thể hình dung **PTX** (bài giảng gọi là "RT") như một dạng assembly: một số instruction chỉ chạy trên GPU có CC nhất định, vì chúng phụ thuộc đơn vị phần cứng đặc thù. Ví dụ **warp shuffle** — cho phép thread trong một warp chia sẻ dữ liệu mà không cần shared/global memory — chỉ có trên thiết bị **CC lớn hơn 5**.
+Có thể hình dung **PTX** (bài giảng gọi là "RT") như một dạng assembly: một số instruction chỉ chạy trên GPU có CC nhất định, vì chúng phụ thuộc đơn vị phần cứng đặc thù. Ví dụ **warp shuffle** — cho phép thread trong một warp chia sẻ dữ liệu mà không cần shared/global memory — chỉ có trên thiết bị **CC 3.x trở lên** (theo CUDA C Programming Guide).
 
 Liên hệ với phiên bản toolkit:
 
 * **Hopper** (CC 9.x) cần CUDA **11.8 trở lên**. Dùng bản thấp hơn sẽ báo lỗi **incompatible CUDA version**.
-* **Maxwell** (CC 5.5) cần CUDA **6.5 trở lên**.
+* **Maxwell** (CC 5.x, cao nhất là **5.3**) cần CUDA **6.5 trở lên**.
 
 Ví dụ thực tế: nếu dự án cần tính năng ML mới nhất hoặc mô phỏng phức tạp, CC của GPU quyết định bạn có dùng được toolkit mới với các tối ưu cần thiết hay không.
 

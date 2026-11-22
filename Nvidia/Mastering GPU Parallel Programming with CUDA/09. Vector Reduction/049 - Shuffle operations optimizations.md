@@ -24,6 +24,8 @@ Xét thứ tự bộ nhớ từ chậm đến nhanh: global (~300 cycle) → L2 
 
 Reduction luôn cần chuyển giá trị giữa các thread. Với shared memory thì làm được nhưng phải ghi ra rồi đọc lại mỗi bước. Muốn giữ dữ liệu trong register thì cần cơ chế khác.
 
+---
+
 ### 🔀 Bốn phép shuffle
 
 Theo **CUDA C Programming Guide**, shuffle trao đổi biến **giữa các thread trong cùng một warp**:
@@ -44,6 +46,8 @@ Cú pháp chung: `(mask, var, delta, width)`, trong đó:
 
 Reduction cần thread ID thấp nhận giá trị từ thread ID cao, nên dùng **`__shfl_down_sync`**. Với `delta = 1`, thread 1 đưa giá trị cho thread 0, thread 3 cho thread 2… với `delta = 2`, thread 2 cho thread 0, bỏ qua thread 1. Đúng bằng mô hình tree reduction với stride 1, 2, 4…
 
+---
+
 ### 🔢 Lane, không phải thread ID
 
 Shuffle chạy ở mức **warp**, nên phải đánh lại số thứ tự trong warp:
@@ -62,6 +66,8 @@ for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
 
 Vòng lặp bắt đầu ở `warpSize / 2 = 16`, giảm còn 8, 4, 2, 1. Sau khi xong, **lane 0 của mỗi warp** giữ tổng của 32 phần tử — một **partial sum cấp warp**.
 
+---
+
 ### 🧩 Vẫn cần shared memory một chút
 
 Vẫn còn vấn đề: mỗi warp có partial sum riêng, mà kernel phải trả về **một** giá trị mỗi block. Không thể giữ tất cả trong register rồi tự cộng — vẫn cần chỗ trung gian nhanh.
@@ -70,12 +76,14 @@ Cách làm hai tầng:
 
 1. **Gom**: lane 0 của mỗi warp ghi partial sum vào shared memory tại vị trí liên tiếp — tức chỉ số `threadIdx.x / 32` (0, 1, 2…7). Mỗi warp đóng góp một phần tử.
 2. `__syncthreads()` để chắc mọi warp đã ghi.
-3. **Reduce tầng hai**: warp đầu tiên (lane 0…7) đọc 8 partial sum từ shared memory vào `sum`, rồi chạy **cùng vòng shuffle** một lần nữa. Lần này chỉ 8 lane có dữ liệu, nên khởi tạo offset ở 4 thay vì 16.
+3. **Reduce tầng hai**: warp đầu tiên (lane 0…7) đọc 8 partial sum từ shared memory vào `sum`, rồi chạy **cùng vòng shuffle** một lần nữa. Vẫn bắt đầu từ offset 16 như lần đầu; các lane 8–31 không có dữ liệu nên đóng góp 0.
 4. **Ghi ra**: `if (tid == 0) d_input[blockIdx.x] = sum;` — một giá trị mỗi block.
 
 Dùng warp đầu tiên, không phải warp khác, vì dữ liệu được gom ở các vị trí 0, 1, 2… nằm trong warp 0. Warp khác muốn đọc phải qua shared memory nhiều lần hơn.
 
-Kết quả: toàn bộ phép cộng chạy trong register, shared memory chỉ còn **8 phần tử** và một lần barrier — thay vì 256 phần tử và 8 barrier như bài trước.
+Kết quả: các phép cộng chạy trong register; shared memory chỉ dùng **8 phần tử** cho partial sum của các warp kèm một lần barrier, thay vì đọc/ghi 256 phần tử qua shared memory ở mọi bước.
+
+---
 
 ### 📊 Đo bằng cả hai cách
 
@@ -87,7 +95,7 @@ ncu --metrics gpu__time_duration.sum ./test06.exe
 
 Metric `gpu__time_duration` trả về thời gian kernel. Kết quả: **17,6 µs**.
 
-**Giao diện Nsight Compute** (cần chạy ứng dụng rồi attach process): kernel 1 mất **17,4 µs**, hai kernel sau **3 µs** mỗi cái — vì chúng chỉ xử lý 2048 rồi 8 phần tử.
+**Giao diện Nsight Compute** (cần chạy ứng dụng rồi attach process): kernel 1 mất **17,4 µs**, hai kernel sau **3 µs** mỗi cái — vì chúng chỉ xử lý các mảng partial sum nhỏ hơn nhiều.
 
 | Phiên bản | Kernel 1 |
 |---|---|
@@ -98,6 +106,8 @@ Metric `gpu__time_duration` trả về thời gian kernel. Kết quả: **17,6 �
 | **Shuffle** | **17 µs** |
 
 Nhanh gấp khoảng **4 lần** so với phiên bản tốt nhất trước đó, và gần **16 lần** so với baseline.
+
+---
 
 ### 🔧 Vài ghi chú thực hành
 

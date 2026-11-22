@@ -14,7 +14,7 @@ tags: []
 
 > Nguồn: `039 - The shared memory.md` · [Udemy](https://viettel.udemy.com/course/mastering-gpu-parallel-programming-with-cuda/learn/lecture/46320299)
 
-Bài này gom lại toàn bộ bức tranh phân cấp bộ nhớ của GPU, rồi đi sâu vào **shared memory** — loại bộ nhớ duy nhất mà các bạn có thể lập trình trực tiếp trong CUDA. Trọng tâm là hai câu hỏi: shared memory khác L1 cache ở đâu, và **bank conflict** được tính như thế nào.
+Bài này gom lại toàn bộ bức tranh phân cấp bộ nhớ của GPU, rồi đi sâu vào **shared memory** — loại bộ nhớ có thể lập trình trực tiếp trong CUDA. Trọng tâm là hai câu hỏi: shared memory khác L1 cache ở đâu, và **bank conflict** được tính như thế nào.
 
 ### 🧭 Ôn lại phân cấp bộ nhớ
 
@@ -25,6 +25,8 @@ Bài này gom lại toàn bộ bức tranh phân cấp bộ nhớ của GPU, r�
 
 L1 được gọi là **hardware cache**: tag, set, replacement policy… đều do phần cứng quản lý, code CUDA không can thiệp được.
 
+---
+
 ### 🧩 Shared memory — cache phần mềm
 
 Ngay cạnh L1 là **shared memory**, và đây là điểm khác biệt cốt lõi:
@@ -34,6 +36,8 @@ Ngay cạnh L1 là **shared memory**, và đây là điểm khác biệt cốt l
 * Với dữ liệu thường, các bạn phải cấp phát ở global memory rồi chờ phần cứng đưa lên L2, L1; không ai bảo đảm dữ liệu sẽ nằm trong L1. Với shared memory thì các bạn chủ động: số phần tử, stride, bank nào chứa giá trị nào.
 
 Trên các kiến trúc gần đây — **Turing, Volta, Ampere, Hopper** — L1 và shared memory nằm trong **cùng một đơn vị vật lý**, và phần chia giữa hai bên do cấu hình hoặc compiler quyết định.
+
+---
 
 ### ⏱️ Độ trễ và lợi ích tái sử dụng dữ liệu
 
@@ -50,6 +54,8 @@ Shared memory nhanh hơn L1 dù cùng một đơn vị vật lý, vì truy cập
 
 Giá trị thực sự của shared memory là **data reuse**. Nếu nhiều thread cùng dùng một dữ liệu, nạp một lần vào shared memory rồi chia sẻ, thay vì mỗi thread đi xuống global memory. Điều này giảm **global memory traffic**, giảm nghẽn băng thông — đặc biệt quan trọng với ứng dụng **memory-bound**. Ví dụ điển hình là **vector reduction**: tổng của cả vector được dùng đi dùng lại qua nhiều thread, và sẽ được khai thác ở các bài sau.
 
+---
+
 ### 🏗️ Shared memory trên Ampere (A100)
 
 Trên **A100**, L1 và shared memory là một khối vật lý **192 KB** cố định. Các bạn chọn kích thước shared memory, phần còn lại thuộc về L1:
@@ -61,11 +67,15 @@ Trên **A100**, L1 và shared memory là một khối vật lý **192 KB** cố 
 
 Compiler tự cân theo mức sử dụng shared memory của ứng dụng; có API cấu hình nhưng giảng viên khuyên để compiler lo.
 
+---
+
 ### 🔢 Bank, cache line và cách truy cập
 
 Khối vật lý chia thành các hàng, mỗi hàng **128 byte** gọi là một **cache line**. Mỗi cache line gồm **32 bank**, mỗi bank **4 byte** (128 / 32 = 4). Hay nhớ: **cache line là hàng, bank là cột**.
 
 Quy tắc then chốt: **mỗi bank đọc/ghi được 4 byte mỗi cycle**. Nhìn theo cột, mỗi cycle chỉ lấy được **một** bank trong cột đó. Vì vậy một cycle lấy được 32 bank ở 32 cột khác nhau = 128 byte, tức trọn một cache line — miễn là các bank cần đọc nằm ở **các cột khác nhau**.
+
+---
 
 ### ⚔️ Bank conflict: đếm theo cột
 
@@ -83,11 +93,15 @@ Ba trường hợp giảng viên phân tích, giả định một **warp = 32 th
 * **Nhiều cache line nhưng khác cột**: dù các bank nằm rải ở nhiều cache line, nếu không cột nào có hai bank thì vẫn đọc xong trong **một cycle**.
 * **Broadcasting**: nhiều thread đọc **đúng cùng một bank** (cùng hàng, cùng cột) — phần cứng phát một lần cho tất cả, **không** tính là conflict.
 
+---
+
 ### 🧮 Ví dụ stride 16 byte và double precision
 
 **Stride 16 byte**: thread kế tiếp nhảy 4 bank (16 / 4). 32 thread phủ 32 bank nhưng trải trên **4 cache line**, mỗi cột nhận **4** yêu cầu → cần **4 cycle**, tức **3 conflict**.
 
 **Double precision**: mỗi phần tử 8 byte nên mỗi thread chiếm **2 bank**. 32 thread × 8 byte = 256 byte → tối thiểu **2 cache line**, và dù xếp thế nào cũng **không thể** đọc hết trong một cycle. Với truy cập liền mạch, 16 thread đầu đọc cache line thứ nhất, 16 thread sau đọc cache line thứ hai.
+
+---
 
 ### ⚠️ Khi Nsight Compute khác lý thuyết
 

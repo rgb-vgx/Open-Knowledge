@@ -52,7 +52,7 @@ for block in range(32, 1024 + 1, 32):
 
 Mỗi lần chạy lấy output dạng CSV, bỏ dấu phẩy và dấu ngoặc kép thừa, chỉ giữ **tên metric** và **giá trị**. Header CSV gồm block size và tên từng metric; sau đó vẽ mỗi metric theo trục x là block size.
 
-Vì sao bắt đầu từ 32: **một warp = 32 thread**, đây là block size nhỏ nhất có nghĩa. Vì sao dừng ở 1024: whitepaper Ampere quy định **tối đa 1024 thread/block**.
+Vì sao bắt đầu từ 32: **một warp = 32 thread**, đây là block size nhỏ nhất có nghĩa. Vì sao dừng ở 1024: whitepaper phần cứng quy định **tối đa 1024 thread/block**.
 
 ---
 
@@ -73,7 +73,7 @@ Hit rate:
 
 Lấy số liệu từ Nsight Compute cho block 32:
 
-* Block size: **32**, grid size: rất lớn (hàng triệu block).
+* Block size: **32**, grid size rất lớn (mỗi SM nhận hơn 13.000 block).
 * **Allocated active blocks/SM: 16** (min của các block limit).
 * Số SM của GPU: **38**.
 * Số wave mỗi SM = grid size / (16 × 38) = **862**. Nsight Compute cũng báo đúng 862.

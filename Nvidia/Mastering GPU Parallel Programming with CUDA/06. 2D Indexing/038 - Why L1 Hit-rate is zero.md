@@ -18,9 +18,9 @@ tags: []
 
 ### 🗂️ Phân cấp bộ nhớ Ampere
 
-* **HBM** (High Bandwidth Memory) — tầng cuối, bộ nhớ toàn cục. Bus của A100 rộng **5120 bit**, băng thông khoảng **1.5 TB/s**, lớn hơn nhiều so với bus 64 bit thường thấy trên CPU.
-* **L2 cache** — chia thành các partition, **dùng chung cho mọi SM**. Nối với HBM qua memory controller và các partition nối với nhau.
-* **L1 cache** — nằm trong từng SM, **không chia sẻ giữa các SM**. L1 data cache **dùng chung đơn vị vật lý với shared memory**; tổng dung lượng cấu hình được, tối đa **192 kB**, có thể chia ví dụ 100 kB cho shared memory và 92 kB cho L1.
+* **HBM** (High Bandwidth Memory) — tầng cuối, bộ nhớ toàn cục. Bus của A100 rộng **hơn 5000 bit**, băng thông khoảng **1.5 TB/s**, lớn hơn nhiều so với bus 64 bit thường thấy trên CPU.
+* **L2 cache** — chia thành **hai partition**, **dùng chung cho mọi SM**. Nối với HBM qua memory controller và các partition nối với nhau.
+* **L1 cache** — nằm trong từng SM, **không chia sẻ giữa các SM**. L1 data cache **dùng chung đơn vị vật lý với shared memory**; trên A100, tổng dung lượng cấu hình được tối đa **192 kB**, có thể chia ví dụ 100 kB cho shared memory và 92 kB cho L1.
 
 Luồng truy cập: lõi (ALU, tensor core, FP32/FP64/INT) phát request → load/store unit → L1. Trúng L1 thì dữ liệu về ngay; trượt thì hỏi L2; trượt tiếp thì xuống HBM.
 
@@ -38,7 +38,7 @@ Tuy vậy, cấu hình block 2 chiều vẫn có thể làm thay đổi các con
 
 ---
 
-### 🧵 Warp gom request thế nào
+### 2️⃣ Warp gom request thế nào
 
 Một warp có **32 thread**, mỗi thread load một `float` **4 byte**. Nếu dữ liệu nằm liên tiếp, tổng cần:
 
@@ -69,7 +69,7 @@ Với ba ma trận: A và B là **load**, C là **store**. Giả sử 100 load A
 Có thể kiểm chứng bằng cách đo riêng hit rate của thao tác đọc:
 
 ```bash
-ncu --metrics lts__t_sectors_op_read,lts__t_sectors_op_write ./app
+ncu --metrics lts__t_sector_op_read_hit_rate,lts__t_sector_op_write_hit_rate ./app
 ```
 
 Kết quả read hit gần **0 %**, còn write hit luôn **100 %** — đúng như cách Nsight Compute quy ước.
@@ -86,4 +86,4 @@ Vì write luôn bị tính là hit, **tổng hit rate của L2 không phản án
 
 L1 hit 0 % vì mỗi phần tử chỉ được đọc một lần — không có cơ hội trúng cache. L2 hiện 33 % chỉ vì Nsight Compute tính mọi store là hit, không phải vì dữ liệu thực sự nằm trong L2. Muốn đánh giá đúng, hãy đo **read hit rate**. Hiểu điều này tránh việc "tối ưu" nhầm vào một chỉ số bị thổi phồng.
 
-> ⚠️ Cần kiểm chứng: con số **192 kB** cho L1/shared là của A100 (GA100) theo whitepaper Ampere; trên RTX 3090 (GA102) dung lượng gộp L1/shared nhỏ hơn. Quy ước "store được tính là hit" trong L2 là quan sát của giảng viên trên Nsight Compute, nên đối chiếu lại với tài liệu Nsight Compute của phiên bản đang dùng.
+> ⚠️ Cần kiểm chứng: con số **192 kB** cho L1/shared là của A100 (GA100) theo whitepaper Ampere; trên RTX 3090 (GA102) dung lượng gộp L1/shared chỉ là **128 kB** theo whitepaper GA102. Quy ước "store được tính là hit" trong L2 là quan sát của giảng viên trên Nsight Compute; tài liệu Nsight Compute không nêu rõ quy ước này, nên đối chiếu lại với phiên bản đang dùng.

@@ -32,6 +32,8 @@ float cpu_reduce(float* input, int n) {
 
 Đầu vào giống kernel (con trỏ vector + `n`), đầu ra là **một** giá trị `float`. So `cpu_reduce` với `input[0]` sau khi chạy GPU là đủ để biết kernel đúng hay sai.
 
+---
+
 ### 🧱 Seven steps quen thuộc
 
 1. Cấp phát host và device: `float* h_input = new float[n];` và `cudaMalloc(&d_input, size)` với `size = n * sizeof(float)` — nhớ `size` là **số byte**, không phải số phần tử.
@@ -44,6 +46,8 @@ float cpu_reduce(float* input, int n) {
 
 Với `n = 1024 * 1024` (gọi tắt "1 triệu"), nên build sau vài dòng để bắt lỗi sớm thay vì viết hết mới biên dịch.
 
+---
+
 ### 🔢 Cấu hình grid size
 
 Chọn `block_size = 256`. Số thread toàn ứng dụng phải phủ đủ `n` phần tử, nên:
@@ -53,6 +57,8 @@ int grid_size = (n + block_size - 1) / block_size;
 ```
 
 Không viết `n / block_size` trần, vì khi `n` không chia hết sẽ ra số thực và thiếu block. Cộng `block_size - 1` trước khi chia là phép **làm tròn lên**. Với `n = 1024*1024` và block 256, `grid_size = 4096`.
+
+---
 
 ### 🪜 Ba lượt kernel
 
@@ -74,11 +80,15 @@ Lưu ý: dù block 256 thread, lượt 3 chỉ dùng 16 thread; các thread dư 
 
 Với ứng dụng thật, đừng hard-code `4096`, `16`, `n` — viết vòng lặp tự tính `n_mới = grid_size` cho tới khi `n_mới == 1`. Giảng viên tách từng bước để dễ hiểu rồi mới gộp.
 
+---
+
 ### 🔍 So sánh kết quả CPU và GPU
 
 Kết quả chạy ra xấp xỉ **5.4** ở cả hai phía, nhưng lệch ở chữ số cuối. Nguyên nhân là **độ chính xác khác nhau** giữa phép cộng dồn trên GPU và CPU, không phải lỗi logic. Đổi kiểu từ `float` sang `double` ở toàn bộ chương trình thì hai kết quả khớp hẳn.
 
 Với code phải đổi `float` ở nhiều chỗ, giảng viên gợi ý dùng **template C++** để chỉ cần đổi một từ khóa.
+
+---
 
 ### 📊 Profiling baseline
 

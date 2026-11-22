@@ -72,7 +72,7 @@ SM chọn **min(32, 4, 8, 16) = 4 block**. Đây chính là lý do khi tính the
 
 ### 🔬 Profile vector addition trên RTX 3090
 
-Mở section **Occupancy** của Nsight Compute, bốn chỉ số đầu là:
+Mở section **Occupancy** của Nsight Compute, các chỉ số Block Limit hiện ra:
 
 * Block Limit Warps: **16**
 * Block Limit Shared Memory: **16**

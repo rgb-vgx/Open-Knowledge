@@ -18,16 +18,20 @@ Trước khi tối ưu bất cứ thứ gì, cần biết ứng dụng đang b�
 
 ### 🧮 Hai thông số cần đo
 
-1. **Memory bandwidth** — bao nhiêu byte mỗi giây đọc/ghi được. Đơn vị thực tế là **GB/s** hoặc **TB/s**. Ví dụ Ampere A100 đạt khoảng **1.5 TB/s** (chính xác là 1555 GB/s).
+1. **Memory bandwidth** — bao nhiêu byte mỗi giây đọc/ghi được. Đơn vị thực tế là **GB/s** hoặc **TB/s**. Ví dụ Ampere A100 (bản 40 GB) đạt khoảng **1.5 TB/s** (chính xác là 1555 GB/s; bản 80 GB là 2039 GB/s).
 2. **Instruction throughput** — bao nhiêu phép tính mỗi giây, **riêng cho từng kiểu dữ liệu**: half, single (FP32), double (FP64), integer. Từ whitepaper A100: FP32 **19.5 TFLOPS**, FP64 **9.7 TFLOPS**, INT32 **19.5 TOPS**, tính trên **core thường** (không dùng tensor core). Dùng tensor core thì con số lên hàng trăm TFLOPS.
 
 Hai con số này là **peak** — giới hạn trên lý thuyết của phần cứng.
+
+---
 
 ### ❗ Vì sao không thể đánh giá bằng một con số
 
 Biết ứng dụng đạt 1 TB/s **không** nói được nó tốt hay xấu: phải so với peak. Tệ hơn, đạt peak bandwidth có thể vì chương trình làm **quá nhiều** thao tác bộ nhớ, kéo theo ít phép tính hữu ích.
 
 GPU có hai đường ống độc lập — bộ nhớ và tính toán. Đẩy một đường lên 100% không có nghĩa đường kia được dùng. Cần một chỉ số **gộp cả hai**.
+
+---
 
 ### 🧠 Arithmetic intensity (AI)
 
@@ -42,6 +46,8 @@ Cách đọc — và đây là chỗ dễ nhầm:
 
 AI cao **không** có nghĩa là "cần tối ưu bộ nhớ" — ngược lại, khi AI cao thì bộ nhớ đã dư sức, nút cổ chai nằm ở core.
 
+---
+
 ### 🏔️ Điểm chuyển tiếp (ridge point)
 
 Điểm mà ứng dụng đạt **đồng thời** peak FLOPs và peak bandwidth gọi là **transition point**:
@@ -49,6 +55,8 @@ AI cao **không** có nghĩa là "cần tối ưu bộ nhớ" — ngược lại
 $$\text{AI}_{ridge} = \frac{\text{peak FLOPs}}{\text{peak bandwidth}} = \frac{19.5 \times 10^{12}}{1.555 \times 10^{12}} \approx 12.5\ \text{FLOP/byte}$$
 
 Với A100 FP32, ridge nằm ở khoảng **12.5 FLOP/byte**. Mỗi tổ hợp (kiểu dữ liệu × có/không tensor core) có một ridge riêng, nên có nhiều đồ thị roofline — không dùng chung một cái.
+
+---
 
 ### 📐 Vẽ đồ thị
 
@@ -68,6 +76,8 @@ Cách dựng:
 
 Hình thu được giống "mái nhà": dốc bên trái, phẳng bên phải.
 
+---
+
 ### 🎯 Đọc kết quả cho một ứng dụng
 
 1. Vẽ mái nhà bằng **peak** (biên giới lý thuyết của phần cứng).
@@ -77,6 +87,8 @@ Hình thu được giống "mái nhà": dốc bên trái, phẳng bên phải.
 5. Tối ưu xong, điểm phải **dịch lên trên**, tiến về ridge — đó là mục tiêu.
 
 Roofline có thể vẽ cho từng tầng bộ nhớ: **DRAM**, **L2**, **L1**. Chỉ khác nhau ở bandwidth dùng trong công thức — peak DRAM, peak L2 hay peak L1.
+
+---
 
 ### 🔬 Áp vào vector reduction
 
@@ -94,6 +106,8 @@ Chạy tiếp phiên bản đã tối ưu (`03`):
 * Performance đọc được **177 GFLOP/s**.
 
 Điểm dịch sang phải và lên cao, tiến gần ridge — đúng như kỳ vọng của một tối ưu đúng hướng.
+
+---
 
 ### ✅ Chốt
 

@@ -85,7 +85,7 @@ Có thể lấy cả bộ modifier bằng cách bỏ phần `.modifier`. Ví d�
 ncu --metrics sm__inst_executed ./vector_add
 ```
 
-sẽ trả về avg, max, min, sum cùng lúc. Lưu ý nhỏ: `sum` không nhất thiết bằng `avg × số SM` nếu phân bố không đều — giảng viên nhắc điều này khi đối chiếu với con số SM.
+sẽ trả về avg, max, min, sum cùng lúc. Lưu ý: `sum` xấp xỉ `avg × số SM` — giảng viên đối chiếu đúng hệ thức này với số SM của GPU.
 
 Vài metric đáng nhớ:
 

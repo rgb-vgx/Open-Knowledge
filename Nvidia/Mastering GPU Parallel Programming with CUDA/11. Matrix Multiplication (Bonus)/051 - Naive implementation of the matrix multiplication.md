@@ -25,6 +25,8 @@ Section bonus này dựng lại phép nhân ma trận từ con số 0 rồi tố
 
 Chính vì vậy các hãng lớn đều có cả **thư viện** lẫn **phần cứng** chuyên dụng.
 
+---
+
 ### 📚 Thư viện có sẵn
 
 | Thư viện | Hãng | Đặc điểm |
@@ -36,6 +38,8 @@ Chính vì vậy các hãng lớn đều có cả **thư viện** lẫn **phần
 **GEMM** = **GE**neral **M**atrix **M**ultiply. Với Tensile, các tham số cần chọn gồm kích thước ma trận, cách chia ma trận cho các SM, có prefetch hay không, có dùng shared memory hay không.
 
 Viết kernel tay cho hiểu cơ chế; dùng thư viện khi cần hiệu năng ngay.
+
+---
 
 ### ⚡ Tensor core so với core thường
 
@@ -49,7 +53,9 @@ Core thường xử lý một phép cộng/nhân trên vài phần tử. Tensor 
 | TF32 | 156 TFLOPS (312 với sparsity) | — |
 | FP32 | — | 19.5 TFLOPS |
 
-Một SM của A100 có **4 tensor core**. Một instruction tensor core tốn khoảng **4 cycle** — latency cao hơn lệnh thường — nhưng số phần tử xử lý trong một lệnh nhiều gấp hàng chục lần, nên throughput ròng vẫn vượt trội. Ví dụ lệnh `HMMA` (half-precision matrix multiply-accumulate) nạp cả khối **16×16** phần tử half precision (2 byte mỗi phần tử) từ global memory vào shared memory.
+Một SM của A100 có **4 tensor core**. Một instruction tensor core tốn khoảng **4 cycle** — latency cao hơn lệnh thường — nhưng số phần tử xử lý trong một lệnh nhiều gấp hàng chục lần, nên throughput ròng vẫn vượt trội. Một instruction làm việc trên cả một khối phần tử — ví dụ **16×16** phần tử half precision (2 byte mỗi phần tử) — nên dữ liệu được nạp theo khối lớn từ global memory vào shared memory, thay vì từng phần tử như lệnh add thường. Việc nhân-tích lũy thật sự do tensor core thực hiện trên các register fragment.
+
+---
 
 ### 🧮 Công thức và hai cách lập trình
 
@@ -85,6 +91,8 @@ Vòng `k` **không bỏ được** — mỗi thread vẫn phải tự cộng d�
 
 Đây gọi là **naive** vì không có tối ưu nào: global memory, không shared memory, không tiling.
 
+---
+
 ### 🧱 Phần main
 
 Bảy bước quen thuộc, áp cho ma trận vuông `N = 512` (dùng một tham số thay cho M, K, N):
@@ -118,6 +126,8 @@ else           std::cout << "Wrong results\n";
 ```
 
 Với `float` thì gần như **không bao giờ** bằng 0 tuyệt đối; phải in `temp` ra và chấp nhận sai số nhỏ.
+
+---
 
 ### 📊 Kết quả và baseline
 

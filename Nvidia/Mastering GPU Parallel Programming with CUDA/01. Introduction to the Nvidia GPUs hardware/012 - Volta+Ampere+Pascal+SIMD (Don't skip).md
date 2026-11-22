@@ -57,7 +57,7 @@ Trong một SM của Volta:
 * **32 core double precision**.
 * **8 tensor core**.
 
-Volta có **84 SM**; nhân 84 với 64 cho ra tổng số core single precision toàn GPU. Tính tương tự cho các loại khác, tổng cộng khoảng **20.000 đơn vị tính toán**.
+Chip GV100 đầy đủ có **84 SM** (V100 thương mại dùng **80 SM**); nhân 84 với 64 cho ra tổng số core single precision toàn GPU. Tính tương tự cho các loại khác, tổng cộng khoảng **20.000 đơn vị tính toán**.
 
 Ngoài SM, toàn GPU còn có:
 
@@ -99,7 +99,7 @@ Bốn partition trong SM **dùng chung L1 cache, shared memory và texture memor
 | Bus memory | — | ~4.000 bit | >5.000 bit |
 | Dung lượng memory | — | 16/32 GB | 40 GB |
 | Memory bandwidth | ~700 GB/s | 900 GB/s | ~1.500 GB/s |
-| L2 cache | — | 6 MB | hơn 7 lần Volta |
+| L2 cache | — | 6 MB | 40 MB (gần 7 lần Volta) |
 | Transistor | — | 21 tỷ | ~54 tỷ (2.5 lần) |
 | Tiến trình | — | — | 7 nm |
 
@@ -124,5 +124,3 @@ Bên cạnh bảng phần cứng còn bảng **compute capability**, cần thi�
 NVLink là tính năng chuẩn trên server **DGX**. **DGX Station** chứa **4 GPU V100** nối bằng NVLink, đạt **3 lần** hiệu năng so với workstation GPU nhanh nhất thời điểm đó. Bảng so sánh DGX-1 của Pascal và Volta cho thấy cả hai đều **8 GPU**, công suất **3.200 W** như nhau — nhưng Volta có nhiều tính toán hơn trên cùng mức năng lượng, nhờ tensor core và số core lớn hơn. Đó chính là ý nghĩa của "tiết kiệm 50% năng lượng": tính trên **mỗi phép tính**, không phải tổng công suất.
 
 **Chốt lại.** Volta là bước ngoặt với **tensor core**, **SM tiết kiệm năng lượng**, integer và floating point song song, cùng NVLink thế hệ hai. Ampere nối tiếp với nhiều SM hơn, throughput cao hơn, bandwidth lớn hơn. Điều cần nhớ xuyên suốt: **đừng chỉ đếm core** — hãy nhìn throughput, khả năng từng đơn vị và cả chi phí năng lượng. Bài tiếp theo mình chuyển sang phần mềm: CUDA toolkit có gì.
-
-> ⚠️ Cần kiểm chứng: con số core FP64 của Ampere trong transcript bị nhiễu âm thanh (nghe như "3004 hundred"); bài viết ghi khoảng 3.400 theo ngữ cảnh, cần đối chiếu lại bảng thông số whitepaper A100.

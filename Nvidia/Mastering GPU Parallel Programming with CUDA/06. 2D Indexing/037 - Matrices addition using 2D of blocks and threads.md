@@ -37,15 +37,15 @@ Grid 2D tương tự: `1024 × 1024` block, nhân lại hơn 1 triệu block.
 
 Ma trận 2D nhưng bộ nhớ là 1D, nên phải chọn cách xếp. **Row-major**: từng hàng được lưu liên tiếp. **Column-major**: từng cột liên tiếp. Bài dùng **row-major**.
 
-Ví dụ ma trận 6 hàng × 8 cột (chỉ số hàng 0–5, cột 0–7). Phần tử ở hàng `i`, cột `j` có địa chỉ:
+Với ma trận có `row_size` cột, phần tử ở hàng `j`, cột `i` được lưu tại:
 
 ```text
-index = j + i * row_size    // row_size = số cột = 8
+index = j × row_size + i
 ```
 
-Kiểm tra với phần tử hàng 3, cột 1: `1 + 3 × 8 = 25`? Công thức trong bài viết theo thứ tự `j × row_size + i` với `i` là cột, `j` là hàng — tức hoán đổi tên biến. Điều cốt lõi: **chỉ số tuyến tính = chỉ số hàng × số cột + chỉ số cột**. Với hàng 3, cột 1 và 8 cột: `3 × 8 + 1 = 25`.
+Ví dụ trong bài: ma trận có **5 cột** (`row_size = 5`, cột chạy 0–4); phần tử ở hàng `j = 1`, cột `i = 3` cho ra index `1 × 5 + 3 = 8`.
 
-Ví dụ thứ hai trong bài: phần tử có tọa độ (3, 1) trên ma trận 5 cột cho ra index **8**, tính bằng `1 × 5 + 3`. Cùng một quy tắc, chỉ khác cách gọi tên trục.
+Quy tắc cốt lõi: **chỉ số tuyến tính = chỉ số hàng × số cột + chỉ số cột**.
 
 ---
 
@@ -67,7 +67,7 @@ int index = iy * Nx + ix;                        // Nx = số cột
 
 `ix` chọn phần tử trong hàng, `iy` chọn hàng, `Nx` là kích thước ma trận theo x (số cột).
 
-Ví dụ trong bài: ma trận **6 hàng × 8 cột**; grid **3 × 2 = 6 block**; mỗi block **blockDim = (4, 2)** nên 8 thread. Xét phần tử có index bộ nhớ **44**:
+Ví dụ trong bài: ma trận **6 hàng × 8 cột**; grid **2 × 3 = 6 block** (2 block theo x, 3 block theo y); mỗi block **blockDim = (4, 2)** nên 8 thread. Xét phần tử có index bộ nhớ **44**:
 
 1. `threadIdx.x = 0`, `blockIdx.x = 1`, `blockDim.x = 4` → `ix = 0 + 1×4 = 4`.
 2. `threadIdx.y = 1`, `blockIdx.y = 2`, `blockDim.y = 2` → `iy = 1 + 2×2 = 5`.

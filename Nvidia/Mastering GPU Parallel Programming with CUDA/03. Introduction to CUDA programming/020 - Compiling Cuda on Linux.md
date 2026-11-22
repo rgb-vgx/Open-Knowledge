@@ -26,7 +26,7 @@ Mở terminal Linux (qua `wsl` nếu đang ở Windows), vào thư mục project
 nvcc --version
 ```
 
-Kết quả hiển thị nvcc đã cài và release của toolkit (trong video là bản 11.5).
+Kết quả hiển thị nvcc đã cài và release của toolkit (trong video là bản **11.5**).
 
 ---
 

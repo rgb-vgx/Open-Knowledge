@@ -22,6 +22,8 @@ Suốt các bài trước, dữ liệu nằm ở global memory — nhưng mỗi 
 
 Vì thế đổi từ global sang shared chỉ tiết kiệm được khoảng **10–20%**, không phải 50–80%. Muốn ăn nhiều hơn phải **ghép** shared memory với một kỹ thuật khác.
 
+---
+
 ### 🧱 Chuyển kernel sang shared memory
 
 Kernel trước (mỗi block 512 phần tử, 256 thread) thêm ba thay đổi:
@@ -38,6 +40,8 @@ Kernel trước (mỗi block 512 phần tử, 256 thread) thêm ba thay đổi:
 
 Điểm mấu chốt là bước 4: trước đây **mỗi thread** đều ghi global memory, giờ cả block chỉ ghi một giá trị.
 
+---
+
 ### 🛡️ Toán tử ba ngôi để tránh rác
 
 Lần đầu chạy, kết quả sai ngay từ phần tử đầu. Nguyên nhân: thread có `index` vượt biên vẫn ghi vào shared memory, để lại **giá trị rác** mà các bước sau cộng vào.
@@ -49,6 +53,8 @@ index < n ? d_input[index] : 0.0f
 ```
 
 Toán tử `condition ? a : b` trả `a` nếu đúng, `b` nếu sai. Hoặc đơn giản hơn: khởi tạo toàn bộ 256 phần tử shared memory bằng 0 trước khi nạp. Không xử lý chỗ này thì tổng sai lệch hoàn toàn — đây là lỗi im lặng điển hình của CUDA.
+
+---
 
 ### 📉 Lượng dữ liệu ghi giảm 20 lần
 
@@ -62,17 +68,21 @@ Toán tử `condition ? a : b` trả `a` nếu đúng, `b` nếu sai. Hoặc đ�
 
 Nhưng thời gian chạy **103 µs**, so với 100 µs của bản global-only → **không cải thiện, thậm chí nhích lên**. Lý do: chi phí nạp vào shared memory và barrier bù lại đúng phần tiết kiệm được. Bài học: tối ưu bộ nhớ chỉ có lợi khi bottleneck thực sự nằm ở bộ nhớ.
 
+---
+
 ### ⚔️ Bank conflict kiểm tra bằng Nsight Compute
 
 Trong **Memory Workload Analysis → Memory Tables** có số **bank conflict**. Với vòng lặp stride **giảm dần** (bắt đầu `blockDim.x / 2`, chia đôi), kết quả là **0 conflict**. Nếu đảo lại — bắt đầu stride 1 và nhân đôi — sẽ thấy **hàng chục conflict** và thời gian tăng lên ~115 µs. Đây là lý do kỹ thuật cho việc chọn chiều vòng lặp, bổ sung cho kết quả đo ở bài trước.
 
-### 🔄 Unrolling: bỏ 5 barrier cuối
+---
 
-Quan sát: mỗi vòng lặp đều có `__syncthreads()` — với block 256 thread, stride đi 128, 64, 32, 16, 8, 4, 2, 1, tức **8 barrier**. Nhưng khi stride xuống **dưới 32**, mọi thread còn lại nằm trong **một warp duy nhất**. Trong một warp, các lane đã chạy lockstep, **không cần barrier nữa**.
+### 🔄 Unrolling: bỏ 6 barrier cuối
+
+Quan sát: mỗi vòng lặp đều có `__syncthreads()` — với block 256 thread, stride đi 128, 64, 32, 16, 8, 4, 2, 1, tức **8 barrier**. Nhưng khi stride còn **32 trở xuống**, mọi thread còn lại nằm trong **một warp duy nhất**. Trong một warp, các lane đã chạy lockstep, **không cần barrier nữa**.
 
 Cách làm:
 
-1. Vòng lặp chỉ chạy khi `stride >= 32`.
+1. Vòng lặp chỉ chạy khi `stride > 32` — với block 256, chỉ còn hai bước 128 và 64.
 2. Phần còn lại giao cho một hàm **`__device__`** — hàm chỉ gọi được từ kernel khác, không gọi từ `main`.
 3. Hàm đó cộng dồn tuần tự trên shared memory với offset **32 → 16 → 8 → 4 → 2 → 1**, không barrier giữa các bước.
 
@@ -87,9 +97,11 @@ __device__ void warp_reduce(float* sdata, int tid) {
 }
 ```
 
-Gọi hàm này khi `tid < 32`, sau khi vòng lặp chính dừng. Phần tính toán bị "trải phẳng" (unroll) thành các lệnh liên tiếp, mất hẳn 5 barrier — và barrier chính là thứ đắt, không phải phép cộng.
+Gọi hàm này khi `tid < 32`, sau khi vòng lặp chính dừng. Phần tính toán bị "trải phẳng" (unroll) thành các lệnh liên tiếp, mất hẳn 6 barrier — và barrier chính là thứ đắt, không phải phép cộng.
 
 Kết quả: **90 µs**, cải thiện khoảng **10%** so với 100 µs. Cộng dồn tuần tự nghe chậm, nhưng đọc shared memory mất ~25 cycle nên vẫn rẻ hơn nhiều so với 5 lần đồng bộ toàn block.
+
+---
 
 ### 🎚️ Chọn block size bằng thực nghiệm
 

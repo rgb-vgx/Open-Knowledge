@@ -95,7 +95,7 @@ Xem toàn bộ tùy chọn:
 nvidia-smi -h
 ```
 
-Tại đây có `--reset` để trả GPU về mặc định, reset memory clocks, application clocks, và các tùy chọn liên quan.
+Tại đây có `--gpu-reset` để trả GPU về mặc định, cùng `--reset-memory-clocks`, `--reset-applications-clocks` (đã deprecated) và các tùy chọn liên quan.
 
 ---
 

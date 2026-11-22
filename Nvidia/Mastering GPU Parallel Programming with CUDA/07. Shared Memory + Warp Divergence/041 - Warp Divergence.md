@@ -25,6 +25,8 @@ tags: []
 
 Kịch bản lý tưởng: **phát 32 thread mỗi clock**, tất cả cùng một instruction, cùng một nhịp. Đó vẫn là *một* instruction nhân cho 32 thread, không phải 32 instruction khác nhau.
 
+---
+
 ### ⚠️ Khi nào divergence xuất hiện
 
 Divergence đến từ **`if/else`** khi các thread trong cùng warp đi hai nhánh khác nhau. Không phải câu `if` nào cũng gây hại — phải phân biệt hai loại điều kiện:
@@ -32,9 +34,13 @@ Divergence đến từ **`if/else`** khi các thread trong cùng warp đi hai nh
 * **Điều kiện biên** (`if (idx < N)`): chỉ đúng với thread cuối, hoặc một nhóm rất nhỏ ở rìa vector. Ví dụ vector 1000 phần tử cần 1024 thread (bội của 32), nên 24 thread dư phải bị chặn lại. Loại này **không** gây warp divergence đáng kể.
 * **Điều kiện chia nhánh thật** (`if (i < 16)`): đúng với khoảng một nửa warp, có thể xảy ra ở **2–3 warp** chứ không riêng thread cuối. Đây mới là warp divergence — không phải block divergence, cũng không phải thread divergence.
 
+---
+
 ### 🔬 GPU xử lý divergence thế nào
 
 Khi warp rẽ nhánh, GPU **serialize** các nhánh: chạy nhánh A cho nhóm thread thuộc A, trong lúc đó nhóm còn lại bị **mask** (stall, idle); xong mới chạy nhánh B, rồi các nhánh hợp lại ở sau `if`. Tức là hai đường đi tốn hai lượt thay vì một — chi phí tăng gấp đôi trong trường hợp đơn giản nhất.
+
+---
 
 ### 📊 Ba mức độ divergence
 
@@ -43,6 +49,8 @@ Khi warp rẽ nhánh, GPU **serialize** các nhánh: chạy nhánh A cho nhóm t
 **2. Divergence vừa (moderate)** — đúng **một mức** rẽ nhánh, thường là 16 thread đi nhánh A, 16 thread đi nhánh B. Nhóm này chạy thì nhóm kia idle, sau đó đổi vai. Hai bước thay vì một, hiệu suất warp giảm còn một nửa.
 
 **3. Divergence nặng (severe)** — nhiều câu `if` lồng nhau hoặc chia theo kiểu chẵn/lẻ, mỗi nhóm bốn thread một nhánh. Thread liên tục chuyển giữa active và idle. Đây là trường hợp tệ nhất: phần lớn thread idle ở mỗi cycle, hiệu năng mất đi rõ rệt.
+
+---
 
 ### 📉 Hệ quả lên hiệu năng
 
@@ -53,6 +61,8 @@ Khi warp rẽ nhánh, GPU **serialize** các nhánh: chạy nhánh A cho nhóm t
 * **Giảm instruction throughput**: số thread active mỗi cycle ít đi.
 
 Cơ chế **masking** — tắt tạm các thread không thuộc nhánh đang chạy — chính là thứ khiến divergence tốn kém: phần cứng vẫn phải "chạy" cả warp, chỉ có điều một nửa lane không sinh kết quả.
+
+---
 
 ### 🎯 Vì sao chưa tối ưu ngay ở vector addition
 

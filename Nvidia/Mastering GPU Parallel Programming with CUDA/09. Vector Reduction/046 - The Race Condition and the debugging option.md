@@ -27,7 +27,9 @@ Bỏ bộ lọc, **mọi** thread đều chạy `a[i] += a[i+1]`:
 
 Nếu thread 1 chạy **trước** thread 0, thì khi thread 0 đọc `a[1]`, giá trị đã là `9` (8 + 1) thay vì `1`. Kết quả thành `10 + 9 = 19` thay vì `11`. Kết quả phụ thuộc **thứ tự thực thi** — đúng định nghĩa **race condition**: đổi thứ tự thì ra đáp án khác, và ta không kiểm soát được thứ tự.
 
-Lỗi nằm ở **bước 1**; nếu bước 1 sai thì các bước sau cũng sai theo. Trong một warp, các lane chạy lockstep nên thường không lộ ra — race xảy ra khi các **warp khác nhau** trong cùng block chen nhau đọc/ghi cùng vùng nhớ. Đó là lý do bug "ẩn" và chỉ hiện trên một số máy.
+Lỗi nằm ở **bước 1**; nếu bước 1 sai thì các bước sau cũng sai theo, và vì thứ tự thực thi không kiểm soát được nên bug có thể "ẩn" trên máy này nhưng hiện trên máy khác.
+
+---
 
 ### 🎛️ Vì sao video trước không thấy lỗi
 
@@ -39,6 +41,8 @@ Giảng viên quay lại hai môi trường, Windows (Visual Studio) và Linux (
 Sự khác biệt nằm ở cờ biên dịch. Trên Linux, dòng build có `-G`; trên Windows, tùy chọn tương ứng là **CUDA → Device → Generate GPU Debug Information = Yes**, và nó chèn `-G` vào command line.
 
 Bỏ `-G` ở cả hai bên thì kết quả lại **đổi hẳn**, lệch tới cả bậc `10^11` so với `10^10` — race lộ ra rõ ràng.
+
+---
 
 ### 📘 `-G` và `-g` khác nhau thế nào
 
@@ -57,6 +61,8 @@ Hệ quả thực hành:
 * Bỏ bộ lọc modulo chỉ an toàn khi có **barrier đúng chỗ**; ở bài này nó không an toàn về mặt lý thuyết, chỉ nhanh hơn.
 * `__syncthreads()` có ở cuối mỗi vòng lặp, nhưng nó chỉ chặn giữa các bước, **không** chặn được đọc/ghi chen nhau bên trong cùng một bước.
 
+---
+
 ### 🖥️ Compute capability trong Visual Studio
 
 Cùng chỗ cấu hình có mục **Code Generation**. Giá trị mặc định thường là **`compute_52`** — kiến trúc cũ, không tối ưu cho card mới. Máy trong bài là **RTX 3060**, kiến trúc **Ampere**, nên phải đổi sang đúng kiến trúc của card.
@@ -64,6 +70,8 @@ Cùng chỗ cấu hình có mục **Code Generation**. Giá trị mặc định 
 Nếu để mặc định `52`, code vẫn chạy nhưng không dùng hết khả năng phần cứng, và kết quả số học có thể khác.
 
 > ⚠️ Cần kiểm chứng: transcript nói RTX 3060 có compute capability **80** (`sm_80`). Theo bảng CUDA GPUs của NVIDIA, RTX 3060 (GA106) là **8.6**, còn A100 mới là 8.0. Khi đặt `arch`/`code`, hãy tra đúng mã của card mình.
+
+---
 
 ### 📝 Bài tập giảng viên giao
 

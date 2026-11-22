@@ -23,6 +23,8 @@ tags: []
 
 Bài này gọi là **reduce in place** vì ghi kết quả ngược vào chính vector đầu vào. Có biến thể dùng hai vector, nhưng baseline ở đây chỉ một.
 
+---
+
 ### 🌳 Tree-based approach
 
 Cách làm là chia đôi liên tiếp:
@@ -38,6 +40,8 @@ Mỗi bước, **stride** tăng gấp đôi: 1 → 2 → 4 → 8. Đó là cơ s
 
 Các giá trị trung gian ở vị trí lẻ không còn dùng nữa, nên việc tính chúng là "phép toán thừa" — vẫn chạy, vẫn tốn tài nguyên, nhưng không ảnh hưởng kết quả. Đây chính là chỗ để tối ưu ở bài sau.
 
+---
+
 ### 🧱 Vấn đề: không có đồng bộ giữa các block
 
 Vector lớn phải chia thành nhiều **chunk**, mỗi block xử lý một chunk. Mỗi block cho ra một **partial sum** — tổng của riêng phần mình, chưa phải tổng toàn vector.
@@ -52,6 +56,8 @@ Muốn cộng các partial sum lại phải chờ **tất cả** block xong. Nh�
 
 Vector càng lớn càng có thể cần ba kernel; ví dụ trong bài chỉ cần hai. Grid size hai kernel khác nhau (8 block so với 1 block), block size có thể giống hoặc khác.
 
+---
+
 ### 🧮 Bộ lọc thứ nhất: chỉ thread chẵn
 
 Code lõi:
@@ -64,6 +70,8 @@ if (tid % 2 == 0) {
 
 `tid % 2 == 0` lọc đúng nửa số thread. Không có bộ lọc này thì thread lẻ cũng cộng dồn vào vị trí không ai dùng — vô hại về kết quả nhưng tốn công.
 
+---
+
 ### 🛡️ Bộ lọc thứ hai: chặn tràn biên
 
 Với 16 phần tử, thread 15 sẽ thực hiện `input[15] += input[16]` — index 16 **không tồn tại**, đó là **memory violation**. Vì vậy phải kiểm tra cả `tid + 1`, không chỉ `tid`:
@@ -75,6 +83,8 @@ if (tid + 1 < n && tid % 2 == 0) {
 ```
 
 Đây là lý do kernel nhận thêm tham số `n` (kích thước vector).
+
+---
 
 ### 🔁 Vòng lặp với stride
 
@@ -93,6 +103,8 @@ for (int stride = 1; stride < blockDim.x; stride *= 2) {
 * `stride` bắt đầu bằng 1 và nhân đôi mỗi bước.
 * Vòng lặp dừng khi `stride >= blockDim.x` — vì lúc đó không còn cặp nào để cộng.
 * `__syncthreads()` bắt buộc: bước sau phải đọc giá trị **đã cập nhật** của bước trước. Thiếu barrier, thread có thể đọc dữ liệu cũ.
+
+---
 
 ### 📦 Gom partial sum về vị trí liền nhau
 

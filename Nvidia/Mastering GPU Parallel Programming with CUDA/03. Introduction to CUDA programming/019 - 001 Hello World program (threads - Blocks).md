@@ -93,6 +93,6 @@ kernel<<<2, 1024>>>();
 
 Tổng thread = 2 × 1024 = 2048, vừa đủ số phần tử. Chương trình chạy đúng.
 
-Còn giới hạn số block? Whitepaper ghi **tối đa 32 thread block mỗi SM**. Vì con số này tính **trên mỗi SM**, không phải toàn GPU, nên tổng block tối đa = **32 × số SM**. Với A100 có 108 SM: 32 × 108. Đó là lý do có thể khai báo hàng triệu block, miễn không vượt tổng giới hạn theo số SM.
+Còn giới hạn số block? Whitepaper ghi **tối đa 32 block cư trú đồng thời (resident) mỗi SM**. Con số này chỉ giới hạn số block chạy song song trên một SM, không phải tổng số block của một grid: grid vẫn có thể khai báo tới **2³¹−1** block theo chiều x, và các block được lập lịch theo từng đợt. Với A100 có 108 SM, mỗi lúc có tối đa **32 × 108 block** cùng cư trú.
 
 **Chốt lại.** Kernel dùng `__global__`, gọi bằng `<<<blocks, threads>>>`, đọc ID qua `blockIdx.x` và `threadIdx.x`. Giới hạn cần nhớ: **1024 thread/block**, **32 block/SM**. Bài sau mình sẽ biên dịch và chạy trên Linux bằng nvcc, kèm một cái bẫy về đồng bộ khá thú vị.

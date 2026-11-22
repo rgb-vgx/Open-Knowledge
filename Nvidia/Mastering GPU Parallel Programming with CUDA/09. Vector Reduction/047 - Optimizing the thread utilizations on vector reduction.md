@@ -20,6 +20,8 @@ Nguyên tắc tối ưu áp dụng cho **mọi** ứng dụng CUDA, không riên
 
 Với block 256 thread và vector 256 phần tử mỗi block, số thread bằng số phần tử. Nhưng chỉ thread chẵn làm việc, vì mỗi thread xử lý **hai** phần tử liền nhau. Tức 128 thread idle trong mỗi block — phần cứng vẫn cấp slot cho chúng, occupancy và SM utilization bị kéo xuống.
 
+---
+
 ### ➗ Ý tưởng: mỗi block "gánh" 512 phần tử
 
 Cho mỗi block 512 phần tử thay vì 256, vẫn 256 thread. Kernel có thêm một bước đầu:
@@ -29,6 +31,8 @@ Cho mỗi block 512 phần tử thay vì 256, vẫn 256 thread. Kernel có thêm
 3. Từ đây chạy y nguyên kernel cũ: 256 phần tử, 256 thread, block 256.
 
 Không cần sửa gì trong vòng lặp! Chỉ thêm vài dòng trước nó. Đó là điểm hay của cách làm: bước gộp biến bài toán về đúng dạng cũ.
+
+---
 
 ### 🧮 Index và stride của bước gộp
 
@@ -50,6 +54,8 @@ d_input[index] += d_input[index + blockDim.x];
 
 Sau lệnh này, mỗi thread đã cộng hai phần tử cách nhau `blockDim.x`, nên dữ liệu đã "dồn" về nửa đầu của chunk. Vòng lặp giảm dần stride như cũ chạy trên phần đầu đó.
 
+---
+
 ### 📉 Grid size giảm một nửa, ít wave hơn
 
 Cùng vector 1 triệu phần tử:
@@ -58,6 +64,8 @@ Cùng vector 1 triệu phần tử:
 * Cấu hình mới: 512 phần tử/block → **2048 block**.
 
 Trong `main`, cả `block_size` lẫn cổng tính grid đều phải phản ánh việc mỗi block gánh 512 phần tử. Grid giảm nửa nghĩa là **số wave mỗi SM giảm nửa** — đây là nguồn lợi chính, không phải bản thân con số grid.
+
+---
 
 ### 📊 Kết quả
 
@@ -72,6 +80,8 @@ Trong `main`, cả `block_size` lẫn cổng tính grid đều phải phản án
 * Đáng chú ý: **~19 MB dữ liệu ghi từ L1 ra L2**. Mỗi thread đọc/ghi global memory nhiều hơn, và đây là chi phí mới xuất hiện. Giảm lượng ghi này chính là lý do dùng **shared memory** ở bài sau.
 * Shared memory vẫn **0 request** vì chưa dùng.
 
+---
+
 ### 🔁 Thử đảo chiều vòng lặp — và vì sao nó chậm hơn
 
 Một biến thể phổ biến trong tài liệu NVIDIA: chạy stride **giảm dần** thay vì tăng dần.
@@ -84,6 +94,8 @@ for (int stride = blockDim.x / 2; stride > 0; stride >>= 1) { ... }
 
 Lưu ý giá trị khởi đầu: `blockDim.x / 2`, không phải `blockDim.x`, vì stride bằng block size thì không còn cặp nào để cộng.
 
+---
+
 ### ⚡ Thay phép chia bằng phép shift
 
 Vòng lặp giảm dần dùng `/ 2` — lại là phép chia, thứ đã chứng minh đắt ở bài trước, và lần này **mỗi thread** đều chạy nó. Thay bằng dịch bit:
@@ -93,6 +105,8 @@ stride >>= 1;   // tương đương stride / 2
 ```
 
 Dịch phải 1 bit = chia 2; dịch trái 1 bit = nhân 2. Kết quả: **98–99 µs**, cải thiện khoảng **2%** so với 100 µs. Con số nhỏ, và giảng viên cảnh báo nhiễu đo: chạy Nsight Compute hai lần trên cùng code có thể lệch vài phần trăm. Vẫn nên thử cả hai kiểu trên GPU của mình rồi chọn.
+
+---
 
 ### 🎯 Chốt lại
 

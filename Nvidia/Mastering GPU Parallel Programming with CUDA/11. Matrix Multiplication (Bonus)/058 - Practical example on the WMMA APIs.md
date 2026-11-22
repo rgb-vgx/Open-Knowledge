@@ -23,6 +23,8 @@ Bài này ghép mọi thứ thành chương trình chạy được: kernel WMMA 
 * Input **half** (FP16), output **float** (FP32) — kernel tên `matrix_multiplication_tensor_cores_fp32` vì accumulator là FP32.
 * **128 thread mỗi block** = **4 warp** mỗi block.
 
+---
+
 ### 🧵 Phần đầu kernel
 
 ```cuda
@@ -43,6 +45,8 @@ int tile_row = warp_id / tiles_per_row;
 int tile_col = warp_id % tiles_per_row;
 ```
 
+---
+
 ### 🔁 Thân kernel
 
 ```cuda
@@ -54,7 +58,7 @@ wmma::fill_fragment(c_frag, 0.0f);
 
 for (int k = 0; k < N; k += TILE) {
     wmma::load_matrix_sync(a_frag, a + k + tile_row * TILE * lda, lda);
-    wmma::load_matrix_sync(b_frag, b + k * ldb + tile_col * TILE, ldb);
+    wmma::load_matrix_sync(b_frag, b + k + tile_col * TILE * ldb, ldb);
     wmma::mma_sync(c_frag, a_frag, b_frag, c_frag);
 }
 
@@ -69,6 +73,8 @@ Bốn điểm cần nhớ:
 * **`mma_sync(c, a, b, c)`** — accumulator vừa là input vừa là output, đó là nghĩa của "accumulate".
 * **`store_matrix_sync` chỉ gọi một lần** sau vòng lặp, ghi toàn bộ tile C ra global.
 
+---
+
 ### 🧱 Phần main
 
 1. Kiểm tra `N % TILE == 0`; nếu không thì dừng — tile 16 không xử lý được ma trận 15 cột.
@@ -80,7 +86,9 @@ Bốn điểm cần nhớ:
 7. Chạy hàm CPU để có kết quả đối chiếu; in **10 phần tử đầu** của cả hai để so.
 8. Giải phóng bộ nhớ.
 
-Lưu ý về `cudaMemset`: nó xóa C về 0 **trước** kernel. Nhờ vậy không cần đọc C từ global khi bắt đầu, và `fill_fragment(0)` vẫn cần để accumulator trong register sạch trước vòng lặp đầu.
+Lưu ý về `cudaMemset`: nó xóa C toàn cục về 0 **trước** kernel. Accumulator trong register vẫn phải khởi tạo bằng `fill_fragment(0)` trước vòng lặp đầu, trừ khi code load sẵn C từ bộ nhớ vào fragment.
+
+---
 
 ### 🧯 Lỗi biên dịch quen thuộc
 
@@ -97,6 +105,8 @@ nvcc -arch=sm_80 -o tensor2 tensor2.cu
 `nvcc` không có `-arch` thường chọn `sm_52` — trước Volta, không có tensor core, nên toàn bộ API WMMA không tồn tại. Máy trong bài là **RTX 3060 Ti** (Ampere), nên dùng `sm_80`; card Ampere phổ thông thực tế là 8.6, dùng `sm_86` cũng được.
 
 Giảng viên nhấn mạnh: nên đặt `-arch` cho **mọi** chương trình CUDA, không riêng bài tensor core — thiếu nó, compiler bỏ qua các tối ưu riêng của kiến trúc.
+
+---
 
 ### 📊 Kết quả
 

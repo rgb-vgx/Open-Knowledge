@@ -22,6 +22,8 @@ Phản biện tự nhiên: dữ liệu đọc từ global sẽ nằm trong L1, l
 
 Shared memory thì khác: **software-controlled**. Các bạn tự quyết định nạp gì, giữ gì, khi nào; dữ liệu nằm đó suốt vòng đời block với latency ~20–25 cycle. Đó là lý do dùng shared memory dù L1 đã tồn tại.
 
+---
+
 ### 🧩 Tiling là gì
 
 Chia ma trận **C** thành các ô vuông gọi là **tile**, mỗi tile do **một thread block** phụ trách. Tile size trong bài là **16×16** = 256 phần tử, khớp với 256 thread/block — mỗi thread tính một phần tử C.
@@ -34,6 +36,8 @@ Với N = 512, tile 16:
 * Mỗi chiều thread trong block: `threadIdx.x`, `threadIdx.y` chạy 0…15.
 
 Ràng buộc quan trọng: **tile phải vừa shared memory**. Shared memory giới hạn (A100 tới **164 KB** mỗi SM, RTX 3060 khoảng **100 KB**), nên không thể chọn tile 1 triệu phần tử.
+
+---
 
 ### 🧮 Viết kernel
 
@@ -84,9 +88,13 @@ Ba điểm cần nắm:
 * **Tile A nạp theo hàng, tile B nạp theo cột** — đúng bản chất phép nhân: A đi theo hàng `row`, B đi theo cột `col`.
 * **Hai `__syncthreads()`** đều bắt buộc: cái đầu chờ mọi thread nạp xong tile trước khi tính; cái sau chờ mọi thread tính xong trước khi ghi đè tile ở vòng kế tiếp.
 
+---
+
 ### 💾 Lượng đọc giảm bao nhiêu
 
 Naive: mỗi phần tử A bị đọc **N lần** (512 lần). Tiling: mỗi phần tử A được đọc **một lần cho mỗi tile cột** — tức `N / TILE = 32` lần. Giảm 16 lần lượng đọc global, đổi lại là thêm hai barrier mỗi vòng.
+
+---
 
 ### 🐛 Lỗi thường gặp khi viết
 
@@ -95,6 +103,8 @@ Bài giảng cố tình giữ lại các lỗi để thấy cách sửa:
 1. **Đặt `__syncthreads()` sai chỗ**: nếu đặt barrier ngay trong thân vòng nạp, chương trình nạp lần lượt mọi tile rồi mới tính — và chỉ tính trên **tile cuối**. Kết quả sai hoàn toàn. Barrier phải nằm **sau khi nạp xong cả hai tile** và **trước phép nhân**.
 2. Quên khai báo `int num_tiles` hay `float sum`.
 3. Nhầm `c` với `C` (tên biến phân biệt hoa thường).
+
+---
 
 ### 📊 Kết quả
 
@@ -105,7 +115,7 @@ Bài giảng cố tình giữ lại các lỗi để thấy cách sửa:
 
 Cải thiện khoảng **30–40%**. Thử tăng tile:
 
-* **tile 32** → 2,1 ms: **chậm hơn** tile 16 (1,995 ms). Block 32×32 = 1024 thread, chạm trần, occupancy giảm.
+* **tile 32** → 2,1 ms: **chậm hơn** tile 16 (1,995 ms). Block 32×32 = 1024 thread, đúng bằng trần thread/block nên không còn dư địa; giảng viên khuyến nghị nên dùng 256 hoặc 512 thread/block.
 * **tile 64** → *"No kernels were profiled"*. Không phải vì shared memory (64×64×4×2 = 32 KB vẫn vừa), mà vì block 64×64 = **4096 thread**, vượt giới hạn **1024 thread/block** của CUDA. Kernel không chạy, nên profiler không thấy gì.
 
 Giới hạn 1024 thread/block là lý do tile lớn hơn phải làm theo cách khác: mỗi thread xử lý **nhiều** phần tử của tile, thay vì một thread một phần tử. Đó chính là hướng của bài tiếp theo — dùng `float4`.

@@ -22,6 +22,8 @@ Thư viện BLAS của NVIDIA cho GPU, cung cấp kernel GEMM đã tối ưu s�
 
 Cài đặt: lấy từ trang download của NVIDIA, chọn bản khớp với **CUDA Toolkit** đang dùng. Trên Linux thường có sẵn khi cài CUDA Toolkit đầy đủ.
 
+---
+
 ### 🧾 Phương trình GEMM
 
 cuBLAS tính:
@@ -34,6 +36,8 @@ $$C = \alpha \cdot op(A) \cdot op(B) + \beta \cdot C$$
 
 Tham số `transa`/`transb` nhận `CUBLAS_OP_N` (không chuyển vị) hoặc `CUBLAS_OP_T` (chuyển vị). Chuyển vị hữu ích khi ma trận lưu row-major mà kernel lại cần đọc theo cột — đổi cách nhìn thay vì copy dữ liệu.
 
+---
+
 ### 🎛️ Handle
 
 Mọi hàm cuBLAS đều nhận tham số đầu là **handle** — một con trỏ quản lý trạng thái (stream, chế độ, workspace). Không có handle thì không gọi được gì.
@@ -44,6 +48,8 @@ cublasCreate(&handle);
 // ... dùng handle cho mọi lệnh
 cublasDestroy(handle);
 ```
+
+---
 
 ### 🚀 Lời gọi GEMM
 
@@ -63,9 +69,9 @@ cublasGemmEx(handle,
 Đọc từng nhóm tham số:
 
 * **`m, n, k`** — kích thước ba ma trận. Ma trận vuông nên cả ba bằng `N`; tổng quát phải tách riêng.
-* **`$alpha`** là **địa chỉ** của biến `alpha` (con trỏ), không phải giá trị.
+* **`&alpha`** là **địa chỉ** của biến `alpha` (con trỏ), không phải giá trị.
 * **`CUDA_R_16F`** — kiểu dữ liệu thực (`R` = real), `16F` = half precision. `CUDA_R_32F` là single.
-* **`lda`, `ldb`, `ldc`** — leading dimension, số phần tử một hàng. Với ma trận không pad thì bằng `N`.
+* **`lda`, `ldb`, `ldc`** — leading dimension. cuBLAS lưu ma trận theo **column-major**, nên đây là số phần tử trên một cột, tức số hàng của ma trận; với ma trận vuông không pad thì bằng `N`.
 * **`CUBLAS_COMPUTE_32F`** — **quan trọng**: phép tính được thực hiện ở **32 bit** dù input là 16 bit. Đây là cách tránh tràn số khi cộng dồn hàng nghìn tích, và cũng là cấu hình chuẩn cho deep learning.
 * **`CUBLAS_GEMM_DEFAULT`** — để thư viện tự chọn thuật toán.
 
@@ -76,6 +82,8 @@ Lưu ý tên hàm: `cublasGemmEx` với `Ex` là bản mở rộng cho phép kha
 * `cublasHgemm` — half thuần.
 
 Chọn sai biến thể là lỗi kiểu dữ liệu lúc chạy.
+
+---
 
 ### 🔗 Biên dịch
 
@@ -89,6 +97,8 @@ nvcc -arch=sm_80 -O3 -lcublas -o cublas cublas.cu
 
 Với nhiều chương trình (naive, WMMA, cuBLAS…), giảng viên dùng **Makefile** để khỏi gõ lại lệnh dài mỗi lần: `make` build tất cả, `make clean` xóa binary.
 
+---
+
 ### 📊 Kết quả
 
 | Phiên bản | N = 1024 |
@@ -98,6 +108,8 @@ Với nhiều chương trình (naive, WMMA, cuBLAS…), giảng viên dùng **Ma
 | **cuBLAS** | **107 µs** |
 
 Nhanh hơn naive **khoảng 23 lần**, hơn WMMA tự viết **3,6 lần**. Toàn bộ chênh lệch đó đến từ những thứ kernel tự viết chưa làm: chọn tile động theo kích thước, nạp bất đồng bộ (`cp.async`), double buffering, xử lý biên, và chọn thuật toán theo kiến trúc.
+
+---
 
 ### 🎯 Kết luận cho cả section
 

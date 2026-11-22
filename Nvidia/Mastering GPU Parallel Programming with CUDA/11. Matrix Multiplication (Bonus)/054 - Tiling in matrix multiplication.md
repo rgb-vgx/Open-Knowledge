@@ -26,6 +26,8 @@ Số thứ hai hay bị bỏ qua. Ví dụ GPU có **16 SM** mà tile chia ra **
 
 Nguyên tắc: **số tile nên là bội số của số SM**, và nếu có thể thì đúng bằng số SM để mỗi SM chạy đúng một tile trong một wave.
 
+---
+
 ### ✅ Trường hợp tốt nhất: 40×40, 16 SM, tile 10×10
 
 * `40 / 10 = 4` tile mỗi chiều → `4 × 4 = 16` tile.
@@ -34,19 +36,23 @@ Nguyên tắc: **số tile nên là bội số của số SM**, và nếu có th
 Đây là cấu hình lý tưởng. Nhưng không chỉ cần "chia hết" — phải kiểm cả hai điều kiện:
 
 * Tile **4×4** cũng chia hết (`40/4 = 10` → `10 × 10 = 100` tile). Nhưng 100 không phải bội của 16 → lượt cuối 4 tile, 12 SM rảnh. **Không tốt.**
-* Tile **24** → 2 tile mỗi SM ở lượt đầu (32), còn 24 − 16 = 8 tile ở lượt sau → nửa số SM rảnh. **Không tốt.**
-* Tile **32** → 16 tile chia 16 SM, nhưng nếu ma trận lớn hơn nhiều thì tile 32 lớn có thể không vừa shared memory.
+* **24 tile** (tổng số tile, không phải tile size) → lượt đầu 16 tile chạy trên 16 SM, còn 8 tile ở lượt sau → nửa số SM rảnh. **Không tốt.**
+* **32 tile** → hai lượt, mỗi lượt 16 tile, lấp đầy 16 SM. Tốt — nhưng khi ma trận rất lớn (ví dụ 4000×4000), muốn chỉ có 16–32 tile thì mỗi tile sẽ rất lớn và có thể không vừa shared memory.
 
 Ba tham số ràng buộc lẫn nhau — chọn tile là bài toán cân bằng, không có công thức đóng.
+
+---
 
 ### 📐 Ma trận không chia hết: đệm cột 0
 
 Ma trận 31 cột không chia được cho tile 16 hay 10. Hai hướng:
 
-* **Đệm (pad)**: thêm cột (hoặc hàng) toàn **0** cho đủ bội của tile. Phần đệm không ảnh hưởng kết quả vì nhân với 0. Đây là cách phổ biến trong thư viện thật (cuBLAS, CUTLASS đều pad).
+* **Đệm (pad)**: thêm cột (hoặc hàng) toàn **0** cho đủ bội của tile. Phần đệm không ảnh hưởng kết quả vì nhân với 0. Đây là cách phổ biến khi phải xử lý ma trận không chia hết tile.
 * **Đổi tile size**: chọn tile mà kích thước ma trận chia hết, rồi kiểm lại số tile có phải bội của SM.
 
 Lưu ý: đệm xong vẫn phải kiểm điều kiện thứ hai. 32 không chia hết cho 10, nên phải chọn tile khác.
+
+---
 
 ### ❌ Ba kiểu tiling tệ
 
@@ -62,6 +68,8 @@ Trường hợp 40×41 tệ nhất: vừa lệch bội số, vừa sinh tile r�
 
 Với 40×50, kích thước chia hết tile (điều kiện 1 đạt) nhưng số tile 20 không phải bội của 16 (điều kiện 2 hỏng). Đây là kiểu sai dễ mắc nhất, vì chỉ nhìn "chia hết" là tưởng ổn.
 
+---
+
 ### 🔢 Tile không nhất thiết vuông
 
 Với ma trận chữ nhật, không cần tile vuông. Có thể dùng **32×16**, **32×8**, **8×16**… miễn:
@@ -76,11 +84,15 @@ Ví dụ ma trận **64×32**, chia x thành 4 phần (`64/4 = 16` cột mỗi t
 
 Đừng nhầm **tile size** với **số tile** — hai con số khác nhau và đều quan trọng.
 
+---
+
 ### 📈 Vẽ biểu đồ trước khi chọn
 
 Giảng viên khuyên vẽ thời gian chạy theo từng phương án tile (16, 24, 32…). Đồ thị thường có dạng răng cưa: phương án chia đẹp cho thời gian thấp, phương án lẻ cho thời gian cao đột biến. Nhìn đồ thị nhanh hơn thử mò.
 
 Các ví dụ trong bài lấy từ **GTC (GPU Technology Conference)** của NVIDIA — hàng trăm lecture mỗi năm về tính toán khoa học, AI, LLM, công cụ. Bản ghi cũ có ở **GTC on demand**.
+
+---
 
 ### ⚡ Vì sao bài sau chuyển sang tensor core
 

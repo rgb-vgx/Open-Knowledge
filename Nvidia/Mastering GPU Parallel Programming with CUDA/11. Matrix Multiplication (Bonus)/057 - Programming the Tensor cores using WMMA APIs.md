@@ -21,11 +21,13 @@ tags: []
 Dù dùng core thường hay tensor core, cấu trúc vẫn gồm bốn bước:
 
 1. **Partition / tiling**: chia A, B, C thành các tile.
-2. **Load**: đưa tile A và B từ global memory vào bộ nhớ nhanh. C không load, chỉ store.
+2. **Load**: đưa tile A và B từ global memory vào bộ nhớ nhanh. C thường chỉ store, nhưng có thể load nếu muốn cộng dồn vào C có sẵn.
 3. **Execute**: nhân và tích lũy kết quả vào một biến trung gian.
 4. **Store**: ghi kết quả từ bộ nhớ nhanh ra C ở global memory.
 
 Khác biệt ở bước 2 và 3: bản core thường nạp vào **shared memory**, bản WMMA nạp thẳng vào **register fragment**.
+
+---
 
 ### 🧠 Vì sao là "Warp"
 
@@ -54,11 +56,15 @@ int tile_row = warp_id / tiles_per_row;
 int tile_col = warp_id % tiles_per_row;
 ```
 
+---
+
 ### 📦 Fragment
 
 **Fragment** là một lớp (overload class) chứa một phần ma trận, **phân tán trên toàn bộ thread của warp**. Không phải mảng thông thường — mỗi thread giữ vài phần tử, và phần cứng biết cách phối hợp chúng khi thực hiện MMA. Đó là lý do không thể tự `fragment[i]` để truy cập từng phần tử.
 
 Kích thước fragment phải thuộc danh sách **được hỗ trợ**, không tùy ý như tile của core thường. Với half precision, CUDA C Programming Guide liệt kê `16×16×16`, `32×8×16`, `8×32×16`. Bảng kiểu dữ liệu cũng cố định: half × half → **float accumulator** (hoặc half), không có tùy chọn khác.
+
+---
 
 ### 🗂️ Layout: row-major và column-major
 
@@ -75,6 +81,8 @@ wmma::fragment<wmma::matrix_b,    16, 16, 16, half, wmma::col_major>    b_frag;
 wmma::fragment<wmma::accumulator, 16, 16, 16, float>                   c_frag;
 ```
 
+---
+
 ### 🛠️ Các hàm chính
 
 | Hàm | Việc |
@@ -90,30 +98,37 @@ Kernel điển hình:
 wmma::fill_fragment(c_frag, 0.0f);
 
 for (int k = 0; k < K; k += 16) {
-    wmma::load_matrix_sync(a_frag, a_ptr + k, lda);
-    wmma::load_matrix_sync(b_frag, b_ptr + k * ldb, ldb);
+    wmma::load_matrix_sync(a_frag, a + tile_row * 16 * lda + k, lda);
+    wmma::load_matrix_sync(b_frag, b + tile_col * 16 * ldb + k, ldb);
     wmma::mma_sync(c_frag, a_frag, b_frag, c_frag);
 }
 
-wmma::store_matrix_sync(c_ptr, c_frag, ldc, wmma::mem_row_major);
+wmma::store_matrix_sync(c + tile_row * 16 * ldc + tile_col * 16,
+                        c_frag, ldc, wmma::mem_row_major);
 ```
 
 `mma_sync` nhận **cả C làm tham số thứ tư** — đó là ý nghĩa "accumulate": kết quả mới cộng dồn vào kết quả cũ, thay vì ghi đè.
 
+---
+
 ### 📏 Tham số `lda`, `ldb`, `ldc` — leading dimension
 
-Địa chỉ một tile không chỉ phụ thuộc vị trí tile mà còn **số phần tử mỗi hàng** của ma trận gốc. Muốn nhảy từ hàng này sang hàng kế tiếp phải cộng **`lda`** (leading dimension). Trong đa số trường hợp ma trận vuông không pad thì `lda = N`, nhưng nếu ma trận được đệm (padding) để căn hàng thì `lda > N`.
+Địa chỉ một tile không chỉ phụ thuộc vị trí tile mà còn **số phần tử mỗi hàng** của ma trận gốc. Với A row-major, muốn nhảy từ hàng này sang hàng kế tiếp phải cộng **`lda`**; với B column-major, muốn nhảy sang cột kế tiếp phải cộng **`ldb`**. Trong đa số trường hợp ma trận vuông không pad thì `lda = ldb = N`, nhưng nếu ma trận được đệm (padding) để căn hàng thì các giá trị này lớn hơn `N`.
 
 Vì vậy `lda`, `ldb`, `ldc` là tham số bắt buộc của kernel, không thể hard-code `N`.
 
 Cộng offset theo tile:
 
 * Cột thứ `k` của tile: `a + k + tile_row * 16 * lda` — `k` chạy theo bước 16.
-* Hàng tương ứng bên B: `b + k * ldb + tile_col * 16`.
+* Tile tương ứng bên B (B column-major): `b + k + tile_col * 16 * ldb`.
+
+---
 
 ### ⚠️ Yêu cầu kiến trúc
 
 WMMA cần **compute capability ≥ 7.0** (Volta trở lên), đơn giản vì trước Volta GPU không có tensor core. Biên dịch không đặt `-arch=sm_70` trở lên sẽ báo lỗi `nvcuda::wmma` không tồn tại — đúng lỗi đã gặp ở bài trước.
+
+---
 
 ### 🎯 Vì sao học WMMA
 

@@ -18,22 +18,11 @@ Naive bị chặn ở cả hai phía — compute và memory — theo roofline. T
 
 ### 🔁 Loop unrolling — giảm instruction thừa
 
-Vòng lặp tích lũy có 2 phép toán mỗi vòng: một nhân, một cộng. Nhưng bản thân vòng lặp cũng tốn 1–2 instruction: tăng biến đếm, so sánh điều kiện, nhảy. Với 16 vòng, phần "quản lý vòng lặp" chiếm gần một nửa số instruction.
+Vòng lặp tích lũy có 2 phép toán mỗi vòng: một nhân, một cộng. Nhưng bản thân vòng lặp cũng tốn instruction: tăng biến đếm, so sánh điều kiện, nhảy. Unrolling gộp nhiều phần tử vào một vòng để giảm phần overhead đó.
 
-**Unrolling** là viết bung thân vòng lặp ra:
+Ở bản `float4`, mỗi thread phụ trách **bốn** phần tử C liên tiếp thay vì một. Thay cho một biến `sum`, dùng bốn biến `sum[0..3]`: mỗi vòng lặp `k` sinh ra **bốn** phép nhân-cộng độc lập thay vì một, tương đương **unroll mức 4** (code đầy đủ ở mục *Tính toán với bốn sum* bên dưới). Bốn `sum[i]` độc lập nhau nên **phá được dependency chain** — phép nhân sau không phải chờ phép cộng trước hoàn tất, các pipeline có việc làm song song. Đây là lý do dùng **bốn biến sum** thay vì một.
 
-```cuda
-for (int k = 0; k < TILE; k += 4) {
-    sum[0] += sA[ty][k+0] * sB[k+0][tx];
-    sum[1] += sA[ty][k+1] * sB[k+1][tx];
-    sum[2] += sA[ty][k+2] * sB[k+2][tx];
-    sum[3] += sA[ty][k+3] * sB[k+3][tx];
-}
-```
-
-Cùng 16 phép nhân và 16 phép cộng, nhưng chỉ 4 vòng lặp thay vì 16 — tiết kiệm 12 lần overhead. Đây là **unroll mức 4**.
-
-Lợi ích phụ: bốn phép `sum[i]` độc lập nhau, nên **phá được dependency chain** — phép nhân sau không phải chờ phép cộng trước hoàn tất, các pipeline có việc làm song song. Đây là lý do dùng **bốn biến sum** thay vì một.
+---
 
 ### 🧱 Vì sao phải là `float4`
 
@@ -45,6 +34,8 @@ Unrolling giảm instruction tính toán, nhưng không giảm số lần đọc
 
 Hệ quả trực tiếp: **vector hóa theo trục x (cột), không theo trục y (hàng)**.
 
+---
+
 ### 🧵 Cấu hình thread mới
 
 Tile vẫn 16×16, nhưng mỗi thread phụ trách **bốn** phần tử C thay vì một:
@@ -53,6 +44,8 @@ Tile vẫn 16×16, nhưng mỗi thread phụ trách **bốn** phần tử C thay
 * **Trục x**: chỉ cần **4 thread** — 4 thread × 4 phần tử = 16 cột.
 
 Block từ **16×16 = 256 thread** giảm còn **4×16 = 64 thread**, khối lượng việc mỗi thread tăng gấp bốn.
+
+---
 
 ### 💾 Đoạn code nạp
 
@@ -67,6 +60,8 @@ Block từ **16×16 = 256 thread** giảm còn **4×16 = 64 thread**, khối lư
 * `reinterpret_cast<float4*>` chỉ đổi **cách nhìn** vùng nhớ thành bốn `float` liền nhau, không copy dữ liệu. Dấu `*` phía trước là **dereference** — lấy giá trị bốn phần tử, không phải lấy địa chỉ. Không có cast này compiler cảnh báo vì kiểu con trỏ không khớp.
 
 Phần B làm y hệt, vì với row-major thì bốn cột liên tiếp trong B cũng nằm liền nhau.
+
+---
 
 ### ➗ Tính toán với bốn sum
 
@@ -86,6 +81,8 @@ Một giá trị `sA[ty][k]` nhân với **bốn** phần tử liên tiếp củ
 
 Vì mỗi `sum[i]` ứng với một phần tử C **khác nhau**, bốn sum không liên quan tới nhau về mặt dữ liệu — đó chính là điều giúp phá dependency.
 
+---
+
 ### 📊 Kết quả
 
 | Phiên bản | N = 512 |
@@ -96,6 +93,6 @@ Vì mỗi `sum[i]` ứng với một phần tử C **khác nhau**, bốn sum kh�
 
 Nhanh hơn naive **hơn 2 lần** và hơn bản shared memory khoảng **40%**. Kiểm chứng CPU/GPU vẫn cho kết quả đúng.
 
-Trên roofline, điểm của phiên bản này tiến gần transition point hơn hẳn hai phiên bản trước — đúng như kỳ vọng khi tối ưu đồng thời cả compute lẫn memory.
+Trên roofline, giảng viên kỳ vọng phiên bản này đẩy điểm gần transition point hơn hai bản trước, nhờ tối ưu đồng thời cả compute lẫn memory — dù theo ông mức cải thiện vẫn chưa nhiều như mong đợi.
 
 Còn một hướng nữa cho phần cứng chuyên dụng: tensor core, sẽ học ở các bài sau.

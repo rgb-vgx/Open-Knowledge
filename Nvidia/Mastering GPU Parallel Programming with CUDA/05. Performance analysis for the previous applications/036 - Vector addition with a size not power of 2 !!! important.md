@@ -36,7 +36,7 @@ Không thể dùng 96 thread vì thiếu; phải dùng **128 thread** (4 warp). 
 
 **Kịch bản 2 — 8 block, mỗi block 128 phần tử.**
 
-Mỗi block dùng đủ **128 thread** (4 warp), không lãng phí. Chỉ block cuối dùng 3 warp cộng **8 thread** của warp thứ tư, tức **24 thread idle** — nhưng chỉ ở một block, không phải mọi block. Thread utilization trung bình ≈ **96.6 %**, gần như tối đa.
+Bảy block đầu dùng đủ **128 thread** (4 warp), không lãng phí. Block cuối dùng 3 warp cộng **8 thread** của warp thứ tư, tức **24 thread idle** — nhưng chỉ ở một block, không phải mọi block. Thread utilization trung bình ≈ **97.7 %** (1000 thread hữu ích trên 1024 thread được cấp), gần như tối đa.
 
 ---
 
@@ -65,4 +65,4 @@ Nếu mỗi thread xử lý nhiều phần tử, tổng thread giảm và số b
 
 ### ✅ Chốt lại
 
-Khi số phần tử không phải bội số của 32, hãy chọn **block size là bội số của 32 gần nhất phía trên** và chia block sao cho phần dư chỉ rơi vào block cuối. Kịch bản 8 block × 128 thread đạt utilization 96.6 % so với 78 % của 10 block × 128 thread, lại còn ít wave hơn. Chỉ cần tinh chỉnh ba con số cấu hình là đủ, không phải sửa logic kernel.
+Khi số phần tử không phải bội số của 32, hãy chọn **block size là bội số của 32 gần nhất phía trên** và chia block sao cho phần dư chỉ rơi vào block cuối. Kịch bản 8 block × 128 thread đạt utilization 97.7 % so với 78 % của 10 block × 128 thread, lại còn ít wave hơn. Chỉ cần tinh chỉnh ba con số cấu hình là đủ, không phải sửa logic kernel.

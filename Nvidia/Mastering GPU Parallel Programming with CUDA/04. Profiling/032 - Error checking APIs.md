@@ -39,10 +39,10 @@ Vector addition với số phần tử lớn. Mỗi phần tử là `int` 4 byte
 
 Trước tiên gặp **warning** ở dòng 17: `integer conversion resulted in truncation`. Biến `size` kiểu `int` không chứa nổi kết quả `N × 4`. Sửa thành `long` thì hết warning.
 
-Khi tăng tiếp, phép nhân `1024 * 1024 * 20` vẫn bị tràn vì các toán hạng đều là `int`. Cần ép kiểu:
+Khi tăng tiếp, phép nhân `1024 * 1024 * 1024 * 20` vẫn bị tràn vì các toán hạng đều là `int`. Cần ép kiểu:
 
 ```cuda
-long long N = 1024LL * 1024LL * 20LL;
+long long N = 1024LL * 1024LL * 1024LL * 20LL;
 ```
 
 Hậu tố `LL` buộc phép nhân chạy trên `long long`, tránh tràn trung gian. Warning cũng xuất hiện ở vòng `for`, nên sửa cả đó.

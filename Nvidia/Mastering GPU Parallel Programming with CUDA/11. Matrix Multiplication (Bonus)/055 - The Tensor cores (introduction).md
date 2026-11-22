@@ -22,17 +22,21 @@ Deep learning chủ yếu là **nhân ma trận**: một layer mạng nơ-ron l�
 
 **Tensor core** ra đời để làm đúng một việc: nhân ma trận. NVIDIA gọi là tensor core, AMD gọi là matrix core — cùng chức năng.
 
+---
+
 ### 🕰️ Lịch sử kiến trúc
 
 Tensor core xuất hiện lần đầu trên **Volta (2017)**, rồi Turing, Ampere, Hopper, Ada Lovelace, Blackwell.
 
 So sánh P100 (Pascal, không có tensor core) với V100 (Volta):
 
-* P100: khoảng **15–19 TFLOPS** FP16.
+* P100: khoảng **15 TFLOPS** FP16 theo transcript (spec FP16 chính thức của P100 là ~19 TFLOPS).
 * V100: **125 TFLOPS** FP16.
 * Chênh khoảng **9 lần** — con số NVIDIA dùng trong whitepaper.
 
 Ý nghĩa thực tế: một mô hình train mất 10 ngày trên P100 có thể xong trong khoảng 1 ngày trên V100. Tiết kiệm thời gian, điện năng, và mở ra khả năng train những mô hình lớn hơn.
+
+---
 
 ### 🔬 Cấu tạo
 
@@ -52,6 +56,8 @@ Một tensor core thực hiện **64 FMA** mỗi clock. **FMA** (*Fused Multiply
 
 Chênh lệch đó, nhân với hàng chục SM, giải thích con số gấp 9 lần ở trên.
 
+---
+
 ### 🧮 Kiểu dữ liệu theo kiến trúc
 
 Ký hiệu `A×B → C`: hai kiểu đầu là input, kiểu sau là output.
@@ -68,9 +74,13 @@ Vì sao có **INT1**? Với mạng chỉ có hai trạng thái (bật/tắt), in
 
 **TF32** là định dạng riêng của Ampere: giữ 10 bit mantissa của FP16 nhưng exponent 8 bit của FP32, cho phép chạy FP32 nhanh hơn mà không phải viết lại code.
 
+---
+
 ### 📊 Ampere: 20 so với 156/312
 
 Với A100, core thường đạt **19.5 TFLOPS** FP32. Dùng tensor core: **156 TFLOPS** TF32, **312 TFLOPS** FP16 (dense) — hoặc gấp đôi nếu tận dụng **sparsity** (ma trận thưa). Đó là lý do mọi framework hiện đại đều mặc định dùng tensor core khi chạy matmul trên GPU.
+
+---
 
 ### 🧰 Phần mềm đi kèm
 
@@ -85,9 +95,13 @@ Nghĩa là khi các bạn gọi `torch.matmul` trên GPU, bên dưới gần nh�
 
 Một lưu ý hiệu năng sẽ nói kỹ ở bài sau: **hiệu quả cao nhất khi các chiều là bội của 128 byte**; lệch khỏi bội số đó thì lợi ích giảm.
 
+---
+
 ### 🛠️ Hai cách lập trình
 
 1. **WMMA API** (`nvcuda::wmma`) — thư viện C++ trong CUDA, cho phép viết kernel dùng tensor core trực tiếp.
 2. **cuBLAS / CUTLASS** — gọi thư viện đã tối ưu.
 
 Hai bài tiếp theo làm cả hai trên cùng kích thước ma trận và kiểu dữ liệu, để so thời gian chạy thực tế giữa core thường và tensor core.
+
+> ⚠️ Cần kiểm chứng: transcript nói hiệu năng tensor core tốt nhất khi "các chiều là bội của 128 byte". Cách phát biểu này chưa rõ — tài liệu NVIDIA thường nói về bội số kích thước tile hoặc alignment tính theo phần tử/byte. Nên đối chiếu whitepaper trước khi dùng như một quy tắc cứng.

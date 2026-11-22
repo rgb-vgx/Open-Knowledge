@@ -22,6 +22,8 @@ Sang section mới, ứng dụng là vector reduction — phức tạp hơn vect
 
 **Nsight Integration** là tên gọi vì nó tích hợp vào Visual Studio, khác với các tool standalone như Nsight Compute, Nsight Systems, Nsight Graphics.
 
+---
+
 ### ⚙️ Cài đặt
 
 Có hai đường: cài từ trong Visual Studio, hoặc qua Marketplace. Cách làm trong bài:
@@ -34,6 +36,8 @@ Sau đó trong menu **Extensions** sẽ có submenu **Nsight**. Mục quan trọ
 
 Ba mục đầu trong submenu Nsight (Compute, Graphics, Systems) chỉ xuất hiện khi tool tương ứng đã có trên máy — thường được cài kèm **CUDA Toolkit**.
 
+---
+
 ### 🔴 Đặt breakpoint và chạy debug
 
 Ví dụ trên vector addition. Trước hết chạy bình thường để chắc kết quả đúng: `0+2=2`, `1+3=4`, `2+4=6`…
@@ -44,6 +48,8 @@ Sau đó:
 2. Vào **Extensions → Nsight** và khởi động debug từ đó — **không** dùng menu Debug thường, vì menu đó chủ yếu dành cho phía CPU.
 3. Cửa sổ debug hiện ra; phần thread GPU là thứ cần quan tâm, các thread CPU nằm ngoài phạm vi bài.
 
+---
+
 ### 📋 Launch details — đọc cấu hình grid/block
 
 Cửa sổ **Launch Details** cho biết kernel được phóng với cấu hình gì:
@@ -52,6 +58,8 @@ Cửa sổ **Launch Details** cho biết kernel được phóng với cấu hìn
 * **grid dim** = số block mỗi grid,
 * **block dim** = số thread mỗi block — ví dụ **96 thread/block = 3 warp**,
 * **grid ID** — ứng dụng này chỉ có một grid nên bằng 1.
+
+---
 
 ### 💾 Xem biến và bộ nhớ
 
@@ -65,6 +73,8 @@ Muốn xem bộ nhớ: **Debug → Windows → Memory**. Trong cửa sổ này:
 * Kết quả `C` chỉ có vài phần tử đầu khác 0 vì chương trình đang **dừng giữa chừng** — các warp sau chưa chạy. Bấm Continue/Step để warp kế tiếp ghi kết quả, các ô đỏ mới xuất hiện.
 * Sau khi kernel kết thúc và bộ nhớ được `free`, cửa sổ Memory không còn dữ liệu.
 
+---
+
 ### 🔧 Đọc assembly của kernel
 
 **Debug → Windows → Disassembly** hiện mã assembly tương ứng từng dòng CUDA. Kernel GPU bắt đầu từ chỗ có `__global__`; phía trên là code CPU, bỏ qua.
@@ -74,10 +84,12 @@ Những điểm đáng chú ý:
 * Đầu kernel có các lệnh **`mov`** để nạp tham số: địa chỉ các con trỏ `a`, `b`, `c` và `n`.
 * `tid` trong assembly là **thread ID**; **`CTA`** (*Cooperative Thread Array*) là **block**.
 * Dòng tính index được dịch thành chuỗi: đọc thread ID, đọc block ID, đọc block size, nhân, rồi cộng.
-* Câu `if` thành so sánh **`setp.lt`** (less than) + lệnh nhảy: đúng thì vào nhánh, sai thì nhảy tới địa chỉ cuối kernel.
+* Câu `if` thành so sánh **`ISETP.LT`** (integer set predicate, less than) + lệnh nhảy: đúng thì vào nhánh, sai thì nhảy tới địa chỉ cuối kernel.
 * Một dòng CUDA có thể sinh **nhiều** instruction assembly — một phần do compiler **unroll** vòng lặp. Assembly của NVIDIA là **closed source**, không có tài liệu đầy đủ, nên chỉ cần đọc ở mức ý nghĩa.
 
 Đọc assembly có ích thực tế: khi thấy latency cao, tìm xem có **barrier** (`__syncthreads`) trong code không — barrier thường là nguồn trễ. Vector addition này không có barrier.
+
+---
 
 ### 🚀 Mở profiler từ Visual Studio
 
@@ -86,6 +98,8 @@ Cách cũ khó hơn: mở terminal, attach ứng dụng vào process đang chạ
 Trong kết quả có các mục quen thuộc: **Speed of Light**, **roofline**, **PM sampling**, **compute workload**, đồ thị **GPU throughput** (SM utilization, memory bandwidth), **average active warps per cycle**, hit rate L1/L2, pipeline utilization (ALU, FMA, double precision). Với vector reduction, chỉ số cần theo dõi nhất là **duration** để so sánh giữa các phiên bản tối ưu.
 
 **Interactive Profile** khác **Profile** ở chỗ không ghi report ra file mà xem trực tiếp.
+
+---
 
 ### 🕒 Nsight Systems — nhìn theo timeline
 

@@ -23,7 +23,7 @@ Nsight Compute có trong **CUDA Toolkit**; nếu thiếu thì tải từ trang N
 Mở công cụ → **New Project** → đặt tên. Cần chuẩn bị **file thực thi**, ví dụ:
 
 ```bash
-nvcc -o a.exe "matrix_add.cu"
+nvcc -o a.exe "vector_add.cu"
 ```
 
 Trong phần cấu hình:
@@ -39,9 +39,7 @@ Trong phần cấu hình:
 
 Không thể profile một tiến trình chưa tồn tại. Có hai cách: bấm **Launch** để GUI tự chạy, hoặc khởi chạy tiến trình ở chế độ chờ rồi **Attach**.
 
-Chế độ launch của `ncu` khởi động ứng dụng nhưng giữ tiến trình sống để profiler gắn vào. Sau đó trong GUI chọn **Attach**, chọn đúng process ID và tên file thực thi.
-
-> ⚠️ Cần kiểm chứng: tên cờ chính xác của chế độ launch trong phiên bản Nsight Compute đang dùng (transcript chỉ mô tả thao tác, không đọc rõ cờ dòng lệnh).
+Chế độ `--mode=launch` của `ncu` khởi động ứng dụng và tạm dừng ở API call đầu tiên, giữ tiến trình sống để profiler gắn vào. Sau đó trong GUI chọn **Attach**, chọn đúng process ID và tên file thực thi.
 
 ---
 
@@ -99,9 +97,9 @@ Section **Warp State Statistics**:
 
 * Mỗi warp bị stall trung bình **111 cycle**, chờ **scoreboard dependency** — tức chờ dữ liệu từ memory.
 * Tổng cộng khoảng **47 K stall**, con số cho toàn GPU.
-* 32 thread/warp, khoảng 39 thread "not predicated off".
+* 32 thread/warp, gần như toàn bộ thread không bị "predicated off".
 
-Tab **Source** hiển thị mã SASS. Tại dòng lệnh `FADD`, tooltip báo dòng này chịu **84 %** tổng stall warp, và **99.7 %** stall của chính nó. Lý do: phép cộng phải chờ hai lệnh load nạp `R3`, `R4`. Các mũi tên tam giác trên SASS vẽ chuỗi phụ thuộc giữa các thanh ghi. Tab **Warp Stall Sampling** xác nhận cùng instruction đó chiếm khoảng **93 %** stall.
+Tab **Source** hiển thị mã SASS. Tại dòng lệnh cộng, tooltip báo dòng này chịu **84 %** tổng stall warp, và **99.7 %** stall của chính nó. Lý do: phép cộng phải chờ hai lệnh load nạp `R3`, `R4`. Các mũi tên tam giác trên SASS vẽ chuỗi phụ thuộc giữa các thanh ghi. Tab **Warp Stall Sampling** xác nhận cùng instruction đó chiếm khoảng **93 %** stall.
 
 Điều này khớp với bức tranh tổng: hit rate L1/L2 thấp → load kéo dài hàng trăm cycle → warp chờ → stall.
 
