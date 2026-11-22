@@ -185,6 +185,56 @@ const SERIES = [
       'Migration, event-driven patterns, testing, observability và deployment microservices trong production.',
     featured: false,
   },
+  {
+    prefix: 'AI/PyTorch for Deep Learning',
+    slug: 'pytorch-deep-learning',
+    title: 'PyTorch for Deep Learning',
+    topic: 'AI',
+    category: 'AI · Deep Learning',
+    description:
+      'Từ tensor, autograd đến huấn luyện, triển khai và torch.compile — khóa PyTorch thực chiến của Daniel Bourke (ZTM).',
+    featured: true,
+  },
+  {
+    prefix: 'AI/Complete Computer Vision Bootcamp',
+    slug: 'complete-computer-vision',
+    title: 'Complete Computer Vision Bootcamp',
+    topic: 'AI',
+    category: 'AI · Computer Vision',
+    description:
+      'Python, ANN/CNN, OpenCV, PyTorch & TensorFlow, object detection, segmentation và dự án YOLO image search.',
+    featured: false,
+  },
+  {
+    prefix: 'AI/Python for Computer Vision OpenCV',
+    slug: 'python-opencv-cv',
+    title: 'Python for Computer Vision với OpenCV',
+    topic: 'AI',
+    category: 'AI · Computer Vision',
+    description:
+      'NumPy, xử lý ảnh/video với OpenCV, object detection, tracking và deep learning cho thị giác máy tính.',
+    featured: false,
+  },
+  {
+    prefix: 'AI/Self Driving Car Jetson Nano',
+    slug: 'self-driving-car',
+    title: 'Self Driving Car với Jetson Nano',
+    topic: 'AI',
+    category: 'AI · Embedded Vision',
+    description:
+      'Python, OpenCV, điều khiển động cơ và lắp ráp xe tự hành lane tracking trên Jetson Nano.',
+    featured: false,
+  },
+  {
+    prefix: 'Nvidia/Mastering GPU Parallel Programming with CUDA',
+    slug: 'cuda-mastering-gpu',
+    title: 'Mastering GPU Parallel Programming with CUDA',
+    topic: 'Nvidia',
+    category: 'NVIDIA · CUDA',
+    description:
+      'Kiến trúc GPU NVIDIA, lập trình CUDA, shared memory, profiling và tối ưu hiệu năng thực chiến.',
+    featured: false,
+  },
 ];
 
 const TOPIC_META = {
