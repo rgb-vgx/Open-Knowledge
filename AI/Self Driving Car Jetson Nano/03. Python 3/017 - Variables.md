@@ -22,11 +22,15 @@ Trong lập trình, **biến** (variable) là một tên mang tính biểu tư�
 
 Biến rất cần thiết để lưu trữ và thao tác dữ liệu trong chương trình.
 
+---
+
 ### ✅ Quy tắc đặt tên biến
 
 1. **Chỉ dùng chữ cái, chữ số và dấu gạch dưới.** Chữ cái có thể viết hoa hoặc viết thường. Ví dụ hợp lệ: `name`, `age`, `animal`, `X123`, `name1`, `name_surname`.
 2. **Phải bắt đầu bằng chữ cái hoặc dấu gạch dưới, không bắt đầu bằng chữ số.** Các bạn có thể đặt `company`, nhưng không thể đặt `123company`.
 3. **Tên biến phân biệt chữ hoa chữ thường.** `name` và `Name` là hai biến khác nhau, vì chữ `n` đầu tiên một cái viết thường, một cái viết hoa.
+
+---
 
 ### ⚙️ Gán giá trị cho biến
 
@@ -37,6 +41,8 @@ x = 5
 ```
 
 Ở đây giá trị `5` được lưu vào biến `x`.
+
+---
 
 ### 🧠 Kiểu dữ liệu và cơ chế dynamic typing
 

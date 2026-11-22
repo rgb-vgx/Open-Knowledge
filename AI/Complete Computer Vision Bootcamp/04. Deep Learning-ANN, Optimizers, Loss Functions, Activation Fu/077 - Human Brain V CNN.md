@@ -22,6 +22,8 @@ Tín hiệu từ mắt đi tới **cerebral cortex** (phụ trách eye movement 
 
 Chức năng: **tiếp nhận, tích hợp và xử lý thông tin thị giác** được chuyển từ **retina** (võng mạc trong mắt). Nó chia thành **5 lớp: V1 đến V5**.
 
+---
+
 ### 🔍 Từng lớp xử lý gì
 
 **V1 — primary visual cortex**
@@ -32,6 +34,8 @@ Xử lý **khác biệt màu sắc** (đỏ, hồng, xanh…), **pattern phức 
 
 **V3, V4, V5**
 Các thao tác phức tạp như **object detection**, **object recognition** diễn ra ở đây.
+
+---
 
 ### 🔁 Luồng tín hiệu có phản hồi
 
@@ -45,6 +49,8 @@ Retina → V1 (edges, lines)
 ```
 
 Sau khi qua hết V3, V4, V5, ta **nhận diện và hình dung** được ảnh — vật thể bỗng "có nghĩa" với con người.
+
+---
 
 ### 🔗 Liên hệ với CNN
 

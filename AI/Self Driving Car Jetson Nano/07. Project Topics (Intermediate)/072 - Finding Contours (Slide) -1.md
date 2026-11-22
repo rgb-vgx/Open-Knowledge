@@ -24,6 +24,8 @@ Chào các bạn, bài này mình sẽ nói về **contour** — cấu trúc dù
 
 Nói cách khác, sau khi có ảnh biên, contour là bước gom các điểm biên rời rạc thành những đường bao có ý nghĩa.
 
+---
+
 ### 🔁 Quá trình tìm contour gồm hai bước
 
 Quá trình này diễn ra theo hai bước:
@@ -32,6 +34,8 @@ Quá trình này diễn ra theo hai bước:
 2. Các bước xử lý tiếp theo dựa trên contour vừa tìm được (bài sau mình sẽ vẽ chúng).
 
 Điểm cần nhớ: contour được tìm từ **ảnh biên**, thường là đầu ra của thuật toán phát hiện biên như **Canny**.
+
+---
 
 ### ⚙️ Hàm `findContours` và ba tham số
 
@@ -50,6 +54,8 @@ contours, hierarchy = cv2.findContours(
     cv2.CHAIN_APPROX_SIMPLE,
 )
 ```
+
+---
 
 ### 📦 Chỉ giữ contours, bỏ hierarchy
 

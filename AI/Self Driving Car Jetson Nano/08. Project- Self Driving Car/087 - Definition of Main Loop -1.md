@@ -28,6 +28,8 @@ Mình lấy một frame từ luồng video bằng biến **`ret, frame`**.
 ret, frame = cap.read()
 ```
 
+---
+
 ### 🎨 Chuyển frame sang ảnh xám
 
 Frame nhận được được chuyển sang grayscale bằng **`cv2.cvtColor`** và lưu vào biến **`gray`**.
@@ -37,6 +39,8 @@ Lý do: ảnh xám **đơn giản hơn**, phù hợp cho **phát hiện biên** 
 ```python
 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 ```
+
+---
 
 ### 🔍 Phát hiện biên bằng Canny
 
@@ -51,6 +55,8 @@ Thuật toán này xác định các **biên của làn đường** trong ảnh.
 canny = cv2.Canny(gray, 130, 150)
 ```
 
+---
+
 ### ⚫ Threshold ảnh xám
 
 Tiếp theo thực hiện **threshold** trên chính ảnh xám **gray**, lưu kết quả vào **`thresh`**:
@@ -64,9 +70,13 @@ _, thresh = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY)
 
 Quá trình này chuyển ảnh thành **nhị phân** — pixel chỉ còn **đen hoặc trắng**. Đây chính là cấu trúc cần thiết để tìm làn đường trên sa bàn mình đã dựng.
 
+---
+
 ### 🎯 Áp ROI lên ảnh threshold
 
 Mình gọi hàm **`roi`** với biến **thresh** để lấy **vùng quan tâm** của ảnh đã threshold. Hàm `roi` đã học ở bài trước.
+
+---
 
 ### ➕ Cộng Canny và threshold
 
@@ -77,6 +87,8 @@ Mục đích: gom **đặc trưng của cả hai ảnh** vào một ảnh duy nh
 ```python
 final = cv2.add(canny, roi(thresh))
 ```
+
+---
 
 ### 🔎 Tìm contour trên ảnh đã gộp
 

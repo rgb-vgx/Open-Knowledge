@@ -34,12 +34,16 @@ Mỗi **iteration**:
 
 Vậy **một epoch = 100 iteration**, mỗi iteration xử lý 1000 điểm.
 
+---
+
 ### 🎛️ Batch size ảnh hưởng tài nguyên thế nào
 
 * Batch **1000** → RAM **8GB** là đủ.
 * Batch **5000** → cần khoảng **16GB** RAM.
 
 Batch size lớn hơn thì mỗi iteration nặng hơn, nhưng **số iteration giảm** → tổng thời gian và noise giảm.
+
+---
 
 ### ✅ Ưu điểm
 
@@ -53,9 +57,13 @@ SGD:               nhẹ RAM, nhiều noise
 Mini-batch SGD:    nhẹ vừa phải, noise giảm
 ```
 
+---
+
 ### ⚠️ Nhược điểm còn lại
 
 Noise **giảm nhưng chưa hết** — đường hội tụ vẫn còn zigzag, chỉ ít hơn SGD. Nó hiệu quả hơn SGD nhưng vẫn mất thời gian để converge.
+
+---
 
 ### ➡️ Bước kế tiếp
 

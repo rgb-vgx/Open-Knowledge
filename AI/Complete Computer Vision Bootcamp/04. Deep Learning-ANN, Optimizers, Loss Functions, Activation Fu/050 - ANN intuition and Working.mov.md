@@ -28,6 +28,8 @@ Bộ dữ liệu: **IQ**, **số giờ học mỗi ngày**, **số giờ chơi**
 
 Ở ví dụ này có hai lớp neuron (một hidden + một output) nên gọi là **two-layer neural network**. Mỗi lớp đều có **bias** riêng (`B1`, `B2`), hằng số đi kèm thường là `1`, và weights khởi tạo **ngẫu nhiên**.
 
+---
+
 ### ➡️ Forward propagation: chạy xuôi qua từng neuron
 
 **Forward propagation** là áp hai bước quen thuộc cho **mọi neuron** trong mạng:
@@ -56,6 +58,8 @@ O2 = 1 / (1 + e^(-0.04518)) ≈ 0.51129
 
 Vậy `O2 ≈ 0.511` là **output dự đoán** của model cho bản ghi này.
 
+---
+
 ### ⚡ Vì sao cần activation function
 
 Hãy nghĩ tới việc đặt tay lên vật nóng. Neuron phải **kích hoạt** để báo "có vật nóng, rụt tay lại". Activation function quyết định neuron **bật (1)** hay **tắt (0)**. Và cũng nhờ weights đúng mà chỉ neuron ở bàn tay bị nóng kích hoạt, còn tay kia thì không. Việc **train** chính là tìm bộ weights chuẩn đó.
@@ -74,11 +78,15 @@ loss = y - y_hat = 1 - 0.511 ≈ 0.49
 
 Đây chính là **loss function** — mức lỗi của model. Loss còn cao nghĩa là dự đoán chưa khớp; mục tiêu train là **giảm loss** bằng cách **cập nhật toàn bộ weights**.
 
+---
+
 ### ⬅️ Backward propagation và vòng lặp train
 
 Việc cập nhật đi **từ cuối về đầu**: sửa `W4` trước, rồi tới `W1, W2, W3`. Đó là **backward propagation**. Cơ chế cập nhật weights dựa trên **optimizers** — thành phần giúp giảm loss và chỉnh weights hợp lý.
 
 Sau khi cập nhật xong, bản ghi tiếp theo lại đi qua forward propagation, tính loss, rồi backward propagation. Vòng lặp **forward → loss → backward** lặp mãi cho tới khi loss giảm đủ.
+
+---
 
 ### 🔀 Loss function vs cost function
 

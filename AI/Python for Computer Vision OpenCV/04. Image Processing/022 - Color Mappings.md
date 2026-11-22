@@ -28,6 +28,8 @@ Ví dụ một màu xanh teal được mô tả bằng vị trí trên từng tr
 
 RGB là mô hình rất cũ. Đến thập niên 1970, **HSL** (hue, saturation, lightness) và **HSV** (hue, saturation, value) ra đời như các lựa chọn thay thế, gần với cách con người cảm nhận màu hơn. Trong khóa ta vẫn chủ yếu dùng ảnh RGB (hoặc BGR khi OpenCV đọc vào), và quy tắc vẫn chỉ là tổ hợp của ba kênh.
 
+---
+
 ### 🔵 HSL và HSV — mô hình hình trụ
 
 Có thể hình dung HSL/HSV như một **hình trụ**:
@@ -39,6 +41,8 @@ Có thể hình dung HSL/HSV như một **hình trụ**:
 Với HSL, đỉnh hình trụ là **trắng tuyệt đối** (độ sáng tối đa), đáy là **đen tuyệt đối** (không có ánh sáng), bất kể hue hay saturation.
 
 HSV tương tự, chỉ thay lightness bằng value. Điểm khác đáng chú ý: trong HSV, màu trắng nằm ở **tâm** hình trụ — saturation bằng 0 với bất kỳ hue nào sẽ cho màu trắng. Nhiều color picker quen thuộc dùng đúng mô hình này.
+
+---
 
 ### 🔄 Chuyển color space bằng cvtColor
 
@@ -69,6 +73,8 @@ img_hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
 ```
 
 OpenCV hỗ trợ rất nhiều cặp chuyển đổi. Gõ `cv2.COLOR_` rồi nhấn Tab để xem toàn bộ; thực tế chỉ cần một vài cặp cho các trường hợp cụ thể.
+
+---
 
 ### 💡 Kết luận
 

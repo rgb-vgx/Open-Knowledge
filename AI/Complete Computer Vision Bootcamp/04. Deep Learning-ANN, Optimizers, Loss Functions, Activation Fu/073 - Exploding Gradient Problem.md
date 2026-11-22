@@ -30,6 +30,8 @@ Bung chain rule (loss → `O3` → `O2` → `O1` → `W1`):
 ∂loss/∂W1 = (∂loss/∂O3) * (∂O3/∂O2) * (∂O2/∂O1) * (∂O1/∂W1)
 ```
 
+---
+
 ### 🔍 Mổ xẻ một mắt xích
 
 Tách `∂O3/∂O2` bằng cách chèn `Z = O2*W3 + B3` với `O3 = sigmoid(Z)`:
@@ -42,6 +44,8 @@ Tách `∂O3/∂O2` bằng cách chèn `Z = O2*W3 + B3` với `O3 = sigmoid(Z)`:
 * `∂Z/∂O2 = W3` (bias là hằng số → đạo hàm 0; `O2` đạo hàm = 1).
 
 Vậy mắt xích này là **một số ≤ 0.25 nhân với `W3`**.
+
+---
 
 ### 📈 Khi W3 quá lớn
 
@@ -64,6 +68,8 @@ Trên đồ thị loss theo weight, weight **nhảy vọt** qua lại:
 Vanishing : đạo hàm nhỏ (sigmoid) → nhân dồn → 0
 Exploding : weights lớn          → nhân dồn → ∞
 ```
+
+---
 
 ### 🎯 Nguyên nhân và cách chữa
 

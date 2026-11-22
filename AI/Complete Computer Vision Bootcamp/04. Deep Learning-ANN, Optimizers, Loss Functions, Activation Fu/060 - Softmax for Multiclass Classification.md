@@ -22,6 +22,8 @@ Ví dụ mạng có input layer 3 node, hai hidden layer, rồi **output layer m
 
 Nhưng nếu output layer có **4 neuron**, bài toán thành **multi-class**: từ `X1, X2, X3` (feature ảnh) dự đoán **cat**, **dog**, **monkey**, **horse**. Mỗi neuron output ứng với một lớp và cần ra **xác suất** của lớp đó. Sigmoid không làm được việc này vì nó chỉ cho nhị phân trên một neuron — nên ta dùng **softmax**.
 
+---
+
 ### 🧮 Công thức softmax
 
 ```text
@@ -29,6 +31,8 @@ softmax(y_i) = e^(y_i) / Σ_k e^(y_k)
 ```
 
 với `y_i` là output thô (input × weights + bias) của node thứ `i`, và tổng ở mẫu chạy trên **toàn bộ node output** (`k` từ 1 đến số lớp). Nhờ chia cho tổng, các giá trị sau softmax **cộng lại bằng 1** — đúng tính chất của phân bố xác suất.
+
+---
 
 ### 🔢 Ví dụ số
 
@@ -45,6 +49,8 @@ horse  = 148.4132 / 169.8666 ≈ 0.874
 ```
 
 Cộng lại xấp xỉ `1.0`. **Horse** có xác suất cao nhất (~`87%`), nên model dự đoán **horse**.
+
+---
 
 ### 🏁 Kết luận
 

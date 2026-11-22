@@ -22,6 +22,8 @@ Chào các bạn, mở đầu section này mình sẽ nói qua vì sao cần đ�
 * Để làm được vậy, xe phải tính toán được việc **rẽ** và các tình huống khác.
 * Vì thế mình cần tìm hiểu các **driver động cơ DC bên ngoài** để điều khiển chuyển động.
 
+---
+
 ### 🛞 Cách xe đánh lái với bốn động cơ
 
 Xe có **bốn động cơ**. Hai động cơ nằm cạnh nhau quay **cùng chiều**.
@@ -31,9 +33,13 @@ Xe có **bốn động cơ**. Hai động cơ nằm cạnh nhau quay **cùng chi
 
 Cách đánh lái bằng chênh lệch tốc độ hai bên là điểm cốt lõi của phần điều khiển này.
 
+---
+
 ### ⚠️ Đừng đánh lái quá gắt
 
 Có một điều các bạn cần lưu ý: hầu hết các xe bám làn đều **can thiệp rất chậm**, vì đây là yếu tố quan trọng cho **an toàn con người**. Vì vậy mình cũng **không nên đặt các góc rẽ quá gắt**.
+
+---
 
 ### 🔌 Không cần vi điều khiển ngoài
 

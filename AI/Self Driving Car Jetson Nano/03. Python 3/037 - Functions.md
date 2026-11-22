@@ -20,6 +20,8 @@ Chào các bạn, bài này mình học **hàm** (function). Hàm là một kh�
 
 Mình có nguyên liệu thô — đó là **input**. Thứ xử lý nguyên liệu là nhà máy — đó là **hàm**. Sau khi xử lý, ta có sản phẩm — đó là **output**. Quá trình biến nguyên liệu thành sản phẩm chính là gọi hàm.
 
+---
+
 ### 📝 Định nghĩa hàm bằng def
 
 Hàm được định nghĩa bằng từ khóa `def`, sau đó là tên hàm, cặp ngoặc tròn chứa các tham số tùy chọn, rồi dấu hai chấm. Khối code của hàm thụt lề bên dưới.
@@ -30,6 +32,8 @@ def greetings():
 ```
 
 Hàm này không có tham số. Khi **gọi** `greetings()`, chương trình in ra `Hello`.
+
+---
 
 ### 🎯 Tham số và đối số
 
@@ -44,6 +48,8 @@ greet("Alice")
 ```
 
 Ở đây `name` là tham số, còn `"Alice"` là đối số. Kết quả in ra `Hello Alice`.
+
+---
 
 ### ↩️ Trả về giá trị bằng return
 

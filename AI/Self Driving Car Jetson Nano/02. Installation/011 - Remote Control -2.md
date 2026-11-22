@@ -23,6 +23,8 @@ Sau khi đã bật VNC và có địa chỉ IP của board, bài này mình cài
 3. Tìm mục tải cho **Windows**.
 4. Bấm **Download VNC Viewer** và chờ tải xong.
 
+---
+
 ### 🔧 Cài đặt
 
 1. Mở file vừa tải.
@@ -31,6 +33,8 @@ Sau khi đã bật VNC và có địa chỉ IP của board, bài này mình cài
 4. Đồng ý license agreement.
 5. Bấm **Next** lần nữa, rồi **Install**.
 6. Xong thì bấm **Finish**.
+
+---
 
 ### 🖥️ Kết nối tới board
 

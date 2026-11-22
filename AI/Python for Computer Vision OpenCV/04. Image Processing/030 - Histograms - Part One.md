@@ -25,11 +25,15 @@ Histogram là biểu diễn phân bố của một đặc trưng liên tục. V�
 
 Có thể thay các cột bằng một đường **kernel density estimation** để thấy xu hướng mượt hơn.
 
+---
+
 ### 🎨 Histogram ảnh
 
 Với ảnh, ta đếm tần suất giá trị của từng kênh. Mỗi kênh R, G, B có giá trị 0–255, nên histogram có 256 bin. Vẽ ba histogram chồng lên nhau (thường tô màu tương ứng) sẽ cho biết ảnh nghiêng về tông nào.
 
 Lưu ý: giá trị **0 là đen tuyệt đối**. Ảnh nhiều vùng đen sẽ có đỉnh lớn gần 0.
+
+---
 
 ### 📥 Chuẩn bị ảnh: một bản BGR, một bản RGB
 
@@ -50,6 +54,8 @@ show_bricks = cv2.cvtColor(blue_bricks, cv2.COLOR_BGR2RGB)
 ```
 
 Tách hai bản như vậy để không phải chuyển đổi qua lại: OpenCV tính toán trên BGR, Matplotlib hiển thị trên RGB.
+
+---
 
 ### 🧮 cv2.calcHist
 
@@ -79,6 +85,8 @@ plt.plot(hist_values)
 
 Histogram kênh xanh của tường gạch có đỉnh quanh `150` và một đỉnh nữa quanh `225` — phù hợp với ảnh chủ yếu màu xanh.
 
+---
+
 ### 🐴 So sánh với ảnh ngựa
 
 ```python
@@ -87,6 +95,8 @@ plt.plot(hist_values)
 ```
 
 Ảnh ngựa có rất nhiều nền đen và con ngựa màu nâu đỏ, nên kênh blue gần như bằng 0 ở hầu hết giá trị. Đúng như dự đoán từ việc nhìn ảnh.
+
+---
 
 ### 🌈 Vẽ cả ba kênh
 
@@ -105,6 +115,8 @@ plt.title('Histogram for blue bricks')
 `enumerate` cho `i` chạy 0, 1, 2 tương ứng blue, green, red, còn `col` là ký tự màu để Matplotlib tô đúng. Kết quả: đóng góp của red rất ít, green và blue nhiều hơn — khớp với ảnh.
 
 Làm tương tự với ảnh ngựa, đổi `img = dark_horse`, tiêu đề thành "for horse". Histogram gần như phẳng ở mọi kênh. Thu nhỏ `xlim` về `0–50` và đặt `ylim` khoảng `0–500000` sẽ thấy rõ các đỉnh nhỏ.
+
+---
 
 ### ⚠️ Ảnh lớn làm lệch histogram
 

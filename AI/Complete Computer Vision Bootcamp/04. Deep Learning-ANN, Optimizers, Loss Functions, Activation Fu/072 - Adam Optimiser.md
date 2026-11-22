@@ -23,6 +23,8 @@ Chào các bạn! **Adam** là optimizer được dùng nhiều nhất hiện na
 
 Nhờ gộp cả hai, Adam vừa **mượt** vừa **tự điều chỉnh learning rate**.
 
+---
+
 ### 🧮 Công thức cập nhật
 
 ```text
@@ -55,6 +57,8 @@ h_dw(t) = beta * h_dw(t-1) + (1 - beta) * (∂loss/∂w(t-1))²
 
 Điểm cần để ý: công thức viết cho thời điểm `t` thì các số hạng quá khứ dùng `t-1`; nếu viết cho `t+1` thì chúng thành `t`. Chỉ là đổi chỉ số thời gian, bản chất không đổi.
 
+---
+
 ### 🧠 Hai lớp làm mượt
 
 Adam có **tới hai** phép **EWA**:
@@ -63,6 +67,8 @@ Adam có **tới hai** phép **EWA**:
 2. Làm mượt **bình phương gradient** → `h_dw` (tinh thần RMSprop), để learning rate động không sụp về 0.
 
 Cả hai áp cho **cả weight lẫn bias**.
+
+---
 
 ### 🏆 Vì sao chọn Adam
 

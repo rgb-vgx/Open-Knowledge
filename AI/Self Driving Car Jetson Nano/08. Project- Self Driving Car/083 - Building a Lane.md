@@ -23,6 +23,8 @@ Chào các bạn, hôm nay mình bắt đầu phần phát triển dự án. K�
 
 Một lời nhắn nhỏ từ giảng viên: khi mới học **AI**, **computer vision** và lập trình, mọi chủ đề đều có vẻ khá khó. Nhưng **thành công đến khi các bạn kiên trì không bỏ cuộc** — cứ tiếp tục, đừng nghi ngờ.
 
+---
+
 ### 📏 Vật liệu và kích thước đường
 
 Đường chạy thử được tạo bằng **băng dính trắng** dán trên **foil đen** (nền đen). Đây là cách đơn giản để tạo đường chạy thử.
@@ -31,6 +33,8 @@ Một lời nhắn nhỏ từ giảng viên: khi mới học **AI**, **computer 
 * Phần **oval** (hai đầu cong): là các **nửa đường tròn** có đường kính **12 cm** — tức **120 mm**.
 
 Các bạn có thể thấy băng trắng và nền foil đen trong bài giảng; phần oval nối hai đầu đường thẳng thành một vòng kín.
+
+---
 
 ### 🧩 Tự bố trí theo ý mình
 

@@ -24,6 +24,8 @@ Chào các bạn, bài này mình sẽ học cách tạo **polygon** — vùng k
 
 Với xe tự lái, polygon cho phép vùng quan tâm ôm đúng hình dạng làn đường thay vì một khung chữ nhật thô.
 
+---
+
 ### 🐍 Chuẩn bị file và hàm `roi`
 
 Tạo file Python mới tên **polygons.py**. Import hai module: **cv2** và **numpy** (dùng tắt là **np**).
@@ -40,6 +42,8 @@ def roi(img):
     pass
 ```
 
+---
+
 ### 📏 Lấy chiều cao ảnh
 
 Camera của xe được đặt hướng xuống, nên ảnh nhận được có toạ độ gắn với **chiều cao tổng** của ảnh. Nhớ rằng điểm trên cùng bên trái của ảnh là **`(0, 0)`**.
@@ -49,6 +53,8 @@ Vì vậy mình lấy chiều cao ảnh bằng phần tử thứ **0** của thu
 ```python
 height = img.shape[0]
 ```
+
+---
 
 ### 🔷 Tạo mảng bốn đỉnh polygon
 

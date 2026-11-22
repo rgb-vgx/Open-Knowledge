@@ -25,6 +25,8 @@ Trong mạng hai lớp (input → hidden → output), mỗi neuron làm:
 
 Rồi forward propagation tính loss, optimizer cập nhật weights.
 
+---
+
 ### 🔲 CNN thay weights bằng filter
 
 Ở CNN, ảnh đi qua **các filter**. Mỗi filter đóng vai trò như **một lớp V1/V2/V3…** trong visual cortex:
@@ -36,6 +38,8 @@ Rồi forward propagation tính loss, optimizer cập nhật weights.
 Tương tự, mỗi filter trích một loại thông tin: **vertical edge**, rồi filter khác bắt horizontal, pattern, hình dạng… Bạn có thể dùng **bao nhiêu filter tùy ý**, kích thước **3×3, 5×5**… Mỗi filter cho ra **một output** (ví dụ mỗi filter cho một ảnh `4×4`).
 
 Điểm mấu chốt: giống weights của ANN, **giá trị filter được khởi tạo ngẫu nhiên** khi train từ đầu, rồi **cập nhật qua forward/backward propagation** — mạng tự học filter nào hữu ích.
+
+---
 
 ### ⚡ Vì sao sau convolution là ReLU
 
@@ -53,6 +57,8 @@ ANN:  Z = WᵀX + b     →  ReLU   (trong hidden neuron)
 CNN:  ảnh * filter    →  ReLU   (trên output convolution)
 ```
 
+---
+
 ### 🔗 Điểm tương đồng
 
 Cả hai đều:
@@ -62,6 +68,8 @@ Cả hai đều:
 3. Dùng **cùng kỹ thuật backpropagation** để học tham số (weights ở ANN, filter ở CNN).
 
 Khác biệt chỉ ở **bản chất tham số và phép toán**: ANN nhân vector weights, CNN trượt filter qua ảnh. Kể cả khi ảnh là **RGB 3 channel**, filter vẫn được học qua backpropagation như vậy.
+
+---
 
 ### ➡️ Tiếp theo
 

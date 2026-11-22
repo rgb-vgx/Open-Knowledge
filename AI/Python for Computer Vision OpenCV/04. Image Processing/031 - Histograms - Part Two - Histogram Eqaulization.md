@@ -28,6 +28,8 @@ plt.imshow(mask, cmap='gray')
 
 Không có đáp án đúng/sai cho việc chọn vùng — tùy mục đích.
 
+---
+
 ### 🔗 Áp mask bằng bitwise_and
 
 ```python
@@ -41,6 +43,8 @@ Tạo hai bản:
 * `show_masked_image`: dùng để hiển thị đúng màu trong Matplotlib.
 
 Kết quả chỉ còn vùng được mask; phần còn lại thành đen. Vùng này của ảnh rainbow ít đỏ hơn toàn ảnh, nên histogram kênh đỏ cũng sẽ phản ánh điều đó.
+
+---
 
 ### 📊 calcHist với mask
 
@@ -67,6 +71,8 @@ plt.title('RED HISTOGRAM FOR NORMAL RAINBOW')
 Histogram có mask có rất ít giá trị đỏ, phần lớn gần 0. Histogram toàn ảnh có nhiều đỏ hơn hẳn, nhờ vùng tím và violet ở phần còn lại của rainbow.
 
 Thực tế khóa học ít khi tính histogram có mask, nhưng khi cần thì quy trình chỉ gồm: tạo mask đen, tô trắng vùng quan tâm, rồi truyền mask vào `calcHist`.
+
+---
 
 ### ⚖️ Histogram equalization là gì
 

@@ -30,6 +30,8 @@ import time
 img = cv2.imread("image.jpg")
 ```
 
+---
+
 ### 🔧 Gọi hàm `cv2.resize` với hai tham số
 
 Mình tạo biến mới, ví dụ **resized_image**, rồi gọi `cv2.resize`. Hàm nhận **hai tham số**:
@@ -47,6 +49,8 @@ resized_image = cv2.resize(img, (width, height))
 ```
 
 Chạy thử, code không báo lỗi.
+
+---
 
 ### 👁️ Hiển thị ảnh gốc và ảnh đã resize
 

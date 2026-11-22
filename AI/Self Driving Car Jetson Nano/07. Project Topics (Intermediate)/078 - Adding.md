@@ -32,6 +32,8 @@ Cả phát hiện biên lẫn chuyển nhị phân đều làm trên ảnh xám,
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 ```
 
+---
+
 ### 🔍 Phát hiện biên bằng Canny
 
 Tạo ma trận **canny** từ ảnh xám, với ngưỡng thứ nhất **127** và ngưỡng thứ hai **255**.
@@ -39,6 +41,8 @@ Tạo ma trận **canny** từ ảnh xám, với ngưỡng thứ nhất **127** 
 ```python
 canny = cv2.Canny(gray, 127, 255)
 ```
+
+---
 
 ### ⚫ Chuyển nhị phân bằng threshold
 
@@ -50,6 +54,8 @@ _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
 
 Tham số lần lượt: ảnh xám **gray**, ngưỡng **127**, giá trị lớn nhất **255**, kiểu **`cv2.THRESH_BINARY`**.
 
+---
+
 ### ➕ Kết hợp hai ma trận bằng `cv2.add`
 
 Mình tạo ma trận mới tên **addition**, gọi **`cv2.add`** với hai tham số là hai ma trận cần cộng: **canny** và **thresh**.
@@ -59,6 +65,8 @@ addition = cv2.add(canny, thresh)
 ```
 
 Kết quả là một ma trận chứa **cả đặc trưng biên lẫn đặc trưng nhị phân** của ảnh — nền tảng để bám làn đường chính xác hơn.
+
+---
 
 ### 👁️ Hiển thị kết quả
 

@@ -25,10 +25,14 @@ Vì **PCA9685** là module hỗ trợ **I2C**, mình phải khai báo đường 
 
 Ngoài ra cần thêm module để điều khiển động cơ DC, tức là **PCA9685** và **motor**.
 
+---
+
 ### 📁 Tạo file Python
 
 1. Mở **VS Code**, vào project folder.
 2. Tạo file Python mới, đặt tên ví dụ **dc_motor_speed.py**.
+
+---
 
 ### ⬇️ Cài thư viện PCA9685
 
@@ -41,6 +45,8 @@ sudo pip3 install adafruit-circuitpython-pca9685
 Khi được hỏi mật khẩu thì nhập mật khẩu của các bạn. Quá trình cài có thể mất một lúc, các bạn cứ chờ đến khi terminal báo đã cài xong.
 
 Transcript cũng lưu ý thư viện điều khiển động cơ chưa có sẵn theo mặc định, nhưng video chỉ minh hoạ lệnh cài cho PCA9685. Nếu máy chưa có module **`adafruit_motor`** dùng ở bước import bên dưới, các bạn cài thêm gói tương ứng trước khi chạy.
+
+---
 
 ### 🐍 Import các module
 

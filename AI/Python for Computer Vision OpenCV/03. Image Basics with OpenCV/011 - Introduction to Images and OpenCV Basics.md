@@ -22,6 +22,8 @@ Chào các bạn đến với section Image Basics. Đây là lúc mình bắt �
 
 **OpenCV** viết tắt của **Open Source Computer Vision Library**, là một thư viện các hàm lập trình chủ yếu nhắm tới computer vision thời gian thực.
 
+---
+
 ### 🕰️ Xuất xứ C++ và Python bindings
 
 * OpenCV được Intel tạo ra từ năm **1999**.
@@ -30,13 +32,19 @@ Chào các bạn đến với section Image Basics. Đây là lúc mình bắt �
 
 Một điều cần lưu ý: khi các bạn Google tutorial về OpenCV, rất nhiều tài liệu vẫn là C++ chứ chưa phải Python. Người mới hay bối rối vì mở code ra thấy một ngôn ngữ hoàn toàn khác. Cả Python và C++ đều có tài liệu đầy đủ, chỉ cần để ý mình đang đọc bản nào.
 
+---
+
 ### 🧠 Những gì đã có sẵn trong thư viện
 
 OpenCV chứa sẵn nhiều thuật toán computer vision phổ biến, bao gồm cả các thuật toán **object detection** và **object tracking**. Vì vậy lộ trình của khóa là đi từ việc mở file, vẽ hình, rồi mới tiến tới hiểu cách thực hiện detection và tracking.
 
+---
+
 ### 📚 Đọc tài liệu đúng ngôn ngữ
 
 OpenCV có tài liệu đầy đủ cho cả **Python** và **C++**. Vì C++ vẫn rất phổ biến, khi tra Google các bạn sẽ gặp nhiều đoạn code C++ trông khác hẳn Python. Chỉ cần để ý mình đang đọc bản nào là đủ; đừng vội nghĩ rằng tài liệu sai.
+
+---
 
 ### 🎯 Mục tiêu của section
 

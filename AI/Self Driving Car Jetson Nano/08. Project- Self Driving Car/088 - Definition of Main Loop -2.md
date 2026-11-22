@@ -31,6 +31,8 @@ for contour in contours:
     print(area)
 ```
 
+---
+
 ### 📦 Vẽ khung bao quanh contour
 
 Mình kiểm tra nếu **diện tích làn đường nằm trong khoảng 900 đến 2800 pixel**. Nếu thoả:
@@ -46,6 +48,8 @@ if 900 < area < 2800:
     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 ```
 
+---
+
 ### 📍 Tính tâm hình chữ nhật
 
 Mình tạo hai biến **`cx`** và **`cy`**:
@@ -60,6 +64,8 @@ cx = x + w // 2
 cy = y + h // 2
 print(cx)
 ```
+
+---
 
 ### 🕹️ Ba điều kiện điều khiển động cơ
 
@@ -81,6 +87,8 @@ elif 90 < cx < 130:
     motor2.throttle = 0.9
 ```
 
+---
+
 ### 🛑 Điểm dừng và các hình vẽ trực quan
 
 * Mình đánh dấu **tâm contour** bằng một **vòng tròn đỏ**.
@@ -88,6 +96,8 @@ elif 90 < cx < 130:
 * Vẽ **đường đỏ** nối hai điểm bằng hàm **`line`** — nhìn vào sẽ thấy xe có đang ở **điểm giữa** hay không.
 
 Và có thêm một điều kiện **`elif`**: nếu **diện tích contour lớn hơn 2800 pixel**, mình **dừng động cơ**. Đây là điểm kết thúc hành trình của xe.
+
+---
 
 ### 🖍️ Vẽ contour và hiển thị bốn cửa sổ
 

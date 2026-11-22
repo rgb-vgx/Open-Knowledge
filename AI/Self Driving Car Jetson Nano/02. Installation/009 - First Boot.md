@@ -23,11 +23,15 @@ tags: []
 
 Cắm chuột, bàn phím USB và cáp màn hình vào board, sau đó cấp nguồn bằng adapter.
 
+---
+
 ### ✅ Đồng ý license và chọn ngôn ngữ, bàn phím
 
 1. Màn hình hiện **license agreement**, các bạn đọc rồi bấm **Accept** và **Continue**.
 2. Ở phần chọn ngôn ngữ, mình để mặc định vì khóa học dùng tiếng Anh.
 3. Ở phần **keyboard layout**, chọn đúng layout của mình. Trong bài, giảng viên dùng bàn phím Thổ Nhĩ Kỳ, layout **Q**.
+
+---
 
 ### 📶 Kết nối Wi-Fi và chọn vùng
 
@@ -36,11 +40,15 @@ Cắm chuột, bàn phím USB và cáp màn hình vào board, sau đó cấp ngu
 3. Bấm **Continue**.
 4. Ở mục chọn **region** để hệ thống đặt đồng hồ, chọn đúng quốc gia của mình. Trong bài, giảng viên chọn Turkey.
 
+---
+
 ### 👤 Đặt tên máy và mật khẩu
 
 1. Nhập tên máy: trong bài là **Yilmaz**.
 2. Đặt mật khẩu: trong bài là **1234**.
 3. Chọn **login automatically** nếu muốn máy tự đăng nhập.
+
+---
 
 ### ⚙️ Chọn dung lượng và chế độ hiệu năng
 

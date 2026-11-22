@@ -37,6 +37,8 @@ y_hat = sigmoid(O1 * W3 + b)
 
 `y_hat` chính là output sau sigmoid; so với `y` thật để ra loss, rồi optimizer backpropagate giảm loss. Vòng lặp lặp tới khi loss đủ nhỏ.
 
+---
+
 ### 2️⃣ Categorical Cross Entropy (CCE)
 
 Dùng cho **multi-class classification**. Ví dụ với output `good` / `bad` / `neutral` — nhiều hơn hai lớp nên không dùng BCE.
@@ -50,6 +52,8 @@ loss = -Σ_j y_ij * log(y_hat_ij)
 ```
 
 Với `y_hat` tính bằng **softmax** ở output layer (chính là softmax đã học). Kết quả là **xác suất từng lớp** (cộng lại bằng `1`), ví dụ `20% / 30% / 50%`. Vector xác suất này là output chung của cả CCE lẫn sparse CCE; hai bản chỉ khác định dạng nhãn.
+
+---
 
 ### 3️⃣ Sparse Categorical Cross Entropy
 

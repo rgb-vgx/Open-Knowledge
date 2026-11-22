@@ -28,6 +28,8 @@ import cv2
 img = cv2.imread("image.jpg")
 ```
 
+---
+
 ### 🔧 Hàm `cv2.line` và năm tham số
 
 Hàm **line** nhận **năm tham số** theo thứ tự:
@@ -44,6 +46,8 @@ Ví dụ mình vẽ từ điểm `(100, 50)` đến `(250, 300)`, màu đỏ, d�
 cv2.line(img, (100, 50), (250, 300), (0, 0, 255), 5)
 ```
 
+---
+
 ### 👁️ Hiển thị kết quả
 
 Sau khi vẽ, mình hiển thị ảnh bằng **`cv2.imshow`** với cửa sổ `"b line"`, rồi giữ lại bằng **`cv2.waitKey(0)`**:
@@ -54,6 +58,8 @@ cv2.waitKey(0)
 ```
 
 Chạy code, các bạn sẽ thấy đường thẳng đỏ vẽ đè lên ảnh.
+
+---
 
 ### 🔍 Thử thay đổi tham số
 

@@ -22,6 +22,8 @@ Chào các bạn! Exploding gradient đến từ việc khởi tạo weights **q
 2. **Weights không được giống nhau** — nếu mọi neuron có weights y hệt, chúng xử lý giống hệt nhau, mất khả năng "nghĩ" khác nhau.
 3. **Weights phải có variance tốt** — các giá trị cần khác biệt, bổ trợ cho nhau.
 
+---
+
 ### 🎲 1. Uniform distribution
 
 Mỗi weight `W_ij` lấy từ phân phối **uniform** với cận dưới/trên:
@@ -31,6 +33,8 @@ a = -1 / sqrt(input)      b = 1 / sqrt(input)
 ```
 
 Ví dụ input = 3 → `[-1/sqrt(3), 1/sqrt(3)]`. Dùng hàm uniform của Python với hai cận này là khởi tạo được toàn bộ weights cho các hidden neuron.
+
+---
 
 ### 🧮 2. Xavier / Glorot initialization
 
@@ -50,6 +54,8 @@ Ví dụ input = output = 3 → `sigma = sqrt(2/6) = sqrt(1/3)`.
 a = -sqrt(6 / (input + output))      b = sqrt(6 / (input + output))
 ```
 
+---
+
 ### 🧮 3. Kaiming He initialization
 
 Do **Kaiming He** đề xuất, cũng hai biến thể:
@@ -67,6 +73,8 @@ Ví dụ input = 3 → `sigma = sqrt(2/3)`.
 ```text
 a = -sqrt(6 / input)      b = sqrt(6 / input)
 ```
+
+---
 
 ### 🧾 Tổng hợp
 

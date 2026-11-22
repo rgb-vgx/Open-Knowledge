@@ -22,6 +22,8 @@ Bài này mình cài extension **Python** cho Visual Studio Code trên Jetson Na
 2. Bấm **Continue**, nhập mật khẩu (trong bài là **1234**).
 3. Mở ô tìm kiếm của hệ điều hành, gõ **code** và mở **Visual Studio Code**.
 
+---
+
 ### 📁 Tạo thư mục project
 
 1. Ở thanh bên, bấm **Explorer**.
@@ -29,12 +31,16 @@ Bài này mình cài extension **Python** cho Visual Studio Code trên Jetson Na
 3. Bấm tạo thư mục mới, đặt tên ví dụ **projects**, rồi bấm **Create** và **OK**.
 4. VS Code hiện thông báo hỏi có tin tưởng các file trong thư mục cha không — chọn **"Yes, I trust the authors"**.
 
+---
+
 ### 🧩 Cài extension Python
 
 1. Mở mục **Extensions** ở thanh bên.
 2. Gõ **Python** vào ô tìm kiếm.
 3. Chọn extension **Python** do **Microsoft** phát hành.
 4. Bấm **Install** và chờ cài xong.
+
+---
 
 ### ▶️ Chạy chương trình đầu tiên
 

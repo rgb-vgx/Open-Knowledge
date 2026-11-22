@@ -27,6 +27,8 @@ Chào các bạn, đây là bài **coding exercise** đầu tiên về biến. M
 
 Để chạy: bấm chuột phải, chọn **Run Python**, sau đó chọn **Run Python File in Terminal**.
 
+---
+
 ### 🚫 Những trường hợp báo lỗi
 
 **Bắt đầu bằng chữ số.** Viết `12name` rồi chạy sẽ ra **syntax error**, vì Python hiểu phần mở đầu là một con số bình thường.
@@ -40,6 +42,8 @@ name1 = "Yilmaz"
 **Dùng từ khóa của Python.** `for` là một cấu trúc của ngôn ngữ, nên `for = 12` sẽ báo lỗi.
 
 **Có khoảng trắng trong tên.** `name surname = "Yilmaz Alija"` lỗi; phải viết `name_surname` với dấu gạch dưới.
+
+---
 
 ### ✅ Những trường hợp hợp lệ
 
@@ -66,6 +70,8 @@ age = 7.5
 ```
 
 **Chuỗi phải nằm trong dấu nháy kép** khi gán tên hay bất kỳ văn bản nào.
+
+---
 
 ### 🌍 Lưu ý về ký tự tiếng Việt
 

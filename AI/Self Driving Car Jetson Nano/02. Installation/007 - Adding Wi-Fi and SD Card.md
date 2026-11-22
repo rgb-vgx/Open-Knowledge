@@ -22,6 +22,8 @@ Trong bài này mình sẽ lắp thẻ SD đã có hệ điều hành và module
 2. Bấm cả hai chốt (clip) hai bên để nhả module.
 3. Nhấc module xử lý ra khỏi socket.
 
+---
+
 ### 💾 Lắp thẻ SD
 
 1. Trên module xử lý có một khe cắm thẻ SD.
@@ -30,6 +32,8 @@ Trong bài này mình sẽ lắp thẻ SD đã có hệ điều hành và module
 
 Vậy là xong phần thẻ SD.
 
+---
+
 ### 📶 Lắp module Wi-Fi
 
 1. Tháo ốc vít ở vị trí gắn module Wi-Fi.
@@ -37,6 +41,8 @@ Vậy là xong phần thẻ SD.
 3. Đặt chân ngắn nhất sang phía bên trái.
 4. Lắp module vào đúng vị trí.
 5. Gắn các chi tiết cố định còn lại của module Wi-Fi.
+
+---
 
 ### 🔧 Đóng lại board
 

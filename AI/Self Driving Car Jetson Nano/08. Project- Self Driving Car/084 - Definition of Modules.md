@@ -26,6 +26,8 @@ Chào các bạn, bài này mình sẽ điểm qua các module dùng trong code 
 import cv2
 ```
 
+---
+
 ### 🔢 `numpy` — làm việc với mảng và vùng quan tâm
 
 * Module **NumPy**.
@@ -35,6 +37,8 @@ import cv2
 ```python
 import numpy as np
 ```
+
+---
 
 ### 🔌 `busio` — giao tiếp I2C
 
@@ -46,6 +50,8 @@ import numpy as np
 import busio
 ```
 
+---
+
 ### 🎛️ `PCA9685` — điều khiển PWM
 
 * Module **Adafruit_PCA9685**, lấy ra **class `PCA9685`**.
@@ -55,6 +61,8 @@ import busio
 ```python
 from adafruit_pca9685 import PCA9685
 ```
+
+---
 
 ### ⚙️ `motor` — điều khiển động cơ DC
 

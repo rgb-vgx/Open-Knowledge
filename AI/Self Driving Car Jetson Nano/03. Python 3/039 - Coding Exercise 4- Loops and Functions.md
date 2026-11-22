@@ -31,6 +31,8 @@ greetings("Yilmaz")
 
 Kết quả: `Hello Yilmaz`.
 
+---
+
 ### ➕ Hàm cộng có return
 
 ```python
@@ -42,6 +44,8 @@ print(add)
 ```
 
 `return` đưa giá trị `60` vào biến `add`, nhưng không tự in. Phải gọi `print(add)` mới thấy kết quả trên terminal.
+
+---
 
 ### 📏 Đếm phần tử bằng for và counter
 
@@ -65,6 +69,8 @@ length_of_array(name)
 ```
 
 Thêm ký tự vào chuỗi, ví dụ `s d f`, số đếm tăng lên `9` — tức mỗi ký tự được tính là một phần tử.
+
+---
 
 ### 💡 Điểm rút ra
 

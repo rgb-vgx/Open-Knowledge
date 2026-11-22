@@ -22,6 +22,8 @@ Mọi ảnh màu — kể cả khuôn mặt bạn thấy trên màn hình — đ
 
 Ví dụ với ảnh núi và túp lều hay một con vẹt: tách ra ta được ba ảnh riêng cho **red channel**, **green channel**, **blue channel**.
 
+---
+
 ### 📐 Pixel và kích thước ảnh
 
 Ảnh được chia thành **pixel**. Nếu ảnh có 6 pixel theo chiều ngang và 6 theo chiều dọc, gọi là ảnh **6×6**.
@@ -38,9 +40,13 @@ Cách ghi kích thước:
 * Hai số đầu = số pixel (cao × rộng).
 * Số cuối = **số channel**.
 
+---
+
 ### ⬛ Ảnh grayscale
 
 Ảnh **grayscale** (trắng đen) chỉ có **một channel**, mỗi pixel vẫn `0..255`. Vì không có ba channel RGB nên ghi **`6 × 6 × 1`**. Nhiều ảnh cũ, phim đen trắng cũng thuộc dạng này.
+
+---
 
 ### 🌈 Ảnh RGB
 

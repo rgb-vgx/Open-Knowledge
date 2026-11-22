@@ -34,6 +34,8 @@ x = input()
 
 Cả hai cách đều hợp lệ.
 
+---
+
 ### 🖨️ Hàm print
 
 Hàm `print()` dùng để thông báo cho người dùng. Vài điểm cần nhớ:

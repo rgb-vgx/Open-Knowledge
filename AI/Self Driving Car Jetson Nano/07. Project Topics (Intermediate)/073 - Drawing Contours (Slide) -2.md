@@ -22,6 +22,8 @@ Chào các bạn, tiếp nối bài tìm contour, bài này mình sẽ nói về
 * Hàm vẽ cần dùng trong OpenCV là **`cv2.drawContours`**.
 * Hàm này vẽ contour lên một ảnh chỉ định; contours đầu vào thường lấy từ **`cv2.findContours`** hoặc phương pháp tương tự.
 
+---
+
 ### ⚙️ Năm tham số của `drawContours`
 
 Hàm nhận **năm tham số**:
@@ -38,6 +40,8 @@ cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
 
 Với `-1`, toàn bộ contour tìm được sẽ được tô viền cùng một màu xanh.
 
+---
+
 ### 👕 Ví dụ: đo size áo từ contour
 
 Trong bài giảng có một ví dụ rất trực quan: một ảnh chiếc **áo phông**.
@@ -46,6 +50,8 @@ Trong bài giảng có một ví dụ rất trực quan: một ảnh chiếc **�
 * Từ contour đó có thể **tính toán size quần áo** — ví dụ **L**, **XL**, v.v.
 
 Đây là minh hoạ cho ý "contour dùng để phân tích hình dạng": đường bao của vật thể mang thông tin về kích thước của nó.
+
+---
 
 ### ✋ Ví dụ: điều khiển bằng cử động tay
 

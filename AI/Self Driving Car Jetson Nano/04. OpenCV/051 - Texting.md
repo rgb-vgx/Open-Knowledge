@@ -28,6 +28,8 @@ import cv2
 img = cv2.imread("image.jpg")
 ```
 
+---
+
 ### 🔧 Hàm `cv2.putText` và bảy tham số
 
 Hàm **putText** nhận **bảy tham số**:
@@ -44,6 +46,8 @@ Hàm **putText** nhận **bảy tham số**:
 cv2.putText(img, "hello", (30, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
 ```
 
+---
+
 ### 👁️ Hiển thị và kiểm tra kết quả
 
 Hiển thị ảnh bằng **`cv2.imshow`** rồi giữ cửa sổ bằng **`cv2.waitKey(0)`**:
@@ -54,6 +58,8 @@ cv2.waitKey(0)
 ```
 
 Chạy code, các bạn sẽ thấy dòng chữ **"hello"** màu xanh dương nằm trên ảnh.
+
+---
 
 ### 🔍 Thử tăng kích thước chữ
 

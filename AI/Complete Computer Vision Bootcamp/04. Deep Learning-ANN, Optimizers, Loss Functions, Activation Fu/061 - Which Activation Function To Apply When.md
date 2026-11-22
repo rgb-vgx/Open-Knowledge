@@ -22,6 +22,8 @@ Input `X1, X2, X3` → **hidden layer 1** → **hidden layer 2** → **output la
 
 Câu hỏi: bước hai đó dùng hàm gì?
 
+---
+
 ### 🧠 Hidden layer: tránh sigmoid và tanh
 
 Nếu dùng **sigmoid** trong hidden layer của mạng **sâu** (5–10 hidden layer, nhiều neuron), ta sẽ dính **vanishing gradient**. **Tanh** cũng vậy — vẫn có thể gây vanishing gradient.
@@ -33,6 +35,8 @@ Vì thế trong thực hành, hidden layer nên dùng **ReLU** hoặc **biến t
 * **PReLU** (parametric ReLU)
 
 Lý do: ReLU và biến thể xử lý được vấn đề **dead neuron** của ReLU thuần (đạo hàm chỉ `0`/`1`). Đây là lựa chọn mặc định cho **hidden layer 1, 2, …**.
+
+---
 
 ### 🎯 Output layer: phân biệt theo bài toán
 

@@ -22,15 +22,21 @@ Perceptron nhận input, gán **weights** (ban đầu có thể ngẫu nhiên), 
 
 Quá trình đi từ trái sang phải — bước một rồi bước hai — chính là **feed forward neural network**.
 
+---
+
 ### 🔁 Cập nhật weight kiểu "mò": không hiệu quả
 
 Giả sử nhãn thật `Y = 1`, nhưng sau feed forward ta ra `Y_hat = 0` (dưới ngưỡng). Rõ ràng có **error**. Cách xử lý của perceptron một lớp: **thay đổi weights rồi chạy lại feed forward**, lặp mãi cho tới khi ra giá trị khớp.
 
 Cách này **không hiệu quả**: nó chỉ thay weights một cách ngẫu nhiên, không có cơ chế dẫn đường cho việc cập nhật. Trong mạng nhiều lớp, người ta dùng **loss function** và **backpropagation** để việc cập nhật weight diễn ra trơn tru — và backpropagation là một trong những phát minh lớn nhất của deep learning.
 
+---
+
 ### ✅ Ưu điểm: bài toán linearly separable
 
 Perceptron một lớp giải tốt các bài toán **linearly separable** (tách tuyến tính). Với hai cụm điểm dữ liệu phân biệt, nó kẻ được **best fit line** chia hai cụm — nên mới gọi là **binary classifier**.
+
+---
 
 ### ❌ Hạn chế: dữ liệu không tách tuyến tính
 

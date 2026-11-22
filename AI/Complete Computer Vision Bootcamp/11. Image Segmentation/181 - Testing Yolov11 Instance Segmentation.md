@@ -29,6 +29,8 @@ Theo docs phần **predict**, `model(...)` trả về một **list** (danh sách
 
 Ta chỉ cần thay model mặc định bằng **model custom** đã train.
 
+---
+
 ### 🗂️ Load model
 
 Giải nén thư mục kết quả train, vào `train/weights/`:
@@ -45,6 +47,8 @@ model = YOLO("train/weights/best.pt")
 
 Ultralytics tự nhận biết đây là model **segmentation**.
 
+---
+
 ### 🖼️ Inference một ảnh
 
 ```python
@@ -60,6 +64,8 @@ for r in results:
 
 Model bao phủ gần hết các vết nứt, dù gộp chúng thành một instance — hợp lý vì dataset train hầu như chỉ có một crack mỗi ảnh. Vết nứt mảnh (hairline) chưa train thì có thể bị bỏ sót.
 
+---
+
 ### 🧺 Inference batch ảnh
 
 Chỉ cần truyền **list đường dẫn**:
@@ -73,6 +79,8 @@ for idx, r in enumerate(results):
 
 Mỗi ảnh cho một `Results`; `enumerate` giúp đánh số. Cách này hợp với nhiều frame camera đến cùng lúc.
 
+---
+
 ### 🎥 Inference trên numpy array
 
 Nếu ảnh đã đọc bằng OpenCV (không có "path"), truyền thẳng **numpy array**:
@@ -84,6 +92,8 @@ results = model(image_array)
 ```
 
 Ultralytics chấp nhận cả path lẫn numpy array — hữu ích khi xử lý frame từ video stream.
+
+---
 
 ### 🎭 Từ instance mask sang semantic mask
 

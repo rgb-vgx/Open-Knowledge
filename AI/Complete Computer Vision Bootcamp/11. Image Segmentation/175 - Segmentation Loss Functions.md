@@ -24,6 +24,8 @@ Khác biệt cốt lõi:
 * **Image classification** — một ảnh cho **một label** (dog/cat).
 * **Segmentation** — ảnh 640×640 cho ra **640×640 dự đoán** (mỗi pixel một nhãn).
 
+---
+
 ### ❗ Vì sao cần loss chuyên biệt?
 
 **MSE** (mean squared error) là loss chuẩn nhưng **không phù hợp** với segmentation vì **class imbalance**:
@@ -32,6 +34,8 @@ Khác biệt cốt lõi:
 * Phần lớn ảnh là **background**.
 
 Nếu dùng MSE, model dễ "học" cách đoán toàn background (vì chiếm đa số) mà vẫn có loss thấp. Ta cần loss **tập trung vào pixel của object** — kể cả khi model chỉ đoán đúng một pixel foreground, cũng phải có trọng số lớn hơn nhiều so với background.
+
+---
 
 ### 📊 Cross Entropy
 
@@ -43,6 +47,8 @@ L_CE = -(1/N) Σ_i y_i · log(ŷ_i)
 
 Trong đó `y` là nhãn thật (0/1 với binary), `ŷ` là xác suất model dự đoán. Khi chỉ có hai lớp, đây là **binary cross entropy**.
 
+---
+
 ### 📐 IoU Loss
 
 **IoU loss** tối ưu trực tiếp chỉ số **IoU** thay vì từng pixel. IoU giữa hai vùng A và B:
@@ -52,6 +58,8 @@ IoU = |A ∩ B| / |A ∪ B|
 ```
 
 với `|A ∪ B| = |A| + |B| - |A ∩ B|`. Vì IoU làm việc trên **toàn vùng**, nó không nhấn mạnh đúng mức thông tin pixel-level mà segmentation cần.
+
+---
 
 ### 🎲 Dice Loss
 
@@ -65,6 +73,8 @@ L_Dice = 1 - (2 Σ y·ŷ + smooth) / (Σ y + Σ ŷ + smooth)
 Hệ số **2** ở tử số khiến Dice **ưu tiên vùng khớp** giữa dự đoán và ground truth, thay vì bị pha loãng bởi vùng không giao (đa phần là background). Đó là lý do Dice hợp với segmentation mất cân bằng.
 
 `smoothed` là một hằng số rất nhỏ (ví dụ `1e-6`) cộng vào cả tử và mẫu để tránh **chia cho 0** khi ảnh không có object (ground truth toàn 0).
+
+---
 
 ### 🧪 Cài đặt trong PyTorch
 

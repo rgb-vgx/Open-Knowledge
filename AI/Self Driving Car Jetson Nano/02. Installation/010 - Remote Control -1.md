@@ -24,6 +24,8 @@ Trong bài này mình cấu hình **VNC** trên board để sau này có thể �
 
 > 💡 Lưu ý về dòng RAM: nếu Jetson Nano của các bạn có **2GB RAM**, chỉ cần dán **hai đoạn lệnh đầu**. Với model **4GB RAM**, làm giống hệt như trong bài.
 
+---
+
 ### ⌨️ Dán lệnh vào terminal
 
 1. Trên board, mở **Terminal**.
@@ -31,6 +33,8 @@ Trong bài này mình cấu hình **VNC** trên board để sau này có thể �
 3. Khi terminal hỏi mật khẩu, nhập mật khẩu mình đặt lúc cài hệ điều hành — trong bài là **1234**.
 4. Với đoạn lệnh cuối, các bạn cần đặt mật khẩu để kết nối từ xa: xóa phần mật khẩu nằm trong dấu ngoặc kép rồi thay bằng mật khẩu của mình. Trong bài, giảng viên đặt là **123456**.
 5. Enter để chạy lệnh.
+
+---
 
 ### 🔄 Khởi động lại board
 
@@ -41,6 +45,8 @@ sudo reboot
 ```
 
 Nhập mật khẩu khi được hỏi và chờ board khởi động lại.
+
+---
 
 ### 🌐 Lấy địa chỉ IP
 

@@ -27,6 +27,8 @@ boolean_value = True
 
 Lần lượt là **string**, **integer**, **float** và **boolean**.
 
+---
+
 ### 📤 In từng biến
 
 Muốn in một biến qua `print()`, ghi trực tiếp tên biến trong ngoặc:
@@ -40,6 +42,8 @@ print(boolean_value)
 
 Kết quả trên terminal: `Yilmaz`, `50`, `10.5`, `True`.
 
+---
+
 ### 🧾 In dữ liệu trực tiếp
 
 Khi in giá trị trực tiếp thay vì qua biến:
@@ -47,6 +51,8 @@ Khi in giá trị trực tiếp thay vì qua biến:
 * Văn bản phải đặt trong dấu nháy kép: `print("Hello")` → `Hello`.
 * Số nguyên, số thực viết thẳng: `print(20)` → `20`, `print(25.75)` → `25.75`.
 * Boolean viết thẳng: `print(True)` → `True`.
+
+---
 
 ### ➕ In nhiều giá trị trong một lần gọi
 

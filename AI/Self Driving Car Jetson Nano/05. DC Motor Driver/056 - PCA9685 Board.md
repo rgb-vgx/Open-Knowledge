@@ -24,6 +24,8 @@ Chào các bạn, nếu bài trước là L298N lo phần chiều quay thì bài
 
 Khi dựng sơ đồ mạch, mình sẽ nối Jetson Nano với PCA9685 để từ dữ liệu nhận được, xe vừa bám được làn vừa chỉnh được tốc độ động cơ DC.
 
+---
+
 ### 🔌 Bốn chân giao tiếp bên trái
 
 Trên module có **6 khe chân** ở phía bên trái, nhưng mình chỉ cần dùng **4 chân**: **GND, SCL, SDA, VCC**.
@@ -33,11 +35,15 @@ Trên module có **6 khe chân** ở phía bên trái, nhưng mình chỉ cần 
 
 Nếu module không hỗ trợ I2C thì sẽ phải đấu rất nhiều dây; nhờ I2C mà mình tránh được chuyện đó.
 
+---
+
 ### ⚡ Mười sáu chân PWM ở phía dưới
 
 Phía dưới module có **16 đường chân**, đánh số từ **0 đến 15**. Đây chính là các đường dùng để **điều khiển tốc độ** động cơ DC.
 
 Cách nối với L298N: đưa các chân **ENA, ENB, IN1, IN2, IN3, IN4** của L298N sang các chân tương ứng trên PCA9685 theo thứ tự. Khi đấu đúng như vậy, mình điều khiển được tốc độ động cơ.
+
+---
 
 ### 🐍 Chuẩn bị cho bài sau
 

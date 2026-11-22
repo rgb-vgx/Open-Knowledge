@@ -20,6 +20,8 @@ Chào các bạn! Nhiều người hay thắc mắc **dùng loss function nào k
 
 Mọi tổ hợp dưới đây đều dùng **ReLU hoặc biến thể** (Leaky ReLU, PReLU, ELU) ở hidden layer. Chỉ khác nhau ở **output layer** và **loss function** đi kèm.
 
+---
+
 ### 1️⃣ Output sigmoid → Binary Cross Entropy
 
 Output layer dùng **sigmoid** → bài toán **binary classification** → loss là **binary cross entropy**.
@@ -30,6 +32,8 @@ output: sigmoid
 loss  : binary cross entropy
 ```
 
+---
+
 ### 2️⃣ Output softmax → Categorical / Sparse Categorical Cross Entropy
 
 Output layer dùng **softmax** → bài toán **multi-class classification** → loss là **categorical cross entropy** hoặc **sparse categorical cross entropy** (tùy biểu diễn nhãn one-hot hay index).
@@ -39,6 +43,8 @@ hidden: ReLU (+ biến thể)
 output: softmax
 loss  : categorical / sparse categorical cross entropy
 ```
+
+---
 
 ### 3️⃣ Output linear → Loss của regression
 

@@ -25,6 +25,8 @@ Chào các bạn, bài này mình sẽ code trọn quy trình contour trên ản
 
 Mình dùng ảnh **highway** đã thêm vào project folder. Trong project, tạo file Python mới, ví dụ **cnt.py**.
 
+---
+
 ### 📥 Đọc ảnh, chuyển xám và phát hiện biên
 
 Đầu tiên import OpenCV, đọc ảnh `img.jpg`, rồi chuyển sang ảnh xám bằng **`cv2.cvtColor`** với cờ **`cv2.COLOR_BGR2GRAY`**.
@@ -40,6 +42,8 @@ canny = cv2.Canny(gray, 100, 255)
 ```
 
 Hàm Canny nhận ba tham số như bài trước: ảnh xám **gray**, ngưỡng thứ nhất **100**, ngưỡng thứ hai **255**.
+
+---
 
 ### 🔍 Tìm contour từ ảnh biên
 
@@ -57,6 +61,8 @@ contours, _ = cv2.findContours(
 * **`cv2.RETR_EXTERNAL`** chỉ lấy contour ngoài cùng.
 * **`cv2.CHAIN_APPROX_SIMPLE`** nén số điểm của contour.
 
+---
+
 ### 🖍️ Vẽ contour lên ảnh gốc
 
 Tiếp theo gọi **`cv2.drawContours`** với năm tham số:
@@ -70,6 +76,8 @@ Tiếp theo gọi **`cv2.drawContours`** với năm tham số:
 ```python
 cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
 ```
+
+---
 
 ### 👁️ Hiển thị kết quả
 

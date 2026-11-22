@@ -22,6 +22,8 @@ Bài trước dán đè cả ảnh nhỏ lên ảnh lớn. Nhưng nếu ảnh nh
 2. Tạo **mask**: vùng trắng là phần được phép đi qua.
 3. Ghép phần foreground đã lọc qua mask vào ROI.
 
+---
+
 ### 📍 Chọn ROI ở góc dưới phải
 
 Giả sử ảnh lớn có shape `1401 × 934`, ảnh nhỏ `600 × 600`. Muốn dán vào góc dưới phải thì offset phải lùi vào đúng 600 pixel:
@@ -42,6 +44,8 @@ rows, cols, channels = img2.shape
 
 Với ảnh vuông, `rows` và `cols` đều bằng 600, `channels` bằng 3.
 
+---
+
 ### ⬜ Tạo grayscale và mask nghịch
 
 ```python
@@ -57,6 +61,8 @@ plt.imshow(mask_inv, cmap='gray')
 ```
 
 `cv2.bitwise_not` đảo từng bit: đen thành trắng, trắng thành đen. Kết quả là vùng **trắng** chính là phần logo ta muốn giữ.
+
+---
 
 ### 🧱 Tạo nền trắng đủ ba kênh
 
@@ -76,6 +82,8 @@ bk = cv2.bitwise_or(white_background, white_background, mask=mask_inv)
 
 `cv2.bitwise_or` tính OR từng phần tử. Truyền nền trắng hai lần rồi áp `mask_inv` sẽ tạo ra ảnh nền trắng ba kênh, trong đó phần logo hiện rõ. Có thể làm thủ công bằng cách nhân mask cho từng kênh, nhưng cách `bitwise_or` tổng quát hơn khi hình có nhiều màu.
 
+---
+
 ### 🔗 Lấy foreground
 
 ```python
@@ -84,6 +92,8 @@ plt.imshow(foreground)
 ```
 
 Áp cùng mask lên ảnh gốc: chỉ phần nằm trong vùng trắng của mask được giữ, phần còn lại thành đen. Kết quả là logo với màu gốc, không còn nền trắng.
+
+---
 
 ### 🖼️ Ghép vào ROI và trả về ảnh lớn
 
@@ -102,6 +112,8 @@ plt.imshow(large_img)
 `cv2.bitwise_or` giữa ROI và foreground (không truyền mask) sẽ chồng phần logo lên vùng ảnh đã chọn. Cuối cùng dùng lại NumPy slicing của bài trước để ghi `final_roi` vào đúng vị trí.
 
 Kết quả: logo "do not copy" nằm gọn trong ảnh mà không mang theo nền trắng.
+
+---
 
 ### 💡 Nhận xét
 

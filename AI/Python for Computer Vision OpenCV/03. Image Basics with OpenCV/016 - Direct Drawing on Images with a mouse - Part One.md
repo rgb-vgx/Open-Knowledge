@@ -36,6 +36,8 @@ def draw_circle(event, x, y, flags, param):
 # --- phần hiển thị ---
 ```
 
+---
+
 ### 🪟 namedWindow và setMouseCallback
 
 Điểm mấu chốt là **tên cửa sổ** phải trùng khớp ở ba nơi: `namedWindow`, `setMouseCallback` và `imshow`.
@@ -55,6 +57,8 @@ Hàm callback luôn nhận các tham số:
 
 OpenCV tự điền các giá trị này khi sự kiện xảy ra, nên ta chỉ định nghĩa hàm mà không tự gọi.
 
+---
+
 ### ⭕ Bắt EVENT_LBUTTONDOWN và vẽ circle
 
 ```python
@@ -71,6 +75,8 @@ def draw_circle(event, x, y, flags, param):
 
 `EVENT_LBUTTONDOWN` là sự kiện **nhấn nút trái xuống**, không phải lúc nhả nút. Đây là khác biệt quan trọng vì các bài sau còn dùng cả `LBUTTONDOWN` lẫn `LBUTTONUP`. Khi sự kiện khớp, lấy ngay `x, y` hiện tại làm tâm và vẽ một hình tròn xanh lá đặc (`thickness=-1`). Bán kính có thể chọn tùy ý.
 
+---
+
 ### ▶️ Vòng lặp hiển thị
 
 ```python
@@ -85,6 +91,8 @@ cv2.destroyAllWindows()
 Chờ 20 milliseconds mỗi vòng và thoát khi nhấn Escape. Chạy code, click vào cửa sổ là một hình tròn xanh xuất hiện đúng vị trí; nhấn Escape để đóng.
 
 Cần lưu ý: tên cửa sổ nếu có dấu cách sẽ lỗi, và rất dễ gõ sai — có thể copy trực tiếp từ notebook đi kèm khóa học.
+
+---
 
 ### 💡 Vì sao nền ảnh hơi xám
 

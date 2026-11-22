@@ -29,6 +29,8 @@ Mình cần một ảnh đường cao tốc để thực hiện phát hiện bi�
 
 Lưu ý nhỏ: kết quả phát hiện biên có thể đúng hoặc sai tùy vào **độ sáng** của ảnh và các tham số mình nhập. Vì vậy cách tìm kết quả chính xác nhất là **thử và chỉnh dần** (trial and error).
 
+---
+
 ### 🐍 Đọc ảnh và chuyển sang ảnh xám
 
 Trong project folder, mình tạo file Python mới, ví dụ **h.py**. Bước đầu là import OpenCV và đọc ảnh với tham số thứ hai bằng **0** để nhận luôn ảnh xám.
@@ -40,6 +42,8 @@ image = cv2.imread("highway.jpg", 0)
 ```
 
 Vì phát hiện biên chỉ thực hiện trên ảnh xám, tham số **0** giúp mình bỏ qua bước gọi `cvtColor` riêng.
+
+---
 
 ### ⚙️ Gọi hàm Canny với hai ngưỡng
 
@@ -54,6 +58,8 @@ output = cv2.Canny(image, 100, 500)
 ```
 
 Chạy thử thì không có lỗi — nghĩa là các tham số đã hợp lệ.
+
+---
 
 ### 👁️ Hiển thị ảnh gốc và ảnh biên
 

@@ -24,6 +24,8 @@ Annotation có thể ở nhiều định dạng: **XML**, **JSON** hay **TXT** �
 * **Google Open Images**.
 * **ImageNet Localization Challenge**.
 
+---
+
 ### 🎯 IoU — Intersection over Union
 
 **IoU** là độ đo dựa trên **Jaccard index**, đánh giá mức chồng lấn giữa **hai bounding box**:
@@ -39,6 +41,8 @@ IoU = diện tích phần giao (intersection) / diện tích phần hợp (union
 
 Nhờ IoU ta quyết định một detection là **true positive** hay **false positive**.
 
+---
+
 ### ✅ TP, FP, FN và vì sao không có TN
 
 * **True Positive (TP)** — detection đúng, tức **IoU lớn hơn ngưỡng**.
@@ -47,6 +51,8 @@ Nhờ IoU ta quyết định một detection là **true positive** hay **false p
 * **True Negative (TN)** — **không áp dụng** trong object detection. Lý do: trong một ảnh có vô số box "không nên phát hiện", nên khái niệm "box đúng là không phát hiện" không có ý nghĩa thống kê.
 
 **Ngưỡng IoU** là một **hyperparameter**. Transcript nêu các mức thường gặp như **0.50**, **0.75**, **0.95**. Ngưỡng cao hay thấp tuỳ use case: ví dụ trong y tế, nơi sai sót có thể ảnh hưởng tính mạng, người ta dùng ngưỡng cao hơn; các bài toán thông thường có thể dùng ngưỡng thấp hơn.
+
+---
 
 ### 📐 Precision và Recall
 
@@ -63,6 +69,8 @@ Vì `TP + FP` chính là **tất cả detection**.
 ```text
 Recall = TP / (TP + FN) = TP / (tổng số ground truth)
 ```
+
+---
 
 ### 📈 PR Curve và Average Precision
 
@@ -81,6 +89,8 @@ recall    = TP / 15         = 1 / 15 ≈ 0.0667
 ```
 
 Vẽ các cặp (recall, precision) ra ta có PR curve.
+
+---
 
 ### 🧮 Hai cách ra con số AP
 

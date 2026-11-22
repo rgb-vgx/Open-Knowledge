@@ -23,12 +23,16 @@ Bài này mình lắp quạt tản nhiệt lên board Jetson Nano. Đây là bư
 
 Lưu ý hướng quạt: **cửa thoát gió của quạt phải hướng về phía cooler** (bộ tản nhiệt).
 
+---
+
 ### 🔧 Cố định quạt lên cooler
 
 1. Đặt quạt lên cooler, canh đúng hai lỗ ốc.
 2. Đưa ốc qua lỗ.
 3. Bắt **hex nut** để giữ quạt thật chặt, không còn khe hở.
 4. Làm tương tự với hai lỗ chéo còn lại để quạt được ép đều xuống cooler.
+
+---
 
 ### 🔌 Đấu dây nguồn quạt
 
@@ -38,6 +42,8 @@ Quạt có hai dây **đỏ** và **đen**:
 * Dây **đen** nối vào đường **GND**.
 
 Đấu đúng cực như vậy để quạt quay đúng chiều và an toàn cho board.
+
+---
 
 ### ⚡ Cấp nguồn
 

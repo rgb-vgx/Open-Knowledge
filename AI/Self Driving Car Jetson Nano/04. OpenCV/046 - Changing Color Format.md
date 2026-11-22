@@ -23,6 +23,8 @@ Chào các bạn, bài này mình sẽ học cách đổi định dạng màu c�
 * Với dự án xe bám làn, mình cần định dạng **gray** (ảnh xám): đường cao tốc vốn chỉ gồm màu đen và trắng, nên xử lý ảnh xám sẽ "lành" hơn.
 * Nếu không xử lý đúng định dạng, chương trình có thể gặp lỗi và xe không bám được làn.
 
+---
+
 ### 🐍 Chuẩn bị file Python
 
 1. Mở **Visual Studio Code**, vào project folder cũ.
@@ -34,6 +36,8 @@ import cv2
 
 image = cv2.imread("image.jpg")
 ```
+
+---
 
 ### 🔁 Đổi sang ảnh xám bằng `cv2.cvtColor`
 
@@ -48,6 +52,8 @@ Lý do phải ghi **BGR** ở đầu: vì định dạng mặc định của Ope
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 ```
 
+---
+
 ### 👁️ Hiển thị ảnh gốc và ảnh xám
 
 Gọi **`cv2.imshow`** hai lần, lần lượt với cửa sổ `"original"` cho ảnh gốc và `"gray color"` cho ảnh xám, rồi giữ cửa sổ bằng **`cv2.waitKey(0)`**:
@@ -59,6 +65,8 @@ cv2.waitKey(0)
 ```
 
 Chạy lên, các bạn thấy cửa sổ ảnh xám và cửa sổ ảnh gốc cạnh nhau.
+
+---
 
 ### 🌈 Thêm một biến đổi sang RGB
 

@@ -30,6 +30,8 @@ Mình tạo biến **cap** và gọi class **`cv2.VideoCapture`** để mở web
 cap = cv2.VideoCapture(0)
 ```
 
+---
+
 ### ☀️ Chỉnh độ sáng
 
 Mình gọi hàm **`set`** để đặt thuộc tính camera. Môi trường thử nghiệm có **độ sáng thấp**, nên cần chỉnh **brightness**.
@@ -37,6 +39,8 @@ Mình gọi hàm **`set`** để đặt thuộc tính camera. Môi trường th�
 ```python
 cap.set(cv2.CAP_PROP_BRIGHTNESS, 100)
 ```
+
+---
 
 ### 📐 Giảm kích thước khung hình
 
@@ -48,6 +52,8 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 ```
 
 Kết quả là khung hình **360 x 240** — nhẹ hơn nhiều so với độ phân giải gốc.
+
+---
 
 ### 🎯 Hàm ROI với polygon
 

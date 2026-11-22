@@ -36,6 +36,8 @@ def exp(base, exp_value):
 
 Sau khi viết xong, lưu file bằng **Ctrl + S**. Chạy file để kiểm tra — không có lỗi nào là ổn.
 
+---
+
 ### 🔗 Dùng module trong file khác
 
 Tạo file mới `main.py`, import module và đặt bí danh:
@@ -55,6 +57,8 @@ print(m.exp(2, 3))
 ```
 
 Kết quả: `8`, tức `2` mũ `3`.
+
+---
 
 ### 💡 Điều rút ra
 

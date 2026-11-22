@@ -20,6 +20,8 @@ Chào các bạn! Adagrad làm learning rate động nhưng có tật: trong m�
 
 Adagrad chia learning rate cho `sqrt(alpha_t + epsilon)`, với `alpha_t = Σ (∂loss/∂w)²` cộng dồn **toàn bộ** quá khứ. Vì cộng dồn mãi và còn bình phương, `alpha_t` tăng không giới hạn → learning rate động teo dần về `0` → không cập nhật được weight → không hội tụ.
 
+---
+
 ### 🩹 Cách sửa: thay tổng cộng dồn bằng trung bình có trọng số
 
 RMSprop/Adadelta thay `alpha_t` bằng một đại lượng **`s_dw(t)`** được làm mượt bằng **exponential weighted average**:
@@ -35,6 +37,8 @@ s_dw(t) = beta * s_dw(t-1) + (1 - beta) * (∂loss/∂w(t-1))²
 
 Điểm mấu chốt: `s_dw` **không cộng dồn vô hạn** như `alpha_t`, mà chỉ là trung bình có trọng số → **không phình lên mãi** → learning rate không bị bóp về 0.
 
+---
+
 ### ✅ Hai thứ RMSprop/Adadelta đem lại
 
 1. **Vẫn giữ learning rate động** (lớn lúc đầu, nhỏ dần khi gần đích).
@@ -46,9 +50,13 @@ Weight vẫn cập nhật theo công thức quen thuộc với learning rate đ�
 w(t) = w(t-1) - lr' * (∂loss/∂w(t-1))
 ```
 
+---
+
 ### 🤔 Adadelta và RMSprop khác gì nhau
 
 Về cơ chế gần như **giống hệt**. Hai cái tên đến từ **hai nhóm nghiên cứu khác nhau**, chỉ khác chút ít trong công thức — nhưng cách vận hành tương đương.
+
+---
 
 ### ⚠️ Điều còn thiếu
 

@@ -20,6 +20,8 @@ Chào các bạn! Bài cuối của chặng lý thuyết CNN: một ví dụ tr�
 
 Ví dụ dùng ảnh **zebra (ngựa vằn)** — ảnh **RGB** nên có **3 channel** (khác MNIST grayscale 1 channel). Mọi thứ còn lại vận hành y hệt phần lý thuyết đã học.
 
+---
+
 ### 🔁 Pipeline: conv + ReLU + pooling lặp lại
 
 Cấu trúc trong ví dụ:
@@ -33,9 +35,13 @@ conv + ReLU → pool
 
 Nhấn mạnh: **mỗi "convolution layer" = convolution + ReLU**. Trong ví dụ có **3 convolution layer** ghép với pooling, xếp chồng theo chiều ngang.
 
+---
+
 ### 🗺️ Feature map
 
 Output của mỗi filter sau convolution (và qua ReLU) được gọi là **feature map** — một bản đồ ghi lại đặc trưng mà filter đó phát hiện (cạnh, pattern, hình dạng…). Nhiều filter → nhiều feature map.
+
+---
 
 ### 🧪 Feature extraction vs classification
 
@@ -49,9 +55,13 @@ Feature extraction:  input → [conv+pool] × 3
 Classification:      flatten → FC → output(softmax)
 ```
 
+---
+
 ### 🎯 Output và softmax
 
 Giả sử cần phân biệt **3 lớp** (horse, zebra, dog) thì output layer có **3 neuron**, áp **softmax** để ra **xác suất** từng lớp — lớp xác suất cao nhất là dự đoán.
+
+---
 
 ### 🔄 Train và backpropagation
 

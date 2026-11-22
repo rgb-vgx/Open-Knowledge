@@ -28,6 +28,8 @@ new_pixel = alpha × pixel_1 + beta × pixel_2 + gamma
 * `beta` càng lớn thì ảnh thứ hai càng hiện rõ.
 * `gamma` là hệ số cộng thêm tùy chọn.
 
+---
+
 ### 📥 Chuẩn bị hai ảnh
 
 ```python
@@ -51,6 +53,8 @@ img2 = cv2.resize(img2, (1200, 1200))
 
 Resize sẽ làm ảnh dog backpack bị méo — chấp nhận trong ví dụ này, vì mục tiêu là thấy cách blend hoạt động.
 
+---
+
 ### ⚖️ Blend hai ảnh cùng kích thước
 
 ```python
@@ -69,6 +73,8 @@ blended = cv2.addWeighted(src1=img1, alpha=0.8,
 ```
 
 Lúc này gần như chỉ còn thấy ảnh dog backpack. `alpha` và `beta` là hai tham số quan trọng nhất; `gamma` có thể thử thêm nhưng thường ít ảnh hưởng hơn.
+
+---
 
 ### 📌 Overlay ảnh nhỏ lên ảnh lớn
 
@@ -99,6 +105,8 @@ Cách đọc:
 Lưu ý thứ tự slice hơi ngược trực giác: NumPy coi **hàng là trục Y**, **cột là trục X**, nên phải viết `large_img[y_offset:y_end, x_offset:x_end]`. Ở đây ta không blend gì cả, chỉ thay hẳn pixel của vùng đó bằng ảnh nhỏ.
 
 Có thể viết gọn trong một dòng thay vì tách `x_end`, `y_end`; trong bài tách ra chỉ để dễ đọc.
+
+---
 
 ### 💡 Tóm tắt
 

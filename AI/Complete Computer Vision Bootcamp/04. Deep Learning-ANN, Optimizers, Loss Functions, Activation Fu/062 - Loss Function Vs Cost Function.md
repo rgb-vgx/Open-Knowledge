@@ -22,6 +22,8 @@ Mạng **two-layer**: input `X1, X2, X3` → hidden layer → output layer. Forw
 
 Mình khuyên khi luyện tập nên **vẽ lại sơ đồ** mạng liên tục — vẽ nhiều sẽ hiểu sâu hơn.
 
+---
+
 ### 1️⃣ Loss function: cập nhật theo từng điểm
 
 **Loss function** lấy **một điểm dữ liệu**, chạy forward propagation, ra `y_hat`, tính sai số rồi **backpropagate ngay** để cập nhật weights. Với **mean squared error** (dạng đơn điểm):
@@ -31,6 +33,8 @@ loss = (y - y_hat)²
 ```
 
 Mỗi điểm dữ liệu → một lần forward + backward → một lần cập nhật weights.
+
+---
 
 ### 2️⃣ Cost function: gộp toàn bộ (hoặc cả batch)
 

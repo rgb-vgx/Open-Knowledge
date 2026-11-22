@@ -25,12 +25,16 @@ Sau khi đã định dạng thẻ SD, việc tiếp theo là lấy image hệ đ
 5. Bấm vào file image để tải. Trong bài, file này hiển thị màu xanh lá.
 6. Đợi tải xong, các bạn sẽ có một file **.zip** của image.
 
+---
+
 ### 🔧 Cài Balena Etcher
 
 1. Lên Google, gõ **Balena etcher** rồi Enter.
 2. Vào trang web có tên miền **balena.io**.
 3. Bấm **Download for Windows** và đợi tải xong file setup.
 4. Chạy file setup, đọc license agreement rồi bấm **Accept this agreement**.
+
+---
 
 ### ⚡ Flash image vào thẻ SD
 

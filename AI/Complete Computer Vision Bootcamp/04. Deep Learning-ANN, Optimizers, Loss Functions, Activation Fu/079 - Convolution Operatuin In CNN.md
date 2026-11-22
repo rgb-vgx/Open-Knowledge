@@ -28,6 +28,8 @@ Lấy ảnh **6×6 grayscale** → kích thước `6 × 6 × 1`. Giả sử ch�
 
 Sau normalize, ảnh chỉ còn `0` và `1`.
 
+---
+
 ### 🧮 Convolution hoạt động thế nào
 
 Dùng **filter 3×3**. Filter trượt qua ảnh, tại mỗi vị trí **nhân từng ô của filter với ô ảnh tương ứng rồi cộng tất cả** — ra một số, ghi vào output.
@@ -51,6 +53,8 @@ Với ảnh ví dụ, output thu được có dạng:
  0  -4  -4   0
 ```
 
+---
+
 ### 🔎 Đọc kết quả: filter đã làm gì
 
 Nếu "denormalize" output về thang gốc để dễ hình dung: `0` (lớn nhất) thành trắng `255`, `-4` (nhỏ nhất) thành đen `0`. Kết quả là một ảnh có **dải đen dọc** đúng chỗ có **cạnh dọc** của ảnh gốc.
@@ -61,6 +65,8 @@ Vậy filter này **tìm ra cạnh dọc** — nên gọi là **vertical edge fi
 Ảnh gốc (có cạnh dọc)  ──filter dọc──►  ảnh làm nổi cạnh dọc
 ```
 
+---
+
 ### 🧰 Nhiều filter, nhiều thông tin
 
 * **Horizontal edge filter** bắt cạnh ngang — chỉ cần đổi bố cục giá trị filter.
@@ -68,6 +74,8 @@ Vậy filter này **tìm ra cạnh dọc** — nên gọi là **vertical edge fi
 * Kích thước filter không nhất thiết 3×3 — có thể **5×5, 7×7**.
 
 Lưu ý quan trọng: các giá trị filter ở đây chỉ để minh họa. Trong CNN thực tế, **filter không được đặt tay** mà **khởi tạo ngẫu nhiên**, rồi **cập nhật qua forward và backward propagation** — mạng tự học ra filter phù hợp.
+
+---
 
 ### 📏 Kích thước output
 

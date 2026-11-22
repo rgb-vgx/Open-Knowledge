@@ -26,6 +26,8 @@ Tạo biến **mask** bằng **`np.zeros_like`**, truyền vào ảnh chính **i
 mask = np.zeros_like(img)
 ```
 
+---
+
 ### 🖌️ Tô polygon bằng `fillPoly`
 
 Hàm **`cv2.fillPoly`** dùng để tô bên trong polygon bằng một màu cụ thể — rất phổ biến trong xử lý ảnh và thị giác máy tính. Hàm nhận **ba tham số**:
@@ -40,6 +42,8 @@ cv2.fillPoly(mask, polygons, 255)
 
 Sau lệnh này, vùng đa giác trên nền đen trở thành màu trắng.
 
+---
+
 ### 🔗 Cắt ảnh bằng `bitwise_and`
 
 Tạo biến **masked_image**. Hàm **`cv2.bitwise_and`** thực hiện phép AND bit giữa hai ảnh, hoặc giữa một ảnh và một mask. Hàm nhận **hai tham số**:
@@ -52,6 +56,8 @@ masked_image = cv2.bitwise_and(img, mask)
 ```
 
 Kết quả: chỉ phần nằm trong polygon còn giữ nguyên, phần ngoài bị đen hoá.
+
+---
 
 ### ▶️ Hàm trả về và khối main
 

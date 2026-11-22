@@ -21,6 +21,8 @@ Chào các bạn! Ở bài trước mình đã điểm qua bounding box; lần n
 
 Box giúp **định vị** và **nhận diện** object trong ảnh nhờ cung cấp **toạ độ không gian**. Muốn vẽ được hình chữ nhật, tối thiểu các bạn cần bốn con số. Không có chúng thì không thể dựng box.
 
+---
+
 ### 📐 Corner Format — bốn góc
 
 Định dạng này dùng bốn toạ độ:
@@ -34,6 +36,8 @@ Ví dụ mình lấy bộ số `50, 30, 200, 180`:
 * bottom-right = `(200, 180)`.
 
 Ghép cặp `(x, y)` này lại là vẽ được hình chữ nhật, và bên trong nó là object cần tìm. Rất trực quan.
+
+---
 
 ### 🎯 Center Format — tâm cộng kích thước
 
@@ -49,6 +53,8 @@ Ví dụ với bộ số `125, 105, 150, 150`:
 * `width = 150`, `height = 150`.
 
 Từ tâm và kích thước, các bạn cũng dựng lại được hình chữ nhật y hệt.
+
+---
 
 ### ⚖️ Định dạng nào đang được dùng?
 

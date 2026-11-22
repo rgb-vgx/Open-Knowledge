@@ -23,6 +23,8 @@ Chào các bạn! **Faster R-CNN** là kiến trúc đến nay vẫn được d�
 4. **Fully connected layers** — feature cố định đi qua lớp FC.
 5. **Hai nhánh song song** — **classification head** (dog, car, person…) và **regression head** (toạ độ bounding box).
 
+---
+
 ### 🔍 RPN hoạt động thế nào?
 
 RPN là một **CNN hoàn chỉnh, tách biệt** nằm bên trong Faster R-CNN — trong một mạng lại có một mạng con. Cơ chế:
@@ -35,6 +37,8 @@ RPN là một **CNN hoàn chỉnh, tách biệt** nằm bên trong Faster R-CNN 
 
 Trong đó **k là số anchor tại mỗi vị trí**. Theo paper gốc, mặc định **k = 9** (3 scale × 3 aspect ratio).
 
+---
+
 ### ⚓ Anchor Boxes
 
 Anchor có thể hình dung như một sliding window nhưng gắn với **scale** và **aspect ratio** cụ thể. Vì object trong ảnh có thể **nhỏ, lớn, hẹp, rộng**, ta cần nhiều anchor để "phủ" các trường hợp đó.
@@ -43,12 +47,16 @@ Với feature map kích thước **W×H**, mỗi vị trí có **k anchor**, nê
 
 Đừng nhầm nhé: **2k** ở đây không phải 2000; nó là `2 × số anchor` (2 lớp foreground/background cho mỗi anchor).
 
+---
+
 ### ✅ Ưu điểm
 
 * **Độ chính xác detection cao**.
 * **Train end-to-end** — có thể train cả mạng một lần; cũng có thể train RPN riêng.
 * **RPN thay selective search** — region proposal giờ học được, hiệu quả hơn.
 * **Xử lý được nhiều object và nhiều scale** nhờ anchor boxes.
+
+---
 
 ### ⚠️ Nhược điểm
 

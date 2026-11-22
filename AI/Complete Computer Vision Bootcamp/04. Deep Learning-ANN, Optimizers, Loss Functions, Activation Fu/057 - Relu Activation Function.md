@@ -28,6 +28,8 @@ ReLU(x) = max(0, x)
 
 Đạo hàm cũng đơn giản: **hoặc `1`, hoặc `0`**. Với `x > 0` thì `1` (và giá trị đạo hàm giữ nguyên `1`); với `x < 0` thì `0`.
 
+---
+
 ### 🛠️ Vì sao ReLU sửa được vanishing gradient
 
 Nhìn lại chain rule khi cập nhật `W2` trên mạng nhiều lớp. Trước đây mắt xích `∂(activation)/∂Z` nằm trong `0..0.25` (sigmoid) hay `0..1` (tanh), nên nhân dồn là teo dần.
@@ -38,6 +40,8 @@ Với ReLU, mắt xích này chỉ nhận **`0` hoặc `1`**:
 * Nếu là **`0`**: xem phần dưới.
 
 Vậy là gradient không còn bị bóp nhỏ một cách hệ thống → vanishing gradient được khắc phục.
+
+---
 
 ### 💀 Nhược điểm: dead neuron
 
@@ -69,6 +73,8 @@ Z < 0  →  ReLU'(Z) = 0  →  dead neuron
 | Nhanh hơn sigmoid và tanh | |
 
 Vì là hàm tuyến tính từng khúc, cả forward lẫn backward đều là đường thẳng nên **tính toán nhanh hơn hẳn** sigmoid và tanh.
+
+---
 
 ### 🔜 Hướng khắc phục dead neuron
 

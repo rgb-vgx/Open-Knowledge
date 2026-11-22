@@ -36,6 +36,8 @@ PReLU(x) = max(alpha * x, x)
 
 Ở đây **alpha là hyperparameter**, giá trị có thể `0.01`, `0.02`, `0.03`… tùy bài toán, chọn bằng **hyperparameter tuning**. Cố định `alpha = 0.01` thì gọi là **Leaky ReLU**; để alpha tự do thì gọi là **Parametric ReLU**.
 
+---
+
 ### 📐 Đạo hàm không còn bằng 0
 
 Vì nhánh âm có độ dốc nhỏ, đạo hàm với `x < 0` là **một số dương nhỏ** thay vì `0`; với `x > 0` vẫn là `1`.
@@ -47,10 +49,14 @@ x < 0  →  đạo hàm = alpha (nhỏ, dương)  ≠ 0
 
 Nhờ đó trong **backpropagation** không bao giờ gặp đạo hàm `0` → **dead neuron được khắc phục**. Vì đạo hàm dương nhỏ chứ không bóp về 0, **vanishing gradient** cũng được xử lý.
 
+---
+
 ### ✅ Ưu điểm
 
 * **Thừa hưởng toàn bộ ưu điểm của ReLU.**
 * **Không còn dead ReLU.** Giải được cả vanishing gradient lẫn dead neuron — nên về lý thuyết tốt hơn ReLU.
+
+---
 
 ### ⚠️ Lưu ý
 

@@ -23,6 +23,8 @@ Chào các bạn, bài này mình thực hành cả ba nhóm toán tử vừa h�
 3. Bấm **Open**.
 4. Tạo file mới tên `operators1.py` và Enter.
 
+---
+
 ### ➕ Thực hành toán tử số học
 
 Mình khai báo `x = 5`, `y = 3` rồi làm các phép tính:
@@ -44,6 +46,8 @@ t = p % 1   # 0
 
 Vì `2 % 1` bằng `0`, nên biến `t` nhận giá trị `0`.
 
+---
+
 ### 📥 Thực hành toán tử gán
 
 Tạo hai biến `a = 2`, `b = 3`. Muốn cộng thêm vào chính biến `a`, dùng toán tử **add and assign**:
@@ -54,6 +58,8 @@ b *= 3   # b = 9
 ```
 
 Sau `a += 2`, biến `a` thành `4`. Sau `b *= 3`, biến `b` thành `9`. Chạy code không có lỗi — các phép toán này khá đơn giản.
+
+---
 
 ### ⚖️ Thực hành toán tử so sánh
 

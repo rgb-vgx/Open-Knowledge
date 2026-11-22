@@ -26,6 +26,8 @@ Chào các bạn, bài trước mình đã biết cách import module. Bài này
 
 Mỗi module chứa các hàm, biến hoặc nhóm chức năng khác nhau.
 
+---
+
 ### 🛠️ Tự tạo module
 
 Muốn có module riêng, các bạn chỉ cần tạo một file Python và định nghĩa các cấu trúc bên trong. Ví dụ file module có hai hàm: một hàm chào người dùng, một hàm tính bình phương của một số.
@@ -40,6 +42,8 @@ mymodule.square(5)
 ```
 
 Sau khi import, mọi cấu trúc trong module đều dùng được qua cú pháp `tên_module.tên_cấu_trúc`. Ở đây hàm chào nhận một chuỗi, hàm bình phương nhận một số nguyên.
+
+---
 
 ### 💡 Vì sao tách module
 

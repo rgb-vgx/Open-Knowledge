@@ -22,6 +22,8 @@ Python có nhiều module đi kèm, và cũng có thể tải thêm module khác
 
 Trong Python, module là một file chứa các định nghĩa và câu lệnh Python: hàm, class, biến và code khác, có thể được chương trình khác dùng thông qua **import**. Đây là nền của cách lập trình theo module trong Python, giúp tái sử dụng code, tổ chức gọn và tách bạch trách nhiệm.
 
+---
+
 ### ⬇️ Cách 1: import cả module
 
 Dùng từ khóa `import`, sau đó là tên module:
@@ -34,6 +36,8 @@ print(math.pi)
 
 Gọi một thành phần trong module thì viết tên module trước, dấu chấm, rồi tên thành phần. Ở đây `pi` là hằng số π.
 
+---
+
 ### 🎯 Cách 2: from … import
 
 Nếu chỉ cần vài thành phần, không cần nạp cả module:
@@ -45,6 +49,8 @@ print(pi)
 ```
 
 Lúc này gọi trực tiếp `pi` mà không cần tiền tố `math.`. Lưu ý: chỉ những thành phần đã khai báo mới dùng được — ví dụ đã `from math import pi` thì không còn dùng được các thành phần khác qua tên `math`.
+
+---
 
 ### ✂️ Cách 3: đặt bí danh bằng as
 

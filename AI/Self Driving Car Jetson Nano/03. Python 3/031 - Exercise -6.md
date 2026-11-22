@@ -35,6 +35,8 @@ control1 = False
 
 Chạy lại, dòng bên trong `if` không được in — điều kiện sai nên khối lệnh bị bỏ qua.
 
+---
+
 ### 🔁 Thêm nhánh else
 
 Khi điều kiện `if` sai, ta có thể xử lý bằng `else`:
@@ -49,6 +51,8 @@ else:
 ```
 
 Kết quả: `I am in the else condition`, vì `control1` bằng `False` nên chương trình nhảy vào khối `else`.
+
+---
 
 ### ⚖️ So sánh hai số
 
@@ -65,6 +69,8 @@ else:
 ```
 
 Kết quả là `y is greater than x`, đúng với `7 > 5`. Khi đổi `x` thành `10` và chạy lại, kết quả đổi thành `x is greater than y`.
+
+---
 
 ### 💡 Điều cần nhớ
 

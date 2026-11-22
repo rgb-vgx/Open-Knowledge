@@ -20,6 +20,8 @@ Chào các bạn! Bài này ghép toàn bộ các mảnh CNN lại thành **ki�
 
 Ảnh đầu vào là **grayscale 28×28**, nên kích thước **`28 × 28 × 1`** (số 1 là số channel). Mục tiêu: dự đoán ảnh chứa chữ số nào (0–9).
 
+---
+
 ### 🔁 Chuỗi conv + pooling
 
 **Convolution layer 1** — filter **5×5**, có `N1` filter, **không padding** (*valid padding*):
@@ -56,6 +58,8 @@ Như vậy **mỗi lần conv + maxpool** vừa **giảm kích thước**, vừa
 28×28 → conv → 24×24 → pool → 12×12 → conv → 8×8 → pool → 4×4
 ```
 
+---
+
 ### 📏 Flattening
 
 Sau các lớp conv/pool, ta có nhiều **feature map** (mỗi filter một map, kích thước `4×4`). **Flatten** "trải dài" mỗi feature map thành một vector một chiều:
@@ -65,6 +69,8 @@ Sau các lớp conv/pool, ta có nhiều **feature map** (mỗi filter một map
 ```
 
 Nối các vector lại (feature map 1, map 2, …) thành **một vector phẳng** duy nhất.
+
+---
 
 ### 🧠 Fully Connected Layer
 
@@ -76,9 +82,13 @@ Sau đó tới **output layer (dense)**. Với MNIST có **10 lớp (0–9)**, o
 conv → pool → conv → pool → flatten → fully connected → output (softmax)
 ```
 
+---
+
 ### 🔄 Huấn luyện
 
 Toàn bộ mạng chạy forward propagation, tính **loss**, rồi **backpropagation** cập nhật **cả giá trị filter** lẫn weights của fully connected layer. Optimizer có thể dùng **Adam** như đã học. Vì đâu đâu cũng dùng ReLU nên việc lấy đạo hàm thuận lợi.
+
+---
 
 ### ➡️ Tiếp theo
 

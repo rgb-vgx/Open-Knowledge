@@ -22,6 +22,8 @@ Một **convolution layer** = **phép convolution** (ảnh × filter) **+ ReLU**
 
 Ví dụ: ảnh `4×4`, không padding, stride `1`, filter `2×2` → output `3×3` (`4 - 2 + 1 = 3`), rồi áp ReLU. Toàn bộ thao tác đó là **một convolution layer**. ReLU cần thiết để **lấy được đạo hàm** khi backpropagate và cập nhật giá trị filter.
 
+---
+
 ### 🎯 Max pooling làm gì
 
 Sau convolution layer, ta áp một **pooling** **riêng** (không thuộc convolution layer). Với **max pooling 2×2, stride 2**:
@@ -43,6 +45,8 @@ Max pooling quét các ô `2×2`, **lấy giá trị lớn nhất**:
 
 Kết quả: `4, 6, 8, 4` — **khuếch đại** pixel có cường độ mạnh nhất (đặc trưng nổi bật) và **giảm kích thước**.
 
+---
+
 ### 🧭 Vì sao max pooling: location invariance
 
 **Location invariance** nghĩa là: dù đặc trưng nằm ở **đâu trong ảnh**, max pooling vẫn **bắt được nó**.
@@ -53,6 +57,8 @@ Ví dụ minh họa:
 * Ảnh nhiều ô tô, filter bắt **bánh xe tròn**; max pooling vẫn **trích được bánh xe** bất kể vị trí.
 
 Nó "cô đọng" những thông tin quan trọng nhất từ output của mỗi filter.
+
+---
 
 ### 🔀 Các loại pooling khác
 
@@ -67,6 +73,8 @@ Average : mean(ô)     → giá trị trung bình
 ```
 
 Chọn loại nào **tùy use case**. Trong phần lớn kiến trúc, ta thấy **convolution layer + max pooling** xếp chồng nhiều lần để trích ngày càng nhiều thông tin; pooling áp cho **mọi output** của mọi filter.
+
+---
 
 ### 🔜 Tiếp theo
 

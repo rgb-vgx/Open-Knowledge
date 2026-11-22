@@ -27,6 +27,8 @@ if control1:
 
 Chạy được kết quả `I am in the condition`. Sau khi đổi `control1 = False` và chạy lại, dòng trong `if` không còn xuất hiện vì điều kiện sai.
 
+---
+
 ### 🔁 Bước 2: bổ sung else
 
 ```python
@@ -42,6 +44,8 @@ Kết quả `I am in the else condition`. Lý do: `control1` là `False`, chươ
 
 Lưu ý khi gõ: ở cuối dòng `if`/`else` phải có dấu hai chấm; Enter sau dấu hai chấm, VS Code tự thụt lề 4 dấu cách.
 
+---
+
 ### ⚖️ Bước 3: so sánh hai giá trị
 
 ```python
@@ -55,6 +59,8 @@ else:
 ```
 
 Với `5` và `7`, kết quả là `y is greater than x`. Đổi `x` thành `10` rồi chạy lại, kết quả thành `x is greater than y`.
+
+---
 
 ### ✅ Kiểm tra
 

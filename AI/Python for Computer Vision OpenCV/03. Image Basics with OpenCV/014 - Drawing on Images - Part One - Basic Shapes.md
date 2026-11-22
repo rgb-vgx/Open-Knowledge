@@ -30,6 +30,8 @@ plt.imshow(blank_img)
 
 `512 × 512` là kích thước đủ nhỏ để hiển thị, `3` là số kênh màu. Vì mọi giá trị đều bằng 0 nên ảnh hiện ra **đen tuyệt đối**.
 
+---
+
 ### ▭ Vẽ rectangle
 
 ```python
@@ -53,6 +55,8 @@ Chỉ cần hai góc, OpenCV tự nối các cạnh theo phương ngang và dọ
 
 Nếu đặt các điểm quá sát biên, độ dày sẽ trông không đều: nét vẽ tính từ giữa đường rồi lan ra hai bên, nên phần bị biên cắt mất không hiện đủ. Dịch các điểm vào trong một chút (ví dụ `10` thay cho `0`, `500` thay cho `510`) sẽ cho các cạnh đều hơn.
 
+---
+
 ### ⬜ Hình vuông ở giữa ảnh
 
 ```python
@@ -67,6 +71,8 @@ plt.imshow(blank_img)
 ```
 
 Với ảnh `512 × 512`, cặp `(200, 200)` và `(300, 300)` cho một hình vuông nằm giữa ảnh, các cạnh đều nhau.
+
+---
 
 ### ⭕ Vẽ circle
 
@@ -104,6 +110,8 @@ cv2.circle(
 ```
 
 Với hình chữ nhật cũng áp dụng y hệt: `thickness=-1` là tô kín.
+
+---
 
 ### 📏 Vẽ line
 

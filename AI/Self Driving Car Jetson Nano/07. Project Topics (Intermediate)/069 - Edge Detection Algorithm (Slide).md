@@ -25,6 +25,8 @@ Chào các bạn, bài này mình sẽ nói về thuật toán phát hiện biê
 
 Với dự án của mình, Canny là bước đầu tiên để biến khung hình camera thành những đường biên rõ ràng của vạch đường.
 
+---
+
 ### 🎨 Phải chuyển ảnh sang ảnh xám trước
 
 Trước khi phát hiện biên, mình cần thay đổi ảnh đầu vào — cụ thể là chuyển sang **grayscale**.
@@ -41,6 +43,8 @@ img = cv2.imread("image.jpeg", 0)
 ```
 
 Chỉ cần vậy là biến **img** đã ở định dạng ảnh xám, sẵn sàng cho bước phát hiện biên — dùng được cho cả ảnh tĩnh lẫn webcam.
+
+---
 
 ### ⚙️ Hàm Canny và ba tham số
 

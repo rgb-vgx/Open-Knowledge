@@ -19,6 +19,8 @@ Chào các bạn! Bài này mình cài đặt **U-Net từ đầu** và train tr
 
 Mình dùng bộ **human segmentation** trên GitHub (tác giả Vikram Shenoy) — bài toán **semantic segmentation** một class `person`. Ảnh trong `training_images/` (`.jpg`), mask trong `ground_truth/` (`.png`): người **trắng**, nền **đen**. Mask được tạo bằng API xoá nền nên còn nhiễu. Mình **clone repo** vào Colab (runtime **T4 GPU**) thay vì tải ZIP.
 
+---
+
 ### 🗂️ Custom Dataset
 
 ```python
@@ -53,6 +55,8 @@ class SegmentationDataset(Dataset):
 
 `DataLoader` bọc dataset, mặc định `batch_size=2`, `shuffle=True`.
 
+---
+
 ### 🧱 Kiến trúc U-Net
 
 **DoubleConv** — hai block `Conv2d(3×3, padding=1) + ReLU`:
@@ -83,6 +87,8 @@ out: Conv2d(64, num_classes, kernel_size=1)
 
 Forward: `down1..down4` giữ lại feature skip; `b = bottleneck(p4)`; rồi `up1(b, down4)`, `up2(up1, down3)`, `up3(up2, down2)`, `up4(up3, down1)`, cuối cùng `out(up4)`.
 
+---
+
 ### 🎯 Loss: Dice + BCE
 
 ```python
@@ -104,6 +110,8 @@ return 0.5 * bce_loss + dice_loss
 
 Transcript đặt **BCE chỉ bằng nửa Dice** để ưu tiên vùng giao pixel — đúng tinh thần segmentation. Có thể chỉnh trọng số tuỳ bài.
 
+---
+
 ### 🔁 Training loop
 
 1. Chọn `device = cuda` nếu có.
@@ -113,6 +121,8 @@ Transcript đặt **BCE chỉ bằng nửa Dice** để ưu tiên vùng giao pix
 5. In loss trung bình; lưu model mỗi 10 epoch và lưu `model_final.pt` khi xong.
 
 Với batch size 8 trên T4, mỗi epoch mất khoảng **1 phút 15 giây**.
+
+---
 
 ### 🔮 Inference
 

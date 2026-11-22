@@ -24,12 +24,16 @@ Chào các bạn, bài này mình sẽ nói về **thresholding** — kỹ thu�
 
 Với đường cao tốc, thresholding giúp mình chỉ giữ lại phần **đen và trắng** — tức là vạch kẻ và mặt đường.
 
+---
+
 ### ⚙️ Hàm `threshold` và hai giá trị trả về
 
 Hàm cần dùng tên là **`cv2.threshold`**. Hàm trả về **hai giá trị**:
 
 1. Giá trị đầu tiên — **không quan trọng**, mình thường không dùng, nên gán cho dấu gạch dưới **`_`**.
 2. Giá trị thứ hai — **rất quan trọng**: đây là ma trận kết quả của phép thresholding (biến kiểu `threshold_image`).
+
+---
 
 ### 🔢 Bốn tham số của hàm
 
@@ -45,6 +49,8 @@ _, threshold_image = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
 ```
 
 Kết quả là một ảnh nhị phân: chỉ còn hai mức đen và trắng, làm nổi bật những vùng sáng như vạch kẻ đường.
+
+---
 
 ### 🖼️ Nhìn kết quả trên ảnh xám
 

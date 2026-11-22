@@ -28,6 +28,8 @@ import cv2
 image = cv2.imread("image.jpg")
 ```
 
+---
+
 ### 🔧 Hàm `cv2.circle` và năm tham số
 
 Hàm **circle** cũng nhận **năm tham số**:
@@ -37,6 +39,8 @@ Hàm **circle** cũng nhận **năm tham số**:
 3. **Bán kính** (radius) tính bằng pixel. Ví dụ `30`; nếu để `5` thì hình tròn rất nhỏ.
 4. **Màu** của hình tròn, dạng tuple.
 5. **Độ dày** (thickness) của nét vẽ, ví dụ `3` pixel.
+
+---
 
 ### 🎨 Khai báo màu trắng
 
@@ -48,6 +52,8 @@ white = (255, 255, 255)
 cv2.circle(image, (100, 80), 30, white, 3)
 ```
 
+---
+
 ### 👁️ Hiển thị và kiểm tra kết quả
 
 Hiển thị bằng **`cv2.imshow`** với cửa sổ `"circle"`, rồi giữ cửa sổ bằng **`cv2.waitKey(0)`**:
@@ -58,6 +64,8 @@ cv2.waitKey(0)
 ```
 
 Chạy code, các bạn sẽ thấy một hình tròn màu trắng vẽ trên ảnh gốc.
+
+---
 
 ### 🔍 Thử thay đổi tham số
 

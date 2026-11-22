@@ -31,6 +31,8 @@ greetings("Yilmaz")
 
 Kết quả: `Hello Yilmaz`.
 
+---
+
 ### ➕ Hàm cộng hai số
 
 ```python
@@ -47,6 +49,8 @@ print(add)
 ```
 
 Lúc này terminal hiện `60`.
+
+---
 
 ### 📏 Hàm đếm số phần tử của list
 

@@ -22,6 +22,8 @@ Chào các bạn, bài coding exercise này mình gõ lại toàn bộ ví dụ 
 2. **File → Open Folder**, chọn thư mục **Python Basics**, bấm **Open**.
 3. Trong project, tạo file mới `operators1.py`.
 
+---
+
 ### 🔢 Nhóm số học
 
 Khai báo hai biến và tính:
@@ -44,6 +46,8 @@ t = p % 1   # 0
 
 `p % 1` cho phần dư `0`, nên `t` bằng `0`.
 
+---
+
 ### 📥 Nhóm gán
 
 ```python
@@ -55,6 +59,8 @@ b *= 3   # b = 9
 ```
 
 `a += 2` cộng thêm `2` vào `a`; `b *= 3` nhân `b` với `3`. Chạy file không báo lỗi.
+
+---
 
 ### ⚖️ Nhóm so sánh
 

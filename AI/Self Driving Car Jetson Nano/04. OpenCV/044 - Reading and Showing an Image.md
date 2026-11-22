@@ -24,6 +24,8 @@ Chào các bạn, bài này mình sẽ cùng làm quen với thư viện **OpenC
 
 Hiểu điều này sẽ giúp các bạn dễ hình dung vì sao về sau mình đọc và xử lý ảnh chủ yếu là thao tác trên các con số.
 
+---
+
 ### 📥 Tải một ảnh mẫu từ Pexels
 
 1. Mở Google, truy cập **pexels.com**.
@@ -31,6 +33,8 @@ Hiểu điều này sẽ giúp các bạn dễ hình dung vì sao về sau mình
 3. Chọn một ảnh ưng ý, vào mục **free download**.
 4. Ở phần **custom size**, đặt kích thước **500 x 500**, rồi bấm **download selected size**.
 5. Kéo file ảnh vừa tải ra **Desktop**.
+
+---
 
 ### 🐍 Tạo project Python và import cv2
 
@@ -49,6 +53,8 @@ print(cv2.__version__)
 
 Chạy thử, mình thấy in ra **4.1.4** — đây là phiên bản OpenCV đang dùng trong bài.
 
+---
+
 ### 📖 Đọc ảnh bằng `cv2.imread`
 
 Tạo một biến mới, ví dụ **image**, rồi gọi hàm **imread**. Tham số bắt buộc là tên file kèm phần mở rộng, dạng **chuỗi**; hàm còn có tham số tùy chọn `flags` (bài này dùng mặc định).
@@ -61,6 +67,8 @@ print(image)
 ```
 
 Chạy code không báo lỗi, và khi in biến **image** ra các bạn sẽ thấy dữ liệu ảnh đã được đọc thành công.
+
+---
 
 ### 👁️ Hiển thị ảnh bằng `imshow` và `waitKey`
 

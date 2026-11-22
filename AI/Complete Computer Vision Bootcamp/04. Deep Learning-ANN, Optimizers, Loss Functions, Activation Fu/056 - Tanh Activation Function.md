@@ -24,14 +24,20 @@ tanh(z) = (e^z - e^(-z)) / (e^z + e^(-z))
 
 với `z = Σ(WᵀX) + b`. Tanh biến đổi `z` về khoảng **-1 đến +1** (thay vì `0..1` như sigmoid). Đường cong của tanh và sigmoid khá giống nhau, chỉ khác dải giá trị.
 
+---
+
 ### 📐 Đạo hàm: 0..1
 
 Điểm khác biệt then chốt: **đạo hàm của tanh nằm trong `0..1`**, rộng hơn nhiều so với `0..0.25` của sigmoid. Đó là tiến bộ, nhưng chưa đủ.
+
+---
 
 ### ✅ Ưu điểm
 
 * Output **-1..+1**.
 * **Zero-centric** (đi qua gốc 0) — tốt hơn hẳn sigmoid. Nhớ lại: hàm zero-centered giúp **cập nhật weights hiệu quả hơn** khi dùng gradient descent.
+
+---
 
 ### ❌ Vẫn còn vấn đề
 
@@ -42,6 +48,8 @@ với `z = Σ(WᵀX) + b`. Tanh biến đổi `z` về khoảng **-1 đến +1**
 sigmoid:  output 0..1    đạo hàm 0..0.25   không zero-centered
 tanh:     output -1..1   đạo hàm 0..1      zero-centered
 ```
+
+---
 
 ### ➡️ Bước tiếp theo
 

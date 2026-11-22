@@ -25,6 +25,8 @@ YOLO11 là một phiên bản ổn định trong dòng YOLO của **Ultralytics*
 
 Có **YOLOv12** dùng **transformer backend** để trích feature, nhưng theo transcript, **YOLO11 vẫn nhỉnh hơn**: inference nhanh hơn và độ chính xác tốt hơn. Vì vậy khoá học chọn YOLO11.
 
+---
+
 ### 🛠️ GitHub hay CLI?
 
 Hai cách dùng YOLO11:
@@ -40,6 +42,8 @@ from ultralytics import YOLO
 
 Package pip có thể chậm hơn GitHub vài tính năng mới, nhưng đủ cho train/inference — và các bản cập nhật rồi cũng được đưa lên package.
 
+---
+
 ### 🏷️ Chuẩn bị dataset
 
 Trên **Roboflow**:
@@ -52,6 +56,8 @@ Trên **Roboflow**:
 6. Tải về định dạng **YOLOv11** (ZIP).
 
 Dataset thực tế dùng để train là **crack detection** từ Roboflow Universe — một class `crack`, mask đánh dấu các vết nứt trên tường/đường/bê tông.
+
+---
 
 ### 📂 Cấu trúc và `data.yaml`
 
@@ -77,6 +83,8 @@ Quan trọng: mỗi split phải có **cả `images` lẫn `labels`**, nếu thi
 * train — **3717** ảnh / **3717** label,
 * valid — **200** / **200**,
 * test — **112** / **112**.
+
+---
 
 ### 🏋️ Train
 
@@ -108,6 +116,8 @@ Training dùng optimizer **AdamW** (momentum 0.9). Với batch ảnh, các loss 
 * **box loss**, **segmentation loss**, **classification loss**, **DFL loss**.
 
 Trên T4, mỗi epoch mất khoảng **1 phút 41 giây**, GPU dùng khoảng **1.5 GB**. Mỗi batch có số **instance** khác nhau (tùy ảnh có 1 hay nhiều vết nứt).
+
+---
 
 ### 📊 Đọc kết quả
 

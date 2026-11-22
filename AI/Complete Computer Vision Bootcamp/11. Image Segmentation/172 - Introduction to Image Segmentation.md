@@ -26,6 +26,8 @@ Hãy nhớ lại hai bài toán cũ:
 
 Còn segmentation **gán nhãn cho từng pixel**, tạo **mask** mô tả chính xác hình dạng object. Nói cách khác: **classification ở mức pixel**.
 
+---
+
 ### 🔍 Vì sao cần segmentation?
 
 Ảnh được cấu tạo từ nhiều pixel. Trong segmentation, mỗi pixel được phân loại thuộc `dog`, `cat`, hay `person`.
@@ -38,6 +40,8 @@ Ba nhóm vấn đề segmentation giải quyết:
 2. **Tách foreground/background** — phân biệt rõ vùng cần và không cần.
 3. **Feature detection** — trích đặc trưng chi tiết cho các **downstream task**.
 
+---
+
 ### 🌍 Ứng dụng thực tế
 
 * **Medical imaging** — nơi segmentation được dùng nhiều nhất.
@@ -46,9 +50,13 @@ Ba nhóm vấn đề segmentation giải quyết:
 * **Ảnh vệ tinh** — phân loại land cover: rừng, nước, nhà, chính xác từng pixel.
 * **Augmented reality** — đặt vật thể ảo đúng vị trí trong cảnh thật.
 
+---
+
 ### 🧪 Từ thresholding đến segmentation thật
 
 Trong module OpenCV, ta đã làm một dạng segmentation đơn giản: ảnh grayscale, nếu pixel **> threshold** thì gán 1, ngược lại 0 — tạo **mask** chỉ gồm hai giá trị 0/1, dùng để tách nền. Nhưng cách này **không tách được người**: không có một ngưỡng duy nhất nào cho người. Vì vậy ta cần **thuật toán CV** phân loại từng pixel thành person, dog, cat… tuỳ dataset.
+
+---
 
 ### 🧩 Ba loại segmentation
 
@@ -63,6 +71,8 @@ Tóm gọn quan hệ:
 
 * Instance segmentation = **object detection + semantic segmentation**.
 * Panoptic segmentation = **instance + semantic**.
+
+---
 
 ### 🏭 Dùng loại nào trong thực tế?
 

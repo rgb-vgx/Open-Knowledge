@@ -26,9 +26,13 @@ Sigmoid nhận giá trị `z` và ép về khoảng `0..1`:
 
 Ở đây `x` là kết quả của input nhân weights (cộng bias). Hàm được dùng ngay trong **hidden neuron**, sau bước nhân weights cộng bias. Một điểm quan trọng đã bàn: **đạo hàm của sigmoid luôn nằm trong khoảng 0 đến 0.25**.
 
+---
+
 ### 🫥 Nhắc lại vanishing gradient
 
 Vì đạo hàm ≤ `0.25`, khi backpropagate qua mạng sâu, các giá trị nhân dồn theo chain rule cứ nhỏ dần (`0.25 → 0.05 → 0.001 → ...`). Gradient gần như biến mất, `w_new ≈ w_old`, weights không cập nhật được. Đó là lý do phải tìm activation function khác.
+
+---
 
 ### 📜 Sigmoid qua góc nhìn lịch sử
 
@@ -37,11 +41,15 @@ Vì đạo hàm ≤ `0.25`, khi backpropagate qua mạng sâu, các giá trị n
 * Output nằm trong `0..1` nên *có thể* nghĩ tới **xác suất**, nhưng đừng xem nó là xác suất theo nghĩa chặt chẽ.
 * Có thể hiểu như **firing rate** của neuron: mức độ neuron nên bật/tắt.
 
+---
+
 ### ⚠️ Ba nhược điểm chính
 
 1. **Dễ vanishing gradient.** Khi input hơi lệch khỏi vùng quanh gốc, gradient gần như bằng 0. Vì đạo hàm chỉ trong `0..0.25`, qua chain rule giá trị teo dần và nhiều weight không bao giờ được cập nhật.
 2. **Output không zero-centered.** Sigmoid đi qua mức `0.5` chứ không qua gốc `0`. Nhớ lại **standard scaler** trong machine learning: nó đưa dữ liệu về **mean = 0, std = 1**. Thực nghiệm cho thấy dữ liệu zero-centered giúp **cập nhật weights hiệu quả hơn**. Sigmoid không đáp ứng được điều đó.
 3. **Phép toán exp tốn thời gian.** Công thức có `e^(-x)`; phép mũ chậm hơn trên máy tính.
+
+---
 
 ### ✅ Ưu điểm
 

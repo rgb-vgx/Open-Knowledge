@@ -26,6 +26,8 @@ Tạo một biến, ví dụ **i2c**, rồi gọi **`busio.I2C`**. Hàm nhận *
 i2c = busio.I2C(SCL, SDA)
 ```
 
+---
+
 ### 📮 Tạo đối tượng PCA9685 và địa chỉ
 
 Tiếp theo mình tạo biến, ví dụ **pca**, và gọi lớp **PCA9685** — trùng tên với chính mạch điện tử. Lớp này nhận **hai tham số**:
@@ -43,6 +45,8 @@ Phải khai báo đúng một trong hai địa chỉ này, nếu không module s
 ```python
 pca = PCA9685(i2c, address=0x40)
 ```
+
+---
 
 ### 🎚️ Đặt tần số hoạt động
 

@@ -22,6 +22,8 @@ Khi kết nối VNC, các bạn sẽ thấy màn hình Jetson Nano có độ ph�
 2. Bấm **Continue**, nhập mật khẩu (trong bài là **123456**).
 3. Mở **Terminal** trên board.
 
+---
+
 ### ⌨️ Mở file cấu hình X.Org
 
 Chạy lệnh:
@@ -36,6 +38,8 @@ Giải thích nhanh hai phần của lệnh:
 * `vim` là trình soạn thảo để mở và sửa file `xorg.conf`, nhờ đó mới lưu được thay đổi.
 
 Khi được hỏi mật khẩu, nhập mật khẩu của board (trong bài là **1234**).
+
+---
 
 ### ✍️ Thêm cấu hình màn hình ảo
 
@@ -63,6 +67,8 @@ Trong quá trình nhập, giảng viên có sửa lại vài chỗ bị gõ sai 
 * `SubSection "Display"` là khối con, nơi đặt độ phân giải ảo.
 * `Virtual 1280 720` là độ phân giải mong muốn — trong bài dùng **1280x720**, các bạn có thể chọn độ phân giải khác.
 
+---
+
 ### 💾 Lưu file và reboot
 
 1. Bấm **ESC** để thoát chế độ nhập.
@@ -74,6 +80,8 @@ reboot
 ```
 
 4. Chờ khoảng **hai phút**. Trước khi kiểm tra, giảng viên **rút cáp HDMI** khỏi Jetson Nano để chắc chắn VNC đang dùng màn hình ảo.
+
+---
 
 ### ✅ Kiểm tra kết quả
 

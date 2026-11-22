@@ -22,6 +22,8 @@ Gradient là **sự thay đổi có hướng** về cường độ hoặc màu c
 
 Gradient có thể tính theo một hướng cụ thể — x hoặc y. Bài dùng **Sobel-Feldman operator** (gọi tắt Sobel), gồm hai kernel 3 × 3: một cho thay đổi ngang, một cho thay đổi dọc. Hai kernel này xấp xỉ đạo hàm của ảnh.
 
+---
+
 ### ↔️ Sobel x-gradient — thấy cạnh dọc
 
 ```python
@@ -44,6 +46,8 @@ Tham số của `cv2.Sobel`:
 
 Ảnh Sudoku có cả đường kẻ dọc và ngang. Với x-gradient, các **đường dọc** hiện rất rõ, còn đường ngang gần như biến mất.
 
+---
+
 ### ↕️ Sobel y-gradient — thấy cạnh ngang
 
 ```python
@@ -51,6 +55,8 @@ sobely = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=5)
 ```
 
 Chỉ đổi `dx, dy` thành `0, 1`. Lần này các đường ngang của bảng Sudoku hiện rõ. Không phải đường dọc biến mất hoàn toàn — các đường kẻ dày vẫn còn dấu vết — nhưng ưu thế của hướng ngang là rõ rệt.
+
+---
 
 ### 🌀 Laplacian
 
@@ -61,6 +67,8 @@ laplacian = cv2.Laplacian(image, cv2.CV_64F)
 Toán tử Laplace là đạo hàm bậc hai theo x cộng đạo hàm bậc hai theo y. Với ảnh xám hai chiều, `cv2.Laplacian` tính cả hai hướng cùng lúc nên không cần truyền `dx`, `dy`. Kết quả gần như edge detection: biên trắng–đen–trắng hiện rõ, số trong ô Sudoku cũng rõ.
 
 Nếu muốn hiểu sâu phần toán, có thể tra Wikipedia về Sobel operator và Laplace operator; tài liệu OpenCV cũng mô tả kỹ. Trong khóa, ta chỉ cần nắm cách dùng.
+
+---
 
 ### 🧪 Kết hợp gradient với các kỹ thuật khác
 
@@ -89,6 +97,8 @@ gradient = cv2.morphologyEx(blended, cv2.MORPH_GRADIENT, kernel)
 ```
 
 Kết quả là ảnh đen trắng khá rõ, số bị mờ nhưng biên nổi bật. Từ đây có thể tiếp tục threshold hoặc khử noise.
+
+---
 
 ### 💡 Ý nghĩa
 

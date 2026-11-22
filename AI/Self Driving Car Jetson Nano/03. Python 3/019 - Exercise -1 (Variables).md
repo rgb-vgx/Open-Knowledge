@@ -25,10 +25,14 @@ Chào các bạn, bài này mình làm bài tập về **biến** để hiểu r
 5. Bấm **Create**, rồi bấm **Open** ở góc dưới phải.
 6. Khi VS Code hỏi, chọn **"Yes, I trust the authors"**.
 
+---
+
 ### 📄 Tạo file Python
 
 1. Trong thư mục project, bấm nút **New File** ở bên phải.
 2. Đặt tên file là `var` và thêm phần mở rộng `.py` — tức `var.py` — rồi Enter.
+
+---
 
 ### 🔍 Chạy thử và kiểm tra lỗi
 

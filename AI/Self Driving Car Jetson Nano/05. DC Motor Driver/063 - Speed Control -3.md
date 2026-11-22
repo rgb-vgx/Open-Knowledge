@@ -33,6 +33,8 @@ pca.channels[5].duty_cycle = 0xFFFF
 
 Lần lượt: kênh 0 là **ENA**, kênh 3 là **ENB**; các kênh 1, 2, 4, 5 tương ứng **IN1–IN4**.
 
+---
+
 ### 🚗 Tạo đối tượng động cơ bằng lớp `DCMotor`
 
 Để điều khiển các động cơ nối vào **OUT1/OUT2** và **OUT3/OUT4**, mình dùng lớp **DCMotor** trong module **motor**. Lớp này nhận **hai tham số**, là các giá trị bắt đầu bằng **IN** (IN1, IN2, IN3, IN4). Theo sơ đồ:

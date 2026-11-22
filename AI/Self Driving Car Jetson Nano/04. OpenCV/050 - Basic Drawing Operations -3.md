@@ -27,6 +27,8 @@ import cv2
 matrix = cv2.imread("image.jpg")
 ```
 
+---
+
 ### 🔧 Hàm `cv2.rectangle` và năm tham số
 
 Hàm **rectangle** nhận **năm tham số**. Mình khai báo sẵn các giá trị ra ngoài cho dễ đọc:
@@ -47,6 +49,8 @@ cv2.rectangle(matrix, start_point, end_point, green, thickness)
 ```
 
 Với tuple màu xanh lá là `(0, 255, 0)`, mình sẽ có một hình chữ nhật viền xanh.
+
+---
 
 ### 👁️ Hiển thị kết quả
 

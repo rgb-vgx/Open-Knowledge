@@ -32,6 +32,8 @@ ix, iy = -1, -1
 * `drawing`: bằng `False` khi chuột chưa nhấn, chuyển `True` khi nhấn xuống và quay lại `False` khi nhả.
 * `ix, iy`: tọa độ điểm bắt đầu kéo, khởi tạo `-1, -1`. Có thể viết thành hai dòng riêng thay vì gán tuple.
 
+---
+
 ### 🔗 Nối cửa sổ với hàm draw_rectangle
 
 ```python
@@ -54,6 +56,8 @@ Tên cửa sổ `my_drawing` vẫn phải trùng ở cả ba chỗ. Trong hàm c
 ```python
 global ix, iy, drawing
 ```
+
+---
 
 ### 🖱️ Ba event: nhấn xuống, di chuyển, nhả lên
 
@@ -85,6 +89,8 @@ elif event == cv2.EVENT_LBUTTONUP:
 
 Rectangle ở đây dùng `thickness=-1` nên là hình **tô đặc**, màu xanh lá.
 
+---
+
 ### ⚙️ Logic chạy
 
 1. Nhấn chuột trái: `drawing = True`, lưu `ix, iy`.
@@ -92,6 +98,8 @@ Rectangle ở đây dùng `thickness=-1` nên là hình **tô đặc**, màu xan
 3. Nhả chuột: `drawing = False`, vẽ lần cuối.
 
 Vì rectangle được vẽ lại rất nhiều lần trong lúc kéo, từ góc nhìn người dùng nó trông như một hình đang lớn dần một cách mượt, chứ không phải hàng loạt hình chồng lên nhau.
+
+---
 
 ### ⚠️ Giới hạn cần biết
 

@@ -28,6 +28,8 @@ Perceptron dùng để giải bài toán **binary classification**. Lấy ví d�
 
 Ta cần một perceptron dự đoán được người đó đậu hay rớt từ hai feature trên.
 
+---
+
 ### 🏗️ Kiến trúc: input layer và hidden layer
 
 Perceptron có:
@@ -54,6 +56,8 @@ với hai input thì `z = W1*X1 + W2*X2 + b`. Nếu có `n` feature thì cứ c�
 
 Công thức này gần như trùng với dạng `y = mx + c`, hay `β1X1 + β2X2 + ... + βnXn` trong hồi quy tuyến tính — nên nó dùng để giải các bài toán **tuyến tính**.
 
+---
+
 ### ⚡ Bước 2: áp activation function
 
 Lấy giá trị `z` vừa tính, ta đưa qua **activation function** để biến đổi output về một khoảng giá trị, ví dụ `0..1` hoặc `-1..+1`. Có nhiều loại:
@@ -71,6 +75,8 @@ Mục đích cuối cùng: với bài toán binary classification, sau bước n
 Giả sử đưa mẫu `(95, 3)` vào, nhân weights, qua activation và nhận output `0`. Nếu nhãn thật cũng là `0` thì **error = 0**, weights khởi tạo đang tốt. Nhưng nếu nhãn thật là `1` mà ta ra `0` thì **error = 1 - 0 = 1**; ta phải **cập nhật `W1`, `W2`** để giảm sai số.
 
 Quá trình này lặp liên tục cho tới khi tìm được bộ weights thỏa mãn mọi bản ghi và cho accuracy tốt hơn. Sai số đó chính là **loss function**; nếu tính trên toàn bộ bản ghi một lượt thì gọi là **cost function**. Việc lan truyền xuôi rồi ngược để cập nhật weights chính là **forward propagation** và **backward propagation**.
+
+---
 
 ### 📏 Vì sao gọi là linear classifier
 

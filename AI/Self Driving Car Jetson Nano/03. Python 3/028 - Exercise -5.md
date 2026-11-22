@@ -30,6 +30,8 @@ Khi chạy, chương trình sẽ chờ dữ liệu gõ từ bàn phím. Nhập `
 print(name)
 ```
 
+---
+
 ### 💬 Thêm thông điệp hướng dẫn
 
 Có thể đặt câu nhắc trong dấu nháy kép bên trong `input()`:
@@ -39,6 +41,8 @@ name2 = input("Please enter your name: ")
 ```
 
 Lưu ý: phần thông điệp này **không** được gán vào biến, nó chỉ hiển thị cho người dùng.
+
+---
 
 ### 🔍 Kiểm tra kiểu bằng type()
 

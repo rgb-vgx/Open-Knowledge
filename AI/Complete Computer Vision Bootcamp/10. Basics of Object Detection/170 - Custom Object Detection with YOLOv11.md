@@ -25,6 +25,8 @@ Dataset mình lấy từ **Roboflow Universe** (kho khổng lồ, hơn 5 triệu
 
 Sau khi giải nén, thư mục có các folder `train`/`valid`/`test` (bên trong là `images`) cùng file **`data.yml`** — file quan trọng nhất. Mở ra sẽ thấy đường dẫn tới train/valid/test và `nc` (number of classes) = 3.
 
+---
+
 ### 📝 Chỉnh `data.yml`
 
 Mình đổi các đường dẫn sang **absolute path**, trỏ vào thư mục `images` của từng split:
@@ -38,6 +40,8 @@ names: [rock, paper, scissors]
 ```
 
 Nếu dùng relative path thì phải đảm bảo dataset nằm đúng chỗ; dùng absolute path an toàn hơn.
+
+---
 
 ### 🏋️ Train bằng CLI
 
@@ -53,6 +57,8 @@ Mình chọn model **medium (`m`)** — không quá nhỏ như nano/small, cũng
 Dataset khá lớn: khoảng **6445 ảnh train** và **576 ảnh validation**. Trên T4, 25 epoch mất hơn **90 phút** (khoảng 1.6 giờ), GPU dùng gần **8 GB**. Logging mặc định qua **TensorBoard**, và YOLO11 còn tích hợp **Comet ML**.
 
 Kết quả lưu trong `runs/detect/train`: có `last.pt` (epoch cuối) và **`best.pt`** (epoch có loss thấp nhất).
+
+---
 
 ### ✅ Validate và predict
 
@@ -70,6 +76,8 @@ yolo predict model=runs/detect/train/weights/best.pt source=<đường_dẫn_ả
 
 Ảnh kết quả lưu ở `runs/detect/predict`; model nhận diện đúng các nắm tay (rock).
 
+---
+
 ### 📦 Export để inference nhanh hơn
 
 Model mặc định là PyTorch (`.pt`), nhưng có thể export sang định dạng khác:
@@ -82,6 +90,8 @@ yolo export model=best.pt format=engine
 * **ONNX** — hợp cho inference trên **CPU**, chạy với ONNX Runtime (nhanh hơn nhiều so với PyTorch thuần).
 * **engine** — định dạng **TensorRT**, tận dụng GPU cho tốc độ rất cao; cần cài `tensorrt` và `onnxruntime-gpu`.
 * Ngoài ra còn OpenVINO cho CPU.
+
+---
 
 ### 🐍 Cách dùng bằng Python
 

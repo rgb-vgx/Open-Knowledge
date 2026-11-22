@@ -24,6 +24,8 @@ w_new = w_old - learning_rate * (∂loss / ∂w_old)
 
 Mạng trong ví dụ: **input layer** → **hidden layer** (một neuron, gọi là L1) → **output layer**. Forward propagation tạo ra output `O1` sau neuron ẩn, rồi `O2` sau neuron output; tính loss từ `O2`, rồi mới backward propagation.
 
+---
+
 ### ✂️ Chain rule cho W4
 
 Với `W4` (weight nối hidden → output), loss phụ thuộc vào `O2`, và `O2` phụ thuộc vào `W4`. Ta tách đạo hàm:
@@ -34,6 +36,8 @@ Với `W4` (weight nối hidden → output), loss phụ thuộc vào `O2`, và `
 
 Hai số hạng `∂O2` triệt tiêu nhau, còn lại đúng `∂loss/∂W4`. Việc **tách một đạo hàm phức thành tích các đạo hàm thành phần** chính là **chain rule**. Từng mảnh được tính riêng, nhân với learning rate, rồi trừ vào weight cũ.
 
+---
+
 ### 🪜 Chain rule cho W1 — sâu hơn một tầng
 
 Với `W1` (nối input → hidden), đường phụ thuộc dài hơn: loss → `O2` → `O1` → `W1`. Vậy:
@@ -43,6 +47,8 @@ Với `W1` (nối input → hidden), đường phụ thuộc dài hơn: loss →
 ```
 
 Lý do: `O2` phụ thuộc `O1` (vì `O1` được nhân với `W4` rồi qua activation function), còn `O1` phụ thuộc `W1`. Cứ thế nối mắt xích cho tới weight cần cập nhật.
+
+---
 
 ### 🧩 Thử thách: mạng hai hidden layer
 

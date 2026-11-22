@@ -35,6 +35,8 @@ Vì bình phương nên hàm có dạng **bậc hai (parabol)**. Khi vẽ loss t
 
 **Nhược điểm: nhạy cảm với outlier.** Vì bình phương sai số, một điểm ngoại lai lớn sẽ **phóng đại** cost, kéo **best fit line** lệch mạnh. Ta đang "phạt" cost theo bình phương lỗi nên chỉ một outlier cũng đủ làm line nhảy.
 
+---
+
 ### 2️⃣ Mean Absolute Error (MAE)
 
 ```text
@@ -48,6 +50,8 @@ Không bình phương mà dùng **trị tuyệt đối**, nên giá trị âm c�
 
 **Nhược điểm:** đồ thị không phải parabol mà có điểm gãy (góc) tại `0`. Không dùng gradient descent trực tiếp được — phải dùng **subgradient** (lấy từng đoạn để tính slope), nên **hội tụ chậm hơn**.
 
+---
+
 ### 3️⃣ Huber loss
 
 Lai giữa MSE và MAE, dùng một **threshold** (hyperparameter):
@@ -58,6 +62,8 @@ ngược lại            :  δ * |y - y_hat| - (1/2) * δ²   (có outlier → 
 ```
 
 Nếu sai số nhỏ hơn ngưỡng (không phải outlier) thì hành xử như **MSE**; nếu lớn hơn (outlier) thì chuyển sang dạng **MAE**. Nhờ vậy vừa trơn vừa bền với outlier.
+
+---
 
 ### 4️⃣ Root Mean Squared Error (RMSE)
 

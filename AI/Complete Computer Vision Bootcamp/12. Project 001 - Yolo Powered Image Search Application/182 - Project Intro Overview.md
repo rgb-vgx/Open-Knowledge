@@ -24,6 +24,8 @@ Chào các bạn! Đây là bài mở đầu **Project 001**: xây ứng dụng 
 
 Ta còn giới hạn được **số lượng** object, ví dụ tối đa 1 `apple` và tối đa 4 `bus`.
 
+---
+
 ### 🧠 Công nghệ
 
 * **YOLO11** cho object detection — theo góc nhìn giảng viên, YOLO11 có nhiều khả năng vượt trội dù YOLOv12 đã ra mắt.
@@ -33,12 +35,16 @@ Ta còn giới hạn được **số lượng** object, ví dụ tối đa 1 `ap
 
 Vì chạy local và có GPU, quá trình inference rất nhanh.
 
+---
+
 ### 🔄 Hai chế độ: xử lý ảnh mới hay nạp metadata
 
 1. **Process new images** — nhập **project path** (thư mục 500 ảnh), bấm **Start Inference**. Hệ thống chạy object detection trên toàn bộ ảnh và sinh ra **`metadata.json`**.
 2. **Load metadata** — nhập đường dẫn tới `metadata.json` có sẵn. Không cần chạy lại inference.
 
 Điểm hay: `metadata.json` **chia sẻ được** cho đồng nghiệp/teammate, họ dùng ngay mà không phải inference lại. Khi nạp thành công, giao diện báo "successfully loaded metadata for 500 images".
+
+---
 
 ### 🔍 Giao diện tìm kiếm
 
@@ -49,6 +55,8 @@ Vì chạy local và có GPU, quá trình inference rất nhanh.
 
 Có checkbox **highlight matching classes**: bật thì chỉ tô các class đã chọn; tắt thì hiện mọi class model dự đoán (banana, person, refrigerator, bottle… — đều thuộc COCO).
 
+---
+
 ### 📤 Xuất kết quả
 
 Cuối trang có **Export**. Bấm **Download results** để tải JSON chỉ gồm các ảnh khớp. Mỗi ảnh có `detections` với **confidence, class, box** và **count**. File này hữu ích để:
@@ -56,6 +64,8 @@ Cuối trang có **Export**. Bấm **Download results** để tải JSON chỉ g
 * gửi cho team annotation,
 * chuẩn bị dữ liệu cho phiên bản model tiếp theo,
 * tái sử dụng cho pipeline khác.
+
+---
 
 ### 🧱 Phạm vi kỹ thuật
 

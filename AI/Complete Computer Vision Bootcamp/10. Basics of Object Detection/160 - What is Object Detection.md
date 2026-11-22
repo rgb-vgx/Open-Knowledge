@@ -24,6 +24,8 @@ Chào các bạn! Bài này mở màn module **object detection**. Mình sẽ l�
 
 Trong ảnh minh hoạ có bốn chiếc xe, mỗi chiếc có một box riêng; xe đạp, đèn giao thông, xe tải cũng vậy. Ý tưởng cốt lõi: bên trong mỗi bounding box phải chứa đúng object đó.
 
+---
+
 ### 📥 Input và 📤 Output
 
 **Input** của một pipeline object detection thường là:
@@ -38,6 +40,8 @@ Trong ảnh minh hoạ có bốn chiếc xe, mỗi chiếc có một box riêng;
 2. **Class label** — tên lớp của object (phần này image classification cũng có).
 3. **Confidence score** — giá trị xác suất trong khoảng **0 đến 1**, thể hiện độ tin cậy của model vào object được phát hiện.
 
+---
+
 ### 📦 Bounding Box — hình chữ nhật định vị object
 
 Ta tưởng tượng một ảnh có một object (ví dụ một người). Bounding box là hình chữ nhật bao quanh object, và nó **xác định vị trí của object trong ảnh**. Ảnh có thể có nhiều object, mỗi object một box.
@@ -49,6 +53,8 @@ Cách biểu diễn quen thuộc là **corner format** với bốn toạ độ:
 
 Chỉ cần bốn giá trị này là có thể vẽ ra hình chữ nhật. Trong lúc train, ta cũng phải cung cấp bounding box cho model để nó học; lúc dự đoán, model sẽ trả ra chính các toạ độ này.
 
+---
+
 ### 🧾 Dữ liệu huấn luyện và Annotation
 
 Với image classification, dữ liệu chỉ cần **ảnh + nhãn lớp**. Với object detection, nhãn phải giàu hơn: mỗi ảnh đi kèm một file **annotation** chứa:
@@ -57,6 +63,8 @@ Với image classification, dữ liệu chỉ cần **ảnh + nhãn lớp**. V�
 * **bounding box** (viết tắt là **bbox**) của object đó.
 
 Có ảnh và annotation là có thể bắt đầu train. Để tạo annotation, người ta dùng các công cụ gán nhãn. Transcript kể tên vài lựa chọn như **Labelbox**, **Roboflow** (bản trả phí) và **Supervisely** (tên đọc từ auto-caption nên các bạn đối chiếu lại khi dùng).
+
+---
 
 ### 🧪 Demo với MakeSense
 

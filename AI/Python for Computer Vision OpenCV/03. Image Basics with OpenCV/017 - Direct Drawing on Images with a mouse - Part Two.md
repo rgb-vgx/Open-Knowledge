@@ -30,15 +30,21 @@ def draw_circle(event, x, y, flags, param):
 
 `EVENT_RBUTTONDOWN` là sự kiện nhấn **nút phải** xuống. Có thể gõ `cv2.EVENT_` rồi nhấn Tab để xem toàn bộ event OpenCV hỗ trợ: di chuyển chuột, nhấn phím, nhả nút trái, nhả nút phải...
 
+---
+
 ### 🎨 Vì sao màu hiện ra khác lời giảng
 
 Khi chạy thử: click trái cho các hình tròn xanh lá, click phải cho các hình tròn **xanh dương** dù trong bài nói là đỏ. Lý do là OpenCV dùng thứ tự kênh **BGR**, không phải RGB — hai kênh đỏ và xanh bị hoán đổi. Đây là lỗi nói nhầm của giảng viên, và cũng là lời nhắc rất tốt: khi chọn màu trong OpenCV, luôn nhớ thứ tự **blue, green, red**.
+
+---
 
 ### 🧭 Điều kiện để nhiều event hoạt động
 
 Cả hai nhánh chỉ chạy khi callback được nối đúng vào cửa sổ đang hiển thị. Ba nơi phải dùng **cùng một tên cửa sổ**: `cv2.namedWindow`, `cv2.setMouseCallback` và `cv2.imshow`. Chỉ cần lệch một ký tự là sự kiện chuột không bao giờ tới được hàm xử lý.
 
 Ngoài ra, toàn bộ code nên nằm trong một cell hoặc một script, và trên macOS/Linux nên chạy dạng script để tránh lỗi kernel khi đóng cửa sổ.
+
+---
 
 ### 💡 Giới hạn hiện tại
 

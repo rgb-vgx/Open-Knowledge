@@ -24,6 +24,8 @@ Ví dụ quen thuộc ở machine learning: **decision tree** xây hết độ s
 
 ANN cũng vậy: vô số weights và bias khiến nó dễ overfit. Dropout mượn đúng ý tưởng "lấy mẫu con" đó.
 
+---
+
 ### 🎚️ Dropout hoạt động thế nào (khi train)
 
 Chọn một xác suất **p** (trong `0 <= p <= 1`). Ở **mỗi lượt forward propagation**, **tắt ngẫu nhiên** một phần neuron theo `p`:
@@ -41,6 +43,8 @@ Epoch 1:  x1 x2 x3 x4  → tắt x2, x4
 Epoch 2:  x1 x2 x3 x4  → tắt x1, x3
 ```
 
+---
+
 ### 🧪 Lúc dự đoán (test/inference): KHÔNG dropout
 
 Khi suy luận trên test data, **không tắt neuron nào** — mọi kết nối được bật. Nhưng lúc train, mỗi neuron chỉ hoạt động với xác suất `1 - p` (bị tắt với xác suất `p`), nên để kỳ vọng khớp, ta **nhân weights với xác suất giữ lại** (`keep probability`):
@@ -50,6 +54,8 @@ Test:  weights * (xác suất giữ lại)  →  output bình thường, không 
 ```
 
 Ví dụ lớp có `p = 0.5` (giữ lại `0.5`) thì nhân weights với `0.5`; lớp có `p = 2/5` (giữ `3/5`) thì nhân với `3/5`, v.v.
+
+---
 
 ### ⚙️ Chọn p thế nào
 

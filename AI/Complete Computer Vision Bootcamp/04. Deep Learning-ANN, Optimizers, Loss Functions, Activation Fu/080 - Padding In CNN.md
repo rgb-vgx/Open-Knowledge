@@ -26,9 +26,13 @@ Với công thức `output = n - f + 1`:
 
 Ảnh gốc `6×6` nhưng output chỉ `4×4` → mất một phần. Ta muốn input `6×6` cho ra output `6×6` để không mất dữ liệu.
 
+---
+
 ### 🧩 Cách làm: thêm một lớp đệm
 
 Thêm **một lớp cushion** quanh ảnh: `6×6` → `8×8`. Khi đó `8 - 3 + 1 = 6` → output trở lại `6×6`.
+
+---
 
 ### 📐 Công thức tính padding cần dùng
 
@@ -45,12 +49,16 @@ với stride `s = 1`. Muốn output = `6`:
 
 Vậy **padding = 1** (một lớp quanh ảnh) là đủ để `6×6` giữ nguyên `6×6`.
 
+---
+
 ### 🎨 Giá trị điền vào phần đệm
 
 Có hai cách:
 
 * **Zero padding** — điền toàn **0** vào viền. Phổ biến nhất.
 * **Neighbor padding** — lấy giá trị **hàng xóm** gần đó gán vào (ví dụ các ô `1` thì điền `1`).
+
+---
 
 ### ✅ Lợi ích
 

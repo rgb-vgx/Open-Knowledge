@@ -29,6 +29,8 @@ Python có ba toán tử logic: **and**, **or** và **not**.
 
 Tóm lại chỉ cần một vế sai là kết quả sai.
 
+---
+
 ### 🔀 Toán tử or
 
 **or** trả về `True` nếu **ít nhất một** điều kiện đúng, và chỉ trả về `False` khi tất cả đều sai.
@@ -38,12 +40,16 @@ Tóm lại chỉ cần một vế sai là kết quả sai.
 * Một vế `20 != 5` đúng → kết quả `True`.
 * `False or False` → `False`.
 
+---
+
 ### 🔄 Toán tử not
 
 **not** đảo ngược giá trị logic:
 
 * `not True` → `False`.
 * `not False` → `True`.
+
+---
 
 ### 🚗 Vì sao xe tự hành cần toán tử logic
 

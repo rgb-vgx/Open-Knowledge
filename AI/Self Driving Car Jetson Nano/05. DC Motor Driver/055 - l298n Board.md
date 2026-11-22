@@ -22,6 +22,8 @@ Chào các bạn, bài này mình sẽ xem kỹ module **L298N** — mạch driv
 * Module cũng có thể điều khiển tốc độ động cơ DC bằng **PWM**, nhưng các chân **GPIO** trên Jetson Nano không thật sự phù hợp cho việc này.
 * Vì vậy với mạch driver này, mình **chỉ chỉnh hướng và trạng thái hoạt động** của động cơ.
 
+---
+
 ### 🔋 Cấp nguồn ngoài cho driver
 
 Driver cần được **cấp nguồn ngoài**, dùng pin từ **6V trở lên**. Trên board có một cụm **triple header** (ba chân) gồm:
@@ -37,6 +39,8 @@ Cách đấu pin:
 
 Đây là đường nguồn bắt buộc để driver hoạt động.
 
+---
+
 ### 🧷 Các chân điều khiển phía bên phải
 
 Trên board có một dãy chân song song nhau:
@@ -46,10 +50,14 @@ Trên board có một dãy chân song song nhau:
 
 Khi làm việc với module **PCA9685**, mình sẽ nối chính các chân này sang module đó.
 
+---
+
 ### 🔁 Các chân ra động cơ
 
 * Động cơ DC được nối vào các cặp **OUT1/OUT2** và **OUT3/OUT4**.
 * Cáp động cơ DC phải đấu đúng vào hai chân của từng cặp thì mới điều khiển được chiều quay.
+
+---
 
 ### 🚗 Cách bố trí cho xe tự lái
 

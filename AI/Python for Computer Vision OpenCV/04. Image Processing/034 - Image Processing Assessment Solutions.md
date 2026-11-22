@@ -26,6 +26,8 @@ display_img(img)
 
 Kết quả là hai chú hươu cao cổ trên nền savannah.
 
+---
+
 ### 🔲 Binary threshold
 
 ```python
@@ -43,6 +45,8 @@ display_img(thresh1)
 
 Kết quả chỉ còn đen và trắng.
 
+---
+
 ### 🎨 Chuyển sang HSV
 
 ```python
@@ -52,6 +56,8 @@ display_img(img_hsv)
 ```
 
 Ảnh hiển thị trông lạ vì ba kênh giờ là hue, saturation, value chứ không phải RGB.
+
+---
 
 ### 🔲 Lowpass filter 4×4
 
@@ -67,6 +73,8 @@ display_img(result)
 
 `np.ones` tạo kernel toàn 1, chia 10 để mỗi phần tử thành `0.1`. `ddepth = -1` giữ nguyên độ sâu đầu vào. Ảnh sáng và mờ hơn, phần trời/ mây thành trắng thuần.
 
+---
+
 ### 📐 Sobel ngang trên ảnh xám
 
 ```python
@@ -77,6 +85,8 @@ display_img(sobelx)
 ```
 
 Nhớ đọc ảnh ở grayscale (`0` làm tham số thứ hai). `dx = 1`, `dy = 0`, `ksize = 5`. Nếu quên grayscale, kết quả sẽ khó hiểu vì gradient tính trên cả ba kênh màu. Hiển thị với `cmap='gray'` để thấy rõ.
+
+---
 
 ### 📊 Histogram ba kênh
 

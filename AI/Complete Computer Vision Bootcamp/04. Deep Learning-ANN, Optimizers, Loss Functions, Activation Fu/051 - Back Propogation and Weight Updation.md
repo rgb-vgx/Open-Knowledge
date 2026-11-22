@@ -27,6 +27,8 @@ Input layer có **3 feature độc lập** (independent): **IQ**, **study hours*
 
 Vì có 3 input và 2 hidden neuron, **ma trận weights `W`** có dạng **3×2** (3 input × 2 hidden neuron); nhân `X` (1×3) với `W` (3×2) cho ra 2 giá trị `Z` ứng với hai hidden neuron.
 
+---
+
 ### ➡️ Forward rồi tính loss
 
 Forward propagation nhân input với weights, cộng bias, áp activation function, ra output. Sau đó tính **loss function**. Với bài toán nhị phân có các lựa chọn phổ biến:
@@ -35,6 +37,8 @@ Forward propagation nhân input với weights, cộng bias, áp activation funct
 * **Classification:** binary cross entropy, cross entropy, categorical cross entropy.
 
 Dạng đơn giản nhất là bình phương sai lệch `(y - y_hat)²`. Mục tiêu: **giảm loss bằng cách cập nhật weights** trong backward propagation.
+
+---
 
 ### 🧮 Công thức cập nhật weights
 
@@ -46,6 +50,8 @@ w_new = w_old - learning_rate * (∂loss / ∂w_old)
 
 Đạo hàm `∂loss / ∂w_old` chính là **độ dốc (slope)** của đồ thị loss theo weight — nền tảng của **gradient descent**.
 
+---
+
 ### 📉 Vì sao công thức này luôn kéo về global minima
 
 Đồ thị loss theo weight thường có dạng một đường cong lồi, đáy là **global minima** — nơi slope bằng `0`.
@@ -54,6 +60,8 @@ w_new = w_old - learning_rate * (∂loss / ∂w_old)
 * Nếu điểm nằm **bên phải** đáy: tiếp tuyến dốc lên → **slope dương**. `w_new = w_old - lr * (dương)` → `w_new < w_old`, tức là **giảm** weight, cũng tiến về đáy.
 
 Khi weight tới đáy, slope `= 0` nên `w_new = w_old` — **hội tụ**, không cần cập nhật nữa. Lúc này loss gần `0`.
+
+---
 
 ### 🎚️ Learning rate: bước nhảy tới đáy
 
@@ -67,6 +75,8 @@ Vì vậy thực hành thường khởi tạo learning rate **nhỏ**.
 ```text
 w_new = w_old - lr * slope
 ```
+
+---
 
 ### 🔗 Còn các lớp phía trước thì sao?
 

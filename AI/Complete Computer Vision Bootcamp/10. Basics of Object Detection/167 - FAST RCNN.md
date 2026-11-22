@@ -19,6 +19,8 @@ Chào các bạn! **Fast R-CNN** (2015) cải tiến R-CNN bằng cách chạy C
 
 Fast R-CNN vừa **detect/classify** object vừa **tinh chỉnh vị trí box** — hai việc diễn ra **đồng thời**. Thay vì mỗi region proposal chạy một forward pass riêng, nó dùng **shared feature map**: CNN chạy một lần trên toàn ảnh, các vùng dùng chung feature map đó.
 
+---
+
 ### 🔄 Pipeline của Fast R-CNN
 
 1. **Xử lý ảnh đầu vào** — ảnh được đưa **trực tiếp vào CNN** (VGG hoặc ResNet) để trích **feature map**, đồng thời đi qua **selective search** để lấy region proposals. Hai nhánh chạy song song từ cùng một ảnh.
@@ -29,12 +31,16 @@ Fast R-CNN vừa **detect/classify** object vừa **tinh chỉnh vị trí box**
 
 Điểm thay đổi lớn ở phần classification: **SVM được thay bằng softmax**, vì softmax hoạt động tốt hơn trong bối cảnh này.
 
+---
+
 ### ✅ Lợi ích
 
 * **Nhanh hơn** R-CNN nhờ bỏ được nút thắt 2000 forward pass riêng lẻ.
 * **Train end-to-end** — cả kiến trúc train trong một lần.
 * **Chính xác hơn** R-CNN (và tốt hơn cả SPPNet).
 * **Tiết kiệm bộ nhớ** — không phải trích và lưu feature cho từng proposal; chỉ cần một forward pass.
+
+---
 
 ### ⚠️ Điểm còn yếu
 

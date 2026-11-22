@@ -28,6 +28,8 @@ Công thức này thay đổi tùy từng optimizer. `learning_rate` quyết đ�
 
 Vẽ loss theo weights ta được đường parabol gọi là **gradient descent curve**; đáy là **global minima**. Dù weight khởi đầu ở đâu, công thức luôn kéo nó về đáy. Tới đáy, slope `= 0` nên `w_new ≈ w_old` — dấu hiệu loss đã giảm hết mức.
 
+---
+
 ### 🔁 Epoch và Iteration (kiểu gradient descent)
 
 Giả sử có **1000 điểm dữ liệu**:
@@ -43,6 +45,8 @@ Một lượt forward + một lượt backward như vậy = **một epoch**. L�
 Gradient Descent (1000 điểm):
 1 epoch = 1 lượt forward (toàn bộ) + 1 lượt backward = 1 iteration
 ```
+
+---
 
 ### ⚖️ Ưu và nhược điểm
 

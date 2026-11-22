@@ -41,6 +41,8 @@ print(help(time))
 
 Terminal hiện mô tả của module; bấm phím **space** để xem tiếp.
 
+---
+
 ### √ Căn bậc hai với math.sqrt
 
 ```python
@@ -54,6 +56,8 @@ print("square root of 49:", square_value2)
 ```
 
 `math.sqrt()` nhận một giá trị và trả về căn bậc hai.
+
+---
 
 ### 🔢 Factorial, lũy thừa và sleep
 

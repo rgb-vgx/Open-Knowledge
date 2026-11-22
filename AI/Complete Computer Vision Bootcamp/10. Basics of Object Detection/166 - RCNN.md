@@ -25,6 +25,8 @@ Trước 2014, object detection dùng các phương pháp **computer vision truy
 
 Nhược điểm chung: **không chính xác và không hiệu quả**. R-CNN ra đời giữ lại selective search nhưng thêm **CNN** — tức đưa deep learning vào.
 
+---
+
 ### 🧩 Bài toán: classification + regression
 
 Object detection gồm hai phần:
@@ -33,6 +35,8 @@ Object detection gồm hai phần:
 * **Classification** — xác định object là gì.
 
 R-CNN tách việc rõ ràng: **CNN trích feature**, còn **region proposal** (selective search) lo việc đề xuất vùng nghi có object.
+
+---
 
 ### 🔄 Pipeline của R-CNN
 
@@ -44,11 +48,15 @@ R-CNN tách việc rõ ràng: **CNN trích feature**, còn **region proposal** (
 
 Kết quả cuối là ghép phần classification và phần localization.
 
+---
+
 ### ⚠️ Ba hạn chế lớn
 
 * **Inference chậm** — phải xử lý tuần tự 2000 vùng qua CNN. Trên GPU mất khoảng **50 giây/ảnh**, trên CPU gần **2 phút** — không thể real-time.
 * **Tốn bộ nhớ** — feature được trích và lưu cho **từng vùng riêng lẻ**, tức 2000 bộ feature.
 * **Không train end-to-end** — region proposal, feature extraction và classification được **train tách rời** rồi ghép lại, khiến pipeline kém hiệu quả.
+
+---
 
 ### 🧭 Vì sao vẫn phải học R-CNN?
 

@@ -41,6 +41,8 @@ Kernel dùng chung:
 kernel = np.ones((5, 5), np.uint8)
 ```
 
+---
+
 ### 📉 Erosion — ăn mòn biên
 
 ```python
@@ -54,6 +56,8 @@ result = cv2.erode(img, kernel, iterations=4)
 ```
 
 Bốn lần lặp đã lấy đi khá nhiều từ chữ; năm lần có thể làm mất hẳn chữ. Có thể đổi kernel sang `7 × 7` hoặc `9 × 9`, nhưng tham số thường được chỉnh nhất là `iterations`.
+
+---
 
 ### 🧹 Opening — khử noise nền
 
@@ -77,6 +81,8 @@ opening = cv2.morphologyEx(noise_img, cv2.MORPH_OPEN, kernel)
 
 Kết quả xóa phần lớn noise mà không làm méo chữ quá nhiều. Không hoàn hảo — vẫn còn chút noise quanh các lỗ của chữ B, còn chữ E vẫn bị kéo dài so với bản gốc — nhưng với mức noise lớn như vậy thì đây là kết quả tốt.
 
+---
+
 ### 🧹 Closing — khử noise foreground
 
 Khi noise nằm trong **foreground**, ta cần phép ngược lại. Tạo noise đen:
@@ -99,6 +105,8 @@ closing = cv2.morphologyEx(black_noise_img, cv2.MORPH_CLOSE, kernel)
 
 Closing = **dilation rồi erosion**, giúp lấp các đốm đen trong foreground. Kết quả cũng không hoàn hảo: nét nối A–B dày lên, có thể xuất hiện đường trắng mảnh giữa B và C. Nhưng nhìn chung noise foreground đã được dọn.
 
+---
+
 ### 🎯 Morphological gradient — lấy viền
 
 ```python
@@ -107,6 +115,8 @@ gradient = cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)
 ```
 
 Morphological gradient lấy **hiệu giữa dilation và erosion**, tức là chỉ giữ phần biên giữa foreground và background. Với chữ, kết quả là đường viền của các chữ — một dạng edge detection thô.
+
+---
 
 ### 💡 Tóm tắt
 

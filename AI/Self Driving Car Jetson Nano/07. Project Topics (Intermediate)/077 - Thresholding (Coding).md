@@ -22,6 +22,8 @@ Chào các bạn, bài này mình sẽ viết code thresholding chạy trên Jet
 2. Nhập mật khẩu, bấm **OK** để vào board.
 3. Di chuyển tới **project folder**, tạo file Python mới, ví dụ **thresholding.py**.
 
+---
+
 ### 📥 Đọc ảnh và chuyển sang ảnh xám
 
 Import OpenCV, đọc ảnh `img.jpg`, sau đó chuyển sang ảnh xám bằng `cv2.cvtColor` với cờ `cv2.COLOR_BGR2GRAY` — thresholding bắt buộc thực hiện trên ảnh xám.
@@ -33,6 +35,8 @@ image = cv2.imread("img.jpg")
 
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 ```
+
+---
 
 ### ⚙️ Gọi hàm threshold
 
@@ -48,6 +52,8 @@ Bốn tham số lần lượt là:
 * Ngưỡng thứ nhất **127** — với ứng dụng đơn giản này mình để mặc định; thực tế nên chỉnh theo ảnh.
 * Giá trị lớn nhất **255**.
 * Kiểu threshold **`cv2.THRESH_BINARY`** — kiểu thường dùng nhất.
+
+---
 
 ### 👁️ Hiển thị ảnh nhị phân và ảnh gốc
 

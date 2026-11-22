@@ -29,6 +29,8 @@ Mình nối các chân tín hiệu của L298N sang các chân số của PCA968
 
 Đấu đúng thứ tự này thì mình mới điều khiển được tốc độ các động cơ DC.
 
+---
+
 ### 🔌 Nối PCA9685 lên Jetson Nano
 
 Để gửi tín hiệu điều tốc, PCA9685 phải nối với Jetson Nano:

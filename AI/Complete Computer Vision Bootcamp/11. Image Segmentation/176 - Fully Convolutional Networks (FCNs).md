@@ -19,6 +19,8 @@ Chào các bạn! **FCN (Fully Convolutional Network)** là một trong những 
 
 Một **vanilla CNN** nhận ảnh, qua các block conv + ReLU + maxpool, rồi **flatten** và nối vào **fully connected layers**, cuối cùng dùng softmax để ra vài neuron class. Kết quả là **một label cho cả ảnh** — tốt cho classification nhưng **không** cho segmentation, vì segmentation cần **một nhãn cho mỗi pixel**.
 
+---
+
 ### 💡 FCN là gì?
 
 **FCN** là kiến trúc deep learning trong đó **fully connected layers được thay bằng convolution layers**. Bất kỳ mạng nào thay FC bằng conv đều có thể gọi là fully convolutional.
@@ -26,6 +28,8 @@ Một **vanilla CNN** nhận ảnh, qua các block conv + ReLU + maxpool, rồi 
 Nhờ vậy FCN **giữ được spatial information** (độ phân giải không gian) xuyên suốt mạng — điều kiện tiên quyết cho pixel-wise segmentation.
 
 Thay vì FC, phần cuối dùng một **convolution block 1×1** với **số output channel = số class** (1×1 conv còn gọi là bottleneck, dùng để giảm số feature về số class mong muốn). Ví dụ feature map **16×16×512** qua 1×1 conv thành **16×16×3**: channel 0 cho person, channel 1 cho cat, channel 2 cho aeroplane. Mỗi channel là mask của một class.
+
+---
 
 ### 📄 Các thành phần trong paper
 
@@ -39,6 +43,8 @@ Kiến trúc: `conv1-pool1 … conv5-pool5`, rồi thêm `conv6`, `conv7`. Sau *
 
 Ý tưởng **skip architecture**: tận dụng **full feature spectrum** — các tầng sớm giữ nhiều spatial detail hơn tầng sau. Kết quả: FCN-32 thô, FCN-16 tốt hơn, **FCN-8 tốt nhất** trong ba (dù vẫn còn xa ground truth).
 
+---
+
 ### 💻 Dựng FCN-8 với VGG16
 
 Backbone là **VGG16 pretrained** (khoảng 528 MB) — ta chỉ thay phần output. Dùng `summary` để xác định vị trí các lớp cần lấy feature: **maxpool3** ở index **17**, **maxpool4** ở index **24**, và output cuối (`vgg.features`).
@@ -50,6 +56,8 @@ Với input **224×224**:
 * pool5 (output cuối) → **7×7×512**.
 
 Mỗi nhánh được đưa qua một **1×1 conv** để cùng số output channel = số class, nhờ đó cộng/merge được.
+
+---
 
 ### ⬆️ Chọn kernel và stride cho conv transpose
 
@@ -66,6 +74,8 @@ Cần hệ số upscale:
 * **8×** cho pool3 (224/28).
 
 Dùng **kernel 4, stride 2, padding 1** → mỗi lần **×2**. Vậy áp dụng hai lần được ×4? Không — mỗi block là một lần ×2, và ta dùng các block nối tiếp có chủ đích. Với **8×**, dùng **kernel 16, stride 8, padding 4**.
+
+---
 
 ### 🔗 Forward pass
 

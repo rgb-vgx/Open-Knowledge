@@ -20,6 +20,8 @@ Chào các bạn! Leaky ReLU và PReLU đã chữa được **dead neuron** như
 
 Ở bài trước mình có bỏ sót một điểm: Leaky ReLU và Parametric ReLU **không zero-centered** (output vẫn `0` hoặc dương). Không zero-centered thì **weight updation không hiệu quả** khi dùng gradient descent.
 
+---
+
 ### 🧮 ELU hoạt động ra sao
 
 ELU cũng là một biến thể để sửa các vấn đề của ReLU, nhưng có nhiều ưu điểm hơn Leaky/PReLU:
@@ -29,10 +31,14 @@ ELU cũng là một biến thể để sửa các vấn đề của ReLU, nhưng
 
 Vì vậy forward propagation không còn là đường thẳng gấp khúc; sang backward propagation, đạo hàm có dạng cong — với `x > 0` giá trị là `1`, với `x < 0` là `α·e^x` (α là hệ số của nhánh âm): **dương** và nhỏ dần về `0` (không phải giá trị âm).
 
+---
+
 ### ✅ Ưu điểm
 
 1. **Không còn dead ReLU** — nhánh âm không bao giờ bằng 0 nên neuron không chết.
 2. **Zero-centered** — các giá trị âm kéo đường cong đi qua gốc, mean gần `0`. Trước đó Leaky/PReLU không có tính chất này.
+
+---
 
 ### ⚠️ Nhược điểm
 
@@ -43,6 +49,8 @@ ELU: x > 0 → x        x ≤ 0 → hàm mũ (âm, tiến dần về một cận
      ưu: zero-centered + không dead neuron
      nhược: tốn tính toán hơn Leaky ReLU
 ```
+
+---
 
 ### 🧭 Tóm lại
 

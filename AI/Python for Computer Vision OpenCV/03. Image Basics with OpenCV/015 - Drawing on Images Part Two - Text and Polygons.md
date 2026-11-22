@@ -49,6 +49,8 @@ Các tham số:
 
 Với `org=(10, 500)`, chữ "hello" nằm sát góc dưới bên trái vì mốc tính là góc dưới trái của khung chữ.
 
+---
+
 ### 🔺 Tự dựng polygon — bước 1: chọn vertices
 
 ```python
@@ -70,6 +72,8 @@ Lưu ý:
 * Các đỉnh phải là **số nguyên**, không để bị chuyển thành float, nên chỉ định `dtype=np.int32`.
 * Nếu các đỉnh cắt nhau hoặc sắp xếp vô lý, polygon sẽ méo hoặc gây lỗi.
 
+---
+
 ### 📐 Bước 2: reshape về (-1, 1, 2)
 
 `vertices` đang có shape `(4, 2)`, nhưng OpenCV yêu cầu dữ liệu ba chiều:
@@ -80,6 +84,8 @@ pts.shape   # (4, 1, 2)
 ```
 
 `reshape((-1, 1, 2))` giữ nguyên thông tin, chỉ thêm một lớp chiều có kích thước 1 — tương ứng với các kênh màu. Công thức này gần như luôn dùng được, không cần hiểu sâu, chỉ cần nhớ **phải reshape** trước khi gọi `polylines`, nếu không OpenCV sẽ báo lỗi.
+
+---
 
 ### 🔗 Bước 3: cv2.polylines
 
@@ -100,6 +106,8 @@ Có hai điểm hơi lạ trong cách gọi:
 2. `isClosed=True` để nối điểm cuối về điểm đầu, tạo thành polygon khép kín.
 
 Màu đỏ và độ dày `5` cho kết quả dễ nhìn. Có thể kiểm tra lại từng đỉnh trên ảnh, ví dụ `(100, 300)` hay `(200, 200)` đều khớp với vị trí đã chọn.
+
+---
 
 ### 💡 Điều thực sự cần nhớ
 

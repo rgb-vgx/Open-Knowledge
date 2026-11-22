@@ -25,6 +25,8 @@ Một **input layer**, **hai hidden layer**, **một output layer**; mỗi hidde
 
 Sigmoid ép mọi giá trị về khoảng `0..1` (không bao giờ đúng bằng 0 hay 1 mà tiến rất sát), nên rất hợp cho **binary classification**. Output lần lượt đi qua `O1_1 → O2_1 → O3_1`, rồi tính loss và dùng **optimizers** để backpropagate, cập nhật `W3`, `W2`, `W1`.
 
+---
+
 ### ⛓️ Bung chain rule cho W1
 
 ```text
@@ -39,11 +41,15 @@ Giờ tập trung vào một mắt xích, ví dụ `∂O3_1/∂O2_1`. Vì `O3_1 
 
 Với `∂Z/∂O2_1 = W3` (bias là hằng số nên đạo hàm bằng 0).
 
+---
+
 ### 🎯 Điểm mấu chốt: đạo hàm sigmoid chỉ nằm trong 0..0.25
 
 Với **sigmoid**, output luôn trong `0..1`. Nhưng **đạo hàm** của nó — `σ'(z) = σ(z)(1 - σ(z))` — luôn nằm trong khoảng **0 đến 0.25** (cực đại `0.25` tại `z = 0`). Điều này đã được chứng minh toán học; ở đây ta dùng nó như một sự thật.
 
 Vậy mỗi mắt xích `∂O/∂O_trước` xấp xỉ `(giá trị ≤ 0.25) * W`. Mà weights khởi tạo ban đầu cũng thường nhỏ (khoảng `0..1`, tùy kỹ thuật khởi tạo). Nhân một loạt số nhỏ với nhau qua nhiều lớp, kết quả **tiến dần về 0**.
+
+---
 
 ### 📉 Hệ quả: weights không được cập nhật
 

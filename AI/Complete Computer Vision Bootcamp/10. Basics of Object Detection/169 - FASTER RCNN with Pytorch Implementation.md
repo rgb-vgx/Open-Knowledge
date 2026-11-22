@@ -33,6 +33,8 @@ from torchvision import transforms
 
 Mình cần cả **kiến trúc** lẫn **weights**, cùng `cv2` để vẽ box và các thư viện đọc/transform ảnh.
 
+---
+
 ### 🧠 Load model
 
 ```python
@@ -47,6 +49,8 @@ model.eval()
 
 Lưu ý: ResNet-50 nghĩa là 50 layer, nên **load model khá lâu**.
 
+---
+
 ### 🖼️ Tiền xử lý ảnh
 
 Hàm nhận đường dẫn ảnh, mở bằng **PIL**, chuyển sang **RGB**, rồi chuyển thành **tensor**:
@@ -57,6 +61,8 @@ tensor = transforms.ToTensor()(image)
 ```
 
 Hàm trả về **cả ảnh gốc** (để vẽ) lẫn **tensor** (để đưa vào model).
+
+---
 
 ### 🔮 Chạy dự đoán
 
@@ -71,6 +77,8 @@ with torch.no_grad():
 * **labels** — class index,
 * **scores** — confidence score.
 
+---
+
 ### 🎨 Vẽ kết quả
 
 Hàm `visualize_detection` nhận ảnh, prediction và danh sách category:
@@ -81,6 +89,8 @@ Hàm `visualize_detection` nhận ảnh, prediction và danh sách category:
 4. Tính kích thước chữ bằng `cv2.getTextSize`, vẽ nền nhãn bằng `cv2.rectangle`, rồi `cv2.putText` để ghi tên class.
 
 Vì màu là random, mỗi lần chạy box lại đổi màu — tiện để phân biệt các object.
+
+---
 
 ### 📊 Kết quả và bài học về threshold
 

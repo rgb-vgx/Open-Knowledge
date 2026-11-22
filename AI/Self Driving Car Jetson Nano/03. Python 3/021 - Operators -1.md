@@ -24,6 +24,8 @@ Toán tử trong Python là những ký hiệu đặc biệt dùng để thao t�
 * **Assignment operators** — gán dữ liệu cho biến.
 * **Comparison operators** — so sánh hai dữ liệu.
 
+---
+
 ### ➕ Toán tử số học
 
 Giả sử `x = 5`, `y = 7`. Khi cộng hai biến ta được `12`, khi nhân được `35`. Các phép cộng, trừ, nhân, chia dùng những toán tử tương ứng.
@@ -52,6 +54,8 @@ a * i    # 70
 i ** 3   # 8
 ```
 
+---
+
 ### 📥 Toán tử gán
 
 Toán tử gán dùng để gán giá trị. Ví dụ `x = 5`. Muốn cộng thêm vào chính biến đó, mình dùng ký hiệu **add and assign**:
@@ -62,6 +66,8 @@ x %= 2   # x = 1
 ```
 
 Sau `x += 2`, biến `x` thành `7`. Sau `x %= 2`, `x` thành `1`.
+
+---
 
 ### ⚖️ Toán tử so sánh
 

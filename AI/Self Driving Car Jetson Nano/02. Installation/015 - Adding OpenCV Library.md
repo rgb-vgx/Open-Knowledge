@@ -21,6 +21,8 @@ Bài cuối của phần cài đặt: kiểm tra thư viện **OpenCV** trong Vi
 1. Kết nối tới Jetson Nano qua VNC, bấm **Continue** khi được hỏi.
 2. Mở ô tìm kiếm, gõ **code** và mở **Visual Studio Code**.
 
+---
+
 ### 📝 Tạo file Python mới
 
 1. Trong project, tạo file Python mới, ví dụ `project.py`.
@@ -35,6 +37,8 @@ Hai dòng này làm đúng hai việc:
 
 * `import cv2` nạp module OpenCV (tên module là `cv2`).
 * `print(cv2.__version__)` in ra phiên bản OpenCV đang có trên máy.
+
+---
 
 ### ✅ Chạy và đọc kết quả
 

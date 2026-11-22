@@ -25,6 +25,8 @@ Chào các bạn, đây là bước đầu tiên để đưa hệ điều hành 
 2. Cắm card reader vào máy tính.
 3. Mở File Explorer, kiểm tra xem máy tính đã đọc được ổ thẻ SD hay chưa.
 
+---
+
 ### 🔧 Tải và cài SD Card Formatter
 
 1. Lên Google, gõ **SD card formatter** rồi Enter.
@@ -33,6 +35,8 @@ Chào các bạn, đây là bước đầu tiên để đưa hệ điều hành 
 4. Đọc và **Accept** user license agreement để bắt đầu tải.
 5. File zip tải về xong thì **giải nén**, mở thư mục vừa giải nén.
 6. Chạy file **setup**. Trình **InstallShield Wizard** hiện lên, lần lượt bấm **Next**, **Modify**, **Next** rồi **Install**.
+
+---
 
 ### ⚙️ Định dạng nhanh thẻ SD
 

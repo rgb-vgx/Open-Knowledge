@@ -25,11 +25,15 @@ pip install ultralytics
 
 Sau đó import và kiểm tra để chắc mọi thứ chạy ổn. Trong lúc chờ cài, mình ghé trang docs chính thức của **Ultralytics YOLO** — tại thời điểm quay bài giảng, docs giới thiệu **YOLO11**, phiên bản mới nhất khi đó trong dòng YOLO real-time detector của Ultralytics, với độ chính xác, tốc độ và hiệu quả được cải thiện.
 
+---
+
 ### 🧩 Các mode và kích thước model
 
 Ultralytics YOLO hỗ trợ nhiều tác vụ: **detection**, **segmentation**, **classification**, **pose**, **OBB**. Bài này chỉ tập trung **detection**. Các mode có sẵn gồm **train**, **val**, **predict**, **export**, **track**, **benchmark**.
 
 Về kích thước, model có các biến thể **n, s, m, l, x** — càng về sau càng lớn, **mAP** càng cao. Nano là nhỏ nhất và nhẹ nhất; X là mạnh nhất (transcript dẫn mAP khoảng **54.7**). Trước khi chạy, mình viết một hàm `visualizer` dùng `cv2.imshow` để hiển thị ảnh dự đoán.
+
+---
 
 ### 🖥️ Chạy inference bằng CLI
 
@@ -43,6 +47,8 @@ Trong đó `yolo` là lệnh, `predict` là tác vụ, `model=yolo11n.pt` chọn
 
 Quan sát ảnh kết quả của nano: **nhiều người không được phát hiện** — model nhỏ nên dễ sai sót, dù nhìn chung vẫn khá ổn.
 
+---
+
 ### 🔍 So sánh các model
 
 Mình chạy lần lượt trên **cùng một ảnh** để dễ đối chiếu:
@@ -54,6 +60,8 @@ Mình chạy lần lượt trên **cùng một ảnh** để dễ đối chiếu
 * **x (extra-large)** — model mạnh nhất; bắt được nhiều object nhất, kể cả chiếc bàn (tuy gọi là "table" thay vì "dining table").
 
 Model càng lớn càng nhiều tham số (và thường nhiều layer hơn), nên kết quả tốt hơn — đúng như mAP cao hơn mà docs ghi. Dù vậy, X vẫn bỏ sót một người chỉ lộ phần đầu, cho thấy không model nào hoàn hảo.
+
+---
 
 ### 🧠 Nhận xét về YOLO
 

@@ -30,6 +30,8 @@ if y > x:
 
 Điểm cần nhớ là **dấu hai chấm** sau điều kiện và **thụt lề** (indentation) cho khối lệnh bên trong. Trong ví dụ trên `y > x` đúng nên dòng `print` được thực thi.
 
+---
+
 ### 🔁 Câu lệnh else
 
 `else` dùng cho trường hợp điều kiện `if` **không** thỏa. Khối `else` không cần điều kiện riêng, và không thể đứng một mình — phải đi sau một `if`.
@@ -45,6 +47,8 @@ else:
 ```
 
 Ở đây `x > y` sai, nên chương trình nhảy vào `else` và in `y`.
+
+---
 
 ### 🔀 Câu lệnh elif
 
@@ -64,6 +68,8 @@ else:
 ```
 
 Chương trình xét `number > 0` — sai, nên bỏ qua `if`. Sang `elif`, `number == 0` đúng, nên in `value is zero`.
+
+---
 
 ### 🚗 Liên hệ với xe tự hành
 

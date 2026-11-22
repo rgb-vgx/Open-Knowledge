@@ -20,6 +20,8 @@ Nhiều ứng dụng computer vision chỉ cần **hình dạng và cạnh**, kh
 
 Thresholding là cách đơn giản để **phân đoạn** ảnh. Với ảnh màu, trước hết chuyển sang grayscale, sau đó áp ngưỡng để mỗi pixel thành đen hoặc trắng. Lợi ích: chỉ cần một kênh thay vì ba, dữ liệu giảm mạnh mà vẫn giữ được hình dạng tổng thể.
 
+---
+
 ### ⚙️ cv2.threshold cơ bản
 
 ```python
@@ -54,6 +56,8 @@ Tham số:
 
 Có thể kiểm tra `image_gray.max()`; ảnh rainbow có max là `214`, nhưng giá trị tối đa có thể vẫn là 255. Việc kiểm tra max hữu ích nếu ảnh được normalize về 0–1, còn ảnh đọc bằng `cv2.imread` mặc định nằm trong 0–255.
 
+---
+
 ### 🔄 Các kiểu threshold
 
 ```python
@@ -69,6 +73,8 @@ ret, thresh_tozero = cv2.threshold(image_gray, 127, 255, cv2.THRESH_TOZERO)
 * **THRESH_TOZERO_INV**: ngược của TOZERO.
 
 Hai kiểu dùng nhiều nhất là `THRESH_BINARY` và `THRESH_BINARY_INV`. Tài liệu OpenCV có bảng công thức cho từng kiểu; cách đọc là: bên trái là kết quả, bên phải là điều kiện quyết định kết quả đó.
+
+---
 
 ### 📰 Ví dụ thực tế: ảnh crossword
 
@@ -97,6 +103,8 @@ Kết quả chưa tốt: một số vùng xám bị đẩy thành trắng trong 
 1. Thử kiểu threshold khác.
 2. Thử mức ngưỡng khác — tăng ngưỡng sẽ "bắt" được nhiều vùng xám đậm hơn thành mực, nhưng có thể ăn cả vùng giấy tối màu.
 
+---
+
 ### 🧠 Adaptive threshold
 
 ```python
@@ -121,6 +129,8 @@ Adaptive threshold tự điều chỉnh ngưỡng theo **vùng lân cận** củ
 
 Kết quả: các ô đen trong crossword vẫn được nhận ra, nhưng do nhìn theo vùng lân cận, một số ô không được tô kín như khi dùng binary threshold. Đổi lại, phần chữ có vẻ rõ hơn.
 
+---
+
 ### 🎛️ Blend hai kết quả threshold
 
 Có thể kết hợp ưu điểm của hai cách bằng `addWeighted`:
@@ -132,6 +142,8 @@ show_pic(blended)
 ```
 
 Kết quả thường dễ nhìn hơn từng ảnh riêng lẻ. Trong ứng dụng thực tế, người ta hay dùng adaptive threshold rồi chỉnh `blockSize` và `C` cho tới khi hài lòng, hoặc blend nhiều kết quả lại.
+
+---
 
 ### 💡 Tóm tắt
 

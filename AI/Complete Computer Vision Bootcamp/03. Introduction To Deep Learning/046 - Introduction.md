@@ -20,9 +20,13 @@ Chào các bạn! Đây là bài mở đầu của series **Deep Learning**. Tr�
 
 **AI** (artificial intelligence) có mục tiêu tạo ra những ứng dụng có thể **tự thực hiện nhiệm vụ của nó**. Ví dụ quen thuộc là hệ thống gợi ý phim của **Netflix**: dựa trên vài input từ người dùng, nó tự động đưa ra gợi ý phim khác nhau. Hay **self-driving car**, hay **Amazon** — nơi bạn mua sắm và được gợi ý những món đồ hấp dẫn.
 
+---
+
 ### 📊 Machine learning: tập con của AI
 
 **Machine learning** là một tập con của AI. Nó cung cấp cho bạn các công cụ thống kê để **phân tích dữ liệu**, **trực quan hóa dữ liệu**, thậm chí thực hiện các phép toán như **forecasting** và **dự đoán**. Trong machine learning lại chia làm hai nhánh lớn: **supervised** và **unsupervised**.
+
+---
 
 ### 🧬 Deep learning: bắt chước bộ não người
 
@@ -48,6 +52,8 @@ RNN không phải điểm dừng. Trong nhánh này các bạn sẽ lần lượ
 * **BERT**
 
 Cả series sẽ giải nhiều use case và dùng framework như **TensorFlow** — framework mã nguồn mở do Google phát triển, trước đây được nhóm Google Brain sử dụng. Ngoài ra khóa còn tập trung vào **end-to-end project**.
+
+---
 
 ### 🎯 Học gì để đủ sức đi làm
 

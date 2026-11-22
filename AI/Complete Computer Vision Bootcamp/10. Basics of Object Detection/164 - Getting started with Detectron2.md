@@ -21,6 +21,8 @@ Detectron2 là thế hệ kế tiếp của **Detectron**, tập trung vào **st
 
 Cách nhanh nhất là chạy trên **Google Colab** với notebook chính thức. Trên **Linux** việc cài đặt rất thuận; trên **Windows** cần workaround, nên mình khuyên dùng Colab.
 
+---
+
 ### 📦 Cài đặt
 
 Notebook cài đặt theo các bước:
@@ -31,6 +33,8 @@ Notebook cài đặt theo các bước:
 4. Chạy `setup.py` trong thư mục repo để cài đặt.
 
 Xong xuôi thì kiểm tra bằng một dòng `import` — nếu không lỗi là ổn. Tiếp theo mình setup **logger** mặc định của Detectron2 cùng **numpy**, **json**, **cv2** để hiển thị kết quả.
+
+---
 
 ### 🧰 Các utility quan trọng
 
@@ -43,6 +47,8 @@ Detectron2 có vài thành phần cốt lõi các bạn cần nhớ:
 * **Visualizer** — vẽ kết quả lên ảnh.
 * **MetadataCatalog** — quản lý metadata dựa trên file annotation.
 * **DatasetCatalog** — quản lý toàn bộ ảnh/dataset.
+
+---
 
 ### 🔮 Dự đoán với model có sẵn
 
@@ -81,6 +87,8 @@ out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
 ```
 
 `print` classes và boxes giúp các bạn thao tác kết quả về sau.
+
+---
 
 ### 🎬 Mở rộng
 

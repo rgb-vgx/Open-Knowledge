@@ -33,6 +33,8 @@ for x in numbers:
 
 Kết quả in ra `1`, `2`, `3` — mỗi phần tử một dòng.
 
+---
+
 ### ♾️ Vòng lặp while
 
 `while` là vòng lặp chính trong chương trình: nó chạy cho tới khi điều kiện sai thì dừng.
@@ -57,6 +59,8 @@ while a > 0:
 ```
 
 Kết quả: `5, 4, 3, 2, 1`.
+
+---
 
 ### 💡 Vì sao cần cả hai
 

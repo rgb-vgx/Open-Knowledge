@@ -22,6 +22,8 @@ Mình sẽ cài **Visual Studio Code** trực tiếp trên Jetson Nano, toàn b�
 2. Chọn địa chỉ IP của Jetson Nano đã lưu.
 3. Bấm **Continue**, nhập mật khẩu (trong bài là **1234**) và Enter.
 
+---
+
 ### 📥 Tải bản VS Code cho ARM64
 
 1. Trên board, mở Google và tìm **Visual Studio Code**.
@@ -31,6 +33,8 @@ Mình sẽ cài **Visual Studio Code** trực tiếp trên Jetson Nano, toàn b�
 5. Tải file **.deb** ở nhánh **ARM64** — đúng kiến trúc của Jetson Nano.
 6. Trình duyệt có thể cảnh báo file tải về, bấm **Keep** rồi **Keep anyway**.
 
+---
+
 ### 🔧 Cài đặt
 
 1. Tải xong, bấm **Show in folder**.
@@ -38,6 +42,8 @@ Mình sẽ cài **Visual Studio Code** trực tiếp trên Jetson Nano, toàn b�
 3. Bấm **Install**.
 4. Nhập mật khẩu của board (**1234**) và xác nhận.
 5. Chờ quá trình cài chạy xong.
+
+---
 
 ### ✅ Mở VS Code
 

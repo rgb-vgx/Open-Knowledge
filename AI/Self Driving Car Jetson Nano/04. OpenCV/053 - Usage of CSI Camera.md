@@ -22,12 +22,16 @@ Chào các bạn, bài này mình sẽ lấy khung hình trực tiếp từ **CS
 2. Gắn cáp CSI camera vào cổng trên Jetson Nano sao cho **phần màu xanh của đầu nối quay ra ngoài**.
 3. Cắm cáp vào, kiểm tra lại cho chắc chắn.
 
+---
+
 ### 🧾 Vì sao phải dùng chuỗi cấu hình
 
 Camera của mình **không kết nối qua USB**, nên không thể mở bằng cách truyền số hiệu camera đơn thuần. Mình cần dùng đúng **chuỗi cấu hình (string)** dành cho CSI camera và truyền vào lớp **`cv2.VideoCapture`**.
 
 * Trong chuỗi cấu hình có **width** và **height**: tăng hai giá trị này thì khung hình lớn hơn nhưng **xử lý rất chậm**, nên tốt nhất là để mặc định.
 * Có thêm phương thức **flip** để đổi hướng camera: đặt **0** sẽ lật dọc so với ảnh bình thường; giảng viên đặt giá trị **2** để có kết quả như mong muốn. Transcript gốc không nêu rõ vị trí đặt giá trị này, nên các bạn đối chiếu lại chuỗi cấu hình được cung cấp trong khóa.
+
+---
 
 ### 🐍 Viết script đọc frame
 
@@ -52,6 +56,8 @@ Cách hoạt động:
 2. Trong vòng lặp **`while True`**, gọi **`camera.read()`**: biến thứ nhất là **boolean** (đọc thành công hay không), biến thứ hai là **frame**.
 3. **`cv2.imshow`** hiển thị frame trong cửa sổ tên `"CSI camera"`.
 4. Điều kiện **`cv2.waitKey(10) & 0xFF == ord('q')`** cho phép bấm phím **q** để thoát vòng lặp — đây là cấu trúc mặc định nên mình giữ nguyên.
+
+---
 
 ### ▶️ Chạy thử
 

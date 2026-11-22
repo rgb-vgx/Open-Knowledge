@@ -28,6 +28,8 @@ Mình khởi tạo I2C với dòng lệnh gán class **`busio.I2C`** cho biến 
 i2c = busio.I2C(board.SCL, board.SDA)
 ```
 
+---
+
 ### 🎛️ Tạo driver PWM PCA9685
 
 Tiếp theo mình tạo và khởi tạo driver PWM **PCA9685**, gán class `PCA9685` cho biến **pca**.
@@ -40,6 +42,8 @@ Tiếp theo mình tạo và khởi tạo driver PWM **PCA9685**, gán class `PCA
 pca = PCA9685(i2c, address=0x40)
 ```
 
+---
+
 ### ⏱️ Đặt tần số PWM
 
 Mình đặt **`pca.frequency`** bằng **100**.
@@ -51,6 +55,8 @@ Mình đặt **`pca.frequency`** bằng **100**.
 pca.frequency = 100
 ```
 
+---
+
 ### 💯 Đặt duty cycle 100%
 
 Mình đặt duty cycle của kênh **0** trên PCA9685 thành **100%** bằng giá trị **`0xFFFF`**.
@@ -61,6 +67,8 @@ Mình đặt duty cycle của kênh **0** trên PCA9685 thành **100%** bằng g
 ```python
 pca.channels[0].duty_cycle = 0xFFFF
 ```
+
+---
 
 ### 🚗 Tạo hai đối tượng động cơ
 

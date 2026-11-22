@@ -24,6 +24,8 @@ Chào các bạn, bài này mình sẽ nói về **ROI** — viết tắt của 
 
 Với xe tự lái, đó là vùng mặt đường ngay trước camera — nơi chứa vạch kẻ cần bám.
 
+---
+
 ### 🐍 Cắt ROI bằng slicing của NumPy
 
 Định nghĩa ROI thực chất là **chọn một tập con của ảnh**. Trong OpenCV, việc này dùng **toạ độ** cụ thể, và mảng NumPy cho phép cắt rất gọn.
@@ -36,6 +38,8 @@ import numpy as np
 
 img = cv2.imread("img.jpg")
 ```
+
+---
 
 ### ✂️ Cú pháp slicing bốn giá trị
 
@@ -53,6 +57,8 @@ Bốn giá trị trong ngoặc vuông lần lượt là:
 * **Điểm kết thúc x** — ví dụ **200**.
 
 Có thể hiểu đơn giản: lấy các pixel nằm giữa **y = 50 đến 150** và **x = 100 đến 200**.
+
+---
 
 ### 👁️ Hiển thị ROI và ảnh gốc
 

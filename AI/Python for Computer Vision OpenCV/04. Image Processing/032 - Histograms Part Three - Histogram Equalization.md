@@ -36,6 +36,8 @@ plt.plot(hist_values)
 
 Vì ảnh xám chỉ có một kênh nên `channels=[0]`.
 
+---
+
 ### ✨ equalizeHist
 
 ```python
@@ -52,6 +54,8 @@ plt.plot(hist_values)
 ```
 
 Histogram mới có nhiều cột rơi xuống 0 và trải rộng hơn. So với ảnh gốc, mức giảm sau giá trị 50 thoải hơn nhiều — đúng với mục tiêu làm phẳng phân bố.
+
+---
 
 ### 🌈 Equalize ảnh màu qua kênh V
 
@@ -79,6 +83,8 @@ plt.imshow(eq_color_gorilla)
 ```
 
 Kết quả có tương phản cao hơn ảnh gốc: tảng đá phía sau sáng hơn, vùng mép tối hơn. Đây là một trong số ít chỗ khóa học dùng HSV, và cũng là lý do cần biết chuyển đổi color space.
+
+---
 
 ### ✅ Tóm tắt
 

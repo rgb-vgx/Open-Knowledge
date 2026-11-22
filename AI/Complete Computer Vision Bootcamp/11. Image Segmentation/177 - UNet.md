@@ -24,6 +24,8 @@ U-Net là một **FCN** gồm hai nửa:
 
 Nối hai nửa là các **skip connection** (mũi tên xám trong sơ đồ): đặc trưng từ tầng encoder được đưa sang tầng decoder **cùng mức**. Nhờ đó U-Net có thể segment với **rất ít mẫu train**.
 
+---
+
 ### 🆚 U-Net hơn FCN ở đâu?
 
 **1. Kết nối encoder → decoder trực tiếp.**
@@ -41,6 +43,8 @@ FCN chủ yếu dùng transposed convolution để upsample. U-Net dùng thêm *
 **5. Dataset nhỏ.**
 FCN cần nhiều dữ liệu; U-Net học hiệu quả với **ít ảnh** (kể cả nhờ data augmentation nội bộ).
 
+---
+
 ### 📄 Kiến trúc trong paper (2015)
 
 Paper U-Net công bố năm **2015** trên arXiv. Quy ước ký hiệu:
@@ -52,6 +56,8 @@ Paper U-Net công bố năm **2015** trên arXiv. Quy ước ký hiệu:
 * **Conv 1×1** ở cuối để giảm channel về **số label**.
 
 Paper dùng input **572×572** cho output **388×388** (do dùng valid convolution nên kích thước co lại). Segmentation output **không nhất thiết** cùng kích thước input, miễn là ảnh phân loại pixel.
+
+---
 
 ### 🔁 Mẫu lặp lại
 

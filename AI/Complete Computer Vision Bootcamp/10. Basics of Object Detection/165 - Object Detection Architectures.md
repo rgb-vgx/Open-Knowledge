@@ -24,6 +24,8 @@ Trong object detection có hai nhiệm vụ diễn ra song song:
 
 Mọi kiến trúc bên dưới đều xoay quanh việc giải hai bài toán này.
 
+---
+
 ### 🐢 Họ Two-Stage Detectors
 
 Đặc điểm chung: dùng **region proposal** để đề xuất vùng nghi có object, rồi mới phân loại. Chúng chậm, **không real-time**, nhưng **độ chính xác cao** hơn one-stage.
@@ -35,6 +37,8 @@ Mọi kiến trúc bên dưới đều xoay quanh việc giải hai bài toán n
 **Faster R-CNN (2015)** — thay **selective search** bằng **RPN (Region Proposal Network)**, đưa region proposal vào deep learning. Nhanh hơn Fast R-CNN, và đến nay vẫn được dùng trong các framework như **Detectron**. Hạn chế: **không real-time**, tốc độ inference thấp.
 
 **Mask R-CNN (2017)** — thêm **nhánh thứ ba** cho **segmentation** (phân loại từng pixel), bên cạnh classification và localization. Dùng cho **instance segmentation**, nhưng vẫn làm được object detection. Đây là kiến trúc rất phổ biến cho bài toán segmentation.
+
+---
 
 ### ⚡ Họ One-Stage Detectors
 
@@ -55,6 +59,8 @@ One-stage **bỏ hẳn bước region proposal**, dự đoán trực tiếp boun
 | YOLO | 2016 | one-stage, real-time |
 | SSD | 2016 | nhanh, tốt với object nhỏ |
 | RetinaNet | 2017 | FPN, multi-scale |
+
+---
 
 ### 🤖 Họ Transformer-Based
 

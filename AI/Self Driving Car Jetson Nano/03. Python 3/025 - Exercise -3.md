@@ -22,6 +22,8 @@ Chào các bạn, giờ mình đưa **toán tử logic** vào môi trường cod
 2. Mở ô tìm kiếm, gõ **vs code** và mở trình soạn thảo.
 3. Tạo file mới tên `operators2.py`, bấm Enter.
 
+---
+
 ### 🧱 Khai báo biến boolean
 
 ```python
@@ -29,6 +31,8 @@ x = True
 y = False
 z = False
 ```
+
+---
 
 ### 🔗 Kiểm tra and
 
@@ -44,6 +48,8 @@ control4 = (False and True)  # False
 * `y and z`: cả hai đều `False` → `False`.
 * `False and True` → `False`.
 
+---
+
 ### 🔀 Kiểm tra or
 
 ```python
@@ -57,6 +63,8 @@ control8 = (False or True)   # True
 * `True or True` → `True`.
 * `False or z`: cả hai đều `False` → `False`.
 * `False or True` → `True`.
+
+---
 
 ### 🔄 Kiểm tra not
 

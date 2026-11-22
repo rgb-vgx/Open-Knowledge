@@ -27,6 +27,8 @@ Với **CNN**, input là **ảnh**. Từ ảnh, CNN giải được:
 * **Segmentation** — tách vùng từng pixel.
 * Và nhiều bài toán khác.
 
+---
+
 ### 🧠 CNN lấy cảm hứng từ não người
 
 Cách CNN xử lý ảnh **dựa trên cách bộ não người xử lý ảnh**. Nhìn thấy con mèo hay cái camera, não nhận ra ngay — đó là điều CNN muốn bắt chước. Không cần hiểu não như bác sĩ, chỉ cần nắm luồng xử lý.
@@ -35,6 +37,8 @@ Trong bản đồ các vùng não, hai vùng quan trọng với ảnh là:
 
 * **Cerebral cortex** (vùng số 12) — phụ trách **eye movement and orientation**.
 * **Occipital lobe** — nơi **visual area**, tức **sight image recognition** và **image perception** diễn ra, nằm ở **phía sau** não.
+
+---
 
 ### 🔀 Luồng tín hiệu trong não
 
@@ -48,6 +52,8 @@ Khi mắt nhìn một vật (ví dụ cái camera):
 ```text
 Mắt (retina) → Cerebral cortex → Visual cortex (V1..V5) → Occipital lobe: nhận diện
 ```
+
+---
 
 ### 🌍 Ý tưởng lớn
 

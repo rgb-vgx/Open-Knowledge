@@ -27,6 +27,8 @@ Các kỹ thuật downsampling phổ biến:
 
 Cần phân biệt: pooling **giảm spatial resolution**, không giảm số channel. Muốn giảm channel thì dùng **convolution 1×1**.
 
+---
+
 ### ❓ Vì sao phải downsampling?
 
 Lấy ảnh **640×640 RGB** — khoảng **1.2 triệu giá trị** (640 × 640 × 3). Nếu đưa thẳng vào một mạng neural dày đặc, lớp ẩn đầu tiên cũng phải có cỡ 1.2 triệu neuron, và còn cần nhiều lớp hơn nữa. Hậu quả:
@@ -36,6 +38,8 @@ Lấy ảnh **640×640 RGB** — khoảng **1.2 triệu giá trị** (640 × 640
 * **Tốn bộ nhớ** — khó xử lý ảnh lớn trên GPU.
 
 Downsampling giải quyết cả ba: thao tác **hiệu quả hơn** (train/inference nhanh), **giảm overfit** (ít tham số hơn, không học nhiễu), và **nhẹ bộ nhớ** (xử lý representation nén thay vì ảnh full-resolution).
+
+---
 
 ### 🧮 Ví dụ max pooling 2×2, stride 2
 
@@ -56,6 +60,8 @@ Cho ma trận 4×4:
 * cửa sổ dưới-phải → max = **6**
 
 Kết quả là ma trận 2×2 `[[6, 8], [9, 6]]` — từ 16 giá trị còn 4 giá trị đại diện nhất.
+
+---
 
 ### 💻 Thử bằng PyTorch
 
@@ -84,6 +90,8 @@ conv_output = conv(image)
 ```
 
 Với kernel 3, stride 1 trên đầu vào 4×4, đầu ra là 2×2. Khác biệt: **convolution có thể học** (trọng số train được), còn **max pooling** chỉ lấy max trong cửa sổ, không có tham số học.
+
+---
 
 ### 🔧 Kernel và stride quyết định đầu ra
 

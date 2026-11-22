@@ -27,6 +27,8 @@ Chào các bạn, bài cuối của phần driver này mình sẽ hoàn thiện 
 
 Nếu lỡ đấu dây động cơ sai chiều, các bạn chỉ cần ra lệnh quay âm để nó chạy đúng hướng mong muốn.
 
+---
+
 ### 🔁 Vòng lặp chạy thử nhiều trạng thái
 
 Mình tạo một vòng lặp **`while True`** để lần lượt cho xe chạy tới chậm, chạy tới nhanh, lùi nhanh, lùi chậm và dừng. Trước mỗi bước có lệnh **`print`** để khi chạy biết ngay động cơ đang ở trạng thái nào và đổi nhanh khi cần.
@@ -61,9 +63,13 @@ while True:
 
 Lưu ý: ở bước **backwards slowly**, transcript đọc **`-0.5`** cho motor1 và **`0.3`** cho motor2 — tức hai bánh quay ngược chiều nhau trong đoạn này. Khi chạy thử, các bạn kiểm tra lại chiều quay thực tế và chỉnh giá trị cho khớp với xe của mình.
 
+---
+
 ### ⏱️ Thêm thời gian chờ giữa các bước
 
 Mỗi trạng thái mình giữ **3 giây** bằng **`time.sleep(3)`**, nhờ vậy có đủ thời gian quan sát động cơ đổi tốc và đổi chiều. Vòng lặp chạy mãi nên xe sẽ lần lượt lặp lại chuỗi động tác trên.
+
+---
 
 ### ✅ Chạy thử trên Jetson Nano
 

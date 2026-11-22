@@ -26,6 +26,8 @@ Với bất kỳ activation function nào, hãy nắm được:
 
 Chính điều thứ ba quyết định số phận của sigmoid trong mạng sâu.
 
+---
+
 ### 🧮 Mổ xẻ đạo hàm trên mạng sâu
 
 Mạng có **hidden layer 1, 2, 3** rồi **output layer**; tính loss, dùng optimizer để backpropagate và cập nhật weights. Muốn cập nhật `W2`:
@@ -48,6 +50,8 @@ Xét `∂O3/∂O2`: đặt `Z = O2*W3 + B3`, và `O3 = sigmoid(Z)`. Chèn `Z`:
 
 Vì `∂Z/∂O2 = W3` (bias là hằng số nên đạo hàm bằng 0). Kết quả là **một số nhỏ nhân với `W3`** — mà `W3` khởi tạo ban đầu cũng nhỏ (kỹ thuật khởi tạo thường cho giá trị `0..1`, sẽ bàn sau).
 
+---
+
 ### 📉 Hệ quả: loss đứng yên
 
 Ghép dần qua các lớp, ta được một tích toàn số nhỏ (`0.2 → 0.01 → 0.002 → ...`). Đem nhân với **learning rate** nhỏ (`~0.001`) thì lượng cập nhật gần như bằng không:
@@ -65,6 +69,8 @@ Weights không đổi → **convergence không xảy ra**, loss kẹt ở một 
 * Phù hợp **binary classification** vì output là `0`/`1`.
 * Cho **dự đoán rõ ràng**, sát `1` hoặc `0`.
 * Train tốt cho mạng **nhỏ / trung bình**.
+
+---
 
 ### ❌ Ba nhược điểm lớn
 

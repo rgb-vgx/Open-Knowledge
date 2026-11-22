@@ -20,6 +20,8 @@ Chào các bạn! Các optimizer trước đều dùng **learning rate cố đ�
 
 Trên đường loss theo weight, nếu xuất phát xa global minima, bước lớn sẽ hội tụ **nhanh**; khi đã sát đáy thì bước nhỏ để khỏi vọt qua. Learning rate cố định không đáp ứng được cả hai, nên ta muốn nó **thay đổi theo quá trình**.
 
+---
+
 ### 🧮 Công thức Adagrad
 
 ```text
@@ -47,9 +49,13 @@ t=3:  lr' ≈ 0.003
 
 Ban đầu học nhanh (bước lớn), càng về sau bước càng ngắn — đúng điều ta muốn.
 
+---
+
 ### ✅ Ưu điểm
 
 * **Learning rate động**: tự điều chỉnh, lớn lúc đầu và nhỏ dần khi tiến về global minima.
+
+---
 
 ### ❌ Nhược điểm
 
@@ -60,6 +66,8 @@ w(t) ≈ w(t-1)
 ```
 
 Lượng cập nhật gần bằng 0 → weight **gần như đứng im** → hội tụ chậm hoặc kẹt. Đây là điểm yếu của Adagrad.
+
+---
 
 ### ➡️ Bước kế tiếp
 

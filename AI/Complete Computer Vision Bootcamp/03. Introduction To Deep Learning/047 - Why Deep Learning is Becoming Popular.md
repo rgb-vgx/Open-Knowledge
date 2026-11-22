@@ -34,15 +34,21 @@ Nhưng giữ dữ liệu trong kho thì chưa đủ — các công ty muốn **d
 
 Muốn train deep learning model, bạn cần **GPU**. Ngày nay giá GPU giảm dần nhờ **Nvidia** liên tục ra mắt GPU cấu hình cao và tối ưu giá theo nghiên cứu. Bạn còn có thể thuê GPU **trên cloud** với chi phí rẻ, đủ sức train những model ngày càng lớn.
 
+---
+
 ### 📈 Lý do 2: dữ liệu khổng lồ đã có sẵn
 
 Deep learning model vốn **cần rất nhiều dữ liệu**, và khi có nhiều dữ liệu chúng thường **hoạt động tốt hơn**. Dữ liệu đã và đang được sinh ra liên tục, đúng thứ deep learning cần.
+
+---
 
 ### 🎬 Ví dụ Netflix: biến dữ liệu thành doanh thu
 
 **Netflix** khởi đầu là nền tảng stream phim. Mục tiêu không chỉ là có nhiều subscription, mà còn **giữ người dùng gắn bó** — có những người bạn của mình xem Netflix cả tuần, từ sáng đến tối. Phim hay, series chất lượng là một phần, nhưng điểm mấu chốt là **recommendation system**.
 
 Cơ chế rất đơn giản: mình đang xem phim hành động, Netflix có lượng dữ liệu và lượng phim khổng lồ; nếu nó gợi ý một phim hành động khác cũng thú vị, mình có thể xem tiếp. Nhờ vậy mình gắn bó với nền tảng và có thể gia hạn subscription từng tháng. Hệ gợi ý này được xây từ **dữ liệu tương tác** của người dùng được lưu lại. Mục tiêu cuối cùng vẫn là **tăng doanh thu**.
+
+---
 
 ### 📉 Lý do 3: đường cong dữ liệu — hiệu năng
 
@@ -60,6 +66,8 @@ Performance
    │/        __/
    └────────────────────────► Data
 ```
+
+---
 
 ### 🌍 Lý do 4: mặt bằng ứng dụng quá rộng
 

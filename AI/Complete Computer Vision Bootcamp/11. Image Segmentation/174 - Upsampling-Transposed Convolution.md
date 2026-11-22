@@ -34,6 +34,8 @@ Ví dụ ảnh 2×2
 
 được upscale thành 4×4; cách điền các pixel mới phụ thuộc thuật toán.
 
+---
+
 ### 🧠 Vì sao cần upsampling?
 
 Sau nhiều lần convolution + pooling, feature map bị nén xuống rất nhỏ. Giả sử input **640×640** nhưng feature map chỉ còn **16×16×512**. Trong khi đó, segmentation cần output gần với kích thước ảnh gốc (ví dụ **512×512×3**) để phân loại từng pixel.
@@ -42,12 +44,16 @@ Nếu chỉ downsampling, model sẽ mắc kẹt ở biểu diễn độ phân g
 
 Ứng dụng: **image segmentation**, **GAN / super-resolution**, **generative models**, **medical imaging**, **image denoising**, **style transfer**.
 
+---
+
 ### ⚙️ Transposed Convolution là gì?
 
 **Transposed convolution** (còn gọi là *deconvolution*) là convolution dùng để **upsample** feature map. Điểm mấu chốt: nó **học cách upscale bằng trainable filters**.
 
 * Nearest neighbor, bilinear… là **thuật toán cố định**, không có tham số học → **không thể** là một phần của CNN.
 * Transposed convolution có **tham số học được**, train bằng **backpropagation** và **gradient descent** → gắn vào CNN như một layer bình thường.
+
+---
 
 ### 💻 Thử bằng PyTorch
 
@@ -68,6 +74,8 @@ print(up_conv.squeeze()) # 4x4, giá trị học được
 ```
 
 `F.interpolate(..., scale_factor=2, mode="nearest")` biến 2×2 thành 4×4 bằng cách **lặp lại** giá trị gần nhất. `ConvTranspose2d` với `kernel_size=3, stride=2, padding=1` cũng cho đầu ra 4×4 nhờ thêm `output_padding=1` (nếu thiếu tham số này, output sẽ là 3×3).
+
+---
 
 ### 🔄 Khác biệt cốt lõi
 

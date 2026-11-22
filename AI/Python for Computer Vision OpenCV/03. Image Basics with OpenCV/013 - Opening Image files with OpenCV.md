@@ -34,6 +34,8 @@ cv2.waitKey()
 
 Trong notebook, mọi thứ phải nằm **cùng một cell**. Sau khi chạy, cell hiện dấu `*` nghĩa là đang chạy; nhìn xuống taskbar sẽ thấy thêm một cửa sổ mang icon JupyterLab. Đóng cửa sổ xong, cell trả về `-1` là mọi thứ ổn.
 
+---
+
 ### ⚠️ Kernel chết khi đóng cửa sổ trên macOS/Linux
 
 Vì Jupyter chạy trong browser, đôi khi nó can thiệp vào việc đóng cửa sổ. Triệu chứng thường gặp trên macOS và Linux (ít gặp hơn trên Windows):
@@ -49,6 +51,8 @@ Cách xử lý:
 
 Nếu không restart kernel thì code sẽ không chạy được nữa. Nếu lỗi này xuất hiện thường xuyên, hãy chuyển hẳn sang chạy bằng script.
 
+---
+
 ### 📜 Chuyển sang file .py
 
 Trước khi làm phần này, các bạn nên đã biết chạy Python script ở command line — đó là kiến thức Python cơ bản.
@@ -58,6 +62,8 @@ Trước khi làm phần này, các bạn nên đã biết chạy Python script 
 3. Dán code vào và chỉnh lại phần hiển thị.
 
 Đặt tên file **duy nhất**, đừng đặt là `opencv.py` hay `numpy.py` vì có thể gây lỗi.
+
+---
 
 ### ⌨️ Vòng lặp chờ phím Escape
 
@@ -90,6 +96,8 @@ python mypuppy.py
 ```
 
 Cửa sổ ảnh hiện lên, bấm Escape là đóng.
+
+---
 
 ### 💡 Workflow notebook → script
 

@@ -21,12 +21,16 @@ Chào các bạn, bài này mình bắt đầu đi vào sơ đồ mạch động
 * Trong sơ đồ, mình dùng một **pin 9V**.
 * Vì phải điều khiển **bốn động cơ DC** nên cần một nguồn pin đủ mạnh.
 
+---
+
 ### 🚗 Vì sao hai động cơ mỗi bên dùng chung đầu ra
 
 Xe trong dự án **không có vô lăng**, nên mình cho hai động cơ **bên trái** nối vào **cùng một cặp output** của L298N:
 
 * Động cơ thứ nhất và động cơ thứ hai bên trái cùng đấu vào một cổng output.
 * Làm tương tự với hai động cơ **bên phải**: động cơ thứ ba và thứ tư dùng chung cặp output còn lại, phục vụ việc quay sang phải.
+
+---
 
 ### 🖤 Nối GND chung
 
@@ -36,6 +40,8 @@ Xe trong dự án **không có vô lăng**, nên mình cho hai động cơ **bê
 * Trong sơ đồ, đường này dùng **dây màu đen**.
 
 Đây là mối nối mass chung, thiếu nó thì mạch không hoạt động đúng.
+
+---
 
 ### 🧷 Các chân tín hiệu của L298N
 

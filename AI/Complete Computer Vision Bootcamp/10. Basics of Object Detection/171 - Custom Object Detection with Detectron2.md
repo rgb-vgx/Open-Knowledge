@@ -19,11 +19,15 @@ Chào các bạn! Nối tiếp bài Detectron2, lần này mình **train một o
 
 Chạy trên Colab với **GPU** (cần cho training). Cài Detectron2, kiểm tra bằng `import` — phiên bản **0.6**, có sẵn **Torch** và **CUDA**. Sau đó setup logger, các thư viện quen thuộc, `get_cfg`, `DefaultPredictor`, visualizer cùng **MetadataCatalog** và **DatasetCatalog**.
 
+---
+
 ### 📥 Dataset
 
 Mình dùng bộ **hard hat workers** trên Roboflow, gồm **3 class**: `person`, `head`, `helmet`. Dataset đã gán nhãn sẵn; mình tải định dạng **COCO** (file JSON annotation), upload ZIP lên Google Drive, mount Drive và giải nén.
 
 Annotation JSON chứa các trường như **image ID**, **category ID** và **bounding box** cho từng object. Metadata có **4 category**, nhưng chỉ **3 class** có mẫu (`person`, `head`, `helmet`); category `workers` không có instance nào.
+
+---
 
 ### 🗂️ Đăng ký dataset
 
@@ -37,6 +41,8 @@ register_coco_instances("exp_test",  {}, "test/annotations.json",  "test/images"
 ```
 
 Sau đó có thể lấy dữ liệu qua `DatasetCatalog.get("exp_train")` và metadata qua `MetadataCatalog.get("exp_train")` để visualize thử vài ảnh gán nhãn.
+
+---
 
 ### 🏋️ Cấu hình training
 
@@ -63,6 +69,8 @@ Các tham số chính:
 * `IMS_PER_BATCH` (batch size) = 128 — tuỳ GPU; GPU mạnh có thể tăng,
 * **workers = 2**.
 
+---
+
 ### ▶️ Chạy và resume
 
 ```python
@@ -78,6 +86,8 @@ trainer.train()
 
 Điểm hay: nếu muốn train thêm, chỉ cần tăng `MAX_ITER` lên **500** rồi chạy lại với `resume=True` — training **tiếp tục từ iteration 299**, không chạy lại từ đầu. Đây là lợi thế lớn khi train dài.
 
+---
+
 ### 💾 Lưu model và đánh giá
 
 Detectron2 tự lưu checkpoint **`model_final.pth`** trong `cfg.OUTPUT_DIR`. Visualize vài kết quả cho thấy model nhận đúng `helmet`/`head`.
@@ -90,6 +100,8 @@ Detectron2 tự lưu checkpoint **`model_final.pth`** trong `cfg.OUTPUT_DIR`. Vi
 * `workers` — không có mẫu nên **None**.
 
 Dataset khá mất cân bằng (person xuất hiện ít), nên mAP chưa cao là điều dễ hiểu.
+
+---
 
 ### 📤 Dùng model về sau
 

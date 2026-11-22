@@ -26,6 +26,8 @@ Edge detection trên ảnh độ phân giải cao mà không blur sẽ phát hi�
 
 Vì edge detection sẽ học ở section sau, hiểu blur từ bây giờ là hợp lý.
 
+---
+
 ### ☀️ Gamma correction
 
 Gamma correction không hẳn là blur hay smoothing, nhưng thường được nhắc cùng nhóm. Nó làm ảnh sáng hơn hoặc tối hơn tùy giá trị gamma:
@@ -36,11 +38,15 @@ Gamma correction không hẳn là blur hay smoothing, nhưng thường được 
 
 Đây chính là thứ đứng sau các nút tăng/giảm độ sáng trong app chỉnh ảnh. Sang phần code ta sẽ làm bằng `np.power`.
 
+---
+
 ### 🔢 Kernel là gì
 
 **Kernel** là một ma trận nhỏ dùng để áp hiệu ứng lên ảnh. Tùy kernel mà hiệu ứng là blur, sharpen, vẽ viền... Trong loạt bài này ta chỉ quan tâm kernel làm mờ và làm trơn.
 
 Để hình dung, hãy mở trang visualization **setosa.io/ev/image-kernels**. Trang hiển thị một ảnh xám phóng to để nhìn từng pixel với giá trị 0–255.
+
+---
 
 ### 🧮 Quét kernel 3x3
 
@@ -54,6 +60,8 @@ Với kernel blur 3x3:
 Ví dụ ở góc ảnh: `206 × 0.0625 + 205 × 0.125 + ...` rồi cộng hết, cho ra `178` — giá trị pixel mới. Quét kernel đi khắp ảnh sẽ thu được ảnh đã blur.
 
 Các giá trị `0.0625` và `0.125` trong kernel blur được chọn qua nhiều nghiên cứu để làm mờ hiệu quả. Kernel khác có thể dùng để sharpen hoặc làm outline.
+
+---
 
 ### ⚠️ Biên ảnh
 

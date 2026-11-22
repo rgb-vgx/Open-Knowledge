@@ -35,6 +35,8 @@ type(img)   # numpy.ndarray
 
 `cv2.imread` nhận trực tiếp đường dẫn tới file JPEG hoặc PNG và trả về luôn một **NumPy array**, nên không cần bước trung gian chuyển đổi như trước. Ảnh puppy trong bài có shape `(1300, 1950, 3)`.
 
+---
+
 ### ⚠️ Cái bẫy NoneType khi sai đường dẫn
 
 Nếu truyền sai đường dẫn, OpenCV **không báo lỗi**:
@@ -46,6 +48,8 @@ type(img)   # NoneType
 
 Rất nhiều bạn mới bị kẹt ở đây vì thấy lệnh chạy không lỗi nên tưởng đường dẫn đúng. Nếu nghi ngờ, hãy kiểm tra `type()` của biến; trả về `NoneType` nghĩa là đường dẫn chưa đúng.
 
+---
+
 ### 🎨 BGR và RGB — vì sao ảnh bị ám xanh
 
 Hiển thị thẳng `plt.imshow(img)` sẽ thấy ảnh ám một màu xanh lạ. Nguyên nhân: **Matplotlib** mong thứ tự kênh **RGB**, còn **OpenCV** đọc theo thứ tự **BGR**. Hai kênh đỏ và xanh bị hoán đổi cho nhau.
@@ -56,6 +60,8 @@ plt.imshow(fix_img)
 ```
 
 `cv2.cvtColor` nhận ảnh nguồn và mã chuyển đổi. OpenCV chuyển được từ bất kỳ color space nào sang bất kỳ color space nào; trong bài chỉ cần `COLOR_BGR2RGB`.
+
+---
 
 ### 🖤 Đọc thẳng ảnh grayscale
 
@@ -74,6 +80,8 @@ plt.imshow(img_gray, cmap='gray')
 
 Matplotlib còn nhiều colormap khác, ví dụ `magma` cho tông tím đen sang cam, nhưng với bài này `gray` là đủ.
 
+---
+
 ### 📐 Resize ảnh
 
 ```python
@@ -90,6 +98,8 @@ new_img.shape   # (650, 975)
 ```
 
 Với cách này truyền `(0, 0)` cho dsize rồi cho **fx**, **fy** là tỉ lệ theo chiều rộng và chiều cao. Tỉ lệ là "bao nhiêu phần của kích thước gốc", không phải "giảm bao nhiêu phần trăm": `fy=0.2` nghĩa là cao bằng 20% ban đầu. Ví dụ `fx=0.8, fy=0.2` cho shape `(260, 1560)`.
+
+---
 
 ### 🔁 Flip và lưu ảnh
 
@@ -108,6 +118,8 @@ cv2.imwrite('totally_new.jpg', fix_img)
 ```
 
 `cv2.imwrite` ghi NumPy array ra file với đường dẫn tùy chọn, hỗ trợ khá nhiều định dạng file.
+
+---
 
 ### 🖼️ Hiển thị ảnh lớn hơn trong notebook
 

@@ -34,6 +34,8 @@ for element in numbers:
 
 Kết quả: `2, 4, 6, 8, 10` — các số chia hết cho 2 không dư.
 
+---
+
 ### ➕ Cộng riêng tổng chẵn và tổng lẻ
 
 Ý tưởng: cộng các số lẻ với nhau, các số chẵn với nhau. Trước hết tạo hai biến **bên ngoài** vòng lặp, gán bằng `0`:
@@ -53,6 +55,8 @@ print("addition of odd numbers:", odd)
 ```
 
 Biến phải khai báo ngoài vòng lặp thì mới giữ được giá trị tích lũy qua các lần lặp.
+
+---
 
 ### ♾️ Counter bằng while và cách thoát vòng lặp vô hạn
 

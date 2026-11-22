@@ -38,6 +38,8 @@ def display_img(img):
 
 Vì blur thay đổi ảnh gốc, sau mỗi phép blur phải load lại ảnh nếu muốn so sánh công bằng.
 
+---
+
 ### ☀️ Gamma correction bằng np.power
 
 ```python
@@ -50,6 +52,8 @@ display_img(result)
 `np.power` lấy từng pixel trong mảng, nâng lên lũy thừa `gamma`. Với `gamma < 1`, ảnh sáng hơn; càng nhỏ càng tiến tới trắng hoàn toàn. Với `gamma > 1`, ảnh tối hơn; `gamma = 2` đã thấy rõ, `gamma = 8` gần như đen.
 
 Có thể gặp cảnh báo về giá trị vượt ngoài khoảng 0–255. Không cần lo: Matplotlib đang cắt (clip) các giá trị vượt biên khi hiển thị.
+
+---
 
 ### ✍️ Viết chữ lên ảnh gạch
 
@@ -66,6 +70,8 @@ display_img(img)
 ```
 
 Chữ này có những khe hở nhỏ giữa các nét. Khi blur, các khe sẽ bị lấp ở mức độ khác nhau — đó là cách so sánh trực quan.
+
+---
 
 ### 🔲 Lowpass filter tự tạo với filter2D
 
@@ -85,6 +91,8 @@ Kernel `5 × 5` toàn số 1, chia cho 25 để tổng bằng 1 — mỗi phần
 
 Kết quả là ảnh mờ đi, các khe trong chữ bị lấp và xuất hiện tông hồng ở một số chỗ. Tăng kích thước kernel sẽ làm blur mạnh hơn.
 
+---
+
 ### 🌫️ Blur có sẵn: cv2.blur
 
 ```python
@@ -93,6 +101,8 @@ display_img(blurred)
 ```
 
 `cv2.blur` dùng kernel trung bình mặc định, chỉ cần truyền kích thước kernel. Về bản chất giống ví dụ `filter2D` phía trên, nhưng OpenCV đã chọn sẵn giá trị. Kernel `(10, 10)` cho blur rõ hơn nhiều.
+
+---
 
 ### 🌫️ GaussianBlur
 
@@ -104,6 +114,8 @@ display_img(blurred_img)
 Tham số: ảnh nguồn, kích thước kernel, và **sigma**. Sigma là độ lệch chuẩn; thường chỉ đặt `sigmaX`, còn `sigmaY` tự động lấy bằng `sigmaX`. Trong bài chọn sigma = 10.
 
 Không có kernel size hay sigma "đúng" tuyệt đối — phần lớn là thử và kiểm tra theo pipeline cụ thể. Nếu mục tiêu là edge detection, hãy thử nhiều kiểu blur rồi xem cách nào cho kết quả edge tốt nhất.
+
+---
 
 ### 🌫️ medianBlur và khử noise
 
@@ -127,6 +139,8 @@ display_img(median)
 
 Noise giảm rõ rệt. Cái giá là mất một ít chi tiết nhỏ, ví dụ từng sợi cỏ hay tán cây phía sau. Nhưng với mắt người, ảnh trông dễ chịu hơn nhiều so với ảnh đầy pixel nhiễu. `5` là giá trị khởi đầu phổ biến; cần mờ hơn thì tăng lên.
 
+---
+
 ### 🎯 bilateralFilter
 
 ```python
@@ -135,6 +149,8 @@ display_img(blur)
 ```
 
 `cv2.bilateralFilter` nhận ảnh nguồn, `d`, `sigmaColor`, `sigmaSpace`. Nó cố gắng giảm noise mà vẫn giữ cạnh khá sắc, nhưng thường **chậm hơn** các filter khác. Trên ảnh gạch, các đường giữa chữ được giữ tốt hơn, tương tự median blur.
+
+---
 
 ### ✅ Tóm tắt
 

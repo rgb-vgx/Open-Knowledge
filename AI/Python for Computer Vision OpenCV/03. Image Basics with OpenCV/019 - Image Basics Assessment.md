@@ -22,9 +22,13 @@ Mở ảnh `dog_backpack.jpeg` trong thư mục **data** và hiển thị trong 
 
 Gợi ý: nếu đọc ảnh bằng OpenCV rồi hiển thị ngay, kênh đỏ và xanh có thể bị hoán đổi. Cần đọc đúng thứ tự và dùng hàm chuyển đổi color space đã học để sửa.
 
+---
+
 ### 2️⃣ Lật ngược ảnh
 
 Lật ảnh **upside down** và hiển thị trong notebook. Đây chính là thao tác flip quanh trục ngang.
+
+---
 
 ### 3️⃣ Vẽ rectangle quanh mặt chó
 
@@ -32,15 +36,21 @@ Vẽ một hình chữ nhật **rỗng, màu đỏ** bao quanh mặt chú chó, 
 
 Không cần căn chính xác tuyệt đối; chỉ cần ước lượng tọa độ hai góc dựa trên trục X và Y của ảnh. Mục tiêu là luyện việc chọn `pt1` (trên trái) và `pt2` (dưới phải).
 
+---
+
 ### 4️⃣ Vẽ tam giác xanh ở giữa ảnh
 
 Vẽ một hình tam giác **màu xanh dương** ở khoảng giữa ảnh, quanh vùng mặt chó. Vị trí có thể cao hoặc thấp hơn, không cần chính xác.
 
 Kích thước và góc của tam giác tùy ý. Trong ví dụ, giảng viên dùng **tam giác đều** vì dễ nhất: hai điểm đáy có cùng giá trị Y, khoảng `700`.
 
+---
+
 ### 🎁 Bonus: tô kín tam giác
 
 Câu hỏi thêm: làm sao **fill** được tam giác? Việc này cần một hàm khác chưa xuất hiện trong bài giảng, nên phải tự tra Stack Overflow hoặc Google. Gợi ý: tam giác được dựng bằng **polyline**, sau đó tìm cách tô kín đối tượng polyline đó. Notebook có sẵn một link gợi ý mạnh nếu bị kẹt.
+
+---
 
 ### 5️⃣ Task cuối: vẽ circle bằng chuột phải
 
