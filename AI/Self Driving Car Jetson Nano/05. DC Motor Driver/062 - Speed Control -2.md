@@ -55,3 +55,5 @@ pca.frequency = 100
 ---
 
 Vậy là mình đã có đối tượng I2C, đối tượng PCA9685 với địa chỉ `0x40`, và tần số `100`. Bài sau mình sẽ khai báo các chân PWM tương ứng với từng động cơ.
+
+> ⚠️ Cần kiểm chứng: tài liệu CircuitPython của PCA9685 ghi địa chỉ mặc định là **0x40**; **0x60** cũng là địa chỉ hợp lệ khi chân địa chỉ A5 được kéo lên. Transcript nói bản "original" dùng `0x60` — cần đối chiếu với module thực tế trước khi đấu dây.

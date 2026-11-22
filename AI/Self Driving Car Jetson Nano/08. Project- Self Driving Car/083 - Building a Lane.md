@@ -25,7 +25,7 @@ Một lời nhắn nhỏ từ giảng viên: khi mới học **AI**, **computer 
 
 ### 📏 Vật liệu và kích thước đường
 
-Đường chạy thử được tạo bằng **băng dính trắng** dán trên **foil đen** (nền đen). Đây là cách đơn giản nhất để mô phỏng vạch kẻ đường.
+Đường chạy thử được tạo bằng **băng dính trắng** dán trên **foil đen** (nền đen). Đây là cách đơn giản để tạo đường chạy thử.
 
 * Phần **đường thẳng dài**: **80 cm**.
 * Phần **oval** (hai đầu cong): là các **nửa đường tròn** có đường kính **12 cm** — tức **120 mm**.
@@ -36,8 +36,6 @@ Các bạn có thể thấy băng trắng và nền foil đen trong bài giảng
 
 * Trong bài, giảng viên bố trí các đoạn theo ý muốn của mình.
 * Các bạn cũng có thể **tự vẽ đường của riêng mình** rồi kiểm tra xe trên đó.
-
-Điều quan trọng là kích thước và hình dạng phù hợp với vị trí camera trên xe, để vạch đường luôn nằm trong vùng quan tâm khi xe chạy.
 
 ---
 

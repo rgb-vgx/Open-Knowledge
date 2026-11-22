@@ -50,7 +50,7 @@ import busio
 
 * Module **Adafruit_PCA9685**, lấy ra **class `PCA9685`**.
 * Class này định nghĩa các đường **I2C** và **địa chỉ** cho mạch của mình.
-* Nó đóng vai trò driver **PWM** để điều khiển tốc độ động cơ.
+* Nó là bộ điều khiển **PWM** dùng để điều khiển nhiều thiết bị.
 
 ```python
 from adafruit_pca9685 import PCA9685

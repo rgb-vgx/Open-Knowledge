@@ -10,7 +10,7 @@ categories:
 tags: []
 ---
 
-# ▭ Vẽ hình chữ nhật trên ảnh với OpenCV
+# 🔲 Vẽ hình chữ nhật trên ảnh với OpenCV
 
 > Nguồn: `050 - Basic Drawing Operations -3.md` · [Udemy](https://viettel.udemy.com/course/self-driving-car-with-jetson-nano-lane-tracking-opencv/learn/lecture/39652670)
 

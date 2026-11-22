@@ -48,3 +48,5 @@ Tách code thành module giúp tái sử dụng và giữ file chính gọn hơn
 ---
 
 Vậy là mình đã biết cả module có sẵn lẫn module tự viết. Bài sau mình thực hành với `math` và `time`.
+
+> ⚠️ Cần kiểm chứng: transcript mô tả hàm `square` là "take the square root" (căn bậc hai), trong khi tên hàm `square` thường mang nghĩa bình phương. Transcript gốc không nêu rõ kết quả chạy, nên cần đối chiếu code mẫu trong khóa.

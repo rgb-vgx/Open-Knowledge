@@ -18,7 +18,7 @@ Chào các bạn, bài cuối của phần driver này mình sẽ hoàn thiện 
 
 ### 🎚️ Thuộc tính `throttle`
 
-Để điều khiển tốc độ, mình dùng thuộc tính **`throttle`** trên hai biến **motor1** và **motor2**. Giá trị nằm trong khoảng **0 đến 1**:
+Để điều khiển tốc độ, mình dùng thuộc tính **`throttle`** trên hai biến **motor1** và **motor2**. Giá trị nằm trong khoảng **-1 đến 1**:
 
 * **`1`** — quay với **100%** tốc độ.
 * **`0.5`** — quay với **50%** tốc độ.
@@ -59,7 +59,7 @@ while True:
     time.sleep(3)
 ```
 
-Lưu ý: ở bước **backwards slowly**, transcript đọc giá trị **`-0.5`** cho motor1 và **`0.3`** cho motor2 (giảng viên cũng nhắc "có thể là 0.3"), transcript gốc không nêu rõ dấu của giá trị thứ hai — các bạn chỉnh lại cho khớp với chiều quay mong muốn của xe mình.
+Lưu ý: ở bước **backwards slowly**, transcript đọc **`-0.5`** cho motor1 và **`0.3`** cho motor2 — tức hai bánh quay ngược chiều nhau trong đoạn này. Khi chạy thử, các bạn kiểm tra lại chiều quay thực tế và chỉnh giá trị cho khớp với xe của mình.
 
 ### ⏱️ Thêm thời gian chờ giữa các bước
 

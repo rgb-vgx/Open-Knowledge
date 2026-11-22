@@ -22,8 +22,6 @@ Chào các bạn, bài này mình bổ sung thêm vài ý về **ROI** — phầ
 * Phương pháp này cho phép chỉ thực hiện đúng thao tác mà **một nhiệm vụ cụ thể** yêu cầu.
 * Nhờ vậy, cả **thời gian xử lý** lẫn **độ chính xác** đều được cải thiện rõ rệt.
 
-Điều này đặc biệt có ý nghĩa trên Jetson Nano, nơi khả năng tính toán không quá mạnh: càng ít pixel phải xử lý, vòng lặp chính càng chạy nhanh.
-
 ### 🧠 Hiểu sâu về ROI để làm dự án tốt hơn
 
 * Qua phần này, các bạn đã hiểu sâu hơn **ROI là gì** và vai trò của nó.

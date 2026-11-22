@@ -69,7 +69,7 @@ age = 7.5
 
 ### 🌍 Lưu ý về ký tự tiếng Việt
 
-Tên biến chỉ nên dùng ký tự tiếng Anh. Giảng viên lấy ví dụ ở Thổ Nhĩ Kỳ có những chữ cái riêng; dùng chúng trong tên biến có thể làm code chạy lỗi. Với tiếng Việt, các bạn cũng nên giữ tên biến không dấu.
+Tên biến chỉ nên dùng ký tự tiếng Anh. Giảng viên lấy ví dụ ở Thổ Nhĩ Kỳ có những chữ cái riêng; dùng chúng trong tên biến có thể làm code chạy lỗi. Với tiếng Việt, các bạn cũng nên giữ tên biến không dấu. Lưu ý: Python 3 thực tế cho phép chữ cái Unicode trong tên biến (PEP 3131), nên đây là khuyến nghị để tránh nhầm lẫn chứ không phải giới hạn bắt buộc.
 
 ---
 

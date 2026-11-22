@@ -84,3 +84,5 @@ name_surname = "Yilmaz Alija"
 ---
 
 Vậy là mình đã đi hết các quy tắc đặt tên biến bằng cách thử sai có kiểm soát. Bài sau mình sẽ học kỹ hơn về các toán tử.
+
+> ⚠️ Cần kiểm chứng: Python 3 (PEP 3131) thực tế **cho phép chữ cái Unicode** trong tên biến, miễn ký tự đầu hợp lệ; quy tắc "chỉ dùng ký tự tiếng Anh" là khuyến nghị của giảng viên để tránh nhầm lẫn, không phải giới hạn của ngôn ngữ.

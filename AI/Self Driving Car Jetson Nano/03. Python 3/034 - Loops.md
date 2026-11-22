@@ -46,7 +46,7 @@ while a > 0:
     print(a)
 ```
 
-Đoạn này sẽ tạo **vòng lặp vô hạn** vì điều kiện luôn đúng. Muốn in các giá trị từ `5` xuống `0`, mỗi vòng phải **giảm** `a` đi một:
+Đoạn này sẽ tạo **vòng lặp vô hạn** vì điều kiện luôn đúng. Muốn in các giá trị từ `5` xuống `1`, mỗi vòng phải **giảm** `a` đi một:
 
 ```python
 a = 5

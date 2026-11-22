@@ -51,7 +51,7 @@ Chạy thử, mình thấy in ra **4.1.4** — đây là phiên bản OpenCV đa
 
 ### 📖 Đọc ảnh bằng `cv2.imread`
 
-Tạo một biến mới, ví dụ **image**, rồi gọi hàm **imread**. Hàm này nhận đúng **một tham số**: tên file kèm phần mở rộng, dạng **chuỗi**.
+Tạo một biến mới, ví dụ **image**, rồi gọi hàm **imread**. Tham số bắt buộc là tên file kèm phần mở rộng, dạng **chuỗi**; hàm còn có tham số tùy chọn `flags` (bài này dùng mặc định).
 
 ```python
 import cv2
