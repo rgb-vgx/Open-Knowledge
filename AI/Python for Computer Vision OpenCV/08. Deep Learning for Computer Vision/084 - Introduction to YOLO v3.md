@@ -20,6 +20,8 @@ Từ phân loại ảnh — cả ảnh là một nhãn — ta chuyển sang **ob
 
 Đưa một ảnh vào, YOLO vẽ bounding box quanh những gì nó nhận ra, kèm nhãn lớp. Điểm đáng chú ý: nó vẫn hoạt động khá tốt khi vật thể **bị che khuất một phần** — thứ mà các phương pháp truyền thống thường vấp.
 
+---
+
 ### 🔄 Khác biệt cốt lõi so với các detector trước
 
 Các hệ thống detection trước đây thường **tái sử dụng classifier hoặc localizer**:
@@ -36,12 +38,16 @@ YOLO làm ngược lại — và cái tên bắt nguồn từ đây:
 3. Việc chia vùng diễn ra **bên trong** mạng, nên không cần quét ảnh nhiều lần từ bên ngoài.
 4. Các bounding box được **cân theo xác suất dự đoán**.
 
+---
+
 ### 🎚️ Ngưỡng tin cậy do ta chọn
 
 Mỗi dự đoán đi kèm một xác suất. Ví dụ YOLO báo "70% chắc bounding box này chứa một người". Ta tự đặt **ngưỡng** (threshold) cho xác suất đó:
 
 * Ngưỡng cao → chỉ nhận detection rất chắc chắn.
 * Ngưỡng thấp hơn, ví dụ **50%** → mô hình dễ dãi hơn, có thể bắt được cả những người khó thấy trong ảnh, đổi lại dễ có báo nhầm.
+
+---
 
 ### ⚡ Vì sao YOLO nhanh
 
@@ -52,6 +58,8 @@ Ba ưu điểm chính so với các hệ thống dựa trên classifier:
 3. **Tốc độ**: nhanh hơn R-CNN hơn **1.000 lần**, và nhanh hơn cả **Fast R-CNN** (bản "nhanh" của R-CNN) khoảng **100 lần**.
 
 Chính tốc độ này khiến YOLO cực kỳ phổ biến trong thực tế.
+
+---
 
 ### 🧰 Chuẩn bị cho bài code
 

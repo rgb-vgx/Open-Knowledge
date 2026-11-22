@@ -97,3 +97,5 @@ Nhờ vậy có thể lọc rất mịn: chỉ vẽ contour trong có giá trị
 ### ✅ Tóm lại
 
 `cv2.findContours(ảnh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)` trả về `contours` và `hierarchy`. Duyệt `range(len(contours))`, xét `hierarchy[0][i][3]`: bằng `-1` là contour ngoài, khác `-1` là contour trong, và giá trị cụ thể nhóm các contour trong theo hình chứa. Vẽ bằng `cv2.drawContours()`. Bài sau ta chuyển sang feature matching — kỹ thuật nhận diện vật thể mạnh hơn hẳn.
+
+> ⚠️ Cần kiểm chứng: transcript dùng `img, contours, hierarchy = cv2.findContours(...)` (ba giá trị trả về). OpenCV 4.x chỉ trả về `(contours, hierarchy)`; code ba giá trị chỉ đúng với OpenCV 3.x. Docs OpenCV không truy cập được (403) để đối chiếu tại thời điểm review.

@@ -124,7 +124,7 @@ cv2.destroyAllWindows()
 Điểm cần chú ý:
 
 1. **`k == 27`** là phím Escape; `ord('c')` là phím C để reset cả ba ảnh về trạng thái ban đầu.
-2. Phím số gửi về **mã nội bộ**, không phải ký tự. Ví dụ bấm `2` có thể trả mã 51, nên phải `chr(k)` rồi `isdigit()` rồi `int()` để lấy đúng số.
+2. Phím số gửi về **mã ASCII**, không phải ký tự. Ví dụ bấm `2` trả mã `50`, nên phải `chr(k)` rồi `isdigit()` rồi `int()` để lấy đúng số.
 3. Phải **copy** `marker_image` trước khi đưa vào `cv2.watershed`, vì ảnh gốc vẫn đang được callback chỉnh sửa.
 4. Tô màu segments bằng NumPy: `segments[marker_copy == color_ind] = colors[color_ind]` — gán màu cho toàn bộ pixel có nhãn tương ứng.
 

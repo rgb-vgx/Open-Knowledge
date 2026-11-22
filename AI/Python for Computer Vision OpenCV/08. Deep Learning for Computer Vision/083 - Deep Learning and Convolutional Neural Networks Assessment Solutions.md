@@ -28,6 +28,8 @@ plt.imshow(X_train[0])
 
 Ảnh trông giống một chiếc giày/bốt. Kiểm tra `y_train[0]` được `9` — tra bảng nhãn thì đó là **ankle boot**. Có thể truyền `cmap='gray'` hoặc bản đảo `gray_r` để nhìn rõ hơn.
 
+---
+
 ### 📏 Task 3: chuẩn hóa
 
 Giá trị lớn nhất của mảng ảnh là **255**:
@@ -37,6 +39,8 @@ X_train = X_train / 255
 X_test = X_test / 255
 ```
 
+---
+
 ### 🧊 Task 4: reshape thêm chiều channel
 
 ```python
@@ -45,6 +49,8 @@ X_test = X_test.reshape(10000, 28, 28, 1)
 ```
 
 Đúng như bài MNIST chữ số, chỉ khác shape: 60.000 ảnh train và 10.000 ảnh test.
+
+---
 
 ### 🏷️ Task 5: one-hot encoding
 
@@ -56,6 +62,8 @@ y_cat_test = to_categorical(y_test)
 ```
 
 Có nhiều cách import `to_categorical`; đường dẫn `keras.utils` là cách dùng hiện hành.
+
+---
 
 ### 🏗️ Task 6: dựng model
 
@@ -82,6 +90,8 @@ model.compile(loss='categorical_crossentropy',
 
 model.summary()
 ```
+
+---
 
 ### 🏃 Task 7: train và đánh giá
 

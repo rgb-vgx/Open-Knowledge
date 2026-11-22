@@ -24,6 +24,8 @@ Bài cuối của section: nạp một model YOLO v3 **đã train sẵn** trên 
 
 Trong `data/` còn có `COCOclasses.txt` — danh sách **80 class** của COCO. Có thể xem trực tiếp file này để biết mạng nhận được những gì.
 
+---
+
 ### 🧩 Notebook gồm những gì
 
 Các hàm đã được viết sẵn — tự lập trình lại toàn bộ là không thực tế vì chi phí train quá lớn:
@@ -44,6 +46,8 @@ yolo = YOLO()
 
 Class này vừa dựng kiến trúc Keras, vừa chứa phần vẽ box. Khi khởi tạo, nó nạp file H5 200 MB nên mất một lúc; warning "model chưa compile" là bình thường — model chỉ compile khi gọi `detect_image`.
 
+---
+
 ### 🖼️ Detect trên một ảnh của bạn
 
 Một nguồn ảnh miễn phí để thử là **unsplash.com**. Nên tìm những gì nằm trong danh sách class của COCO — ví dụ tìm "person car" để có cả người lẫn xe. Có thể xem trước các class trên **cocodataset.org**.
@@ -63,7 +67,9 @@ Kết quả lưu vào `images/res/`. Trong lần chạy mẫu (mất khoảng 6 
 
 Hai người còn lại trong ảnh không được phát hiện: một người quay mặt đi, chân bị che; người kia mất gần nửa người. Che khuất làm giảm độ tin cậy rất mạnh — người chỉ mất một chút bàn chân đã tụt từ mức gần như chắc chắn xuống còn 75%.
 
-Thử ảnh thứ hai với bốn người rõ ràng và một hàng xe: mô hình bắt được **ba** người cùng một chiếc **truck** ở tiền cảnh (dù chỉ thấy nửa xe), nhưng bỏ sót người thứ tư.
+Thử ảnh thứ hai với bốn người rõ ràng và một cụm xe sát nhau: mô hình bắt được **ba** người cùng một chiếc **truck** ở tiền cảnh (dù chỉ thấy nửa xe), nhưng bỏ sót người thứ tư.
+
+---
 
 ### 🎚️ Hai ngưỡng có thể chỉnh
 
@@ -75,6 +81,8 @@ Class `YOLO` nhận hai tham số khi khởi tạo:
 Hạ object threshold xuống **0.3** rồi detect lại `four_people.jpeg` cho kết quả khác hẳn: người thứ tư được phát hiện với score **0.54** — trước đó bị loại vì dưới 0.6. Đổi lại, ngưỡng thấp dễ sinh ra phân loại nhầm.
 
 Điều thú vị: người đó nhìn rõ không kém ba người còn lại nhưng chỉ được 0.54. Một lời nhắc rằng kể cả các mạng phức tạp cỡ YOLO cũng **không hoàn hảo**.
+
+---
 
 ### 🎥 Video
 

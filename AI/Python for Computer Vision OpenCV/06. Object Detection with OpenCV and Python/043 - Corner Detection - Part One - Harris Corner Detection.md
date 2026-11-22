@@ -101,3 +101,5 @@ Trên bàn cờ thật: phát hiện đủ các góc chính của bàn, nhưng *
 ### ✅ Tóm lại
 
 Quy trình gồm bốn bước: ép ảnh xám về `np.float32` → `cv2.cornerHarris()` với `blockSize`, `ksize`, `k` → `cv2.dilate()` → threshold theo `0.01 * dst.max()` và tô màu. Bài sau ta chuyển sang Shi-Tomasi, cách dùng còn gọn hơn.
+
+> ⚠️ Cần kiểm chứng: transcript nêu công thức Harris là `λ1 * λ2 - k * (λ1 + λ2)`; dạng chuẩn trong tài liệu Harris là `λ1 * λ2 - k * (λ1 + λ2)^2`. Docs OpenCV không truy cập được (403) để đối chiếu tại thời điểm review.

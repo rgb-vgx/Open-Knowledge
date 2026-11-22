@@ -31,11 +31,15 @@ Input minh họa là ảnh `6 × 6`, mỗi ô là một giá trị "độ tối"
 
 Đánh đổi: pooling **loại bỏ rất nhiều thông tin**. Một kernel `2 × 2` với stride `2` vứt đi tới **75%** dữ liệu đầu vào. Nhưng đây là bước gần như bắt buộc: lượng dữ liệu ảnh quá lớn, không pooling thì tính toán quá đắt.
 
+---
+
 ### 🎲 Dropout
 
 Dropout là một dạng **regularization** chống overfit. Trong lúc training, các unit bị **bỏ ngẫu nhiên** cùng các kết nối của chúng.
 
 Tác dụng: ngăn các unit "học vẹt" lẫn nhau (co-adapt) quá mức vào một tập training cụ thể — không unit nào dám dựa dẫm vào một unit khác, buộc mỗi unit phải học được đặc trưng hữu ích riêng.
+
+---
 
 ### 🏆 Các kiến trúc CNN nổi tiếng
 
@@ -48,6 +52,8 @@ AlexNet là ví dụ rõ cho việc "đi sâu thì trừu tượng tăng":
 * Càng lên cao càng trừu tượng: nhận ra **bộ phận của vật thể**, rồi tới **lớp vật thể** — phân biệt bàn ăn, đồng hồ, con tàu...
 
 Về quy mô, AlexNet tốn tài nguyên tới mức phải **chạy phân tán trên nhiều GPU**: trong sơ đồ kinh điển, một nửa ảnh đi vào GPU này, nửa kia đi vào GPU khác.
+
+---
 
 ### 🧱 Ghép lại thành một CNN hoàn chỉnh
 

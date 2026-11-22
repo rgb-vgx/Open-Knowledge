@@ -24,12 +24,16 @@ tags: []
 
 Code tải dữ liệu đã được cung cấp sẵn trong notebook bài tập.
 
+---
+
 ### ✅ Các bước cần làm
 
 1. **Visualize dữ liệu** — dùng Matplotlib xem một ảnh bất kỳ, ví dụ một đôi bốt/sneaker, để chắc chắn dữ liệu đọc đúng.
 2. **Chuẩn hóa** — chia `x_train`, `x_test` cho giá trị lớn nhất của mảng ảnh (255) để đưa pixel về 0–1.
 3. **Reshape** — thêm chiều thứ tư cho **một** color channel, giống hệt cách đã làm với MNIST chữ số.
 4. **One-hot encoding** — chuyển `y_train`, `y_test` bằng `to_categorical` để Keras xử lý như bài phân loại nhiều lớp.
+
+---
 
 ### 🏗️ Kiến trúc gợi ý
 
@@ -46,10 +50,12 @@ model.add(Dense(10, activation='softmax'))
 
 Thứ tự layer: convolution → pooling → flatten → dense 128 → dense 10. Đây chỉ là gợi ý, hoàn toàn có thể thử filter, kernel, số neuron khác — notebook có sẵn phần summary để tham khảo.
 
+---
+
 ### 🏃 Train và đánh giá
 
 1. Fit model trên `x_train`; số epoch tùy chọn. Ví dụ trong bài chạy **10 epoch** và đạt khoảng **95%** accuracy.
-2. Đánh giá trên `x_test` và báo cáo đủ **accuracy, precision, recall, F1-score** — có thể dùng đúng quy trình của bài MNIST đầu tiên: dự đoán trên test, rồi in confusion matrix và classification report.
+2. Đánh giá trên `x_test` và báo cáo đủ **accuracy, precision, recall, F1-score** — có thể theo đúng quy trình của bài MNIST đầu tiên.
 
 Lời khuyên của giảng viên: cố gắng làm mà không mở lại bài cũ; nếu bí thì xem lại các bài trước, hoặc cùng lắm mở bài giải ngay sau đây và làm theo kiểu code-along.
 

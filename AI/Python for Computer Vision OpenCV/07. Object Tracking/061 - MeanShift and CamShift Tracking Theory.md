@@ -12,7 +12,7 @@ tags: []
 
 # 🧠 MeanShift và CamShift — trượt cửa sổ tới vùng giống nhất
 
-> Nguồn: `061 - MeanShift and CamShift Tracking Theory.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12503639)
+> Nguồn: `061 - MeanShift and CamShift Tracking Theory.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12598246)
 
 Bài này mình tìm hiểu hai thuật toán tracking cơ bản nhất: **MeanShift** và **CamShift** (continuously adaptive MeanShift). Ý tưởng chung rất gọn: biểu diễn mục tiêu bằng histogram màu, rồi trượt cửa sổ tìm kiếm về phía vùng có phân bố màu giống nhất.
 
@@ -24,11 +24,15 @@ Với mỗi điểm, thuật toán tính **hướng tới centroid gần nhất*
 
 Trong ví dụ của bài, sau vòng đầu các điểm đã co về hai cụm dưới và một vùng trên chưa rõ tách hay gộp. Sang vòng hai, cụm dưới gần như hội tụ; đến vòng ba, thuật toán chốt **ba cụm**, và các vòng sau không còn dịch chuyển nữa.
 
+---
+
 ### ⚠️ MeanShift không cho chọn số cụm
 
 Điểm cần nhớ: MeanShift **tự quyết định số cụm**, người dùng không truyền vào `k`. Vì vậy kết quả có thể không phải con số "hợp lý" theo mắt người. Trong ví dụ trên, nhìn bằng mắt có thể thấy 4 cụm hợp lý hơn (hai cụm ở trên thay vì một cụm lớn), nhưng thuật toán vẫn gộp thành 3.
 
 Đây là khác biệt với **K-means** — thuật toán họ hàng bên machine learning, nơi bạn được chọn trước số cụm `k`.
+
+---
 
 ### 🎯 Áp MeanShift vào object tracking
 
@@ -38,6 +42,8 @@ Khi dùng để track, MeanShift được cấp một **target** cần theo dõi
 2. Trượt cửa sổ tracking tới vị trí có histogram khớp nhất — chính là "cluster center" theo nghĩa màu sắc.
 
 Trong animation của bài, cửa sổ ban đầu đặt trên khuôn mặt; qua từng vòng lặp, vị trí cửa sổ được cập nhật theo weighted mean cho tới khi hội tụ. Nếu khuôn mặt di chuyển, cửa sổ sẽ tiếp tục bám theo.
+
+---
 
 ### 🔄 CamShift — thêm khả năng đổi kích thước
 
@@ -51,6 +57,8 @@ Hạn chế của MeanShift: **kích thước cửa sổ không đổi**. Khi m�
 4. Lặp lại MeanShift với cửa sổ đã scale và vị trí cũ, cho tới khi đạt độ chính xác yêu cầu.
 
 Toàn bộ quá trình này OpenCV lo hết phía sau; ta chỉ gọi một hàm.
+
+---
 
 ### 💡 Chốt lại
 

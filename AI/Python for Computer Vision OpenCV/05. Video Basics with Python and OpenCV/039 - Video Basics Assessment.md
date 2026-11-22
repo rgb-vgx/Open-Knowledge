@@ -1,5 +1,5 @@
 ---
-title: 'Bài tập Video Basics: click đâu vẽ vòng tròn xanh ở đó'
+title: 'Bài tập Video Basics: click đâu vẽ vòng tròn xanh dương ở đó'
 date: '2026-11-23'
 course: 'python-opencv-cv'
 lesson: 39
@@ -10,7 +10,7 @@ categories:
 tags: []
 ---
 
-# 🎯 Bài tập Video Basics: click đâu vẽ vòng tròn xanh ở đó
+# 🎯 Bài tập Video Basics: click đâu vẽ vòng tròn xanh dương ở đó
 
 > Nguồn: `039 - Video Basics Assessment.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12257706)
 
@@ -20,9 +20,9 @@ Khép lại section Video Basics bằng một project nhỏ. Bài này mình gi�
 
 Chỉ có một yêu cầu: viết chương trình **đọc live stream từ camera** trên máy bạn. Nếu không có USB camera thì mở một **file video** có sẵn cũng được.
 
-Sau đó, **bất kỳ chỗ nào bạn click chuột trái**, chương trình vẽ một **vòng tròn màu xanh** ngay tại điểm vừa click.
+Sau đó, **bất kỳ chỗ nào bạn click chuột trái**, chương trình vẽ một **vòng tròn màu xanh dương** ngay tại điểm vừa click.
 
-Kết quả đúng trông như thế này: video vẫn chạy liên tục, và mỗi lần click, một vòng tròn rỗng màu xanh hiện ra tại vị trí con trỏ.
+Kết quả đúng trông như thế này: video vẫn chạy liên tục, và mỗi lần click, một vòng tròn rỗng màu xanh dương hiện ra tại vị trí con trỏ.
 
 ---
 
@@ -40,7 +40,7 @@ Ngoài ra có thể coi đây là một **code-along**: nhảy thẳng sang bài
 
 ### 💡 Gợi ý lớn nhất
 
-Project này **rất giống** phần vẽ hình chữ nhật đỏ ở bài trước. Khác biệt duy nhất là thay vì vẽ hình chữ nhật, bạn vẽ **vòng tròn xanh**. Mọi mảnh ghép — global variable, callback chuột, vòng lặp đọc frame, `imshow`, phím thoát — đều đã có trong bài "Vẽ lên camera trực tiếp".
+Project này **rất giống** phần vẽ hình chữ nhật đỏ ở bài trước. Khác biệt duy nhất là thay vì vẽ hình chữ nhật, bạn vẽ **vòng tròn xanh dương**. Mọi mảnh ghép — global variable, callback chuột, vòng lặp đọc frame, `imshow`, phím thoát — đều đã có trong bài "Vẽ lên camera trực tiếp".
 
 ---
 

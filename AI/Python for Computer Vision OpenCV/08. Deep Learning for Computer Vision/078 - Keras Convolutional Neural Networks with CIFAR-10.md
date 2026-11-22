@@ -33,6 +33,8 @@ plt.imshow(x_train[0])
 
 Ảnh rất nhỏ nên hơi mờ — ảnh đầu tiên là con ếch, có ảnh khác là con ngựa. Chỉ nhìn được hình dáng tổng thể, nhưng đủ để thấy ưu điểm: **có màu**.
 
+---
+
 ### ⚙️ Tiền xử lý
 
 Hai bước, y hệt MNIST:
@@ -52,6 +54,8 @@ Chia 255 để đưa pixel về 0–1. Label chuyển sang one-hot với 10 lớ
 Mười lớp của CIFAR-10 (theo Wikipedia, do **Canadian Institute for Advanced Research** công bố): máy bay, ô tô, chim, mèo, hươu, chó, ếch, ngựa, tàu thủy và xe tải. Không chỉ toàn động vật, mà có cả phương tiện giao thông.
 
 Cũng trên trang Wikipedia đó có bảng lịch sử error rate: tháng 8/2010 là **21,1%**, còn state-of-the-art hiện tại khoảng **1,48%**. Mục tiêu của bài chỉ là vượt mốc 21,1% bằng một mô hình Keras đơn giản.
+
+---
 
 ### 🏗️ Mô hình: hai cặp Conv + Pool
 
@@ -79,6 +83,8 @@ Khác biệt so với MNIST:
 * **Hai** cặp convolution + pooling thay vì một: ảnh lớn hơn và phức tạp hơn nên cần thêm layer để học đặc trưng.
 * `Dense(256)` thay vì `128`. Một thói quen phổ biến khi làm ảnh là tăng số neuron theo lũy thừa 2: `128 → 256 → 512...`.
 
+---
+
 ### ⚙️ Compile và train
 
 ```python
@@ -95,6 +101,8 @@ model.fit(x_train, y_cat_train, verbose=1, epochs=10)
 Tác giả chạy **10 epoch** — khá lâu trên máy chậm. Khóa học có sẵn file weight `cifar_10_epoch.h5` đã train sẵn để nạp bằng `load_model` thay vì tự train lại.
 
 Kết quả: khoảng **80%** accuracy trên tập train sau 10 epoch.
+
+---
 
 ### 📉 Kết quả test và bài học overfit
 

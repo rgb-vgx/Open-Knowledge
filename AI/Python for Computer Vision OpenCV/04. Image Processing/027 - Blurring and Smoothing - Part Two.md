@@ -49,7 +49,7 @@ display_img(result)
 
 `np.power` lấy từng pixel trong mảng, nâng lên lũy thừa `gamma`. Với `gamma < 1`, ảnh sáng hơn; càng nhỏ càng tiến tới trắng hoàn toàn. Với `gamma > 1`, ảnh tối hơn; `gamma = 2` đã thấy rõ, `gamma = 8` gần như đen.
 
-Có thể gặp cảnh báo về giá trị vượt ngoài khoảng 0–255. Không cần lo: NumPy đang cắt (clip) các giá trị vượt biên.
+Có thể gặp cảnh báo về giá trị vượt ngoài khoảng 0–255. Không cần lo: Matplotlib đang cắt (clip) các giá trị vượt biên khi hiển thị.
 
 ### ✍️ Viết chữ lên ảnh gạch
 

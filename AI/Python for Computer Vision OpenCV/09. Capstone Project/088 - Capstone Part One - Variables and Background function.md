@@ -12,7 +12,7 @@ tags: []
 
 # 🖐️ Capstone phần 1 — dựng nền trung bình để tách bàn tay
 
-> Nguồn: `088 - Capstone Part One - Variables and Background function.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12787365)
+> Nguồn: `088 - Capstone Part One - Variables and Background function.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12787367)
 
 Bắt đầu capstone: mình sẽ làm chương trình đếm số ngón tay giơ lên trong một ô ROI. Phần 1 lo hai việc nền tảng — khai báo biến toàn cục và viết hàm cập nhật **nền trung bình** (running average background), để sau này phát hiện khi bàn tay đi vào vùng ROI.
 
@@ -27,6 +27,8 @@ Bắt đầu capstone: mình sẽ làm chương trình đếm số ngón tay gi�
 Convex hull lý thuyết sẽ có các đỉnh tương ứng đầu ngón tay. Ngón duỗi ra thì đỉnh nằm xa tâm; ngón co lại thì đỉnh nằm gần tâm.
 
 Phương pháp này **không hoàn hảo**. Ví dụ kiểu giơ tay chữ V của Spock (5 ngón) sẽ bị đếm thành 3, vì thuật toán không nhận ra khoảng trống giữa ngón trỏ/giữa và ngón áp út/út. Đó là giới hạn của cách làm đơn giản này.
+
+---
 
 ### 📦 Import và biến toàn cục
 
@@ -48,6 +50,8 @@ roi_right, roi_left = 300, 600
 
 Bốn biến `roi_*` định nghĩa hình chữ nhật đỏ. Các con số này phụ thuộc camera; nếu ô quá sát mép, các bạn chỉnh lại hoặc tính theo chiều rộng/cao của luồng video.
 
+---
+
 ### 🧮 Hàm cập nhật nền trung bình
 
 ```python
@@ -65,9 +69,13 @@ Lần gọi đầu tiên, `background` là `None`, nên hàm sao chép frame, é
 
 Từ lần thứ hai, **`cv2.accumulateWeighted()`** tính tổng có trọng số giữa frame hiện tại (`src`) và accumulator (`dst`). Kết quả là `background` trở thành trung bình động của chuỗi frame. Hàm không trả về gì; nó cập nhật trực tiếp biến toàn cục.
 
+---
+
 ### 💡 Vì sao phải dùng nền trung bình?
 
 Camera luôn có nhiễu và ánh sáng thay đổi nhẹ. Nếu lấy đúng một frame làm nền, hiệu ảnh sẽ đầy đốm nhiễu. Trung bình qua nhiều frame cho một nền "sạch" hơn, nhờ đó khi bàn tay xuất hiện, `absdiff` sẽ làm nổi bật đúng vùng thay đổi.
+
+---
 
 ### ✅ Chốt phần 1
 

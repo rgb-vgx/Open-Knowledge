@@ -75,7 +75,7 @@ noise_img = white_noise + img
 opening = cv2.morphologyEx(noise_img, cv2.MORPH_OPEN, kernel)
 ```
 
-Kết quả xóa phần lớn noise mà không làm méo chữ quá nhiều. Không hoàn hảo — ví dụ lỗ hổng trong chữ B có thể bị lấp, chữ E có thể bị kéo dài — nhưng với mức noise lớn như vậy thì đây là kết quả tốt.
+Kết quả xóa phần lớn noise mà không làm méo chữ quá nhiều. Không hoàn hảo — vẫn còn chút noise quanh các lỗ của chữ B, còn chữ E vẫn bị kéo dài so với bản gốc — nhưng với mức noise lớn như vậy thì đây là kết quả tốt.
 
 ### 🧹 Closing — khử noise foreground
 

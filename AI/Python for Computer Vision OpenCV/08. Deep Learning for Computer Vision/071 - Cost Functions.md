@@ -27,6 +27,8 @@ Trước khi viết công thức, thống nhất các ký hiệu để khỏi l�
 
 Nói cách khác: input nhân weight, cộng bias thành `z`, đưa `z` qua activation để có `a`, và `a` là dự đoán cuối cùng của neuron.
 
+---
+
 ### 📐 Squared error cost
 
 Cost function đầu tiên là bình phương sai số:
@@ -39,6 +41,8 @@ Có thể bỏ luôn hệ số `1/N` nếu muốn, không ảnh hưởng bản c
 
 Điểm hay của bình phương: **sai số lớn bị phóng đại**. Chênh lệch giữa `y` và `a` càng lớn thì bình phương càng nổi bật, nên hàm này "trừng phạt" mạnh những dự đoán lệch xa.
 
+---
+
 ### 🚀 Cross-entropy: học nhanh hơn
 
 Vấn đề của squared error khi triển khai thực tế là nó có thể **làm chậm tốc độ học**. Vì vậy trong deep learning người ta thường dùng **cross-entropy**:
@@ -48,6 +52,8 @@ cost = -(1/N) * Σ [ y * log(a) + (1 - y) * log(1 - a) ]
 ```
 
 Ưu điểm: **học nhanh hơn**. Lý do nằm ở chỗ, với cross-entropy, khoảng cách giữa `y` và `a` càng lớn thì neuron học càng nhanh. Nếu lúc khởi đầu dự đoán lệch hẳn so với giá trị thật, hàm này cho phép "nhảy" tới rất nhanh thay vì bò từng bước nhỏ.
+
+---
 
 ### 🧩 Còn thiếu một mảnh ghép
 

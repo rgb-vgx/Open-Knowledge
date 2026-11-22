@@ -27,12 +27,16 @@ Hai phát hiện quan trọng:
 
 Ý tưởng "chỉ nhìn một phần ảnh" chính là nền của kiến trúc CNN, được hiện thực hóa nổi tiếng trong paper năm 1998 của **Yann LeCun** với kiến trúc **LeNet-5**, lần đầu dùng để phân loại MNIST.
 
+---
+
 ### 🧩 Cấu trúc một CNN
 
 Nhìn sơ đồ CNN thường thấy trong paper, có thể chia làm hai nửa:
 
 * **Feature extraction**: gồm **convolution** và **subsampling/pooling** — phần mới, là trọng tâm bài này.
 * **Classification**: fully connected network và **softmax** cho nhiều output — phần ta đã biết.
+
+---
 
 ### 🧊 Tensor: scalar, vector, matrix rồi tensor
 
@@ -51,6 +55,8 @@ Với ảnh, tensor 4 chiều rất tiện để đưa cả lô ảnh vào model
 
 MNIST là ảnh xám nên chiều cuối bằng `1`; ảnh màu sẽ có `3` channel RGB. Hiểu shape của tensor là điều kiện bắt buộc khi dựng model trong TensorFlow.
 
+---
+
 ### ⚖️ Dense layer vs convolutional layer
 
 * **Dense layer**: mỗi neuron nối tới **toàn bộ** neuron của layer sau.
@@ -63,6 +69,8 @@ Vì sao không dùng dense cho ảnh?
 3. **Regularization tự nhiên.** Giới hạn kết nối giúp mạng bớt overfit và thu hẹp không gian tìm weight xuống kích thước của convolution.
 
 Mỗi layer convolution nhìn một vùng ngày càng lớn hơn của ảnh khi đi sâu vào mạng.
+
+---
 
 ### 🧭 Convolution một chiều: filter và stride
 
@@ -83,7 +91,9 @@ Hai khái niệm đi kèm:
 
 Ta có thể dùng **nhiều filter** cùng lúc: hai filter, bốn filter... Mỗi filter là một bộ weight riêng và **bắt một đặc điểm khác nhau**. Khi số filter nhiều, cách vẽ từng mũi tên trở nên rối, nên người ta biểu diễn bằng **khối**: input `1 × L`, còn layer sau là tensor `(số filter, số unit)`.
 
-Vì stride không chia hết chiều dài input, có neuron ở mép không được phủ. Cách xử lý: thêm **zero padding** — chèn thêm pixel `0` ở viền để filter trượt đủ.
+Khi filter trượt, các neuron ở mép có thể không có đủ input tương ứng. Cách xử lý: thêm **zero padding** — chèn thêm pixel `0` ở viền để filter trượt đủ.
+
+---
 
 ### 🖼️ Convolution hai chiều trên lưới
 

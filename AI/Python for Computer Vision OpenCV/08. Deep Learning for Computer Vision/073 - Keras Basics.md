@@ -43,6 +43,8 @@ X = features
 y = labels
 ```
 
+---
+
 ### ✂️ Chia train/test bằng scikit-learn
 
 ```python
@@ -56,6 +58,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 `train_test_split` **shuffle ngẫu nhiên** trước khi chia, nên không cần lo label bị sắp xếp. `test_size=0.33` dành một phần ba dữ liệu cho test. `random_state=42` cố định kết quả shuffle — con số 42 chỉ là giá trị tuỳ chọn, nhưng vì là "câu trả lời cho mọi thứ trong vũ trụ" (theo *The Hitchhiker's Guide to the Galaxy*) nên xuất hiện khắp nơi trong code Python.
 
 Kiểm tra lại: `X` có 1372 dòng, `X_train` có 919 dòng, tức khoảng 67% — phần còn lại nằm trong `X_test`.
+
+---
 
 ### 📏 Chuẩn hóa dữ liệu với MinMaxScaler
 
@@ -75,6 +79,8 @@ Câu hỏi rất hay gặp: **tại sao chỉ fit trên `X_train`?** Vì nếu f
 
 Với bộ dữ liệu nhỏ này, min khoảng `-13` và max khoảng `17` — cùng bậc độ lớn nên scale không thực sự bắt buộc. Nhưng nếu có feature max tới cả triệu trong khi feature khác chỉ quanh `-13`, việc scale là bắt buộc. Máy tính làm hết, nên cứ làm cho chắc.
 
+---
+
 ### 🏗️ Dựng mạng bằng Sequential
 
 ```python
@@ -92,6 +98,8 @@ model.add(Dense(1, activation='sigmoid'))
 * Layer giữa (hidden): `8` neuron — một mẹo trong bài là chọn khoảng **1x đến 2x** số input; quá lớn hay quá nhỏ đều cho kết quả kém. Layer này không cần khai báo `input_dim`.
 * Layer cuối: **một** neuron vì output chỉ là `0` hoặc `1`, activation **sigmoid** để ép giá trị về khoảng 0–1.
 
+---
+
 ### ⚙️ Compile và fit
 
 ```python
@@ -108,6 +116,8 @@ Compile cần ba thứ: **loss**, **optimizer** và **metrics** cần theo dõi.
 
 **Một epoch** là một lần đi hết toàn bộ training data. Sau 50 epoch, độ chính xác trên tập train đạt khoảng **99%** — nhưng đó mới là train, chưa nói lên điều gì về dữ liệu mới.
 
+---
+
 ### 🔮 Dự đoán và đánh giá
 
 ```python
@@ -123,6 +133,8 @@ Test set đóng vai trò dữ liệu hoàn toàn mới. Trước đó ta có th�
 Confusion matrix cho thấy mô hình chỉ đoán nhầm **7 tờ tiền**; classification report cho precision, recall và F1 đều khoảng **98%**.
 
 > ⚠️ Cần kiểm chứng: `model.predict_classes()` đã bị loại bỏ khỏi Keras/TensorFlow từ bản 2.6. Với Keras hiện tại, dùng `np.argmax(model.predict(scaled_X_test), axis=-1)` cho bài nhiều lớp, hoặc so ngưỡng `0.5` với output của `model.predict()` cho bài hai lớp.
+
+---
 
 ### 💾 Lưu và nạp lại mô hình
 

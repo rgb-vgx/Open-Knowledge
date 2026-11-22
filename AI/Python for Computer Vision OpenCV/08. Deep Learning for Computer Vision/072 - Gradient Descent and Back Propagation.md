@@ -33,9 +33,13 @@ Weight ban đầu được chọn ngẫu nhiên, ứng với điểm xanh trên 
 
 Nói gọn: lấy bước tiến tỷ lệ với **âm của gradient**.
 
+---
+
 ### 🧮 Vì sao phải dùng thư viện
 
 Với một chiều thì tìm cực tiểu bằng mắt rất dễ. Nhưng mạng thật có **rất nhiều tham số**, không thể vẽ đồ thị hay nhìn bằng trực giác được nữa. Khi đó phải dùng các **thư viện đại số tuyến tính** có sẵn trong deep learning library, ví dụ tìm giá trị tốt nhất cho toàn bộ weight đầu vào của các neuron.
+
+---
 
 ### 🔁 Backpropagation: sửa mọi weight cùng lúc
 
@@ -47,6 +51,8 @@ Gradient descent ở trên mới chỉ minh họa cho **một** weight. Câu h�
 * Nó dựa nhiều vào **chain rule** (quy tắc chuỗi) trong giải tích để lan ngược qua mạng và tính các lỗi này.
 * Cách chạy: tính lỗi ở **output**, rồi phân phối ngược qua từng layer.
 * Nó **cần biết output mong muốn cho mỗi input** — tức là phải có nhãn, đúng bản chất **supervised learning**. Không có gì để so sánh thì không có lỗi để tính.
+
+---
 
 ### 🏦 Bài thực hành tiếp theo
 

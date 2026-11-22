@@ -14,7 +14,7 @@ tags: []
 
 > Nguồn: `020 - Image Basics Assessment Solutions.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12257640)
 
-Cùng đi qua lời giải của bốn task và phần bonus. Tọa độ dưới đây chỉ là ước lượng — kết quả của các bạn có thể lệch một chút mà vẫn đúng.
+Cùng đi qua lời giải của năm task và phần bonus. Tọa độ dưới đây chỉ là ước lượng — kết quả của các bạn có thể lệch một chút mà vẫn đúng.
 
 ### 📥 Đọc ảnh và sửa BGR sang RGB
 

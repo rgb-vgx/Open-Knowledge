@@ -22,6 +22,8 @@ Phần hai của bài custom images: dựng model, dùng `flow_from_directory` �
 * `Activation` cho phép thêm activation **như một layer riêng**, tách khỏi `Dense` — tiện khi muốn đổi nhanh hàm kích hoạt mà không sửa layer.
 * `Dropout` là layer mới trong Keras: tắt ngẫu nhiên một phần neuron khi train để giảm overfit.
 
+---
+
 ### 🏗️ Mô hình
 
 ```python
@@ -67,6 +69,8 @@ model.compile(loss='binary_crossentropy',
 
 Loss là `binary_crossentropy` vì chỉ có hai lớp; optimizer `adam`.
 
+---
+
 ### 📦 Sinh batch cho train và test
 
 ```python
@@ -91,6 +95,8 @@ test_image_gen = image_gen.flow_from_directory(
 * `class_mode='binary'` cho bài hai lớp.
 * Sau khi chạy, generator báo số ảnh tìm được và số class. Thuộc tính `class_indices` cho biết thứ tự gán nhãn: `cat → 0`, `dog → 1` (theo thứ tự thư mục).
 
+---
+
 ### 🏃 Train với steps_per_epoch
 
 ```python
@@ -114,6 +120,8 @@ Chạy thử một epoch mất khoảng một phút và chỉ đạt khoảng **
 
 Trong lúc train có thể xuất hiện warning về ảnh không đọc được — thường là ảnh quá nhỏ (có ảnh chỉ `1 × 1` pixel) hoặc ảnh trắng/đen tuyền. Đây chỉ là warning, generator bỏ qua ảnh đó, không phải lỗi; muốn ẩn thì `import warnings; warnings.filterwarnings('ignore')`.
 
+---
+
 ### 📈 Kết quả khi train đủ lâu
 
 Notebook của bài chạy **100 epoch**, mỗi epoch 150 step — mất khoảng **2 giờ**. Accuracy tăng dần rồi chững lại quanh **80%** trên tập train. Có thể lấy mảng lịch sử từ `results.history['acc']` và vẽ bằng `plt.plot` để thấy đường cong này.
@@ -124,6 +132,8 @@ Vì không ai muốn chờ 2 tiếng, khóa học cung cấp sẵn model đã tr
 from keras.models import load_model
 new_model = load_model('cat_dog_100_epochs.h5')
 ```
+
+---
 
 ### 🔮 Dự đoán một ảnh mới
 
@@ -156,5 +166,7 @@ new_model.predict(dog_image)           # → xác suất, khoảng 0.57
 `predict` trả về xác suất thuộc lớp "dog". Ngưỡng phân chia là **0.5**: nhỏ hơn thì mô hình cho là mèo. Ở ví dụ này mô hình đoán đúng là chó với độ tự tin khoảng **57%** — đúng, nhưng không quá chắc.
 
 > ⚠️ Cần kiểm chứng: `model.fit_generator()` đã bị deprecate và bị loại bỏ ở các bản Keras mới — dùng `model.fit(...)` với generator, các tham số `steps_per_epoch`/`validation_data`/`validation_steps` giữ nguyên. `model.predict_classes()` cũng đã bị bỏ từ Keras/TensorFlow 2.6; thay bằng ngưỡng `> 0.5` trên kết quả `model.predict()`.
+
+> ⚠️ Cần kiểm chứng: transcript chỉ nêu rõ `Conv2D` đầu tiên dùng `filters=32` và gợi ý tăng lên `64`; giá trị `64` cho hai lớp Conv2D sau trong khối code là suy ra, chưa được đọc rõ trong transcript.
 
 Như vậy là đã đi hết một pipeline thực tế: ảnh thô → cấu trúc thư mục → generator → CNN → model đã lưu → dự đoán ảnh mới.

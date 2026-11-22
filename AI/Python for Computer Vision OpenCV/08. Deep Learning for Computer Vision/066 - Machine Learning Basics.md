@@ -24,6 +24,8 @@ Machine learning lật ngược lại: ta đưa vào **input** và **output mong
 
 Ứng dụng rộng hơn ảnh rất nhiều: phát hiện gian lận thẻ tín dụng, mô hình định giá, nhận dạng pattern và ảnh, phân tích cảm xúc văn bản, recommendation engine. Trong khóa này ta chỉ quan tâm phần áp dụng vào phân tích ảnh.
 
+---
+
 ### 🐶 Supervised learning: học từ dữ liệu có nhãn
 
 Thuật toán supervised learning được huấn luyện bằng các cặp **input – output đã biết**. Ví dụ: ảnh con chó được gắn nhãn "dog", ảnh con mèo gắn nhãn "cat", do con người dán nhãn thủ công.
@@ -35,6 +37,8 @@ Cách học diễn ra như sau:
 3. Điều chỉnh mô hình theo sai số đó.
 
 Sau khi huấn luyện xong, đưa vào một ảnh mới chưa có nhãn, mô hình sẽ dự đoán đó là chó hay mèo. Kiểu học này phù hợp khi dữ liệu quá khứ có thể dự đoán sự kiện trong tương lai — dữ liệu ảnh cũ dự đoán ảnh mới.
+
+---
 
 ### 📋 Quy trình machine learning
 

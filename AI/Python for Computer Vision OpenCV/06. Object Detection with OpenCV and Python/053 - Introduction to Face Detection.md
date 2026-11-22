@@ -33,9 +33,9 @@ Mọi thứ bắt đầu từ những đặc trưng rất đơn giản:
 * **Line feature** — một dải tối kẹp giữa hai vùng sáng, ngang hoặc dọc.
 * **Four-rectangle feature** — bốn hình chữ nhật xen kẽ sáng/tối.
 
-Giá trị của một feature = **tổng pixel vùng trắng trừ tổng pixel vùng đen**.
+Giá trị của một feature = **tổng pixel vùng đen trừ tổng pixel vùng trắng** (đúng như ví dụ bên dưới: vùng tối trừ vùng sáng).
 
-Với một cạnh lý tưởng (đen tuyệt đối cạnh trắng tuyệt đối), hiệu trung bình là `1 - 0 = 1`. Ảnh thật không hoàn hảo như vậy. Ví dụ trong bài: trung bình vùng tối khoảng **0.81**, vùng sáng **0.15**, hiệu là `0.6625`. Càng gần `1` thì feature càng rõ. Ta đặt một **ngưỡng** (ví dụ `0.5`) để quyết định feature đó "đạt" hay không.
+Với một cạnh lý tưởng (đen tuyệt đối cạnh trắng tuyệt đối), hiệu trung bình là `1 - 0 = 1`. Ảnh thật không hoàn hảo như vậy. Ví dụ trong bài: trung bình vùng tối khoảng **0.8125**, vùng sáng **0.15**, hiệu là `0.6625`. Càng gần `1` thì feature càng rõ. Ta đặt một **ngưỡng** (ví dụ `0.5`) để quyết định feature đó "đạt" hay không.
 
 ---
 

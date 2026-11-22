@@ -22,6 +22,8 @@ Cách đơn giản hóa: neuron có nhiều **dendrite** (nhánh) đưa tín hi�
 
 Ý tưởng cốt lõi: nhiều input → một output. Neuron nhân tạo giữ đúng cấu trúc đó.
 
+---
+
 ### 🔢 Perceptron với hai input
 
 Mô hình đơn giản nhất của neuron nhân tạo là **perceptron**. Ví dụ trong bài có hai input và một output, đánh số từ 0 cho quen với index trong lập trình: `input 0` và `input 1`.
@@ -42,6 +44,8 @@ Weight thường được khởi tạo ngẫu nhiên — ở đây chỉ là s�
 
 Cộng lại được `6 + (-4) = 2`.
 
+---
+
 ### ⚡ Hàm activation đầu tiên: bước nhảy 0/1
 
 Kết quả trên được đưa qua **activation function**. Có rất nhiều hàm để chọn, nhưng ở mức đơn giản nhất bài này dùng hàm bước:
@@ -51,11 +55,15 @@ Kết quả trên được đưa qua **activation function**. Có rất nhiều 
 
 Với tổng bằng `2` (dương), output là `1`.
 
+---
+
 ### 🩹 Vấn đề input bằng 0 và bias term
 
 Có một lỗ hổng: nếu các input ban đầu đều bằng `0` thì `0` nhân với bất kỳ weight nào cũng bằng `0`, tổng luôn bằng `0`, và output luôn là `0` dù chọn weight gì. Neuron "chết" ngay từ đầu.
 
 Cách sửa: thêm **bias term**, ở ví dụ này chọn `bias = 1`. Nhờ vậy tổng không còn bị kẹt ở 0 khi input rỗng.
+
+---
 
 ### 🧮 Biểu diễn bằng toán
 

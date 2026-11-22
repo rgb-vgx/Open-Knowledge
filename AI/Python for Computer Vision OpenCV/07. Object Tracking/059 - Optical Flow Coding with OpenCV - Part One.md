@@ -45,6 +45,8 @@ Trong `lk_params`, **`winSize`** là cửa sổ tìm kiếm. Đây là một đ�
 
 **`criteria`** ghép hai điều kiện dừng bằng toán tử `|`: tối đa 10 vòng lặp (`TERM_CRITERIA_COUNT`) hoặc epsilon 0.03 (`TERM_CRITERIA_EPS`). Cái nào tới trước thì dừng — tức là đánh đổi giữa tốc độ và độ chính xác.
 
+---
+
 ### 📷 Lấy frame đầu và chọn điểm
 
 ```python
@@ -61,6 +63,8 @@ mask = np.zeros_like(prev_frame)
 Frame đầu tiên được đóng vai "previous frame". Ta chuyển sang grayscale vì optical flow làm việc trên ảnh xám. `goodFeaturesToTrack` nhận ảnh xám, không mask, và toàn bộ tham số trong `corner_track_params` nhờ cú pháp `**`.
 
 `mask` là ảnh đen cùng kích thước frame, chỉ dùng để **vẽ các đường tracking** rồi cộng lại vào frame — không liên quan đến việc track.
+
+---
 
 ### 🔁 Vòng lặp: tính optical flow
 
@@ -84,6 +88,8 @@ Hàm **`cv2.calcOpticalFlowPyrLK`** (Pyramid Lucas-Kanade) trả về ba thứ: 
 
 Một lỗi đánh máy rất dễ mắc mà giảng viên nhắc lại: phải viết `status == 1` (so sánh), không phải `status = 1` (gán).
 
+---
+
 ### 🖍️ Vẽ đường và điểm
 
 ```python
@@ -100,6 +106,8 @@ Một lỗi đánh máy rất dễ mắc mà giảng viên nhắc lại: phải 
 `ravel()` của NumPy làm phẳng mảng 2 chiều thành 1 chiều, tương đương `reshape(-1)` và giữ nguyên thứ tự — nhờ đó lấy được cặp `x, y`.
 
 Mỗi điểm mới được nối với vị trí cũ bằng đường xanh trên `mask`, còn vị trí hiện tại được đánh dấu bằng chấm đỏ đặc (`thickness=-1`) trên frame.
+
+---
 
 ### 🪟 Hiển thị và cập nhật trạng thái
 
@@ -119,6 +127,8 @@ cap.release()
 ```
 
 Bước quan trọng nhất là **cập nhật** `prev_gray` và `prevPts` sau mỗi vòng: frame hiện tại trở thành frame trước, và các điểm tốt trở thành điểm cần track tiếp. `reshape(-1, 1, 2)` đưa mảng về đúng dạng mà hàm Lucas-Kanade yêu cầu.
+
+---
 
 ### 💡 Kết quả và lưu ý
 

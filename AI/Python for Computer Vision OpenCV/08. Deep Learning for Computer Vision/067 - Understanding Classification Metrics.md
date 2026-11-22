@@ -22,6 +22,8 @@ Ta chia dữ liệu, khoảng 30% làm test set và 70% làm training set. Mô h
 
 Lặp lại cho toàn bộ `X_test`, cuối cùng ta có số lần dự đoán đúng và số lần sai. Nhưng điểm mấu chốt: **không phải mọi lần đúng/sai đều có giá trị như nhau**. Ví dụ kinh điển là ảnh chụp nốt ruồi để phát hiện ung thư — báo nhầm một người ung thư là "bình thường" nguy hiểm hơn nhiều so với báo nhầm người khỏe thành có bệnh. Vì vậy mới cần nhiều độ đo khác nhau, và chúng gắn với **confusion matrix**.
 
+---
+
 ### ✅ Accuracy và cái bẫy mất cân bằng
 
 Accuracy là tỷ lệ dự đoán đúng trên tổng số dự đoán:
@@ -33,6 +35,8 @@ accuracy = (TP + TN) / tổng số mẫu
 Ví dụ test set có 100 ảnh, mô hình đoán đúng 80 ảnh thì accuracy = 0.8, tức 80%.
 
 Accuracy chỉ đáng tin khi các lớp **cân bằng**. Nếu test set có 99 ảnh chó và 1 ảnh mèo, một mô hình "ngu" luôn miệng nói "dog" vẫn đạt 99% accuracy — vì chỉ có đúng một trường hợp nó có thể sai. Đó là lý do phải xem thêm precision và recall.
+
+---
 
 ### 🎯 Precision, recall và đánh đổi giữa chúng
 
@@ -48,6 +52,8 @@ precision = TP / (TP + FP)
 
 Recall cao nghĩa là bỏ sót ít; precision cao nghĩa là ít báo nhầm. Hai thứ này thường **đánh đổi nhau**: muốn vét hết các ca bệnh thì phải chấp nhận báo động nhầm nhiều hơn, và ngược lại.
 
+---
+
 ### ⚖️ F1-score: trung bình điều hòa
 
 Khi cần một con số gộp cả hai, dùng **F1-score** — trung bình điều hòa (harmonic mean) của precision và recall:
@@ -57,6 +63,8 @@ F1 = 2 * (precision * recall) / (precision + recall)
 ```
 
 Tại sao không lấy trung bình cộng? Vì trung bình cộng không trừng phạt giá trị cực đoan. Một mô hình có precision = 1.0 nhưng recall = 0.0 sẽ được 0.5 nếu tính trung bình cộng, trong khi công thức F1 cho ra 0 — đúng với thực tế là mô hình vô dụng. F1 phạt nặng sự lệch giữa hai độ đo.
+
+---
 
 ### 🧩 Confusion matrix
 

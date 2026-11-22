@@ -29,6 +29,8 @@ Hai quy tắc cần nhớ:
 * Nếu có **ba hidden layer trở lên**, mạng được gọi là **deep network**.
 * Càng nhiều layer, **mức trừu tượng càng tăng** — mạng học được biểu diễn ngày càng phức tạp.
 
+---
+
 ### 📉 Vì sao hàm bước 0/1 không đủ tốt
 
 Hàm activation của bài trước chỉ trả `0` hoặc `1` tùy dấu của tổng `w·x + b`. Để tiện, người ta đặt:
@@ -38,6 +40,8 @@ z = w * x + b
 ```
 
 và vẽ trục hoành theo `z`. Hàm này có nhược điểm lớn: **thay đổi nhỏ không được phản ánh**. `z` nhích từ `0.5` lên `0.6` vẫn ra `1`; `z` nhảy từ `-1` xuống `-1000` vẫn ra `0`. Không có độ phân giải nào để học — cần hàm "mượt" hơn.
+
+---
 
 ### 📈 Sigmoid
 
@@ -55,9 +59,13 @@ f(z) = 1 / (1 + e^(-z))
 
 Đổi activation function có thể có ích tùy bài toán, và sẽ được bàn kỹ hơn khi code mạng thật.
 
+---
+
 ### 📐 Tanh
 
 Hàm phổ biến tiếp theo là **tanh** (hyperbolic tangent), cũng nhận `z = w * x + b`. Hình dạng rất giống sigmoid nhưng **miền giá trị là -1 đến 1**, thay vì 0 đến 1. Hành vi tương tự, chỉ khác khoảng output.
+
+---
 
 ### 📏 ReLU
 

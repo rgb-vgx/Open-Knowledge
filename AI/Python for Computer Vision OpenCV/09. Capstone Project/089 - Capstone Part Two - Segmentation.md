@@ -12,7 +12,7 @@ tags: []
 
 # ✂️ Capstone phần 2 — tách bàn tay khỏi nền
 
-> Nguồn: `089 - Capstone Part Two - Segmentation.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12787367)
+> Nguồn: `089 - Capstone Part Two - Segmentation.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12787371)
 
 Mục tiêu phần này: từ ảnh xám trong ROI, tạo ra ảnh nhị phân với **bàn tay màu trắng trên nền đen**, rồi lấy contour lớn nhất làm `hand_segment`. Đầu ra của hàm là cặp `(ảnh thresholded, contour bàn tay)`.
 
@@ -24,6 +24,8 @@ def segment(frame, threshold_min=25):
 
 Hàm nhận frame (grayscale) và ngưỡng tối thiểu, mặc định **25**. Nếu nền trong ROI không đồng đều hoặc có nhiều hình dạng lạ, bạn sẽ phải chỉnh giá trị này — tăng lên nếu detect quá nhiều nhiễu.
 
+---
+
 ### ➖ Hiệu ảnh tuyệt đối với nền
 
 ```python
@@ -31,6 +33,8 @@ Hàm nhận frame (grayscale) và ngưỡng tối thiểu, mặc định **25**.
 ```
 
 `cv2.absdiff()` lấy trị tuyệt đối hiệu hai ảnh: pixel nào khác nền sẽ có giá trị lớn. Điều kiện bắt buộc là `background` phải ở kiểu **uint8** — vì `accumulateWeighted` giữ nó dạng float, ta phải ép lại.
+
+---
 
 ### ⚫️ Threshold nhị phân
 
@@ -43,6 +47,8 @@ Hàm nhận frame (grayscale) và ngưỡng tối thiểu, mặc định **25**.
 
 Đừng nhầm ba khái niệm trùng tên: `thresholded` (có "ed") là **ảnh kết quả**, `cv2.threshold` là **hàm**, còn `threshold_min` là **giá trị ngưỡng**.
 
+---
+
 ### 🔍 Lấy contour ngoài cùng
 
 ```python
@@ -51,6 +57,8 @@ Hàm nhận frame (grayscale) và ngưỡng tối thiểu, mặc định **25**.
 ```
 
 Ta truyền bản copy để không làm hỏng ảnh thresholded gốc, chỉ lấy **contour ngoài cùng** (`RETR_EXTERNAL`) và xấp xỉ đơn giản (`CHAIN_APPROX_SIMPLE`).
+
+---
 
 ### 🖐️ Chọn contour lớn nhất
 
@@ -67,6 +75,8 @@ Nếu không có contour nào, trả `None` để phần gọi hàm biết mà b
 Ngược lại, giả định **contour ngoài lớn nhất là bàn tay**. Dùng `max()` với `key=cv2.contourArea` để chọn contour có diện tích lớn nhất, tránh bắt nhầm các đốm trắng nhiễu nhỏ trong nền.
 
 Giả định này có thể bị phá nếu bạn đưa thêm vật khác to hơn bàn tay vào ROI — khi đó hàm sẽ tách nhầm vật đó.
+
+---
 
 ### 💡 Tóm tắt pipeline
 

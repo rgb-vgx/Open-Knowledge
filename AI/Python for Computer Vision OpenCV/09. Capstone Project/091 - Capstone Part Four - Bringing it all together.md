@@ -12,7 +12,7 @@ tags: []
 
 # 🎬 Capstone phần 4 — chạy chương trình đếm ngón tay
 
-> Nguồn: `091 - Capstone Part Four - Bringing it all together.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12787371)
+> Nguồn: `091 - Capstone Part Four - Bringing it all together.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12787377)
 
 Phần cuối: nối `calc_accum_avg`, `segment` và `count_fingers` vào một vòng lặp đọc camera. Chương trình có hai giai đoạn — 60 frame đầu để **học nền**, sau đó mới bắt đầu đếm ngón khi bàn tay đi vào ROI.
 
@@ -43,6 +43,8 @@ Ta luôn làm việc trên **ROI** chứ không phải toàn frame: cắt theo `
 
 Trong 60 frame đầu, `background` chưa có nên chỉ cập nhật trung bình và hiện dòng chữ **"WAIT! GETTING BACKGROUND"**. Vị trí, font, màu, độ dày đều tùy chỉnh được theo camera.
 
+---
+
 ### ✋ Giai đoạn đếm ngón
 
 ```python
@@ -70,6 +72,8 @@ Trong 60 frame đầu, `background` chưa có nên chỉ cập nhật trung bìn
 
 Số ngón được ghi lên góc trái bằng `cv2.putText()` — nhớ ép `str(fingers)` vì `putText` cần chuỗi. Cửa sổ **"Thresholded"** hiển thị ảnh nhị phân, rất hữu ích để chỉnh `threshold_min` hoặc ánh sáng.
 
+---
+
 ### 🟥 Vẽ ROI và thoát
 
 ```python
@@ -89,9 +93,13 @@ cv2.destroyAllWindows()
 
 Ô ROI đỏ được vẽ **sau** khi xử lý, để không ảnh hưởng lên ảnh đầu vào. `num_frames` tăng mỗi vòng; sau 60 frame, dòng "wait" biến mất và chương trình sẵn sàng nhận bàn tay. Nhấn **Escape** để thoát và giải phóng camera.
 
+---
+
 ### 🐛 Lỗi chính tả và cách sửa
 
 Khi chạy lần đầu, giảng viên gõ nhầm `tresholded` thay vì `thresholded` ngay sau dòng `hand_segment = max(...)`. Cách sửa: sửa tên biến, **Restart Kernel**, rồi chạy lại toàn bộ cell để định nghĩa lại các hàm.
+
+---
 
 ### 👀 Kết quả
 
@@ -104,6 +112,8 @@ Một số điều cần tinh chỉnh theo tay và ánh sáng của bạn:
 * Giảm bán kính xuống 80% nếu ngón ngắn.
 * Chỉnh `threshold_min` nếu nền bị bắt nhiễu.
 * Đảm bảo nền trong ROI tương đối đồng nhất trong 60 frame đầu.
+
+---
 
 ### 💡 Tổng kết capstone
 

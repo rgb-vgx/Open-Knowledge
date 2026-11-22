@@ -43,7 +43,7 @@ face_cascade = cv2.CascadeClassifier(
     'data/cascades/haarcascade_frontalface_default.xml')
 ```
 
-Đây là danh sách khoảng **6000 classifier** — tức 6000 feature sẽ được thử lần lượt trên ảnh. Chỉ cần nạp file XML một lần rồi tái sử dụng. Trong thư mục cascade còn nhiều file khác (ví dụ `haarcascade_frontalcatface.xml` cho mặt mèo), nhưng ở đây ta dùng bản `frontalface_default`.
+Đây là danh sách khoảng **6000 classifier** — tức 6000 feature sẽ được thử lần lượt trên ảnh. Chỉ cần nạp file XML một lần rồi tái sử dụng. Trong thư mục cascade còn nhiều file XML khác, nhưng ở đây ta dùng bản `frontalface_default`.
 
 Truyền **đường dẫn file XML** vào `cv2.CascadeClassifier` — nếu sai đường dẫn, object rỗng và detect sẽ không ra gì.
 

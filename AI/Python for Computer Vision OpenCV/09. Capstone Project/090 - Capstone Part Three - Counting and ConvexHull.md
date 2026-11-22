@@ -12,15 +12,17 @@ tags: []
 
 # 🖐️ Capstone phần 3 — đếm ngón tay bằng convex hull
 
-> Nguồn: `090 - Capstone Part Three - Counting and ConvexHull.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12787369)
+> Nguồn: `090 - Capstone Part Three - Counting and ConvexHull.md` · [Udemy](https://viettel.udemy.com/course/python-for-computer-vision-with-opencv-and-deep-learning/learn/lecture/12787373)
 
-Đây là phần "ăn não" nhất của capstone. Từ contour bàn tay, mình vẽ **convex hull**, tìm 4 điểm cực trị, suy ra tâm bàn tay, dựng một đường tròn bán kính bằng 90% khoảng cách xa nhất, rồi đếm các contour nằm ngoài đường tròn — đó là các ngón đang duỗi.
+Đây là phần "ăn não" nhất của capstone. Từ contour bàn tay, mình vẽ **convex hull**, tìm 4 điểm cực trị, suy ra tâm bàn tay, dựng một đường tròn bán kính bằng 90% khoảng cách xa nhất, rồi đếm các contour cắt qua vành đường tròn — đó là các ngón đang duỗi.
 
 ### 📐 Convex hull hoạt động thế nào?
 
 Convex hull nối các điểm ngoài cùng của một tập điểm (hoặc contour) thành một đa giác bao. Với bàn tay, các đỉnh đa giác rơi đúng vào đầu ngón tay: ngón duỗi thì đỉnh xa tâm, ngón co thì đỉnh gần tâm.
 
 Vì bàn tay đi vào từ phía dưới, phần cổ tay cũng tạo ra các điểm ở đáy đa giác. Ta phải loại các điểm này ra, nếu không sẽ đếm nhầm cổ tay thành ngón.
+
+---
 
 ### 🧭 Tìm tâm bàn tay
 
@@ -42,6 +44,8 @@ left = tuple(conv_hull[conv_hull[:, :, 0].argmin()][0])
 right = tuple(conv_hull[conv_hull[:, :, 0].argmax()][0])
 ```
 
+---
+
 ### 📏 Bán kính và đường tròn tham chiếu
 
 ```python
@@ -59,6 +63,8 @@ Bán kính lấy **90%** khoảng cách xa nhất. Con số này tùy chỉnh: n
 
 Chu vi đường tròn dùng để giới hạn số điểm contour được phép coi là một ngón.
 
+---
+
 ### ⭕️ Mask hình tròn và contour bên ngoài
 
 ```python
@@ -72,9 +78,11 @@ contours, hierarchy = cv2.findContours(
     circular_roi.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 ```
 
-Mask tròn chỉ dùng để tính, không hiển thị. `cv2.bitwise_and()` giữ lại phần bàn tay nằm trong đường tròn; phần ngón duỗi ra ngoài bị cắt — nhưng contour của chúng vẫn được `findContours` trả về dưới dạng mảnh nằm ngoài.
+Mask tròn chỉ dùng để tính, không hiển thị. `cv2.circle()` với `thickness=10` vẽ **viền** đường tròn dày 10 pixel (không tô kín), nên `cv2.bitwise_and()` chỉ giữ lại các pixel bàn tay nằm đúng trên vành tròn đó. Ngón duỗi vượt qua bán kính 90% sẽ cắt vành tròn và để lại một đoạn contour ngắn; ngón co nằm gọn bên trong nên không tạo contour. Vì vậy `findContours()` trên ảnh đã mask trả về các mảnh contour tương ứng với ngón duỗi.
 
 Lần này dùng `CHAIN_APPROX_NONE` để giữ **toàn bộ** điểm trên contour, vì ta cần đếm số điểm.
+
+---
 
 ### 🔢 Đếm ngón với hai điều kiện
 
@@ -99,6 +107,8 @@ Hai bộ lọc:
 
 Contour nào vượt qua cả hai điều kiện thì cộng 1 vào `count`.
 
+---
+
 ### 💡 Ghép lại toàn bộ hàm
 
 ```python
@@ -109,8 +119,8 @@ def count_fingers(thresholded, hand_segment):
     return count
 ```
 
-Pipeline: convex hull → 4 điểm cực trị → tâm → khoảng cách lớn nhất → đường tròn 90% → mask → đếm contour ngoài vùng tròn, có loại cổ tay và nhiễu.
+Pipeline: convex hull → 4 điểm cực trị → tâm → khoảng cách lớn nhất → đường tròn 90% → mask → đếm contour cắt vành tròn, có loại cổ tay và nhiễu.
 
 Phần cuối sẽ ghép tất cả hàm này vào vòng lặp camera để chương trình chạy thật.
 
-> ⚠️ Cần kiểm chứng: transcript ghi ba giá trị trả về của `cv2.findContours` (API OpenCV 3); với OpenCV 4 hàm trả về hai giá trị như code trên. Ngoài ra `convexHull` trả về mảng có shape phức tạp, nên đoạn indexing 4 điểm cực trị cần đối chiếu lại với phiên bản OpenCV đang dùng.
+> ⚠️ Cần kiểm chứng: transcript ghi ba giá trị trả về của `cv2.findContours` (API OpenCV 3); với OpenCV 4 hàm trả về hai giá trị như code trên. Ngoài ra `convexHull` trả về mảng có shape phức tạp, nên đoạn indexing 4 điểm cực trị cần đối chiếu lại với phiên bản OpenCV đang dùng — transcript cho biết đoạn này được giảng viên copy-paste từ notes chứ không đọc từng dòng, nên code trong bài là bản dựng lại theo mô tả.

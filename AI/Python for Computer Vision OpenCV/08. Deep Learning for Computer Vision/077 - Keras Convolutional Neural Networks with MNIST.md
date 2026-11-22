@@ -33,6 +33,8 @@ plt.imshow(single_image, cmap='gray_r')
 
 Phần lớn giá trị bằng `0` — hợp lý vì nền ảnh chiếm phần lớn diện tích. Dùng `cmap='gray_r'` (`_r` là đảo colormap) sẽ thấy chữ số **tối trên nền sáng**, đúng như ảnh gốc.
 
+---
+
 ### 🏷️ One-hot encoding cho label
 
 `y_train` hiện là 60.000 số từ 0 đến 9. Nếu đưa thẳng vào mạng, mạng sẽ hiểu nhầm đây là bài **hồi quy** — như thể `5` và `4` nằm trên một trục liên tục và có cả giá trị `4.5` ở giữa. Với mạng, đó không phải là các hạng mục riêng biệt.
@@ -48,6 +50,8 @@ y_cat_test = to_categorical(y_test, 10)
 
 `10` là số lớp (chữ số 0–9). Kiểm tra `y_cat_train[0]` — ảnh đầu tiên là số 5 — sẽ thấy mảng 10 phần tử với số `1` tại index 5. Giờ label đã rõ ràng là hạng mục, và khớp với output 10 neuron dùng activation đưa về 0/1.
 
+---
+
 ### 📏 Chuẩn hóa pixel về 0–1
 
 ```python
@@ -57,6 +61,8 @@ x_test = x_test / x_test.max()
 
 Chỉ cần chia cho giá trị lớn nhất là đủ chuẩn hóa về khoảng 0–1 (không cần scikit-learn). Giá trị pixel lên tới 255 có thể làm mạng "nổ" khi tính toán; scale lại thì tỷ lệ giữa các pixel vẫn giữ nguyên, ảnh hiển thị không khác gì.
 
+---
+
 ### 🧊 Reshape thêm chiều channel
 
 ```python
@@ -65,6 +71,8 @@ x_test = x_test.reshape(10000, 28, 28, 1)
 ```
 
 Việc này không làm méo dữ liệu, chỉ nói rõ rằng có **một** color channel — để mạng dùng được cho mọi loại ảnh, kể cả ảnh màu với chiều cuối bằng 3. Kết quả: `(60000, 28, 28, 1)` và `(10000, 28, 28, 1)`.
+
+---
 
 ### 🏗️ Dựng mô hình
 
@@ -89,6 +97,8 @@ model.add(Dense(10, activation='softmax'))
 * **`Flatten`** — chuyển từ dữ liệu 2D sang 1D, vì các layer convolution hiểu ảnh 2D còn layer dense thì không.
 * **`Dense(128)`** — số neuron không có đáp án tuyệt đối, `128` là giá trị chạy tốt với MNIST.
 * **`Dense(10, activation='softmax')`** — layer phân loại cuối, 10 neuron cho 10 chữ số, softmax trả về xác suất từng lớp.
+
+---
 
 ### ⚙️ Compile, train và đánh giá
 

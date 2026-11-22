@@ -37,6 +37,8 @@ Quy tắc bắt buộc khi làm việc với Keras và ảnh thật:
 
 Nếu phân loại ba loại, chỉ cần thêm thư mục `bird/` với ảnh chim bên trong; Keras tự suy ra số lớp từ số thư mục con. Tên file giữa `test` và `train` có thể trùng nhau.
 
+---
+
 ### 🖼️ Đọc thử để thấy vấn đề
 
 ```python
@@ -57,6 +59,8 @@ plt.imshow(dog)
 ```
 
 Kích thước lộ ra ngay vấn đề: `cat4.shape` là `375 × 500`, còn `dog.shape` là `199 × 188`. **Ảnh thật có kích thước khác nhau**, và khi gom hàng chục nghìn ảnh, gần như không thể ép tất cả về cùng một kích thước bằng tay. Đó chính là lý do cần công cụ sinh dữ liệu của Keras.
+
+---
 
 ### ⚡ ImageDataGenerator: vừa xử lý vừa tăng cường dữ liệu
 
@@ -89,6 +93,8 @@ Từng tham số:
 
 Mục đích của cả loạt biến đổi này: tạo thêm ảnh **biến thể** từ ảnh gốc, để mạng bớt học vẹt và bền hơn với ảnh mới.
 
+---
+
 ### 🔄 Thử một phép biến đổi
 
 ```python
@@ -96,6 +102,8 @@ plt.imshow(image_gen.random_transform(dog))
 ```
 
 `random_transform` trả về mảng ảnh đã biến đổi ngẫu nhiên: có thể kéo giãn, xoay nhẹ, lật ngang... Mỗi lần chạy lại ra một kết quả khác. Ảnh vẫn là con chó, chỉ khác góc nhìn — đúng thứ ta muốn.
+
+---
 
 ### 📁 Sinh batch từ thư mục
 
