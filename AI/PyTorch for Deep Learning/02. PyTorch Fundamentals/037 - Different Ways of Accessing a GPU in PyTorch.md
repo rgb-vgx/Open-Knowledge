@@ -33,6 +33,8 @@ Workflow của mình: chạy thí nghiệm nhỏ và học kiến thức mới t
 
 > Nếu setup GPU local hoặc cloud: xem hướng dẫn **PyTorch Get Started → Start Locally** (chọn OS/CUDA, nó sinh lệnh cài, ví dụ qua Conda) hoặc mục **Cloud Partners**.
 
+---
+
 ### 🚀 Bật GPU trên Colab
 
 Vào **Runtime → Change runtime type → Hardware accelerator → GPU → Save**. Colab sẽ khởi động lại runtime và kết nối bạn tới một instance có GPU.
@@ -45,6 +47,8 @@ nvidia-smi
 
 Máy mình (Colab Pro) có **Tesla P100** — khá mạnh. Bản miễn phí có thể là **Tesla K80**, yếu hơn nhưng vẫn nhanh hơn CPU.
 
+---
+
 ### 🔌 Kiểm tra PyTorch có thấy GPU không
 
 ```python
@@ -55,6 +59,8 @@ torch.cuda.is_available()
 Trả về `True` nghĩa là PyTorch dùng được GPU. Nhớ lại: **CUDA** là interface lập trình của Nvidia để dùng GPU cho tính toán số.
 
 Một lợi thế lớn của Colab: mọi kết nối giữa PyTorch và GPU Nvidia được setup sẵn. Khi tự dựng máy hoặc cloud, bạn phải tự làm bước này — khóa học không đi sâu, hãy theo hướng dẫn setup chính thức.
+
+---
 
 ### 🧭 Device-agnostic code
 
@@ -77,6 +83,8 @@ torch.cuda.device_count()    # ví dụ: 1
 
 Với thí nghiệm lớn, bạn có thể có nhiều GPU và muốn chia model/dữ liệu ra từng cái — nên việc đếm device hữu ích.
 
+---
+
 ### 📚 Best practices
 
 Tài liệu PyTorch có mục **CUDA semantics → Best Practices**, chủ yếu nói về việc set up **device-agnostic code**. Có cả cách đọc tham số từ command line (dùng `argparse`) khi chạy script:
@@ -86,6 +94,8 @@ device = torch.device("cuda" if args.device == "cuda" else "cpu")
 ```
 
 Trong notebook thì ta dùng cách đơn giản ở trên. Chưa hiểu hết cũng không sao — sẽ gặp lại xuyên suốt khóa.
+
+---
 
 ### 🎯 Chốt lại
 

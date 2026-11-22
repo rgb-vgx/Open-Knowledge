@@ -25,6 +25,8 @@ Chào các bạn, chào mừng tới section mới — **going modular** với P
 
 Mình nhắc lại câu thần chú: **if in doubt, run the code**.
 
+---
+
 ### 🤔 Vậy going modular nghĩa là gì?
 
 Các bạn đã viết được nhiều code hay trong notebook. Câu hỏi đặt ra: *có thể tái sử dụng nó ở nơi khác không?* Câu trả lời là có — và đó chính là toàn bộ tiền đề của section này: **tái sử dụng những đoạn code hữu ích nhất từ notebook trước vào các Python script**.
@@ -36,6 +38,8 @@ Nhìn lại **Food Vision Mini** mà chúng ta làm ở section trước:
 * Dự đoán thử — kết quả chưa tốt như hình minh họa, sai khá nhiều, nhưng không sao.
 
 Việc cần làm bây giờ là biến toàn bộ code load dữ liệu, build model, train model đó thành một chuỗi Python script.
+
+---
 
 ### 📁 Cấu trúc thư mục sẽ hướng tới
 
@@ -51,6 +55,8 @@ Sau section này, ta sẽ có cấu trúc kiểu:
   * và cuối cùng là thư mục **models** chứa các model đã train.
 
 Dữ liệu vẫn giữ **standard image classification format** như mấy section qua. Các bạn hoàn toàn có thể tùy biến cấu trúc này theo bài toán của mình — nhưng đây là kiểu cấu trúc bạn thường gặp khi đọc code PyTorch "ngoài đời".
+
+---
 
 ### 🎯 Train model bằng một dòng lệnh
 
@@ -69,6 +75,8 @@ python train.py --model tiny_vgg --batch_size 32 --learning_rate 0.001 --num_epo
 
 Mấy flag kiểu `--model`, `--batch_size` được gọi là **argument flags**. Bạn có thể thêm bao nhiêu hyperparameter cũng được — 10 hay 20 cái đều ok, nó vô cùng linh hoạt. Dòng lệnh trên nghĩa là: train tiny VGG, batch size 32, learning rate 0.001, trong 10 epoch.
 
+---
+
 ### 🌍 Đây là cách code PyTorch ngoài đời được tổ chức
 
 Mình không nói đây là chân lý duy nhất, chỉ là một trong nhiều cách. Nhưng hãy nhìn các dự án thật:
@@ -79,6 +87,8 @@ Mình không nói đây là chân lý duy nhất, chỉ là một trong nhiều 
 * Các paper mới như **ConvNeXt** cũng chạy `python main_finetune.py`.
 
 Điểm chung: **notebook để thí nghiệm, Python script để tái sử dụng và chạy thật**.
+
+---
 
 ### 🔁 Workflow của mình
 
@@ -91,6 +101,8 @@ from torch.utils.data import DataLoader
 ```
 
 Hàm bên trong sẽ trả về **train dataloader**, **test dataloader** và **class names**. Đó là kiểu "move the most useful code to Python scripts".
+
+---
 
 ### 📒 Hai notebook: cell mode và script mode
 
@@ -107,6 +119,8 @@ Magic command bắt đầu bằng **hai dấu phần trăm** `%%`, khác với l
 ```
 
 Mỗi mục nhỏ trong notebook đều có thể tách thành một script riêng: một cái chuẩn bị dữ liệu, một cái build model, một cái train, một cái evaluate, một cái save...
+
+---
 
 ### ✅ Chốt lại
 

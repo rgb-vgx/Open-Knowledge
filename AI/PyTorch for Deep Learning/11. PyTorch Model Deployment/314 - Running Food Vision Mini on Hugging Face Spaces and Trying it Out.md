@@ -38,6 +38,8 @@ demo.launch()
 
 Điểm hay là có thể sửa **trực tiếp trên web**: vào **Files and versions** → mở `app.py` → sửa → commit. Space sẽ tự **rebuild**. Lần build thứ hai thường nhanh hơn vì đã cache dependency.
 
+---
+
 ### 🔁 Đồng bộ thay đổi về máy
 
 Vì thư mục local là một git repo, chạy:
@@ -48,9 +50,13 @@ git pull
 
 là thay đổi trên web được kéo về. Từ giờ có thể sửa local rồi push lên, hoặc ngược lại — cả hai chiều đều được.
 
+---
+
 ### 🟢 Thành quả
 
 Sau khi build xong, trạng thái chuyển **Running** (xanh). App hiện đủ tiêu đề, mô tả, ba ảnh mẫu. Bấm pizza → `pizza`, steak → `steak`, sushi → `sushi`. Upload ảnh steak tự chụp → vẫn ra `steak` với thời gian dự đoán hiển thị rõ.
+
+---
 
 ### 🖼️ Nhúng app vào notebook bằng iframe
 
@@ -67,6 +73,8 @@ IFrame(
 ```
 
 Đường dẫn `/embed` là dạng Gradio cung cấp để nhúng Space. Cách này rất tiện nếu muốn dựng một notebook vừa giải thích cách train, vừa cho người xem thử model ngay tại chỗ.
+
+---
 
 ### 💡 Bài học
 

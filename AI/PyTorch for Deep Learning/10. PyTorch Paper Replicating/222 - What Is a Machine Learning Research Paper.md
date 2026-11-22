@@ -22,6 +22,8 @@ Nếu đọc mấy dòng đầu mà không hiểu gì, đừng lo — cứ tạm
 
 Transformer được giới thiệu lần đầu trong lĩnh vực **NLP** (natural language processing), sau đó lan sang **computer vision** — và đó chính là thứ mình sắp dựng: một **vision transformer**, tức transformer cho ảnh.
 
+---
+
 ### 🧱 Giải phẫu một paper
 
 Lướt qua paper, các bạn sẽ thấy cấu trúc quen thuộc:
@@ -35,6 +37,8 @@ Lướt qua paper, các bạn sẽ thấy cấu trúc quen thuộc:
 * **Appendix** — tài nguyên, phát hiện phụ không nằm trong các mục trên.
 
 Paper này do **12 nhà nghiên cứu** cùng viết — những người giỏi nhất thế giới hợp tác. Nên nếu lần đầu đọc mà thấy khó hiểu thì hoàn toàn bình thường: mình đọc khoảng nửa tá lần rồi mà vẫn còn chỗ chưa nắm.
+
+---
 
 ### 🗺️ Cấu trúc chuẩn của một paper
 

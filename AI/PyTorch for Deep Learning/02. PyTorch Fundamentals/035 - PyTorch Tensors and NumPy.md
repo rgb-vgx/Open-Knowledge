@@ -38,6 +38,8 @@ tensor   # tensor([1., 2., ..., 7.], dtype=torch.float64)
 
 `torch.from_numpy` nhận một **ndarray** — kiểu dữ liệu chính của NumPy — và trả về tensor.
 
+---
+
 ### ⚠️ Cẩn thận data type: float64 vs float32
 
 Tensor nhận được có `dtype=torch.float64`, vì **NumPy mặc định dùng float64** cho số thực, và `from_numpy` **giữ nguyên** dtype đó.
@@ -53,6 +55,8 @@ tensor.dtype    # torch.float32
 
 > Ghi chú: NumPy mặc định float64 **với số thực**; nếu mảng toàn số nguyên (ví dụ `np.arange(1, 8)`), dtype sẽ là `int64`, và tensor nhận được cũng là `int64`. Hãy kiểm tra `.dtype` thay vì mặc định đoán.
 
+---
+
 ### 🧠 Có chia sẻ bộ nhớ không?
 
 Trong video, thử:
@@ -67,6 +71,8 @@ Tensor **không đổi**. Nhưng lưu ý: theo tài liệu PyTorch, `torch.from_
 Lý do kết quả trên không đổi: `array = array + 1` **tạo ra một mảng mới** rồi gán lại biến `array`, chứ không sửa mảng cũ tại chỗ. Nếu bạn viết `array += 1` hoặc `array[0] = 99`, tensor sẽ thay đổi.
 
 > ⚠️ Cần kiểm chứng: kết luận "không share memory" trong video không chính xác với tài liệu PyTorch (`torch.from_numpy` và `Tensor.numpy()` đều share memory); kết quả quan sát được giải thích bằng việc phép `+` tạo object mới.
+
+---
 
 ### ⬅️ Tensor → NumPy array: `.numpy()`
 
@@ -88,6 +94,8 @@ tensor = tensor + 1
 
 `numpy_tensor` vẫn giữ giá trị cũ, vì phép `+` tạo tensor mới. Nhưng nếu sửa **tại chỗ** (`tensor += 1`), ndarray — vốn dùng chung bộ nhớ với tensor CPU — cũng đổi theo.
 
+---
+
 ### 🧭 Bảng nhớ nhanh
 
 | Chuyển đổi | Cách làm |
@@ -97,6 +105,8 @@ tensor = tensor + 1
 | Default float NumPy | `float64` |
 | Default float PyTorch | `float32` |
 | Bộ nhớ | Chia sẻ (trừ khi bạn tạo object mới bằng phép gán) |
+
+---
 
 ### 🎯 Chốt lại
 

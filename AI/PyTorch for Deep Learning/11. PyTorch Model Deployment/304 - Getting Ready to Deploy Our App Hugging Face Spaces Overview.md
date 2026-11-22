@@ -20,6 +20,8 @@ Chào các bạn. Video trước mình đã có một Gradio demo chạy ngon l�
 
 Link do `launch(share=True)` tạo ra có hạn 72 giờ. Quá hạn là chết. Với demo cá nhân thì tạm được, nhưng để làm portfolio, trình bày ở hội nghị hay gửi cho stakeholder thì không ổn.
 
+---
+
 ### 🤗 Hugging Face Spaces là gì?
 
 Hugging Face Spaces cho phép host **ML demo app** ngay trên profile cá nhân hoặc profile của tổ chức. Vài điểm chính:
@@ -29,11 +31,15 @@ Hugging Face Spaces cho phép host **ML demo app** ngay trên profile cá nhân 
 * Hỗ trợ tốt hai framework Python phổ biến là **Gradio** và **Streamlit**. Mình đang dùng Gradio nên đi tiếp với nó.
 * Có sẵn một kho demo của cộng đồng tại `huggingface.co/spaces` — ví dụ Stable Diffusion cũng chạy ở đó.
 
+---
+
 ### 🐙 Vì sao nói "GitHub của ML"?
 
 Mình hay ví Hugging Face là **GitHub của machine learning**. GitHub là nơi khoe kỹ năng code; Hugging Face Spaces là nơi khoe kỹ năng ML qua các demo đã build. Dưới nắp, mỗi Space là một **git repository**, nên quy trình làm việc rất giống GitHub: thêm file, commit, push.
 
 Nếu các bạn chưa quen Git, có rất nhiều khóa miễn phí (ví dụ của freeCodeCamp). Ở đây mình chỉ dùng những lệnh cơ bản nhất.
+
+---
 
 ### 🎯 Mục tiêu của section này
 

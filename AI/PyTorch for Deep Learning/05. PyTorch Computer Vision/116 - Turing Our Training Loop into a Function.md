@@ -59,6 +59,8 @@ def train_step(
     print(f"Train loss: {train_loss:.5f} | Train accuracy: {train_acc:.2f}%")
 ```
 
+---
+
 ### 🔍 Những chỗ khác bản gốc
 
 * **Bỏ `model_0`** — thay bằng tham số `model`, hàm dùng được cho mọi model.
@@ -67,19 +69,27 @@ def train_step(
 * **Thêm accuracy cho training** — trước đây chỉ đo accuracy cho test, lần này cộng dồn cả `train_acc` để thấy model học tốt lên trong lúc train.
 * **Bỏ print theo batch** — dời ra cuối hàm, in gọn một dòng mỗi step.
 
+---
+
 ### 💡 Type hint
 
 `model: torch.nn.Module`, `data_loader: torch.utils.data.DataLoader`, `optimizer: torch.optim.Optimizer`… Type hint không bắt buộc, nhưng giúp người đọc biết hàm mong đợi gì, và bạn sẽ thấy chúng ngày càng phổ biến trong Python hiện đại.
 
 `device: torch.device = device` — mặc định dùng luôn biến `device` đã khai báo từ trước, nhưng vẫn có thể truyền thiết bị khác nếu muốn.
 
+---
+
 ### ⚠️ Chỗ dễ sai: vị trí phép chia
 
 Cộng dồn `train_loss` **bên trong** vòng lặp batch, chia trung bình **bên ngoài**. Nếu chia bên trong, loss sẽ bị chia nhiều lần và ra số vô nghĩa.
 
+---
+
 ### 🎯 Thử thách
 
 Tương tự cách mình vừa làm, hãy thử tự viết `test_step` từ testing loop trước đó. Gợi ý: testing loop **không cần optimizer**.
+
+---
 
 ### ✅ Tạm kết
 

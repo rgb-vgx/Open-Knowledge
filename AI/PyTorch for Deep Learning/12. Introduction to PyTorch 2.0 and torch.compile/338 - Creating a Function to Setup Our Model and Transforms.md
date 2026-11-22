@@ -29,6 +29,8 @@ model_weights = ResNet50_Weights.IMAGENET1K_V2
 # hoặc ResNet50_Weights.DEFAULT — bộ tốt nhất hiện có
 ```
 
+---
+
 ### 🖼️ Transforms đi kèm weights
 
 Một điểm quan trọng: **transforms đi kèm luôn với weights**. Đây là các phép biến đổi cần áp lên ảnh để tiền xử lý đúng với cách model được train. Nếu dùng model pre-trained, dữ liệu của các bạn phải được transform **giống hệt** lúc train (như đã bàn ở phần transfer learning).
@@ -39,6 +41,8 @@ model = resnet50(weights=model_weights)
 ```
 
 Lần đầu chạy sẽ **tải weights** về. Xong là ta có một ResNet50 hoàn chỉnh chỉ trong vài dòng.
+
+---
 
 ### 🔢 Đếm tham số: 25 triệu
 
@@ -57,9 +61,13 @@ sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 ResNet50 có **25.557.032 tham số**. Vì sao lại đếm? Vì mức tăng tốc của PyTorch 2.0 **rõ nhất khi dùng càng nhiều GPU càng tốt** — tức model càng lớn, nhiều tham số trainable thì **tăng tốc tương đối** càng đáng thấy.
 
+---
+
 ### 🚀 Vì sao model lớn không train chậm gấp 25 lần?
 
 Đây là chỗ hay: model 1 triệu tham số train mất, ví dụ, **10 phút**. Model 25 triệu tham số không mất 25 × 10 = 250 phút, mà có thể chỉ **20 phút** (mình bịa số để minh họa). Vì GPU giỏi **parallel computing** — nhiều phép tính chạy đồng thời. Dù làm gấp 25 lần phép tính, chúng xảy ra song song, nên tăng tốc tương đối mới lộ ra.
+
+---
 
 ### 🧰 Gói thành hàm `create_model`
 

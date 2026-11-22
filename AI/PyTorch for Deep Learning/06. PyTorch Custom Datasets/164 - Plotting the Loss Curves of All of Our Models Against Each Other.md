@@ -24,9 +24,13 @@ tags: []
 
 Khóa này tập trung vào **PyTorch thuần**, nên giờ ta hard code trước, sau này muốn dùng tool thì thêm.
 
+---
+
 ### 📋 Vì sao hard code lại "cồng kềnh"?
 
 Kết quả mỗi model là một **dict**. Muốn so sánh nhiều model, phải tự viết code cho từng cái — tưởng tượng có 5 hay 10 model thì rất mệt. Đó chính là lý do các tool tracking ra đời.
+
+---
 
 ### 🔥 Vẽ 4 ô so sánh
 
@@ -74,6 +78,8 @@ plt.xlabel("Epochs")
 plt.legend()
 ```
 
+---
+
 ### 👀 Đọc kết quả
 
 * **Train loss**: Model 0 đi xuống đúng hướng; Model 1 có một cú "nổ" ở epoch thứ 2 rồi giảm lại. Nếu train lâu hơn, cả hai có thể tiếp tục giảm.
@@ -82,13 +88,19 @@ plt.legend()
 
 Nhắc lại: có thay đổi (chống overfit/underfit) **không đảm bảo** metric đi đúng hướng. Lý tưởng vẫn là loss đi từ trái-trên xuống phải-dưới, accuracy đi từ dưới-trái lên phải-trên.
 
+---
+
 ### 📈 Khi có nhiều model
 
 Với 5 hay 10 model (chuyện thường khi làm ML), figure sẽ rối với hàng loạt đường. Đó là lúc TensorBoard / W&B / MLflow phát huy tác dụng. Nhưng nguyên tắc vẫn vậy: **vẽ các experiment cạnh nhau** để xem cái nào hiệu quả.
 
+---
+
 ### 💡 Nếu là mình
 
 Với cả hai model, mình sẽ **train lâu hơn** và **tăng hidden units** ở mỗi layer rồi xem kết quả. Đó cũng là gợi ý cho các bạn thử.
+
+---
 
 ### ✅ Tạm kết
 

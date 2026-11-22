@@ -35,6 +35,8 @@ Bấm **Shift + Enter** là chạy. Muốn đổi một cell thành text cell, d
 
 Cuốn sách online **learnpytorch.io** thực chất cũng là các notebook Colab được chuyển sang dạng sách. Mỗi module mới, chúng ta bắt đầu một notebook mới. Module đầu tiên đặt tên **`00_pytorch_fundamentals`** — vì code Python bắt đầu từ số 0.
 
+---
+
 ### ⚡ Bật GPU trong Colab
 
 Lợi thế lớn của Colab: vào **Runtime → Change runtime type → Hardware accelerator**, chọn **GPU** (hoặc **TPU**), bấm **Save**.
@@ -48,6 +50,8 @@ nvidia-smi
 ```
 
 Máy của mình lúc đó là **Tesla P100** — một GPU khá tốt. Bản trả phí thường được GPU xịn hơn.
+
+---
 
 ### 📦 PyTorch và các thư viện có sẵn
 
@@ -70,11 +74,15 @@ Lúc quay video, kết quả là **PyTorch 1.10.0**, kèm hậu tố **CUDA 11.1
 
 > ⚠️ Cần kiểm chứng: các con số phiên bản PyTorch/CUDA ở trên là tại thời điểm quay khóa (khoảng 2022). Hiện nay PyTorch đã lên các phiên bản 2.x, nên các bạn chỉ cần cài bản mới nhất từ pytorch.org; code trong khóa vẫn chạy được với phiên bản mới.
 
+---
+
 ### 🧭 Colab hay chạy local?
 
 Colab là cách **dễ nhất** để bắt đầu: không cài đặt, có GPU miễn phí, toàn bộ khóa học chạy được trên đó.
 
 Nếu muốn chạy trên máy local, hãy xem tài liệu **"Getting set up to code PyTorch"** của khóa — nhưng đó không thay thế tài liệu cài đặt chính thức trên pytorch.org. Muốn bắt đầu càng sớm càng tốt thì mình khuyên dùng Colab.
+
+---
 
 ### ✅ Sẵn sàng
 

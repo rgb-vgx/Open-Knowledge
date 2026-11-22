@@ -36,6 +36,8 @@ Vì cả ba dictionary có cùng key (`model_name`, `model_loss`, `model_acc`), 
 * **Model 1** (có phi tuyến, train GPU): **kém hơn** baseline.
 * **Model 2** (TinyVGG CNN): **tốt nhất** từ trước tới giờ.
 
+---
+
 ### ⏱️ Thêm cột training time
 
 ```python
@@ -48,16 +50,13 @@ compare_results["training_time"] = [
 
 Giờ bảng cho thấy bức tranh đầy đủ: model tốt nhất cũng là model **train lâu nhất**.
 
+---
+
 ### ⚖️ Performance-speed trade-off
 
-Đây là khái niệm đáng nhớ. Giả sử CNN hơn baseline khoảng 5% accuracy nhưng train (và inference) chậm hơn nhiều lần. Trong nhiều bối cảnh, **5% đó có thể không đáng**.
+Đây là khái niệm đáng nhớ. Giả sử CNN hơn baseline khoảng 5% accuracy nhưng train (và inference) nhanh/chậm hơn nhiều lần. Ở bài này — một **toy problem**, dataset khá đơn giản — chênh lệch đó có thể chấp nhận được. Nhưng trong thực tế, một model train lâu hơn mà tốt hơn đáng kể thì có thể đáng. Không có câu trả lời chung; tùy bài toán bạn đang làm.
 
-Ví dụ thực tế:
-
-* Ứng dụng mobile cần phản hồi tức thì → model nhẹ, nhanh quan trọng hơn vài % accuracy.
-* Hệ thống offline, chạy batch qua đêm → accuracy quan trọng hơn tốc độ.
-
-Không có câu trả lời chung. Tùy bài toán.
+---
 
 ### 📉 Vẽ biểu đồ cột ngang
 
@@ -71,6 +70,8 @@ plt.ylabel("model")
 
 Biểu đồ này rất tiện để chia sẻ: ai hỏi "các thí nghiệm FashionMNIST của bạn thế nào?", gửi hình là xong.
 
+---
+
 ### 🔁 Nhắc lại về tính tái lập
 
 Nếu số của bạn không khớp chính xác:
@@ -78,6 +79,8 @@ Nếu số của bạn không khớp chính xác:
 * Lệch vài chữ số thập phân → bình thường, do tính ngẫu nhiên.
 * Lệch lớn → kiểm tra manual seed, `torch.cuda.manual_seed`, và xem cell đã chạy đúng thứ tự chưa.
 * Thời gian train lệch nhiều → do phần cứng (Colab free vs Pro, GPU khác nhau).
+
+---
 
 ### 🎯 Hướng thí nghiệm tiếp theo
 
@@ -89,6 +92,8 @@ Từ bảng này, có thể thử:
 * Train lâu hơn 10 epoch.
 
 Đây chính là "improve through experimentation" — vòng lặp không có điểm dừng.
+
+---
 
 ### ✅ Tạm kết
 

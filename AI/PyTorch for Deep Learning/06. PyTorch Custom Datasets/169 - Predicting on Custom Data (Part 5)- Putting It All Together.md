@@ -57,6 +57,8 @@ def pred_and_plot_image(model, image_path, class_names=None,
     plt.axis(False)
 ```
 
+---
+
 ### 🔍 Giải thích các bước
 
 * **`read_image(str(image_path)).type(torch.float32)`** — đọc ảnh, ép dtype `float32`.
@@ -66,6 +68,8 @@ def pred_and_plot_image(model, image_path, class_names=None,
 * **`torch.softmax(...)`** rồi **`torch.argmax(...)`** — logit → xác suất → nhãn.
 * **`.squeeze().permute(1, 2, 0).cpu()`** — bỏ batch, đổi channels-last, **đưa về CPU** để Matplotlib vẽ.
 * **`.cpu()` trong title** — bắt buộc, vì Matplotlib **không** xử lý được tensor trên GPU. Đây chính là chỗ mình gặp lỗi "has no attribute CPU" do đặt sai ngoặc.
+
+---
 
 ### 🍕 Chạy thử trên ảnh "Pizza Dad"
 
@@ -79,9 +83,11 @@ pred_and_plot_image(
 )
 ```
 
-Kết quả: model dự đoán đúng **pizza**. Nhưng như mình đã nói, model hiện tại chưa tốt nên đây có phần **may mắn**. Khi thử với một ảnh khác trên Model 1 lại ra **steak** — sai, nhưng Model 1 (kém hơn về định lượng) lại đoán đúng hơn ở trường hợp này. Model 0 thì đoán sai với xác suất chỉ `0.368`.
+Kết quả: Model 1 dự đoán đúng **pizza** trên ảnh này. Nhưng như mình đã nói, model hiện tại chưa tốt nên đây có phần **may mắn**. Chạy thử với model khác (Model 0) trên cùng ảnh thì lại ra **steak** — sai, với xác suất chỉ `0.368`. Vậy là dù Model 1 kém hơn về mặt định lượng, nó lại đoán đúng hơn ở trường hợp định tính này.
 
 Bài học: kết quả định lượng (accuracy) và **định tính** (nhìn ảnh thực tế) có thể khác nhau — lại là lý do phải *visualize*.
+
+---
 
 ### ✅ Tạm kết
 

@@ -1,5 +1,5 @@
 ---
-title: 'Từ logits sang xác suất rồi sang nhãn dự đoán'
+title: 'Bài 78 — Từ logits sang xác suất rồi sang nhãn dự đoán'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 78
@@ -22,6 +22,8 @@ Trước khi viết training loop, mình phải làm rõ một chuỗi chuyển 
 * **Prediction probabilities** — logits đi qua một activation function: **sigmoid** cho binary, **softmax** cho multiclass.
 * **Prediction labels** — xác suất chuyển thành nhãn bằng cách **làm tròn (round)** với binary, hoặc **lấy argmax** với đầu ra của softmax.
 
+---
+
 ### 🧮 Logit ra đời thế nào?
 
 Một lớp `nn.Linear` thực hiện **linear transformation**: `output = x @ weight.T + bias` (weight và bias chính là các tensor trong `state_dict`). Đó là toàn bộ phép tính bên trong hai lớp của mình — raw output chính là **logits**.
@@ -34,7 +36,9 @@ y_logits = model_0(X_test.to(device))[:5]
 y_logits
 ```
 
-Chúng nằm trên **CUDA device** và vẫn **track gradient**. Vì đang chỉ dự đoán, mình bọc trong `torch.inference_mode()` để tắt gradient tracking. Quy tắc: mỗi lần model dự đoán thì để **eval mode** + `inference_mode`; khi train thì nhớ bật lại **train mode**.
+Chúng nằm trên **CUDA device** và vẫn **track gradient**. Vì đang chỉ dự đoán, mình bọc trong `torch.inference_mode()` để tắt gradient tracking.
+
+---
 
 ### 🧪 Bước 2: sigmoid để ra xác suất
 
@@ -47,6 +51,8 @@ y_pred_probs
 Vì kiến trúc binary classification có **output activation là sigmoid**, đây chính là bước biến logit thành **prediction probability** — giá trị trong khoảng **0 đến 1**, càng gần 1 càng chắc thuộc một lớp.
 
 Lưu ý: không thể làm tròn thẳng trên logits. Phải qua sigmoid trước thì mới có ý nghĩa xác suất.
+
+---
 
 ### 🎯 Bước 3: làm tròn để ra nhãn
 
@@ -67,6 +73,8 @@ y_preds[:5].squeeze(), y_test[:5]
 
 `.squeeze()` bỏ chiều thừa (`[n, 1]` → `[n]`) để cùng shape với `y_test`.
 
+---
+
 ### ✅ Kiểm tra chéo
 
 ```python
@@ -74,6 +82,8 @@ torch.eq(y_preds.squeeze(), y_test)
 ```
 
 Hai kết quả — `y_pred_probs` làm tròn và `y_preds` tính một mạch — **khớp nhau**, đúng như mong đợi. Nhãn giờ đã cùng format với `y_test`, tuy giá trị còn sai bét vì model vẫn dùng **trọng số ngẫu nhiên**.
+
+---
 
 ### 🧭 Vì sao phải làm chuỗi này?
 

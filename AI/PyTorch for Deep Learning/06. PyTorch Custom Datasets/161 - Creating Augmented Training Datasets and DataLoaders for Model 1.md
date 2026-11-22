@@ -18,7 +18,9 @@ Giờ là thí nghiệm thứ hai: **Model 1** — cùng TinyVGG nhưng có **da
 
 ### 🧪 Vì sao vẫn thử augmentation?
 
-Data augmentation giúp model học pattern **tổng quát hóa** bằng cách làm tập train khó hơn (xoay, đổi màu, dịch ảnh...) mà không cần thêm dữ liệu thật. Tất nhiên nó không phải "viên đạn bạc" — có lúc giúp, có lúc không.
+Data augmentation giúp model học pattern **tổng quát hóa** bằng cách làm tập train khó hơn (ví dụ xoay ảnh) mà không cần thêm dữ liệu thật. Tất nhiên nó không phải "viên đạn bạc" — có lúc giúp, có lúc không.
+
+---
 
 ### 🔥 Transform cho train (có augmentation)
 
@@ -32,7 +34,9 @@ train_transform_trivial = transforms.Compose([
 ])
 ```
 
-`num_magnitude_bins=31` (mặc định) — augmentation áp ở cường độ **ngẫu nhiên 0–31**. Hạ về `5` thì mức biến đổi nhẹ hơn nhiều.
+`num_magnitude_bins=31` (mặc định) — augmentation áp ở **mức cường độ ngẫu nhiên trong 31 mức**. Hạ về `5` thì mức biến đổi nhẹ hơn nhiều.
+
+---
 
 ### 🔥 Transform cho test (không augmentation)
 
@@ -44,6 +48,8 @@ test_transform_simple = transforms.Compose([
 ```
 
 Test **không** augmentation — ta chỉ đánh giá, không tạo pattern mới từ tập test. Mọi augmentation chỉ dành cho train.
+
+---
 
 ### 📦 Tạo dataset và DataLoader
 
@@ -73,7 +79,9 @@ test_dataloader_simple = DataLoader(
 
 Điểm khác duy nhất so với lần trước: train dataloader dùng transform **có** `TrivialAugmentWide`, test dataloader dùng transform **simple**. `NUM_WORKERS = os.cpu_count()` — một worker mỗi CPU. `torch.manual_seed(42)` trước khi `shuffle=True` để tái lập thứ tự.
 
-Lúc chạy mình gõ sai tên biến (`train_transform_trivial` thành `train_transform...`) nên Colab báo lỗi — sửa xong là được.
+Lúc chạy mình gõ sai tên biến (`train_transform...` thay vì `train_transform_trivial`) — sửa xong là được.
+
+---
 
 ### ✅ Tạm kết
 

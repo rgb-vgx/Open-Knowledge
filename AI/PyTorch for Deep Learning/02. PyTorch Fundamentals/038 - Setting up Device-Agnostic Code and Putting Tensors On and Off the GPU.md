@@ -20,6 +20,8 @@ Bài trước chúng ta đã có `device` và biết GPU có sẵn. Giờ là l�
 
 Tensor operation — cộng, nhân, matrix multiplication... — là các phép tính số học, và GPU rất giỏi loại này. Chạy nhanh hơn nghĩa là **tìm pattern nhanh hơn**, làm được nhiều thí nghiệm hơn, tiến tới model tốt nhất nhanh hơn.
 
+---
+
 ### 🏠 Mặc định: tensor nằm trên CPU
 
 ```python
@@ -34,6 +36,8 @@ tensor = torch.tensor([1, 2, 3], device="cpu")
 ```
 
 Nhưng dù không ghi, mặc định vẫn là CPU.
+
+---
 
 ### ⬆️ Đưa tensor lên thiết bị đích: `.to(device)`
 
@@ -53,6 +57,8 @@ device(type='cuda', index=0)
 Điểm hay: nhờ **device-agnostic code**, đoạn code này chạy được **cả khi có GPU lẫn khi chỉ có CPU** — tensor tự đi tới thiết bị phù hợp, không lỗi.
 
 Method **`.to()`** dùng được cho cả **model** (sẽ học sau), không chỉ tensor.
+
+---
 
 ### ⬇️ Đưa tensor về CPU
 
@@ -80,6 +86,8 @@ Gọi **`.cpu()`** để copy tensor về host memory trước, rồi `.numpy()`
 
 Lưu ý: `.cpu()` trả về một tensor **mới** trên CPU; `tensor_on_gpu` vẫn ở GPU và không bị thay đổi.
 
+---
+
 ### 🧾 Bốn việc chính khi làm với GPU
 
 1. Có quyền truy cập GPU (Colab).
@@ -88,6 +96,8 @@ Lưu ý: `.cpu()` trả về một tensor **mới** trên CPU; `tensor_on_gpu` v
 4. Dùng **`.to(device)`** / **`.cpu()`** để di chuyển tensor.
 
 Còn nhiều chủ đề nâng cao như **multi-GPU**, nhưng khóa này chỉ dùng một GPU.
+
+---
 
 ### 🎯 Bài tập
 

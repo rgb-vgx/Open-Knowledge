@@ -24,6 +24,8 @@ Dữ liệu có thể là gần như bất cứ thứ gì — ảnh, văn bản,
 
 Ai tìm pattern? Không phải các bạn viết tay từng luật, mà là **thuật toán machine learning** — chính là thứ chúng ta sẽ xây trong khóa này. Bên dưới lớp code là toán học, nhưng khóa này tập trung vào **code**: các bạn viết code, code kích hoạt phần toán để tìm ra pattern.
 
+---
+
 ### 🫧 Ba lớp bong bóng: AI, ML, Deep Learning
 
 Hãy hình dung ba vòng tròn lồng nhau:
@@ -33,6 +35,8 @@ Hãy hình dung ba vòng tròn lồng nhau:
 3. **Deep learning** — tập con nằm trong ML, và đây chính là nơi khóa học tập trung, với PyTorch làm công cụ.
 
 Thú thật, mình hay dùng lẫn hai khái niệm ML và deep learning. ML là chủ đề rộng hơn, deep learning tinh tế hơn một chút. Nhưng các bạn cứ tự hình thành định nghĩa riêng của mình — mình khuyến khích điều đó.
+
+---
 
 ### 🥘 Lập trình truyền thống vs machine learning
 
@@ -50,11 +54,15 @@ Với **machine learning**, cách làm đảo lại: các bạn đưa vào **inp
 
 Đây thường được gọi là **supervised learning**: input còn có tên là **features**, output còn có tên là **labels**, và nhiệm vụ của thuật toán là tìm mối quan hệ giữa features và labels.
 
+---
+
 ### 🍗 Nếu để máy học nấu món gà của bà
 
 Các bạn sẽ thu thập thật nhiều input là nguyên liệu — rau củ, gà — và thật nhiều output là thành phẩm cuối cùng. Thuật toán machine learning sẽ tự tìm ra các bước để đi từ nguyên liệu đến đĩa gà.
 
 Vậy là đủ để phân biệt lập trình truyền thống và machine learning. Phần còn lại của khóa học, chúng ta sẽ **encode** những thuật toán kiểu này bằng code.
+
+---
 
 ### ❓ Câu hỏi để lại
 

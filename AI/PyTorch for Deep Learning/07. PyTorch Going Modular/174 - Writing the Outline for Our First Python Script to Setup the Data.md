@@ -30,6 +30,8 @@ Chạy các cell với `Shift + Enter`:
 * Biến train/test dataset thành dataloader.
 * Kiểm tra một ảnh đơn: size và shape.
 
+---
+
 ### 📄 Tạo file script bằng Jupyter magic
 
 Đây chỉ là **một cách** tạo script — bạn hoàn toàn có thể copy code vào file `.py` bằng tay. Nhưng mình dùng magic command của Jupyter là `writefile`.
@@ -42,6 +44,8 @@ Phân biệt hai loại magic:
 * Hai dấu `%%` — **cell magic**, tác dụng trên cả cell.
 
 Ta cần `%%writefile`: ghi nội dung cell ra file. Cú pháp: `%%writefile` rồi tới tên file.
+
+---
 
 ### 🛠️ Bắt đầu viết `data_setup.py`
 
@@ -76,6 +80,8 @@ Mấy điểm cần chú ý:
 * Script cần **import đủ module** mà code bên trong dùng: `datasets`, `transforms`, `DataLoader`, `os`.
 * `NUM_WORKERS = os.cpu_count()` — số worker bằng số CPU có được.
 
+---
+
 ### ✍️ Viết docstring theo Google style
 
 Docstring của hàm nên có:
@@ -92,6 +98,8 @@ Vì sao phải viết docstring? Không chỉ để chia sẻ code cho người 
 
 > Lưu ý: dòng mô tả dài quá 79 ký tự thì nên xuống dòng cho đúng chuẩn Python.
 
+---
+
 ### ❗ Lỗi thư mục chưa tồn tại
 
 Khi chạy `%%writefile` lần đầu, có thể gặp lỗi kiểu *No such file or directory: going_modular* — vì thư mục chưa có. Cách xử lý:
@@ -102,6 +110,8 @@ os.makedirs("going_modular", exist_ok=True)
 ```
 
 Tạo xong thư mục rỗng, chạy lại là ghi file được.
+
+---
 
 ### ✅ Chốt lại
 

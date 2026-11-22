@@ -36,6 +36,8 @@ Vì sao dùng **hàm** tạo model? Để mỗi experiment khởi tạo một **
 
 Cách setup bằng list/dict đơn giản, dễ đọc. Với ~8 experiment thì đủ tốt; nếu chạy nhiều hơn có thể cần cách "elegant" hơn.
 
+---
+
 ### 💾 Import `save_model`
 
 Ta muốn **lưu từng model đã train ra file** để sau này load lại model tốt nhất. Nếu không lưu mà chỉ chạy, xem xong là mất model.
@@ -44,6 +46,8 @@ Ta muốn **lưu từng model đã train ra file** để sau này load lại mod
 from going_modular import utils
 # utils.save_model(model=..., target_dir=..., model_name=...)
 ```
+
+---
 
 ### 🔁 Ba vòng lặp lồng nhau
 
@@ -96,6 +100,8 @@ for dataloader_name, train_dataloader in train_dataloaders.items():
             print("-" * 50)
 ```
 
+---
+
 ### 🔑 Những điểm quan trọng
 
 1. **`train` bản trong notebook** — không phải `engine.train`, vì bản này đã có tham số `writer`.
@@ -104,11 +110,15 @@ for dataloader_name, train_dataloader in train_dataloaders.items():
 4. **Test data loader cố định** — cùng một test set cho tất cả.
 5. **Tên file `.pth`** — gồm model, data loader, epoch để dễ phân biệt.
 
+---
+
 ### 🧩 Có thể mở rộng
 
 * Vary **learning rate** thay vì cố định `0.001`.
 * Thử **optimizer khác** như SGD thay Adam.
 * Thêm `assert` để chắc `model_name` hợp lệ.
+
+---
 
 ### ✅ Tạm kết
 

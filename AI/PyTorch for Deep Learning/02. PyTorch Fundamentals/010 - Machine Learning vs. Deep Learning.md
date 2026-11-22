@@ -24,6 +24,8 @@ Các bạn sẽ thấy XGBoost xuất hiện rất nhiều trong các cuộc thi
 
 Nên nếu có dữ liệu dạng bảng, hãy cân nhắc XGBoost trước khi nghĩ đến việc xây một thuật toán deep learning. Dĩ nhiên, luật không đóng đinh — đây chính là phần "vừa là nghệ thuật, vừa là khoa học" của machine learning.
 
+---
+
 ### 🖼️ Dữ liệu phi cấu trúc: sân nhà của deep learning
 
 Với **unstructured data** — dữ liệu "lung tung", không nằm trong hàng cột gọn gàng — deep learning thường tốt hơn. Ví dụ:
@@ -36,6 +38,8 @@ Với **unstructured data** — dữ liệu "lung tung", không nằm trong hàn
 Đám dữ liệu này nhìn thì không có cấu trúc, nhưng sẽ có cách biến chúng thành dạng có cấu trúc nhờ "phép màu" của **tensor** — thứ chúng ta sẽ làm rất nhiều trong khóa này.
 
 Tóm gọn: **structured data → gradient boosting, random forest, tree-based (như XGBoost)**; **unstructured data → neural network**.
+
+---
 
 ### 🌳 Các thuật toán "nông" và các mạng "sâu"
 
@@ -59,6 +63,8 @@ Các kiến trúc neural network phổ biến:
 * **Recurrent neural network (RNN)**
 * **Transformer** — nổi lên mạnh trong vài năm gần đây
 
+---
+
 ### 🎯 Khóa học này tập trung vào đâu
 
 Nghe đến đây có thể hơi quá tải, nhất là nếu các bạn chưa có nhiều kinh nghiệm. Tin tốt là: trong PyTorch, chúng ta sẽ tập trung vào **fully connected neural network** và **convolutional neural network** — nền tảng của deep learning.
@@ -66,6 +72,8 @@ Nghe đến đây có thể hơi quá tải, nhất là nếu các bạn chưa c
 Nắm được những viên gạch nền này rồi, các bạn có thể bước sang các kiểu mạng khác.
 
 Và nhắc lại lần nữa: tùy cách các bạn biểu diễn bài toán, rất nhiều thuật toán ở đây có thể dùng cho cả hai phía. Mình vừa "làm rối" các bạn một chút khi nói cái này hợp deep learning, cái kia hợp machine learning — nhưng đó cũng chính là phần thú vị: hãy dùng sự tò mò của mình để tìm ra cách tốt nhất cho bài toán cụ thể.
+
+---
 
 ### 🔜 Tiếp theo: neural network là gì?
 

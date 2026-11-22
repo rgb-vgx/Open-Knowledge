@@ -27,6 +27,8 @@ loss_fn = torch.nn.CrossEntropyLoss(label_smoothing=0.1)
 * **Adam** với `lr=1e-3` — công thức quen thuộc.
 * **CrossEntropyLoss** với `label_smoothing=0.1`. Theo tài liệu PyTorch, `label_smoothing` nhận float trong `[0.0, 1.0]`, mặc định `0.0`.
 
+---
+
 ### 🧠 Label smoothing là gì?
 
 Label smoothing là kỹ thuật **regularization** (chống overfitting) đưa một chút "nhiễu" vào nhãn. Ví dụ với 5 lớp, thay vì model dự đoán:
@@ -44,6 +46,8 @@ thì làm mượt thành:
 Nó ngăn model quá **tự tin** vào một lớp duy nhất và luôn để ngỏ các lớp khác. Điều này hữu ích khi dataset lớn, có thể có nhãn sai.
 
 Đội torchvision dùng `label_smoothing=0.1` khi train model pretrained, và ghi nhận cải thiện accuracy. Với 101 lớp, mình cũng áp thử.
+
+---
 
 ### 🚂 Gọi training loop
 
@@ -63,12 +67,16 @@ results = engine.train(
 
 Mình chạy trên **Nvidia Tesla P100** (Colab Pro): khoảng **264 giây/epoch**, tổng gần **17 phút**. Trong lúc chờ, mình chuẩn bị sẵn code plot loss curves và save/load model.
 
+---
+
 ### 📊 Kết quả
 
 * Epoch 1: train accuracy chưa tới 30%, test đã gần 50% (trên 101 lớp!).
 * Sau 5 epoch: test accuracy **gần 58%**.
 
 Vậy là **vượt 56.4%** của paper gốc, chỉ với **20% dữ liệu train**. Đổi lại, mình dùng network hiện đại + transfer learning. Paper gốc train **6 ngày** trên Tesla K20X; của mình khoảng 17 phút.
+
+---
 
 ### 💾 Lưu và load model
 
@@ -81,6 +89,8 @@ loaded_effnetb2_food101.load_state_dict(
     torch.load(effnetb2_food101_model_path, map_location=torch.device("cpu"))
 )
 ```
+
+---
 
 ### 📏 Kích thước model
 

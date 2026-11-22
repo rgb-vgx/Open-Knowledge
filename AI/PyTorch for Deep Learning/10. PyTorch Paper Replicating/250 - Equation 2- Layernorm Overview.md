@@ -22,6 +22,8 @@ Trong Figure 1, chỗ LayerNorm có **ba mũi tên** vì đầu ra của nó đ�
 
 Layer `nn.MultiheadAttention` của PyTorch nhận đúng ba input `query, key, value` — khớp với ba mũi tên này.
 
+---
+
 ### 📖 LayerNorm là gì?
 
 Theo tài liệu: layer normalization là kỹ thuật **chuẩn hóa phân bố của các layer trung gian**, giúp gradient mượt hơn, train nhanh hơn và tổng quát hóa tốt hơn.
@@ -37,6 +39,8 @@ Nghĩa là ta chuẩn hóa dọc theo chiều embedding:
 * Patch embedding đi tới **768 chiều**.
 * LayerNorm chuẩn hóa trên đúng chiều **768** đó.
 
+---
+
 ### 🪜 Phép so sánh cầu thang
 
 Đây là cách mình hay hình dung normalization. Hãy tưởng tượng bạn bước xuống một cầu thang — gradient descent cũng giống vậy: cố đi xuống đáy của **loss curve**.
@@ -49,6 +53,8 @@ Còn nếu **chuẩn hóa** để mọi bậc có cùng chiều cao và chiều 
 
 * Bước xuống cầu thang nhanh = **train nhanh hơn** nhờ gradient ổn định.
 * Không phải chỉnh từng bậc = **generalize tốt hơn**, vì mô hình không phải thích nghi riêng cho từng mẫu.
+
+---
 
 ### ✅ Chốt lại
 

@@ -24,9 +24,13 @@ Nhắc lại định nghĩa cho chắc: **model deployment** là làm cho model 
 
 Nếu có thắc mắc, dùng tab **Discussions** → **New Discussion**. Materials còn có cả slide cho section này.
 
+---
+
 ### ⚙️ Đặt runtime và kiểm tra phiên bản
 
 Chuyển runtime sang **CPU** cho phần giới thiệu cho nhanh. Đoạn setup dùng `try`/`except` để đảm bảo có tối thiểu **torch 1.12** và **torchvision 0.13**; nếu thiếu thì cài. Google Colab vốn đã có sẵn đúng hai phiên bản này nên thường không cần cài thêm.
+
+---
 
 ### 📦 Clone repo để lấy script "going modular"
 
@@ -40,6 +44,8 @@ Một trong những điểm mạnh của khóa là tái sử dụng code. Cell t
 Thay vì viết lại từ đầu mỗi lần, ta gọi lại các script này. Đây là thực hành chung của software engineering, không riêng machine learning: **turn most useful notebook cells into reusable Python scripts**.
 
 Kiểm tra thư mục bằng `ls going_modular` — nếu vào nhầm chỗ thì lùi lại một cấp cho tới khi thấy các file `.py`.
+
+---
 
 ### 🖥️ Device-agnostic code
 

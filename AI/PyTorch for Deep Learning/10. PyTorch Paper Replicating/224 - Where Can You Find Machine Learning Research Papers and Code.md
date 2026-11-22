@@ -22,17 +22,25 @@ Nơi tập trung nhiều nhất là **arXiv** (trong transcript tự động g�
 
 Mẹo của mình: đừng cố đọc hết. Lọc theo chủ đề — ví dụ **computer vision** khi đang làm Food Vision Mini — rồi chỉ bới trong đó.
 
+---
+
 ### 🐦 Feed đã lọc trên Twitter
 
 Có một tài khoản Twitter tên **AK** (có thể đọc là "Akil") chuyên đăng lại các paper mới, kiểu một **filtered feed** của arXiv. Lướt qua sẽ thấy đủ thứ: demo, thông tin, paper của DeepMind, neural radiance fields, vector quantized image-to-image translation... Phần lớn mình không hiểu hết, nhưng luôn nhặt ra được thứ liên quan tới việc đang làm.
+
+---
 
 ### 💻 Repo tái lập trên GitHub
 
 **lucidrains/vit-pytorch** là nguồn cảm hứng lớn cho code trong module này. Đây không phải nơi tìm paper, mà là nơi xem người ta dịch paper thành code trông thế nào — một **ViT** đơn giản, dùng được. Tài khoản **lucidrains** có cả một bộ sưu tập: AlphaFold bằng PyTorch, DALL·E 2 bằng PyTorch... Toàn bộ đều mã nguồn mở, để người khác học theo. Đáng để bookmark.
 
+---
+
 ### 🏆 Papers with Code — nguồn tổng hợp nhất
 
 **paperswithcode.com** có lẽ là nguồn đầy đủ nhất: paper mới nhất kèm code. Có cả TensorFlow, Hugging Face Transformers, PyTorch. Trang **Browse State of the Art** cho phép đi vào **Computer Vision → Image Classification** và xem model nào đang dẫn đầu. Ở đó các bạn sẽ thấy các dòng kiểu `ViT-H/14` — đúng là vision transformer mình đang làm, và bấm vào là ra paper gốc *An Image is Worth 16x16 Words*.
+
+---
 
 ### 📌 Tóm lại bốn nguồn
 

@@ -35,6 +35,8 @@ test_transforms = transforms.Compose([
 
 Điểm cần chú ý: **test không có `RandomHorizontalFlip`**. Bình thường ta **không** data-augment tập test — chỉ chuyển sang tensor, không xoay/lật/đổi kích thước tùy tiện, để đánh giá khách quan.
 
+---
+
 ### 🏗️ Khởi tạo dataset custom
 
 ```python
@@ -42,7 +44,9 @@ train_data_custom = ImageFolderCustom(targ_dir=train_dir, transform=train_transf
 test_data_custom = ImageFolderCustom(targ_dir=test_dir, transform=test_transforms)
 ```
 
-Lúc thử, mình gõ nhầm tên biến (ví dụ `train_transforms`) nên Colab báo lỗi — sửa lại là chạy. In `train_data_custom` ra thì thấy nó **không giàu thông tin** như `ImageFolder` (vì ta chưa viết `__repr__`), nhưng vẫn inspect được.
+Lúc thử, mình gõ nhầm tên biến (`train transforms` thay vì `train_transforms`) — sửa lại là chạy. In `train_data_custom` ra thì thấy nó **không giàu thông tin** như `ImageFolder` (vì ta chưa viết `__repr__`), nhưng vẫn inspect được.
+
+---
 
 ### 📏 So sánh độ dài
 
@@ -53,6 +57,8 @@ len(test_data), len(test_data_custom)
 
 Kết quả khớp nhau: custom dataset đếm đúng số mẫu như bản gốc. Vậy `__len__` hoạt động.
 
+---
+
 ### 🏷️ Kiểm tra các attribute
 
 ```python
@@ -61,6 +67,8 @@ train_data_custom.class_to_idx
 ```
 
 Kết quả cho đúng list `['pizza', 'steak', 'sushi']` và dict `{'pizza': 0, 'steak': 1, 'sushi': 2}`. Khi gõ `train_data_custom.` và bấm tab, Colab gợi ý các attribute `classes`, `class_to_idx`, `load_image`, `paths`, `transform` — đều đến từ code ta tự viết.
+
+---
 
 ### ✅ So sánh trực tiếp bằng `==`
 
@@ -73,9 +81,13 @@ print(test_data_custom.classes == test_data.classes)
 
 Custom dataset cho kết quả **trùng khớp** với `ImageFolder` gốc. Các bạn có thể tự so sánh thêm những thuộc tính khác như một bài tập nhỏ.
 
+---
+
 ### 💡 Bài học rút ra
 
 Điều quan trọng không phải là tái tạo `ImageFolder`, mà là **pattern**: bất kể dữ liệu gì, chỉ cần kế thừa `Dataset`, override `__len__` và `__getitem__` trả về `(data, label)`, là các bạn tự dựng được hàm nạp dữ liệu cho PyTorch. Đây là chìa khóa để làm việc với custom dataset.
+
+---
 
 ### ✅ Tạm kết
 

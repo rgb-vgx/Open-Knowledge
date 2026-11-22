@@ -1,5 +1,5 @@
 ---
-title: 'Ghép tất cả lại (phần 1): tạo dataset multiclass'
+title: 'Bài 92 — Ghép tất cả lại (phần 1): tạo dataset multiclass'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 92
@@ -26,6 +26,8 @@ So với binary, multiclass chỉ đổi hai chỗ quan trọng:
 | **Loss function** | binary cross entropy | **cross entropy** |
 
 Phần còn lại (data, model, training loop) gần như giữ nguyên.
+
+---
 
 ### 🫧 Tạo dữ liệu bằng `make_blobs`
 
@@ -58,6 +60,8 @@ X_blob, y_blob = make_blobs(n_samples=1000,
 
 Tên biến viết **HOA** (`NUM_CLASSES`, `NUM_FEATURES`, `RANDOM_SEED`) là quy ước phổ biến cho các **setting đặt ở đầu notebook** — cho người đọc biết đây là thứ có thể chỉnh.
 
+---
+
 ### 🧱 Tensor hóa và chia tập
 
 ```python
@@ -74,6 +78,8 @@ X_blob_train, X_blob_test, y_blob_train, y_blob_test = train_test_split(X_blob,
 
 Vẫn `.type(torch.float)` vì NumPy mặc định `float64`, PyTorch cần `float32`. `test_size=0.2` → 80/20, `random_state` để cố định cách chia.
 
+---
+
 ### 📊 Visualize, visualize, visualize
 
 ```python
@@ -82,6 +88,8 @@ plt.scatter(X_blob[:, 0], X_blob[:, 1], c=y_blob, cmap=plt.cm.RdYlBu)
 ```
 
 Mình dùng `figsize=(10, 7)` — theo kinh nghiệm là tỉ lệ đẹp. Hình ra **bốn cụm màu** khác nhau.
+
+---
 
 ### 🎚️ Nghịch `cluster_std` để thấy độ khó
 

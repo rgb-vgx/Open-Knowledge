@@ -30,6 +30,8 @@ print(vit_transforms)
 
 Kết quả gồm **resize**, **crop size**, **mean**, **standard deviation** — rất giống bộ transform ta tự viết hồi trước, nhưng đảm bảo **khớp chính xác** với lúc model được train. Cứ dùng cái này cho chắc.
 
+---
+
 ### 🔄 Tạo dataloader
 
 Dùng lại `create_dataloaders` từ `data_setup` (phần Going Modular):
@@ -47,9 +49,13 @@ train_dataloader_pretrained, test_dataloader_pretrained, class_names = data_setu
 
 Lưu ý: tham số là `transform` (số ít), không phải `transforms` — mình gọi nhầm vài lần trong lúc gõ.
 
+---
+
 ### 📈 Vì sao có thể dùng batch size lớn hơn?
 
 Ta có thể tăng batch size lớn hơn 32 khi dùng model pre-trained vì **phải cập nhật ít trọng số hơn**. Ở feature extractor, chỉ có khoảng **2.300** trọng số trainable, thay vì cập nhật cả **86 triệu** tham số. Ít phép tính hơn, tốn ít bộ nhớ hơn — nên batch size có thể lớn hơn. Bạn cứ thử nghiệm.
+
+---
 
 ### ✅ Chốt lại
 

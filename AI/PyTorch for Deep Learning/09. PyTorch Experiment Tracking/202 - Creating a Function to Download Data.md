@@ -35,6 +35,8 @@ def download_data(source: str,
 
 Docstring cho gọn: *Downloads a zipped dataset from source and unzips to destination.*
 
+---
+
 ### 📁 Tạo thư mục đích nếu chưa có
 
 Đầu tiên dựng đường dẫn tới thư mục data và thư mục ảnh:
@@ -52,6 +54,8 @@ else:
 
 Nếu thư mục đã tồn tại thì bỏ qua; nếu chưa thì tạo, kèm `parents=True` để tạo luôn thư mục cha và `exist_ok=True` cho an toàn.
 
+---
+
 ### ⬇️ Tải file zip về
 
 Từ chuỗi `source`, ta chuyển thành `Path` rồi lấy tên file (`target_file`). Sau đó mở file để ghi nhị phân (`"wb"`) và dùng `requests.get` tải nội dung:
@@ -66,6 +70,8 @@ with open(data_path / target_file, "wb") as f:
 ```
 
 Lưu ý: dùng link **raw** từ GitHub thì mới tải đúng file.
+
+---
 
 ### 🗜️ Giải nén và dọn file nguồn
 
@@ -82,6 +88,8 @@ if remove_source:
 return image_path
 ```
 
+---
+
 ### 🧪 Chạy thử và... gặp lỗi
 
 Gọi hàm với link 10% pizza/steak/sushi:
@@ -95,6 +103,8 @@ image_path = download_data(
 Lần đầu chạy, mình gõ nhầm ba chữ "L" trong `[INFO]` nên không khớp điều kiện. Sửa xong thì nó nhảy vào nhánh "skipping download" vì thư mục đã tồn tại nhưng **rỗng**. Đây là điểm yếu thật sự của hàm: nếu thư mục đích rỗng, nó vẫn không tải lại. Mình xóa sạch trong `data/` rồi chạy lại — lần này tải và giải nén đúng, cuối cùng có `data/pizza_steak_sushi/` và ảnh pizza bên trong.
 
 > **Bài tập nhỏ:** cải tiến hàm để kiểm tra thư mục đích có **rỗng** hay không, nếu rỗng thì vẫn tải lại. Bạn làm được thì báo mình biết nhé.
+
+---
 
 ### ✅ Tạm kết và thử thách
 

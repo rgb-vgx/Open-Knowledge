@@ -22,6 +22,8 @@ Câu hỏi hay: *Sao không lưu hết code train/test vào file ngay từ đầ
 
 Hoàn toàn có thể. Nhưng mình cố tình đi chậm, vì **import hàm từ file là một chuyện, còn tự viết được code mới hiểu sâu**. Viết đi viết lại nhiều lần là cách luyện. Giờ đã đủ thực hành, ta mới "đóng gói".
 
+---
+
 ### 📚 Nhìn cách PyTorch team tổ chức code
 
 Mình mở tham khảo repo **torchvision references**. Trong `references/classification` có:
@@ -33,6 +35,8 @@ Mình mở tham khảo repo **torchvision references**. Trong `references/classi
 Mở `utils.py` ra: có các hàm tiện ích như `save_on_master` (lưu model weights), và **docstring theo style tương tự** ta đang luyện. Đây là minh chứng: **nguyên tắc là đem code hữu ích lưu vào file Python**.
 
 Bản của ta là phiên bản đơn giản hóa, nhưng tinh thần y hệt.
+
+---
 
 ### 📄 Tạo `utils.py`
 
@@ -49,11 +53,15 @@ def save_model(model: torch.nn.Module, target_dir: str, model_name: str):
     ...
 ```
 
+---
+
 ### ⚠️ Nhớ import `torch`
 
 Lần đầu ghi file, Colab báo lỗi đỏ: thiếu `import torch`. Đây là lỗi rất phổ biến khi tách code ra script — **script phải tự import mọi thứ nó dùng**. Ta đã nhắc điều này ở video trước, và giờ gặp lại thực tế.
 
 Thêm `import torch` rồi ghi đè lại, file sạch, không còn gạch đỏ.
+
+---
 
 ### 🗂️ Script hiện có
 
@@ -66,9 +74,13 @@ Sau video này, thư mục `going_modular` có bốn file:
 
 Chỉ còn thiếu `train.py` — file ghép tất cả lại và cho phép train từ một dòng lệnh.
 
+---
+
 ### 💡 Một mẹo nhỏ
 
 Bạn có thể tạo script bằng `%%writefile`, hoặc mở file trong Colab và **sửa trực tiếp bằng tay**. Cả hai đều ổn. Chỉ cần cẩn thận: mỗi lần chạy `%%writefile` là nó ghi đè toàn bộ file — nên đừng vô tình lưu đè lên `engine.py` chẳng hạn.
+
+---
 
 ### ✅ Chốt lại
 

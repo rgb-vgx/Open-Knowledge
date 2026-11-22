@@ -32,10 +32,14 @@ Một vài con số để so sánh:
 
 Quy luật: **compute capability càng cao thì GPU càng mới và càng mạnh**.
 
+---
+
 ### 🚦 Ngưỡng 8.0
 
 * GPU có điểm **8.0 trở lên**: tận dụng được **hầu hết, nếu không nói là toàn bộ** tính năng mới của PyTorch 2.0.
 * GPU **dưới 8.0**: vẫn dùng được PyTorch 2.0 (nhờ tương thích ngược), nhưng **mức cải thiện có thể không rõ rệt** bằng.
+
+---
 
 ### 🏢 Desktop class và data center class
 
@@ -45,6 +49,8 @@ Có hai kiểu GPU:
 * **Data center class** — loại nối vào trong data center, như Google Cloud, AWS hay Lambda Cloud, tức một kho máy khổng lồ ở đâu đó.
 
 Đội PyTorch có ghi rõ: trên GPU desktop class như **NVIDIA 3090**, mức tăng tốc **thấp hơn** so với GPU server class như **A100**. Lý do: dù cùng kiến trúc **Ampere**, A100 là data center class nên có **khả năng phần cứng khác** so với RTX 3090.
+
+---
 
 ### 🐍 Code kiểm tra bằng PyTorch
 

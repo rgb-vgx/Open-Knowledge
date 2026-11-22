@@ -54,6 +54,8 @@ test_dataloader = DataLoader(
 * **Train** thì `shuffle=True`, **test** thì `shuffle=False`.
 * Tham số truyền vào là `num_workers` (không phải "numb workers" — đó chỉ là cách phát âm đùa trong transcript).
 
+---
+
 ### 🧷 `pin_memory=True` là gì?
 
 Đây là tham số mình chưa giới thiệu trước đó. Nếu chạy `Shift + Cmd + Space` để xem docstring `DataLoader` trong Colab khó đọc, có thể mở tài liệu PyTorch. Đại ý tài liệu khuyến nghị:
@@ -64,9 +66,13 @@ Hiểu đơn giản: **phần lớn thời gian train bị tiêu vào việc chu
 
 Mình có nhắc tới bài nói "How to make deep learning models go brrr" (về compute bandwidth) như tài nguyên mở rộng — nguyên tắc là: **tính toán nhiều nhất có thể, giảm số lần truyền bộ nhớ**.
 
+---
+
 ### 💾 Ghi ra script
 
 Thêm `%%writefile going_modular/data_setup.py` ở đầu cell, chạy — nó sẽ hỏi ghi đè. Đồng ý, và ta có file script đầu tiên hoàn chỉnh.
+
+---
 
 ### 🧪 Dùng lại script vừa tạo
 
@@ -87,9 +93,13 @@ Kết quả: `class_names` trả về `['pizza', 'steak', 'sushi']`.
 
 Thêm nữa, gõ `data_setup.create_dataloaders` rồi mở docstring, bạn sẽ thấy **ngay docstring mình viết** hiện ra: mô tả, Args, Returns, Example usage. Đó chính là lý do ta viết docstring theo đúng style — công cụ hiển thị nó đẹp và dễ đọc.
 
+---
+
 ### 🔁 Thay đổi tư duy
 
 Thay vì mỗi notebook lại viết lại cả chục dòng tạo dataloader, giờ ta **import một script** và truyền đường dẫn train/test. Gọn hơn rất nhiều.
+
+---
 
 ### ✅ Chốt lại
 

@@ -22,6 +22,8 @@ PyTorch là một **machine learning framework** viết bằng Python. Nó cho p
 
 Và PyTorch đang thực sự "on fire" — không chỉ vì cái tên hay logo ngọn lửa. Phần lớn nghiên cứu machine learning mới nhất đều được viết và công bố bằng code PyTorch. Nghĩa là biết viết và đọc PyTorch đồng nghĩa với việc các bạn đứng ở tuyến đầu của ngành.
 
+---
+
 ### 🏢 Những ông lớn đang dùng PyTorch
 
 Danh sách này đủ để thấy PyTorch không phải đồ chơi:
@@ -30,6 +32,8 @@ Danh sách này đủ để thấy PyTorch không phải đồ chơi:
 * **Meta** — vận hành hệ thống hiểu và sắp xếp nội dung cho news feed.
 * **Apple** — tạo ra các tính năng nhiếp ảnh được tăng cường bằng tính toán.
 * Thậm chí cả những chiếc **máy cày diệt cỏ tự động** ngoài đồng.
+
+---
 
 ### 🧭 Cách khóa học này được thiết kế
 
@@ -41,11 +45,15 @@ Lộ trình sẽ đi từ:
 2. Các mảng nâng cao hơn: **PyTorch workflow**, phân loại bằng **neural network**, **computer vision**, **custom dataset**, **experiment tracking**, **model deployment**.
 3. Và món mình thích nhất: **transfer learning** — kỹ thuật tận dụng những gì một model đã học ở bài toán khác rồi áp vào bài toán của các bạn.
 
+---
+
 ### 🍔 Ba milestone project quanh Food Vision
 
 Xuyên suốt khóa học, các bạn sẽ xây **ba milestone project** xoay quanh một dự án lớn tên là **Food Vision**: một model computer vision phân loại ảnh món ăn.
 
 Mục tiêu kép: vừa luyện PyTorch, vừa chạm vào những khái niệm machine learning quan trọng, vừa có một **portfolio** để đưa cho nhà tuyển dụng và nói: "Đây là những gì tôi đã làm."
+
+---
 
 ### 👋 Về người hướng dẫn
 

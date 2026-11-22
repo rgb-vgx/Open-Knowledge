@@ -22,6 +22,8 @@ tags: []
 
 Bạn có thể dừng video và tự thử trước — ta đã có đủ mảnh ghép. Nếu muốn theo cùng, mình bắt đầu từ class kế thừa `nn.Module`.
 
+---
+
 ### ⚙️ Bộ hyperparameters (đa phần từ Table 1 và 3)
 
 ```python
@@ -50,6 +52,8 @@ Vài điểm:
 * **`embedding_dropout`** là một "kho báu" khác trong paper: dropout áp **ngay sau khi cộng position embedding vào patch embedding**.
 * **`num_classes=1000`** vì kiến trúc gốc train trên ImageNet. Với Food Vision Mini, ta sẽ đặt `3` (pizza, steak, sushi).
 
+---
+
 ### ✅ Assertion: image size chia hết cho patch size
 
 Để chắc chắn ảnh cắt được thành patch vuông vắn:
@@ -62,6 +66,8 @@ Vài điểm:
 ```
 
 Mình từng nhắc: đây là chỗ nên đưa vào logic, không hard-code.
+
+---
 
 ### 🔢 Số patch và các embedding
 
@@ -83,6 +89,8 @@ Mình từng nhắc: đây là chỗ nên đưa vào logic, không hard-code.
 ```
 
 Khác với lúc minh họa, giờ cả class embedding và position embedding đều khởi tạo bằng **`torch.randn`** — bắt đầu ngẫu nhiên rồi tối ưu bằng gradient descent. Class embedding có shape `(1, 1, embedding_dim)`, position embedding `(1, num_patches + 1, embedding_dim)`.
+
+---
 
 ### 🧱 Patch embedding và transformer encoder
 
@@ -112,6 +120,8 @@ Phần **transformer encoder** là nơi xếp chồng 12 block. Bí quyết là 
 
 List comprehension tạo ra **12 encoder block**, còn `*` trải chúng ra thành một chuỗi layer tuần tự. Muốn một mô hình lớn hơn, chỉ cần tăng `num_transformer_layers`.
 
+---
+
 ### 🎯 Classifier head (Equation 4)
 
 ```python
@@ -122,6 +132,8 @@ List comprehension tạo ra **12 encoder block**, còn `*` trải chúng ra thà
 ```
 
 `in_features=embedding_dim` vì output của encoder có chiều `768`; `out_features=num_classes` vì đây là layer cuối, chiếu ra số lớp phân loại.
+
+---
 
 ### ✅ Chốt lại
 

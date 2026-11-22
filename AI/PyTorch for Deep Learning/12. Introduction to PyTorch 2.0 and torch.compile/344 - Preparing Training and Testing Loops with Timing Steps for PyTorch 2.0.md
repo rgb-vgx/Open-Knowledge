@@ -29,6 +29,8 @@ Các bạn hẳn còn nhớ điệp khúc khi train PyTorch model:
 
 Lần này ta tái dùng code từ phần **Going Modular** (mình thừa nhận là "phá luật" không tự viết lại), nhưng chỉ thêm vài thay đổi nhỏ.
 
+---
+
 ### 🧩 Chỉ thêm vài dòng: đo thời gian
 
 Ý tưởng rất đơn giản — import `time`, rồi **kẹp** mỗi bước train và test giữa hai mốc thời gian:
@@ -60,6 +62,8 @@ Và **cập nhật dict kết quả** trả về để chứa `train_time` / `te
 
 So với bản gốc ở Going Modular, thay đổi chỉ là **vài dòng** ở mỗi loop: bọc `train step` bằng bấm giờ, bọc `test step` bằng bấm giờ, và thêm tham số tắt progress bar.
 
+---
+
 ### ⚠️ Một vấn đề gặp phải: inference_mode
 
 Khi thực nghiệm với PyTorch 2.0, mình **gặp lỗi với `torch.inference_mode`**, nên phải dùng **`torch.no_grad()`** trong test loop.
@@ -70,6 +74,8 @@ with torch.no_grad():
 ```
 
 Nếu các bạn thấy `torch.inference_mode` chạy được (có thể do PyTorch 2.0 đã được cập nhật), hãy báo mình qua GitHub Discussions/Issues — mình sẽ cập nhật notebook. Còn hiện tại, cứ dùng `torch.no_grad()` cho chắc.
+
+---
 
 ### 🔜 Thử thách: Experiment 1
 

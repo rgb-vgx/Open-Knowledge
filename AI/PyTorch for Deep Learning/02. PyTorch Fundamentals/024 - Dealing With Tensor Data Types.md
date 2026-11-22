@@ -31,6 +31,8 @@ float_32_tensor = torch.tensor([3.0, 6.0, 9.0],
 
 Để `dtype=None` thì PyTorch vẫn cho ra **`torch.float32`**, vì đó là kiểu mặc định.
 
+---
+
 ### 📊 Các data type phổ biến
 
 Trong tài liệu `torch.tensor`, mục data types đứng ngay đầu — vì nó quan trọng:
@@ -44,6 +46,8 @@ Trong tài liệu `torch.tensor`, mục data types đứng ngay đầu — vì n
 
 Thực tế các bạn chủ yếu gặp **float32** và **float16**.
 
+---
+
 ### 🔬 "Precision" nghĩa là gì?
 
 Trong khoa học máy tính, **precision** của một số là **mức độ chi tiết** mà số đó được biểu diễn, thường tính bằng **bit**.
@@ -54,6 +58,8 @@ Trong khoa học máy tính, **precision** của một số là **mức độ ch
 
 Vì sao không luôn dùng mặc định? Vì đôi khi bạn sẵn sàng **hy sinh độ chi tiết** để đổi lấy tốc độ: số ít bit hơn chiếm ít bộ nhớ hơn, nên tính toán nhanh hơn. Ngược lại, nếu cần chính xác hơn, có thể lên float64.
 
+---
+
 ### 🚨 Ba lỗi lớn của PyTorch
 
 Hãy nhớ ba cái này, các bạn sẽ gặp lại:
@@ -61,6 +67,8 @@ Hãy nhớ ba cái này, các bạn sẽ gặp lại:
 1. **Tensor sai data type** — ví dụ tính toán giữa tensor `float16` và `float32`.
 2. **Tensor sai shape** — sẽ gặp rõ khi học matrix multiplication, nếu shape không khớp sẽ lỗi.
 3. **Tensor sai device** — một tensor nằm trên GPU, một cái trên CPU mà đem tính với nhau thì PyTorch báo lỗi.
+
+---
 
 ### 🔄 Đổi data type
 
@@ -79,10 +87,14 @@ float_16_tensor.dtype
 
 Kết quả: `torch.float16`. Vậy là đã sửa được lỗi "sai data type".
 
+---
+
 ### 🖥️ `device` và `requires_grad`
 
 * **`device`** mặc định là CPU. Trong Colab có thể chuyển tensor sang GPU bằng `"cuda"` — cách viết **device-agnostic code** sẽ học sau. Nguyên tắc: hai tensor phải **cùng device** mới tính toán được với nhau.
 * **`requires_grad`** quyết định PyTorch có **theo dõi gradient** của tensor qua các phép tính hay không. Mặc định là `False`; phần autograd sẽ giải thích kỹ sau.
+
+---
 
 ### 🎯 Bài tập
 

@@ -22,6 +22,8 @@ Mình restart runtime để chứng minh một điểm: **mọi thứ trong thư
 
 Mình xóa thư mục `data/` và `models/` vừa tạo, refresh lại thì chỉ còn notebook và `sample_data/` (Colab có sẵn, không phải lo).
 
+---
+
 ### 📥 Cell "get data" làm gì?
 
 Đây chính là cell ta đã dùng ở notebook 4. Các bước:
@@ -35,6 +37,8 @@ Mình xóa thư mục `data/` và `models/` vừa tạo, refresh lại thì ch�
 
 Chạy cell: nó in "didn't find", rồi tải và giải nén. Ta có thư mục `data/`.
 
+---
+
 ### 🗂️ Cấu trúc dữ liệu sau khi giải nén
 
 Đây là **standard image classification format**:
@@ -45,15 +49,21 @@ Chạy cell: nó in "didn't find", rồi tải và giải nén. Ta có thư mụ
 
 Ta đã gặp kiểu này ở module trước, nên không cần giải thích lại.
 
+---
+
 ### 🎁 Bài tập đầu tiên của section
 
 Với những gì sắp học, các bạn có thể tự thử **biến riêng cell "get data" này thành một script hoàn chỉnh**. Đó là bài tập đầu tiên mình đặt ra cho section.
+
+---
 
 ### 📍 Tiếp theo là gì?
 
 Ta tạo đường dẫn tới thư mục train và test — cũng là code đã viết rồi, mục đích là tái sử dụng. Từ đây trở đi, mọi subsection của notebook sẽ được chuyển thành Python script.
 
 Notebook **script mode (part 2)** chứa đúng những gì ta nhắm tới. Nếu đặt part 1 và part 2 cạnh nhau, bạn sẽ thấy phần "get data" giống hệt, còn từ section 2 trở đi part 2 có thêm mục **2.1 Create datasets and dataloaders in script mode**.
+
+---
 
 ### ✅ Chốt lại
 

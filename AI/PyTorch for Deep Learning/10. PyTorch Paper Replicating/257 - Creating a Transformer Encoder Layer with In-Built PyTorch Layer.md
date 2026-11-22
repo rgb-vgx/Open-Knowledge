@@ -38,12 +38,16 @@ Vài điểm cần chú ý:
 * `batch_first=True` để input theo thứ tự batch → sequence → feature.
 * `norm_first` mặc định là `False` (norm **sau**), vì bản transformer gốc làm vậy. ViT làm **norm trước** nên ta đặt `norm_first=True`.
 
+---
+
 ### 📊 So sánh với bản tự viết
 
 Nếu chạy `torchinfo.summary` trên `nn.TransformerEncoderLayer`, ta thấy nó cũng gồm multi-head attention, linear, dropout, norm — các phép toán y hệt. Thứ tự các layer hiển thị có thể hơi khác vì bản của PyTorch viết theo kiểu tuần tự, nhưng:
 
 * Số tham số **7.087.872** — **giống hệt** bản tự viết của ta.
 * Cùng các operation, chỉ khác cách bố trí.
+
+---
 
 ### 🤔 Vậy sao phải tự viết làm gì?
 
@@ -54,9 +58,13 @@ Lợi ích của layer dựng sẵn:
 1. **Ít lỗi hơn** — mọi layer trong PyTorch đều qua kiểm thử kỹ càng.
 2. **Có thể nhanh hơn** — từ PyTorch 1.12, `nn.TransformerEncoderLayer` có **fast path** tối ưu (BetterTransformer) cho inference, có thể tăng tốc và throughput **hơn 2x** trong nhiều tình huống, mà không cần sửa model.
 
+---
+
 ### 📚 Stack nhiều layer
 
 Muốn chồng nhiều encoder layer? Dùng `nn.TransformerEncoder`, truyền vào một encoder layer và `num_layers`. Với ViT-Base, `num_layers=12`.
+
+---
 
 ### ✅ Chốt lại
 

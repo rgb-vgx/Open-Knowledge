@@ -20,6 +20,8 @@ Chào các bạn. Food Vision Big đạt gần **58%** trên test, vượt paper
 
 Deploy là **bài test cuối cùng** — đưa model ra thế giới thật. Ở đó sẽ lộ ra những lỗi mà tập train/test không bao giờ cho thấy. Đó là lý do mình đầu tư công đoạn này chứ không dừng ở notebook.
 
+---
+
 ### 📁 Cấu trúc đích
 
 ```text
@@ -35,6 +37,8 @@ demos/
 ```
 
 Khác Food Vision Mini ở chỗ có thêm **`class_names.txt`**. Vì có tới 101 tên lớp, nhét cả list vào `app.py` sẽ rất cồng kềnh. Mình lưu ra file text, mỗi dòng một tên, rồi đọc lại khi chạy app.
+
+---
 
 ### 🧱 Tạo thư mục bằng code
 
@@ -56,6 +60,8 @@ os.listdir(food_vision_big_demo_path)
 ```
 
 Kết quả chỉ có `['examples']` — đúng như dự kiến, các file khác sẽ được lấp dần.
+
+---
 
 ### 📌 Thành phần từng file
 

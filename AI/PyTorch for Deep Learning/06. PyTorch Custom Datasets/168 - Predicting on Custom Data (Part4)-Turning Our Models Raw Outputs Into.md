@@ -30,9 +30,13 @@ print(custom_image_pred_label)
 
 `dim=1` vì ta lấy softmax/argmax **theo chiều lớp** (chiều trong cùng).
 
+---
+
 ### 👀 Xác suất bị "dàn đều"
 
 Các xác suất ra khá **dàn trải** giữa ba lớp. Điều này **không lý tưởng**: model tốt nên gán xác suất **cao** cho lớp đúng (ví dụ > 0.8). Dàn đều phản ánh việc model của ta chưa train tốt.
+
+---
 
 ### 🏷️ Ra tên lớp — và lỗi device
 
@@ -41,6 +45,8 @@ print(class_names[custom_image_pred_label])   # pizza
 ```
 
 Có thể phải đưa `custom_image_pred_label` về **CPU** trước (`.cpu()`) mới index được, vì tensor vẫn nằm trên **CUDA**. Kết quả ra `pizza` — đúng, nhưng theo mình là "may như đoán mò" vì xác suất thấp và dàn đều.
+
+---
 
 ### ✅ Thử thách của bài
 

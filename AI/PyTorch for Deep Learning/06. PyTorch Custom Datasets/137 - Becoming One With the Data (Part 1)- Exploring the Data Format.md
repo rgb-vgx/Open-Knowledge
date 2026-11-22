@@ -24,6 +24,8 @@ Mình rất thích một câu (mà mình tự chế, gán cho nhân vật "Abrah
 
 Ý nói: chuẩn bị dữ liệu chiếm phần lớn thời gian, và đó chính là việc ta sắp làm. (Mình thừa nhận luôn: "Abraham Loss-function" không có thật, câu đó do mình bịa.)
 
+---
+
 ### 🗂️ Dữ liệu đến từ đâu?
 
 Bộ ảnh này lấy từ **Food 101** (có sẵn trong `torchvision.datasets`), rồi mình chia nhỏ từ 101 lớp xuống **3 lớp** cho một thí nghiệm nhỏ. Cấu trúc sau khi giải nén:
@@ -42,6 +44,8 @@ data/pizza_steak_sushi/
 
 Đây là **standard image classification format**: thư mục cha chứa `train`/`test` (có thể thêm `validation`), và **tên thư mục con chính là tên lớp**.
 
+---
+
 ### 🚶 Khám phá bằng `os.walk`
 
 Mình viết một helper để đi qua cây thư mục và in ra thông tin. Theo docstring, `os.walk` là **directory tree generator**: với mỗi thư mục trong cây (kể cả gốc, bỏ `.` và `..`), nó trả về một **three-tuple** `(dirpath, dirnames, filenames)`.
@@ -59,14 +63,18 @@ walk_through_dir(image_path)
 
 Kết quả cho thấy: thư mục gốc có **2 thư mục** (`train`, `test`) và **0 ảnh**; mỗi thư mục `test`/`train` có **3 thư mục** (pizza, steak, sushi); và mỗi thư mục lớp chứa các ảnh JPEG.
 
+---
+
 ### 🔢 Đếm số ảnh mỗi lớp
 
 Từ kết quả, mình đọc ra được phân bố:
 
-* **Test**: khoảng **19 ảnh steak**, tương tự cho các lớp khác — khoảng **25 ảnh/lớp**.
+* **Test**: lớp steak có **19 ảnh**; trung bình khoảng **25 ảnh/lớp**.
 * **Train**: **75 ảnh steak**, **72 ảnh sushi**, **78 ảnh pizza** — khoảng **75 ảnh/lớp**.
 
 Các con số không đều tuyệt đối nhưng xấp xỉ nhau. Đây là **10% của 3 lớp** được chọn ngẫu nhiên từ Food 101.
+
+---
 
 ### 📐 Chuẩn image classification đến từ đâu?
 
@@ -78,6 +86,8 @@ test_dir = image_path / "test"
 ```
 
 Chuẩn này bắt nguồn từ `torchvision.datasets.ImageFolder` — một **generic data loader** mặc định sắp xếp ảnh theo kiểu: thư mục gốc → thư mục lớp → ảnh. Ví dụ phân loại chó/mèo thì có `root/dog/...` và `root/cat/...`. Ta chỉ khác ở chỗ dùng ảnh món ăn và 3 lớp pizza/steak/sushi. Nếu muốn dùng cả Food 101 thì sẽ có **101 thư mục** — hoàn toàn làm được, nhưng ta cứ giữ nhỏ trước.
+
+---
 
 ### ✅ Tạm kết
 

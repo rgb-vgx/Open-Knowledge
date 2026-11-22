@@ -46,17 +46,23 @@ def test_step(
     print(f"Test loss: {test_loss:.5f} | Test accuracy: {test_acc:.2f}%")
 ```
 
+---
+
 ### 🔍 Ba điểm cần khớp
 
 1. **`model.eval()`** — chuyển model sang chế độ đánh giá.
 2. **`torch.inference_mode()`** — tắt autograd khi dự đoán. Inference là từ khác của "prediction"; dùng context manager này cho tốc độ và bộ nhớ tốt hơn.
 3. **`pred.argmax(dim=1)`** — output thô là logit, phải chuyển sang nhãn dự đoán để `accuracy_fn` so sánh được với nhãn thật.
 
+---
+
 ### ⚠️ Bẫy: phép chia phải nằm trong context manager
 
 Hai dòng `test_loss /= len(data_loader)` và `test_acc /= len(data_loader)` phải nằm **bên trong** `with torch.inference_mode()`. Lý do: các giá trị được tạo ra trong context manager mà bị thay đổi bên ngoài có thể khiến PyTorch báo lỗi. Cứ giữ mọi thao tác liên quan trong cùng context cho an toàn.
 
 Đây là điểm nhiều người sửa code mà quên — thử kéo hai dòng chia ra ngoài rồi chạy xem lỗi gì.
+
+---
 
 ### 🧩 Ghép hai hàm thành một "optimization loop"
 
@@ -82,6 +88,8 @@ for epoch in tqdm(range(epochs)):
 ```
 
 Không còn phải viết lại forward, backward, zero_grad… mỗi lần. Đây là lúc giá trị của function hóa lộ rõ.
+
+---
 
 ### ✅ Tạm kết
 

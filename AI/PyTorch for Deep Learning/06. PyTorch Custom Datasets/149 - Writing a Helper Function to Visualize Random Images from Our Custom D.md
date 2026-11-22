@@ -26,6 +26,8 @@ Lại là khẩu hiệu "visualize, visualize, visualize". Custom dataset đã k
 6. Lặp qua các chỉ số, lấy `(image, label)` và vẽ.
 7. **Đổi shape** ảnh cho khớp Matplotlib (channels-last).
 
+---
+
 ### 🔥 Code đầy đủ
 
 ```python
@@ -58,6 +60,8 @@ def display_random_images(dataset, classes=None, n=10, display_shape=True, seed=
         plt.title(title)
 ```
 
+---
+
 ### 🔍 Giải thích các điểm chính
 
 * **Giới hạn `n`**: nếu truyền 20, hàm tự hạ về `10` và tắt hiển thị shape — vì 20 ảnh trên một hàng sẽ không đọc được.
@@ -66,6 +70,8 @@ def display_random_images(dataset, classes=None, n=10, display_shape=True, seed=
 * **`permute(1, 2, 0)`** — lại đổi channels-first `(C, H, W)` về channels-last `(H, W, C)` cho Matplotlib.
 * **`plt.subplot(1, n, i + 1)`** — một hàng, `n` cột, vị trí `i+1`.
 
+---
+
 ### 🖼️ Dùng với cả hai loại dataset
 
 ```python
@@ -73,10 +79,12 @@ def display_random_images(dataset, classes=None, n=10, display_shape=True, seed=
 display_random_images(train_data, n=5, classes=class_names, seed=None)
 
 # Dataset tạo bằng ImageFolderCustom
-display_random_images(train_data_custom, n=10, classes=class_names, seed=42)
+display_random_images(train_data_custom, n=20, classes=class_names, seed=42)
 ```
 
 Với cả hai, ảnh hiện ra kèm nhãn (sushi, pizza, steak...) và shape `[64, 64, 3]`. Truyền `n=20` thì hàm in dòng "n shouldn't be larger than 10..." và chỉ hiển thị 10.
+
+---
 
 ### ✅ Tạm kết
 

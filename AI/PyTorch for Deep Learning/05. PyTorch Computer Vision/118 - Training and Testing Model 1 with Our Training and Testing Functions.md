@@ -27,6 +27,8 @@ epochs = 3
 
 Giữ epochs = 3 và các tham số giống baseline để thí nghiệm chỉ khác đúng **kiến trúc** và **device**.
 
+---
+
 ### 🔁 Optimization loop
 
 ```python
@@ -49,11 +51,15 @@ for epoch in tqdm(range(epochs)):
 
 Cả một optimization loop gói trong vài dòng. Nếu muốn, có thể đưa hai hàm này vào `helper_functions.py` để tái sử dụng ở project khác.
 
+---
+
 ### 🐛 Lỗi gặp phải
 
 Lần chạy đầu báo `train_step() got an unexpected keyword argument 'loss'`. Hóa ra mình gõ thiếu tên tham số — phải là `loss_fn=loss_fn`. Sửa xong là chạy.
 
 Đây là kiểu lỗi rất hay gặp khi function hóa: tên tham số phải khớp chính xác.
+
+---
 
 ### 📉 Kết quả: GPU không "thần thánh" như tưởng
 
@@ -71,6 +77,8 @@ Vì sao? Vài lý do hợp lý:
 
 > Tùy dữ liệu và phần cứng, model có thể train **nhanh hơn trên CPU** so với GPU.
 
+---
+
 ### 🧠 Chi tiết hơn về trade-off
 
 Hai lý do chính khiến GPU chậm hơn:
@@ -81,6 +89,8 @@ Hai lý do chính khiến GPU chậm hơn:
 GPU phát huy lợi thế lớn nhất khi model **to hơn**, dữ liệu **lớn hơn**, và có nhiều layer **tốn compute**. Với bài "đồ chơi" như FashionMNIST, khác biệt không đáng kể.
 
 Để hiểu sâu, có bài viết kinh điển *"Making Deep Learning Go Brrrr From First Principles"* của Horace He (làm việc trên PyTorch), bàn về **compute**, **memory bandwidth cost** (chi phí di chuyển dữ liệu) và **overhead**.
+
+---
 
 ### ✅ Tạm kết
 

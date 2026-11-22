@@ -27,6 +27,8 @@ torchvision==0.13.0
 gradio==3.1.4
 ```
 
+---
+
 ### ✅ Cấu trúc hoàn chỉnh
 
 ```text
@@ -42,6 +44,8 @@ demos/food_vision_big/
 
 Đủ cả 6 thành phần.
 
+---
+
 ### 📦 Nén thư mục
 
 ```bash
@@ -50,6 +54,8 @@ cd demos/food_vision_big && zip -r food_vision_big.zip * \
 ```
 
 Lệnh này lặp lại y hệt bài 312, chỉ đổi tên thư mục và file zip. Kết quả: `demos/food_vision_big.zip`.
+
+---
 
 ### ⬇️ Tải về máy
 
@@ -62,6 +68,8 @@ except:
 ```
 
 Nếu không chạy trên Colab, chỉ cần tải file zip bằng tay.
+
+---
 
 ### 🧩 Chuẩn bị cho bước deploy
 

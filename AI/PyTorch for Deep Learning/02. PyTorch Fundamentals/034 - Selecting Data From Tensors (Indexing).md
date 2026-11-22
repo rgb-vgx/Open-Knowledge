@@ -33,6 +33,8 @@ tensor([[[1, 2, 3],
 
 Ba cặp ngoặc: ngoài cùng là shape `1`, giữa là `3` hàng, trong là `3` phần tử mỗi hàng.
 
+---
+
 ### 🔎 Index từng cấp
 
 ```python
@@ -50,6 +52,8 @@ x[0][0][0]  # giống x[0, 0, 0]
 
 Tùy sở thích: viết từng ngoặc giúp bạn thấy rõ đang "bóc" lớp nào.
 
+---
+
 ### ⚠️ Giới hạn của từng chiều
 
 Thử:
@@ -66,6 +70,8 @@ Nhưng `x[0, 1, 1]` thì được:
 x[0, 1, 1]    # tensor(5)
 ```
 
+---
+
 ### ✂️ Dấu `:` — lấy tất cả một chiều
 
 Dấu hai chấm `:` nghĩa là "lấy hết chiều này".
@@ -81,6 +87,8 @@ x[0, 0, :]     # tensor([1, 2, 3])         — index 0 của chiều 0 và 1, m�
 
 Còn `x[:, 1, 1]` về bản chất giống `x[0, 1, 1]`, nhưng có `:` ở đầu nên trả về dạng mảng `[5]` thay vì số `5`.
 
+---
+
 ### 🏆 Thử thách
 
 Với tensor trên:
@@ -94,6 +102,8 @@ Với tensor trên:
 x[0, 2, 2]    # tensor(9)
 x[0, :, 2]    # tensor([3, 6, 9])
 ```
+
+---
 
 ### 🎯 Chốt lại
 

@@ -1,5 +1,5 @@
 ---
-title: 'Tải helper function và vẽ decision boundary để soi model'
+title: 'Bài 80 — Tải helper function và vẽ decision boundary để soi model'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 80
@@ -31,6 +31,8 @@ circles["label"].value_counts()
 
 Dataset **cân bằng** — 500 đỏ, 500 xanh. Chia 80/20 thì train có 400 mỗi lớp, test có 100 mỗi lớp. Với dữ liệu cân bằng hai lớp, đoán bừa kiểu **tung đồng xu** cũng ra ~50% accuracy. Vậy model của mình đang đoán bừa. Train code đã đúng (đã dùng được ở phần trước), nên vấn đề nằm ở **model** hoặc **dữ liệu**.
 
+---
+
 ### 📥 Tải `helper_functions.py` bằng code
 
 Mình có sẵn hàm `plot_decision_boundary` viết từ trước (lấy cảm hứng từ Goku Mohandas, tác giả *Made With ML* — tài liệu mình rất khuyến khích). Thay vì copy-paste, mình tải thẳng từ repo khóa học:
@@ -55,7 +57,9 @@ else:
 2. Nếu chưa, `requests.get(...)` lấy nội dung file qua URL **raw** từ GitHub.
 3. Mở file `helper_functions.py` ở chế độ ghi nhị phân (`"wb"`) và ghi `request.content` vào.
 
-Nếu chạy được, `from helper_functions import plot_predictions, plot_decision_boundary` sẽ thành công, và các bạn mở được cả nội dung file trên Colab. Toàn là Python thuần, chẳng có gì bí hiểm — các bạn hoàn toàn đọc và hiểu được.
+Nếu chạy được, `from helper_functions import plot_predictions, plot_decision_boundary` sẽ thành công, và các bạn mở được cả nội dung file trên Colab. Toàn là code Python đọc được, chẳng có gì bí hiểm — các bạn hoàn toàn đọc và hiểu được.
+
+---
 
 ### 🗺️ Vẽ decision boundary
 
@@ -73,9 +77,13 @@ Hàm nhận ba tham số: **model** (`torch.nn.Module`), **X** và **y** (tensor
 
 Bức hình nói lên tất cả: model đang cố vẽ **một đường thẳng** xuyên qua dữ liệu. Không ngạc nhiên khi accuracy ~50% — dữ liệu là **vòng tròn**, mà đường thẳng thì cắt ngang hai vòng không ổn.
 
+---
+
 ### 🧠 Vì sao lại là đường thẳng?
 
 Nhìn lại model: nó ghép hai lớp `nn.Linear` — mà **linear** nghĩa là **đường thẳng**. Chồng hai lớp tuyến tính lên nhau vẫn chỉ ra được một biểu diễn tuyến tính, tức vẫn là đường thẳng. Mà dữ liệu vòng tròn thì **không thể tách bằng đường thẳng** (trừ khi uốn lượn — nhưng phép toán tuyến tính không làm được điều đó).
+
+---
 
 ### 🎯 Thử thách trước bài sau
 

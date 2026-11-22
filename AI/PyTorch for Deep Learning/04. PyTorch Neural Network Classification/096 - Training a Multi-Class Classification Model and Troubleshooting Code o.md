@@ -1,5 +1,5 @@
 ---
-title: 'Train model multiclass và debug data type, shape trên đường chạy'
+title: 'Bài 96 — Train model multiclass và debug data type, shape trên đường chạy'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 96
@@ -61,6 +61,8 @@ for epoch in range(epochs):
 
 Mẹo nhỏ: thực ra **argmax của logits** cũng cho cùng kết quả với argmax của softmax (vì softmax đơn điệu). Nhưng mình vẫn viết đủ `softmax` → `argmax` vì các bạn sẽ thấy pattern này rất nhiều trong thực tế.
 
+---
+
 ### 🐛 Bốn lỗi, bốn bài học
 
 **1. Data type: label phải là `torch.long`**
@@ -108,6 +110,8 @@ Rồi **gán lại** `X_blob_test, y_blob_test = X_blob_test.to(device), y_blob_
 **4. Typo biến**
 
 Trong phần test mình gọi `test_pred = ...` nhưng khi tính `test_acc` lại truyền `y_pred` (của train) thay vì `test_pred`. Đổi thành `test_pred` là hết lỗi.
+
+---
 
 ### 📈 Cuối cùng: loss giảm, accuracy tăng
 

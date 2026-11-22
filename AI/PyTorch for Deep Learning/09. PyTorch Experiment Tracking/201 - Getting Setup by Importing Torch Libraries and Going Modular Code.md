@@ -24,9 +24,13 @@ Mình mở **colab.research.google.com**, tạo notebook mới, đặt tên `PyT
 
 Mình cũng dán sẵn vài link: bản eBook/sách của notebook, trang Discussions trên GitHub để đặt câu hỏi, và link **extra curriculum** từ Made With ML.
 
+---
+
 ### 🖥️ Bật GPU trước đã
 
 Việc đầu tiên: chắc chắn đang dùng **GPU**, vì bật cái này có thể khởi động lại runtime. Bấm **Connect**, kiểm tra backend — thấy **GPU** là ngon. Làm sớm để khỏi phải restart runtime về sau.
+
+---
 
 ### 📦 Cài đúng phiên bản PyTorch và torchvision
 
@@ -44,6 +48,8 @@ pip install --pre torch torchvision --extra-index-url https://download.pytorch.o
 
 Chạy mất khoảng **3-4 phút**. Xong nó in ra "torch/torchvision versions not as required" (nếu vừa cài), rồi ta **Restart runtime** để nạp phiên bản mới. Restart xong nhớ kiểm tra lại GPU. Lần này mình có `torch 1.13.0.dev...` — đủ mức tối thiểu để chạy notebook.
 
+---
+
 ### 🔁 Import lại code cũ thay vì viết lại
 
 Đây là phần hay: tái sử dụng **going modular**. Mình import các import quen thuộc (`torch`, `torchvision`, `matplotlib`, kiểm tra `torchinfo`), rồi lấy các script modular từ repo khóa học.
@@ -52,6 +58,8 @@ Chạy mất khoảng **3-4 phút**. Xong nó in ra "torch/torchvision versions 
 * Sau đó có ngay `engine.py` và toàn bộ hàm đã viết ở section trước.
 
 Spoiler nhỏ: ta sẽ **sửa `train` function** để track experiment bằng TensorBoard — đó là lý do cần import lại code này. Hàm `save_model` trong `utils.py` cũng sẽ được tái dùng để lưu từng model ra file.
+
+---
 
 ### 🎲 Device-agnostic code và set seed
 
@@ -69,9 +77,13 @@ def set_seeds(seed: int = 42):
 
 Mình dùng **42** — con số yêu thích, thực ra dùng số nào cũng được. Seed giúp "gia vị" cho randomness, cố gắng làm kết quả **reproducible** (tái lập được). Từ giờ trong các cell sau chỉ cần gọi `set_seeds()` là xong.
 
+---
+
 ### ⚠️ Lưu ý khi quay lại notebook
 
 Nếu bạn nghỉ giữa chừng rồi quay lại, **phải chạy lại các cell setup ở trên** — đảm bảo đúng phiên bản torch/torchvision, nếu không code (nhất là phần torchvision) có thể vỡ về sau.
+
+---
 
 ### ✅ Tạm kết
 

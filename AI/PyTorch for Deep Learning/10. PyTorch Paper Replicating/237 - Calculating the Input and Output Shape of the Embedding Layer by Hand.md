@@ -20,12 +20,16 @@ tags: []
 
 `ViT-B/16` = **ViT-Base**, patch size **16 × 16**. Tương tự `ViT-L/16` là bản Large. Vậy `P = 16` cho cả ba biến thể.
 
+---
+
 ### 🧾 Công thức từ Section 3.1
 
 * Input ảnh: `x ∈ R^(H×W×C)`.
 * Sequence patch sau khi flatten: `x_p ∈ R^(N × (P²·C))`.
 * Số patch: `N = H·W / P²`.
 * Latent size: `D`, cũng chính là **embedding dimension** / **hidden size** trong Table 1.
+
+---
 
 ### 🔢 Thay số cụ thể
 
@@ -64,9 +68,13 @@ embedding_layer_output_shape = (number_of_patches, patch_size**2 * color_channel
 
 Con số **768** đến từ đâu? Đúng là `P²·C = 16²·3 = 768` — và trùng khớp với **hidden size `D = 768`** của ViT-Base trong Table 1. Không hề hard-code, nó được suy ra từ patch size và số color channel.
 
+---
+
 ### 🤔 Từ shape này sang shape kia bằng cách nào?
 
 Input là `(224, 224, 3)`, output là `(196, 768)`. Làm sao biến đổi? Đoạn animation trong bài trước đã gợi ý (dùng một layer quen thuộc), và vài bài tới sẽ dùng PyTorch layer thật để làm việc này. Trước hết cứ tự nghĩ xem — gợi ý: cắt ảnh thành patch 16×16 rồi embed từng patch.
+
+---
 
 ### 📈 Một chi tiết từ paper
 

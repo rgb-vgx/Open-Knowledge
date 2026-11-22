@@ -22,6 +22,8 @@ Trong `torchvision.datasets` có sẵn dataset **Food 101**: gồm **101 lớp m
 
 Ta hoàn toàn có thể làm luôn trên cả 101 lớp. Nhưng để thực hành, mình đã tạo một **tập con nhỏ hơn** và khuyên các bạn cũng làm vậy với bài toán của mình: **start small, upgrade when necessary**. Cụ thể mình giảm còn **3 lớp** và **10% số ảnh** — đủ để bắt đầu, nếu chạy tốt thì tự mở rộng lên.
 
+---
+
 ### 📁 Cấu trúc bộ dữ liệu nhỏ
 
 Tập con được tạo theo đúng kiểu **image classification**:
@@ -31,6 +33,8 @@ Tập con được tạo theo đúng kiểu **image classification**:
 * Và `test/` cũng chia theo `pizza/`, `steak/`, `sushi/`.
 
 Notebook tạo dữ liệu nằm ở `extras/custom_data_creation` trong repo khóa học, các bạn có thể xem như extra curriculum.
+
+---
 
 ### 🔥 Import và chuẩn bị đường dẫn
 
@@ -56,6 +60,8 @@ else:
 
 `mkdir(parents=True, exist_ok=True)` tạo luôn các thư mục cha nếu cần và không báo lỗi khi thư mục đã có.
 
+---
+
 ### 📥 Tải bằng `requests`
 
 Mình dùng `requests.get()` lấy file zip từ GitHub rồi ghi nội dung xuống đĩa:
@@ -69,6 +75,8 @@ with open(data_path / "pizza_steak_sushi.zip", "wb") as f:
 
 Chỗ này tiện hơn tải file về máy rồi upload: code chạy lại nhiều lần vẫn được, và file đi thẳng vào Colab.
 
+---
+
 ### 🧰 Giải nén và cú lỗi "not a zip file"
 
 Ta dùng `zipfile` để giải nén:
@@ -80,6 +88,8 @@ with zipfile.ZipFile(data_path / "pizza_steak_sushi.zip", "r") as zip_ref:
 ```
 
 Chạy lần đầu, mình nhận ngay lỗi: **`File is not a zip file`**. Nhìn lại URL thì ra mình đã dùng link dạng `github.com/.../blob/...` thay vì link **raw**. Sửa `blob` thành `raw` là xong — code vốn đúng, chỉ là tải nhầm dữ liệu. Đây đúng kiểu lỗi các bạn sẽ gặp: **không ai viết code đúng ngay lần đầu**.
+
+---
 
 ### ✅ Tạm kết
 

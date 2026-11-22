@@ -22,6 +22,8 @@ Số experiment bạn có thể chạy cũng nhiều như số model bạn có t
 
 Trả lời: **bất cứ thứ gì là một dạng hyperparameter** mà bạn tưởng tượng được.
 
+---
+
 ### 🎛️ Danh sách các "núm vặn"
 
 * **Số epoch** — thay đổi thời gian train.
@@ -33,15 +35,21 @@ Trả lời: **bất cứ thứ gì là một dạng hyperparameter** mà bạn 
 * **Kiến trúc model** — đổi sang model pretrained khác trong torchvision, không chỉ EfficientNet.
 * **Số layer / hidden unit** — gắn liền với kiến trúc model.
 
+---
+
 ### 🔬 Vì sao bắt đầu với dữ liệu nhỏ?
 
 Mình giải thích lý do chọn bộ 10%: **muốn experiment đầu tiên chạy thật nhanh** trước khi scale lên. Nếu scale lên rồi compute tốn thời gian mà kết quả lại tệ, bạn vừa mất kha khá thời gian. Vì vậy ta tiến từng bước: chạy trong vài giây tới vài phút, rồi mới đến toàn bộ Food 101.
 
 Nói chung, **nhiều dữ liệu hơn thường tốt hơn** — đây là một trong những việc hiệu quả nhất trong machine learning.
 
+---
+
 ### 💡 Tại sao transfer learning mạnh?
 
 Có rất nhiều thứ để theo dõi, nhưng đó chính là thế giới machine learning thú vị: **câu hỏi lớn nhất là "cái gì làm nên model tốt nhất?"** — toàn bộ nghiên cứu đều xoay quanh nó. Và đó là lý do mình rất ủng hộ **transfer learning**: bạn có một working model để áp lên bài toán của mình, thay vì bắt đầu từ số 0.
+
+---
 
 ### ✅ Tạm kết
 

@@ -20,6 +20,8 @@ Bài trước viết xong training loop nhưng chưa chạy. Bài này mình ch�
 
 Bấm chạy và… `IndentationError`. Hóa ra một dòng bị thụt lề lệch đúng một space. Cả khối code đúng, chỉ sai mỗi khoảng trắng. Bài học: khi gặp lỗi lạ, kiểm tra indentation trước.
 
+---
+
 ### 🎉 Chạy lại và kết quả
 
 Sau khi sửa, progress bar chạy. Kết quả baseline:
@@ -34,6 +36,8 @@ Sau khi sửa, progress bar chạy. Kết quả baseline:
 Lưu ý quan trọng: **số của bạn có thể khác**. Do tính ngẫu nhiên, kể cả set manual seed vẫn có thể lệch chút. Cùng "realm" là được: accuracy quanh 83% thì bình thường; rơi xuống 25% thì có gì đó sai.
 
 Thời gian train phụ thuộc rất nhiều vào phần cứng (Daniel dùng Colab Pro, CPU nhanh hơn bản free). Nếu thời gian của bạn gấp mười lần thì nên xem lại code; nhanh hơn mười lần thì cứ tận hưởng phần cứng xịn.
+
+---
 
 ### 🧰 Function hóa phần đánh giá
 
@@ -66,12 +70,16 @@ def eval_model(
     }
 ```
 
+---
+
 ### 🔍 Vài điểm đáng chú ý
 
 * **Tham số `model`** thay cho `model_0` cứng — hàm dùng được với bất kỳ model nào.
 * **`model.__class__.__name__`** lấy tên class của model. Chỉ hoạt động nếu model được tạo từ một class có tên riêng — lý do nên đặt tên class khác nhau cho từng model.
 * **`.item()`** chuyển tensor một phần tử thành số Python thuần, dễ đọc và so sánh.
 * **Trả về dictionary** thay vì in — nhờ vậy có thể gom kết quả nhiều model lại và so sánh sau này.
+
+---
 
 ### 📈 Chạy thử
 
@@ -88,6 +96,8 @@ model_0_results
 ```
 
 Thêm `tqdm` quanh `data_loader` cũng được, nhưng chỉ 313 batch nên chạy rất nhanh.
+
+---
 
 ### ✅ Tạm kết
 

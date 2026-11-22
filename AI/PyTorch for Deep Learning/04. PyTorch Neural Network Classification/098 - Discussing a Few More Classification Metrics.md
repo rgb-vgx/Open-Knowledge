@@ -1,5 +1,5 @@
 ---
-title: 'Bàn thêm vài metric đánh giá model phân loại'
+title: 'Bài 98 — Bàn thêm vài metric đánh giá model phân loại'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 98
@@ -22,6 +22,8 @@ Accuracy = trong 100 mẫu, model đoán đúng bao nhiêu. Model của mình đ
 
 Nhưng có **lưu ý quan trọng**: accuracy **không tốt với dữ liệu mất cân bằng**. Ví dụ có **1000 mẫu lớp 1** nhưng chỉ **10 mẫu lớp 0** — model đoán "lớp 1" tất cả vẫn được accuracy cao, trong khi thực chất vô dụng với lớp 0.
 
+---
+
 ### ⚖️ Precision và Recall
 
 Hai metric quan trọng khi các lớp có **số lượng mẫu khác nhau**:
@@ -37,6 +39,8 @@ Nhưng có **precision-recall trade-off**: tăng precision thường làm giảm
 
 Tài liệu mình khuyến khích đọc thêm: bài *"Beyond Accuracy: Precision and Recall"* của Will Koehrsen — giải thích rất hay khi nào dùng cái nào.
 
+---
+
 ### 🎼 F1-score, confusion matrix, classification report
 
 * **F1-score** — kết hợp precision và recall, hữu ích khi muốn một con số **cân bằng** giữa hai phía.
@@ -44,6 +48,8 @@ Tài liệu mình khuyến khích đọc thêm: bài *"Beyond Accuracy: Precisio
 * **Classification report** (của scikit-learn) — tổng hợp mọi metric trên vào một báo cáo.
 
 Có sẵn ở cả **scikit-learn** (`precision_score`, `recall_score`, `f1_score`, `confusion_matrix`, `classification_report`) lẫn **TorchMetrics** (`torchmetrics.functional.precision`, `recall`…). Để dành làm bài tập mở rộng.
+
+---
 
 ### 🔧 `torchmetrics` trong thực tế
 
@@ -60,9 +66,13 @@ torchmetric_accuracy(y_preds, y_blob_test)
 
 Kết quả: **99.5%** — khớp với hàm accuracy tự viết. `torchmetrics` cung cấp rất nhiều metric "kiểu PyTorch" (xem module `torchmetrics.classification`).
 
+---
+
 ### ⚠️ Bẫy device với torchmetrics
 
 Lần đầu chạy, mình lại văng lỗi quen thuộc: **"Expected all tensors to be on the same device, but found at least two devices"**. Vì metric object mặc định nằm trên **CPU**, còn `y_preds`/`y_blob_test` nằm trên **CUDA**. Vì `torchmetrics` viết theo kiểu PyTorch, nó cũng phải tuân thủ quy tắc device-agnostic — nhớ `.to(device)` cho metric object.
+
+---
 
 ### 🏁 Tổng kết hành trình
 

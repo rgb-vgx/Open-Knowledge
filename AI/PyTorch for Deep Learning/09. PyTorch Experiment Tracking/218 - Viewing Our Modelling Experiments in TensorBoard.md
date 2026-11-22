@@ -25,11 +25,15 @@ Ta đã chạy xong loạt experiment, có model lưu trong `models/` và các r
 
 (`%load_ext` chỉ cần chạy một lần; nếu đã có instance TensorBoard ở trên thì có thể bỏ qua.) TensorBoard có sẵn trong Colab. Nếu dùng **VS Code** thì tra cách chạy TensorBoard trong VS Code. Cách khác là upload lên **TensorBoard.dev** để công khai.
 
+---
+
 ### 📊 Tab Scalars: mọi experiment tự load
 
 Mở ra, ta thấy tất cả modeling experiment **tự động** hiện lên, đủ accuracy và loss. Tắt smoothing (hoặc để mức 0.5) — mình không thích smoothing lắm, thích xem giá trị **tuyệt đối**.
 
 Kéo ngang thấy rất nhiều experiment, có cả một cái "extra" ta không cần — chỉ giữ các run có prefix ngày hôm nay (28/6). Mỗi run có cột cho biết nó chạy bao lâu: cái **lâu nhất khoảng 1 phút** (dùng nhiều dữ liệu nhất).
+
+---
 
 ### 🏆 Best model về accuracy
 
@@ -37,9 +41,13 @@ Xem **test accuracy** ở cuối: chấm màu xanh đậm (thứ hai từ dướ
 
 Model khác không kém mấy: chấm xanh lá ở dưới cùng train **nửa thời gian** nhưng chỉ thấp hơn khoảng **1 điểm phần trăm**. Đó là **trade-off giữa performance và speed** — lý do ta thử nhiều model size/dữ liệu/thời gian.
 
+---
+
 ### 📉 Xem loss
 
 Chuyển sang **test loss**, zoom ra: có 8 giá trị cho 8 model. Model **loss thấp nhất** lại là **EffNetB0, 10 epoch** (~2.2856 loss), train khoảng 51 giây. Loss thấp nhì là chấm xám — `data_20_percent / effnetb2 / 10_epochs`.
+
+---
 
 ### ⚖️ Chọn model nào?
 
@@ -47,9 +55,13 @@ EffNetB2 (20%, 10 epoch) có **loss thấp nhì** nhưng **accuracy cao nhất**
 
 Xu hướng chung: **nhiều dữ liệu hơn + model to hơn + train lâu hơn → kết quả tốt hơn** (thường là vậy, không phải lúc nào cũng tuyệt đối).
 
+---
+
 ### ➡️ Tiếp theo nên chạy gì?
 
 Vì best model là B2 trên 20% dữ liệu, 10 epoch, có thể scale tiếp: lên **B4**, dùng **40-50%** dữ liệu, hoặc train **50 epoch**. Bạn thử bao nhiêu tùy thích.
+
+---
 
 ### ☁️ Chia sẻ qua TensorBoard.dev
 
@@ -64,6 +76,8 @@ tensorboard dev upload --logdir runs \
 Lần đầu sẽ yêu cầu **authorization code**: mở URL, dán code. Sau đó nó upload mọi kết quả trong `runs/` (~260 scalar) và trả về link công khai.
 
 > ⚠️ **Cảnh báo:** kết quả upload lên TensorBoard.dev là **công khai**. Đừng upload dữ liệu nhạy cảm.
+
+---
 
 ### ✅ Tạm kết
 

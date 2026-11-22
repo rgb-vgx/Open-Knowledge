@@ -20,6 +20,8 @@ Số liệu đã có, nhưng đây là computer vision — phải **nhìn** mớ
 
 Model 0 (linear) 83.4%, Model 1 (phi tuyến) kém hơn, Model 2 (CNN) tốt nhất nhưng train lâu nhất. Một điều đáng nói: chạy lại notebook có thể ra thời gian train khác — tùy Google Colab cấp phần cứng nào. Vì vậy cứ đo và ghi lại, đừng so sánh tuyệt đối giữa các lần.
 
+---
+
 ### 🛠️ Hàm `make_predictions`
 
 ```python
@@ -53,6 +55,8 @@ def make_predictions(
 * **`.cpu()`** — Matplotlib không làm việc với tensor trên GPU, nên phải kéo về CPU.
 * **`torch.stack(pred_probs)`** — gộp list các tensor thành một tensor.
 
+---
+
 ### 🎯 Bốc mẫu ngẫu nhiên
 
 ```python
@@ -81,6 +85,8 @@ plt.title(class_names[test_labels[0]])
 
 Kết quả: một chiếc giày cao gót, nhãn `Sandal`.
 
+---
+
 ### 🔢 Chuyển xác suất thành nhãn
 
 ```python
@@ -94,9 +100,13 @@ print(pred_classes)
 
 Đây là bước quan trọng: không so xác suất với nhãn, mà so **nhãn với nhãn**, "apples to apples".
 
+---
+
 ### 💡 Vì sao phải set seed?
 
 Để bạn và mình bốc ra cùng 9 ảnh, dễ đối chiếu. Muốn thật sự ngẫu nhiên thì comment `random.seed(42)`.
+
+---
 
 ### ✅ Tạm kết
 

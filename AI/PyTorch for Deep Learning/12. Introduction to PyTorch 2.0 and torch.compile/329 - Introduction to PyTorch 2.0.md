@@ -24,6 +24,8 @@ Nhưng nói suông thì không đủ. Nhanh hơn bao nhiêu, thật sự?
 
 Đội PyTorch đã chạy thử trên **163 mô hình mã nguồn mở** từ Hugging Face Transformers, TIMM (torch image models) và TorchBench — một tập code base phổ biến được tuyển chọn trên khắp GitHub — trộn giữa **AMP** (automatic mixed precision / `float16`) và train `float32`. Kết quả: `torch.compile` cho **tốc độ nhanh hơn trung bình 43% khi train** trên GPU NVIDIA A100.
 
+---
+
 ### 🧪 Mình thử trên máy của mình
 
 Mình cũng đem `torch.compile` chạy thử trong benchmark riêng, và thấy vài điều:
@@ -34,9 +36,13 @@ Mình cũng đem `torch.compile` chạy thử trong benchmark riêng, và thấy
 
 Mình chưa thử mixed precision hay kiến trúc kiểu transformer, các lần train dài — mà đây chính là chỗ mình nghĩ `torch.compile` sẽ phát huy mạnh nhất.
 
+---
+
 ### 🔍 Bên trong có gì: fusion và graph capture
 
 `torch.compile` được thiết kế để "chỉ chạy được thôi", nhưng phía sau là vài công nghệ: **TorchDynamo**, **AOTAutograd**, **PrimTorch** và **TorchInductor**. Release notes của PyTorch 2.0 giải thích kỹ hơn. Ở mức cao, có **hai cải tiến chính**: **fusion** và **graph capture**.
+
+---
 
 ### 🍹 Fusion — trộn mọi thứ trong một lần xay
 
@@ -48,6 +54,8 @@ Thay vì làm một phép toán trên một mẩu dữ liệu rồi lưu kết q
 
 Ví dụ dễ hiểu: dùng máy xay sinh tố. Máy xay giỏi xay nguyên liệu giống như GPU giỏi nhân ma trận. Không có fusion thì giống như cho từng nguyên liệu vào và xay lại mỗi lần thêm một thứ — điên rồ và tốn bandwidth. Bản thân mỗi lần xay thì nhanh, nhưng các bạn mất thời gian vì thêm từng thứ một. Có fusion thì giống như cho tất cả nguyên liệu vào từ đầu rồi xay một lần: mất chút thời gian lúc đầu nhưng lấy lại toàn bộ thời gian đã mất vào bandwidth.
 
+---
+
 ### 🗺️ Graph capture — đi đường mà không phải nghĩ
 
 Graph capture (hay graph tracing) là đi qua một chuỗi phép toán cần thực hiện — như các phép trong mạng neural — và **ghi lại trước** những gì sẽ phải làm.
@@ -57,6 +65,8 @@ Không có graph capture thì giống như đến một vùng mới và đi theo
 Có graph capture thì giống như lái trong khu nhà mình: gần như không phải nghĩ. Nhưng các bạn mất chút thời gian lúc đầu để nhớ đường về nhà. Đây là điều cần lưu ý: graph capture tốn thời gian gom trước, đổi lấy tốc độ những lần sau.
 
 > Muốn đọc thêm về fusion, memory bandwidth và overhead, mình gợi ý bài **"Making Deep Learning Go Brrrr From First Principles"** của Horace He.
+
+---
 
 ### 📦 Những cập nhật khác của PyTorch 2.0
 

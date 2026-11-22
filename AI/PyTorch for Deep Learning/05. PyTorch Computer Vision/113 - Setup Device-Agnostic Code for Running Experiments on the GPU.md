@@ -32,9 +32,13 @@ Lúc đầu cả hai đều thất bại vì Colab chưa bật GPU. Cách bật:
 
 Sau khi bật, `nvidia-smi` cho thấy **Tesla T4** với **16GB memory**; `torch.cuda.is_available()` trả `True`.
 
+---
+
 ### 🔄 Nhớ chạy lại các cell phía trên
 
 Khi runtime reset, mọi biến mất hết. Dùng **Run before** (hoặc Run all) để tải lại data và helper function. Dataset nhỏ nên tải nhanh — đây là lợi thế của dataset có sẵn trên `torchvision.datasets`. Với dataset lớn, việc tải lại có thể tốn kha khá thời gian, cần lưu ý.
+
+---
 
 ### 🧭 Device-agnostic code
 
@@ -50,15 +54,21 @@ Pattern này xuất hiện gần như ở đầu mọi notebook PyTorch. Mình c
 
 Sau này, mỗi khi tạo model hay tensor, chỉ cần `.to(device)` là code chạy được trên bất kỳ phần cứng nào.
 
+---
+
 ### 🤔 Baseline đã 83%, có cần phi tuyến không?
 
 Quay lại câu hỏi treo từ đầu section. Nhìn ảnh quần áo, có vẻ nhiều thứ khá tuyến tính, nhưng cũng có hình dạng phi tuyến. Baseline không có phi tuyến mà vẫn đạt 83% — vậy thêm phi tuyến có giúp không?
 
 Không ai biết trước. Đó chính là lý do phải **thí nghiệm**. Model tiếp theo sẽ có phi tuyến và chạy trên GPU, để so sánh cả **accuracy** lẫn **thời gian train**.
 
+---
+
 ### 🎯 Thử thách
 
 Trước khi xem bài sau, các bạn thử tự dựng một model có `nn.ReLU` chen giữa các linear layer, đẩy lên `device`, rồi tự đặt câu hỏi: nó có tốt hơn 83.4% không?
+
+---
 
 ### ✅ Tạm kết
 

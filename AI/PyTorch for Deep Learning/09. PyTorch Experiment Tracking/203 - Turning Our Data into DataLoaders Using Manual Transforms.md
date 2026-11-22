@@ -24,6 +24,8 @@ Mình viết ra một câu quan trọng:
 
 Nếu dùng dữ liệu riêng với một model đã pretrain (thị giác hay NLP đều vậy), phải format dữ liệu **giống cách model được train**. Nếu không, hiệu năng sẽ bị giảm so với kết quả mà model pretrained đáng lẽ đạt được.
 
+---
+
 ### 📂 Chuẩn bị đường dẫn train/test
 
 ```python
@@ -33,11 +35,15 @@ test_dir  = image_path / "test"
 
 `image_path` là đường dẫn ta có được từ hàm `download_data` ở bài trước. Ta dùng lại model transfer learning vì nó chạy tốt ở section trước.
 
+---
+
 ### 📐 Vì sao chuẩn hóa theo ImageNet?
 
 Phần lớn model pretrained trong torchvision được train trên **ImageNet**, và tất cả đều kỳ vọng ảnh đầu vào được chuẩn hóa **cùng một cách**. Mình mở tài liệu torchvision (mục *Models and pre-trained weights*), chú ý phiên bản 0.13 trở lên có phần quan trọng về transform. Từ 0.13 còn có cách tự động tạo transform — nhưng ta xem cách thủ công trước để hiểu bản chất.
 
 Cách thủ công linh hoạt hơn, đổi lại có rủi ro transform ảnh **sai** nếu tự làm không chuẩn.
+
+---
 
 ### 🔧 Dựng pipeline transform
 
@@ -59,6 +65,8 @@ manual_transforms = transforms.Compose([
 
 Giải thích cho khớp tài liệu: ảnh cần chiều cao/rộng tối thiểu **224**, đưa pixel về khoảng **0-1**, rồi normalize bằng các giá trị mean/std ImageNet ở trên. In ra `manual_transforms` để xem pipeline. Nếu muốn thêm **data augmentation** thì chèn thêm bước vào đây — đó là lợi thế của việc tự tạo pipeline.
 
+---
+
 ### 🔁 Tạo DataLoader bằng code going modular
 
 Đây là sức mạnh của việc tái dùng code: file `data_setup.py` đã có sẵn hàm `create_dataloaders`, dùng `ImageFolder` của `torchvision.datasets` để tạo dataset rồi trả về train/test DataLoader:
@@ -78,6 +86,8 @@ Nó áp **cùng một transform** cho cả train và test.
 > **Gợi ý cải tiến:** thêm tham số `test_transform` để train/test dùng transform khác nhau (ví dụ test transform là một `transforms.Compose` riêng). Hiện tại dùng chung vẫn ổn.
 
 Kết quả in ra train/test DataLoader và `class_names` — chính là `['pizza', 'steak', 'sushi']`. Đó là pipeline transform thủ công ta vừa tạo.
+
+---
 
 ### ✅ Tạm kết
 

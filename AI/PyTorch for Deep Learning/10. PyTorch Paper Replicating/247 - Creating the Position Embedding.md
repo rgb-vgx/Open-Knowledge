@@ -27,11 +27,15 @@ Kết quả là shape đổi từ `196` thành `197`, và **embedding dimension*
 
 Mình nhấn mạnh một điều: sau này ta sẽ dùng `torch.randn` để khởi tạo ngẫu nhiên. Vì bản chất của deep learning là **bắt đầu từ ngẫu nhiên rồi tối ưu** dần.
 
+---
+
 ### 🧩 Vì sao cần position embedding?
 
 Khi biến ảnh thành patch bằng `Conv2d`, rồi **flatten** thành chuỗi, **thông tin không gian bị mất**. Position embedding ra đời để "nhắc" mô hình thứ tự các patch: patch này nằm cạnh patch kia, và cứ thế.
 
 Trong paper, ký hiệu là **E_pos**, một phần tử số thực có shape `(N + 1, D)`, với `N` là số patch và `D` là embedding dimension. Với ta, đó là `197 × 768`. Đây chính là chỗ cái tên **patch + position embedding** xuất phát.
+
+---
 
 ### 🔢 Tính số patch và embedding dimension
 
@@ -49,6 +53,8 @@ embedding_dimension = patch_embedded_image_with_class_embedding.shape[-1]
 # 768
 ```
 
+---
+
 ### ⚙️ Tạo learnable 1D position embedding
 
 Rất giống cách làm class token, chỉ khác **shape**: class token chỉ là một biến đơn, còn position embedding trải khắp toàn bộ chuỗi.
@@ -64,6 +70,8 @@ position_embedding.shape
 
 `nn.Parameter` mặc định có `requires_grad=True`, tức là **learnable** — đúng như ta cần.
 
+---
+
 ### ➕ Cộng position embedding vào chuỗi
 
 Vì shape khớp nhau, chỉ cần cộng trực tiếp:
@@ -78,6 +86,8 @@ patch_and_position_embedding.shape
 ```
 
 Shape không đổi, nhưng **giá trị thay đổi**: vì position embedding khởi tạo bằng `torch.ones`, mỗi phần tử trong tensor kết quả tăng thêm **1**. Ta kiểm tra output sau mỗi lớp chính là vì thế — mạng nơ-ron suy cho cùng chỉ là output lớp này làm input lớp kia.
+
+---
 
 ### ✅ Chốt lại
 

@@ -53,7 +53,7 @@ Theo thứ tự từ đơn giản đến "cầu cứu":
 
 ### 📚 Tài nguyên đi kèm
 
-Toàn bộ tài liệu khóa học nằm trong repo GitHub — đó là ground truth của cả khóa. Trong repo có thư mục `extras/` chứa notebook gốc, bài tập và lời giải; mình sẽ chỉ chỗ cụ thể khi cần.
+Toàn bộ tài liệu khóa học nằm trong repo GitHub — đó là ground truth của cả khóa, gồm tài liệu và notebook đi kèm. Mình sẽ chỉ chỗ cụ thể khi cần.
 
 Ngoài ra còn có bản **sách** (ebook) của khóa, tên là *Learn PyTorch*. Khi bạn xem video, sách có thể đã đủ chương tương ứng với từng video. Sách chỉ để tham khảo thêm — các video được xây dựng dựa trên nội dung đó, nhưng trọng tâm vẫn là code cùng nhau.
 

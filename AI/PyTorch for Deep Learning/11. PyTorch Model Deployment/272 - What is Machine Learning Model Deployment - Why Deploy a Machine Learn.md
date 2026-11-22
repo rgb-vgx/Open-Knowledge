@@ -28,6 +28,8 @@ Các bạn hình dung luồng cơ bản: có dữ liệu đầu vào (hàng và 
 
 Tóm lại: deployment là đưa model đến tay người dùng hoặc một app/program khác.
 
+---
+
 ### ❓ Nếu model không rời notebook, nó có tồn tại?
 
 Đây là một trong những câu hỏi triết học quan trọng nhất của machine learning, và cũng là lý do số một để deploy: **vì nó vui**.
@@ -35,6 +37,8 @@ Tóm lại: deployment là đưa model đến tay người dùng hoặc một ap
 Từ đầu khóa đến giờ, model của chúng ta chỉ nằm trong notebook và chỉ mình ta truy cập được. Nếu train xong rồi cất đó, không ai dùng, thì model có thực sự tồn tại?
 
 Nhớ lại khái niệm **ba tập dữ liệu** — training set, validation set, test set — đều nằm trong notebook, máy local hoặc Google Colab. Giờ mình giới thiệu **tập dữ liệu thứ tư**: **real world**. Chỉ khi deploy, các bạn mới thực sự kiểm tra được model ngoài đời thật.
+
+---
 
 ### 🔄 Thêm bước deploy vào PyTorch workflow
 
@@ -49,6 +53,8 @@ Giờ thêm một bước nữa — mình gọi là **step X** (X là số bất
 5. Quay lại đầu workflow và lặp lại — tạo thành một vòng lặp.
 
 Các bước train/evaluate ở trên thường được gọi là **machine learning** hay **data science**. Còn từ lúc deploy và monitor trở đi, người ta gọi là **MLOps** (ML operations) hay **machine learning engineering**.
+
+---
 
 ### ⚙️ MLOps và hạ tầng quanh model
 

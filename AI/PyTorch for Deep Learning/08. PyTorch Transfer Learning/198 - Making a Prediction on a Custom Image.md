@@ -38,6 +38,8 @@ Lưu ý quen thuộc:
 
 Ảnh này khá lớn — Colab có thể hơi lâu mới hiển thị. Kiên nhẫn chút nhé: đó là bố mình và một cái pizza.
 
+---
+
 ### 🔮 Dự đoán
 
 Ảnh lớn không sao, vì `pred_and_plot_image` sẽ **tự format** về đúng kích thước model cần (224×224).
@@ -50,17 +52,23 @@ pred_and_plot_image(
 )
 ```
 
+---
+
 ### 📊 Kết quả
 
 Model dự đoán: **pizza**, xác suất **0.517**.
 
 Đừng lo nếu con số của bạn hơi khác — miễn model dự đoán **đúng class** là được.
 
+---
+
 ### 🥊 So với TinyVGG
 
 Ở section 04, TinyVGG cũng đoán đúng **pizza**, nhưng xác suất chỉ **0.373**. Như vậy transfer learning model **tự tin hơn** với dự đoán đúng. Đây là tín hiệu tốt.
 
 Toàn bộ quá trình: lấy EfficientNet B0 làm backbone, đóng băng nó, customize cho pizza/steak/sushi, rồi dùng pattern học từ ImageNet + dữ liệu riêng để dự đoán **ảnh "ngoài đời"**.
+
+---
 
 ### 🌍 Ứng dụng thật
 
@@ -69,6 +77,8 @@ Toàn bộ quá trình: lấy EfficientNet B0 làm backbone, đóng băng nó, c
 Ứng dụng đó hiện hỗ trợ khoảng **100 món**, và sẽ tăng dần. Food Vision Mini mới làm được **3 món** — bạn có thể mở rộng bằng cách thêm dữ liệu train và xem transfer learning làm tốt tới đâu.
 
 Nhớ rằng ta chỉ có khoảng **70 ảnh train mỗi class** — rất ít trong bối cảnh deep learning. Đó chính là sức mạnh của transfer learning.
+
+---
 
 ### ✅ Chốt lại
 

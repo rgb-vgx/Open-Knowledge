@@ -28,6 +28,8 @@ df["model"] = ["EffNetB2", "ViT"]
 df["test_acc"] = round(df["test_acc"] * 100, 2)
 ```
 
+---
+
 ### 🧭 Chỉ số nào tốt hơn?
 
 | Chỉ số | Hướng tốt | Model thắng |
@@ -41,6 +43,8 @@ df["test_acc"] = round(df["test_acc"] * 100, 2)
 \* Số tham số và model size là **tùy tình huống**: nhiều tham số hơn không phải lúc nào cũng chậm hơn. Nhưng nhìn chung model nhiều tham số tốn nhiều phép tính hơn, và với mục tiêu đưa lên mobile thì nhỏ vẫn hơn.
 
 Về trực giác: nếu có compute vô hạn thì chẳng cần quan tâm kích thước. Nhưng Tesla cũng không nhét được máy to tùy thích — model càng lớn, xe càng nặng, càng tốn điện, pin càng nhanh cạn. Luôn là **đánh đổi** giữa model lớn nhất có thể và hiệu năng/pin.
+
+---
 
 ### 📐 Tính tỉ lệ ViT / EffNetB2
 
@@ -59,6 +63,8 @@ Kết quả:
 * **Số tham số**: ViT **~11×**.
 * **Model size**: ViT **~11×**.
 * **Time per prediction (CPU)**: ViT **~5.5×**.
+
+---
 
 ### 🤔 Trade-off có đáng không?
 

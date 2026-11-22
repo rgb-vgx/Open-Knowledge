@@ -20,6 +20,8 @@ tags: []
 
 Model được train trên ảnh **64×64**, kiểu `torch.float32`, 3 kênh. Ảnh mới (rất lớn, `uint8`) khác hẳn — nên phải resize và đổi dtype.
 
+---
+
 ### 📖 Tìm hàm đọc ảnh trong tài liệu
 
 Trong `torchvision`, mục **reading and writing images and videos**. Hàm **`torchvision.io.read_image`**: đọc JPEG/PNG thành tensor 3 chiều (RGB hoặc grayscale), giá trị **`uint8`**, có thể chuyển sang mode mong muốn.
@@ -30,9 +32,13 @@ import torchvision
 custom_image_uint8 = torchvision.io.read_image(str(custom_image_path))
 ```
 
+---
+
 ### ⚠️ Cú lỗi: cần `str`, không phải `PosixPath`
 
 Lần đầu chạy báo lỗi kiểu **"expected value type of string but found posix path"**. `read_image` cần **đường dẫn dạng string**, còn `custom_image_path` là `PosixPath`. Sửa bằng `str(custom_image_path)`. Đây là lý do mình luôn thích `pathlib`, nhưng đôi khi phải nhớ chuyển đổi khi gọi hàm cũ.
+
+---
 
 ### 🎨 Hiển thị ảnh
 
@@ -42,6 +48,8 @@ plt.axis(False)
 ```
 
 `read_image` trả về **channels-first** `(C, H, W)`, nên phải `permute(1, 2, 0)` về channels-last cho Matplotlib. (Nếu không, lỗi "invalid shape" quen thuộc.) Một lần nữa: đây là bố Daniel giơ hai ngón cái với chiếc pizza.
+
+---
 
 ### 🔍 Kiểm tra metadata
 
@@ -58,6 +66,10 @@ Kết quả:
 
 Cả hai đều sẽ gây lỗi khi đưa vào model nếu không xử lý.
 
+---
+
 ### ✅ Thử thách của bài
 
 Thử tự **resize tensor về 64×64** bằng một transform của `torchvision`, và **đổi `uint8` sang `torch.float32`**. Đó chính là các bước chuẩn bị trước khi dự đoán — bài sau mình làm cùng. Hẹn các bạn ở đó.
+
+> ⚠️ Cần kiểm chứng: tài liệu torchvision hiện đánh dấu `torchvision.io.read_image` là deprecated (khuyến nghị `decode_image`/TorchCodec); code trong khóa dùng theo phiên bản cũ nên vẫn chạy được.

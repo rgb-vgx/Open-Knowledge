@@ -20,6 +20,8 @@ Chào các bạn. `app.py` sắp tới cần một instance EffNetB2 đúng ki�
 
 Trong notebook, hàm `create_effnetb2_model` đã có sẵn. Nhưng khi chạy trên Hugging Face Spaces, môi trường chỉ có các file trong thư mục app, không có notebook. Vì vậy mọi thứ `app.py` cần phải nằm trong file `.py` đi kèm. Đây chính là lý do mình biến logic thành hàm từ trước.
 
+---
+
 ### ✍️ Ghi file bằng magic `%%writefile`
 
 Jupyter/Colab có magic `%%writefile` để ghi nội dung cell ra file:
@@ -50,6 +52,8 @@ def create_effnetb2_model(num_classes: int = 3, seed: int = 42):
 
 Điểm quan trọng: bên trong file phải **import đủ dependency** (`torch`, `torchvision`, `nn`), vì script chạy độc lập, không thừa hưởng import của notebook.
 
+---
+
 ### 🔎 Kiểm tra file vừa tạo
 
 Sau khi chạy cell, trong `demos/food_vision_mini/` xuất hiện `model.py`. Thử import lại từ đó:
@@ -61,6 +65,8 @@ effnetb2_model, effnetb2_transforms = model.create_effnetb2_model()
 ```
 
 Chạy không lỗi nghĩa là script hoạt động độc lập. Từ giờ `app.py` chỉ cần `from model import create_effnetb2_model` là đủ.
+
+---
 
 ### 📌 Tổng kết các mảnh đã có
 

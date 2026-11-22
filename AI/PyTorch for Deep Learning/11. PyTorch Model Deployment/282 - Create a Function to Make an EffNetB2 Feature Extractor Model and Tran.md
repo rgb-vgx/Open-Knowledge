@@ -20,6 +20,8 @@ Bài tập của bài trước là biến các bước tạo EfficientNet B2 fea
 
 Vì ta sẽ tạo model này nhiều lần: lúc train, lúc tạo bản sao để kiểm tra, lúc export sang script deploy. Viết một lần, gọi nhiều lần — đúng tinh thần **going modular**.
 
+---
+
 ### 🛠️ Viết hàm
 
 ```python
@@ -52,6 +54,8 @@ def create_effnetb2_model(num_classes: int = 3,
 
 `num_classes` mặc định 3 cho pizza/steak/sushi nhưng có thể chỉnh khi dùng cho bài khác. Seed 42 giúp tái lập kết quả ở mức tối đa có thể.
 
+---
+
 ### 📸 Kiểm tra output
 
 ```python
@@ -60,6 +64,8 @@ effnetb2, effnetb2_transforms = create_effnetb2_model(num_classes=3, seed=42)
 
 * **`effnetb2_transforms`** — crop, resize, mean và standard deviation đúng như khi pretrained model được train. Mọi ảnh đi qua model đều phải qua bộ này.
 * **`summary(effnetb2, input_size=(1, 3, 224, 224))`** — base layers `False` (frozen), chỉ head `True`, tổng **4,227 trainable parameters**, đúng như kỳ vọng.
+
+---
 
 ### 🎓 Feature extractor vs fine-tuning
 

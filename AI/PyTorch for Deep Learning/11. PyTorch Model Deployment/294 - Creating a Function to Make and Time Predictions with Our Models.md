@@ -33,6 +33,8 @@ import torchvision
 * `tqdm.auto` — tự chọn progress bar phù hợp môi trường (notebook hay terminal).
 * `List`, `Dict` — chỉ để type hint: hàm trả về **list of dictionaries**.
 
+---
+
 ### 🧱 Chữ ký hàm
 
 ```python
@@ -44,6 +46,8 @@ def pred_and_store(paths: List[Path],
 ```
 
 `device` mặc định bám theo máy — device-agnostic như mọi khi.
+
+---
 
 ### 🔁 Thân hàm
 
@@ -96,6 +100,8 @@ Vài điểm đáng chú ý:
 * **`pred_label.cpu()`** — `class_names` là list Python, sống trên CPU; nếu tensor nằm trên GPU mà không chuyển về CPU sẽ lỗi.
 * **`pred_prob.max().cpu().item()`** — lấy xác suất lớn nhất, chuyển về CPU, `.item()` để ra số Python, làm tròn 4 chữ số.
 * **`torch.inference_mode()`** — tắt những cơ chế chỉ cần cho training.
+
+---
 
 ### 👀 Vì sao "list of dictionaries"?
 

@@ -22,6 +22,8 @@ Cả hai model đều đã vượt mốc **95% accuracy**. Giờ đến tiêu ch
 * Speed: ≥30 FPS.
 * Cách đo: lặp qua toàn bộ ảnh test, đo thời gian mỗi prediction, lấy trung bình.
 
+---
+
 ### 📂 Lấy danh sách đường dẫn ảnh test
 
 ```python
@@ -31,6 +33,8 @@ test_data_paths = list(Path(test_dir).glob("*/*.jpg"))
 ```
 
 `glob("*/*.jpg")` quét mọi thư mục con (pizza, steak, sushi) và lấy file **`.jpg`**. Kết quả là danh sách đường dẫn ảnh test. (Lưu ý: phần mở rộng thực tế là `.jpg`; transcript đọc thành "dot JPEG".)
+
+---
 
 ### 🧩 Thiết kế hàm `pred_and_store()`
 
@@ -43,6 +47,8 @@ Hàm nhận vào:
 * `device` — thiết bị đích (CPU/CUDA).
 
 Trả về: **danh sách dictionary**, mỗi dictionary ứng với một prediction. Cấu trúc "list of dicts" rất thuận tiện để kiểm tra và phân tích dữ liệu sau này.
+
+---
 
 ### 📝 Các bước bên trong vòng lặp
 

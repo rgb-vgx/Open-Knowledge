@@ -1,5 +1,5 @@
 ---
-title: 'Dự đoán và đánh giá model phi tuyến đầu tiên'
+title: 'Bài 90 — Dự đoán và đánh giá model phi tuyến đầu tiên'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 90
@@ -33,6 +33,8 @@ y_preds[:10], y_test[:10]
 
 Hai bên giờ **cùng format**: đều trên **CUDA**, đều là **float**, đều là `0`/`1`. So sánh là so táo với táo. Nhìn nhanh thì phần lớn khớp, có một điểm model đoán sai — chuyện bình thường.
 
+---
+
 ### 🗺️ Vẽ decision boundary: so sánh có và không có non-linearity
 
 ```python
@@ -54,9 +56,13 @@ Hàm `plot_decision_boundary` tự làm prediction trên lưới điểm rồi t
 
 Đây chính là sức mạnh của việc kết hợp **đường thẳng + đường cong** (linear + non-linear functions).
 
+---
+
 ### 🧪 Chưa hoàn hảo — và đó là chỗ luyện tập
 
 Model đạt khoảng **79% accuracy** trên test data. Tốt hơn nhiều, nhưng chưa tới đâu. Nếu để ý, vẫn có vài điểm bị phân loại sai.
+
+---
 
 ### 🎯 Thử thách: vượt mốc 80%
 

@@ -27,6 +27,8 @@ Mặc định `SummaryWriter` lưu vào `log_dir` dạng `runs/current_date_host
 
 Không có cách đặt tên "chuẩn" nào — bao nhiêu experiment thì bấy nhiêu cách track. Đây chỉ là một gợi ý.
 
+---
+
 ### 🧩 Hàm `create_writer`
 
 ```python
@@ -51,6 +53,8 @@ def create_writer(experiment_name: str,
 
 Tham số: `experiment_name` và `model_name` là bắt buộc, `extra` mặc định `None` (có thể bỏ trống).
 
+---
+
 ### 🧪 Thử tạo writer
 
 ```python
@@ -68,13 +72,19 @@ example_writer = create_writer(
 
 Như vậy khi mở TensorBoard, ta có thể lọc theo "5 epochs" hay "data 10%" đều được.
 
+---
+
 ### 🐛 Lỗi nhỏ: quên trả về writer
 
 Ban đầu mình chỉ `return log_dir` (một string), nên chưa phải writer. Sửa lại: import `SummaryWriter` rồi trả về `SummaryWriter(log_dir=log_dir)`. Giờ mới đúng thứ ta cần.
 
+---
+
 ### 🚀 Tiến tới track nhiều experiment
 
 Thấy sức mạnh chưa? Ta đã có cách **programmatic** tạo writer cho từng experiment. Có thể nhét hàm này vào `train` function qua tham số `writer`: mỗi lần gọi `train` sẽ tạo writer mới, lưu vào folder riêng. Thư mục vừa tạo (`runs/2022-06-27/data_10_percent/effnetb0/5_epochs`) đã xuất hiện trong TensorBoard đang mở (dù chưa có file bên trong).
+
+---
 
 ### ✅ Tạm kết và thử thách
 

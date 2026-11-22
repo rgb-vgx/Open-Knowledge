@@ -27,6 +27,8 @@ Việc đầu tiên khi gặp một kiến trúc lạ: xác định cái gì đi
 
 Nhìn vậy là đã map xong input/output — và biết ngay đây là một **classification model**.
 
+---
+
 ### 🔤 Từ khóa cần hiểu: embedding
 
 Trong figure có vài cụm "extra learnable...", "linearly embed...". Quy tắc chung: chỗ nào có **learnable** hay **embedding** thì đó là một **learnable representation** — bắt đầu bằng số ngẫu nhiên rồi được cải thiện dần trong quá trình train. Thay vì ném thẳng giá trị pixel vào transformer encoder, ta biến ảnh thành biểu diễn học được.
@@ -34,6 +36,8 @@ Trong figure có vài cụm "extra learnable...", "linearly embed...". Quy tắc
 **Embedding** là một trong những khái niệm mạnh nhất của machine learning. Định nghĩa gọn: *embedding = learnable representation, khởi tạo ngẫu nhiên và tinh chỉnh dần*.
 
 Paper còn thêm một **class token** học được vào đầu chuỗi: "we use the standard approach of adding an extra learnable classification token to the sequence". Chỗ này sẽ làm rõ khi code.
+
+---
 
 ### 🧱 Các layer bên trong
 
@@ -51,6 +55,8 @@ Ghép layer thành block:
 * **MSA block** — một Norm + multi-head attention.
 * **MLP block** — Norm + MLP.
 * Các block này hợp thành **transformer encoder**, rồi xếp nhiều transformer encoder lên nhau thành **model** hoàn chỉnh.
+
+---
 
 ### 🍕 Chuyển sang Food Vision Mini
 

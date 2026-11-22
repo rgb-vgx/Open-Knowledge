@@ -33,11 +33,15 @@ train_dataloader_vit, test_dataloader_vit, class_names = data_setup.create_datal
 
 `batch_size=32` giữ nguyên — "our trusty old 32". Bạn có thể thử giá trị khác, nhưng đây là mặc định hợp lý.
 
+---
+
 ### ✅ Kiểm tra
 
 * `len(train_dataloader_vit)` — số batch train.
 * `len(test_dataloader_vit)` — số batch test.
 * `class_names` — `['pizza', 'steak', 'sushi']`.
+
+---
 
 ### 🔁 Khác biệt so với bản EffNetB2
 

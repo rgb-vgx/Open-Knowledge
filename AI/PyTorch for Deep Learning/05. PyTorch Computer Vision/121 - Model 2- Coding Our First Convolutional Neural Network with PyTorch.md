@@ -14,7 +14,7 @@ tags: []
 
 > Nguồn: `121 - Model 2- Coding Our First Convolutional Neural Network with PyTorch.md` · [Udemy](https://viettel.udemy.com/course/pytorch-for-deep-learning/learn/lecture/32920350)
 
-Đây là model lớn nhất từ đầu khóa: mình dựng **TinyVGG** — kiến trúc của CNN Explainer — bằng PyTorch thuần. Code xong nguyên model rồi mấy bài sau mới mổ xẻ từng layer. Chuẩn bị tinh thần: sẽ có vài lỗi chính tả và một lỗi shape ở cuối.
+Đây là model lớn nhất từ đầu khóa: mình dựng **TinyVGG** — kiến trúc của CNN Explainer — bằng PyTorch thuần. Code xong nguyên model rồi mấy bài sau mới mổ xẻ từng layer. Chuẩn bị tinh thần: sẽ có vài lỗi chính tả và một lỗi ở cuối vì chưa biết `in_features` của classifier.
 
 ### 🧩 TinyVGG là gì?
 
@@ -25,6 +25,8 @@ Mình chia mạng thành các **convolutional block**:
 * **conv_block_1**: `Conv2d → ReLU → Conv2d → ReLU → MaxPool2d`
 * **conv_block_2**: y hệt block 1
 * **classifier**: `Flatten → Linear`
+
+---
 
 ### 🏗️ Code đầy đủ
 
@@ -77,6 +79,8 @@ class FashionMNISTModelV2(nn.Module):
         return x
 ```
 
+---
+
 ### 🔍 Các hyperparameter của `Conv2d`
 
 * **`in_channels`** — số kênh của input. Layer đầu nhận `input_shape`; các layer sau nhận `out_channels` của layer trước.
@@ -86,6 +90,8 @@ class FashionMNISTModelV2(nn.Module):
 * **`padding`** — thêm viền quanh ảnh.
 
 Đây đều là **hyperparameter** — giá trị bạn tự đặt. Nhớ lại: nối layer thì `out_channels` của layer trước phải bằng `in_channels` của layer sau.
+
+---
 
 ### ⚙️ Khởi tạo
 
@@ -101,15 +107,21 @@ model_2 = FashionMNISTModelV2(
 
 Lưu ý `input_shape=1` — không phải `784`. Với CNN, input vẫn giữ dạng `[C, H, W]`, không flatten trước. Nếu là ảnh màu RGB thì `input_shape=3`.
 
+---
+
 ### 🐛 Lỗi gặp phải (rất đáng học)
 
 Khi chạy, code báo lỗi ngay tại classifier vì `something` chưa có giá trị — Python không thể nhân một biến chưa tồn tại để ra `in_features`. Đây là chỗ khó nhất khi dựng CNN: **không biết output shape của conv block trước khi flatten**. Mình cố tình để vậy và sẽ giải quyết bằng "mẹo" ở bài 124.
 
 Ngoài ra còn một loạt lỗi chính tả kiểu `out channel` thiếu chữ `l`, `colonel size` thay vì `kernel_size`. Sửa xong mới chạy được — đừng lo, ai cũng gặp.
 
+---
+
 ### 💡 Vì sao chép kiến trúc có sẵn?
 
 Đây là thực tế rất phổ biến trong ML: tìm một kiến trúc đã được chứng minh, replicate lại bằng code, rồi thử trên bài của mình. TinyVGG nhỏ, dễ hiểu, phù hợp để học.
+
+---
 
 ### ✅ Tạm kết
 

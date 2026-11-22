@@ -35,9 +35,11 @@ print(confmat_tensor)
 * **`confmat(preds=..., target=...)`** — truyền nhãn dự đoán và nhãn thật. `test_data.targets` là toàn bộ nhãn của test set (PyTorch gọi là "targets", mình hay gọi là "labels").
 * Kết quả là một tensor `10 x 10`.
 
-> ⚠️ Cần kiểm chứng: ở các bản `torchmetrics` mới, constructor còn nhận tham số `task` (ví dụ `ConfusionMatrix(task="multiclass", num_classes=len(class_names))`). Code viết theo bản tại thời điểm quay video; nếu bạn dùng bản mới mà gặp cảnh báo/lỗi, hãy thêm `task="multiclass"`.
+> ⚠️ Cần kiểm chứng: ở các bản `torchmetrics` mới, constructor **yêu cầu** tham số `task` (ví dụ `ConfusionMatrix(task="multiclass", num_classes=len(class_names))`). Code viết theo bản tại thời điểm quay video; nếu bạn dùng bản mới mà gặp lỗi, hãy thêm `task="multiclass"`.
 
 Cách đọc: **hàng** là nhãn thật, **cột** là nhãn dự đoán. Ô `[i, j]` là số mẫu thật lớp `i` bị dự đoán thành lớp `j`.
+
+---
 
 ### 🎨 Vẽ ma trận
 
@@ -53,6 +55,8 @@ fig, ax = plot_confusion_matrix(
 * `class_names` để dán nhãn hàng/cột bằng chữ.
 * `figsize=(10, 7)` — kích thước vừa đẹp trong Colab.
 
+---
+
 ### 📖 Đọc kết quả
 
 **Đường chéo lý tưởng:** nếu model hoàn hảo, toàn bộ số liệu nằm trên đường chéo, các ô còn lại bằng 0. Ở đây đường chéo rất đậm — model khá tốt — nhưng vẫn có ô lệch đáng chú ý.
@@ -64,6 +68,8 @@ Các nhầm lẫn nổi bật:
 * **Pullover ↔ Coat / Shirt** — nhầm giữa các loại áo khoác/áo dài tay.
 * **Sneaker ↔ Ankle boot** — nhầm hai loại giày.
 
+---
+
 ### 🧠 Những nhầm lẫn này có "hợp lý" không?
 
 Phần lớn là **hợp lý về mặt thị giác**: áo khoác và áo pullover trông giống nhau, sneaker và ankle boot đều là giày. Model nhầm ở chỗ người cũng có thể nhầm.
@@ -73,15 +79,21 @@ Phần lớn là **hợp lý về mặt thị giác**: áo khoác và áo pullov
 * Nhãn có thể cần **gộp** hoặc định nghĩa rõ hơn.
 * Hoặc chấp nhận rằng đây là giới hạn của bài toán ảnh xám 28x28.
 
+---
+
 ### 🔬 Confusion matrix dùng để làm gì?
 
 * Không chỉ biết "sai bao nhiêu %", mà biết **sai kiểu gì**.
 * Phát hiện nhóm lớp dễ nhầm → ưu tiên cải thiện (thêm dữ liệu, đổi kiến trúc).
 * Kiểm tra xem lỗi có "hợp lý" không, hay model đang học sai hoàn toàn.
 
+---
+
 ### 📚 Muốn thêm metric?
 
 Ngoài confusion matrix, `torchmetrics` còn precision, recall, F1… — rất đáng đọc qua, nhất là khi làm bài toán mà accuracy không đủ (ví dụ dữ liệu mất cân bằng).
+
+---
 
 ### ✅ Tạm kết
 

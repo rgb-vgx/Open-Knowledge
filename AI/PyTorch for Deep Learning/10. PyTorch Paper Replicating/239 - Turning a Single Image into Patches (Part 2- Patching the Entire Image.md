@@ -35,6 +35,8 @@ Total patches: 196 (14 x 14)
 
 196 patch, khớp đúng con số `N` đã tính bằng tay. Mỗi patch là **16 × 16 pixel**.
 
+---
+
 ### 🖼️ Tạo lưới subplot 14 × 14
 
 Lần này cần **cả chiều cao lẫn chiều rộng**:
@@ -48,6 +50,8 @@ fig, ax = plt.subplots(nrows=image_size // patch_size,
 ```
 
 Vì có tới **196 subplot**, việc vẽ khá nặng CPU — trên Colab mất khoảng **40 giây**. Đây chỉ là code visualize, không phải code chạy trong model.
+
+---
 
 ### 🔁 Hai vòng lặp lồng nhau
 
@@ -74,6 +78,8 @@ plt.show()
 Mấy tham số `rotation`, `va`, `label_outer` là mình phải mò trong **Matplotlib docs** khá lâu mới ra — không tự nhiên mà biết được.
 
 Kết quả: ảnh được "patchified" — 14 hàng × 14 cột, mỗi ô là một mẩu ảnh.
+
+---
 
 ### ⚡ Vấn đề: code này quá chậm
 

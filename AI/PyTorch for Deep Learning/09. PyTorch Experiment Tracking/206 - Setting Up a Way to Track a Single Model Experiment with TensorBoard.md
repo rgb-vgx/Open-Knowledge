@@ -27,6 +27,8 @@ optimizer = torch.optim.Adam(params=model.parameters(), lr=0.001)
 
 Dùng cross entropy vì là phân loại đa lớp, Adam với learning rate `0.001` cho nhất quán.
 
+---
+
 ### 🖊️ SummaryWriter là gì?
 
 Nếu bạn đã thử thách bài trước, bạn sẽ thấy ta dùng được một **SummaryWriter**. Có thể hình dung nó như "ghi lại bản tóm tắt" những tham số bạn truyền vào.
@@ -38,6 +40,8 @@ writer = SummaryWriter()
 ```
 
 Khởi tạo xong không in gì cả. Mở tài liệu `SummaryWriter` ra thì rõ: mọi chi tiết về TensorBoard nằm ở **tensorflow.org/tensorboard**. Đây là website của TensorFlow — một framework deep learning khác, khá giống PyTorch — và TensorBoard là **visualization toolkit** của nó.
+
+---
 
 ### 🔍 TensorBoard làm được gì?
 
@@ -51,9 +55,13 @@ Theo tài liệu: TensorBoard cung cấp khả năng visualize và tooling cho t
 
 Điểm quan trọng: tất cả đều **có tài liệu chính thức**, ta chỉ đang thực hành bằng code.
 
+---
+
 ### 📁 SummaryWriter ghi đi đâu?
 
 Tài liệu nói: *SummaryWriter ghi các entry trực tiếp vào **event file** trong `log_dir` để TensorBoard đọc.* Tức writer giúp ta lưu metric ra file để TensorBoard dùng. Mặc định nó lưu vào thư mục dạng `runs/current_date_time_hostname` (hostname là tên máy). Sau này có thể đổi bằng `log_dir=...`, nhưng giờ để mặc định.
+
+---
 
 ### 🔧 Rút `train` function ra để sửa
 
@@ -75,6 +83,8 @@ writer.add_scalars(main_tag="Accuracy",
 
 `add_scalars` để ghi **nhiều scalar** một lúc (scalar = một con số đơn lẻ) — đúng với loss/accuracy. Writer còn có `add_histogram`, `add_image`, `add_images`... nhưng ta tập trung scalar. `global_step=epoch` để giá trị được ghi theo từng epoch.
 
+---
+
 ### 🕸️ Ghi cả model graph
 
 ```python
@@ -84,6 +94,8 @@ writer.close()
 ```
 
 `add_graph` chạy một forward pass với tensor random để ta xem được luồng tính toán qua model. Cuối cùng `writer.close()` báo writer không track gì nữa.
+
+---
 
 ### ✅ Tạm kết
 

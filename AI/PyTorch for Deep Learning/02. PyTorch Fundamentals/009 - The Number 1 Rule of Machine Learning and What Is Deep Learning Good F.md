@@ -20,6 +20,8 @@ Bài trước mình nhắc tới **rule số 1 của machine learning**: nếu k
 
 Với tinh thần đó, câu hỏi trở thành: chúng ta nên tìm đến machine learning hay deep learning trong trường hợp nào?
 
+---
+
 ### 🧩 Ba loại bài toán deep learning xử lý tốt
 
 **1. Bài toán có danh sách luật dài.** Cách truyền thống là có data input, viết danh sách luật để biến đổi data, rồi ra output. Nhưng nếu danh sách luật dài hàng trăm, hàng nghìn, thậm chí hàng triệu — như luật lái xe — thì ML/deep learning có thể giúp. Hiện nay, với xe tự lái, đây đang là cách tiếp cận **state of the art**.
@@ -34,6 +36,8 @@ Lấy một món thôi: làm sao viết chương trình nhận ra **quả chuố
 
 Tóm lại, deep learning giỏi với: **bài toán nhiều luật**, **môi trường thay đổi liên tục**, và **khám phá insight trong tập dữ liệu lớn**.
 
+---
+
 ### 🚫 Khi nào deep learning không phù hợp
 
 Mình sẽ nói "thường là" (typically) vì mọi thứ còn tùy bài toán, và deep learning mạnh lên rất nhanh — biết đâu tương lai sẽ khác. Các bạn cứ giữ đầu óc mở.
@@ -43,11 +47,15 @@ Mình sẽ nói "thường là" (typically) vì mọi thứ còn tùy bài toán
 * **Khi sai số là không thể chấp nhận.** Output của model deep learning không phải lúc nào cũng đoán trước được — chúng có tính **probabilistic**, tức mỗi dự đoán là một "cược" xác suất. Với hệ rule-based, bạn biết chắc output mỗi lần. Nếu không thể chấp nhận sai số xác suất, hãy quay về hệ rule-based.
 * **Khi không có nhiều dữ liệu.** Model deep learning thường cần khá nhiều data để cho kết quả tốt.
 
+---
+
 ### 🩹 Vài lưu ý cho các ngoại lệ
 
 Đúng là có những kỹ thuật giúp kết quả tốt mà không cần data khổng lồ — các bạn có thể tìm hiểu về **deep learning explainability**. Hay khi cần tái lập, có cách làm model **reproducible** để biết chắc output, và chúng ta sẽ làm nhiều bài test để kiểm chứng.
 
 Vì vậy mình mới viết "typically" — mọi thứ còn tùy bài toán.
+
+---
 
 ### 🔜 Tiếp theo
 

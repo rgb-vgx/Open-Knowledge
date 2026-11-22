@@ -1,5 +1,5 @@
 ---
-title: 'Tự viết lại các hàm non-linear activation bằng PyTorch thuần'
+title: 'Bài 91 — Tự viết lại các hàm non-linear activation bằng PyTorch thuần'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 91
@@ -29,6 +29,8 @@ Một chi tiết thú vị: nếu bỏ `dtype=torch.float32`, tensor sẽ là **
 
 Vẽ `A` ra: đó là một **đường thẳng** từ -10 đến 10. Linear thì ra đường thẳng — dễ hiểu.
 
+---
+
 ### 🔦 ReLU: `max(0, x)`
 
 ```python
@@ -49,6 +51,8 @@ plt.plot(relu(A))           # ReLU tự viết
 ```
 
 Hai đường trùng khít — **replicate thành công**. Và để thấy rõ tác dụng: `A` có giá trị âm, sau ReLU tất cả thành 0; phần dương giữ nguyên.
+
+---
 
 ### 🌀 Sigmoid: `1 / (1 + e^(-x))`
 
@@ -72,6 +76,8 @@ plt.plot(sigmoid(A))
 
 Hai đường **cong trùng nhau** — lại replicate đúng. `torch.sigmoid` về bản chất chỉ là công thức kia được tối ưu.
 
+---
+
 ### 🧱 Vậy là mình đã tự dựng model từ đầu
 
 Tính đến giờ mình đã tự viết lại:
@@ -81,6 +87,8 @@ Tính đến giờ mình đã tự viết lại:
 * **Sigmoid** — non-linearity.
 
 Tức là về lý thuyết, có thể viết **toàn bộ model** từ đầu bằng tay. Nhưng dùng layer của PyTorch dễ hơn nhiều, lại giống **xếp Lego**: ghép các layer có sẵn. Chúng đã được **kiểm thử lỗi**, tính toán **nhanh nhất có thể**, tận dụng **GPU** — rất nhiều lợi ích.
+
+---
 
 ### 🎬 Điều model thực sự làm
 

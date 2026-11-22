@@ -20,6 +20,8 @@ Chào các bạn. Dataset đã có, giờ biến thành `DataLoader` để đưa
 
 Hàm cũ nhận đường dẫn thư mục rồi tự dựng `ImageFolder`. Ở đây `train_data_food101_20_percent` đã là một `Dataset` (thực chất là `Subset`), nên chỉ cần `torch.utils.data.DataLoader` trực tiếp.
 
+---
+
 ### 📦 Cấu hình chung
 
 ```python
@@ -29,6 +31,8 @@ import torch
 BATCH_SIZE = 32
 NUM_WORKERS = 2
 ```
+
+---
 
 ### 🚂 DataLoader cho train
 
@@ -43,6 +47,8 @@ train_dataloader_food101_20_percent = torch.utils.data.DataLoader(
 
 Với tập train, `shuffle=True` để model không học theo thứ tự cố định.
 
+---
+
 ### 🧪 DataLoader cho test
 
 ```python
@@ -56,6 +62,8 @@ test_dataloader_food101_20_percent = torch.utils.data.DataLoader(
 
 Tập test **không cần shuffle** vì chỉ dùng để đánh giá.
 
+---
+
 ### ⚙️ `num_workers` — tham số rất "experimental"
 
 `num_workers` quyết định số tiến trình con dùng để load dữ liệu. Theo tài liệu PyTorch:
@@ -66,6 +74,8 @@ Tập test **không cần shuffle** vì chỉ dùng để đánh giá.
 Mình hay set bằng **số CPU** (ở đây là 2). Kinh nghiệm chung: 2–4 là hợp lý; vượt 4 thì lợi ích giảm dần (diminishing returns) và phụ thuộc mạnh vào phần cứng. Đây cũng là lý do mình đặt biến `NUM_WORKERS` riêng để dễ chỉnh.
 
 Nếu gặp lỗi **CPU memory**, một trong những cách xử lý là **giảm `batch_size`** (ví dụ chia đôi).
+
+---
 
 ### 🔢 Kiểm tra số batch
 

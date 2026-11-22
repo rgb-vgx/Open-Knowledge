@@ -1,5 +1,5 @@
 ---
-title: 'Lên các bước modelling và dựng code device-agnostic'
+title: 'Bài 73 — Lên các bước modelling và dựng code device-agnostic'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 73
@@ -27,6 +27,8 @@ Trước khi gõ, mình phác ra giấy cho rõ:
 
 Ba bước cuối khớp với workflow tổng quát: chọn/xây model phù hợp bài toán, chọn loss function và optimizer, rồi xây training loop.
 
+---
+
 ### 🔌 Device-agnostic code
 
 ```python
@@ -43,6 +45,8 @@ Mặc định — khi không có GPU — mọi code PyTorch sẽ chạy trên **
 Mình đang chạy trên Colab nên bật GPU bằng **Runtime → Change runtime type → GPU → Save**. Runtime sẽ khởi động lại và kết nối lại. Vì đã reset, phải **Run all** (hoặc **Run before**) để chạy lại các cell phía trên — nếu không `X_train` sẽ chưa được định nghĩa.
 
 Sau khi chạy lại, `device` ra `"cuda"` và dữ liệu đã sẵn sàng.
+
+---
 
 ### 💡 Vì sao phải device-agnostic?
 

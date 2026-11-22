@@ -93,7 +93,7 @@ for epoch in range(epochs):
 ### 📊 Kết quả sau 100 epoch
 
 * Loss giảm đều qua từng mốc 10, 20, 30... epoch.
-* Sau 100 epoch, loss còn khoảng **1/3** so với ban đầu.
+* Sau 100 epoch, loss đã giảm từ khoảng **0.31** lúc bắt đầu xuống còn khoảng **0.03**.
 * `weight ≈ 0.562`, `bias ≈ 0.357` — đã tiến rất gần `0.7` và `0.3`.
 * Dự đoán mới: chấm đỏ gần như phủ lên chấm xanh lá.
 

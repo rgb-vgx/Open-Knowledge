@@ -23,6 +23,8 @@ Input là ảnh món ăn. Output gồm hai phần:
 * Một **dictionary** tên lớp → xác suất, ví dụ steak `0.61`, sushi `0.30`, pizza `0.09`. Định dạng này để Gradio tự vẽ thanh xác suất cho đẹp.
 * **Prediction time** — thời gian model dự đoán, vì tiêu chí của Food Vision Mini là model phải **nhanh**.
 
+---
+
 ### ⏱️ Bắt đầu timer và transform ảnh
 
 Đầu tiên khởi động bộ đếm:
@@ -39,6 +41,8 @@ img = effnetb2_transforms(img).unsqueeze(0)
 
 Đây là bước dễ sai nhất — thiếu batch dimension là model báo lỗi shape ngay.
 
+---
+
 ### 🧠 Chạy inference và chuyển sang xác suất
 
 Chuyển model sang chế độ eval, tắt gradient bằng `torch.inference_mode()`, rồi đưa ảnh qua model. Output thô là logits, nên mình bọc thêm `torch.softmax(..., dim=1)` để biến thành xác suất trên **chiều 1** (chiều của các lớp):
@@ -48,6 +52,8 @@ effnetb2.eval()
 with torch.inference_mode():
     pred_probs = torch.softmax(effnetb2(img), dim=1)
 ```
+
+---
 
 ### 📊 Đổ xác suất vào dictionary tên lớp
 
@@ -66,6 +72,8 @@ Với mỗi ảnh, `pred_probs[0]` là vector xác suất của ba lớp pizza, 
 pred_time = round(timer() - start_time, 4)
 return pred_labels_and_probs, pred_time
 ```
+
+---
 
 ### 🔍 Thử với ảnh ngẫu nhiên trong test set
 

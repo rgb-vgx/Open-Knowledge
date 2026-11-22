@@ -40,6 +40,8 @@ long_tensor * float_32_tensor
 
 Vậy là PyTorch "dễ tính" hơn mình tưởng. Nhưng cứ nhớ: khi train model thật, rất có thể các bạn sẽ đụng lỗi sai data type — và giờ thì đã biết cách đổi `dtype`.
 
+---
+
 ### 🧭 Ba câu hỏi để chẩn đoán mọi tensor
 
 Với ba lỗi lớn, ta cần trả lời ba câu hỏi:
@@ -55,6 +57,8 @@ tensor.dtype     # data type
 tensor.shape     # shape
 tensor.device    # device
 ```
+
+---
 
 ### 📐 `shape` (thuộc tính) vs `size()` (hàm)
 
@@ -74,6 +78,8 @@ Cả hai cho cùng kết quả. Khác biệt:
 
 Mình quen dùng `shape` hơn, nhưng các bạn sẽ gặp cả `size()` trong code người khác.
 
+---
+
 ### 🧪 Ví dụ đầy đủ
 
 ```python
@@ -91,6 +97,8 @@ Kết quả:
 * **Device**: `cpu` — mặc định, trừ khi ta chỉ định khác.
 
 Mọi tensor tạo ra đều nằm trên **CPU** cho đến khi bạn chủ động đưa lên GPU — cách làm sẽ học ở phần sau.
+
+---
 
 ### 🎯 Bài tập
 

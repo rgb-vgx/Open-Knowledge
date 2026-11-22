@@ -33,11 +33,15 @@ Các ký hiệu:
 
 Giống quy ước thường gặp: chữ thường thường là **vector**, chữ hoa thường là **matrix** — dù trong paper này cách đặt tên hơi lẫn lộn, nên cứ hiểu `x` là ảnh input.
 
+---
+
 ### 🧩 Phương trình 1: patch embeddings
 
 Đoạn text nói tiếp: transformer dùng **constant latent vector size `D`** xuyên suốt các layer. Ta flatten các patch rồi map sang `D` chiều bằng một **trainable linear projection**. Theo đúng nghĩa đen: "trainable linear projection" = **learnable embedding**.
 
 Output của projection này gọi là **Patch embeddings** — và đó chính là nội dung **Equation 1**. Sau đó còn cộng thêm **position embedding** và **class token embedding** (sẽ làm sau).
+
+---
 
 ### 🧠 Phương trình 2 và 3: transformer encoder
 
@@ -47,6 +51,8 @@ Transformer encoder (Vaswani et al., 2017 — paper *Attention Is All You Need*)
 * **MLP** block.
 
 Đây là nội dung **Equation 2** và **Equation 3**. Thêm một chi tiết quan trọng từ text: **layer norm áp trước mỗi block, residual connection sau mỗi block**.
+
+---
 
 ### 🛠️ Mẹo: đưa text paper vào notebook bằng Mathpix
 

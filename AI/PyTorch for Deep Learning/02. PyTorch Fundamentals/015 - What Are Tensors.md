@@ -32,6 +32,8 @@ Nguyên lý vẫn vậy:
 
 Và dạng số ở bước 2 và 4 chính là **tensor**.
 
+---
+
 ### 🧩 Tensor có thể là gần như bất cứ thứ gì
 
 Câu trả lời ngắn gọn: **một tensor có thể là gần như bất kỳ cách biểu diễn số nào**.
@@ -40,6 +42,8 @@ Câu trả lời ngắn gọn: **một tensor có thể là gần như bất k�
 
 Điểm cần nhớ: bạn có input data, bạn **numerically encode** nó thành một tensor — loại tensor tùy thuộc bài toán. Rồi bạn đưa tensor đó vào neural network, mạng thực hiện các phép toán trên tensor.
 
+---
+
 ### ⚙️ PyTorch lo phần toán phía sau
 
 Rất nhiều phép toán trong số đó được PyTorch xử lý ngầm. Chúng ta viết code để thực thi các phép toán trên tensor, còn phần tính toán phức tạp thì framework lo.
@@ -47,6 +51,8 @@ Rất nhiều phép toán trong số đó được PyTorch xử lý ngầm. Chú
 Sau đó, mạng neural — do bạn tự xây hoặc lấy sẵn để dùng cho bài toán của mình — **xuất ra một tensor khác**. Tensor này giống input về bản chất, nhưng đã được biến đổi theo cách ta lập trình.
 
 Cuối cùng, ta lấy output tensor và chuyển thành thứ con người hiểu được.
+
+---
 
 ### 🍜 Ví dụ: phân loại ramen hay spaghetti
 
@@ -59,6 +65,8 @@ Làm bài toán phân loại ảnh, cụ thể là phân biệt ảnh **ramen** 
 * Chuyển tensor đó thành kết quả con người đọc được: đây là ramen hay spaghetti.
 
 Nguyên lý không đổi dù quy mô lớn đến đâu: **encode dữ liệu thành tensor → đưa vào mạng → nhận tensor ra → diễn giải**.
+
+---
 
 ### 🎯 Chốt lại
 

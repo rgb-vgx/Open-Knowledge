@@ -25,6 +25,8 @@ Transformer encoder là các layer xen kẽ:
 
 Giữa mỗi MSA và MLP là một **layer norm**, áp **trước** mỗi block. Trong PyTorch có sẵn `nn.LayerNorm` và `nn.MultiheadAttention` — đây là gợi ý cho code sau này. Ngoài ra, mỗi block còn có **residual connection** (còn gọi là **skip connection**), chính là các dấu `+` trong figure.
 
+---
+
 ### ➕ Residual connection là gì?
 
 Với MSA block: input `z` vừa đi qua Norm + MSA, vừa có một nhánh tắt (skip) cộng thẳng vào output. Viết theo ký hiệu paper:
@@ -35,6 +37,8 @@ output = MSA(LN(input)) + input
 
 Ý tưởng: khi xếp nhiều layer, các con số có thể teo nhỏ dần và mất ổn định số học. Cộng input vào output giúp giữ lại tín hiệu gốc, tránh **gradient/loss** bùng nổ hoặc biến mất. Định nghĩa chính thống nói residual connection giúp layer học **residual function** so với input thay vì học hàm từ đầu — nếu identity mapping là tối ưu thì đẩy residual về 0 dễ hơn là fit nguyên một identity qua chồng layer phi tuyến.
 
+---
+
 ### 📐 Equation 2: MSA block
 
 Equation 2 = một Norm + multi-head self-attention + residual, gói lại thành:
@@ -42,6 +46,8 @@ Equation 2 = một Norm + multi-head self-attention + residual, gói lại thàn
 ```text
 z'_ℓ = MSA(LN(z_{ℓ-1})) + z_{ℓ-1}
 ```
+
+---
 
 ### 📐 Equation 3: MLP block
 
@@ -60,6 +66,8 @@ x_output = MSA(LN(x_input)) + x_input
 # Equation 3
 x_output = MLP(LN(x_output)) + x_output
 ```
+
+---
 
 ### 📚 Muốn đào sâu
 

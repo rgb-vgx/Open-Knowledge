@@ -25,6 +25,8 @@ Mình bắt đầu từ **trường hợp lý tưởng nhất** rồi làm ngư�
 
 Tất nhiên, thế giới model xác suất thì "luôn đúng" gần như không thể. Nhưng đặt ra mục tiêu lý tưởng trước giúp bạn biết mình đang cố đạt tới đâu.
 
+---
+
 ### 📍 Câu 2 — Model sẽ đi đâu: on-device hay cloud?
 
 Đây là câu hỏi về **nơi model chạy**.
@@ -33,6 +35,8 @@ Tất nhiên, thế giới model xác suất thì "luôn đúng" gần như khô
 * **Cloud** — model chạy trên một máy tính *không phải* thiết bị của bạn. Cloud là tập hợp server trong các data center trên khắp thế giới, truy cập qua Internet; chuyển lên cloud có thể giúp công ty tiết kiệm tiền và tiện cho người dùng hơn.
 
 Hai lựa chọn này không loại trừ nhau. Model on-device thường nhỏ vì điện thoại không nhiều compute; nếu nó chạy không tốt, có thể fallback sang model trên cloud — nơi gần như có compute vô hạn.
+
+---
 
 ### ⚡ Câu 3 — Model sẽ hoạt động thế nào: online hay offline?
 

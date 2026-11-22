@@ -36,9 +36,13 @@ results = train(model=model,
 
 Model là EfficientNet-B0 feature extractor, train trong **5 epoch**.
 
+---
+
 ### 🚀 Chạy và xem kết quả
 
 Ba... hai... một... chạy! Kết quả khá tốt với feature extractor: **85% test accuracy**. Nhìn vào thư mục `runs/` thấy xuất hiện các mục `Train Accuracy`, `Train Loss`, `Test Loss`... Nhưng này, có gì đó sai.
+
+---
 
 ### 🐛 Bắt lỗi tag trùng tên
 
@@ -51,9 +55,13 @@ Chạy lại xong, refresh thư mục, ta thấy đúng bốn mục:
 
 Kết quả cuối cùng đạt gần **88% accuracy**. Rất ổn.
 
+---
+
 ### 🎥 Bước tiếp theo: xem event file thế nào?
 
 Trong thư mục `runs/` giờ có các **event file**. Thử thách cho bạn trước video sau: tìm cách **xem các file này bằng TensorBoard ngay trong notebook**. Vì đang dùng Google Colab (bạn có thể dùng môi trường khác), hãy search "how to view tensorboard experiments in a colab notebook" — có tài liệu tốt hướng dẫn.
+
+---
 
 ### ✅ Tạm kết
 

@@ -30,6 +30,8 @@ image_out_of_conv.requires_grad
 
 Nếu `True`, PyTorch đang track gradient — nghĩa là các giá trị này sẽ được cập nhật khi gọi `optimizer.step()` trong vòng train, dần trở thành biểu diễn tốt hơn cho ảnh.
 
+---
+
 ### 🎲 Visualize vài feature map ngẫu nhiên
 
 Có 768 feature map 14×14, không thể vẽ hết. Chọn ngẫu nhiên 5 cái:
@@ -49,6 +51,8 @@ for i, index in enumerate(random_indexes):
     ax[i].set(xticklabels=[], yticklabels=[], xticks=[], yticks=[])
 ```
 
+---
+
 ### ⚠️ Lỗi gặp phải: tensor requires grad
 
 Lần đầu mình quên `detach()` và gặp lỗi:
@@ -63,13 +67,19 @@ Giải thích: tensor có `requires_grad=True` không thể chuyển thẳng san
 * `detach()` — rời khỏi grad tracking.
 * `.numpy()` — chuyển sang NumPy cho Matplotlib.
 
+---
+
 ### 🍕 Feature map trông thế nào
 
 Ban đầu các feature map trông như "nothingness" — toàn nhiễu. Nhưng nhìn kỹ có thể thấy vài đường viền mờ của chiếc pizza. Đó là vì trọng số conv **khởi tạo ngẫu nhiên**; qua quá trình train, chúng sẽ dần học ra nét có ý nghĩa. Ta không cần tự hiểu từng feature map — máy sẽ tự tìm ra biểu diễn phù hợp.
 
+---
+
 ### 🪜 Bước còn lại: flatten
 
 Hai chiều cuối `14 × 14` cần gộp thành một chiều **196**, để có sequence như transformer cần. Paper nói: "the input sequence is obtained by simply flattening the spatial dimensions of the feature map". Dùng **`torch.flatten`**.
+
+---
 
 ### 🏋️ Thử thách
 

@@ -25,6 +25,8 @@ Nếu `Conv2d` học feature, thì `MaxPool2d` **nén** feature đó lại. Bài
 
 Công thức đơn giản: với mỗi ô `kernel_size x kernel_size`, lấy **giá trị lớn nhất**.
 
+---
+
 ### 🧪 Thử ngay với dữ liệu giả
 
 ```python
@@ -46,7 +48,9 @@ print(test_image_through_conv_and_max_pool.shape)
 # torch.Size([1, 10, 31, 31])
 ```
 
-Với `kernel_size=2`, mỗi chiều **giảm một nửa** (làm tròn xuống). Nếu đổi conv sang `padding=0`, output conv là `62x62`, rồi max pool còn `31x31`. Nếu conv giữ `padding=1` cho ra `64x64`, max pool sẽ còn `32x32`. Xu hướng luôn là **nhỏ dần**.
+Với `kernel_size=2`, mỗi chiều **giảm một nửa** (làm tròn xuống). Với cấu hình conv `padding=0` ở trên, output conv là `62x62`, rồi max pool còn `31x31`. Nếu conv để `padding=1` cho ra `64x64`, max pool sẽ còn `32x32`. Xu hướng luôn là **nhỏ dần**.
+
+---
 
 ### 🔬 Ví dụ "nhìn thấy được"
 
@@ -71,6 +75,8 @@ print(max_pool_tensor.shape)
 
 Bốn số `0.3367, 0.1288, 0.2345, 0.2303`. Max là `0.3367`, và output chỉ còn đúng một số đó. Shape từ `2x2` xuống `1x1`.
 
+---
+
 ### 🧠 Vì sao lại nén?
 
 Câu trả lời hay nhất: **intelligence is compression**. Mạng nơ-ron cố biểu diễn dữ liệu trong một **không gian vector nhỏ hơn** nhưng vẫn giữ được pattern quan trọng để dự đoán dữ liệu mới.
@@ -79,6 +85,8 @@ Câu trả lời hay nhất: **intelligence is compression**. Mạng nơ-ron c�
 
 Nếu tăng `kernel_size=4`, output chia cho 4 — nén mạnh hơn nữa. Có hiệu quả hay không thì phải thử; đó là bản chất thực nghiệm của ML.
 
+---
+
 ### 🔗 Ghép lại: 3 lớp, 3 vai
 
 * **Conv2d** — học feature từ ảnh.
@@ -86,6 +94,8 @@ Nếu tăng `kernel_size=4`, output chia cho 4 — nén mạnh hơn nữa. Có h
 * **MaxPool2d** — nén feature, giữ lại phần quan trọng nhất.
 
 Lặp lại bộ ba này nhiều lần theo chiều sâu là ra một CNN.
+
+---
 
 ### ✅ Tạm kết
 

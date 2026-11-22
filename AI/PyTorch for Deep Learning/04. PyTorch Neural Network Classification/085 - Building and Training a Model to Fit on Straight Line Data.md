@@ -1,5 +1,5 @@
 ---
-title: 'Dựng và train model để fit dữ liệu đường thẳng'
+title: 'Bài 85 — Dựng và train model để fit dữ liệu đường thẳng'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 85
@@ -33,6 +33,8 @@ model_2
 
 Chỉ đổi mỗi `in_features=1` (vì `X_train_regression` có 1 feature), `out_features` vẫn là **1** để ra một con số dự đoán. Giữa hai lớp có **10 → 10** cho khớp shape. `nn.Sequential` đơn giản là đẩy dữ liệu qua từng lớp theo thứ tự — mỗi lớp tự gọi `forward` nội bộ của nó (với `nn.Linear` là phép linear transformation).
 
+---
+
 ### ⚖️ Loss và optimizer cho regression
 
 ```python
@@ -45,6 +47,8 @@ optimizer = torch.optim.SGD(params=model_2.parameters(),
 ```
 
 Khác biệt so với classification: dùng **`nn.L1Loss`** (mean absolute error) vì đây là **regression** — dự đoán một con số, không phải một class. Optimizer vẫn là **SGD**, `lr=0.1`.
+
+---
 
 ### 🏋️ Loop train/test
 
@@ -84,6 +88,8 @@ So với loop classification, điểm khác:
 * `loss_fn(y_pred, y_train)` — ở đây prediction đã là output cuối, không cần logits vì `L1Loss` không đòi hỏi gì đặc biệt.
 
 Một loop optimization gói gọn trong chục dòng — trước đây mình mất cả một buổi để viết lần đầu.
+
+---
 
 ### 📉 Loss đi xuống — model học được!
 

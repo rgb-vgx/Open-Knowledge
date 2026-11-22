@@ -27,6 +27,8 @@ Trang **pytorch.org** là nơi các bạn nên ghé thăm nhiều nhất trong s
 
 Mỗi khi viết code PyTorch, hãy quay lại đây đọc tài liệu và xem ví dụ.
 
+---
+
 ### 🧰 PyTorch là gì?
 
 PyTorch là **framework deep learning phổ biến nhất cho nghiên cứu**, cho phép các bạn viết code deep learning nhanh bằng **Python**. Nếu đã biết Python — một ngôn ngữ rất thân thiện — các bạn có thể viết code deep learning tân tiến, được **tăng tốc bằng GPU**, ngay bằng Python.
@@ -39,6 +41,8 @@ Những gì PyTorch mang lại:
 
 PyTorch ban đầu được thiết kế và dùng nội bộ bởi **Facebook/Meta**. Giờ nó là **open source** và được dùng bởi Tesla, Microsoft, OpenAI...
 
+---
+
 ### 📊 Bằng chứng: 58% paper dùng PyTorch
 
 Đừng chỉ nghe mình nói. Hãy xem **paperswithcode.com/trends** — trang theo dõi các paper machine learning mới nhất và xem chúng có kèm code hay không.
@@ -48,6 +52,8 @@ Trên trang này, các framework khác như **TensorFlow**, **JAX**, **PaddlePad
 Con số này đáng kinh ngạc: trong khoảng **65.000 paper có code** mà trang theo dõi, 58% được triển khai bằng PyTorch. Đó là framework phổ biến nhất để viết code cho các thuật toán machine learning tân tiến nhất.
 
 Papers with Code là một trong những tài nguyên mình thích nhất để cập nhật xu hướng ngành — nó bao phủ semantic segmentation, image classification, object detection, image generation, computer vision, NLP, y tế... Các bạn cứ tự khám phá nhé.
+
+---
 
 ### 🚀 Vì sao PyTorch?
 
@@ -60,6 +66,8 @@ Ngoài chuyện là "con cưng" của giới nghiên cứu, còn vài lý do r�
 * **Microsoft** cũng tham gia rất mạnh.
 
 Nếu chừng đó vẫn chưa đủ, có lẽ các bạn đang ở sai khóa học rồi (mình đùa thôi!).
+
+---
 
 ### ⚡ GPU, CUDA và TPU
 

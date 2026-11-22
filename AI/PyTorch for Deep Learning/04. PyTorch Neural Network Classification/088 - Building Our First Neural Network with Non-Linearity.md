@@ -1,5 +1,5 @@
 ---
-title: 'Xây neural network đầu tiên có non-linearity'
+title: 'Bài 88 — Xây neural network đầu tiên có non-linearity'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 88
@@ -22,6 +22,8 @@ Sẵn sàng chưa? Giờ mình thêm mảnh ghép "phép thuật" — **non-line
 
 Về lý thuyết, hidden layer có thể là **gần như bất kỳ tổ hợp** các module trong `torch.nn` — thậm chí bất kỳ hàm nào các bạn nghĩ ra; chỉ có điều nó có học được không thôi.
 
+---
+
 ### 🔦 ReLU: đơn giản mà hiệu quả
 
 **ReLU** — *rectified linear unit* — làm đúng một việc **theo từng phần tử** (element-wise):
@@ -30,6 +32,8 @@ Về lý thuyết, hidden layer có thể là **gần như bất kỳ tổ hợp
 * Input **dương** → giữ nguyên.
 
 Trông như hai đoạn thẳng ghép lại, nhưng kết quả không phải một đường thẳng — nên đây là **non-linear activation**. Mình không phải tự code: chỉ cần `nn.ReLU()`. Về cơ bản không thể đơn giản hơn.
+
+---
 
 ### 🏗️ `CircleModelV2`
 
@@ -60,7 +64,11 @@ Vì sao không đặt ReLU ở cuối? Vì output cuối là **logits**, muốn 
 
 Với **2 hidden layer × 10 hidden unit** và ReLU chen giữa, model giờ có sức mạnh vẽ **đường cong** — khác hẳn mấy cái "chỉ đường thẳng" trước đó.
 
+---
+
 ### 🎯 Thử thách kép
 
 1. Tự viết **training code** cho `model_3` trên dữ liệu vòng tròn và xem nó có học được không (mình sẽ làm cùng nhau ở các bài sau).
 2. Lên **TensorFlow Playground**, dựng lại mạng tương tự: **2 hidden layer**, đổi activation từ **Linear** sang **ReLU**, learning rate **0.1**, rồi bấm Play. Nhìn xem các đường ranh giới uốn cong thế nào.
+
+> ⚠️ Cần kiểm chứng: transcript nhắc cả learning rate **0.01** và **0.1** cho TensorFlow Playground; bài giữ **0.1** theo câu "we've been using 0.1, so we'll leave that".

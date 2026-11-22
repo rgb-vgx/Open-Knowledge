@@ -20,11 +20,15 @@ Chào các bạn. Còn đúng một file để hoàn tất thư mục demo: `req
 
 Khi build app, Spaces sẽ cài các thư viện trong `requirements.txt`. Môi trường mặc định không chắc có sẵn `torch`, `torchvision`, `gradio`, nên phải khai báo tường minh.
 
+---
+
 ### 📦 Ba dependency chính
 
 * **`torch`** — core PyTorch.
 * **`torchvision`** — model pretrained và transforms.
 * **`gradio`** — framework giao diện.
+
+---
 
 ### ✍️ Ghi file kèm phiên bản
 
@@ -46,6 +50,8 @@ print(torch.__version__, torchvision.__version__, gradio.__version__)
 
 `torch 1.12.0` đi với `torchvision 0.13.0` là cặp tương thích. `gradio 3.1.4` là bản mà demo đã chạy ổn — Gradio ra bản mới khá nhanh, nên ghim lại cho chắc.
 
+---
+
 ### ✅ Checklist thư mục
 
 ```text
@@ -58,6 +64,8 @@ demos/food_vision_mini/
 ```
 
 Đủ cả rồi. Thư mục này có thể tải về và upload thẳng lên Hugging Face Spaces.
+
+---
 
 ### 🔮 Nếu chạy trong tương lai
 

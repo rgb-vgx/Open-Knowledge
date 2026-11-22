@@ -25,6 +25,8 @@ Giả sử ta có ảnh món ăn kích thước **24 x 24** với **3 color chan
 
 Cùng một logic lặp lại với mọi loại dữ liệu: biến dữ liệu thành tensor, đưa vào một machine learning algorithm, rồi định hình output cho đúng bài toán.
 
+---
+
 ### 🎯 Output là xác suất cho từng lớp
 
 Với 3 lớp sushi / steak / pizza, output mong muốn là 3 giá trị:
@@ -37,9 +39,13 @@ Nếu model gán 0.81 cho sushi ở ảnh thứ hai thì đó là dự đoán c�
 
 Muốn model tốt lên thì cách cơ bản nhất là cho nó xem nhiều ảnh hơn, để nó xây dựng **internal representation** tốt hơn và tổng quát hóa được với ảnh chưa từng thấy.
 
+---
+
 ### 🧠 Model nào hay dùng?
 
 **Convolutional neural network (CNN)** thường cho kết quả tốt nhất với dữ liệu ảnh. Gần đây **transformer** cũng làm rất tốt với ảnh, nhưng trong section này mình tập trung vào CNN.
+
+---
 
 ### 🔢 Shape cụ thể: `[batch_size, height, width, color_channels]`
 
@@ -58,6 +64,8 @@ Với ảnh steak, một biểu diễn điển hình là:
 
 Với bài 3 lớp, output shape là `3`. Bài 100 lớp thì output là `100`.
 
+---
+
 ### 🔄 Channels last và channels first
 
 Mình cố ý vẽ hai kiểu biểu diễn:
@@ -66,6 +74,8 @@ Mình cố ý vẽ hai kiểu biểu diễn:
 * **NCHW** — channels first: `[batch, channels, height, width]`. PyTorch (tại thời điểm quay video) mặc định kiểu này.
 
 Đây là điểm cực kỳ quan trọng: **sai thứ tự chiều là ăn lỗi ngay**. Có nhiều cách chuyển qua lại giữa hai format, và dữ liệu chỉ là một, khác nhau ở thứ tự biểu diễn. Có tranh luận format nào tốt hơn; channels last có vẻ thắng về hiệu năng dài hạn, nhưng nằm ngoài phạm vi bài này.
+
+---
 
 ### 🖤 Ví dụ ảnh xám 28 x 28
 
@@ -76,6 +86,8 @@ Với ảnh xám (grayscale) món đồ thời trang 28 x 28, quy trình y hệt
 * Model cho ra xác suất cho một trong mười loại quần áo: boot, shirt, pants, dress…
 
 Vì ảnh xám và rất nhỏ, chi tiết ít, nên đây là bài vừa sức để bắt đầu.
+
+---
 
 ### 🧭 Ghép vào workflow PyTorch
 
@@ -88,6 +100,8 @@ Các bước chuẩn bị code cũng theo đúng workflow đã học:
 5. Đánh giá bằng `torchmetrics` hoặc tự viết metric.
 6. Cải thiện qua thí nghiệm.
 7. Lưu và tải lại model.
+
+---
 
 ### ✅ Tạm kết
 

@@ -27,6 +27,8 @@ Trong `torchvision.models` có nhiều biến thể: **vit_b_16**, **vit_b_32**,
 
 Model càng lớn, hiệu năng có thể tốt hơn nhưng **càng khó deploy** lên thiết bị. Ta chọn **ViT Base, patch size 16**.
 
+---
+
 ### 🧱 Viết hàm
 
 ```python
@@ -61,6 +63,8 @@ def create_vit_model(num_classes: int = 3,
 * `in_features = 768` (EffNetB2 là 1408).
 * Không cần thêm `Dropout` trong head như bản EffNetB2 ở transcript.
 
+---
+
 ### 🔍 Kiểm tra model
 
 ```python
@@ -70,6 +74,8 @@ vit, vit_transforms = create_vit_model(num_classes=3, seed=42)
 * **Transforms**: mean và standard deviation gần như — có thể là **giống hệt** — của EfficientNet B2, vì cả hai đều pretrained trên **ImageNet**. Kích thước ảnh đầu vào hơi khác (ViT-B/16 dùng 224×224), có thể chỉnh cho khớp nhưng tạm để nguyên.
 * **Summary**: có layer **patchify** chia ảnh thành các patch, rồi chồng **encoder layers**, và cuối cùng là `heads`.
 * **85,800,963 tổng tham số**, nhưng chỉ **~2,307 trainable** (`768 * 3 + 3`) — phần còn lại đã đóng băng.
+
+---
 
 ### ⚖️ Feature extractor hay fine-tuning?
 

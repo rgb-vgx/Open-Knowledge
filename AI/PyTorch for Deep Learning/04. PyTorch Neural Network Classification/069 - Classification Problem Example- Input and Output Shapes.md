@@ -1,5 +1,5 @@
 ---
-title: 'Input và output của bài toán phân loại: từ pixel đến xác suất dự đoán'
+title: 'Bài 69 — Input và output của bài toán phân loại: từ pixel đến xác suất dự đoán'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 69
@@ -24,6 +24,8 @@ Với ảnh, input là một **numerical encoding**. Giả sử app tự resize 
 
 Các bạn không cần tự nghĩ ra thuật toán — thường nó đã tồn tại sẵn (mình sẽ gặp lại chuyện này ở phần **transfer learning**). Nếu chưa có cho bài toán của mình thì… chính là lúc dùng PyTorch để xây.
 
+---
+
 ### 🎯 Output: xác suất dự đoán, không phải nhãn cứng
 
 Đầu ra của model **không bao giờ là kết luận dứt khoát** kiểu "chắc chắn là pizza". Nó nhả ra **prediction probabilities** trong khoảng 0 đến 1:
@@ -34,6 +36,8 @@ Các bạn không cần tự nghĩ ra thuật toán — thường nó đã tồn
 Ví dụ một ảnh sushi có thể ra `[0.9, 0.05, 0.05]` cho sushi / steak / pizza. Nếu model đoán sai, đó cũng là chuyện bình thường — thêm dữ liệu, chỉnh thuật toán, train lại, dự đoán sẽ tốt lên. Đó chính là tinh thần của machine learning.
 
 Sau đó mình viết code chuyển các xác suất này thành **nhãn** cho người dùng đọc, chứ không ai muốn nhìn một màn hình toàn số.
+
+---
 
 ### 🔢 Shape của tensor: batch size, channels, width, height
 
@@ -51,11 +55,15 @@ Có tranh luận trong giới về **thứ tự** các chiều. Có người x�
 
 Shape thực tế có thể là `[32, 3, 224, 224]`, vì **32** là batch size rất phổ biến.
 
+---
+
 ### 🍞 Vì sao batch size lại là 32?
 
 Có một tweet nổi tiếng đại ý: "Training với mini-batch lớn có hại cho sức khỏe — và quan trọng hơn, có hại cho test error. Bạn bè không để bạn bè dùng mini-batch lớn hơn 32." Tweet này cũ từ lâu nhưng vẫn đúng đến thời điểm mình quay video (2022): có những batch size lớn hơn nhiều, nhưng **32 vẫn chạy tốt với rất nhiều bài toán**.
 
 Batch size 32 nghĩa là mỗi lần thuật toán "nhìn" 32 ảnh cùng lúc. Lý do không nhìn cả nghìn ảnh một lượt: máy tính không có vô hạn compute. Dùng bội số của **8** thì khá hiệu quả về mặt tính toán.
+
+---
 
 ### 🏁 Shape output: số lớp quyết định
 
@@ -67,3 +75,5 @@ Nhưng nhớ: shape output thay đổi theo bài toán.
 * Với **binary classification**, đôi khi shape chỉ là **1** cũng được, chuyện này mình sẽ thấy khi làm tay.
 
 Nguyên tắc bất biến: **input luôn được mã hóa thành số**, còn **output thường là xác suất dự đoán** theo các lớp của bài toán. Bài sau mình sẽ vẽ ra kiến trúc tổng quát của một model classification — nhớ nhé, "architecture" ở đây giống như bản sơ đồ của neural network.
+
+> ⚠️ Cần kiểm chứng: transcript nói thứ tự mặc định của PyTorch là "channels, width, height"; tài liệu PyTorch dùng định dạng NCHW (channels, height, width). Với ảnh 224×224 thì hai cách ghi cho cùng shape.

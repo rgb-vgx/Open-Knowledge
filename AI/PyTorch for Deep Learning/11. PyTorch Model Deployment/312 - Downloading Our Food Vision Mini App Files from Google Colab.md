@@ -24,6 +24,8 @@ Chào các bạn. Thư mục `demos/food_vision_mini` đã đủ file. Bước t
 
 Bài này chỉ giải quyết khâu trung gian: lấy file ra khỏi Colab.
 
+---
+
 ### 📦 Nén bằng lệnh `zip`
 
 Colab chạy trên Linux, nên dùng được `zip`. Mình `cd` vào trong thư mục rồi nén từ bên trong, để file zip chứa đúng cấu trúc con:
@@ -41,6 +43,8 @@ Giải thích:
 
 Kết quả là `demos/food_vision_mini.zip`. Bên trong gồm `app.py`, `model.py`, `requirements.txt`, thư mục `examples/` và file model `.pth`.
 
+---
+
 ### ⬇️ Tải bằng code
 
 Có thể bấm nút download trên Colab, nhưng mình thích làm bằng code để chạy lại được:
@@ -54,6 +58,8 @@ except:
 ```
 
 Lần đầu chạy, trình duyệt có thể hỏi có cho phép tải file từ Colab không — cứ **Allow**. File sẽ nằm trong thư mục Downloads, giải nén ra là thấy đúng cấu trúc app.
+
+---
 
 ### ✅ Kiểm tra sau khi giải nén
 

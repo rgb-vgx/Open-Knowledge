@@ -22,6 +22,8 @@ Nếu các bạn gõ "what are neural networks?" lên Google, sẽ thấy vô s�
 
 Về phần mình, trong khóa này mình định nghĩa neural network theo cách thực dụng nhất: **một cỗ máy nhận dữ liệu, biến nó thành số, tìm pattern, rồi cho ra output**.
 
+---
+
 ### 🔢 Bước một: biến mọi thứ thành số
 
 Giả sử ta có dữ liệu: ảnh món ăn, tweet, hay file âm thanh. Con người nhìn ảnh ramen hay spaghetti là nhận ra ngay sau một hai lần; nghe nhạc hay, nghe bạn nói qua điện thoại cũng vậy.
@@ -29,6 +31,8 @@ Giả sử ta có dữ liệu: ảnh món ăn, tweet, hay file âm thanh. Con ng
 Nhưng máy tính thì chưa. Trước khi dùng được trong neural network, dữ liệu phải được chuyển thành **con số**. Mình gọi bước này là **numerical encoding** hay **representation**.
 
 Những dấu ngoặc vuông trong hình minh họa cho biết đó là một **matrix** hoặc **tensor** — thứ chúng ta sẽ thao tác rất nhiều trong khóa.
+
+---
 
 ### 🕸️ Bước hai: đi qua mạng neural
 
@@ -39,6 +43,8 @@ Sau khi đã thành số, dữ liệu được đưa qua neural network. Một h
 3. **Output layer** — nơi cho ra kết quả.
 
 Số node, số layer, cái gì đi vào, cái gì đi ra — tất cả đều **tùy biến được**.
+
+---
 
 ### 🧠 Mạng tự học representation
 
@@ -56,11 +62,15 @@ Ví dụ một feature có thể là chuyện chữ "do" thường đứng sau "
 
 Cuối cùng, mạng xuất ra một **output**: một tập số (có thể là features, weight matrix, hay learned representation). Những con số này có thể lên tới hàng triệu — hình minh họa chỉ có chín số mà mình đã thấy choáng. Vì thế ta cần một bước chuyển chúng thành thứ con người hiểu được.
 
+---
+
 ### 🍜 Ví dụ đầu-cuối
 
 Với ảnh món ăn: input là ảnh, mạng học representation phân biệt ramen và spaghetti, rồi ta chuyển output thành câu trả lời "ảnh này là ramen" hay "spaghetti".
 
 Với một tweet: mạng học pattern rồi cho ra phán đoán "đây là tweet về thảm họa thiên nhiên" hay "không phải".
+
+---
 
 ### 🏗️ Kiến trúc mạng neural 101
 
@@ -72,6 +82,8 @@ Ghép tất cả lại, ta có **architecture** (kiến trúc) của mạng:
 
 Kiến trúc là mô tả **toàn bộ các layer cộng lại**: input, hidden (có thể nhiều hơn một), và output.
 
+---
+
 ### 📐 Mỗi layer là gì?
 
 Về mặt kỹ thuật, mỗi layer thường là sự kết hợp của hai loại hàm:
@@ -82,6 +94,8 @@ Về mặt kỹ thuật, mỗi layer thường là sự kết hợp của hai lo
 Nếu mình yêu cầu các bạn vẽ bất cứ thứ gì bằng các đường thẳng và đường cong không giới hạn, các bạn sẽ vẽ được đủ kiểu pattern. Ở tầng cơ bản nhất, neural network làm đúng như vậy: **dùng sự kết hợp của đường thẳng và đường cong để vẽ ra pattern trong dữ liệu**.
 
 Chúng ta sẽ thấy điều này bằng code ở phần sau.
+
+---
 
 ### 🔜 Tiếp theo
 

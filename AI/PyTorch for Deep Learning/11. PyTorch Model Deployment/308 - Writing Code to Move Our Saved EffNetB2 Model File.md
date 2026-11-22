@@ -35,6 +35,8 @@ effnetb2_food_vision_mini_model_destination = (
 
 `Path.name` lấy tên file cuối (`....pth`), ghép vào thư mục demo. Kết quả đích là `demos/food_vision_mini/09_pretrained_....pth`.
 
+---
+
 ### 🔀 Move có xử lý trường hợp đã move rồi
 
 Nếu chạy cell lần thứ hai, file nguồn không còn nữa. Mình bọc trong `try`/`except` để lần chạy lại không gãy:
@@ -57,12 +59,16 @@ except:
 
 `shutil.move` nhận `src` và `dst`; nếu đích là thư mục có sẵn thì file được đặt vào trong đó, còn nếu là đường dẫn file thì nó đổi tên luôn.
 
+---
+
 ### 🔄 Kiểm tra hành vi chạy lặp
 
 * **Lần đầu:** file biến mất khỏi `models/`, xuất hiện trong `demos/food_vision_mini/`, in ra `Model move complete.`
 * **Lần hai:** in ra `No model found at ... perhaps it's already been moved?` và `Model exists at ...: True`.
 
 Đúng như mong đợi — code **idempotent** ở mức chấp nhận được: chạy lại không làm hỏng gì.
+
+---
 
 ### ✅ Trạng thái thư mục
 

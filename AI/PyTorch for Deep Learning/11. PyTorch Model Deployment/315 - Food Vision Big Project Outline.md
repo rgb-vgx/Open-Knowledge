@@ -22,6 +22,8 @@ Food Vision Mini dùng **3 trong tổng số 101 lớp** của bộ Food101. Đ�
 
 Vì vậy bước tiếp theo rất tự nhiên: dùng **toàn bộ 101 lớp**.
 
+---
+
 ### 🎯 Kế hoạch Food Vision Big
 
 Mình sẽ lặp lại đúng workflow của Food Vision Mini nhưng với model lớn hơn:
@@ -32,6 +34,8 @@ Mình sẽ lặp lại đúng workflow của Food Vision Mini nhưng với model
 4. Đóng gói thành app Gradio và deploy lên Hugging Face Spaces.
 
 Đây là tinh thần xuyên suốt khóa: chạy thí nghiệm nhỏ để chắc chắn mọi thứ hoạt động, rồi mới **step things up a notch**.
+
+---
 
 ### 🧪 Thử thách: model cho 101 lớp
 
@@ -44,6 +48,8 @@ model, transforms = create_effnetb2_model(num_classes=101)
 ```
 
 Chỉ cần đổi `num_classes` là classifier head tự động xuất ra 101 chiều. Không cần sửa gì trong thân hàm — đó là lợi ích của việc viết hàm có tham số ngay từ đầu.
+
+---
 
 ### 🍜 Vài lớp sẽ gặp
 

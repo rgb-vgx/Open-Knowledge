@@ -58,12 +58,16 @@ class TinyVGG(nn.Module):
         return x
 ```
 
+---
+
 ### 🔍 Vài điểm cần nắm
 
 * **`conv_block_1`** — `Conv2d(input → hidden, kernel=3, stride=1, padding=1)` ×2, kèm `ReLU`, kết bằng `MaxPool2d(kernel_size=2, stride=2)`. Với MaxPool, **stride mặc định bằng kernel size**.
 * **`conv_block_2`** — copy block 1, chỉ đổi `in_channels` đầu vào thành `hidden_units` (để khớp output của block trước).
 * **`classifier`** — `Flatten()` để duỗi output các conv block thành **feature vector**, rồi `Linear`.
 * **`in_features=hidden_units`** — đây là chỗ **cố tình sai**. Shape thật sau hai lần max-pool (64→32→16) là `hidden_units × 16 × 16`, không phải `hidden_units`. Ta để tạm rồi để `forward` báo lỗi cho biết shape đúng — cách sửa shape "programmatic" mình thích hơn tính tay.
+
+---
 
 ### 🏗️ Khởi tạo Model 0
 
@@ -77,6 +81,8 @@ model_0 = TinyVGG(
 
 `input_shape=3` vì ảnh màu; `output_shape` = số lớp = **3**; `hidden_units=10` (có thể thử 100 hoặc 64 — bội số của 8). Chuyển model lên `device` (CUDA) mất vài giây — bình thường với model lớn.
 
+---
+
 ### ⚡ Operator fusion là gì?
 
 Có thể viết gọn `forward` bằng:
@@ -86,6 +92,8 @@ return self.classifier(self.conv_block_2(self.conv_block_1(x)))
 ```
 
 Cách này tương đương nhưng hưởng lợi từ **operator fusion**: GPU gộp các phép tính lại, giảm việc đi đi lại lại giữa **memory** và **compute** (thay vì gán lại `x` sau mỗi lớp). Chủ đề này ngoài phạm vi khóa; ai muốn đọc thêm thì tìm blog *"How to make your GPUs go BRRR from first principles"* (BR = nhanh).
+
+---
 
 ### ✅ Tạm kết
 

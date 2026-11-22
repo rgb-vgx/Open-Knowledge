@@ -30,6 +30,8 @@ train_data
 
 `test_data` tương tự, chỉ khác số điểm và split. Cả hai đã được `ToTensor()` chuyển thành tensor rồi.
 
+---
+
 ### 🔁 Vì sao cần DataLoader?
 
 `DataLoader` biến dataset thành một **Python iterable**, cụ thể hơn là chia dữ liệu thành các **batch** (mini-batch). Hai lý do chính:
@@ -41,6 +43,8 @@ train_data
 
 Nếu muốn hiểu lý thuyết sâu hơn, từ khóa là **mini-batch gradient descent** (Andrew Ng có bài giảng rất hay).
 
+---
+
 ### 🗺️ Hình dung dữ liệu sau khi chia batch
 
 Với batch size 32 trên 60.000 ảnh train:
@@ -49,6 +53,8 @@ Với batch size 32 trên 60.000 ảnh train:
 * Tổng số batch ≈ `60.000 / 32` ≈ **1875**.
 
 Tương tự cho test (10.000 ảnh), số batch ≈ 313.
+
+---
 
 ### 🧩 Code sẽ viết ở bài sau
 
@@ -73,6 +79,8 @@ test_dataloader = DataLoader(
 ```
 
 Vì sao train thì `shuffle=True`? Vì nếu dữ liệu vô tình có thứ tự (ví dụ toàn ảnh quần, rồi toàn ảnh áo), ta không muốn model học cái thứ tự đó. Xáo trộn giúp model chỉ học pattern giữa các lớp. Test thì thường để nguyên thứ tự cho dễ so sánh kết quả giữa các lần đánh giá — sẽ bàn kỹ ở bài sau.
+
+---
 
 ### ✅ Tạm kết
 

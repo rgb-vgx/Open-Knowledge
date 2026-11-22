@@ -27,6 +27,8 @@ train_data = datasets.ImageFolder(root=train_dir, transform=data_transform)
 test_data = datasets.ImageFolder(root=test_dir, transform=data_transform)
 ```
 
+---
+
 ### 🎛️ `transform` và `target_transform`
 
 `ImageFolder` có hai tham số transform:
@@ -36,6 +38,8 @@ test_data = datasets.ImageFolder(root=test_dir, transform=data_transform)
 
 Nếu dataset của các bạn **không** ở chuẩn này, có thể phải dùng data loader khác; nhiều loader vẫn có tham số transform cho dữ liệu.
 
+---
+
 ### 📊 Kiểm tra dataset sau khi nạp
 
 ```python
@@ -44,6 +48,8 @@ print(test_data)
 ```
 
 Kết quả cho thấy `train_data` có **225 mẫu** (khoảng 75 ảnh/lớp), `test_data` ít hơn, cả hai đều là `ImageFolder`, kèm `root` và `transform`. Đúng như dự đoán từ lúc khám phá dữ liệu.
+
+---
 
 ### 🏷️ Lấy tên lớp và mapping index
 
@@ -60,6 +66,8 @@ class_dict = train_data.class_to_idx
 * **`classes`** — danh sách tên lớp, rất tiện khi vẽ ảnh kèm nhãn hoặc khi dự đoán.
 * **`class_to_idx`** — map tên lớp sang chỉ số nguyên. Đây chính là chỗ `target_transform` sẽ phát huy tác dụng nếu muốn đổi nhãn.
 
+---
+
 ### 🔢 Độ dài và các thuộc tính khác
 
 ```python
@@ -68,6 +76,8 @@ len(test_data)
 ```
 
 Ngoài ra còn các thuộc tính như `samples` (toàn bộ đường dẫn + nhãn), `targets` (chỉ nhãn), `imgs`, `loader`. Xem `train_data.samples` sẽ thấy từng cặp `(đường_dẫn_ảnh, nhãn)`; `train_data.targets` cho danh sách nhãn **theo thứ tự** (`0, 0, ... 1, 1, ... 2, 2, ...`). Phần tử đầu tiên là một ảnh pizza với nhãn `0`.
+
+---
 
 ### ✅ Tạm kết
 

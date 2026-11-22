@@ -30,9 +30,13 @@ Ta đã làm việc này nhiều lần (ở "Make predictions on a custom image"
 
 Điều quan trọng: dùng đúng `vit_transforms` — bộ transform khớp với lúc pre-train.
 
+---
+
 ### 🎉 Kết quả: "Pizza Dad"
 
 Ảnh "Pizza Dad" quen thuộc được tải về và cho qua model. Kết quả: **pizza**, với độ tin cậy **0.988** — cực cao. Hai ngón cái giơ lên!
+
+---
 
 ### 🏁 Nhìn lại chặng đường (Milestone Project 2)
 
@@ -41,6 +45,8 @@ Ta đã chính thức đi tới cuối milestone project của mình:
 1. **Replicate kiến trúc ViT từ đầu**, chỉ dựa vào paper.
 2. Nhận ra kết quả chưa tốt (thiếu scale dữ liệu).
 3. Chuyển sang **ViT pre-trained** — đúng kiến trúc ta tự dựng — và có kết quả **tốt nhất từ trước tới nay** (test loss thấp nhất, dự đoán tự tin nhất).
+
+---
 
 ### 🎯 Thử thách
 

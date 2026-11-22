@@ -26,6 +26,8 @@ out = bias + Σ (weight ⊛ input)
 
 Input có shape `(N, C_in, H, W)` hoặc `(C_in, H, W)`; output `(N, C_out, H_out, W_out)`. Docs cũng có công thức tính `H_out`, `W_out` — hữu ích, nhưng mình có "mẹo" riêng ở bài 124.
 
+---
+
 ### 🎲 Tạo dữ liệu giả giống CNN Explainer
 
 CNN Explainer dùng ảnh `64 x 64 x 3` (channels last). Ta làm lại theo kiểu PyTorch (channels first):
@@ -42,6 +44,8 @@ print(test_image.shape)  # torch.Size([3, 64, 64])
 
 Đây chỉ là số ngẫu nhiên, không phải ảnh thật — mục đích là kiểm tra shape.
 
+---
+
 ### 🧱 Tạo một `Conv2d` giống layer đầu của CNN Explainer
 
 ```python
@@ -57,6 +61,8 @@ conv_layer = nn.Conv2d(
 * `in_channels=3` vì ảnh có 3 kênh màu. Lưu ý thứ tự chiều bị đảo so với `test_image.shape = [3, 64, 64]`.
 * `out_channels=10` — 10 "hidden unit", giống CNN Explainer.
 * `kernel_size=3` — viết một số là viết tắt của tuple `(3, 3)`.
+
+---
 
 ### 🐛 Lỗi đầu tiên: thiếu chiều batch
 
@@ -75,6 +81,8 @@ print(conv_output.shape)  # torch.Size([1, 10, 62, 62])
 
 > ⚠️ Cần kiểm chứng: transcript ghi rằng lỗi này có thể không xuất hiện ở PyTorch 1.11. Thực tế các bản PyTorch mới cho phép `Conv2d` nhận input không có batch (`(C, H, W)`), nhưng thêm `.unsqueeze(0)` luôn an toàn và giữ code tương thích.
 
+---
+
 ### 🔍 Đọc output shape `[1, 10, 62, 62]`
 
 * `1` — batch size (một ảnh).
@@ -82,6 +90,8 @@ print(conv_output.shape)  # torch.Size([1, 10, 62, 62])
 * `62, 62` — chiều cao/rộng sau convolution.
 
 Vì sao từ `64` xuống `62`? Vì kernel `3x3`, padding `0`, stride `1`: kernel không thể đặt ở mép ngoài cùng nên mỗi chiều mất `3 - 1 = 2` pixel. Đây là lý do ta thấy kích thước giảm dần qua các layer.
+
+---
 
 ### 🎛️ Thay hyperparameter, xem output đổi
 
@@ -91,9 +101,13 @@ Vì sao từ `64` xuống `62`? Vì kernel `3x3`, padding `0`, stride `1`: kerne
 
 Đây chính là phần "Understanding hyperparameters" trên CNN Explainer: kernel quyết định "nhìn rộng bao nhiêu", stride quyết định "nhảy xa bao nhiêu", padding quyết định "có xử lý mép không".
 
+---
+
 ### 💡 Vì sao phải nén?
 
 Mạng tích chập cố tình **nén** input thành biểu diễn nhỏ hơn. Nếu chỉ ghi nhớ nguyên pattern thì vô nghĩa — mục tiêu là học pattern **tổng quát hóa** được, rồi dùng để dự đoán ảnh mới.
+
+---
 
 ### ✅ Tạm kết
 

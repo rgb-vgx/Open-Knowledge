@@ -43,6 +43,8 @@ print(f"New shape: {x_squeezed.shape}")
 
 Nghe có vẻ lắt nhắt, nhưng làm vài lần là thành phản xạ: thấy shape mismatch thì nghĩ ngay "có cần squeeze không?". Giống như tập đi xe đạp — lúc đầu lạng lách, sau thì quen.
 
+---
+
 ### 🔍 `unsqueeze`: thêm một chiều kích thước 1
 
 Ngược lại với squeeze, **`unsqueeze(dim)`** thêm một chiều `1` vào **đúng vị trí `dim`**:
@@ -62,6 +64,8 @@ x_squeezed.unsqueeze(dim=1).shape   # torch.Size([9, 1])
 
 Lời khuyên: mỗi khi gặp tham số như `dim`, hãy **thử đổi giá trị** và in kết quả ra xem — cách học nhanh nhất.
 
+---
+
 ### 🔀 `permute`: sắp xếp lại các chiều
 
 **`permute`** trả về một **view** của tensor với các chiều được **sắp xếp lại theo thứ tự chỉ định**.
@@ -80,11 +84,15 @@ Cách đọc `permute(2, 0, 1)`: chiều **2** (color channels) lên **vị trí
 
 Ảnh thường được biểu diễn dưới dạng `height × width × color_channels` (RGB), nhưng nhiều model lại muốn **channels-first**. `permute` là công cụ để đổi qua lại.
 
+---
+
 ### 🧠 Nhớ: permute cũng là view
 
 Vì `permute` trả về **view**, nó **chia sẻ bộ nhớ** với tensor gốc. Nghĩa là cùng một dữ liệu, chỉ nhìn từ góc khác.
 
 Bài tập: sau khi `permute`, thử **sửa một giá trị trong `x_original`** (ví dụ `x_original[0, 0, 0] = 123`) rồi kiểm tra `x_permuted` — bạn sẽ thấy giá trị tương ứng cũng đổi theo. Đó là bằng chứng chúng dùng chung bộ nhớ.
+
+---
 
 ### 🎯 Chốt lại
 

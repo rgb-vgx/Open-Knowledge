@@ -22,9 +22,13 @@ Theo Wikipedia: *"Data augmentation in data analysis are techniques used to incr
 
 Mục đích: nhìn cùng một ảnh từ **nhiều góc độ khác nhau**, để model học được pattern **tổng quát hóa** tốt hơn, áp dụng được cho dữ liệu chưa từng thấy.
 
+---
+
 ### 📚 "State of the art" nghĩa là gì?
 
 SOTA = "best in the business" — tốt nhất hiện có. Trong blog **How to Train State of the Art Models Using TorchVision's latest primitives** của đội PyTorch, họ liệt kê một loạt cải tiến cho ResNet-50: learning rate optimization, train lâu hơn, **random erasing**, **label smoothing**, **mixup**, **cutmix**, weight decay tuning, EMA, inference resize tuning... Tổng cộng có thể tăng độ chính xác từ khoảng **76 lên gần 81** (gần **+5%**). Trong đó có **TrivialAugment** — thứ ta sẽ thử.
+
+---
 
 ### 🔥 Dựng transform với `TrivialAugmentWide`
 
@@ -41,10 +45,12 @@ train_transform = transforms.Compose([
 Giải thích:
 
 * **`Resize((224, 224))`** — kích thước phổ biến cho image classification.
-* **`TrivialAugmentWide(num_magnitude_bins=31)`** — chọn **ngẫu nhiên** các phép augmentation và áp ở **cường độ ngẫu nhiên**. `num_magnitude_bins` là thang cường độ từ **0 đến 31**; `31` là mạnh nhất, `5` thì nhẹ hơn nhiều.
+* **`TrivialAugmentWide(num_magnitude_bins=31)`** — chọn **ngẫu nhiên** các phép augmentation và áp ở **cường độ ngẫu nhiên**. `num_magnitude_bins` là **số mức cường độ** (mặc định `31`); mức càng cao thì biến đổi càng mạnh, hạ về `5` thì nhẹ hơn nhiều.
 * **`ToTensor()`** — chuyển sang tensor.
 
 Test transform giữ nguyên cấu trúc cũ (Resize + ToTensor, không augmentation).
+
+---
 
 ### 👀 Visualize kết quả
 
@@ -56,10 +62,16 @@ plot_transformed_images(image_paths=image_path_list, transform=train_transform, 
 
 Kết quả: cùng một ảnh pizza/steak nhưng mỗi lần ra một kiểu — có ảnh bị **tối đi**, ảnh bị **đổi màu**, ảnh bị **cắt lệch (shift)**. Có ảnh bị biến đổi mạnh nhưng **vẫn là steak** — và đó chính là điều ta muốn model học được: nhận ra món ăn dù ảnh đã bị làm nhiễu.
 
+---
+
 ### 🤔 Dùng augmentation nào cho dữ liệu của mình?
 
 Câu hỏi "nên dùng transform nào" cũng khó như "nên dùng model nào" — không có một đáp án duy nhất. Lời khuyên của mình: **thử vài cái, xem cái nào người khác dùng thành công** (như `TrivialAugmentWide` đội PyTorch dùng), thử trên bài toán của mình; hiệu quả thì giữ, không thì lập thí nghiệm khác. Mình cũng khuyên các bạn mở **illustration of transforms** và thử thay `TrivialAugmentWide` bằng một augmentation khác.
 
+---
+
 ### ✅ Tạm kết
 
 Data augmentation là cách "nhân bản" độ đa dạng dữ liệu một cách khéo léo, dựa rất nhiều vào randomness. Đã đủ lý thuyết và dữ liệu — giờ là lúc **build model đầu tiên** cho section này. Hẹn các bạn ở bài sau.
+
+> ⚠️ Cần kiểm chứng: tài liệu torchvision mô tả `num_magnitude_bins` là "số lượng giá trị cường độ" (31 mức), không phải thang điểm 0–31; transcript dùng cách nói 0–31.

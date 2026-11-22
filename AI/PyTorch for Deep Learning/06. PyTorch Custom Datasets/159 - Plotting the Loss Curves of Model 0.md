@@ -25,6 +25,8 @@ Train xong nhưng kết quả chưa như ý. Trước khi tìm cách cải thi�
 
 Đây là bước *evaluating* trong PyTorch workflow (kiểu giống TensorBoard, nhưng làm tay bằng Matplotlib).
 
+---
+
 ### 🔥 Hàm `plot_loss_curves`
 
 ```python
@@ -57,12 +59,16 @@ def plot_loss_curves(results):
     plt.legend()
 ```
 
+---
+
 ### 🔍 Giải thích
 
 * Lấy bốn list từ dict `results`: `train_loss`, `test_loss`, `train_acc`, `test_acc`.
 * **`epochs = range(len(results["train_loss"]))`** — trục ngang là số epoch (bằng độ dài của list loss).
 * **`subplot(1, 2, 1)`** — một hàng hai cột; ô 1 vẽ **loss** (train vs test), ô 2 vẽ **accuracy** (train vs test).
 * **`legend()`** — hiện chú thích để phân biệt train/test.
+
+---
 
 ### 👀 Đọc kết quả
 
@@ -72,9 +78,13 @@ plot_loss_curves(model_0_results)
 
 Với 5 epoch, đường **loss** có xu hướng **đi xuống** (đúng hướng), đường **accuracy** có xu hướng **đi lên** — nhưng còn thấp. Điều này khớp với con số định lượng: model chưa đạt như mong muốn. Nếu train lâu hơn, đường có thể tiếp tục đi đúng hướng — nhưng không ai biết chắc cho tới khi thử.
 
+---
+
 ### 💡 Mục đích chính: xem xu hướng
 
 Ở giai đoạn này, ta chủ yếu nhìn **trend**, chưa cần phân tích sâu. Xu hướng lý tưởng: loss giảm, accuracy tăng. Nhưng có nhiều kiểu loss curve khác nhau (underfitting, overfitting...) và cách đọc chúng — mình sẽ nói ở bài sau.
+
+---
 
 ### ✅ Tạm kết
 

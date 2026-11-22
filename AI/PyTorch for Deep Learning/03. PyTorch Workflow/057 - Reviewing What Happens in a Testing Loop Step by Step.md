@@ -22,9 +22,9 @@ Rerun cell training: model nhớ tham số cũ và tiếp tục cải thiện t�
 
 Kết quả sau tổng cộng 200 epoch:
 
-* Training loss: `0.244` → `0.0080` (giảm thêm khoảng 3 lần).
-* Test loss: `0.00564` → `0.005` (gần 10 lần cải thiện so với lúc đầu).
-* `weight ≈ 0.6990`, `bias ≈ 0.2990` — gần như trùng khít giá trị thật `0.7` và `0.3`.
+* Training loss: `0.0244` → `0.0089` (giảm thêm khoảng 3 lần).
+* Test loss: `0.0565` → `0.005` (gần 10 lần cải thiện trong lượt chạy này).
+* `weight ≈ 0.6990`, `bias ≈ 0.3093` — gần như trùng khít giá trị thật `0.7` và `0.3`.
 
 Dự đoán mới bám sát đường thẳng gần như tuyệt đối. Có thể gán tay tham số cho đúng, nhưng viết code để máy tự học bằng backpropagation và gradient descent mới là điều đáng làm.
 

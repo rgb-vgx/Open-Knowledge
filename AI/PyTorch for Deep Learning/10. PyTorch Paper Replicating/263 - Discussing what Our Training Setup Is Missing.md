@@ -28,6 +28,8 @@ Trong khi đó Food Vision Mini chỉ có khoảng **200-225 ảnh** — ít hơ
 
 Nếu muốn thử: có thể tải **toàn bộ Food 101** (101.000 ảnh, 101 lớp) vào Colab và train với cùng setup — chỉ cần chuẩn bị lại train/test dataloader. Nhưng cẩn thận, nó sẽ train lâu hơn đáng kể.
 
+---
+
 ### 🔁 Khác biệt thứ hai: số epoch
 
 Ta chỉ train **10 epoch**, còn paper train tùy theo dataset:
@@ -37,6 +39,8 @@ Ta chỉ train **10 epoch**, còn paper train tùy theo dataset:
 * ImageNet-1k (1,3 triệu ảnh): **300 epoch**.
 
 Bạn có thể thử train 100 epoch để xem sao — đáng để thử.
+
+---
 
 ### 🎛️ Ba kỹ thuật ta chưa dùng
 
@@ -48,15 +52,21 @@ Paper còn dùng thêm ba thứ (mà ta bỏ qua):
 
 Cả ba chủ yếu để **chống overfitting** (regularization). PyTorch có sẵn: `torch.nn.utils.clip_grad_norm_` cho gradient clipping, và `torch.optim.lr_scheduler` cho lr decay (linear, cosine).
 
+---
+
 ### 🎢 Overfitting và underfitting: đi trên dây
 
 Đây gần như là toàn bộ machine learning — giữ thăng bằng giữa **overfitting** (train loss thấp hơn test loss) và **underfitting** (chưa chạm tới tiềm năng).
 
 Cách thêm dữ liệu để giảm underfitting, nhưng nếu thêm quá nhiều mà model có **quá nhiều tham số** (learning capacity lớn) thì lại overfit. Vì vậy ta dùng regularization để ghìm lại.
 
+---
+
 ### 💡 Cách mình thích train
 
 **Overfit trước, regularize sau.** Train với càng nhiều dữ liệu và tham số càng tốt để chạm trần năng lực, rồi áp regularization (warmup, lr decay, gradient clipping) để kéo overfitting xuống. Model hiện tại của ta đang **underfit** nhiều hơn overfit, nên ưu tiên đầu tiên là **thêm dữ liệu**.
+
+---
 
 ### ✅ Tiếp theo
 

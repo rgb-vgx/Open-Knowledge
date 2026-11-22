@@ -22,6 +22,8 @@ Thực nghiệm số một: **EfficientNet B2 feature extractor**. Nếu đã t�
 
 Câu hỏi nên hỏi đầu mỗi dự án deep learning: *đã có model nào giải bài toán tương tự chưa?* Với ảnh, câu trả lời thường nằm trong `torchvision.models`.
 
+---
+
 ### ⚙️ Lấy pretrained weights và transforms
 
 ```python
@@ -38,6 +40,8 @@ effnetb2 = torchvision.models.efficientnet_b2(weights=effnetb2_weights)
 
 API cũng chấp nhận `weights="default"` (transcript thử và xác nhận chạy được).
 
+---
+
 ### ❄️ Đóng băng base layers
 
 ```python
@@ -46,6 +50,8 @@ for param in effnetb2.parameters():
 ```
 
 `requires_grad=False` khiến PyTorch không theo dõi gradient cho các tham số này — chúng **không bị cập nhật** bởi gradient descent trong training loop.
+
+---
 
 ### 🎯 Thay classifier head cho 3 class
 
@@ -67,6 +73,8 @@ effnetb2.classifier = nn.Sequential(
 * Tổng **trainable parameters = 4227** — đúng bằng `1408 * 3 + 3`.
 
 Đây là lý do phải **luôn kiểm tra input/output shape** của model sau khi chỉnh sửa. Nhìn summary mà thấy số tham số lạ là biết mình vừa gõ sai.
+
+---
 
 ### 🧾 Kiểm tra bằng `torchinfo`
 

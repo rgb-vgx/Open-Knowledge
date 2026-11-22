@@ -22,6 +22,8 @@ Có vô số tài liệu: bài "A comprehensive guide to convolutional neural ne
 
 Lưu ý vui: trong khóa này **CNN** là *convolutional neural network*, không phải đài tin tức.
 
+---
+
 ### 🏗️ Kiến trúc điển hình của một CNN
 
 Một CNN cơ bản nhất gồm các lớp nối tiếp:
@@ -31,6 +33,8 @@ Một CNN cơ bản nhất gồm các lớp nối tiếp:
 3. **Hidden activation / non-linear activation** — thường là ReLU, để model vẽ được đường cong, không chỉ đường thẳng.
 4. **Pooling layer** — ví dụ max pooling, nén thông tin.
 5. **Output layer** — thường là linear layer, đưa output về đúng shape mong muốn.
+
+---
 
 ### 🪟 Bên trong convolutional layer có gì?
 
@@ -44,6 +48,8 @@ Trong đó có một **bias term** (như đã gặp) và một **weight matrix**
 
 Cốt lõi: mỗi layer thực hiện một phép toán trên input, rồi chuyển kết quả cho layer sau, đến khi ra output dùng được.
 
+---
+
 ### 🔁 Luồng forward
 
 Khi đưa ảnh vào:
@@ -52,11 +58,15 @@ Khi đưa ảnh vào:
 * Hàm `forward` trả về `x` ở dạng dùng được — có thể chuyển thành **class names**.
 * Từ đó tích hợp vào app computer vision.
 
+---
+
 ### ⚠️ Không có một kiến trúc CNN duy nhất
 
 Đây là điều mình muốn các bạn nhớ: **gần như vô số cách xếp các layer lại với nhau**. Slide chỉ trình bày *một* kiến trúc điển hình, đơn giản nhất có thể. Theo thời gian các bạn sẽ học cách dựng model phức tạp hơn, và cả cách dùng lại model có sẵn (transfer learning ở section sau).
 
 Cách luyện tốt nhất không phải nhìn slide, mà là **code ra**.
+
+---
 
 ### ✅ Tạm kết
 

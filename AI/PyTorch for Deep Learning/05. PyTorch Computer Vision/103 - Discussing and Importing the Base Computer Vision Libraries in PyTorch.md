@@ -20,18 +20,22 @@ tags: []
 
 Mình tạo notebook tên `03_pytorch_computer_vision_video.ipynb`, có gắn tag `_video` cho khớp cách đặt tên trong repo (các notebook video nằm ở thư mục `video_notebooks`, bản reference notebook là "ground truth" có chú thích đầy đủ). Trong notebook ghi sẵn hai link: reference notebook và online book (*Section 3: PyTorch Computer Vision*). Sau đó chuyển cell sang markdown bằng `command + M`.
 
+---
+
 ### 📦 `torchvision` — thư viện domain chính
 
-`torchvision` là thư viện domain của PyTorch dành cho computer vision. Bản tại thời điểm quay video là **torchvision 0.12**. Trong bộ PyTorch còn có các domain library khác:
+`torchvision` là thư viện domain của PyTorch dành cho computer vision. Theo docs tại thời điểm quay video, bản mới nhất là **torchvision 0.12**, còn Colab của Daniel thì đang chạy 0.11 (sẽ thấy ở phần kiểm tra version). Trong bộ PyTorch còn có các domain library khác:
 
 * `torchaudio` — audio
 * `torchtext` — text
 * `torchrec` — recommendation system
 * `torchdata` — data pipeline
 * `torchserve` — serving model
-* `torch.xla` (PyTorch/XLA) — tăng tốc phần cứng
+* PyTorch/XLA (`torch_xla`) — tăng tốc phần cứng
 
 Section này chỉ cần `torchvision`.
+
+---
 
 ### 🗂️ Các module con của `torchvision`
 
@@ -43,6 +47,8 @@ Ngoài ra, hai thứ không riêng vision mà cả PyTorch dùng:
 
 * `torch.utils.data.Dataset` — base class để tạo dataset tùy chỉnh.
 * `torch.utils.data.DataLoader` — tạo một **Python iterable** trên dataset (tức là chia batch, xáo trộn…).
+
+---
 
 ### ⌨️ Import
 
@@ -60,6 +66,8 @@ print(torchvision.__version__)
 
 `torch.nn` (viết tắt `nn`) chứa layer, loss function và mọi thứ để dựng mạng nơ-ron.
 
+---
+
 ### 🔍 `ToTensor()` làm gì?
 
 Mở docstring của `torchvision.transforms.ToTensor`:
@@ -70,6 +78,8 @@ Nói cách khác: đưa ảnh về tensor, đổi thứ tự chiều sang **chan
 
 Module `transforms` còn rất nhiều phép biến đổi khác, gom lại bằng `Compose`. Bài tập mở rộng: dành 10 phút đọc từng mục trong package này, tổng cộng khoảng một giờ — rất đáng.
 
+---
+
 ### 📊 Và Matplotlib
 
 ```python
@@ -78,11 +88,15 @@ import matplotlib.pyplot as plt
 
 Matplotlib là công cụ visualization cốt lõi. Nhắc lại khẩu hiệu của dân khám phá dữ liệu: **visualize, visualize, visualize** — hãy "làm một với dữ liệu".
 
+---
+
 ### ✅ Kiểm tra version
 
 Sau khi chạy, máy của Daniel ra **PyTorch 1.10** (có CUDA) và **torchvision 0.11**. Đây là mức tối thiểu để học section này; máy bạn có thể mới hơn. Nếu code lỗi, hãy kiểm tra version trước tiên.
 
 > ⚠️ Cần kiểm chứng: số version nêu trên là tại thời điểm quay video (2022). Hiện nay PyTorch/torchvision đã lên các bản 2.x, một số API vẫn giữ nguyên nhưng bạn nên đối chiếu docs của bản mình đang dùng.
+
+---
 
 ### ✅ Tạm kết
 

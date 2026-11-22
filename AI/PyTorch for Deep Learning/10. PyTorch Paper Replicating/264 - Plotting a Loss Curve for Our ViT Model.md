@@ -25,6 +25,8 @@ Bài trước ta đã liệt kê những gì training setup còn thiếu — l�
 
 Hình dung learning rate decay dễ như thế này: giống lúc với đồng xu ở cuối ghế sofa — càng gần, bạn càng bước **những bước nhỏ hơn**. Vậy mới không vượt qua nó.
 
+---
+
 ### 📊 Tải loss curve
 
 Dùng helper có sẵn:
@@ -45,11 +47,15 @@ Tăng thời gian train có thể cải thiện chút, nhưng nhìn kỹ: train 
 
 Model "Goldilocks" lý tưởng là khi **train loss và test loss cùng giảm song song**.
 
+---
+
 ### 🎁 Kỹ thuật đã học ở Section 6
 
 Bạn có nhớ kỹ thuật ở Section 6 giúp xử lý cả overfitting lẫn underfitting không? Đó là **transfer learning**.
 
 Giả sử ta bị kẹt với đúng 225 ảnh — công ty hỏi "kết quả tốt nhất với chừng này ảnh là gì?" — thì transfer learning là thứ mình sẽ với tới đầu tiên.
+
+---
 
 ### 🔍 Tìm một ViT pre-trained
 
@@ -58,6 +64,8 @@ Ta đã tự dựng ViT, nhưng cũng có thể dùng bản **pre-trained**. Tro
 * Đạt **81% top-1 accuracy** trên 1000 lớp.
 * Ảnh đầu vào **224×224**.
 * Weights được train từ đầu bằng một biến thể của **DeiT** (Data-efficient Image Transformer) recipe.
+
+---
 
 ### 🎯 Thử thách
 

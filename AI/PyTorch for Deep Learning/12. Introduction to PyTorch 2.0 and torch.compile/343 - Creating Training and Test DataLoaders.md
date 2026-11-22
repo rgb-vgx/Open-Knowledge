@@ -32,11 +32,15 @@ print(f"Using {num_workers} workers to load data. More is generally better (có 
 
 Trên Colab bản mình đang dùng (Pro/premium) có **12 CPU**. Bản Colab trước đây chỉ có **2 worker** — tùy máy mà khác nhau.
 
+---
+
 ### ⚠️ Có phải càng nhiều càng tốt?
 
 Kinh nghiệm của mình: **nhiều thường tốt hơn**. Nhưng không phải lúc nào cũng vậy — có người thấy nó **bão hòa ở khoảng 4× số GPU**. Với một GPU, khoảng **4 worker** thường là đủ. Đây chỉ là quy tắc ngón tay cái; hãy thử nghiệm.
 
 > Mình để link một discussion thread của PyTorch về chủ đề này nếu các bạn muốn đọc thêm.
+
+---
 
 ### 🏋️ Train DataLoader
 
@@ -51,6 +55,8 @@ train_dataloader = DataLoader(
 
 `shuffle=True` rất quan trọng: tránh model chỉ **ghi nhớ thứ tự** dữ liệu.
 
+---
+
 ### 🧪 Test DataLoader
 
 ```python
@@ -63,6 +69,8 @@ test_dataloader = DataLoader(
 ```
 
 `shuffle=False` vì khi đánh giá, ta chỉ cần đo trên dữ liệu model chưa từng thấy — không cần ngẫu nhiên.
+
+---
 
 ### 📊 Kiểm tra số batch
 
@@ -77,6 +85,8 @@ Với batch size 128:
 * **79 batch** test (10.000 ảnh).
 
 Đó là khá nhiều dữ liệu: 60.000 ảnh cỡ 224. (A100 có 40GB, các bạn có thể thử nâng batch size lên **256**; máy khác thì tùy.)
+
+---
 
 ### 🔜 Bước tiếp: train/test loop có bấm giờ
 

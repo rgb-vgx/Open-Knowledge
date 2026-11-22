@@ -29,6 +29,8 @@ food_vision_mini_examples_path.mkdir(parents=True, exist_ok=True)
 
 `parents=True` để tạo luôn thư mục cha nếu thiếu, `exist_ok=True` để không lỗi khi thư mục đã có. Sau bước này, dưới `demos/food_vision_mini/` có thêm một thư mục `examples` rỗng.
 
+---
+
 ### 🖼️ Chọn ba ảnh đại diện
 
 Mình muốn mỗi lớp một ảnh: pizza, steak, sushi. Có thể random, nhưng mình chọn tay ba ảnh trông bắt mắt hơn:
@@ -42,6 +44,8 @@ random_test_dataset_image_paths = [
 ```
 
 Tên biến là "random" cho vui thôi, thực tế mình chọn sẵn để hình demo đẹp.
+
+---
 
 ### 📄 Copy bằng `shutil.copy2`
 
@@ -57,6 +61,8 @@ for example in random_test_dataset_image_paths:
 Vì sao `copy2` thay vì `copy`? Theo tài liệu Python, `copy2` giống `copy` nhưng **cố gắng giữ nguyên metadata** của file (thời gian sửa, quyền...). Không thực sự quan trọng ở đây, nhưng mình dùng cho chắc.
 
 `example.name` lấy phần tên file cuối cùng của path — tiện để đặt tên đích. Kết quả: trong `examples/` có đúng ba ảnh, mỗi lớp một ảnh.
+
+---
 
 ### 🔁 Định dạng "list of lists" cho Gradio
 

@@ -32,6 +32,8 @@ Với Food Vision Mini:
 * **Model**: EfficientNet B2 feature extractor.
 * **Outputs**: nhãn (steak / sushi / pizza) + prediction time cho vui.
 
+---
+
 ### 🧱 Chuẩn bị model trên CPU
 
 ```python
@@ -40,6 +42,8 @@ next(iter(effnetb2.parameters())).device
 ```
 
 Hard-code **CPU** vì Hugging Face Spaces (bản miễn phí) chạy CPU trừ khi trả tiền nâng cấp GPU.
+
+---
 
 ### ✍️ Thiết kế hàm `predict()`
 
@@ -66,6 +70,8 @@ Trả về **tuple**: một `dict` và một `float`.
 
 * `float` — **thời gian dự đoán**, giúp đánh giá tốc độ thật khi chạy trên server.
 
+---
+
 ### 📝 Các bước bên trong
 
 1. **Khởi động timer**.
@@ -76,6 +82,8 @@ Trả về **tuple**: một `dict` và một `float`.
 6. Ghép thành **dictionary** `{class_name: prob}`.
 7. **Dừng timer**, tính `pred_time`.
 8. `return pred_labels_and_probs, pred_time`.
+
+---
 
 ### 🖼️ Vì sao trả dictionary thay vì nhãn?
 

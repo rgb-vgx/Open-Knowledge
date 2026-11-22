@@ -20,6 +20,8 @@ Chào các bạn! Hai video qua ta đã có `data_setup.py` và `model_builder.p
 
 Ba hàm này lấy từ notebook 04, mục "create train and test loop functions". Mình chỉ thêm **docstring** theo Google style cho từng hàm.
 
+---
+
 ### 🔤 Type annotations
 
 Trong cell có thêm **Python type annotations**. Chúng chỉ là **gợi ý** (hint), không ép buộc runtime. Ví dụ:
@@ -28,6 +30,8 @@ Trong cell có thêm **Python type annotations**. Chúng chỉ là **gợi ý** 
 * Hàm trả về một **tuple chứa hai float**.
 
 Type hint không được enforce, nhưng giúp người đọc (và chính bạn) biết kiểu dữ liệu mong đợi. Đây là tài nguyên mở rộng đáng đọc.
+
+---
 
 ### 📄 Tạo `engine.py`
 
@@ -50,6 +54,8 @@ from tqdm.auto import tqdm
 * `torch`.
 * `tqdm` từ `tqdm.auto` cho progress bar.
 
+---
+
 ### 🧩 Ghép ba hàm vào file
 
 Thay vì viết lại, mình chép từ notebook xuống theo thứ tự:
@@ -61,6 +67,8 @@ Thay vì viết lại, mình chép từ notebook xuống theo thứ tự:
 Đây là script dài nhất từ đầu section, vì nó chứa khá nhiều chức năng. Nhưng nhờ vậy, lần sau không phải viết lại.
 
 Sau khi `%%writefile` chạy xong và refresh, ta có `engine.py` hoàn chỉnh.
+
+---
 
 ### 🔌 Import và dùng thử
 
@@ -80,6 +88,8 @@ train() missing 7 required positional arguments: 'model',
 
 Đây là lỗi tốt — nó cho thấy hàm đã import được và PyTorch đang nhắc ta những gì cần truyền vào. Chi tiết cách dùng sẽ thấy khi train thật.
 
+---
+
 ### 💡 Vì sao tách riêng `engine.py`
 
 `engine` nghĩa là "động cơ" — phần lõi vận hành quá trình train: một bước train, một bước test, và vòng lặp lớn. Tách ra giúp:
@@ -87,6 +97,8 @@ train() missing 7 required positional arguments: 'model',
 * Notebook gọn hơn nhiều.
 * Dùng lại được cho model khác.
 * Dễ sửa một chỗ, áp dụng mọi nơi.
+
+---
 
 ### ✅ Chốt lại
 

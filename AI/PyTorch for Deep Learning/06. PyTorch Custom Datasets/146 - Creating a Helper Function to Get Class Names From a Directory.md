@@ -22,6 +22,8 @@ Bước đầu tiên để tự dựng custom dataset là một helper function 
 2. **Báo lỗi** nếu không tìm thấy class name — dấu hiệu cấu trúc thư mục có vấn đề.
 3. **Trả về** class names dưới dạng **list** và **dict**.
 
+---
+
 ### 🔍 Thử `os.scandir` trước
 
 ```python
@@ -35,6 +37,8 @@ print(class_names_found)
 ```
 
 Mình lưu ý một lỗi nhỏ lúc thử: ban đầu định dùng `os.scandir(image_path / target_directory)` nhưng thừa `image_path` — chỉ cần truyền đúng `target_directory` là đủ. Kết quả quét thư mục train ra ba entry: `pizza`, `sushi`, `steak`.
+
+---
 
 ### 🔥 Đóng gói thành hàm `find_classes`
 
@@ -62,6 +66,8 @@ def find_classes(directory: str) -> Tuple[List[str], Dict[str, int]]:
 * **`sorted(...)`** — đảm bảo thứ tự class names ổn định, để index không xáo trộn giữa các lần chạy.
 * **`FileNotFoundError`** — nếu `classes` rỗng, báo lỗi kèm gợi ý "kiểm tra cấu trúc file".
 * **Dict comprehension với `enumerate`** — biến list thành dict. Máy tính thích **số** hơn **chuỗi** làm nhãn, nên bước này cần thiết.
+
+---
 
 ### ✅ Kết quả
 

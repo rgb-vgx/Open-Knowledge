@@ -26,6 +26,8 @@ effnetb2_food101, effnetb2_transforms = create_effnetb2_model(num_classes=101)
 
 Kiểm tra bằng summary: input shape không đổi, **output shape = 101**, các lớp base vẫn **frozen**, chỉ classifier cuối là trainable. Số tham số trainable tăng so với bản 3 lớp vì output layer rộng hơn (101 thay vì 3) — với Food Vision Mini chỉ hơn **4.000** tham số trainable, còn 101 lớp nhiều hơn hẳn. Tổng tham số của model gần như giữ nguyên, vì phần lớn nằm ở backbone đã đóng băng.
 
+---
+
 ### ⚠️ Vì sao thêm data augmentation?
 
 Bộ Food101 có hơn **100.000 ảnh**. Dữ liệu càng nhiều, model càng dễ **overfitting** — train loss thấp hơn test loss vì model học thuộc tập train mà không generalize.
@@ -37,6 +39,8 @@ Cách chống overfitting phổ biến là **regularization**. Vài hướng:
 * Dùng **data augmentation**.
 
 Data augmentation là cách dễ nhất (sau transfer learning): biến đổi ảnh train để model khó học hơn, từ đó tăng tính đa dạng.
+
+---
 
 ### 🎨 Chọn `TrivialAugmentWide`
 
@@ -56,6 +60,8 @@ food101_test_transforms = effnetb2_transforms
 ```
 
 Lý do: augmentation chỉ dành cho train, nhằm làm dữ liệu "khó" hơn một cách nhân tạo. Tập test phải phản ánh dữ liệu thật ngoài đời, nên giữ nguyên.
+
+---
 
 ### 📊 Tóm tắt cấu hình
 

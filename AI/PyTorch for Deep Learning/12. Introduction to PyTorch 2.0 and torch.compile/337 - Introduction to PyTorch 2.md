@@ -22,6 +22,8 @@ Hôm nay là ngày PyTorch 2.0 chính thức ra mắt, cải tiến chính là *
 
 Nghe rất ấn tượng. Còn thực tế thì sao?
 
+---
+
 ### 🔬 Mình tự đo lại
 
 Khi thử `torch.compile` trong benchmark riêng, mình rút ra vài nhận xét:
@@ -31,9 +33,13 @@ Khi thử `torch.compile` trong benchmark riêng, mình rút ra vài nhận xét
 * Mức tăng của mình **không lớn bằng** release notes — nhưng vẫn quanh **10% mỗi epoch**.
 * Mình **chưa** khám phá mixed precision, kiến trúc transformer, hay các lần train dài — mà đó chính là nơi `torch.compile` có lẽ hiệu quả nhất.
 
+---
+
 ### ⚙️ Bốn công nghệ phía sau
 
 `torch.compile` được thiết kế "chỉ chạy được", nhưng phía sau là **TorchDynamo**, **AOTAutograd**, **PrimTorch** và **TorchInductor**. Release notes giải thích chi tiết. Ở mức cao, có **hai cải tiến chính**: **fusion** và **graph capture**.
+
+---
 
 ### 🍹 Fusion: xay một lần thay vì từng nguyên liệu
 
@@ -42,6 +48,8 @@ Khi thử `torch.compile` trong benchmark riêng, mình rút ra vài nhận xét
 GPU hiện đại **không thiếu compute** — nút cổ chai là tốc độ đưa dữ liệu từ CPU sang GPU, gọi là **memory bandwidth**. Thay vì tính, lưu bộ nhớ, tính, lưu bộ nhớ..., ta nối càng nhiều phép toán càng tốt để giảm chi phí bandwidth.
 
 Hình dung máy xay sinh tố. Không fusion: cho từng nguyên liệu vào, xay lại sau mỗi lần thêm — điên rồ và tốn bandwidth, dù mỗi lần xay đều nhanh. Có fusion: cho tất cả vào từ đầu rồi xay một lần — mất chút thời gian chuẩn bị nhưng lấy lại toàn bộ thời gian bandwidth.
+
+---
 
 ### 🗺️ Graph capture: đi đường quen
 
@@ -52,6 +60,8 @@ Không graph capture giống như đến vùng lạ, đi theo chỉ dẫn từng
 Có graph capture giống như lái trong khu nhà mình: gần như không phải nghĩ, nhưng mất thời gian lúc đầu để nhớ đường. Đây là caveat: tốn thời gian ghi nhớ phép toán trước, đổi lấy tốc độ các lần sau.
 
 > Đọc thêm về fusion, memory bandwidth và overhead: **"Making Deep Learning Go Brrrr From First Principles"** của Horace He.
+
+---
 
 ### 📦 Những cập nhật khác của PyTorch 2.0
 

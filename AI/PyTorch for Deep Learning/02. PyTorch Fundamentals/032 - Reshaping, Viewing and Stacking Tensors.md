@@ -45,6 +45,8 @@ torch.arange(1, 11).reshape(5, 2)   # ✅ 5*2 = 10
 torch.arange(1, 13).reshape(3, 4)   # ✅ 3*4 = 12
 ```
 
+---
+
 ### 👁️ `view`: "nhìn" tensor theo shape khác
 
 ```python
@@ -63,6 +65,8 @@ x    # phần tử đầu của x cũng = 5!
 ```
 
 Đúng vậy — sửa `z` là sửa luôn `x`, vì chúng cùng vùng nhớ. Đây là điểm mấu chốt cần nhớ.
+
+---
 
 ### 📚 `stack`: xếp nhiều tensor lại
 
@@ -91,6 +95,8 @@ PyTorch cũng có:
 
 Hai hàm này tương tự `stack` với các `dim` khác nhau, các bạn tự thử nhé.
 
+---
+
 ### 🛟 Mẹo khi Colab "trục trặc"
 
 Trong video gặp lỗi **"Save failed — automatic saving failed"**. Cách xử lý:
@@ -98,6 +104,8 @@ Trong video gặp lỗi **"Save failed — automatic saving failed"**. Cách x�
 * Cứ tiếp tục chạy vài cell, Colab thường tự khắc phục.
 * Hoặc **restart/đóng rồi mở lại** notebook.
 * Nếu sợ mất thay đổi lớn: **File → Download** notebook rồi upload lại.
+
+---
 
 ### 🎯 Chốt lại
 

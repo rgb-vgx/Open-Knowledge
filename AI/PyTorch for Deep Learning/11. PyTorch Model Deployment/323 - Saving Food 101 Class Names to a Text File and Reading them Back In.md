@@ -24,6 +24,8 @@ food_vision_big_class_names_path = food_vision_big_demo_path / "class_names.txt"
 
 Kết quả: `demos/food_vision_big/class_names.txt`.
 
+---
+
 ### ✍️ Ghi class names ra file
 
 Mỗi tên lớp nằm trên một dòng, nối bằng ký tự xuống dòng `"\n"`:
@@ -45,6 +47,8 @@ baklava
 
 Đúng định dạng mong muốn.
 
+---
+
 ### 📖 Đọc ngược lại thành list
 
 ```python
@@ -64,9 +68,13 @@ food101_class_names_loaded[:5]
 
 Nếu bỏ `.strip()`, bạn sẽ thấy `'apple_pie\n'` — nhìn thì giống nhưng khi so sánh chuỗi sẽ sai.
 
+---
+
 ### 🧠 Vì sao dùng file thay vì list?
 
 Không bắt buộc — hoàn toàn có thể hard-code list 101 phần tử. Nhưng để `app.py` gọn và dễ đọc, tách ra file là hợp lý. Đọc file text rất nhanh, không ảnh hưởng hiệu năng app.
+
+---
 
 ### ✅ Đã có gì
 

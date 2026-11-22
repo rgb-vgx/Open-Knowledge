@@ -40,6 +40,8 @@ Phải thấy `04-pizza-dad.jpeg`.
 
 Các bạn có thể dùng ảnh khác — ảnh tự chụp, ảnh món ăn yêu thích — miễn nằm trong nhóm lớp của Food101. Thậm chí có thể cố tình chọn ảnh "khó" để xem model sai ở đâu; mình sẽ nói thêm về trường hợp này ở phần deploy.
 
+---
+
 ### 📦 Move model vào thư mục
 
 File model đang ở `models/`. Move sang `demos/food_vision_big/`:
@@ -50,6 +52,8 @@ mv models/09_pretrained_effnetb2_feature_extractor_food101_20_percent.pth \
 ```
 
 Kiểm tra lại bằng `ls`, file `.pth` phải nằm cạnh `app.py` (sau này) và `examples/`.
+
+---
 
 ### ⚠️ Lưu ý khi chạy lại
 
@@ -62,6 +66,8 @@ try:
 except FileNotFoundError:
     print("[INFO] No model at source, perhaps already moved.")
 ```
+
+---
 
 ### ✅ Trạng thái
 

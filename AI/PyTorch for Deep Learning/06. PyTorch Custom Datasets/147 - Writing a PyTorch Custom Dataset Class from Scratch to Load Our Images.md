@@ -29,6 +29,8 @@ Sáu bước:
 5. Override **`__len__`**.
 6. Override **`__getitem__`**.
 
+---
+
 ### 🔥 Code đầy đủ
 
 ```python
@@ -69,9 +71,11 @@ class ImageFolderCustom(Dataset):
             return img, class_idx
 ```
 
+---
+
 ### 🔍 Giải thích từng phần
 
-* **`glob("*/*.jpg")`** — lấy mọi ảnh: `*` đầu = `train`/`test`, `/`, `*` sau = lớp, `.jpg` = file. (Transcript nói `*/*.jpg` theo cấu trúc `train/pizza/xxx.jpg`.)
+* **`glob("*/*.jpg")`** — lấy mọi ảnh: `*` đầu = tên lớp (`pizza`/`steak`/`sushi`), `/`, `*` sau = tên file, `.jpg` = phần mở rộng (vì `targ_dir` đã là thư mục `train`/`test`).
 * **`find_classes(targ_dir)`** — tái dùng hàm bài trước, gán vào `self.classes` và `self.class_to_idx`.
 * **`load_image`** — mở ảnh bằng `Image.open` từ `self.paths[index]`.
 * **`__len__`** — trả về `len(self.paths)`, tức số mẫu.
@@ -83,9 +87,13 @@ class ImageFolderCustom(Dataset):
 
 Chỗ `parent.name` giả định dữ liệu theo đúng chuẩn `data_folder/class_name/image.jpg` — nếu format khác, phải chỉnh.
 
+---
+
 ### ⚖️ Cái giá của tự viết
 
 Ưu điểm là tùy biến gần như vô hạn, nạp được nhiều loại dữ liệu. Nhược điểm là **nhiều code → dễ lỗi**. Vì vậy bài sau ta sẽ **test** class này, đối chiếu với `ImageFolder` gốc.
+
+---
 
 ### ✅ Tạm kết
 

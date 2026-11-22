@@ -25,6 +25,8 @@ Ta sẽ so sánh hai model:
 
 Làm baseline trước giúp ta có mốc để biết augmentation có thực sự giúp ích không. Kiến trúc vẫn là **TinyVGG** từ CNN Explainer: input **64×64×3**, qua các lớp conv/ReLU/max-pool, rồi output khớp số lớp — với ta là **3 lớp** pizza, steak, sushi (không phải 10 như bản gốc).
 
+---
+
 ### 🔥 Transform đơn giản
 
 ```python
@@ -38,6 +40,8 @@ simple_transform = transforms.Compose([
 
 Chỉ resize về **64×64** (khớp input TinyVGG) rồi `ToTensor()` — pixel chuyển về khoảng **0–1**. Không có augmentation, đúng tinh thần baseline. Mình khuyên các bạn tự thử nạp dữ liệu trước khi xem tiếp.
 
+---
+
 ### 📦 Nạp dữ liệu bằng ImageFolder
 
 ```python
@@ -48,6 +52,8 @@ test_data_simple = datasets.ImageFolder(root=test_dir, transform=simple_transfor
 ```
 
 Cả train và test dùng **cùng** `simple_transform`. (Tên biến có hậu tố `simple` để phân biệt với phiên bản augmentation về sau.)
+
+---
 
 ### 🚚 Tạo DataLoader
 
@@ -74,6 +80,8 @@ test_dataloader_simple = DataLoader(
 ```
 
 `num_workers = os.cpu_count()` — Colab của mình thường có 2 CPU. `shuffle=True` cho train, `False` cho test.
+
+---
 
 ### ✅ Tạm kết
 

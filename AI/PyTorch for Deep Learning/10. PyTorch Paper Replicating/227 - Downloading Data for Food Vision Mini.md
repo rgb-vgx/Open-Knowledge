@@ -22,6 +22,8 @@ Paper ViT nói rằng vision transformer đạt kết quả so với **state of 
 
 Mình dùng lại đúng bộ ảnh **pizza, steak, sushi** như các section trước — để so sánh **apples to apples**, tức cùng một bộ data thì mới so sánh được công bằng giữa các model trên ảnh pizza, steak, sushi.
 
+---
+
 ### ⬇️ Gọi hàm download
 
 `download_data` là helper function nằm trong `helper_functions.py`, mình đã viết từ section 7 (Experiment Tracking). Cách dùng:
@@ -36,6 +38,8 @@ image_path = download_data(
 ```
 
 Chạy xong phải nhận lại một `image_path`. Nếu không chắc thì cứ chạy thử — "if in doubt, run the code". Download không lâu, và ta có cấu trúc `train` / `test` với ba class **pizza, steak, sushi**.
+
+---
 
 ### 🛣️ Tạo train/test path
 

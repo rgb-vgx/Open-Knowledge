@@ -24,9 +24,13 @@ Nếu mình kể hết mọi thứ về deep learning, machine learning, PyTorch
 
 Mình muốn các bạn thấy rằng **search như vậy là bình thường, và được khuyến khích**. Suốt khóa học các bạn sẽ thấy mình làm điều này rất nhiều.
 
+---
+
 ### 📚 Nguồn học liệu chính thức
 
 Elon Musk từng tweet một hình vui về các "cấp độ" học: học đại học, khóa online, YouTube, bài viết, meme, rồi "hóa thần". Mình thì nghiêm túc hơn: toàn bộ tài liệu khóa học nằm ở **learnpytorch.io**, dưới dạng **online book**. Các bạn có thể đọc song song khi xem video, và theo thời gian sách sẽ có thêm chương.
+
+---
 
 ### 🧱 Module này: tensor và phép toán trên tensor
 
@@ -42,11 +46,15 @@ Nhìn rộng hơn, cả khóa học sẽ đi qua:
 6. **Lưu và load model** — ví dụ export model ra ứng dụng.
 7. **Dùng model đã train để dự đoán trên dữ liệu của riêng bạn** (custom data) — phần rất vui.
 
+---
+
 ### 👨‍🍳 Học như đầu bếp, không chỉ như nhà khoa học
 
 Mình hay nói vui: chúng ta sẽ làm như **đầu bếp**, không phải như nhà hóa học.
 
 Nhà hóa học cần chính xác tuyệt đối. Đầu bếp thì kiểu "thêm chút muối, chút bơ, nếm thử — ngon là được". Machine learning là sự pha trộn của cả hai: một phần khoa học, một phần nghệ thuật. Nên mình thích gọi đây là **"nấu ăn với PyTorch"**.
+
+---
 
 ### 🔄 Workflow PyTorch sáu bước
 
@@ -62,6 +70,8 @@ Nhà hóa học cần chính xác tuyệt đối. Đầu bếp thì kiểu "thê
 6. **Lưu và load lại model đã train**.
 
 Các bước được đánh số cho dễ hiểu, nhưng thực tế có thể trộn qua lại tùy giai đoạn.
+
+---
 
 ### 🔜 Tiếp theo
 

@@ -20,6 +20,8 @@ Ta đã thấy best model làm tốt thế nào. Trước khi kết thúc sectio
 
 Mình khuyến khích bạn thử trên ảnh riêng, nhưng bài này dùng **ảnh pizza dad** quen thuộc — ảnh bố mình đang ăn pizza. Đây là ảnh đã được dùng để test model xuyên suốt khóa học, giữ cho nhất quán.
 
+---
+
 ### ⬇️ Tải ảnh vào Colab
 
 Ta tái dùng code tải ảnh từ bài transfer learning: dùng `requests` tải về nếu chưa có. Lần này code báo lỗi **`data_path is not defined`** — hóa ra ta chưa định nghĩa `data_path`. Đúng là "cái lần duy nhất mình nói không cần xem lại code thì lại phải xem".
@@ -34,6 +36,8 @@ custom_image_path = Path("data/pizza_dad.jpeg")
 
 Rồi chạy lại code tải ảnh, nó ghi nội dung ra `custom_image_path`. Ảnh đã có.
 
+---
+
 ### 🔮 Dự đoán
 
 ```python
@@ -44,11 +48,15 @@ pred_and_plot_image(model=best_model,
 
 Chạy — và **hai ngón tay cái giơ lên**! Model dự đoán **pizza** với xác suất **0.982**.
 
+---
+
 ### 🎯 So sánh độ "tự tin"
 
 Wow — đây có vẻ là model **tự tin nhất** từ trước tới giờ. Nhớ lại section transfer learning trước: EffNetB0 trên 10% dữ liệu, 5 epoch cho xác suất dự đoán gần như **chỉ bằng một nửa** con số này.
 
 Cần phân biệt: xác suất cao hơn **không có nghĩa là đúng hơn** — chỉ là model **tự tin hơn**. Nhưng theo mình, điều đó gợi ý rằng các pattern nó học được **tốt hơn** các model trước.
+
+---
 
 ### ✅ Tạm kết
 

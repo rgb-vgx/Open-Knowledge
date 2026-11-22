@@ -22,6 +22,8 @@ Trong notebook section 2 có phần "The missing piece: non-linearity": nếu d�
 
 Nhưng nhìn ảnh bag thì có vẻ khá "thẳng" — toàn đường thẳng. Vậy phi tuyến có giúp ích không? Không biết trước. Đó là phần **experimentation**: thử rồi xem.
 
+---
+
 ### 📐 `ReLU` hoạt động thế nào?
 
 **ReLU** (Rectified Linear Unit) là activation phi tuyến:
@@ -30,6 +32,8 @@ Nhưng nhìn ảnh bag thì có vẻ khá "thẳng" — toàn đường thẳng.
 * Input dương → giữ nguyên.
 
 Chỉ vậy thôi, nhưng đủ để model học được đường gấp khúc thay vì đường thẳng.
+
+---
 
 ### 🏗️ Code Model 1
 
@@ -54,6 +58,8 @@ So với Model 0, chỉ thêm hai lớp `nn.ReLU()`. Thứ tự thường thấy
 Lưu ý: ReLU **không đổi shape** dữ liệu. Bạn có thể in shape trước/sau để kiểm chứng. Vì vậy `out_features` của linear này vẫn phải khớp `in_features` của linear kia.
 
 Nếu bỏ hai lớp ReLU đi, ta quay đúng về Model 0 — đây là cách hay để thấy mình chỉ thêm đúng hai dòng.
+
+---
 
 ### ⚙️ Khởi tạo và đẩy lên GPU
 
@@ -80,9 +86,13 @@ next(model_1.parameters()).device
 
 `index=0` nghĩa là GPU đầu tiên — máy chỉ có một Tesla T4 nên model nằm trên đó.
 
+---
+
 ### 💡 Class linh hoạt như function
 
 Nhấn mạnh: class cũng linh hoạt như function. Cần thêm use case khác cho model class thì cứ thêm tham số, thêm logic vào `__init__`. Đừng ngại.
+
+---
 
 ### ✅ Tạm kết
 

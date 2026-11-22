@@ -20,6 +20,8 @@ Video trước ta đã chơi với set device toàn cục và context manager. G
 
 Ta tập trung vào **GPU NVIDIA** vì đó là loại mình có nhiều quyền truy cập nhất (minh họa bằng A100). PyTorch 2.0 vẫn chạy trên mọi GPU chạy được bản trước đó; chỉ là **mức tăng tốc** rõ nhất khi GPU có **compute capability cao**. Muốn tra điểm của GPU mình, xem trang NVIDIA Developer.
 
+---
+
 ### 🧩 Bốn thực nghiệm, cùng một setup
 
 Cả bốn dùng **cùng model và dataset**:
@@ -37,6 +39,8 @@ Cả bốn dùng **cùng model và dataset**:
 
 Thực nghiệm 3 và 4 thực chất là 1 và 2 nhân ba, để lấy **trung bình** — tránh kết quả may rủi ("fluke").
 
+---
+
 ### ⚙️ Các tham số giữ nguyên
 
 * **Batch size: 128**
@@ -47,9 +51,13 @@ Mình dùng batch size khá lớn vì như đã bàn ở video intro: **tăng t�
 
 > Đây là cấu hình cố ý nhắm tới A100 — đúng con GPU mà đội PyTorch dùng để benchmark. Nếu GPU của các bạn **ít bộ nhớ hơn**, hãy **giảm batch size và image size**. Ta sẽ làm việc này programmatically ở video sau.
 
+---
+
 ### 💾 Kiểm tra bộ nhớ GPU bằng nvidia-smi
 
 Cách nhanh để biết mình còn bao nhiêu VRAM: chạy `nvidia-smi`. A100 cho ra **40GB**, tức **40.960MB** — một trong những GPU lớn nhất có thể mua.
+
+---
 
 ### 🔜 Bước tiếp: dựng model và transforms
 

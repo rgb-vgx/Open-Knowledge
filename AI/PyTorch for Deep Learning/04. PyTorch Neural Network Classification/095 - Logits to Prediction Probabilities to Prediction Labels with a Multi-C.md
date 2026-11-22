@@ -1,5 +1,5 @@
 ---
-title: 'Logits sang xác suất sang nhãn với model multiclass'
+title: 'Bài 95 — Logits sang xác suất sang nhãn với model multiclass'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 95
@@ -35,6 +35,8 @@ y_blob_test = y_blob_test.to(device)
 y_blob_train = y_blob_train.to(device)
 ```
 
+---
+
 ### 🔢 Mỗi mẫu có 4 logit, không phải 1
 
 ```python
@@ -43,6 +45,8 @@ y_logits
 ```
 
 Nhìn kỹ: mỗi mẫu là **bốn con số**, không phải một. Vì model có `out_features=4` — **một logit cho mỗi lớp**. Đó là **raw output** của model, trước mọi activation.
+
+---
 
 ### 🌀 Bước 2: softmax để ra xác suất
 
@@ -65,6 +69,8 @@ softmax(x)_i = exp(x_i) / sum(exp(x_j))
 
 Tức `torch.exp(x)` chia cho tổng `torch.exp` của mọi phần tử — các bạn tự code lại được nếu muốn (giống bài replicate activation).
 
+---
+
 ### 🎯 Bước 3: argmax để ra nhãn
 
 ```python
@@ -76,6 +82,8 @@ y_preds
 Với binary mình **làm tròn**; với multiclass mình lấy **argmax** — vị trí (index) của xác suất lớn nhất. Ví dụ nếu xác suất cao nhất ở index **1**, lớp dự đoán là **1**.
 
 Giờ `y_preds` đã **cùng format** với `y_blob_test` (đều là nhãn). Dù lúc này model chưa train nên đoán **bừa** — sai rất nhiều — nhưng format đã khớp. Sau khi train, chúng sẽ dần khớp cả giá trị.
+
+---
 
 ### 📋 Tóm tắt chuỗi chuyển đổi
 

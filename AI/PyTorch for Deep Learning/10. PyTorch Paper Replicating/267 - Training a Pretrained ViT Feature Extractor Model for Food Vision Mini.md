@@ -42,6 +42,8 @@ pretrained_vit_results = engine.train(
 
 Dùng đúng `train_dataloader_pretrained` và `test_dataloader_pretrained` — bộ dataloader đã được transform khớp với model pre-trained.
 
+---
+
 ### 📊 Kết quả: khác một trời một vực
 
 Ngay từ đầu đã **hơn 90%** test accuracy, train accuracy lên **95-97%**, loss đi xuống đúng hướng. Có lúc dao động quanh 90 rồi vượt gần 94, kết thúc vững vàng.
@@ -55,6 +57,8 @@ So sánh trực tiếp:
 
 Model pre-trained **vừa chính xác hơn hẳn, vừa nhanh hơn**. Đây có lẽ là model tốt nhất từ trước tới nay của ta.
 
+---
+
 ### 📈 Loss curve rất đẹp
 
 ```python
@@ -65,14 +69,20 @@ plot_loss_curves(pretrained_vit_results)
 
 Loss đi đúng hướng, accuracy đi đúng hướng. Chưa nằm đúng "Goldilocks zone" hoàn hảo, nhưng đẹp hơn hẳn lần trước. Cách cải thiện thêm số một vẫn là **thêm dữ liệu** — biện pháp hiệu quả nhất cho deep learning.
 
+---
+
 ### 💡 Sức mạnh của transfer learning
 
 Ta mất cả một section để replicate ViT từ đầu. Còn bản pre-trained: khoảng **20 dòng code** (thậm chí ít hơn) kết hợp `torchvision.models` và weights có sẵn, đã cho kết quả vượt trội trên lượng dữ liệu nhỏ. Đó là sức mạnh của transfer learning.
+
+---
 
 ### 🎁 Thử thách và nơi tìm model pre-trained
 
 * Thử bộ weights **SWAG** (trong `torchvision`) — quy trình tương tự, kết quả trên ImageNet còn tốt hơn.
 * Nguồn model pre-trained: **torchvision**, **Hugging Face Hub**, **`timm`** (PyTorch Image Models), và **Papers with Code** (research state-of-the-art kèm code).
+
+---
 
 ### ✅ Tiếp theo
 

@@ -28,15 +28,21 @@ Với EfficientNet B0, vector đó có **kích thước 1280**. Classifier hiệ
 
 Ta sẽ đổi thành **3** cho pizza/steak/sushi — hoặc 10, 100 tùy số class bài toán.
 
+---
+
 ### 🧊 "Frozen" nghĩa là gì?
 
 Khi nói **base layers stay frozen**, nghĩa là các layer nền **không được cập nhật** tham số trong quá trình train. Chúng đã học trên ImageNet rồi, giữ nguyên.
 
 Chỉ phần **output head** được train trên dữ liệu mới. Đó là **phần duy nhất trainable** của một feature extractor.
 
+---
+
 ### 🥇 Kiểu 1 — Original model (không đổi gì)
 
 Nếu dữ liệu của bạn **đúng y như** dữ liệu model được train (ví dụ ImageNet 1000 class), bạn dùng nguyên model, không chỉnh sửa.
+
+---
 
 ### 🥈 Kiểu 2 — Feature extraction
 
@@ -50,11 +56,15 @@ Cách làm:
 
 Ta thay đổi **input data** (dữ liệu riêng) và **output head** (3 class), còn feature layer giữ nguyên.
 
+---
+
 ### 🥉 Kiểu 3 — Fine-tuning
 
 Phù hợp khi bạn có **lượng lớn dữ liệu** — ví dụ 1000 ảnh mỗi class chứ không phải 100.
 
 Cách làm: **unfreeze** một phần base layer và cập nhật weight của chúng theo dữ liệu custom. Với ít dữ liệu, fine-tune dễ làm hỏng pattern đã học — nên thường chỉ nên làm khi có nhiều dữ liệu.
+
+---
 
 ### 🔢 Thứ tự quan trọng
 
@@ -64,6 +74,8 @@ Quy trình điển hình:
 2. Chuyển sang **feature extraction**: đóng băng base layer, train head.
 3. Khi cần, **fine-tune**: mở khóa dần từ **trên xuống dưới** (top-down).
 
+---
+
 ### 📊 Bảng tóm tắt
 
 | Kiểu | Base layer | Output head | Khi nào dùng |
@@ -71,6 +83,8 @@ Quy trình điển hình:
 | Original | Giữ nguyên | Giữ nguyên | Dữ liệu giống hệt model gốc |
 | Feature extraction | Frozen | Train mới | Ít dữ liệu custom |
 | Fine-tuning | Unfreeze dần | Train | Nhiều dữ liệu custom |
+
+---
 
 ### 🎯 Chốt lại
 

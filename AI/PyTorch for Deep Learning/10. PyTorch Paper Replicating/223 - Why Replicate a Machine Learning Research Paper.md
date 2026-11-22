@@ -26,11 +26,15 @@ Mình lấy ý này từ **George Hotz** (founder của **comma.ai**, công ty l
 
 Nghe đơn giản, nhưng cái hay nằm ở chỗ chọn paper nào. Paper mình đang dùng đến từ **Google Research Brain team** — một nhóm cực kỳ mạnh về machine learning. Paper này còn tự nhận là **state of the art** trên computer vision: "vanilla Transformers competitive with or even better than state of the art CNNs". Nói cách khác, đây là một trong những thứ tốt nhất ở thời điểm công bố.
 
+---
+
 ### ⚙️ ML engineer thực sự làm gì?
 
 Một machine learning engineer viết code để lấy **data**, xây **model** tìm pattern trong data đó, rồi **deploy** model để nó đem lại "trí tuệ" cho một ứng dụng nào đó. Replicate paper là bài tập mô phỏng đúng vòng đó — chỉ khác là model đã có sẵn thiết kế trong paper.
 
 Có một điểm cần nói thêm: machine learning engineering còn bao gồm **xây infrastructure quanh model** — cách load data, transform data, các bước **data preprocessing** trước khi đưa vào model. Và sau khi có model, còn phải tìm cách **deploy** để đưa nó tới tay người dùng.
+
+---
 
 ### 🎯 Trọng tâm của section này
 

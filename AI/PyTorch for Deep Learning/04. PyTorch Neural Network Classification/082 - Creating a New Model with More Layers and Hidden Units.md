@@ -1,5 +1,5 @@
 ---
-title: 'Tạo model mới với nhiều layer và hidden unit hơn'
+title: 'Bài 82 — Tạo model mới với nhiều layer và hidden unit hơn'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 82
@@ -25,6 +25,8 @@ Bài trước mình bàn các cách cải thiện model **từ góc độ model*
 
 Mọi thứ mình sắp đổi đều là **hyperparameter**.
 
+---
+
 ### 🔧 Ba thay đổi cho `CircleModelV1`
 
 1. Tăng **hidden unit** từ **5 → 10**.
@@ -34,6 +36,8 @@ Mọi thứ mình sắp đổi đều là **hyperparameter**.
 Nhắc lại lời cảnh báo: đổi cả ba cùng lúc thì không biết cái nào tạo ra cải thiện (hoặc tệ đi). Nhưng cứ thử cho biết.
 
 Mình vẫn **subclass `nn.Module`** thay vì `nn.Sequential` — để luyện tay và vì các bạn sẽ gặp kiểu viết này rất nhiều ngoài thực tế, nhất là với model phức tạp.
+
+---
 
 ### ⌨️ Code
 
@@ -46,7 +50,6 @@ class CircleModelV1(nn.Module):
         self.layer_3 = nn.Linear(in_features=10, out_features=1)
 
     def forward(self, x):
-        # z is a common name for logits
         # performs all operations at once for speed ups
         return self.layer_3(self.layer_2(self.layer_1(x)))
 ```
@@ -56,6 +59,8 @@ class CircleModelV1(nn.Module):
 * `layer_1`: `2 → 10` (`X_train` có 2 feature).
 * `layer_2`: `10 → 10` — `in_features` **phải khớp** `out_features` của layer trước.
 * `layer_3`: `10 → 1` — output một số, khớp với `y`.
+
+---
 
 ### ⚡ Vì sao viết `self.layer_3(self.layer_2(self.layer_1(x)))`?
 
@@ -75,6 +80,8 @@ def forward(self, x):
 ```
 
 Hai cách cho cùng kết quả. Mình dùng cách hai vì **PyTorch tính toán cả chuỗi một lượt**, tận dụng được các **speed up** phía sau. Chữ `z` là tên thường dùng cho **logits** (đầu ra thô) — nhưng biến trung gian đặt tên gì cũng được.
+
+---
 
 ### 🚀 Khởi tạo
 

@@ -25,6 +25,8 @@ x
 
 Kết quả: `tensor([1, 11, 21, 31, 41, 51, 61, 71, 81, 91])` — mười phần tử, từ 1 đến 91.
 
+---
+
 ### 🔽 `argmin`: vị trí của giá trị nhỏ nhất
 
 ```python
@@ -43,6 +45,8 @@ x[0]    # tensor(1)
 
 Lưu ý: kết quả của `argmin` là **index**, không phải giá trị. Đây chính là ý nghĩa của "arg" — trả về **đối số** (vị trí) mà tại đó hàm đạt min.
 
+---
+
 ### 🔼 `argmax`: vị trí của giá trị lớn nhất
 
 ```python
@@ -57,6 +61,8 @@ x[9]    # tensor(91)
 
 Đúng: index 9 (phần tử thứ mười) chứa `91`.
 
+---
+
 ### 🤔 Khi nào dùng arg thay vì min/max?
 
 * **`min`/`max`** → trả về **giá trị**.
@@ -65,6 +71,8 @@ x[9]    # tensor(91)
 Nếu bạn chỉ cần con số nhỏ nhất, dùng `min`. Nhưng nếu bạn cần biết **nó xuất hiện ở đâu**, dùng `argmin`/`argmax`.
 
 Đặc biệt, **`argmax`** rất hữu ích khi dùng hàm kích hoạt **softmax** sau này — vì softmax cho ra xác suất của từng lớp, và ta thường muốn biết **lớp nào có xác suất cao nhất** (vị trí), chứ không chỉ con số xác suất. Phần này sẽ học kỹ sau.
+
+---
 
 ### 🎯 Chốt lại
 

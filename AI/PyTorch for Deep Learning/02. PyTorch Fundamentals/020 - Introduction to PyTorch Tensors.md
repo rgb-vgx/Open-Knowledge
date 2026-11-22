@@ -35,6 +35,8 @@ scalar.item()
 
 Kết quả là `7` kiểu Python `int` bình thường.
 
+---
+
 ### ➡️ Vector: tensor một chiều
 
 ```python
@@ -58,6 +60,8 @@ vector.shape
 
 Trả về `torch.Size([2])` — vector có hình dạng `2`, tức hai phần tử.
 
+---
+
 ### 🔲 Matrix: tensor hai chiều
 
 ```python
@@ -69,7 +73,7 @@ MATRIX.ndim
 Hai cặp ngoặc vuông → **2 chiều**.
 
 ```python
-matrix.shape
+MATRIX.shape
 ```
 
 Trả về `torch.Size([2, 2])` — 2 nhân 2, tổng cộng 4 phần tử.
@@ -77,24 +81,26 @@ Trả về `torch.Size([2, 2])` — 2 nhân 2, tổng cộng 4 phần tử.
 Index theo trục 0:
 
 ```python
-matrix[0]
+MATRIX[0]
 ```
 
-Cho ra `tensor([7, 8])`; index `matrix[1]` cho `tensor([9, 10])`. Đây chính là lúc các cặp ngoặc phát huy tác dụng.
+Cho ra `tensor([7, 8])`; index `MATRIX[1]` cho `tensor([9, 10])`. Đây chính là lúc các cặp ngoặc phát huy tác dụng.
+
+---
 
 ### 🧊 Tensor: ba chiều trở lên
 
 ```python
-tensor = torch.tensor([[[1, 2, 3],
+TENSOR = torch.tensor([[[1, 2, 3],
                         [3, 6, 9],
                         [2, 5, 4]]])
-tensor.ndim
+TENSOR.ndim
 ```
 
 Ba cặp ngoặc vuông → **3 chiều**.
 
 ```python
-tensor.shape
+TENSOR.shape
 ```
 
 Trả về `torch.Size([1, 3, 3])`. Đọc thế nào?
@@ -103,7 +109,9 @@ Trả về `torch.Size([1, 3, 3])`. Đọc thế nào?
 * Số `3` đầu ứng với ba hàng bên trong.
 * Số `3` sau ứng với ba phần tử mỗi hàng.
 
-Nói cách khác, đây là **một** khối hình `3 × 3`. Index `tensor[0]` sẽ lấy ra khối `3 × 3` đó.
+Nói cách khác, đây là **một** khối hình `3 × 3`. Index `TENSOR[0]` sẽ lấy ra khối `3 × 3` đó.
+
+---
 
 ### 🖼️ Hình dung các chiều
 

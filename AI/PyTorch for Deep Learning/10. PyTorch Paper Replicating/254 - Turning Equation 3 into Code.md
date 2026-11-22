@@ -22,6 +22,8 @@ Transformer giữ **embedding dimension** không đổi xuyên suốt. Ngoài ra
 
 Lần này mình **không quên** `super().__init__()` nữa nhé!
 
+---
+
 ### 🧱 Dựng layer norm và MLP
 
 ```python
@@ -51,9 +53,13 @@ class MLPBlock(nn.Module):
 
 Chú ý sự khớp chiều: `out_features` của layer đầu (`3072`) phải bằng `in_features` của layer sau — nếu lệch sẽ lỗi shape mismatch. Layer thứ hai chiếu **ngược về** `embedding_dim` (`768`).
 
+---
+
 ### 💡 Vì sao phình lên 3072 rồi thu về 768?
 
 Ta dùng layer đầu để **chiếu lên không gian lớn hơn** nhằm hy vọng nắm bắt thêm thông tin, rồi layer sau **nén lại** về embedding dimension. Liệu cách này có hiệu quả không? Kết quả của paper cho thấy kiến trúc này đạt kết quả rất tốt so với state-of-the-art — chắc hẳn các tác giả có lý do.
+
+---
 
 ### 🚀 Forward method
 
@@ -65,6 +71,8 @@ Ta dùng layer đầu để **chiếu lên không gian lớn hơn** nhằm hy v�
 ```
 
 Có thể viết gọn thành `return self.mlp(self.layer_norm(x))` — cách này có thể được hưởng lợi từ operator fusion. Nhưng ở đây vẫn thiếu **residual connection**; ta sẽ thêm khi ghép transformer encoder.
+
+---
 
 ### 🧪 Test forward pass
 
@@ -82,6 +90,8 @@ print(f"Output shape of MLP block: {patched_image_through_mlp_block.shape}")
 Kết quả: shape vào và ra đều `(1, 197, 768)`, nhưng **gần như mọi giá trị đều thay đổi**. Lưu ý lần test này chưa đúng thứ tự tuyệt đối vì chưa có residual — ta chỉ kiểm tra xem output của block trước có đi lọt qua block sau không.
 
 Đừng lo nếu giá trị của bạn khác mình — tất cả đều ngẫu nhiên vì mô hình chưa học gì.
+
+---
 
 ### ✅ Chốt lại
 

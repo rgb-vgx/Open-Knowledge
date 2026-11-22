@@ -24,6 +24,8 @@ from tqdm.auto import tqdm
 
 Không gì thú vị bằng ngồi nhìn neural network train — progress bar cho biết đang ở epoch nào.
 
+---
+
 ### 🔥 Hàm `train`
 
 ```python
@@ -31,7 +33,7 @@ from tqdm.auto import tqdm
 
 def train(model, train_dataloader, test_dataloader,
           optimizer, loss_fn=nn.CrossEntropyLoss(),
-          epochs: int = 5, device=device):
+          epochs=5, device=device):
     # 1. Dict kết quả
     results = {
         "train_loss": [], "train_acc": [],
@@ -57,6 +59,8 @@ def train(model, train_dataloader, test_dataloader,
     return results
 ```
 
+---
+
 ### 🔍 Giải thích
 
 * **`loss_fn=nn.CrossEntropyLoss()`** — mặc định hợp lý cho bài **multiclass classification**; có thể truyền loss khác nếu muốn.
@@ -65,11 +69,15 @@ def train(model, train_dataloader, test_dataloader,
 * **`results` dict** — mỗi list bốn khóa `train_loss`, `train_acc`, `test_loss`, `test_acc`; `.append()` mỗi epoch để vẽ loss curve sau này.
 * **Format `:.4f`** — in 4 chữ số thập phân cho gọn.
 
-Mình thừa nhận có vài lần quên dấu phẩy và gõ sai khiến Colab báo lỗi cú pháp — sửa xong là chạy. Chuyện thường ngày.
+Ban đầu mình để type annotation `epochs: int = 5` thì Colab báo lỗi kiểu `Epochs is not defined`, nên đã bỏ annotation đi. Chuyện thường ngày.
+
+---
 
 ### ⚖️ Lưu ý
 
 Đây chỉ là **một cách** triển khai, không phải "gold standard". Theo thời gian các bạn sẽ cần thêm chức năng (logging, early stopping, lưu checkpoint...) và tự viết thêm. Nhưng hàm này đủ để train model ngay.
+
+---
 
 ### ✅ Tạm kết
 

@@ -22,6 +22,8 @@ Nếu lúc nào cũng phải tự viết từng bước để tái tạo món g�
 
 Vậy với một bài toán phức tạp thì sao?
 
+---
+
 ### 🚗 Bài toán tự lái xe
 
 Hãy tưởng tượng các bạn phải viết **mọi luật để lái xe**. Khi học lái, các bạn mất có thể 20 giờ, 100 giờ. Nhưng giờ hãy thử liệt kê từng luật một:
@@ -36,11 +38,15 @@ Mới đó đã nửa tá luật, các bạn có thể kể thêm rất nhiều,
 
 Đó chính là lúc machine learning và deep learning phát huy tác dụng.
 
+---
+
 ### 💬 "ML dùng được cho mọi thứ miễn là biến nó thành số"
 
 Mình hay chia sẻ một bình luận hay trên video **2020 Machine Learning Roadmap** của mình. Đại ý: bạn có thể dùng ML cho **bất cứ thứ gì**, miễn là bạn chuyển được nó thành con số.
 
 Đúng như mình nói ở bài trước: machine learning là biến thứ gì đó thành số để máy đọc được, rồi lập trình để tìm pattern. Khác một chỗ — với thuật toán ML, **chúng ta viết thuật toán, còn nó tự tìm pattern**, không phải chúng ta. Về lý thuyết, đó có thể là bất kỳ input hay output nào trong vũ trụ. Nghe khá đã, đúng không?
+
+---
 
 ### 📏 Nhưng có phải lúc nào cũng nên dùng?
 
@@ -51,6 +57,8 @@ Nếu các bạn có thể xây một **hệ thống dựa trên luật đơn gi
 Nói cách khác: nếu giải được bài toán bằng một hệ rule-based đơn giản mà không cần machine learning, hãy làm vậy.
 
 Đây là lời khuyên từ **Google's Machine Learning Handbook** (mình rất khuyến khích các bạn đọc). Các bạn có thể Google để tìm, link cũng sẽ có trong phần tài nguyên của khóa.
+
+---
 
 ### 🎯 Chốt lại
 

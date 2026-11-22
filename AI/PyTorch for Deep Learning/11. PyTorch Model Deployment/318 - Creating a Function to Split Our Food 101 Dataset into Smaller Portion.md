@@ -25,12 +25,16 @@ Trước khi train, mình cần một con số để hướng tới. Paper gốc
 
 Mục tiêu của mình: **vượt 56.4%** trên test set, nhưng chỉ dùng **20% dữ liệu train**. Paper gốc dùng 100% dữ liệu và train tới **6 ngày**; mình có lợi thế là network hiện đại và transfer learning.
 
+---
+
 ### 📉 Vì sao 20%?
 
 * 20% của 75.750 train ≈ **15.150 ảnh**.
 * 20% của 25.250 test ≈ **5.050 ảnh**.
 
 Như vậy mỗi epoch nhanh hơn nhiều, đủ để biết hướng đi đúng hay sai. Khi mọi thứ ổn, các bạn có thể train lại trên toàn bộ dữ liệu như bài tập mở rộng.
+
+---
 
 ### 🧰 Hàm `split_dataset`
 
@@ -56,6 +60,8 @@ def split_dataset(dataset, split_size: float = 0.2, seed: int = 42):
 Điểm quan trọng: **tổng `lengths` phải bằng độ dài dataset**. Nếu dataset có 10 phần tử mà chia `[3, 7]` thì được; `[3, 6]` sẽ lỗi. Ở đây `length_2 = len(dataset) - length_1` đảm bảo điều đó.
 
 `generator=torch.manual_seed(42)` giúp kết quả chia **tái lập được** giữa các lần chạy.
+
+---
 
 ### 🚀 Áp dụng cho train và test
 

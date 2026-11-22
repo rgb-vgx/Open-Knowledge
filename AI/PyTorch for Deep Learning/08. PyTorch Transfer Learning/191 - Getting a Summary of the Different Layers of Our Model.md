@@ -20,6 +20,8 @@ Chào các bạn! Video trước ta bàn các kiểu transfer learning và thố
 
 Ở phần setup, ta đã đảm bảo có **`torchinfo`**. Package này cho ta bảng tóm tắt chi tiết hơn `print(model)`.
 
+---
+
 ### 🧾 Gọi `summary`
 
 ```python
@@ -41,6 +43,8 @@ Giải thích:
 
 Tài liệu `torchinfo` nằm trên GitHub (cảm ơn Tyler Yep đã tạo package này).
 
+---
+
 ### 📊 Đọc kết quả
 
 Bảng in ra:
@@ -50,6 +54,8 @@ Bảng in ra:
 * Output **toàn model** shape `(1, 1000)`.
 
 Từng layer biến đổi shape: input → output → input → output... Bạn có thể đi từng dòng để xem ảnh bị "nhào nặn" thế nào. Mỗi layer có số parameter khác nhau — hy vọng chúng học được điều gì đó hữu ích.
+
+---
 
 ### 🧠 Điểm quan trọng: `AdaptiveAvgPool2d`
 
@@ -62,11 +68,15 @@ Từng layer biến đổi shape: input → output → input → output... Bạn
 
 Vì sao 1000? Vì EfficientNet B0 pretrain trên **ImageNet-1000**. Ta sẽ đổi thành **3** cho pizza/steak/sushi.
 
+---
+
 ### 🔓 Cột trainable
 
 Hiện tại **mọi layer đều trainable = True**. Nhưng với feature extraction, ta muốn **freeze base layer**, chỉ để **classifier head** trainable.
 
 Nói cách khác: mọi layer thành `trainable=False`, chỉ layer cuối giữ `True`.
+
+---
 
 ### 📏 Thông tin hữu ích khác
 
@@ -80,6 +90,8 @@ Lưu ý:
 * Kích thước ước lượng **không phải lúc nào cũng chính xác 100%**. Muốn biết chính xác, hãy lưu model ra file và xem dung lượng thật.
 
 Nhắc lại ba tiêu chí chọn model: **nhanh, nhỏ, performance tốt**.
+
+---
 
 ### ✅ Chốt lại
 

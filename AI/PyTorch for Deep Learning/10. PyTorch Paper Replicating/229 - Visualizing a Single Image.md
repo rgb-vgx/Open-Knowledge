@@ -25,6 +25,8 @@ image_batch, label_batch = next(iter(train_dataloader))
 image, label = image_batch[0], label_batch[0]
 ```
 
+---
+
 ### 🔍 Kiểm tra shape
 
 Luôn kiểm tra shape cho chắc:
@@ -37,6 +39,8 @@ Kết quả:
 
 * `image.shape` → `torch.Size([3, 224, 224])` — **3 color channels** (red, green, blue), chiều cao và rộng **224 × 224**, đúng như `IMAGE_SIZE` đã set và đúng **Table 3** của paper (training resolution 224).
 * `label` → một scalar, ví dụ `0`.
+
+---
 
 ### 🎨 Plot ảnh với Matplotlib
 

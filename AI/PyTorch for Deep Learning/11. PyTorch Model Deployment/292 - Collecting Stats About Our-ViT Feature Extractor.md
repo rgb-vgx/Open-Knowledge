@@ -33,6 +33,8 @@ Kết quả: **85,800,963** — "just under 86 million". So với EffNetB2:
 
 Vì sao đếm? Một trong hai mục tiêu là **model nhanh**. Nói chung, càng nhiều tham số thì càng nhiều phép tính khi dữ liệu đi qua, và nhiều compute hơn thường kéo theo **latency** cao hơn. Đây chỉ là quy tắc ngón tay cái — điều chắc chắn là ta sẽ **đo bằng code** ở bài sau.
 
+---
+
 ### 🗂️ Dictionary thống kê của ViT
 
 ```python
@@ -45,6 +47,8 @@ vit_results = {
 ```
 
 `results_vit` là dictionary `engine.train()` trả về — lý do hàm train lưu kết quả lại chính là để kiểm tra thế này. Nếu có nhiều thực nghiệm hơn, sẽ dùng **TensorBoard** hoặc **Weights & Biases** thay vì theo dõi thủ công.
+
+---
 
 ### 🆚 Bảng đối chiếu sơ bộ
 

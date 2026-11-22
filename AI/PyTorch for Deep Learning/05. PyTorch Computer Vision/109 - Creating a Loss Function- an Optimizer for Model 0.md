@@ -26,6 +26,8 @@ In ra thấy mỗi linear layer có một **weight tensor** và một **bias**. 
 
 "Feature" có thể là bất cứ gì: với một cái bag, feature có thể là quai tròn ở trên, mép hai bên… Nhưng mình **không nói** cho model phải học feature nào. Cái hay của ML là nó tự tìm ra. Weight và bias chính là nơi các feature đó được lưu.
 
+---
+
 ### 🎯 Chọn loss và optimizer
 
 Bài toán là **multiclass classification**, nên:
@@ -41,6 +43,8 @@ optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.1)
 
 `lr=0.1` là learning rate — mức "tweak" weight sau mỗi bước. Đặt cao vì dữ liệu đơn giản (28x28, 60.000 ảnh). Nếu không ổn thì chỉnh và thử lại.
 
+---
+
 ### 📏 Accuracy lấy từ đâu?
 
 Có hai lựa chọn:
@@ -49,6 +53,8 @@ Có hai lựa chọn:
 * Tự viết hàm `accuracy_fn`. Notebook section 2 đã viết một hàm như vậy, và file `helper_functions.py` trong repo cũng có.
 
 Mình chọn cách tải file helper về notebook, vì đây là kỹ năng thực tế: trong project Python lớn, người ta tách hàm dùng chung ra file `.py` rồi import, khỏi phải viết lại.
+
+---
 
 ### 📥 Tải `helper_functions.py` bằng code
 
@@ -78,11 +84,15 @@ Sau đó import hàm:
 from helper_functions import accuracy_fn
 ```
 
-Colab có thể báo "could not be resolved" — cứ chạy thử, nếu hàm hoạt động khi train thì ổn. Docstring của `accuracy_fn` ghi: *"Calculates accuracy between truth and predictions"*.
+Colab có thể báo "could not be resolved" — cứ chạy thử, nếu hàm hoạt động khi train thì ổn. Docstring của `accuracy_fn` mô tả nó tính accuracy giữa nhãn thật và dự đoán.
+
+---
 
 ### 💡 Vì sao tách helper function?
 
 Vì ta đã viết training loop và accuracy nhiều lần rồi. Viết một lần cho đúng, lưu vào `.py`, lần sau import — đỡ lỗi và đỡ lặp.
+
+---
 
 ### ✅ Tạm kết
 

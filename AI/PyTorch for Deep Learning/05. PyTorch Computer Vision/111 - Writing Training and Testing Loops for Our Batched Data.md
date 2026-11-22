@@ -20,6 +20,8 @@ tags: []
 
 Sáng ra mở notebook, runtime đã disconnect (qua đêm Colab luôn vậy). Cách xử lý nhanh: bấm **Reconnect**, rồi vào cell đang làm và chọn **Run before** để chạy lại toàn bộ cell phía trên — tải lại data, helper function, v.v. Mình cũng tự ghi note lại đang ở đâu để không lạc.
 
+---
+
 ### 🗺️ Bốn bước của loop lần này
 
 1. Lặp qua các **epoch**, trong mỗi epoch lặp qua các **training batch**.
@@ -29,6 +31,8 @@ Sáng ra mở notebook, runtime đã disconnect (qua đêm Colab luôn vậy). C
 
 Điểm khác biệt cốt lõi: **optimizer cập nhật tham số model một lần mỗi batch, chứ không phải một lần mỗi epoch**. Đó chính là lợi ích của mini-batch.
 
+---
+
 ### 📊 Thêm progress bar với tqdm
 
 ```python
@@ -36,6 +40,8 @@ from tqdm.auto import tqdm
 ```
 
 `tqdm` là progress bar phổ biến, ít overhead, và Colab có sẵn. `tqdm.auto` tự chọn kiểu hiển thị phù hợp với môi trường (Jupyter, terminal…). Cách dùng: bọc iterator bằng `tqdm`.
+
+---
 
 ### 🧱 Chuẩn bị
 
@@ -47,6 +53,8 @@ epochs = 3   # giữ nhỏ để thí nghiệm chạy nhanh
 ```
 
 Vì sao chỉ 3 epoch? Để thí nghiệm chạy trong khoảng 30 giây đến 1 phút. Chạy nhanh thì thử được nhiều, sai thì không mất thời gian chờ. Sau này muốn thì tăng lên 100.
+
+---
 
 ### 🔁 Vòng lặp chính
 
@@ -92,6 +100,8 @@ for epoch in tqdm(range(epochs)):
     print(f"Train loss: {train_loss:.4f} | Test loss: {test_loss:.4f} | Test acc: {test_acc:.4f}")
 ```
 
+---
+
 ### 🔍 Giải thích từng mảnh
 
 * **`enumerate(train_dataloader)`** cho biết đang ở batch thứ mấy — cần cho việc in tiến độ.
@@ -101,6 +111,8 @@ for epoch in tqdm(range(epochs)):
 * **`argmax(dim=1)`**: output thô của model là **logit**; `accuracy_fn` cần nhãn dự đoán nên phải lấy vị trí có logit cao nhất. Từ logit sang nhãn, không cần qua softmax.
 * **`torch.inference_mode()`**: tắt autograd khi đánh giá, nhanh và nhẹ hơn.
 * **Chia trung bình phải nằm ngoài vòng lặp batch** — đây là chỗ dễ lệch thụt đầu dòng nhất.
+
+---
 
 ### ⏱️ Đo thời gian và kiểm tra device
 
@@ -115,6 +127,8 @@ total_train_time_model_0 = print_train_time(
 
 `next(model_0.parameters()).device` lấy parameter đầu tiên rồi hỏi nó đang nằm trên thiết bị nào — mẹo hay để biết model đang ở CPU hay `cuda` mà không cần nhớ.
 
+---
+
 ### ✅ Tạm kết
 
-Toàn bộ code đã sẵn sàng, nhưng mình cố tình dừng ở đây để bài sau chạy thử và xem có lỗi không. Spoiler: lần đầu sẽ có lỗi indentation. Nhưng đó là chuyện bình thường — cứ chạy, sửa, chạy lại.
+Toàn bộ code đã sẵn sàng, nhưng mình cố tình dừng ở đây để bài sau chạy thử và xem có lỗi không — đúng kiểu cliffhanger. Cứ chạy, sửa, chạy lại; đó là chuyện bình thường.

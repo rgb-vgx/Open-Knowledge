@@ -22,6 +22,8 @@ Phần **going modular** nằm trong sách (ebook) của khóa, mục `05_pytorc
 
 Điều này thú vị với mình vì — nếu giống mình — các bạn học Python trên Jupyter notebook, trong khi phần lớn code ngoài đời lại nằm trong **file .py**, không phải notebook. Section này chính là cây cầu đó.
 
+---
+
 ### 📒 Hai notebook: cell mode và script mode
 
 Section có hai notebook:
@@ -30,6 +32,8 @@ Section có hai notebook:
 * **Part 2 — script mode**: dựa trên part 1, dùng magic command để tách code thành script.
 
 Lý do làm hai phần: để các bạn **thấy rõ khác biệt** khi chuyển từ cell mode sang script mode.
+
+---
 
 ### 📂 Mở notebook trong Colab
 
@@ -42,6 +46,8 @@ Cách mình làm:
 5. Chọn runtime **GPU**, rồi **Connect**.
 
 Notebook này mở đầu thẳng bằng code, không phải phần "where can you get help" như mọi khi — vì code đã viết hết ở notebook 4 rồi.
+
+---
 
 ### 🧱 Chạy hết các cell — có gì bên trong?
 
@@ -64,6 +70,8 @@ Tiếp theo:
 
 Cuối cùng là các bước train, evaluate và save. Chạy hết: ta thấy vài epoch in ra, rồi model được lưu vào thư mục `models`.
 
+---
+
 ### 📁 Kiểm tra kết quả
 
 Sau khi chạy:
@@ -74,9 +82,13 @@ Sau khi chạy:
 
 Notebook chạy được từ đầu đến cuối chỉ bằng cell. Việc tiếp theo là biến các cell hữu ích thành Python script — đó là phần 2.
 
+---
+
 ### 🎯 Đích đến
 
 Sau section này, ta hướng tới thư mục **going_modular** chứa: `data_setup.py`, `engine.py`, `model_builder.py`, `train.py`, `utils.py`.
+
+---
 
 ### ✅ Chốt lại
 

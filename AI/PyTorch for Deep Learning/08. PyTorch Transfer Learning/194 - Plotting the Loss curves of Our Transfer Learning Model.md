@@ -24,6 +24,8 @@ Số liệu cuối cùng chỉ là một điểm. **Loss curve** cho thấy xu h
 * Train và test có chênh lệch quá lớn không (overfitting)?
 * Có dấu hiệu underfitting không?
 
+---
+
 ### 📥 Tải `helper_functions.py`
 
 Ta cần hàm `plot_loss_curves`. Nó nằm trong `helper_functions.py` trên GitHub của khóa.
@@ -54,6 +56,8 @@ from helper_functions import plot_loss_curves
 
 Cần dùng **raw URL** (không phải link trang GitHub), ghi file ở chế độ **binary** (`"wb"`), và ghi `.content` của response.
 
+---
+
 ### 📊 Vẽ curve
 
 ```python
@@ -61,6 +65,8 @@ plot_loss_curves(results)
 ```
 
 Kết quả: một hình 4 đường — **train loss**, **test loss** giảm dần; **train accuracy**, **test accuracy** tăng dần. Nhìn rất đẹp.
+
+---
 
 ### 🥣 "Goldilocks loss curve"
 
@@ -72,17 +78,23 @@ Nhắc lại lý thuyết từ section trước:
 
 Với curve của ta: train loss và test loss **không chênh nhau nhiều**, và cùng giảm khá nhanh. Đó là dấu hiệu model đang làm rất tốt.
 
+---
+
 ### 🔁 Liên hệ với "how to deal with overfitting"
 
 Nếu train loss thấp hơn test loss đáng kể, một cách xử lý là **transfer learning** — dùng pretrained weight cho bài toán riêng. Và ta vừa thấy nó hiệu quả trong thực tế: transfer learning là một trong những kỹ thuật mạnh nhất để **giảm overfitting và underfitting**.
 
 Bạn có thể quay lại phần lý thuyết cũ, đọc lại sau khi đã thấy curve thật — sẽ "vỡ" ra nhiều hơn.
 
+---
+
 ### 🚀 Gợi ý mở rộng
 
 * **Train lâu hơn** — tăng epoch, xem loss giảm tới đâu, accuracy lên tới đâu.
 * **Thử fine-tuning** — mở khóa một phần base layer khi có nhiều dữ liệu hơn.
 * **So sánh** curve với các model khác.
+
+---
 
 ### ✅ Chốt lại
 

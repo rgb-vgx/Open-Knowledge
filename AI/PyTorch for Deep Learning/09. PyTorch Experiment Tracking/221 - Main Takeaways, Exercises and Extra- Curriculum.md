@@ -31,6 +31,8 @@ Workflow quen thuộc:
 
 Ta vừa làm đủ cả: track experiment programmatic, theo motto *experiment, experiment, experiment*, save/reload model, và dự đoán trên dữ liệu custom. Trọn vòng tròn — vỗ vai mình một cái, không phải chuyện nhỏ đâu!
 
+---
+
 ### 💡 Main takeaways
 
 * **Experiment, experiment, experiment** — cứ thử nhiều.
@@ -39,12 +41,16 @@ Ta vừa làm đủ cả: track experiment programmatic, theo motto *experiment,
 * **Khi tìm ra cái hiệu quả, scale up.** Best model là **EffNetB2** — thử scale lên toàn bộ Food 101. Mình khuyên đừng nhảy thẳng vào toàn bộ dataset: hãy thử **đủ 101 lớp nhưng chỉ 10% ảnh** trước.
 * **Track experiment programmatic** tốn vài bước setup (tạo writer, TensorBoard...) nhưng về lâu dài rất đáng: xem được nhiều experiment cùng lúc.
 
+---
+
 ### 🛠️ Các công cụ tracking khác
 
 Ta dùng **TensorBoard** vì gắn sẵn trong PyTorch. Ngoài ra còn:
 
 * **Weights & Biases** — một trong những công cụ mình thích nhất.
 * **MLflow** — thư viện open source mạnh cho vòng đời MLOps.
+
+---
 
 ### 🏋️ Bài tập
 
@@ -56,9 +62,13 @@ Cuối sách có ba bài tập:
 
 Ngoài ra có **extra curriculum** để bạn tự khám phá.
 
+---
+
 ### 📓 Template và solution
 
 Có **exercise template notebook** (số 7) và **solutions notebook** (số 7) trên GitHub, kèm link trong sách. Bạn thử template trước rồi đối chiếu solution sau.
+
+---
 
 ### 🎉 Tạm kết
 

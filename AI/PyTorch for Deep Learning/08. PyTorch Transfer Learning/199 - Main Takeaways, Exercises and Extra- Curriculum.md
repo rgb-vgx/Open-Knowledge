@@ -28,14 +28,13 @@ Chào các bạn! Hai ngón tay cái cho model transfer learning đầu tiên �
 
 Ngoài ra: **có nhiều nơi tìm pretrained model** — PyTorch domain libraries, timm, Hugging Face Hub, Papers with Code.
 
+---
+
 ### 📝 Bài tập
 
-Trong sách (mục `pytorch_transfer_learning/exercises`) có danh sách bài tập. Mình không điểm qua hết — để các bạn tự khám phá. Một vài hướng:
+Trong sách (mục `pytorch_transfer_learning/exercises`) có danh sách bài tập. Mình không điểm qua hết — để các bạn tự khám phá.
 
-* Train model lâu hơn (nhiều epoch) và xem kết quả.
-* Thử **fine-tuning** thay vì chỉ feature extraction.
-* Thử **một kiến trúc khác** trong danh sách torchvision.
-* Dự đoán trên bộ ảnh custom của riêng bạn.
+---
 
 ### 📦 Template và lời giải
 
@@ -45,11 +44,15 @@ Trong sách (mục `pytorch_transfer_learning/exercises`) có danh sách bài t�
 
 Link đầy đủ nằm cuối bản sách của khóa.
 
+---
+
 ### 📚 Tài nguyên mở rộng
 
 * Đọc lại mục **Models and pre-trained weights** của torchvision (bản 0.13+).
 * Tìm hiểu **fine-tuning** — kỹ thuật mở khóa dần base layer khi có nhiều dữ liệu.
 * Đọc thêm **The Bitter Lesson** và các paper như "How to Train Your ViT".
+
+---
 
 ### 🎬 Chốt lại
 

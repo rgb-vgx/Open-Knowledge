@@ -27,6 +27,8 @@ Trong cả paper 22 trang, mình chỉ tập trung vào bốn chỗ:
 
 Mình sẽ dựng **ViT-Base**, bản nhỏ nhất, nhưng viết code sao cho có thể tăng hyperparameter lên các bản lớn hơn sau này.
 
+---
+
 ### 🗺️ Bản đồ: inputs → layers → blocks → model
 
 Cách mình tách mọi kiến trúc deep learning: **inputs, outputs, layers, blocks**.
@@ -45,6 +47,8 @@ Cách mình tách mọi kiến trúc deep learning: **inputs, outputs, layers, b
 
 Điều quan trọng: model **học ánh xạ từ input sang output**. Dù trước mắt là 22 trang research code, nguyên lý vẫn y hệt mọi mạng neural đã dựng trong khóa.
 
+---
+
 ### 🔎 Đi săn "kho báu" trong paper
 
 Replicating giống đi tìm kho báu: phải lục đúng bảng, đúng figure để lấy nguyên liệu. Ví dụ **Table 3** cho ta:
@@ -54,6 +58,8 @@ Replicating giống đi tìm kho báu: phải lục đúng bảng, đúng figure
 * **patch size 16** — sẽ dùng khi chia ảnh thành patch.
 
 Mình không train trên ImageNet mà dùng bộ pizza/steak/sushi nhỏ hơn, nên các con số sẽ được thu nhỏ cho phù hợp. Các bạn muốn tìm hiểu thêm thì cứ lần theo từng tham số trong bảng.
+
+---
 
 ### 🧱 Gom lại thành một câu
 

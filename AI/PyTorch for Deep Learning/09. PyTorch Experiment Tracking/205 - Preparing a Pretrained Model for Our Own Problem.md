@@ -26,6 +26,8 @@ model = torchvision.models.efficientnet_b0(pretrained=True)
 
 Chạy được, nhưng in ra cảnh báo: tham số `pretrained` đã **deprecated từ 0.13** và sẽ bị bỏ từ 0.15 — hãy dùng `weights` thay thế. Mình cố ý cho xem cách cũ vì bạn sẽ gặp nó trong nhiều demo PyTorch cũ, và đây là thay đổi khá lớn cần biết.
 
+---
+
 ### 🆕 Cách mới: `weights=...`
 
 ```python
@@ -37,6 +39,8 @@ model = torchvision.models.efficientnet_b0(weights=weights).to(device)
 
 > Mẹo nhỏ: nhớ viết là `weights`, **không** phải `weight`. Mình từng mắc lỗi tên tham số này rất lâu.
 
+---
+
 ### ❄️ Đóng băng base layer
 
 PyTorch tự động track gradient của tham số để optimizer cập nhật chúng khi model nhìn dữ liệu. Muốn "đóng băng", ta đặt `requires_grad = False`:
@@ -47,6 +51,8 @@ for param in model.features.parameters():
 ```
 
 Trước khi freeze, mình in tham số ra và thấy toàn bộ features đã học từ ImageNet — những pattern số học rất tốt cho thị giác (như đã nói ở section 0.6). Freeze xong chúng sẽ không có gradient để cập nhật.
+
+---
 
 ### 🎛️ Thay classifier head
 
@@ -60,6 +66,8 @@ model.classifier = torch.nn.Sequential(
 ```
 
 `in_features=1280` là kích thước feature vector trước classifier của B0. `len(class_names)` = 3. Ta cũng set seed vì layer `Linear` mới được khởi tạo ngẫu nhiên, và gửi cả model lẫn classifier lên thiết bị đích (nhớ gửi cả model vừa tải lên device — dễ quên).
+
+---
 
 ### 📋 Kiểm tra bằng `torchinfo`
 
@@ -76,11 +84,15 @@ summary(model,
 
 Thông tin rất quan trọng cần xem là **input/output shape** từng layer. Kết quả cho thấy base layer đều frozen, chỉ classifier trainable. Đó chính là một **feature extractor**: chỉ layer cuối (vừa đổi thành 3 output) được train.
 
+---
+
 ### 🧮 Bao nhiêu tham số trainable?
 
 Trong video, tổng tham số khoảng **4 triệu**, và **dưới 4000 tham số trainable**. Vì phần lớn layer bị đóng băng, số phép tính PyTorch phải làm giảm mạnh — nên training cũng nhanh hơn.
 
 > Nếu bài toán có **10 lớp**, giá trị `out_features` sẽ là 10 thay vì 3.
+
+---
 
 ### ✅ Tạm kết
 

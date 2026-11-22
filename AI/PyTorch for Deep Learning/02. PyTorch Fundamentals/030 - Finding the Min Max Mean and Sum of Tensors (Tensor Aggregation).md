@@ -20,6 +20,8 @@ tags: []
 
 Aggregation nghĩa là đi từ **một lượng lớn số** xuống **một lượng nhỏ số**. Ví dụ lấy mean của một tensor chín phần tử biến nó thành **một** phần tử. Đó là aggregation.
 
+---
+
 ### 🏗️ Tạo tensor để thử
 
 ```python
@@ -28,6 +30,8 @@ x
 ```
 
 Kết quả: `tensor([0, 10, 20, 30, 40, 50, 60, 70, 80, 90])`.
+
+---
 
 ### 🔽 Min và max
 
@@ -40,6 +44,8 @@ x.min()         # tensor(0)
 torch.max(x)    # tensor(90)
 x.max()         # tensor(90)
 ```
+
+---
 
 ### ⚠️ Mean: cẩn thận data type!
 
@@ -76,6 +82,8 @@ Và mean của dãy `0, 10, ..., 90` đúng là **45**.
 
 > Ghi chú: `torch.mean` yêu cầu tensor có dtype **floating point** hoặc **complex**. Tensor số nguyên phải ép sang `torch.float32` (hoặc float khác) trước.
 
+---
+
 ### ➕ Sum
 
 ```python
@@ -85,11 +93,15 @@ x.sum()         # tensor(450)
 
 Tổng `0 + 10 + ... + 90 = 450`.
 
+---
+
 ### 🎨 Dùng hàm hay method?
 
 Cả `torch.min(x)` lẫn `x.min()` đều chạy, vì bên dưới chúng gọi cùng một cơ chế. Mình thường dùng `torch.max(x)`, nhưng các bạn sẽ thấy mình lúc khác lại viết `x.sum()`.
 
 Lời khuyên: **chọn một style và giữ nhất quán** trong code của mình.
+
+---
 
 ### 🎯 Chốt lại
 

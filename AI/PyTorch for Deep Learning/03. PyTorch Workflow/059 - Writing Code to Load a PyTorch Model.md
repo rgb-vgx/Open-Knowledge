@@ -35,11 +35,11 @@ Vì `LinearRegressionModel` là subclass của `nn.Module`, ta gọi được `l
 loaded_model_0.load_state_dict(torch.load(f=MODEL_SAVE_PATH))
 ```
 
-`torch.load` đọc object đã lưu bằng `torch.save`. Theo tài liệu, nó dùng cơ chế unpickling của Python, nhưng xử lý **storage** (phần dữ liệu bên dưới tensor) đặc biệt: storage được giải tuần tự trên **CPU** trước, rồi mới chuyển sang **device** mà nó được lưu từ trước. Điểm này quan trọng khi sau này chuyển sang GPU.
+`torch.load` đọc object đã lưu bằng `torch.save`. Theo tài liệu, nó dùng cơ chế unpickling của Python, nhưng xử lý **storage** (phần dữ liệu bên dưới tensor) đặc biệt: storage được deserialize trên **CPU** trước, rồi mới chuyển sang **device** mà nó được lưu từ trước. Điểm này quan trọng khi sau này chuyển sang GPU.
 
 Kết quả in ra `All keys matched successfully` — state dict khớp hoàn toàn với kiến trúc model.
 
-Giờ `loaded_model_0.state_dict()` cho đúng các giá trị đã train, ví dụ `weight ≈ 0.6990`, `bias ≈ 0.2990`.
+Giờ `loaded_model_0.state_dict()` cho đúng các giá trị đã train, ví dụ `weight ≈ 0.6990`, `bias` cũng rất gần `0.3`.
 
 ---
 

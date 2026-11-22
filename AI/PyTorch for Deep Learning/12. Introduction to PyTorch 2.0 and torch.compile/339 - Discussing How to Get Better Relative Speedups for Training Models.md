@@ -22,6 +22,8 @@ Video trước ta có hàm `create_model` trả về ResNet50 và transforms. Gi
 
 Một trong những chi phí chính của thời gian train là **bandwidth** — chuyển dữ liệu từ bộ nhớ sang GPU. Ta muốn giảm nó tối đa. Hai cách: **operator fusion** (giảm chuyển dữ liệu) và **graph capture** (ghi nhớ trước các phép toán model cần làm, khỏi tra cứu lúc chạy).
 
+---
+
 ### 🔑 Nguyên tắc: dùng nhiều GPU nhất có thể
 
 GPU hiện đại rất nhanh khi thực hiện phép toán (thao tác tensor, nhân ma trận), nên phần lớn **tăng tốc tương đối** xuất hiện khi **càng nhiều dữ liệu nằm trên GPU càng tốt**. Lưu ý chữ "tương đối": không phải lúc nào cũng tăng tốc cùng tỉ lệ, mà là tương đối so với khi dùng ít GPU.
@@ -35,11 +37,15 @@ GPU hiện đại rất nhanh khi thực hiện phép toán (thao tác tensor, n
 
 Xu hướng chung: **tăng, tăng, tăng** mọi thứ nhét được lên GPU.
 
+---
+
 ### 📉 Tăng gấp bốn nhưng thời gian không gấp bốn
 
 Nhờ những điều trên, tăng tốc tương đối sẽ tốt hơn. **Tổng thời gian train có thể dài hơn, nhưng không tuyến tính.** Batch size tăng gấp 4 không có nghĩa thời gian train tăng gấp 4; data size, model size cũng vậy.
 
 Ví dụ trực quan trên slide: A100 với một "ô" dữ liệu, train mất **10 phút**. Lên thực nghiệm lớn hơn, **6× dữ liệu trên 2 GPU**, chỉ mất **2× thời gian train** — nhờ tận dụng tính song song của GPU. (Số liệu chỉ để minh họa.)
+
+---
 
 ### 📚 Tài nguyên đọc thêm
 

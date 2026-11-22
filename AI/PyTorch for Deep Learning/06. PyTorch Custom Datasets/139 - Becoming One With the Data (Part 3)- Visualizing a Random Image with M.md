@@ -29,6 +29,8 @@ img_as_array = np.asarray(img)
 
 Transcript gốc nói "transform your image to an array" — đó là bước bắt buộc, và là chỗ nhiều bạn sẽ tự phát hiện ra khi gặp lỗi.
 
+---
+
 ### 📈 Vẽ ảnh và tiêu đề
 
 ```python
@@ -39,6 +41,8 @@ plt.axis(False)
 ```
 
 `figsize=(10, 7)` đặt kích thước figure; `axis(False)` tắt trục tọa độ cho gọn.
+
+---
 
 ### 🔍 Đọc shape: 512 × 363 × 3
 
@@ -52,13 +56,19 @@ Kết quả cho `Image shape: (512, 363, 3)`. Hiểu là:
 
 Ba channel đó là **đỏ, xanh lá, xanh dương (RGB)** — trộn lại theo cách nào đó thì ra màu của ảnh.
 
+---
+
 ### ⚠️ Vì sao shape lại quan trọng?
 
 Mình nhấn mạnh: một trong những lỗi chính của machine learning/deep learning là **shape mismatch**. Biết shape dữ liệu giúp các bạn hình dung được các layer của model cần shape gì, dữ liệu khác cần shape gì. Đây là lý do phải in shape ra ngay khi khám phá dữ liệu.
 
+---
+
 ### 🎨 Xem thêm một ảnh nữa
 
 Mình vẽ thêm một ảnh pizza với shape `(512, 512, 3)` — lần này vuông, nhưng vẫn channels-last và 3 channel. Điều này cho thấy **kích thước ảnh thay đổi** giữa các ảnh, dù đều là ảnh màu 3 channel. Đó chính là lý do sau này ta phải **resize** về cùng một kích thước.
+
+---
 
 ### ✅ Tạm kết
 

@@ -25,9 +25,13 @@ Nhớ lại CNN Explainer ở section PyTorch Computer Vision: **convolutional l
 
 thì mỗi lần kernel nhảy đúng một patch. Mỗi patch được biến thành một **convolutional feature map** — mà feature map chính là một **learnable representation**, tức **embedding**.
 
+---
+
 ### 📖 Paper xác nhận điều này
 
 Phần *hybrid architecture* của Section 3.1 nói: "As an alternative to raw image patches, the input sequence can be formed from feature maps of a CNN" và "the patches can have a spatial size of 1×1, which means that the input sequence is obtained by simply flattening the spatial dimensions of the feature map and projecting to the transformer dimension." Đúng luồng ta đang làm.
+
+---
 
 ### 🛠️ Code conv2d
 
@@ -44,6 +48,8 @@ conv2d = nn.Conv2d(
 ```
 
 `out_channels=768` chính là **embedding size** `D` của ViT-Base. Đổi con số này là đổi được biến thể model.
+
+---
 
 ### 🚀 Chạy ảnh qua layer
 
@@ -67,6 +73,8 @@ torch.Size([1, 768, 14, 14])
 * `14 × 14` — chính là **số patch** (196) xếp theo lưới, vì kernel trượt qua ảnh tạo ra 14×14 feature map.
 
 Vậy ta đã có learnable representation của ảnh, đúng kích thước — chỉ còn cần **flatten** hai chiều cuối `14 × 14` thành một chiều `196`.
+
+---
 
 ### 🏋️ Thử thách
 

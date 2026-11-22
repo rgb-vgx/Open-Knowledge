@@ -28,6 +28,8 @@ Trước khi vào bài, mình nhắc lại quy trình tự cứu mình:
 
 Notebook của section này là **07 PyTorch experiment tracking**, có trên GitHub và có cả bản "sách" tìm kiếm được ở **Learn PyTorch** (mục số 7).
 
+---
+
 ### 🧠 Vậy experiment tracking là gì?
 
 Ta đã build khá nhiều model. Đầu tiên thử **TinyVGG** — không ăn thua. Sang **transfer learning** thì chạy tốt. Vậy câu hỏi đặt ra: **làm sao biết model nào trong số đó làm tốt nhất?** Experiment tracking chính là câu trả lời.
@@ -40,6 +42,8 @@ Nó nối tiếp đúng tinh thần của khóa học — code theo, thử nghi�
 
 Section này đào sâu vào khẩu hiệu thứ hai: **experiment**. Mặc áo khoa học gia vào, mình bắt đầu track các modeling experiment cho Food Vision Mini.
 
+---
+
 ### 🎛️ Vì sao phải track experiment?
 
 Nếu chỉ build vài model thì không sao. Nhưng thử tưởng tượng bạn có một dictionary `results`, rồi model 1, model 2, model 1 v2, model 2 v2, model 2 v3... Cứ thế nhân lên. Chỉ **13 model** đã rối tung rồi, mà thực tế khi làm dự án riêng các bạn sẽ build nhiều hơn thế rất nhiều.
@@ -47,6 +51,8 @@ Nếu chỉ build vài model thì không sao. Nhưng thử tưởng tượng b�
 Vậy nên cần một cách **đáng tin cậy** để lưu lại và quay về điều tra. Nhìn vào đám kết quả đó, ta tự hỏi: cái nào ổn, cái nào tệ, **nên làm ít đi cái gì và thử nhiều hơn cái gì?** Đó chính là mục đích:
 
 > Tìm ra cái **không** hiệu quả, để rồi tìm ra cái **có** hiệu quả.
+
+---
 
 ### 🛠️ Các cách track experiment
 
@@ -59,6 +65,8 @@ Có vài hướng phổ biến:
 
 Nếu bạn search "track machine learning experiments" sẽ thấy vô số công cụ. Trong **extra curriculum** có bài về experiment tracking của **Goku Mohandas** trên Made With ML — mình khuyên đọc cả bộ tài nguyên Made With ML nếu muốn tìm hiểu sâu.
 
+---
+
 ### 🗺️ Section này sẽ làm gì
 
 Dù tập trung vào TensorBoard, các nguyên tắc tracking đều áp dụng được cho mọi dịch vụ. Kế hoạch:
@@ -70,6 +78,8 @@ Dù tập trung vào TensorBoard, các nguyên tắc tracking đều áp dụng 
 5. **Dự đoán** bằng model tốt nhất trên dữ liệu custom của bạn.
 
 Ta vừa mặc áo khoa học gia, vừa đội mũ đầu bếp — vì machine learning là **nửa nghệ thuật, nửa khoa học**. Vậy nên mình sẽ "nấu" thật nhiều code.
+
+---
 
 ### ✅ Tạm kết
 

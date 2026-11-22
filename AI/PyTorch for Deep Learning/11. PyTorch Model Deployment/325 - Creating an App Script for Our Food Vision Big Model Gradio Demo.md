@@ -33,6 +33,8 @@ with open("class_names.txt", "r") as f:
 
 Vì `app.py` nằm cùng cấp với `class_names.txt`, đường dẫn tương đối `"class_names.txt"` là đủ. Nhớ `.strip()` để bỏ newline.
 
+---
+
 ### 🧠 Chuẩn bị model 101 lớp
 
 ```python
@@ -47,6 +49,8 @@ effnetb2.load_state_dict(
 ```
 
 `map_location=torch.device("cpu")` tiếp tục là bắt buộc: model train trên GPU, load lại trên CPU (free tier của Spaces) mà không ép device sẽ lỗi.
+
+---
 
 ### 🔮 Hàm predict giữ nguyên
 
@@ -66,6 +70,8 @@ def predict(img) -> Tuple[Dict, float]:
     pred_time = round(timer() - start_time, 4)
     return pred_labels_and_probs, pred_time
 ```
+
+---
 
 ### 🖥️ Giao diện Gradio
 
@@ -92,6 +98,8 @@ Vài điểm cần chú ý:
 * **`num_top_classes=5`** thay vì 3 — vì 101 lớp, hiển thị top 5 trực quan hơn.
 * **Không có `share=True`** trong `launch()` — bài học từ Food Vision Mini: Spaces không hỗ trợ tham số này.
 * `example_list` vẫn dùng `os.listdir("examples")` như bản Mini.
+
+---
 
 ### 🧪 Kiểm tra sau khi ghi file
 

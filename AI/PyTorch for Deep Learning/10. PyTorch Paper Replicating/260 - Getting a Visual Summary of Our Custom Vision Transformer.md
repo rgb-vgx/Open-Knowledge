@@ -38,6 +38,8 @@ print(f"Output logits shape: {logits.shape}")
 
 Kết quả: **1000 logits** cho 1000 lớp — đúng như ImageNet.
 
+---
+
 ### 🍕 Chuyển sang bài toán 3 lớp
 
 Ở Food Vision Mini, ta có **3 lớp** (pizza, steak, sushi). Chỉ cần đổi `num_classes`:
@@ -51,6 +53,8 @@ print(f"Output logits shape: {logits.shape}")
 ```
 
 Vẫn chạy trơn, ra đúng **3 output**. Vậy là ta đã thích nghi ViT với dữ liệu của mình. Dĩ nhiên kết quả chưa có ý nghĩa gì vì **trọng số ngẫu nhiên** và **ảnh cũng ngẫu nhiên**.
+
+---
 
 ### 🖼️ Visual summary bằng torchinfo
 
@@ -77,6 +81,8 @@ Bảng này có thể mất chút thời gian vì nó chạy một forward pass 
 * Kết thúc bằng **classifier head**, ra `(1, 3)` với `num_classes=3`.
 
 Tổng tham số: **85,800,963** — mô hình lớn nhất của ta từ trước tới nay. Chúc mừng, ta đã chính thức replicate Vision Transformer từ ảnh, công thức toán và văn bản thành code PyTorch dùng được.
+
+---
 
 ### 🎯 Thử thách: train nó!
 

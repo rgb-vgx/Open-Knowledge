@@ -29,17 +29,31 @@ optimizer = torch.optim.SGD(params=model_1.parameters(), lr=0.1)
 * Vẫn là `torch.optim.SGD` với `lr=0.1`, lần này truyền `params=model_1.parameters()`.
 * `accuracy_fn` import lại cho đủ bộ, dù đã import trước đó.
 
+---
+
 ### 🔬 Quy tắc thí nghiệm: đổi một biến mỗi lần
 
 Đây là điểm mình muốn các bạn nhớ: khi chạy nhiều experiment, chỉ nên chỉnh **một hoặc hai** thứ mỗi lần. Như vậy mới biết chính xác cái gì ảnh hưởng đến kết quả.
 
 Ở đây mình đổi **kiến trúc** (thêm ReLU) và **device** (CPU → GPU). Nếu kết quả tốt hơn, sẽ khó nói là do phi tuyến hay do GPU nhanh hơn — nhưng đó là một phần của thực nghiệm, và các bạn có thể tự tách ra thử.
 
+---
+
+### 🧪 Đoán trước hay chạy thật?
+
+Có thể đoán hoặc dựa vào kinh nghiệm để biết các lớp phi tuyến có giúp ích không, và theo thời gian bạn sẽ dần hiểu các hàm khác nhau ảnh hưởng đến mạng ra sao. Nhưng Daniel thích cách chạy thật nhiều thí nghiệm hơn — cứ code ra rồi xem kết quả.
+
+---
+
 ### ❓ Ôn nhanh
 
 * **Loss function** làm gì? Đo model sai bao nhiêu.
 * **Optimizer** làm gì? Cập nhật tham số model để giảm loss.
 * **Accuracy** làm gì? Đo độ chính xác — một trong những metric cơ bản của classification.
+
+Ba câu hỏi này sẽ quay lại mỗi khi bạn debug một model không chịu học.
+
+---
 
 ### 🔁 Bước tiếp: lại training loop?
 
@@ -48,19 +62,9 @@ optimizer = torch.optim.SGD(params=model_1.parameters(), lr=0.1)
 * `train_step(...)`
 * `test_step(...)`
 
-Mỗi hàm sẽ nhận vài tham số (model, dataloader, loss, optimizer, accuracy, device…). Các bạn thử tự đoán danh sách tham số trước khi xem bài sau.
+Mỗi hàm sẽ nhận vài tham số (model, dataloader, loss, optimizer, accuracy, device…). Các bạn thử tự đoán danh sách tham số trước khi xem bài sau. Nhờ vậy, lần train sau chỉ còn là chuyện gọi hàm với đúng tham số.
 
-### 📋 Checklist trước khi train
-
-Trước khi gọi training loop, kiểm tra nhanh:
-
-1. Model đã ở đúng `device` chưa?
-2. Dataloader đã có batch size hợp lý chưa?
-3. Loss function có khớp loại bài toán không (classification → cross entropy)?
-4. Optimizer có nhận đúng `model.parameters()` không?
-5. Learning rate có hợp lý không?
-
-Chỉ cần một mục sai là kết quả sẽ vô nghĩa, và lỗi thường không báo rõ ràng.
+---
 
 ### ✅ Tạm kết
 

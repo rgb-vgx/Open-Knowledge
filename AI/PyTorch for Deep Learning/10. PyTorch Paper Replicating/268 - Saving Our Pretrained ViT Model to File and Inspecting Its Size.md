@@ -32,6 +32,8 @@ utils.save_model(
 
 Tên file theo quy ước: **08** (section), `pretrained_vit_feature_extractor`, tên dữ liệu, và đuôi `.pth`. Nếu chạy trơn, ta thấy dòng "Saving model to models/08_pretrained_vit_feature_extractor_pizza_steak_sushi.pth" và file xuất hiện trong thư mục `models`.
 
+---
+
 ### 📏 Kiểm tra kích thước file
 
 Dùng `pathlib` để lấy kích thước file, đổi ra megabyte:
@@ -50,6 +52,8 @@ print(f"Pretrained ViT feature extractor model size: {pretrained_vit_model_size}
 ```
 
 Kết quả: **327 MB**.
+
+---
 
 ### 🤔 327 MB — quá lớn?
 

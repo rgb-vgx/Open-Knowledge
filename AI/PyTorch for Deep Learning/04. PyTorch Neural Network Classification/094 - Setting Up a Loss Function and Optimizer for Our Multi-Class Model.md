@@ -1,5 +1,5 @@
 ---
-title: 'Cài loss function và optimizer cho model multiclass'
+title: 'Bài 94 — Cài loss function và optimizer cho model multiclass'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 94
@@ -26,11 +26,15 @@ Trong `torch.nn` (bộ building block cho neural network) có mục loss functio
 
 Trong PyTorch, loss function còn được gọi là **criterion** (đôi khi "cost function"). `nn.CrossEntropyLoss` "tính cross entropy loss giữa input và target", dùng để train bài classification có **C lớp**.
 
+---
+
 ### ⚖️ Về tham số `weight`
 
 Tài liệu `nn.CrossEntropyLoss` có tham số tùy chọn **`weight`** — một tensor 1 chiều gán trọng số cho từng lớp. Hữu ích khi dataset **mất cân bằng**: ví dụ chỉ 10 chấm vàng nhưng 500 chấm xanh, 100 đỏ… Lúc đó gán trọng số cao hơn cho lớp ít mẫu giúp model chú ý tới chúng.
 
 Dataset của mình **cân bằng** nên không cần — chỉ cần biết để dùng sau này.
+
+---
 
 ### ⌨️ Code
 

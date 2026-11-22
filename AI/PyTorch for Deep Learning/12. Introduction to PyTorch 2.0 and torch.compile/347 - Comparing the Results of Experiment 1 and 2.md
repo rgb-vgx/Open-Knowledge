@@ -29,6 +29,8 @@ single_run_compile_results_df = pd.DataFrame(single_run_compile_results)
 
 Mỗi bảng có **5 hàng** — 5 epoch. Model chưa compile và compile có kết quả accuracy khá tương đồng (nhưng ta không chăm accuracy).
 
+---
+
 ### 👀 Nhìn nhanh vào xu hướng
 
 * Thời gian mỗi epoch của bản **không compile** khá ổn định, chỉ epoch đầu hơi lâu hơn một chút.
@@ -36,6 +38,8 @@ Mỗi bảng có **5 hàng** — 5 epoch. Model chưa compile và compile có k�
 * Các epoch sau của bản compile **nhanh hơn**.
 
 Nếu train **20 epoch** thay vì 5, mức tăng tốc trung bình sẽ rõ hơn nhiều, vì cái "phí" epoch đầu được chia đều cho nhiều epoch hơn.
+
+---
 
 ### 📈 Hàm vẽ đồ thị
 
@@ -55,6 +59,8 @@ Bên trong hàm:
 4. Vẽ **bar chart** so sánh 4 cột: train epoch time và test epoch time, của bản compile và không compile.
 5. Tự tạo tiêu đề cho single/multi-run, và lưu figure nếu muốn.
 
+---
+
 ### 📁 Tạo thư mục lưu figure
 
 ```python
@@ -66,6 +72,8 @@ os.makedirs(dir_to_save_figures_in, exist_ok=True)
 
 Sau này quay lại xem kết quả vẫn còn. (Nếu muốn quản lý thực nghiệm bài bản hơn, cân nhắc **TensorBoard** như phần Experiment Tracking đã học.)
 
+---
+
 ### 🎯 Kết quả: bất ngờ ở test epoch
 
 Vẽ xong, đồ thị cho thấy:
@@ -74,6 +82,8 @@ Vẽ xong, đồ thị cho thấy:
 * **Mean test epoch time**: bản **compile lại chậm hơn** — hơi lạ!
 
 Vì sao? Vì **epoch đầu quá chậm** (do tối ưu) kéo trung bình xuống khi chỉ chạy 5 epoch.
+
+---
 
 ### 🧮 Nếu train dài hơn thì sao?
 

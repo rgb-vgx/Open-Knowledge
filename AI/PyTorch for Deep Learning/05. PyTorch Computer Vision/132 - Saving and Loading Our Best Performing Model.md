@@ -37,6 +37,8 @@ print(f"Saving model to: {MODEL_SAVE_PATH}")
 
 Tổ chức thư mục gọn gàng — `data/` cho dữ liệu, `models/` cho model, file helper riêng — là thói quen tốt.
 
+---
+
 ### 💾 Lưu `state_dict`
 
 ```python
@@ -46,6 +48,8 @@ torch.save(obj=model_2.state_dict(), f=MODEL_SAVE_PATH)
 `state_dict()` là **dictionary các tham số đã học**: toàn bộ weight và bias. Khi mới khởi tạo, chúng là số ngẫu nhiên; sau khi train, chúng đã được cập nhật để biểu diễn dữ liệu. Lưu `state_dict` là cách khuyến nghị (nhẹ, linh hoạt hơn lưu cả model).
 
 Chạy xong, mở thư mục `models/` sẽ thấy file `.pth`.
+
+---
 
 ### 📥 Tải lại: phải tạo instance trước
 
@@ -65,6 +69,8 @@ loaded_model_2.load_state_dict(torch.load(f=MODEL_SAVE_PATH))
 
 Điều kiện tiên quyết: **các tham số khởi tạo phải khớp** model gốc (`input_shape=1`, `hidden_units=10`, `output_shape=10`). Nếu không khớp, `load_state_dict` sẽ báo lỗi shape mismatch.
 
+---
+
 ### ✅ Đánh giá model vừa tải
 
 ```python
@@ -79,7 +85,9 @@ loaded_model_2_results = eval_model(
 print(loaded_model_2_results)
 ```
 
-Kết quả phải **gần như trùng** `model_2_results`. Có thể lệch ở vài chữ số thập phân cuối do độ chính xác số học khi lưu/đọc file — chuyện bình thường.
+Kết quả phải **gần như trùng** `model_2_results`. Chỉ cần nhìn loss và accuracy thấy khớp là ổn; nếu lệch nhiều thì phải kiểm tra lại (xem phần dưới).
+
+---
 
 ### 🔬 Kiểm tra bằng code thay vì bằng mắt
 
@@ -96,9 +104,13 @@ torch.isclose(
 
 Nếu kết quả lệch nhiều (không chỉ vài chữ số thập phân), hãy xem lại: đã set seed chưa, thứ tự cell chạy đúng chưa, kiến trúc lúc load có khớp không.
 
+---
+
 ### 💡 Vì sao phải kiểm tra?
 
 Đánh giá model sau khi lưu/tải **quan trọng ngang lúc train**. Nếu deploy một model lưu hỏng, kết quả sẽ tệ mà không rõ nguyên nhân. Kiểm tra trước khi deploy là bước không được bỏ.
+
+---
 
 ### ✅ Tạm kết
 

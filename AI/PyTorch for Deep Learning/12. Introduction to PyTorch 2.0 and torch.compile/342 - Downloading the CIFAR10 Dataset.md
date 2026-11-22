@@ -26,6 +26,8 @@ Về CIFAR10:
 * Tổng **60.000 ảnh**, kích thước gốc **32×32**.
 * Ta sẽ **upscale lên 224×224** để "vắt" GPU nhiều dữ liệu nhất có thể.
 
+---
+
 ### 📥 Tạo train và test dataset
 
 CIFAR10 có sẵn trong `torchvision.datasets`. Ta dùng transforms đã tạo và chỉnh ở các bài trước (crop và resize về 224):
@@ -57,6 +59,8 @@ Vài lưu ý:
 
 CIFAR10 gốc là ảnh màu 32×32, 10 lớp. Nhờ transform crop/resize 224, ảnh của ta thành **224×224** — kích thước này được set programmatically dựa trên dung lượng VRAM (bài 340).
 
+---
+
 ### 📏 Kiểm tra kích thước split
 
 Mình luôn thích khám phá dữ liệu trước:
@@ -70,6 +74,8 @@ Kết quả: **50.000** ảnh train, **10.000** ảnh test — khớp với kỳ
 
 > Nhân đây: nếu các bạn tên là "Len" (như hàm `len()`), chắc mỗi lần gõ code lại thấy như đang tự gọi mình. Mình gõ chữ này cả nghìn lần rồi — chào các Len nhé!
 
+---
+
 ### 🔍 Xem thử một mẫu
 
 ```python
@@ -79,6 +85,8 @@ print(label)         # ví dụ 6
 ```
 
 Ta có **3 kênh màu**, **224×224**. Label là một số từ 0–9; ví dụ `6` có thể là **frog** (thứ tự lớp: airplane, automobile, bird, cat, dog, frog, horse, ship, truck...). Mình khuyên các bạn tự visualize để xem nó ra hình gì.
+
+---
 
 ### 🧩 Thử thách: tự viết DataLoader
 

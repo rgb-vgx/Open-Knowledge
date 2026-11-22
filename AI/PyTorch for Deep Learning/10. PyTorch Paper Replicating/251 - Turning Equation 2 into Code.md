@@ -28,6 +28,8 @@ Ta viết class linh hoạt để có thể đổi sang cấu hình khác nếu 
 
 Về **dropout**: paper hơi giấu thông tin này, phải lần tới **Appendix B** mới thấy. Kết luận là **không dùng dropout cho attention** (tức các phép chiếu Q, K, V). Dropout, khi có, chỉ áp sau mỗi **dense layer** (linear/feedforward/MLP). Vì vậy `attn_dropout=0.0`.
 
+---
+
 ### 🧱 Dựng layer norm và attention
 
 ```python
@@ -54,6 +56,8 @@ class MultiHeadSelfAttentionBlock(nn.Module):
 
 `nn.LayerNorm` chuẩn hóa trên **D chiều cuối**, với `normalized_shape=embedding_dim` tức `768`. Tham số `eps` ta để mặc định vì paper không nêu, và giá trị mặc định của PyTorch thường đã là điểm khởi đầu tốt.
 
+---
+
 ### 🔀 `batch_first` và thứ tự chiều
 
 `nn.MultiheadAttention` mặc định `batch_first=False`, nghĩa là input theo thứ tự **sequence → batch → feature**. Ta đặt `batch_first=True` để input/output là **batch → sequence → feature**.
@@ -67,6 +71,8 @@ class MultiHeadSelfAttentionBlock(nn.Module):
 | feature | embedding dimension (768) |
 
 "Sequence" là chuỗi patch, "feature" là các learnable features — ở ta gọi là embedding dimension. Đây lại là ví dụ cho việc deep learning dùng nhiều tên cho cùng một khái niệm.
+
+---
 
 ### 🚀 Forward: Q, K, V đều là x
 
@@ -89,6 +95,8 @@ class MultiHeadSelfAttentionBlock(nn.Module):
 `forward` của attention trả về hai thứ: **attention output** và **attention weights**. Ta chỉ cần output nên dùng `_` để bỏ weights, và đặt `need_weights=False`.
 
 Điểm mấu chốt của **self attention**: `query`, `key`, `value` là **ba bản sao của cùng một chuỗi**. Mạng tự học phần nào của chuỗi nên chú ý tới chính nó; nếu học được biểu diễn đó, mô hình hy vọng nắm được biểu diễn tốt của ảnh.
+
+---
 
 ### ✅ Chốt lại
 

@@ -14,11 +14,13 @@ tags: []
 
 > Nguồn: `165 - Predicting on Custom Data (Part 1)- Downloading an Image.md` · [Udemy](https://viettel.udemy.com/course/pytorch-for-deep-learning/learn/lecture/32763714)
 
-Đây là một trong những phần thú vị nhất của deep learning: **dự đoán trên ảnh hoàn toàn mới** — không nằm trong tập train lẫn test. Hãy tưởng tượng app nhận diện món ăn (kiểu NutriFact/NeutralPHI): chụp ảnh đồ ăn, app phân loại và trả về thông tin dinh dưỡng. Bài này ta tải một ảnh về để chuẩn bị cho quy trình đó.
+Đây là một trong những phần thú vị nhất của deep learning: **dự đoán trên ảnh hoàn toàn mới** — không nằm trong tập train lẫn test. Hãy tưởng tượng app nhận diện món ăn (kiểu Nutrify): chụp ảnh đồ ăn, app phân loại và trả về thông tin dinh dưỡng. Bài này ta tải một ảnh về để chuẩn bị cho quy trình đó.
 
 ### 🍕 Workflow thực tế
 
 Ảnh mẫu là "Pizza Dad" — bố của Daniel giơ hai ngón cái với chiếc pizza. Trong app thật, khi upload ảnh này, model sẽ dự đoán `pizza`, rồi trả về macronutrient và thời gian xử lý. Ta sẽ làm lại quy trình tương tự với model PyTorch đã train — dù kết quả có thể chưa tốt vì model còn cần cải thiện.
+
+---
 
 ### 🔥 Tải ảnh bằng code
 
@@ -40,6 +42,8 @@ else:
 ```
 
 Điểm quan trọng: với GitHub phải dùng link **raw** (`raw.githubusercontent.com`), không phải link `blob` — bài học từ lúc tải dataset. Ảnh nằm trong thư mục `images/` của repo khóa học (không phải `extras/`).
+
+---
 
 ### ✅ Tạm kết
 

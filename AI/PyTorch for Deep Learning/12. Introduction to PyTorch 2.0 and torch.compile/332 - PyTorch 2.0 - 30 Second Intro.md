@@ -29,6 +29,8 @@ model = torchvision.models.resnet50()
 
 Rồi viết code train và test bình thường. Đây chính là điều đẹp của PyTorch 2.0: nếu các bạn đã quen PyTorch 1.x, các bạn **100% đủ sức** dùng tính năng mới.
 
+---
+
 ### ⚡ Sau PyTorch 2.0
 
 Vẫn code y hệt phía trên, chỉ thêm một bước — bọc model vào `torch.compile`:
@@ -44,6 +46,8 @@ compiled_model = torch.compile(model)
 Chạy cell đó, PyTorch sẽ thực hiện vài bước tối ưu bên dưới, thế là xong. Sau đó các bạn dùng `compiled_model` với code train/test như bình thường. Model giờ đã được compile.
 
 Một điểm hay nữa: PyTorch 2.0 được thiết kế để **chạy với mọi model** — đó là một trong những mục tiêu của nó. Model của các bạn có thể là bất cứ thứ gì, không chỉ ResNet50.
+
+---
 
 ### ⚠️ Vài caveat cần biết
 

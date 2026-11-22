@@ -23,6 +23,8 @@ Chào các bạn! Ta đã có hai cách transform dữ liệu. Giờ tới câu 
 3. **Hugging Face Hub**.
 4. **Papers with Code**.
 
+---
+
 ### 🎯 Ba tiêu chí chọn model
 
 Không có câu trả lời chắc chắn — như mọi thứ trong ML, hãy **experiment, experiment, experiment**. Nhưng mình thường cân nhắc ba yếu tố:
@@ -32,6 +34,8 @@ Không có câu trả lời chắc chắn — như mọi thứ trong ML, hãy **
 3. **Performance** — model làm tốt cỡ nào trên bài toán của bạn?
 
 Ba yếu tố này thường **gắn chặt nhau**.
+
+---
 
 ### 🚗 Ví dụ: xe tự lái
 
@@ -45,6 +49,8 @@ Với Food Vision Mini, nếu deploy lên **mobile**:
 * phải nhỏ để vừa thiết bị,
 * performance phải đủ tốt, nếu không chẳng ai dùng.
 
+---
+
 ### 📊 Đọc bảng weight
 
 Trong tài liệu torchvision, mục classification có bảng **tất cả classification weights**:
@@ -57,6 +63,8 @@ Quy tắc kinh nghiệm: **ít tham số hơn thường chạy nhanh hơn**, vì
 
 Ta muốn **accuracy cao nhất với số tham số thấp nhất**.
 
+---
+
 ### 🥇 So sánh nhanh
 
 * **EfficientNet B0**: khoảng **78% accuracy**, chừng **5 triệu tham số**.
@@ -68,6 +76,8 @@ Ngoài ra còn có **MobileNet** dành riêng cho thiết bị di động:
 
 * **MobileNet V3 Large**: khoảng **75% accuracy**, số tham số tương đương EfficientNet B0.
 
+---
+
 ### 📜 The Bitter Lesson
 
 Một điều đáng bàn: nếu có **compute vô hạn**, ta sẽ chọn model **lớn nhất, nhiều tham số nhất, tổng quát nhất**. Đó là tinh thần bài luận **"The Bitter Lesson"** của Rich Sutton:
@@ -77,6 +87,8 @@ Một điều đáng bàn: nếu có **compute vô hạn**, ta sẽ chọn model
 Hiểu đơn giản: càng nhiều dữ liệu, càng nhiều compute, phương pháp càng tổng quát (như neural network) → kết quả càng tốt.
 
 Nhưng **ta không có compute vô hạn**. Nên chiến lược là: **bắt đầu nhỏ, mở rộng khi cần**.
+
+---
 
 ### 🧭 Chốt lại
 

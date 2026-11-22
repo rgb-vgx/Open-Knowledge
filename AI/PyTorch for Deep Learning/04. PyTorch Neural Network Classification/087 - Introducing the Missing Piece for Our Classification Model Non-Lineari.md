@@ -1,5 +1,5 @@
 ---
-title: 'Mảnh ghép còn thiếu: non-linearity'
+title: 'Bài 87 — Mảnh ghép còn thiếu: non-linearity'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 87
@@ -22,6 +22,8 @@ Trên dữ liệu đường thẳng, model học ngon — chấm đỏ bám sát
 
 Hồi cấp ba các bạn học **line of best fit**, kiểu `y = mx + b` hay `y = x + c`, rồi đến hàm bậc hai và đủ thứ. Machine learning cũng từ ý tưởng đó mà ra, nhưng ở một tầm khác.
 
+---
+
 ### 🍕 Neural network = chồng chất linear + non-linear
 
 Đây là một trong những điều đẹp nhất của machine learning:
@@ -32,15 +34,21 @@ Hồi cấp ba các bạn học **line of best fit**, kiểu `y = mx + b` hay `y
 
 Model của mình thất bại vì mình chỉ cho nó **sức mạnh của đường thẳng**. Dữ liệu cong thì cần **non-linearity** mới mô hình hóa được — dù bài toán có vẻ đơn giản.
 
+---
+
 ### 🍕 Nghĩ về một model nhận diện pizza
 
 Thử tưởng tượng: có thể mô hình hóa một chiếc pizza chỉ bằng **đường thẳng** không? Nghe vô lý — model thị giác máy tính đâu có đi tìm đường thẳng? Mình cho rằng **có**, nhưng có thêm **đường cong** vào.
 
 Thử tự viết luật tay: "chỗ này cong, nếu thấy màu đỏ thì…" — không, không ổn. Làm vậy với **100 món ăn** thì chương trình phình to khủng khiếp. Thay vào đó, ta đưa cho model **khả năng dùng cả hàm tuyến tính lẫn phi tuyến**, xếp chồng qua nhiều layer, để **model tự tìm ra pattern** — tự quyết định vẽ đường nào để nhận ra pizza, sushi, hay bất cứ món gì.
 
+---
+
 ### ♾️ Câu hỏi lớn: vô số đường thẳng và đường cong vẽ được gì?
 
 Nếu có **vô số** đường thẳng và đường cong (thực ra là **hữu hạn**, nhưng có thể là hàng triệu parameter), các bạn vẽ được những hình rất tinh xảo. Đó chính là thứ cho neural network khả năng không chỉ fit một đường thẳng hay tách hai vòng tròn, mà còn làm những việc điên rồ như **hệ thống thị giác của xe tự lái** (tất nhiên sau đó còn cần code để quyết định làm gì với những gì "nhìn" thấy).
+
+---
 
 ### 🔁 Chuẩn bị lại dữ liệu vòng tròn
 
@@ -67,6 +75,8 @@ plt.scatter(x=X[:, 0],
             cmap=plt.cm.RdYlBu)
 ```
 
+---
+
 ### 🧱 Tensor hóa và chia tập
 
 ```python
@@ -85,6 +95,8 @@ X_train, X_test, y_train, y_test = train_test_split(X,
 ```
 
 Vì sao vẫn `.type(torch.float)`? Vì NumPy mặc định `float64`, còn PyTorch cần `float32`. NumPy có mặt khắp nơi (pandas, scikit-learn, matplotlib đều dựa trên nó), còn PyTorch được chọn để tận dụng **autograd** (động cơ của gradient descent) và **GPU**.
+
+---
 
 ### 🎯 Thử thách
 

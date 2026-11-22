@@ -14,7 +14,7 @@ tags: []
 
 > Nguồn: `140 - Transforming Data (Part 1)- Turning Images Into Tensors.md` · [Udemy](https://viettel.udemy.com/course/pytorch-for-deep-learning/learn/lecture/32709560)
 
-Ta đã biến ảnh thành NumPy array và thấy được nó dưới dạng số. Nhưng PyTorch không nhận array hay file JPEG — nó nhận **tensor**. Bài này mình dựng một **transform pipeline** bằng `torchvision.transforms` để resize, lật ngang và cuối cùng chuyển ảnh thành tensor.
+Ta đã biến ảnh thành NumPy array và thấy được nó dưới dạng số. Nhưng model của PyTorch làm việc với **tensor** — không phải file JPEG hay array thô. Bài này mình dựng một **transform pipeline** bằng `torchvision.transforms` để resize, lật ngang và cuối cùng chuyển ảnh thành tensor.
 
 ### 🎯 Hai bước cốt lõi của mọi pipeline dữ liệu
 
@@ -24,6 +24,8 @@ Bất kể dữ liệu là ảnh, text hay audio, quy trình luôn là:
 2. **Bọc nó vào `torch.utils.data.Dataset`**.
 
 Sau đó, từ `Dataset` ta tạo `DataLoader` — thứ tạo ra phiên bản **iterable/batched** của dataset. (Hai tên `Dataset` và `DataLoader` sẽ xuất hiện suốt.)
+
+---
 
 ### 🧰 Tham số `transform` của `ImageFolder`
 
@@ -35,6 +37,8 @@ Import lại các thư viện chính:
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 ```
+
+---
 
 ### 🔥 Dựng transform pipeline
 
@@ -52,9 +56,13 @@ data_transform = transforms.Compose([
 * **`RandomHorizontalFlip(p=0.5)`** — lật ngang ảnh với xác suất **50%**. Đây là một dạng **data augmentation** — tức là làm tăng độ đa dạng của dữ liệu một cách nhân tạo.
 * **`ToTensor()`** — chuyển ảnh sang tensor.
 
+---
+
 ### 🔬 `ToTensor()` làm gì chính xác?
 
 Đọc docstring: `ToTensor()` chuyển một **PIL image** hoặc **NumPy array** có shape `(H, W, C)` với giá trị trong khoảng **0–255** thành **`torch.FloatTensor`** có shape **`(C, H, W)`** với giá trị trong khoảng **0.0–1.0**. Nó cũng ghi chú: transform này **không hỗ trợ TorchScript**. Nói cách khác, nó đổi thứ tự channel sang channels-first và chuẩn hóa pixel về 0–1.
+
+---
 
 ### 🧪 Thử transform với dữ liệu sai kiểu
 
@@ -68,6 +76,8 @@ transformed_image.shape
 
 Shape ra `[3, 64, 64]` — **channels first**. Thử đổi `Resize((224, 224))` (một kích thước phổ biến khác cho các model vision) thì shape thành `[3, 224, 224]`; đổi lại `64` thì về như cũ.
 
+---
+
 ### 🧾 Kiểm tra dtype
 
 ```python
@@ -76,6 +86,8 @@ transformed_image.dtype
 ```
 
 Vậy là đã có cách transform ảnh thành tensor đúng chuẩn PyTorch.
+
+---
 
 ### ✅ Tạm kết
 

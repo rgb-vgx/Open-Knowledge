@@ -23,9 +23,13 @@ Trước khi lao vào code, mình muốn các bạn thấy rõ bức tranh lớn
 3. **So sánh kết quả** giữa các thực nghiệm.
 4. **Chỉ chỗ học thêm** — tài liệu, bài viết, nguồn để đào sâu.
 
+---
+
 ### 👨‍🍳 Học như đầu bếp, không như nhà hóa học
 
 Cách mình dạy ở đây là **"nấu ăn" chứ không phải "làm thí nghiệm hóa học"**: chúng ta sẽ nấu thật nhiều code, thử, chỉnh, nếm thử — chứ không chỉ đọc công thức. Vì với mình, viết và chạy code là cách học tốt nhất.
+
+---
 
 ### 📚 Tài liệu đi kèm
 

@@ -25,6 +25,8 @@ Với Food Vision Mini, model sẽ chạy trên **mobile app hoặc website**, n
 
 Không thể lưu một model bất kỳ rồi mong nó chạy trên mọi thiết bị. Vì thế ta thu thập thông số để lát nữa **so sánh** EfficientNet B2 với Vision Transformer: model nào **nhỏ nhất**, **chính xác nhất**, **latency thấp nhất** — tất cả góp phần vào quyết định chọn model cho Food Vision Mini.
 
+---
+
 ### 🐍 Đo bằng `pathlib`
 
 ```python
@@ -45,6 +47,8 @@ EffNetB2 feature extractor model size: 29.8MB
 ```
 
 Có thể tải file từ Colab rồi xem trực tiếp, nhưng đo bằng code nhanh và tái lập được hơn.
+
+---
 
 ### 📊 Con số để so sánh sau này
 

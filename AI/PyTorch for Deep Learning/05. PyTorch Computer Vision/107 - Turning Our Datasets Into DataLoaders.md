@@ -28,6 +28,8 @@ BATCH_SIZE = 32
 
 Nguyên tắc chuẩn bị DataLoader áp dụng cho ảnh, text, audio — loại dữ liệu nào cũng vậy.
 
+---
+
 ### 🧱 Tạo hai DataLoader
 
 ```python
@@ -53,6 +55,8 @@ Các tham số quan trọng của `DataLoader`:
 
 Vì sao train `shuffle=True` còn test `shuffle=False`? Train cần xáo trộn để model không học thứ tự. Test thì model không bao giờ thấy lúc train, chỉ dùng để evaluate, nên thứ tự không ảnh hưởng chất lượng — giữ nguyên cho dễ so sánh giữa các lần đánh giá.
 
+---
+
 ### 📏 Kiểm tra số batch
 
 ```python
@@ -63,7 +67,9 @@ len(test_dataloader)   # 313
 * `60.000 / 32 = 1875` — chia hết.
 * `10.000 / 32 = 312.5` → làm tròn lên **313**. Batch cuối sẽ không đủ 32 mẫu, nhưng không sao.
 
-Nếu đổi batch size, số batch đổi theo: batch size 128 thì còn 169 batch; batch size 1 thì thành 60.000 batch. Mình giữ 32.
+Nếu đổi batch size, số batch đổi theo: batch size 128 thì còn khoảng 469 batch; batch size 1 thì thành 60.000 batch. Mình giữ 32. (Transcript gốc nói 169 batch với batch size 128 — con số đó nhẩm nhầm, vì `60.000 / 128 = 468,75`.)
+
+---
 
 ### 🔍 Lấy một batch ra xem
 
@@ -81,6 +87,8 @@ Giải nghĩa shape `[32, 1, 28, 28]`:
 
 Nhãn là tensor 32 phần tử, mỗi ảnh một nhãn. Đây chính là dạng **channels first** — PyTorch mặc định — trong khi slide input/output ban đầu vẽ channels last. Cùng dữ liệu, khác thứ tự chiều.
 
+---
+
 ### 🖼️ Vẽ một ảnh bất kỳ trong batch
 
 ```python
@@ -94,13 +102,17 @@ print(f"Image size: {img.shape}")
 print(f"Label: {label}, label size: {label.shape}")
 ```
 
-Kết quả `Image size: torch.Size([1, 28, 28])` — không có chiều batch vì đây là một ảnh đơn lẻ. `label` là số nguyên nên `label.shape` báo lỗi hoặc rỗng, đó là bình thường.
+Kết quả `Image size: torch.Size([1, 28, 28])` — không có chiều batch vì đây là một ảnh đơn lẻ. `label` ở đây là tensor 0 chiều (lấy một phần tử từ batch), nên `label.shape` là `torch.Size([])`, đó là bình thường.
 
 Với seed cố định, lần lượt ra bag, shirt, coat, coat, bag… Bag trông như một hình chữ nhật méo — đúng kiểu "khó tin nổi" nếu bắt viết rule-based.
+
+---
 
 ### 💡 Mẹo in shape
 
 Thói quen tốt: sau mỗi bước biến đổi, **in shape ra**. Đó là cách nhanh nhất để "làm một với dữ liệu" và phát hiện lệch shape sớm.
+
+---
 
 ### ✅ Tạm kết
 

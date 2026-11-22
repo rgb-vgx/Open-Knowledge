@@ -26,6 +26,8 @@ Theo tài liệu tham khảo, mức tăng tốc trung bình của `torch.compile
 
 Làm sao nó làm được vậy? Có một bài tổng quan dài ba phút giải thích **operator fusion** — như mình bàn ở video intro — và **graph capture**. Các bạn đọc thêm trong phần tài nguyên.
 
+---
+
 ### ✅ Xác minh phiên bản PyTorch
 
 Coi như ta vừa làm xong phần tổng quan 30 giây. Giờ hãy giả vờ chưa có sẵn PyTorch 2.0 và kiểm tra xem máy có không.
@@ -39,6 +41,8 @@ Mình lấy đoạn code kiểm tra từ **learnpytorch.io → PyTorch 2 intro**
 3. **In ra vài thông tin hữu ích** về môi trường.
 
 Chạy xong là ta đã sẵn sàng.
+
+---
 
 ### 🔜 Bước tiếp theo: lấy thông tin GPU
 

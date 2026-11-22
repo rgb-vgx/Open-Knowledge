@@ -30,6 +30,8 @@ tensor_B = torch.tensor([[7, 10],
 
 Cả hai đều có shape **`(3, 2)`**.
 
+---
+
 ### ❌ Thử nhân trực tiếp
 
 ```python
@@ -43,6 +45,8 @@ RuntimeError: mat1 and mat2 shapes cannot be multiplied (3x2 and 3x2)
 ```
 
 Vì inner dimensions là `2` và `3` — không khớp. Lưu ý: `torch.mm` cũng là phép nhân ma trận (dành cho tensor 2 chiều) và cho kết quả tương tự `torch.matmul`; còn `torch.matmul` linh hoạt hơn với tensor nhiều chiều.
+
+---
 
 ### 🔄 Transpose: đổi trục của tensor
 
@@ -65,6 +69,8 @@ tensor_B.T.shape    # torch.Size([2, 3]) — đã đổi
 
 > Ghi chú: `tensor.T` là thuộc tính tiện dụng cho tensor 2 chiều. Với tensor nhiều chiều hơn, transpose cần chỉ rõ hai trục, ví dụ `torch.transpose(input, dim0=0, dim1=1)`.
 
+---
+
 ### ✅ Nhân sau khi transpose
 
 ```python
@@ -82,6 +88,8 @@ tensor([[ 27,  30,  33],
 ```
 
 Kiểm tra phần tử đầu: `(1 × 7) + (2 × 10) = 27`. Đó chính là dot product của hàng đầu `tensor_A` với cột đầu `tensor_B.T`.
+
+---
 
 ### 🔍 In ra để "visualize"
 
@@ -105,9 +113,13 @@ Multiplying: torch.Size([3, 2]) @ torch.Size([2, 3]) <- inner dimensions must ma
 Output shape: torch.Size([3, 3])
 ```
 
+---
+
 ### 🌐 Nhìn trực quan trên web
 
 Nếu nhập `[[1,2],[3,4],[5,6]]` và `[[7,8,9],[10,11,12]]` vào **matrixmultiplication.xyz** rồi bấm nhân, các bạn sẽ thấy từng cặp số "nhảy" ra: `1×7 + 2×10 = 27`, rồi `30`, `33`, `61`, `68`... cho đến ma trận kết quả y hệt trên.
+
+---
 
 ### 🎯 Bài tập
 

@@ -1,5 +1,5 @@
 ---
-title: 'Train model nâng cấp: thêm layer liệu có khá hơn?'
+title: 'Bài 83 — Train model nâng cấp: thêm layer liệu có khá hơn?'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 83
@@ -30,6 +30,8 @@ optimizer = torch.optim.SGD(params=model_1.parameters(),
 ```
 
 Chú ý: `params=model_1.parameters()` — **model mới thì phải truyền parameter của model mới**. `lr=0.1` giữ như cũ để càng ít biến càng tốt (dù có thể 0.1 hơi lớn).
+
+---
 
 ### 🏋️ Setup và loop
 
@@ -79,9 +81,13 @@ Các bạn để ý: phần lớn code **giống hệt** loop của `model_0`, c
 
 Lại nhắc: đừng lo nếu loss/accuracy trên máy bạn không khớp tuyệt đối với máy mình — tính ngẫu nhiên là bản chất của machine learning. Điều cần quan tâm là **xu hướng**.
 
+---
+
 ### 😤 Kết quả: vẫn như tung đồng xu
 
 1000 epoch, thêm một layer, gấp đôi hidden unit — và accuracy vẫn **quanh 50%**. Model vẫn không học được gì trên dataset vòng tròn này.
+
+---
 
 ### 🖼️ Vẽ lại decision boundary
 
@@ -98,6 +104,8 @@ plot_decision_boundary(model_1, X_test, y_test)
 Kết quả vẫn là **một đường thẳng** cắt đôi dữ liệu — y như `model_0`. To hơn, sâu hơn, train lâu hơn… vẫn là đường thẳng. Vì model cấu tạo từ **`nn.Linear`** — mà linear thì mãi là **tuyến tính**, chồng bao nhiêu lớp tuyến tính vẫn ra một biểu diễn tuyến tính. Trong khi dữ liệu vòng tròn là **non-linear**.
 
 Đây là lúc bực mình thật. Train model mà nó không học được gì thì rất ức chế — mình cũng từng như vậy nhiều lần.
+
+---
 
 ### 🎯 Thử thách: kiểm chứng model có học được gì không
 

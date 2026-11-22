@@ -32,11 +32,15 @@ z0 = [ x_class ; x_p^1·E ; x_p^2·E ; ... ; x_p^N·E ] + E_pos
 
 Trong đó `D` là **latent vector size** (embedding size) giữ nguyên xuyên suốt các layer — trong **Table 1** gọi là **hidden size**. Các patch được flatten rồi map sang `D` chiều bằng **trainable linear projection**; output của phép chiếu gọi là **Patch embeddings**.
 
+---
+
 ### 🔢 Vì sao cần position embedding
 
 Text paper nói rõ: position embedding được cộng vào patch embedding "to retain positional information". Nghĩa là giữ **thứ tự** của từng patch trong ảnh. Paper dùng **learnable 1D position embeddings** vì "we have not observed significant performance gains from using more advanced 2D-aware position embeddings" (xem Appendix D).
 
 Figure minh họa dùng 9 patch với vị trí đánh số 0–9; con số thực tế phụ thuộc số patch của bạn.
+
+---
 
 ### 🪜 Viết lại bằng pseudocode
 

@@ -41,6 +41,8 @@ results = engine.train(
 
 Đó chính là lý do ta viết `engine.py`: không phải viết lại code train mỗi lần. `train_dataloader` và `test_dataloader` là những instance tạo từ phần "Create datasets and dataloaders" hồi đầu chương.
 
+---
+
 ### 📉 Diễn biến training
 
 Kết quả ban đầu khá hứa hẹn, rồi... lộn xộn:
@@ -53,11 +55,15 @@ Vậy mô hình đang **overfit** hay **underfit**? Nhìn qua thì có vẻ **un
 
 Thật đáng tiếc: bao công replicate một kiến trúc to đẹp mà nó chưa chạy tốt trên dữ liệu của ta.
 
+---
+
 ### 🤔 Vì sao kém?
 
 Hãy nghĩ xem setup của ta khác gì setup của paper. Gợi ý: đọc lại phần **Experiments** trong paper — mục **Datasets** để xem họ dùng dữ liệu gì, ngó qua **model variants** (ta mới dùng Base), rồi xem **Training & Fine-tuning** và **Results**.
 
 Câu hỏi: vì sao ViT gốc đạt kết quả tốt như vậy, còn ta thì chưa?
+
+---
 
 ### ✅ Nhìn mặt tích cực
 

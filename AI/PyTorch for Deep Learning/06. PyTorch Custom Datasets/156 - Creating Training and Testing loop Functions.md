@@ -21,6 +21,8 @@ Ta sẽ viết lại hai hàm **`train_step`** và **`test_step`** — lần nà
 * `train_step(model, dataloader, loss_fn, optimizer, device)` — huấn luyện model trên dataloader.
 * `test_step(model, dataloader, loss_fn, device)` — đánh giá model, **không** cần optimizer vì không tối ưu gì cả.
 
+---
+
 ### 🔥 Hàm `train_step`
 
 ```python
@@ -59,6 +61,8 @@ def train_step(model, dataloader, loss_fn, optimizer, device):
 
 Đây chính là "bài ca tối ưu PyTorch" quen thuộc: **forward → loss → zero_grad → backward → step**. Accuracy tính bằng cách lấy `argmax` trên `softmax`, so sánh với nhãn thật, đếm số đúng rồi chia cho tổng.
 
+---
+
 ### 🔥 Hàm `test_step`
 
 ```python
@@ -88,9 +92,13 @@ def test_step(model, dataloader, loss_fn, device):
 * **`torch.inference_mode()`** — tắt các thứ không cần khi đánh giá, như theo dõi gradient.
 * **Không** có `zero_grad`/`backward`/`step` — không tối ưu.
 
+---
+
 ### 💡 Có cần `softmax` trước `argmax` không?
 
 Mình lưu ý một điểm hay: **không bắt buộc**. `argmax` của **logit** thô và `argmax` của `softmax(logit)` cho cùng kết quả, vì softmax đơn điệu tăng. Ta dùng `softmax` chỉ để đầy đủ (có được **xác suất dự đoán**). Các bạn thử bỏ `softmax` xem kết quả có giống không.
+
+---
 
 ### ✅ Tạm kết
 

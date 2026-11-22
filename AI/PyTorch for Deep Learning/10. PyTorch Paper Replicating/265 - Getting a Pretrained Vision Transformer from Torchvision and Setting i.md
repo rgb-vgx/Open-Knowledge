@@ -30,6 +30,8 @@ cost = 30 * 24 * 8   # $5,760
 
 Đó là chưa kể các model khổng lồ khác như BLOOM (hơn **3 tháng** train). Với người mới, con số này quá đắt. Ta cần chạy nhanh, tận dụng GPU miễn phí. Dùng model pre-trained là hợp lý.
 
+---
+
 ### 📥 Lấy weights từ torchvision
 
 Từ torchvision **0.13+** có API mới cho pretrained weights. Yêu cầu torchvision ≥ 0.12, nhưng ta dùng 0.13+.
@@ -50,6 +52,8 @@ pretrained_vit = vit_b_16(weights=pretrained_vit_weights).to(device)
 
 `ViT_B_16_Weights.DEFAULT` nghĩa là **best available** — nếu weights được cập nhật, ta tự động dùng bản tốt nhất. Ngoài ViT-Base, torchvision còn có ViT-L và ViT-Huge, nhưng ta bắt đầu với Base.
 
+---
+
 ### 🧊 Đóng băng backbone
 
 Ta muốn **giữ nguyên** phần base (đã học trên ImageNet) và chỉ huấn luyện phần **head** cho bài toán của mình. Đóng băng bằng cách tắt gradient:
@@ -60,6 +64,8 @@ for param in pretrained_vit.parameters():
 ```
 
 Kiểm tra bằng `torchinfo.summary`: tổng tham số **86.567.656** (do head có 1000 lớp), nhưng tất cả đều **không trainable**.
+
+---
 
 ### 🔄 Thay classifier head
 
@@ -77,9 +83,13 @@ pretrained_vit.heads = nn.Linear(in_features=768, out_features=len(class_names))
 
 Ta dùng phần base để **trích xuất biểu diễn ảnh**, rồi đưa vào layer top mới học.
 
+---
+
 ### 🤯 Một phát hiện thú vị
 
 Số tham số **85.800.963** giống hệt bản ViT ta tự dựng từ đầu! Nghĩa là ta đã dựng ra **cùng loại kiến trúc** như đội PyTorch làm. Tuyệt chưa!
+
+---
 
 ### ✅ Tiếp theo
 

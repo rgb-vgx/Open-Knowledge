@@ -23,6 +23,8 @@ tags: []
 * **Kích thước điểm**: model size (MB).
 * Vị trí lý tưởng: **góc trên bên trái** — accuracy cao nhất, thời gian thấp nhất.
 
+---
+
 ### 🧱 Dựng scatter plot
 
 ```python
@@ -40,6 +42,8 @@ scatter = ax.scatter(
 
 `s` nhận list kích thước — điểm của ViT sẽ to hơn hẳn vì file 327MB.
 
+---
+
 ### 🏷️ Thêm tiêu đề, nhãn, grid
 
 ```python
@@ -49,6 +53,8 @@ ax.set_ylabel("Test accuracy (%)", fontsize=14)
 ax.tick_params(axis="both", labelsize=12)
 ax.grid(True)
 ```
+
+---
 
 ### 🔤 Chú thích từng điểm
 
@@ -62,6 +68,8 @@ for index, row in df.iterrows():
 ```
 
 Lưu ý phiên bản matplotlib: tham số đầu của `Axes.annotate` từng có tên **`s`**, sau đổi thành **`text`**. Nếu gặp lỗi từ khóa, truyền **positional** (như trên) hoặc đổi tên tham số cho khớp version đang dùng. Phần `+ 0.006` / `+ 0.003` chỉ để nhãn không đè lên điểm.
+
+---
 
 ### 🔍 Legend theo kích thước model
 
@@ -78,6 +86,8 @@ Lưu hình nếu muốn mang đi họp:
 ```python
 fig.savefig("food_vision_mini_inference_speed_vs_performance.png")
 ```
+
+---
 
 ### 🧭 Đọc biểu đồ
 

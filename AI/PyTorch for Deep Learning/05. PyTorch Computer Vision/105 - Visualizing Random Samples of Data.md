@@ -30,6 +30,8 @@ print(random_idx)
 
 Đây là pattern dùng được cho mọi loại dữ liệu: ảnh, text, audio… miễn là có index để lấy mẫu.
 
+---
+
 ### 🧱 Dựng lưới ảnh
 
 Mình đặt số hàng/cột trước, rồi lặp để vẽ từng ảnh:
@@ -56,6 +58,8 @@ Ba chi tiết đáng nói:
 
 Lần đầu thường phải chỉnh qua chỉnh lại mới ra hình ưng ý — chuyện bình thường.
 
+---
+
 ### 👗 Nhìn ảnh thì thấy gì?
 
 Lần chạy đầu tiên ra ankle boot, shirt, bag, ankle boot, sandal, shirt, pullover… và có hai điều đáng chú ý ngay:
@@ -67,11 +71,15 @@ Khi bỏ seed và lấy mẫu mới, mình tiếp tục thấy sandal, ankle boo
 
 Một ảnh bag trông chỉ là hình chữ nhật méo mó; có ảnh gần như chẳng có chi tiết gì.
 
+---
+
 ### 🧠 Bài học rút ra
 
 Nếu **bạn** nhầm giữa các mẫu và nhãn của chúng, **model của bạn** cũng sẽ nhầm. Những quan sát này sẽ được kiểm chứng bằng confusion matrix ở cuối section.
 
 Câu hỏi khác: có viết được chương trình rule-based để phân loại không? Kiểu "nếu là hình chữ nhật có cái khóa ở giữa thì là bag"? Có thể, sau một hồi vật lộn. Nhưng mình thích viết machine learning algorithm để nó tự tìm pattern hơn.
+
+---
 
 ### ✅ Tạm kết
 

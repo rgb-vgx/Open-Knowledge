@@ -1,5 +1,5 @@
 ---
-title: 'Chuyển dữ liệu sang tensor và chia train/test'
+title: 'Bài 72 — Chuyển dữ liệu sang tensor và chia train/test'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 72
@@ -29,6 +29,8 @@ Kết quả: `X` có **1000 mẫu × 2 feature**, còn `y` có **1000 mẫu**, m
 
 Cần nhớ: số feature cho một label rất linh hoạt. Với bài toán lớn hơn, các bạn có thể có 1000 mẫu nhưng mỗi mẫu là 128, 200 hay 10 con số — tùy.
 
+---
+
 ### 🔬 Xem thử một mẫu
 
 ```python
@@ -41,6 +43,8 @@ print(f"Shapes for one sample of X: {X_sample.shape} and the same for y: {y_samp
 ```
 
 Một mẫu `X` là **2 feature**; một mẫu `y` là **scalar**. Cách nói cho dễ: **2 feature của X dùng để dự đoán 1 con số của y**.
+
+---
 
 ### 🧱 Chuyển NumPy array sang tensor
 
@@ -60,6 +64,8 @@ y = torch.from_numpy(y).type(torch.float)
 X[:5], y[:5]
 ```
 
+---
+
 ### ⚠️ Vì sao phải `.type(torch.float)`?
 
 Đây là cái bẫy nhỏ rất dễ dính. Mặc định NumPy dùng **`float64`**, còn PyTorch mặc định là **`float32`** (viết tắt `torch.float`). Nếu không ép kiểu, tensor của các bạn sẽ là `float64` và **có thể gây lỗi về sau**.
@@ -70,6 +76,8 @@ X.dtype, y.dtype
 ```
 
 Giờ dữ liệu đã là tensor — kiểm tra bằng `type(X)` sẽ ra `torch.Tensor`.
+
+---
 
 ### ✂️ Chia train/test
 
@@ -90,6 +98,8 @@ Vài điểm cần nhớ về hàm này:
 * **Thứ tự trả về** rất dễ lộn: `X_train, X_test, y_train, y_test` — **feature trước, train trước**, rồi mới tới label. Mình cũng phải làm đủ nhiều lần mới nhớ nổi.
 * **`test_size=0.2`** — 20% dữ liệu dành cho test, 80% cho train. Muốn chia 50/50 thì để `0.5`, dù kiểu chia đó ít khi dùng.
 * **`random_state`** — tương đương random seed, để lần chạy nào cũng chia giống nhau.
+
+---
 
 ### 🌱 Một lưu ý về seed
 

@@ -23,6 +23,8 @@ Chào các bạn. File zip đã nằm trong máy. Video này mình đi từng b�
 
 Space mới chỉ có một `README.md`. Trong phần cấu hình, SDK version và `app_file` mặc định là `app.py` — đúng thứ mình đã chuẩn bị.
 
+---
+
 ### 2️⃣ Clone repo về máy
 
 ```bash
@@ -34,6 +36,8 @@ ls
 ```
 
 Trong repo mới chỉ có `README.md`. Toàn bộ file app sẽ được đưa vào đây.
+
+---
 
 ### 3️⃣ Copy file từ thư mục đã tải
 
@@ -52,6 +56,8 @@ git remote -v
 
 Phải trỏ tới `https://huggingface.co/spaces/<username>/food_vision_mini_video`.
 
+---
+
 ### 4️⃣ Bật Git LFS cho file lớn
 
 Model nặng khoảng 29–30 MB, vượt ngưỡng ~10 MB nên cần Git LFS:
@@ -64,6 +70,8 @@ git add .gitattributes
 
 `git lfs track` ghi pattern vào `.gitattributes`. Spaces thường đã tạo sẵn file này, nhưng track thêm `*.pth` cho chắc. Lệnh có thể báo `*.pth` đã được hỗ trợ — không sao.
 
+---
+
 ### 5️⃣ Commit và push
 
 ```bash
@@ -74,6 +82,8 @@ git push
 ```
 
 `git add .` đưa toàn bộ file vào staging. `git status` để xem danh sách trước khi commit. Khi `git push`, phần upload LFS sẽ chạy — với model ~30 MB, tùy mạng có thể mất vài phút.
+
+---
 
 ### ⏳ Sau khi push
 

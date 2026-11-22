@@ -1,5 +1,5 @@
 ---
-title: 'Code training loop và testing loop cho model phân loại'
+title: 'Bài 79 — Code training loop và testing loop cho model phân loại'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 79
@@ -25,6 +25,8 @@ torch.cuda.manual_seed(42)  # nếu chạy trên CUDA
 
 Mình dùng số yêu thích **42**. Có hai loại seed: `torch.manual_seed` cho PyTorch chung và `torch.cuda.manual_seed` cho phép toán trên CUDA. Đặt cả hai để cố gắng tái lập được kết quả. Nhưng các bạn đừng ám ảnh chuyện số trên máy mình phải khớp y hệt máy các bạn — điều quan trọng hơn là **xu hướng** loss đi xuống hay đi lên.
 
+---
+
 ### 📦 Đưa dữ liệu lên device
 
 ```python
@@ -34,6 +36,8 @@ X_test, y_test = X_test.to(device), y_test.to(device)
 ```
 
 Model nằm trên GPU thì dữ liệu cũng phải nằm trên GPU, nếu không sẽ lỗi. Code viết theo hướng **device-agnostic** nên chạy đâu cũng được.
+
+---
 
 ### 🏋️ Phần training
 
@@ -75,6 +79,8 @@ Lý do mình chọn bản "with logits": theo tài liệu PyTorch, nó gộp sig
 
 Hàm `accuracy_fn` là hàm Python thuần mình tự viết, nhét thẳng vào loop được — đúng chất Python của PyTorch.
 
+---
+
 ### 🧪 Phần testing
 
 ```python
@@ -92,6 +98,8 @@ Hàm `accuracy_fn` là hàm Python thuần mình tự viết, nhét thẳng vào
 
 Khi test thì chuyển sang **eval mode** và bọc trong **`torch.inference_mode()`** — đang inference nên không cần gradient.
 
+---
+
 ### ⚠️ Thứ tự tham số: cẩn thận!
 
 Đây là chỗ dễ sai nhất:
@@ -100,6 +108,8 @@ Khi test thì chuyển sang **eval mode** và bọc trong **`torch.inference_mod
 * **Hàm accuracy mình viết**: **label thật trước, prediction sau** — `accuracy_fn(y_true, y_pred)`.
 
 Không phải mình cố làm rối. Mình đặt `accuracy_fn` theo thứ tự của **scikit-learn** (`accuracy_score(y_true, y_pred)`) vì gói metrics của scikit-learn rất tiện. Còn loss function của PyTorch lại ngược lại. Nhớ kỹ hai thứ tự này.
+
+---
 
 ### 🖨️ In kết quả mỗi 10 epoch
 

@@ -22,6 +22,8 @@ Mọi project ML đều bắt đầu từ dữ liệu. Mình sẽ dùng **Fashio
 
 FashionMNIST (từ Zalando Research) gồm ảnh xám các món quần áo. Bài toán: biến ảnh thành số, train model nhận ra từng loại quần áo.
 
+---
+
 ### 📥 Lấy dataset qua `torchvision.datasets`
 
 Trong docs của `torchvision.datasets` có danh sách dataset tích hợp: Caltech101, CIFAR100 (100 lớp), CIFAR10 (10 lớp), MNIST, FashionMNIST, ImageNet... ImageNet là chuẩn vàng để đánh giá computer vision, với hàng triệu ảnh.
@@ -51,6 +53,8 @@ train_data = datasets.FashionMNIST(
 
 Bản test chỉ khác đúng một dòng: `train=False`.
 
+---
+
 ### 📁 Chạy thử thì được gì
 
 Sau khi chạy, `torchvision` tự tải và giải nén vào thư mục `data/FashionMNIST/`, chia sẵn thành `train_images`, `train_labels`, `test_images`, `test_labels`. Đây là điểm hay: dataset phổ biến đã được format sẵn cho PyTorch — khác với dataset tự làm sau này.
@@ -61,6 +65,8 @@ Số lượng mẫu:
 * **10.000** mẫu test
 
 Nhiệm vụ: model học pattern trên 60.000 ảnh train rồi dự đoán trên 10.000 ảnh test.
+
+---
 
 ### 🔎 Xem một mẫu
 
@@ -74,6 +80,8 @@ Kết quả `image.shape` là `torch.Size([1, 28, 28])` — tức **1 color chan
 
 Đây chính là dấu vết của `ToTensor()`: PIL Image/NumPy array `(H, W, C)` → `torch.FloatTensor` shape `(C, H, W)`, giá trị 0–1. PyTorch mặc định **channels first**; thư viện khác có thể thích channels last.
 
+---
+
 ### 🏷️ Tên lớp và ánh xạ ngược
 
 ```python
@@ -86,9 +94,13 @@ print(train_data.class_to_idx)
 
 Ví dụ nhãn `9` tương ứng **Ankle boot**. Ngoài ra dataset còn có `.data` (toàn bộ ảnh) và `.targets` (toàn bộ nhãn, một tensor dài).
 
+---
+
 ### 🖤 Vì sao chỉ có 1 channel?
 
 Vì ảnh xám. Pixel đen = 0, trắng = giá trị cao (gần 1 sau khi scale), còn 0.001 là một pixel trắng mờ. Ảnh màu có 3 channel cho đỏ/xanh lá/xanh dương, ảnh xám chỉ 1.
+
+---
 
 ### ✅ Tạm kết
 

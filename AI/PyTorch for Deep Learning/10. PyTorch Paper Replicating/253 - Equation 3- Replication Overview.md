@@ -22,6 +22,8 @@ Một lần nữa nhìn lại bức tranh lớn: transformer encoder gồm các 
 
 Residual connection chính là cộng input vào output của block. Nó cho phép xây **mô hình lớn và sâu hơn** vì ngăn gradient và weight update bị co nhỏ dần. Ta chưa code nó, sẽ làm khi ghép transformer encoder hoàn chỉnh.
 
+---
+
 ### 📖 MLP trong paper gồm những gì?
 
 Trong mục **3.1** (Model overview), có đúng một dòng mô tả MLP: gồm **hai layer** với **GELU nonlinearity**. Dạng giả mã:
@@ -37,9 +39,13 @@ Vài điểm cần làm rõ:
 * In PyTorch: `nn.GELU()`.
 * **Dropout**: đây là một "kho báu" phải lần trong paper — nó nói rõ dropout **áp sau mỗi dense layer**. Vậy trong MLP block ta đặt dropout sau các linear layer.
 
+---
+
 ### 💡 Vì sao cần phi tuyến?
 
 Mình hay hỏi vui: nếu chỉ có đường thẳng thì bạn vẽ được gì? Còn khi có cả đường cong, bạn vẽ được những hình thù tinh xảo. Mạng nơ-ron cũng vậy — activation function chính là thứ cho phép nó biểu diễn các pattern phức tạp.
+
+---
 
 ### 🎯 Thử thách
 

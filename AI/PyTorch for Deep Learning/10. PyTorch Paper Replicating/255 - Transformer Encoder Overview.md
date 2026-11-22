@@ -25,9 +25,13 @@ Tra cứu "what is an encoder in machine learning" sẽ thấy nhiều tài li�
 
 Ví dụ Google Translate: câu tiếng Anh được encoder chuyển thành số, decoder dựng các số đó thành câu tiếng Nhật. Đó là mô hình **sequence-to-sequence (seq2seq)**, phổ biến trong NLP. Cái tên **transformer encoder** xuất phát từ đây, vì paper "Attention Is All You Need" vốn ra đời cho bài toán **text**.
 
+---
+
 ### 🖼️ Nhưng ta đang làm ảnh
 
 Đầu vào của ta là một **chuỗi patch ảnh**. Transformer encoder biến chuỗi đó thành biểu diễn dễ học hơn qua nhiều lớp. Khác với dịch máy, ta **không có decoder** trong kiến trúc ViT, vì mục tiêu là **phân loại ảnh** — output là **một tên lớp**, chứ không phải một chuỗi.
+
+---
 
 ### 🔁 Residual connection
 
@@ -37,6 +41,8 @@ Ví dụ Google Translate: câu tiếng Anh được encoder chuyển thành s�
 * Ngăn **weight update bị co nhỏ dần** (vanishing gradient).
 
 Trong cả MSA block và MLP block ta đều chưa code phần này. Ta có thể thêm vào `forward` của từng block, hoặc thêm khi ghép encoder — mình chọn cách thứ hai để hai block giữ nguyên khả năng tái sử dụng.
+
+---
 
 ### 📝 Giả mã transformer encoder
 
@@ -51,6 +57,8 @@ return mlp_out
 
 Thực ra đây là một chuỗi phép cộng liên tiếp, nên kết quả cuối vẫn là một tensor duy nhất. LayerNorm đã nằm sẵn **bên trong** mỗi block (nhớ lại: norm đứng trước mỗi block), nên encoder block chỉ cần ghép chúng lại và chèn residual.
 
+---
+
 ### ✅ Nhìn lại bức tranh
 
 Theo mục 3.1 của paper: transformer encoder gồm các layer **MSA và MLP xen kẽ**, layer norm **trước mỗi block**, residual **sau mỗi block**. Ta đã có:
@@ -58,6 +66,8 @@ Theo mục 3.1 của paper: transformer encoder gồm các layer **MSA và MLP x
 * `MLPBlock` (Equation 3).
 
 Giờ chỉ còn thiếu lớp keo dính chúng lại.
+
+---
 
 ### 🎯 Thử thách
 

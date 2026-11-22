@@ -31,6 +31,8 @@ Lỗi đầu tiên gặp phải: `AttributeError: ... has no attribute 'patch_si
 AssertionError: Input image size must be divisible by patch size, image shape: 250, patch size: 16
 ```
 
+---
+
 ### 📖 Paper nói gì về class token
 
 > In order to perform classification, we use the standard approach of adding an extra **learnable** classification token to the sequence.
@@ -41,6 +43,8 @@ Hai điểm cần nhớ:
 
 * **Prepend** — thêm vào **đầu**, không phải append vào cuối.
 * **Learnable** — token này học được, không phải hằng số.
+
+---
 
 ### 🔧 `nn.Parameter` — cách tạo tham số học được
 
@@ -65,6 +69,8 @@ class_token = nn.Parameter(
 `requires_grad=True` là mặc định của `nn.Parameter`, ở đây viết ra cho rõ ràng. Dùng `torch.ones` chỉ để dễ nhìn trong demo — thực tế nên khởi tạo ngẫu nhiên (`torch.randn`) để nó được tối ưu từ một điểm random.
 
 Shape: `(1, 1, 768)` — một token duy nhất, 768 chiều.
+
+---
 
 ### 🔗 Nối token vào đầu chuỗi bằng `torch.cat`
 

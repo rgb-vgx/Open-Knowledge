@@ -23,6 +23,8 @@ How did you go? Bạn đã viết hai hàm tạo feature extractor EfficientNet-
 
 Model mặc định có **1000 output class** (ImageNet); ta cần **3** (pizza/steak/sushi).
 
+---
+
 ### 🧪 Trước tiên: khám phá B2
 
 Để hiểu B2 khác B0 chỗ nào, mình tạo thử:
@@ -37,6 +39,8 @@ effnetb2 = torchvision.models.efficientnet_b2(weights=effnetb2_weights)
 Điểm khác: B2 là bản **scale up** của B0 nên `features` cuối có **1408** giá trị (B0 là **1280**), và dropout cao hơn một chút để chống overfitting. Quy luật chung: cùng một dòng model tên na ná nhau (B0, B1, B2...) thường chỉ là cùng kiểu kiến trúc được scale lên — nhiều layer/parameter hơn.
 
 > Bài học quan trọng: khi đổi model, phải chắc **input/output shape khớp** ở mọi layer, kể cả layer cuối. Lệch là lỗi shape ngay.
+
+---
 
 ### 🏗️ Viết hàm `create_effnetb0`
 
@@ -72,6 +76,8 @@ Các ý chính:
 
 Gọi `create_effnetb0()` rồi `summary(...)` thấy base layer frozen, chỉ classifier trainable — tổng khoảng **4 triệu** tham số và **dưới 4000** trainable.
 
+---
+
 ### 🏗️ Viết hàm `create_effnetb2`
 
 Y hệt, chỉ đổi ba chỗ: `EfficientNet_B2_Weights`, `efficientnet_b2`, và **`in_features=1408`**.
@@ -83,6 +89,8 @@ Sau khi sửa, summary B2 cho thấy:
 * Tổng khoảng **7,7-7,8 triệu** tham số (gần gấp đôi B0).
 * Khoảng **4000** (hơn một chút) trainable.
 * Feature vector của classifier là **1408** thay vì 1280.
+
+---
 
 ### ✅ Tạm kết
 

@@ -25,6 +25,8 @@ Trong neural network và deep learning có hai cách nhân chính:
 
 Matrix multiplication có lẽ là **phép toán tensor phổ biến nhất** bên trong neural network. Nó còn được gọi là **dot product**, và ký hiệu là một dấu chấm đậm.
 
+---
+
 ### 🧠 Dot product hoạt động thế nào?
 
 Ví dụ trên trang Math is Fun: nhân ma trận `[[1,2,3],[4,5,6],[7,8,9]]` với `[[...]]` — kết quả phần tử đầu tiên là `58`.
@@ -37,6 +39,8 @@ Cách tính: lấy **hàng đầu** của ma trận thứ nhất nhân với **c
 
 Làm tương tự cho từng vị trí còn lại sẽ ra toàn bộ ma trận kết quả. Đây là bài tập rất tốt: tự tay làm lại từng bước.
 
+---
+
 ### 🔢 Element-wise trong PyTorch
 
 ```python
@@ -46,6 +50,8 @@ print(f"Element-wise multiplication: {tensor * tensor}")
 ```
 
 Kết quả: `tensor([1, 4, 9])` — vì `1×1=1`, `2×2=4`, `3×3=9`. Đúng nghĩa "nhân từng phần tử".
+
+---
 
 ### 🧮 Matrix multiplication trong PyTorch
 
@@ -64,6 +70,8 @@ Tính tay theo dot product:
 ```
 
 Element-wise **nhân rồi để nguyên từng vị trí**; dot product **nhân từng cặp rồi cộng dồn** lại thành một số. Đó là khác biệt cốt lõi.
+
+---
 
 ### 🐢 Tự viết vòng lặp vs dùng `torch.matmul`
 
@@ -84,6 +92,8 @@ Kết quả vẫn là 14, nhưng chậm hơn nhiều. Đo thời gian:
 Tức nhanh hơn **khoảng 10 lần** — dù tensor chỉ có 3 phần tử. Với tensor một triệu phần tử, khoảng cách sẽ còn khủng khiếp hơn.
 
 Lý do: PyTorch triển khai các hàm này theo kiểu **vectorized** — xử lý cả mảng cùng lúc thay vì lặp từng phần tử. Đó là lý do với các phép phức tạp như matrix multiplication, bạn nên dùng hàm của PyTorch thay vì tự viết `for`.
+
+---
 
 ### 🎯 Chốt lại
 

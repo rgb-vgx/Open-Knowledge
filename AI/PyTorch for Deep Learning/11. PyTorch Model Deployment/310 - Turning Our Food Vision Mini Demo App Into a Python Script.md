@@ -23,6 +23,8 @@ Chào các bạn. Đây là file quan trọng nhất: `app.py`. Hugging Face Spa
 3. **Hàm `predict`** — map ảnh → dictionary xác suất + thời gian.
 4. **Gradio app** — `gr.Interface` + `launch()`.
 
+---
+
 ### ✍️ Phần 1 và 2: import, model, transforms
 
 ```python
@@ -51,6 +53,8 @@ Hai điểm cần chú ý:
 * **`from model import create_effnetb2_model`** — vì `app.py` nằm cùng thư mục với `model.py`. Lỗi hay gặp là quên import này.
 * **`map_location=torch.device("cpu")`** — model được train trên GPU, nếu không ép về CPU thì khi load trên môi trường chỉ có CPU sẽ lỗi. Đây là cái bẫy mình từng dính.
 
+---
+
 ### 🧠 Phần 3: hàm predict
 
 Hàm `predict` giữ nguyên như bản trong notebook:
@@ -69,6 +73,8 @@ def predict(img) -> Tuple[Dict, float]:
     pred_time = round(timer() - start_time, 4)
     return pred_labels_and_probs, pred_time
 ```
+
+---
 
 ### 🖼️ Phần 4: app Gradio + examples
 
@@ -94,6 +100,8 @@ demo.launch(debug=False, share=True)
 ```
 
 Toàn bộ file chỉ khoảng **72 dòng**. Mình cố ý viết hơi dài dòng cho dễ đọc, hoàn toàn có thể rút gọn.
+
+---
 
 ### ⚠️ Lưu ý về import
 

@@ -24,11 +24,15 @@ Nếu muốn đọc lại lý thuyết: mục `05_pytorch_going_modular` trong s
 
 Code PyTorch ngoài đời thường ở dạng script — nên quen với script mode là rất đáng.
 
+---
+
 ### 📝 Ba bài tập
 
 1. **Biến phần "get data" thành script.** Cell section 1 (tải dữ liệu) chưa được tách. Gợi ý: dùng code rất giống phần tạo script ta vừa làm.
 2. **Dùng module `argparse` của Python** để truyền hyperparameter tùy chỉnh vào `train.py`. Hơi khó một chút, nhưng làm được. Tài nguyên: tài liệu `argparse` chính thức và hướng dẫn của Real Python về xây CLI bằng `argparse`.
 3. **Viết script `predict.py`** để dự đoán trên một ảnh cho trước đường dẫn, dùng model đã lưu. Nhớ lại section 04 ta đã dự đoán trên custom image — hãy lấy code đó đóng gói thành script.
+
+---
 
 ### 📦 Template và lời giải
 
@@ -37,11 +41,15 @@ Code PyTorch ngoài đời thường ở dạng script — nên quen với scrip
 * Mình cũng có **video walkthrough** giải bài tập trực tiếp trên YouTube — xem cách mình xử lý từng bài.
 * Link đầy đủ nằm cuối bản sách của khóa.
 
+---
+
 ### 📚 Tài nguyên mở rộng
 
 * **Structuring a Python project** — nếu muốn hiểu vì sao đặt `going_modular/going_modular/` rồi script bên trong, đọc bài này.
 * **PyTorch style guide của Igor Susmelj** — nguồn cảm hứng cho cách mình viết code trong khóa.
 * **Repo PyTorch vision references** — xem `train.py` thật dùng để train state-of-the-art model. Model của ta còn nhỏ, nhưng code train này chính là thứ đưa các model ảnh của PyTorch tới kết quả SOTA.
+
+---
 
 ### 💡 Chốt lại
 

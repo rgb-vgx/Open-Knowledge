@@ -26,6 +26,8 @@ plt.axis(False)
 
 Ảnh sẽ khác mỗi lần chạy vì DataLoader shuffle ngẫu nhiên — không sao. Ảnh đang có shape `(3, 224, 224)`; ta cần biến nó thành `(N, D)` — `N` là số patch, `D` là embedding size (`P²·C = 768`).
 
+---
+
 ### ➡️ Chuyển sang channels last
 
 ```python
@@ -46,6 +48,8 @@ plt.imshow(image_permuted[:patch_size, :, :])
 ```
 
 Kết quả là một dải mỏng, chỉ thấy viền bánh pizza ở mép. Đó là 16 pixel đầu tiên theo chiều cao.
+
+---
 
 ### 🧩 Cắt hàng trên thành từng patch
 
@@ -82,9 +86,13 @@ for i, patch in enumerate(range(0, image_size, patch_size)):
 
 Vòng lặp cho ra các khoảng `0–16, 16–32, 32–48, ...` — mỗi đoạn là một patch 16×16. Kết quả: hàng trên cùng của ảnh được tách thành 14 ô riêng biệt.
 
+---
+
 ### 🧠 Vì sao patch embedding quan trọng
 
 Một người bạn ML engineer của mình hay nói: **"it's all about the embedding"**. Nếu biểu diễn được data thành một **learnable representation** tốt, kiến trúc model thường sẽ học được. Nên phần patch embedding đáng để hiểu kỹ.
+
+---
 
 ### 🏋️ Thử thách
 

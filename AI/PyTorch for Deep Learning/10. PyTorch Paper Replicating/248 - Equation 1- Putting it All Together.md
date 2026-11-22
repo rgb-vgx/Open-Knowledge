@@ -34,6 +34,8 @@ image_shape = image.shape
 height, width = image_shape[1], image_shape[2]
 ```
 
+---
+
 ### 📦 Thêm batch dimension
 
 Ảnh thường đi qua mạng theo batch, nên ta thêm một chiều batch vào đầu:
@@ -44,6 +46,8 @@ x = image.unsqueeze(0)
 ```
 
 Từ đây, mỗi bước ta đều in shape ra để thấy dữ liệu biến đổi thế nào — kiểm tra input/output shape là một trong những việc quan trọng nhất của deep learning.
+
+---
 
 ### 🔥 Patch embedding layer
 
@@ -61,6 +65,8 @@ patch_embedding = patch_embedding_layer(x)
 ```
 
 `in_channels=3` cho ảnh màu, `patch_size=16`, `embedding_dim=768` đúng theo **Table 1** của paper với cấu hình **ViT-Base**.
+
+---
 
 ### 🐦 Class token
 
@@ -89,6 +95,8 @@ patch_embedding_class_token = torch.cat(
 
 Shape tăng từ `196` lên `197` — đúng như mong đợi.
 
+---
+
 ### ➕ Position embedding
 
 Tính số patch từ chính dữ liệu, không hard-code:
@@ -112,6 +120,8 @@ patch_and_position_embedding = patch_embedding_class_token + position_embedding
 ```
 
 Không lỗi, đúng shape. Tiếng vỗ tay nào!
+
+---
 
 ### ✅ Toàn bộ Equation 1 trong một cell
 

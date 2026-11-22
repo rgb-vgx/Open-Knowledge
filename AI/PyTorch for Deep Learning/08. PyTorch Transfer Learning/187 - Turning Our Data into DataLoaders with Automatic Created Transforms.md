@@ -35,13 +35,17 @@ weights = torchvision.models.EfficientNet_B0_Weights.DEFAULT
 model = torchvision.models.efficientnet_b0(weights=weights).to(device)
 ```
 
-Lưu ý: tham số tên là **`weights`** (số nhiều) — đây là lỗi chính tả rất dễ mắc, mình cũng từng viết nhầm thành `weight`.
+Lưu ý: tham số tên là **`weights`** (số nhiều) — rất dễ viết nhầm thành `weight`.
+
+---
 
 ### 🎯 `DEFAULT` nghĩa là gì?
 
 `EfficientNet_B0_Weights.DEFAULT` tương đương **bộ weight tốt nhất hiện có** — với EfficientNet B0 là `IMAGENET1K_V1` (train trên 1000 class ImageNet).
 
 Cũng có bộ `IMAGENET1K_V2`, `IMAGENET21K` (21.000 class) cho một số model. Nhờ API mới, khi có "recipe" weight tốt hơn ra đời, bạn chỉ cần đổi biến — không phải sửa cách khởi tạo.
+
+---
 
 ### 🧪 Lấy transform tự động
 
@@ -54,7 +58,7 @@ Kết quả gần như:
 
 ```text
 Compose(
-    Resize(size=256, interpolation=bilinear, max_size=None, antialias=True)
+    Resize(size=256, interpolation=bicubic, max_size=None, antialias=True)
     CenterCrop(size=(224, 224))
     ToTensor()
     Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
@@ -64,6 +68,8 @@ Compose(
 So với bản manual ta tự viết: chỉ khác là nó **resize về 256 rồi center crop 224**, thay vì resize thẳng 224. Phần normalize y hệt — cùng mean/std ImageNet.
 
 Điểm đẹp: bạn chỉ cần nói *"dùng EfficientNet B0"*, và transform tương ứng **đi kèm** bộ weight. Cùng logic áp dụng cho mọi model khác (ConvNeXt, ViT...).
+
+---
 
 ### 🧵 Tạo dataloader với auto transforms
 
@@ -78,12 +84,16 @@ train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
 
 Chạy xong, ta nhận được train/test dataloader và class names — kết quả giống hệt bản manual ở video trước.
 
+---
+
 ### 📌 Tổng kết hai cách
 
 | Cách | Ưu điểm | Nhược điểm |
 |---|---|---|
 | Manual | Linh hoạt vô hạn, thêm gì cũng được | Sai là giảm hiệu năng |
 | Automatic | Chuẩn xác theo đúng pretrained model | Ít tùy biến hơn |
+
+---
 
 ### ✅ Chốt lại
 

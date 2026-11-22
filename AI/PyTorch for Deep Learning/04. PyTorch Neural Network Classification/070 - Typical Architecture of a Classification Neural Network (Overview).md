@@ -1,5 +1,5 @@
 ---
-title: 'Kiến trúc điển hình của một neural network phân loại'
+title: 'Bài 70 — Kiến trúc điển hình của một neural network phân loại'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 70
@@ -30,6 +30,8 @@ Một model classification có vài núm vặn mà **chính các bạn quyết �
 | **Output activation** | **Sigmoid** | **Softmax** |
 | **Loss function** | Binary cross entropy | Cross entropy |
 
+---
+
 ### 🔢 Input layer: `in_features`
 
 `in_features` do các bạn chọn, bằng **số feature** của bài toán. Ví dụ dự đoán ai đó có bệnh tim hay không, mình có thể dùng 5 feature:
@@ -42,6 +44,8 @@ Một model classification có vài núm vặn mà **chính các bạn quyết �
 
 Với bài toán ảnh, `in_features` có thể là **3** — số colour channels.
 
+---
+
 ### 🧠 Hidden layers và số neuron
 
 Mỗi lớp là một phép toán, và trong PyTorch **mọi thứ gần như đều là layer**. Cú pháp các bạn sẽ gặp khi định nghĩa một lớp là `nn.Linear(...)`, rồi tới `nn.ReLU()`, rồi `nn.Linear(...)` nữa.
@@ -52,12 +56,16 @@ Mỗi lớp là một phép toán, và trong PyTorch **mọi thứ gần như đ
 
 Để thấy độ lớn của chuyện này, cứ nhìn **ResNet**: bản 34 layer đã dày đặc, còn có **ResNet-152** với 152 layer. Mình chưa tới đó, nhưng đang xây đủ công cụ để đi tới.
 
+---
+
 ### 🎚️ Activation: chỗ "phép màu" non-linearity xuất hiện
 
 * **Hidden layer activation** thường là **ReLU** (rectified linear unit) — nhưng PyTorch còn rất nhiều hàm non-linear khác. Mình chỉ gieo hạt giống ở đây thôi; hãy tưởng tượng một đường **non-linear** khác đường thẳng ra sao. Nó sẽ là **super power** cho bài toán classification.
 * **Output activation**: **sigmoid** cho binary, **softmax** cho multiclass.
 
 Những cái tên này giờ chỉ là chữ trên trang giấy — mình sẽ dạy xen kẽ lúc gặp trong code.
+
+---
 
 ### 📉 Loss function và optimizer
 
@@ -67,6 +75,8 @@ Những cái tên này giờ chỉ là chữ trên trang giấy — mình sẽ d
 * Multiclass classification → **cross entropy** (không phải bản binary). Đúng như tên gọi: classification nhị phân đi với binary cross entropy.
 
 **Optimizer** để tối ưu loss. Mình đã gặp **SGD** (stochastic gradient descent) trước đây; một lựa chọn phổ biến khác là **Adam**. Gói `torch.optim` còn nhiều optimizer khác nữa.
+
+---
 
 ### 🍱 Ví dụ: mạng multiclass cho Food Vision
 

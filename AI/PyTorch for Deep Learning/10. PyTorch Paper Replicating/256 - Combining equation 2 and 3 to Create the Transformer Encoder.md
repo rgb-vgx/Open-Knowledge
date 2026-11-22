@@ -35,6 +35,8 @@ class TransformerEncoderBlock(nn.Module):
 
 Vì block này chứa cả MSA block và MLP block, nó cần đủ tham số cho cả hai: embedding dimension (`768`), số head (`12`), MLP size (`3072`), MLP dropout (`0.1` từ Table 3) và attention dropout (`0.0`, để sẵn phòng khi muốn thử).
 
+---
+
 ### 🧱 Tái sử dụng hai block đã viết
 
 ```python
@@ -55,6 +57,8 @@ Vì block này chứa cả MSA block và MLP block, nó cần đủ tham số ch
 
 Nhìn xem ta tạo chúng nhanh thế nào — đây chính là lý do mình tách Equation 2 và 3 thành các block riêng. Cả hai đều chưa có residual; ta thêm ở `forward`.
 
+---
+
 ### ➕ Forward với residual connection
 
 ```python
@@ -69,6 +73,8 @@ Nhìn xem ta tạo chúng nhanh thế nào — đây chính là lý do mình tá
 ```
 
 Mỗi dòng chỉ là "cho `x` qua block rồi cộng lại chính `x`" — đó chính là **residual / skip connection**. Cái tên **ResNet** cũng xuất phát từ đây: mạng residual nổi tiếng đã phổ biến residual connection trong computer vision. Toàn bộ encoder block gói trong **23 dòng**, còn có thể rút ngắn hơn nếu nhét luôn residual vào bên trong từng block.
+
+---
 
 ### 🧪 Kiểm tra bằng `torchinfo.summary`
 
@@ -89,6 +95,8 @@ summary = torchinfo.summary(
 `input_size=(1, 197, 768)` không phải kích thước ảnh, mà là **output của patch embedding**: batch size, số patch trong chuỗi, và embedding dimension. Phần `col_names` cho ta xem input/output size từng layer, số tham số, và layer có trainable không (phải là `True` vì mọi layer đều `requires_grad=True`).
 
 Kết quả bắt đầu từ `(1, 197, 768)`, đi qua MLP block thì **shape phình lên rồi nén lại**: tại `nn.Linear` đầu tiên, chiều feature tăng lên `3072`, rồi layer sau thu về `768`. Chỉ với **một** encoder block mà số tham số đã rất lớn — và ta dựng nó cực nhanh nhờ tính module của PyTorch.
+
+---
 
 ### ✅ Chốt lại
 

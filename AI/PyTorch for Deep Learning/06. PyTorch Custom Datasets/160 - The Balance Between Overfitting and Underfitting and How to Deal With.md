@@ -26,17 +26,21 @@ Mình ví von: overfitting giống học sinh **học thuộc lòng** tài liệ
 
 Với Model 0 của ta, đường loss còn cao → có dấu hiệu **underfitting**.
 
+---
+
 ### 🔧 Cách giảm overfitting
 
 Tất cả đều kèm "caveat" — **không phải lúc nào cũng hiệu quả**:
 
 * **Lấy thêm dữ liệu** — model có nhiều ví dụ hơn để học pattern tổng quát.
-* **Data augmentation** — làm tập train khó học hơn (như `TrivialAugmentWide`).
+* **Data augmentation** — làm tập train khó học hơn.
 * **Dữ liệu chất lượng hơn** — không chỉ nhiều mà còn tốt hơn.
 * **Transfer learning** — lấy pattern đã học của model khác (đã train trên ImageNet trong `torchvision.models`) rồi tinh chỉnh cho bài toán mình.
 * **Đơn giản hóa model** — bớt layer, bớt hidden units (ví dụ 10 layer → 5, 100 units → 50), buộc model dùng ít tài nguyên hơn mà vẫn phải tổng quát hóa.
 * **Learning rate decay / scheduling** — giảm learning rate theo thời gian. Ví dụ: lúc đầu bước lớn, càng gần đích bước càng nhỏ để không "vượt" mất điểm tối ưu (như thò tay nhặt đồng xu sau đệm ghế — gần đến nơi thì bước nhỏ kẻo làm rơi).
 * **Early stopping** — theo dõi test error; khi nó bắt đầu **tăng** liên tục (ví dụ 10 bước), dừng train và **lưu lại trọng số ở điểm test loss thấp nhất**.
+
+---
 
 ### 🔧 Cách giảm underfitting
 
@@ -46,13 +50,19 @@ Tất cả đều kèm "caveat" — **không phải lúc nào cũng hiệu quả
 * **Transfer learning** — giúp cả overfitting lẫn underfitting.
 * **Bớt regularization** — regularization "ghì" model lại để chống overfit; làm quá tay sẽ gây underfit.
 
+---
+
 ### 🎯 Bài toán cân bằng
 
 Đây là "điệu nhảy" khó nhất của ML: giảm underfit quá tay → overfit, và ngược lại. Mục tiêu là tiến gần **"just right"**, dù hiếm khi đạt hoàn hảo. Đây cũng là hướng nghiên cứu phổ biến nhất.
 
+---
+
 ### 🤔 Câu hỏi cho bạn
 
 Model 0 đang underfitting, vậy theo các bạn nên làm gì để **tăng khả năng học**: train lâu hơn, thêm layer, hay thêm hidden units? Suy nghĩ rồi bài sau ta cùng build thêm model.
+
+---
 
 ### ✅ Tạm kết
 

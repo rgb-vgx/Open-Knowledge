@@ -22,6 +22,8 @@ Lần chạy đầu, output ngập tràn shape — vì các dòng `print(x.shape
 
 Cách xử lý: mở lại class Model 2, comment các dòng print, chạy lại cell khởi tạo model, rồi train lại. Nhắc nhở: debug thì in, train thật thì tắt.
 
+---
+
 ### ⚙️ Setup và train
 
 ```python
@@ -59,6 +61,8 @@ total_train_time_model_2 = print_train_time(
 
 `torch.cuda.manual_seed(42)` giúp tái lập kết quả trên GPU — thiếu nó thì kể cả set `manual_seed` vẫn có thể lệch.
 
+---
+
 ### 📈 Kết quả
 
 Sau 3 epoch:
@@ -69,6 +73,8 @@ Sau 3 epoch:
 Đây là lần đầu tiên một model vượt baseline. CNN thực sự "ăn tiền" ở bài toán ảnh.
 
 Nhưng nhớ: số của bạn có thể khác. Daniel lúc quay dùng Tesla P100; bạn có thể dùng GPU khác. Lệch vài phần trăm hoặc gấp đôi thời gian là chuyện bình thường; lệch cả chục điểm accuracy thì nên kiểm tra code.
+
+---
 
 ### 📋 Lấy dictionary kết quả
 
@@ -84,20 +90,7 @@ model_2_results = eval_model(
 
 Kết quả `model_acc` quanh **88**. Giờ ta có ba dictionary — `model_0_results`, `model_1_results`, `model_2_results` — cùng cấu trúc, sẵn sàng để so sánh.
 
-### 🧠 Vì sao CNN thắng?
-
-Vì convolution khai thác được **cấu trúc không gian** của ảnh: pixel gần nhau có liên quan, cạnh và texture lặp lại ở nhiều vị trí. Linear layer phá vỡ cấu trúc đó ngay từ bước `Flatten`. CNN giữ cấu trúc, học feature theo vùng, rồi mới nén dần.
-
-### 💡 Nhưng đừng dừng ở đây
-
-88.5% chưa phải trần. Có nhiều hướng thí nghiệm:
-
-* Tăng `hidden_units` (ví dụ 30).
-* Bỏ/giữ ReLU để xem tác động.
-* Đổi `kernel_size`, `padding`, `MaxPool2d`.
-* Train lâu hơn (10 epoch).
-
-Mình khuyến khích các bạn tự thử — chính những lần thử đó mới dạy được nhiều.
+---
 
 ### ✅ Tạm kết
 

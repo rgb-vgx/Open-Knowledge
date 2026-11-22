@@ -30,6 +30,8 @@ Sẽ ra một loạt lỗi quen thuộc, lần lượt:
 
 Cứ sửa từng cái một. Đó chính là ba lỗi lớn của deep learning: shape, device, dtype.
 
+---
+
 ### 🔍 In shape qua từng block
 
 Sửa `forward` để in shape ở mỗi chặng:
@@ -50,6 +52,8 @@ Kết quả:
 * Sau `conv_block_1`: `[1, 10, 14, 14]` — từ `28x28` qua hai conv (padding=1 giữ nguyên) và một max pool (chia đôi) → `14x14`.
 * Sau `conv_block_2`: `[1, 10, 7, 7]` — tiếp tục nén một nửa.
 * Classifier: chưa chạy được vì `in_features` sai.
+
+---
 
 ### 💡 Suy ra `in_features`
 
@@ -81,6 +85,8 @@ torch.Size([1, 10])
 
 Một vector **10 logit** — mỗi lớp một giá trị, đúng như CNN Explainer.
 
+---
+
 ### 🧠 Vì sao mẹo này hữu ích?
 
 Công thức `H_out = ⌊(H_in + 2*padding − kernel_size) / stride + 1⌋` đúng, nhưng dễ tính nhầm khi mạng nhiều layer. Cho dữ liệu chạy thật rồi in shape:
@@ -91,9 +97,13 @@ Công thức `H_out = ⌊(H_in + 2*padding − kernel_size) / stride + 1⌋` đ�
 
 Quy tắc nhớ nhanh: trong linear layer có **phép nhân ma trận**, nên "inner dimensions phải khớp". Nếu lỗi `mat1 and mat2` thì chính là `in_features` chưa khớp `Flatten` output.
 
+---
+
 ### 🧹 Nhớ comment print khi train
 
 Mấy dòng `print(x.shape)` rất hữu ích khi debug, nhưng lúc train thật sẽ in hàng nghìn dòng làm chậm và rối. Comment chúng lại trước khi chạy training loop (bài 126 sẽ minh họa hậu quả nếu quên).
+
+---
 
 ### ✅ Tạm kết
 

@@ -26,6 +26,8 @@ Hoặc bài toán phân biệt **mèo và chó**: các bạn có một nghìn �
 
 Nói ngắn: **supervised learning = data + labels**.
 
+---
+
 ### 🧩 Unsupervised và self-supervised: chỉ có dữ liệu
 
 Ở đây các bạn chỉ có **data**, không có **label**. Vẫn là ảnh mèo chó, nhưng chỉ có ảnh, không biết ảnh nào là mèo, ảnh nào là chó.
@@ -35,6 +37,8 @@ Với **self-supervised learning**, thuật toán có thể học ra một **rep
 Sau đó, chính các bạn có thể bước vào: "Cho tôi xem những pattern bạn đã học." Nó đưa ra một loạt cụm, và các bạn gán nhãn: cụm trông thế này là chó, cụm trông thế kia là mèo.
 
 Tóm lại: **unsupervised và self-supervised chỉ học từ chính dữ liệu**.
+
+---
 
 ### 🔁 Transfer learning: học từ mô hình khác
 
@@ -46,6 +50,8 @@ Ví dụ, để xây thuật toán supervised phân biệt ảnh mèo chó, các
 
 Transfer learning là kỹ thuật rất, rất mạnh. Trong khóa này, chúng ta sẽ viết code tập trung vào hai paradigm phổ biến nhất: **supervised learning** và **transfer learning**. Tuy vậy, cách viết code đó có thể thích ứng sang các paradigm khác.
 
+---
+
 ### 🎮 Reinforcement learning: một góc riêng
 
 Có một kiểu mình chưa nhắc, nằm ở "ngăn" riêng: **reinforcement learning** (học tăng cường). Mình để nó như phần mở rộng cho các bạn tự tìm hiểu.
@@ -53,6 +59,8 @@ Có một kiểu mình chưa nhắc, nằm ở "ngăn" riêng: **reinforcement l
 Ý tưởng chính: có một **environment** (môi trường) và một **agent** (tác nhân) thực hiện **actions** trong môi trường đó; hệ thống trả lại **rewards** và **observations** cho agent.
 
 Ví dụ đời thường: dạy chó đi vệ sinh ngoài trời. Bạn thưởng khi nó đi đúng chỗ, và có thể không thưởng khi nó "giải quyết" trên ghế sofa.
+
+---
 
 ### 🎯 Chốt lại
 

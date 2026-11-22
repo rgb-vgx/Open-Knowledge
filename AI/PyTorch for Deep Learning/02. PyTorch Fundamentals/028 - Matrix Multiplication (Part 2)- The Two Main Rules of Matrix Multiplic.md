@@ -42,6 +42,8 @@ Cách nhớ: viết shape cạnh nhau, cặp số **ở giữa** phải giống 
    phải khớp
 ```
 
+---
+
 ### 📏 Quy tắc 2: kết quả có shape của outer dimensions
 
 Kết quả của phép nhân mang shape của **outer dimensions** — hai số ở ngoài cùng.
@@ -64,6 +66,8 @@ Vài ví dụ mình đã thử:
 
 Đúng vậy: đổi `2` thành `10` ở inner dimensions, phép nhân vẫn hợp lệ; nhưng đổi một bên thành `7` thì vỡ ngay.
 
+---
+
 ### ⚠️ Thông báo lỗi quen thuộc
 
 Khi vi phạm quy tắc 1, PyTorch báo đại ý:
@@ -73,6 +77,8 @@ RuntimeError: mat1 and mat2 shapes cannot be multiplied (3x10 and 7x3)
 ```
 
 Hãy nhớ khuôn mặt của lỗi này — các bạn sẽ gặp nó rất nhiều. Cách sửa: chỉnh shape để inner dimensions khớp nhau.
+
+---
 
 ### @ hay `torch.matmul`?
 
@@ -84,6 +90,8 @@ torch.matmul(a, b)    # hàm đầy đủ
 ```
 
 Mình khuyên dùng **`torch.matmul`** vì rõ nghĩa hơn. `@` tiện và ngắn gọn, nhưng ít người nhận ra ngay đó là matrix multiplication.
+
+---
 
 ### 🎯 Chốt lại
 

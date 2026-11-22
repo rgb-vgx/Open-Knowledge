@@ -38,11 +38,15 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 > Ta vẫn dùng `.to(device)` kiểu cổ điển, dù PyTorch 2.0 cho phép set device toàn cục. Trong thực nghiệm, **giữ mọi thứ giống nhau** giữa các lần chạy là điều quan trọng nhất để so sánh công bằng.
 
+---
+
 ### 🏃 Chạy và đo
 
 Gọi hàm `train` với model, train/test dataloader, loss, optimizer, `num_epochs=5`, device. Kết quả lưu vào `single_run_no_compile_results`.
 
 > Cảnh báo: vì dùng nhiều dữ liệu, tùy GPU/máy mà đoạn này **chạy khá lâu** — trên A100 khoảng **7 phút** cho 5 epoch. Cứ để nó chạy, đừng đóng Colab kẻo phiên bị ngắt.
+
+---
 
 ### 📊 Kết quả trên A100
 
@@ -52,6 +56,8 @@ Gọi hàm `train` với model, train/test dataloader, loss, optimizer, `num_epo
 * **Test accuracy cuối: ~87%**. Không phải state-of-the-art, nhưng ổn — và ta không nhắm tới nó.
 
 Kết quả (thời gian từng epoch, loss, accuracy) được lưu lại để vẽ đồ thị so sánh sau này.
+
+---
 
 ### 🔜 Thử thách: Experiment 2
 

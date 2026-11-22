@@ -1,5 +1,5 @@
 ---
-title: 'Bài tập và tài liệu mở rộng cho phần classification'
+title: 'Bài 99 — Bài tập và tài liệu mở rộng cho phần classification'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 99
@@ -27,12 +27,16 @@ Bản sách của khóa (*Learn PyTorch for Deep Learning*) có **mục bài t�
 
 Các bạn sẽ có **skeleton code** để điền dần.
 
+---
+
 ### 🗂️ Skeleton và solution
 
 Trong repo `mrdbourke/pytorch-deep-learning`, thư mục **`extras/`** chứa:
 
 * **`exercises/`** — notebook bài tập với code khung.
 * **`solutions/`** — notebook lời giải.
+
+---
 
 ### 🥇 Thứ tự làm bài (quan trọng)
 
@@ -41,6 +45,8 @@ Mình khuyên đúng trình tự này:
 1. **Tự làm bài tập** trước — dựa vào notebook đã code cùng nhau trong module này.
 2. **Đọc tài liệu chính thức** của PyTorch khi bí.
 3. **Solution chỉ là phương án cuối** — và nhớ rằng đó chỉ là *một* cách giải, không phải cách duy nhất.
+
+---
 
 ### 🎉 Chúc mừng
 

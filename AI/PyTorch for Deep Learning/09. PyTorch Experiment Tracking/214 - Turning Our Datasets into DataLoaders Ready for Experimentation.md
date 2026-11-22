@@ -39,6 +39,8 @@ simple_transform = transforms.Compose([
 
 Ta dùng transform **thủ công** cho nhất quán, dù có thể dùng automatic.
 
+---
+
 ### 📁 Dựng đường dẫn dữ liệu
 
 ```python
@@ -52,6 +54,8 @@ test_dir = data_10_percent_path / "test"
 Vì mọi experiment dùng **cùng một test set**, ta chỉ cần `test_dir` từ bộ 10%. Điều này giữ việc đánh giá **nhất quán** — nếu mỗi experiment một test set thì không biết thay đổi nào mang lại lợi ích.
 
 In ra kiểm tra đường dẫn: `...10%/train`, `...20%/train`, `.../test` — khớp.
+
+---
 
 ### 🧺 Tạo DataLoader
 
@@ -75,6 +79,8 @@ train_dataloader_20_percent, test_dataloader, class_names = \
 
 Cả hai đều trả về `test_dataloader` giống nhau (cùng `test_dir`). Dùng `batch_size=32` chung.
 
+---
+
 ### 🔢 Kiểm tra số batch
 
 ```python
@@ -90,6 +96,8 @@ Kết quả:
 * 20% train: **15 batch** — gần gấp đôi (không đúng gấp đôi vì 32 có thể không chia hết số mẫu, nhưng đủ tốt).
 * test: **3 batch**.
 * Class names: `['pizza', 'steak', 'sushi']`.
+
+---
 
 ### ✅ Tạm kết
 

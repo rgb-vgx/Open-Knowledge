@@ -27,6 +27,8 @@ Toàn bộ phần code "hậu trường" mình đã viết ở section *PyTorch 
 
 Ngoài ra còn `helper_functions.py` với đủ thứ như duyệt thư mục, plot decision boundary, download data, plot loss curves — toàn những hàm đã viết trong khóa, chỉ gom lại một chỗ.
 
+---
+
 ### 🧪 Kiểm tra phiên bản
 
 Đoạn code setup sẽ import `torch` và `torchvision` kèm kiểm tra phiên bản:
@@ -38,6 +40,8 @@ Ngoài ra còn `helper_functions.py` với đủ thứ như duyệt thư mục, 
 
 Nhớ bật GPU trước: **Runtime → Change runtime type → GPU**, rồi Save.
 
+---
+
 ### 🔧 Cài thêm torchinfo
 
 `torchinfo` không có sẵn trên Colab, nhưng là package mình rất thích để xem **model summary**. Cài bằng:
@@ -45,6 +49,8 @@ Nhớ bật GPU trước: **Runtime → Change runtime type → GPU**, rồi Sav
 ```bash
 pip install torchinfo
 ```
+
+---
 
 ### 🖥️ Device-agnostic code
 

@@ -32,6 +32,8 @@ utils.save_model(
 
 Tên file theo cùng pattern với EffNetB2 để dễ nhận diện. Trong thư mục `models/` giờ có cả hai model.
 
+---
+
 ### 📏 Đo kích thước
 
 ```python
@@ -48,6 +50,8 @@ Kết quả: **327MB**.
 |---|---|
 | EfficientNet B2 | 29.8 MB |
 | ViT-B/16 | 327 MB |
+
+---
 
 ### ⚠️ Vì sao chuyện này quan trọng?
 

@@ -25,6 +25,8 @@ def forward(self, x):
 
 Ta không hard-code batch size. Paper dùng batch size **4096**, ta thì bị giới hạn phần cứng nên dùng nhỏ hơn — nhưng code này chạy với **bất kỳ** batch size nào.
 
+---
+
 ### 🐦 Bước 2: mở rộng class token cho cả batch
 
 ```python
@@ -35,6 +37,8 @@ Lúc demo ta làm việc với một ảnh, nhưng thực tế ta đưa vào **c
 
 Ví dụ với `embedding_dim=768` và batch size `32`: class embedding gốc `(1, 1, 768)` được mở rộng thành `(32, 1, 768)`.
 
+---
+
 ### 🔥 Bước 3: patch embedding (Equation 1)
 
 ```python
@@ -43,6 +47,8 @@ Ví dụ với `embedding_dim=768` và batch size `32`: class embedding gốc `(
 ```
 
 Đây là phép biến đổi đầu tiên của `forward`: ảnh batch → chuỗi patch embeddings.
+
+---
 
 ### 🧷 Bước 4: nối class token vào đầu chuỗi
 
@@ -53,6 +59,8 @@ Ví dụ với `embedding_dim=768` và batch size `32`: class embedding gốc `(
 
 Nối theo `dim=1` — chiều số patch. Kết quả tăng từ `196` lên `197`.
 
+---
+
 ### ➕ Bước 5: cộng position embedding
 
 ```python
@@ -61,6 +69,8 @@ Nối theo `dim=1` — chiều số patch. Kết quả tăng từ `196` lên `19
 
 Position embedding có shape `(1, num_patches + 1, 768)` — cố ý thiết kế để khớp với chuỗi đã có class token, nên chỉ cần cộng thẳng.
 
+---
+
 ### 💧 Bước 6: embedding dropout
 
 ```python
@@ -68,6 +78,8 @@ Position embedding có shape `(1, num_patches + 1, 768)` — cố ý thiết k�
 ```
 
 Nhớ lại paper: dropout áp **ngay sau khi cộng position embedding vào patch embedding**, và trước mọi dense layer. Đây là chỗ ta đặt nó.
+
+---
 
 ### 🏛️ Bước 7: qua transformer encoder
 
@@ -78,6 +90,8 @@ Nhớ lại paper: dropout áp **ngay sau khi cộng position embedding vào pat
 
 Một dòng là đi qua cả **12** encoder block đã xếp chồng — nhờ đã gói thành `nn.Sequential`. Đây là Equation 2 và 3 nhân lên cho nhiều lớp.
 
+---
+
 ### 🎯 Bước 8: classifier trên class token (Equation 4)
 
 ```python
@@ -86,6 +100,8 @@ Một dòng là đi qua cả **12** encoder block đã xếp chồng — nhờ �
 ```
 
 Equation 4 chỉ lấy **class token** — phần tử ở vị trí `0` của chiều sequence: `x[:, 0]`. Vì thế Figure 1 chỉ vẽ mũi tên từ class token đi ra MLP head. Classifier (LayerNorm + Linear) biến class token thành **logits** trên các lớp.
+
+---
 
 ### ✅ Toàn bộ forward
 

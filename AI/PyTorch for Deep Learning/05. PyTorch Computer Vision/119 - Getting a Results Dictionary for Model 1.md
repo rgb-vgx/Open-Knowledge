@@ -33,6 +33,8 @@ Nhìn code thì đúng. Nhưng chạy thì lỗi:
 RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
 ```
 
+---
+
 ### 🐛 Vì sao? (Và vì sao lỗi này khó thấy)
 
 Model 1 nằm trên **CUDA**, nhưng dữ liệu lấy từ `test_dataloader` vẫn ở **CPU**. Khi forward pass, PyTorch cố nhân ma trận giữa hai tensor khác thiết bị → nổ.
@@ -44,6 +46,8 @@ Ba lỗi lớn nhất khi làm deep learning, đáng nhớ:
 1. **Shape mismatch**
 2. **Device mismatch** — chính là ca này
 3. **Dtype mismatch** — dữ liệu sai kiểu
+
+---
 
 ### 🔧 Sửa `eval_model`
 
@@ -79,6 +83,8 @@ Hai thay đổi:
 
 Chạy lại cell gọi `eval_model` là xong.
 
+---
+
 ### 📈 So sánh nhanh
 
 Sau khi có `model_1_results`, đặt cạnh `model_0_results`:
@@ -90,9 +96,13 @@ Sau khi có `model_1_results`, đặt cạnh `model_0_results`:
 
 Nếu số của bạn lệch vài chữ số thập phân thì bình thường — do tính ngẫu nhiên. Nếu lệch cả chục điểm accuracy thì nên kiểm tra lại cell đã chạy đúng chưa.
 
+---
+
 ### 💡 Bài học
 
 Bất cứ khi nào đưa model lên GPU, hãy chắc chắn **mọi tensor đi vào model cũng được đưa lên cùng device**. Viết một lần trong hàm rồi dùng lại — đó là lý do device-agnostic code nên nằm trong các hàm helper, không rải rác khắp notebook.
+
+---
 
 ### ✅ Tạm kết
 

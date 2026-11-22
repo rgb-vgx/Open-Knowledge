@@ -41,15 +41,21 @@ image shape: 250, patch size: 16
 
 Đây là ví dụ điển hình của việc kiểm tra shape sớm: 250 không chia hết cho 16.
 
+---
+
 ### 📖 Nhắc lại vai trò class token
 
 Paper: "In order to perform classification, we use the standard approach of adding an extra **learnable** classification token to the sequence." Token này được **prepend** — thêm vào **đầu** sequence, ngược với **append** (thêm vào cuối).
 
 Ký hiệu: `z_0^0 = x_class`, và trạng thái của nó ở output của transformer encoder (`z_L^0`) chính là biểu diễn ảnh `y` (Eq. 4). Vì vậy chuỗi sau khi thêm token sẽ dài **197** thay vì 196.
 
+---
+
 ### 🔧 Vì sao dùng `nn.Parameter`
 
 Từ hồi PyTorch Workflow, `nn.Parameter` là cách tạo trọng số học được: nó có `requires_grad=True`, nên PyTorch track gradient và gradient descent cập nhật nó. Với `nn.Module`, `requires_grad=True` thường là mặc định cho parameter.
+
+---
 
 ### 🧩 Tạo và gắn token
 

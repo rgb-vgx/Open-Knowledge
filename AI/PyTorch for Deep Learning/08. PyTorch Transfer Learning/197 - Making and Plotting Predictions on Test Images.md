@@ -36,6 +36,8 @@ Giải thích:
 * **`random.sample(population, k)`** — chọn ngẫu nhiên `k` phần tử **không lặp lại**.
 * Test set có khoảng **75 ảnh**.
 
+---
+
 ### 🔁 Chạy qua hàm
 
 ```python
@@ -49,6 +51,8 @@ for image_path in test_image_path_sample:
 ```
 
 `image_size` thực ra đã có mặc định, nhưng mình ghi rõ cho chắc.
+
+---
 
 ### 🐛 Lỗi đầu tiên: format tensor
 
@@ -70,6 +74,8 @@ Sau đó `:.3f` mới hoạt động. Mình in thử `target_image_pred_probs` �
 
 Sửa xong, hàm chạy trơn.
 
+---
+
 ### 📊 Kết quả
 
 Vài ví dụ:
@@ -81,14 +87,20 @@ Vài ví dụ:
 
 Model nhìn chung làm tốt, nhưng **vẫn sai vài ảnh**. Ví dụ ảnh sushi bị đoán thành steak. Điều này bình thường — model vẫn tốt hơn nhiều so với trước.
 
+---
+
 ### 💡 Điều rút ra
 
 * Đánh giá **định lượng** (accuracy, loss) và **định tính** (nhìn ảnh thật) bổ sung cho nhau.
 * Một model 90% accuracy vẫn sai 10% — và nhìn tận mắt giúp hiểu nó sai kiểu gì.
 
+---
+
 ### 🎯 Bài tập
 
 Dự đoán trên **pizza_dad** — ảnh pizza nổi tiếng dùng suốt khóa. Tải ảnh từ repo xuống rồi đưa qua hàm. Hoặc dùng **ảnh pizza/steak/sushi của chính bạn**.
+
+---
 
 ### ✅ Chốt lại
 

@@ -20,6 +20,8 @@ Muốn deploy thì model phải nằm trong file — app không thể import not
 
 EfficientNet B2 feature extractor đạt **~97% accuracy**, vượt tiêu chí 95%. Loss curves còn cho thấy nếu train lâu hơn, hiệu năng có thể tăng — đáng thử, nhưng nhớ thêm **data augmentation** để tránh overfitting.
 
+---
+
 ### 📁 Gọi `utils.save_model`
 
 ```python
@@ -35,6 +37,8 @@ utils.save_model(
 Hàm này nằm trong `going_modular/utils.py`, viết từ section 05. Tên file hơi dài nhưng **mô tả rõ ràng** — người khác (và chính bạn sáu tháng sau) nhìn vào là biết đây là model gì, kiến trúc gì, train trên dữ liệu nào.
 
 Lưu ý: `utils.save_model` tạo thư mục nếu chưa có, rồi ghi model vào `models/`.
+
+---
 
 ### 🤔 Hai câu hỏi trước khi sang bài sau
 

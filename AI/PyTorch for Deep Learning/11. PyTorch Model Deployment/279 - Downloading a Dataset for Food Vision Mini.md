@@ -22,6 +22,8 @@ Muốn deploy thì phải có model, muốn có model thì phải có dữ liệ
 
 So sánh như vậy là "không cùng hệ quy chiếu". Muốn **apples to apples**, phải tải cùng bộ **20% pizza, steak, sushi** rồi train lại cả hai — vì đây là hai model tốt nhất cho bài toán Food Vision Mini. Mục tiêu: chạy thêm một thực nghiệm trên cùng dataset để xem model nào **hợp use case** hơn.
 
+---
+
 ### 📂 Tái dùng hàm `download_data`
 
 Hàm này nằm trong **`helper_functions.py`** trên GitHub của khóa, được viết từ section 07 (PyTorch experiment tracking). Thay vì viết lại, ta import và gọi nó: nó tải file zip từ GitHub rồi **tự giải nén**.
@@ -34,6 +36,8 @@ data/
     ├── train/
     └── test/
 ```
+
+---
 
 ### 🗂️ Trỏ đường dẫn train/test
 

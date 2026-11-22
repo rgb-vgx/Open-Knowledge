@@ -22,9 +22,13 @@ Một demo mà người xem phải tự tìm ảnh mới thử được thì r�
 
 Tùy loại demo mà examples sẽ khác — text thì là câu mẫu, audio thì là file âm thanh. Với Food Vision Mini, examples là **danh sách ảnh món ăn**.
 
+---
+
 ### 📋 Định dạng mà Gradio nhận
 
 Tham số `examples` của `gr.Interface` nhận **list of lists** — mỗi phần tử con là một bộ input cho một lần chạy. Mình cần đúng cấu trúc đó, nếu không Gradio sẽ báo lỗi.
+
+---
 
 ### 🎲 Chọn ba ảnh ngẫu nhiên từ test set
 
@@ -41,6 +45,8 @@ Kết quả là một list gồm ba list con, mỗi list con chứa một đư�
 
 Nếu muốn ảnh đẹp và mang tính minh họa hơn, các bạn có thể tự chọn tay một ảnh pizza, một steak, một sushi thay vì random.
 
+---
+
 ### 🧩 Còn thiếu gì nữa?
 
 Giờ mình đã có đủ ba mảnh:
@@ -48,6 +54,8 @@ Giờ mình đã có đủ ba mảnh:
 1. Hàm `predict` map ảnh → dictionary xác suất + thời gian.
 2. Danh sách `class_names`.
 3. `example_list` để gắn vào giao diện.
+
+---
 
 ### 🚀 Thử thách: tự dựng `gr.Interface`
 

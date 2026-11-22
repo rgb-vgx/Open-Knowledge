@@ -1,5 +1,5 @@
 ---
-title: 'Train model phi tuyến đầu tiên và debug lỗi shape'
+title: 'Bài 89 — Train model phi tuyến đầu tiên và debug lỗi shape'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 89
@@ -25,6 +25,8 @@ Mình thử nghịch learning rate:
 
 Đây là minh họa trực quan cho sức mạnh của **learning rate**. Giờ mang nó vào code PyTorch.
 
+---
+
 ### ⚖️ Loss và optimizer
 
 ```python
@@ -36,11 +38,15 @@ optimizer = torch.optim.SGD(params=model_3.parameters(),
 
 Binary classification (đỏ/xanh) → **BCEWithLogitsLoss**. Ví dụ khác về binary classification ngoài đời: email spam/không spam, thẻ tín dụng gian lận/không, bảo hiểm — ai có lỗi trong tai nạn hay không.
 
+---
+
 ### 🔍 Vì sao ReLU "rẻ"?
 
 Xem `model_3.state_dict()` — chỉ có `weight` và `bias` của **layer 1, 2, 3**; **ReLU không có parameter nào**.
 
 ReLU định nghĩa là `max(0, x)`: input âm thì `max(0, số âm)` ra 0; input dương thì giữ nguyên. Không có trọng số để chỉnh, nên **không tốn compute để cập nhật**. Đó là lý do nó hiệu quả. Mỗi parameter trong model đều cần tính toán để điều chỉnh — càng nhiều parameter càng nhiều compute. Đánh đổi kinh điển: nhiều parameter → *có thể* học tốt hơn, nhưng cần nhiều compute hơn.
+
+---
 
 ### 🏋️ Training loop
 
@@ -87,11 +93,13 @@ for epoch in range(epochs):
 
 Vẫn chuỗi quen thuộc: **logits → probabilities (sigmoid) → labels (round)**. Loss nhận **logits**; accuracy nhận **labels**.
 
+---
+
 ### 🐛 Debug ngay trên đường chạy
 
 Chạy lên, gặp vài lỗi thật:
 
-1. **`AttributeError`** — mình gõ `torch.manuals_eed` thay vì `torch.manual_seed`. Typo kinh điển.
+1. **`AttributeError`** — mình gõ sai tên `torch.manual_seed` (typo). Lỗi kinh điển.
 2. **`ValueError: Target size ... must be the same as input size`** — lỗi shape. Kiểm tra:
 
 ```python
@@ -102,6 +110,8 @@ test_logits.shape, y_test.shape
 À, **thiếu `.squeeze()` trên `test_logits`**! Lúc train mình có `squeeze()` nên chạy được, nhưng phần test thì quên. Chiều thừa `1` khiến `[200, 1]` không khớp với `[200]`. Thêm `.squeeze()` vào là xong.
 
 Đúng như mình nói từ đầu module: **lỗi shape là lỗi phổ biến nhất trong deep learning**. Và cũng đúng như mình nhắc suốt mấy bài trước: nhớ `squeeze()`.
+
+---
 
 ### 📈 Kết quả: accuracy đi lên
 

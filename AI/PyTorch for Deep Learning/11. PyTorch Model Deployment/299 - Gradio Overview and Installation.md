@@ -30,6 +30,8 @@ Input  →  Function (model)  →  Output
 
 Với Food Vision Mini: ảnh món ăn → model → nhãn pizza/steak/sushi.
 
+---
+
 ### 📦 Cài đặt
 
 ```bash
@@ -40,6 +42,8 @@ Trong Colab, chỉ cần chạy cell này. Transcript ghi nhận phiên bản **
 
 > ⚠️ Cần kiểm chứng: các API cụ thể của Gradio có thể đổi giữa các major version (đặc biệt từ 3.x lên 4.x/5.x). Khi chạy, hãy đối chiếu với docs của bản đang cài.
 
+---
+
 ### 🧩 Gradio hỗ trợ gì?
 
 Rất nhiều loại input/output: `Textbox`, `Number`, `Slider`, `Checkbox`, `Radio`, `Image`, `Video`, `Audio`, `File`, `DataFrame`, `TimeSeries`, `Button`… Nên có thể demo gần như mọi loại model:
@@ -47,6 +51,8 @@ Rất nhiều loại input/output: `Textbox`, `Number`, `Slider`, `Checkbox`, `R
 * **Text → Text** (dịch, phân loại).
 * **Image → Label** (Food Vision Mini).
 * **Text → Image** (Stable Diffusion).
+
+---
 
 ### 🎨 Ví dụ đáng để xem
 

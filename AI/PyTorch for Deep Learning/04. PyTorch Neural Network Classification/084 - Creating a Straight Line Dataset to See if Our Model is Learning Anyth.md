@@ -1,5 +1,5 @@
 ---
-title: 'Tạo dataset đường thẳng để kiểm tra model có học được gì không'
+title: 'Bài 84 — Tạo dataset đường thẳng để kiểm tra model có học được gì không'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 84
@@ -19,6 +19,8 @@ Model cứ đoán như tung đồng xu trên dữ liệu vòng tròn, dù đã t
 ### 🧪 Triết lý troubleshoot: test bài nhỏ trước
 
 Ở phần 01 (*PyTorch Workflow Fundamentals*) mình đã dựng một model fit được **đường thẳng**. Vậy giờ mình tạo lại đúng loại dữ liệu đó, xem model hiện tại có học nổi không. Nếu có, vấn đề nằm ở **dữ liệu vòng tròn** chứ không phải code. Nguyên tắc này dùng được cả đời: gặp dataset lớn thì bắt đầu bằng một phần nhỏ; gặp model lớn thì bắt đầu bằng model nhỏ rồi tăng dần độ phức tạp.
+
+---
 
 ### 🧵 Sinh dữ liệu đường thẳng
 
@@ -45,6 +47,8 @@ X_regression[:5], y_regression[:5]
 
 Mỗi `x` ứng với một `y` — một feature đi với một label.
 
+---
+
 ### ✂️ Chia train/test
 
 ```python
@@ -59,6 +63,8 @@ len(X_train_regression), len(X_test_regression), len(y_train_regression), len(y_
 ```
 
 Tỉ lệ 80/20 quen thuộc: 80 mẫu train, 20 mẫu test. Mình đặt tên biến có hậu tố `_regression` để không đụng với `X`, `y` của dữ liệu vòng tròn.
+
+---
 
 ### 📊 Visualize, visualize, visualize
 

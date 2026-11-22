@@ -28,13 +28,19 @@ Trước khi vào nội dung, mình nhắc lại quy trình tự cứu mình —
 
 Transcript lưu ý: URL discussions trên slide chỉ vào trang `mrdbourke/pytorch-deep-learning` — nơi có cả notebook "ground truth" cho section này.
 
+---
+
 ### 📚 Tài nguyên của section
 
 Mình nhấn mạnh lại: tài nguyên nằm ở trang sách online **Learn PyTorch**, phần của section này. Các bạn có thể dùng nó như tài liệu tham khảo khi bí. Còn trên GitHub có sẵn notebook **PyTorch custom datasets** — đây là **ground truth notebook**, cứ kẹt thì mở ra đối chiếu.
 
+---
+
 ### 🧩 Custom dataset là gì?
 
 Ta đã build khá nhiều neural network trên các dataset có sẵn. Nhưng câu hỏi là: nếu mình có **dataset riêng** hoặc đang giải bài toán riêng của mình, liệu có build model PyTorch để dự đoán trên đó được không? Được. Chỉ là phải qua vài bước tiền xử lý để dữ liệu tương thích với PyTorch — và đó chính là nội dung của section.
+
+---
 
 ### 🧠 Các thư viện domain của PyTorch
 
@@ -47,9 +53,13 @@ Ta đã build khá nhiều neural network trên các dataset có sẵn. Nhưng c
 
 Mỗi thư viện đều có module `datasets` với hàm nạp dữ liệu cho domain tương ứng: có dataset dựng sẵn, và có cả hàm để nạp dataset của riêng các bạn. Ngoài ra còn **`torchdata`** — chứa nhiều helper nạp dữ liệu, ở thời điểm ghi hình (tháng 4/2022) vẫn đang **beta** và sẽ còn cập nhật.
 
+---
+
 ### 🍔 Mục tiêu: Food Vision Mini
 
-Cả section sẽ cùng hướng tới build **Food Vision Mini**: nạp ảnh pizza, sushi, steak từ dataset Food 101, build một model phân loại ảnh (kiểu model đứng sau app nhận diện ảnh món ăn), rồi xem nó có phân loại đúng pizza là pizza, sushi là sushi, steak là steak không. Mình cũng khoe luôn dự án cá nhân đang làm — **NutriFact App**, một app nhận diện ảnh món ăn kèm thông tin dinh dưỡng — vẫn đang hoàn thiện, và Food Vision Mini sẽ là phiên bản gần giống vậy.
+Cả section sẽ cùng hướng tới build **Food Vision Mini**: nạp ảnh pizza, sushi, steak từ dataset Food 101, build một model phân loại ảnh (kiểu model đứng sau app nhận diện ảnh món ăn), rồi xem nó có phân loại đúng pizza là pizza, sushi là sushi, steak là steak không. Mình cũng khoe luôn dự án cá nhân đang làm — **Nutrify App**, một app nhận diện ảnh món ăn kèm thông tin dinh dưỡng — vẫn đang hoàn thiện, và Food Vision Mini sẽ là phiên bản gần giống vậy.
+
+---
 
 ### 🗺️ Lộ trình của section
 
@@ -62,6 +72,8 @@ Toàn bộ vẫn xoay quanh **PyTorch workflow** quen thuộc. Cụ thể:
 * Build model phân loại đa lớp (multiclass) Food Vision Mini.
 * So sánh model **có** và **không có** data augmentation.
 * Dự đoán trên **custom data** — dữ liệu nằm ngoài tập train/test.
+
+---
 
 ### ✅ Tạm kết
 

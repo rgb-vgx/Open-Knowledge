@@ -26,6 +26,8 @@ Mình phác ra kế hoạch trước khi code:
 4. Mở ảnh bằng **PIL**.
 5. Lấy metadata rồi hiển thị ảnh.
 
+---
+
 ### 🔥 Import và cố định seed
 
 ```python
@@ -36,6 +38,8 @@ random.seed(42)
 ```
 
 "Máy học là chuyện khai thác sức mạnh của randomness" — và mình cũng thích dùng randomness để khám phá dữ liệu. Đặt `random.seed(42)` để hai bên ra **cùng một ảnh**; không đặt thì mỗi lần chạy ra một ảnh khác.
+
+---
 
 ### 📋 Lấy toàn bộ đường dẫn ảnh
 
@@ -51,6 +55,8 @@ image_path_list = list(image_path.glob("*/*/*.jpg"))
 
 Kết quả là danh sách **mọi ảnh** nằm trong `pizza_steak_sushi`. (Transcript gốc viết là `*.JPG`; trên Linux tên file là chữ thường `.jpg`.)
 
+---
+
 ### 🎯 Chọn ảnh ngẫu nhiên và lấy nhãn
 
 ```python
@@ -62,6 +68,8 @@ print(image_class)
 ```
 
 `parent` lấy thư mục cha của ảnh, `.stem` lấy phần cuối của path đó — chính là **tên lớp**. Với seed `42`, mình ra một ảnh `test/pizza/...` và nhãn `pizza`.
+
+---
 
 ### 🖼️ Mở ảnh và in metadata
 
@@ -75,10 +83,14 @@ print(f"Image width: {img.width}")
 
 Một mẹo hữu ích: nếu ảnh **bị hỏng (corrupt)**, `Image.open` có thể báo lỗi — dùng nó như một cách dọn dẹp dataset. Ở bộ dữ liệu này, mình chưa thấy ảnh hỏng.
 
+---
+
 ### 🔁 Chạy lại nhiều lần để "thấy" dữ liệu
 
 Mình lặp lại việc chọn ảnh ngẫu nhiên khá nhiều lần: lúc ra pizza, lúc sushi, lúc steak. Có ảnh trông giống steak nhưng thực ra là sushi — đúng lý do vì sao phải xem nhiều ảnh. Cứ visualize đủ nhiều (20 lần, 100 lần) đến khi các bạn thấy tự tin "mình hiểu dữ liệu này rồi" thì mới đánh giá model.
 
+---
+
 ### ✅ Thử thách của bài
 
-Trước khi sang bài sau, mình đặt challenge: hãy visualize một ảnh ngẫu nhiên y như vậy, nhưng **bằng Matplotlib** thay vì in ra metadata. Gợi ý: các bạn sẽ cần biến ảnh thành array. Thử đi, rồi bài sau mình làm cùng nhau.
+Trước khi sang bài sau, mình đặt challenge: hãy visualize một ảnh ngẫu nhiên y như vậy, nhưng **bằng Matplotlib** thay vì in ra metadata. Thử đi, rồi bài sau mình làm cùng nhau.

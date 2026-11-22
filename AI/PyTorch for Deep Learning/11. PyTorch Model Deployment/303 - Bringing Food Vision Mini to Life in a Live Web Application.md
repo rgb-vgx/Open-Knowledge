@@ -34,6 +34,8 @@ article = "Created at [09. PyTorch Model Deployment](https://www.learnpytorch.io
 
 Mình cố tình để link tới trang model deployment để ai muốn xem code thì tìm được.
 
+---
+
 ### 🧱 Cấu hình `gr.Interface`
 
 `Interface` là class chính của Gradio. Nó nhận một hàm ánh xạ input → output, cùng mô tả cho input và output:
@@ -59,6 +61,8 @@ Vài điểm đáng chú ý:
 * `outputs` là **một list** vì app trả về hai output. `gr.Label(num_top_classes=3)` vẽ thanh xác suất cho 3 lớp; `gr.Number(label=...)` hiển thị thời gian dự đoán.
 * Nếu có 1000 lớp, `num_top_classes=3` vẫn chỉ hiện 3 lớp tự tin nhất — tiện cho phần nhìn.
 
+---
+
 ### 🌐 Launch và lấy link công khai
 
 Gọi `launch()` để Gradio dựng web server:
@@ -71,6 +75,8 @@ demo.launch(debug=False, share=True)
 * `debug=True` sẽ in lỗi chi tiết trong Colab, hữu ích khi phát triển.
 
 Sau khi chạy, app hiện ra với tiêu đề, mô tả, link, và ba ảnh mẫu. Bấm một ảnh sushi → model trả về `sushi`; bấm ảnh pizza → `pizza`. Upload ảnh steak tự chụp → `steak`. Nút **Flag** cho phép đánh dấu ảnh đoán sai để sau này xem lại — mình để phần đó làm bài tập mở rộng.
+
+---
 
 ### ⏳ Giới hạn 72 giờ
 

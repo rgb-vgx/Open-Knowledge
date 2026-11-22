@@ -22,6 +22,8 @@ Tăng hiệu năng thường kéo theo model to hơn — nhiều layer, nhiều 
 
 Mình cố ý để model trên CPU ở bài trước để lát nữa so sánh CPU vs GPU.
 
+---
+
 ### ⌨️ Dùng `timeit.default_timer`
 
 ```python
@@ -29,6 +31,8 @@ from timeit import default_timer as timer
 ```
 
 `timeit.default_timer()` trả về một mốc thời gian (thực chất là `time.perf_counter()`). Cách dùng: lấy mốc `start` trước khi chạy code, lấy mốc `end` sau khi chạy, hiệu hai mốc là thời gian đã trôi qua.
+
+---
 
 ### 🧱 Hàm `print_train_time`
 
@@ -47,6 +51,8 @@ Chi tiết:
 * `{total_time:.3f}` in ra 3 chữ số thập phân.
 * Hàm trả về `total_time` để lát nữa có thể lưu lại phục vụ so sánh.
 
+---
+
 ### 🧪 Thử ngay
 
 ```python
@@ -59,9 +65,13 @@ print_train_time(start=start_time, end=end_time, device="cpu")
 
 Chạy với khoảng code rỗng thì ra một số rất nhỏ, cỡ `3.304e-05` giây — vì gần như chẳng có gì để tính. Khi nhét code train thật vào giữa hai mốc, ta sẽ đo được thời gian train thực tế.
 
+---
+
 ### 🧩 Đã đủ mảnh ghép
 
 Đến đây ta có: model, data (DataLoader), loss function, optimizer, accuracy metric và hàm bấm giờ. Đủ đồ để train.
+
+---
 
 ### ✅ Tạm kết
 

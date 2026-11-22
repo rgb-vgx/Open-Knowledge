@@ -28,6 +28,8 @@ Chỗ indexing đọc là: `:` — toàn bộ batch; `0` — patch đầu tiên;
 
 Đây chính là **embedding vector** đại diện một patch. Một ảnh được biểu diễn bởi 196 vector như vậy, mỗi vector 768 chiều.
 
+---
+
 ### 👀 Plot vector đó
 
 ```python
@@ -38,6 +40,8 @@ plt.axis(False)
 ```
 
 Lại phải `detach().numpy()` — Matplotlib không nhận tensor đang track gradient. Hình ra là một dải 1×768 trông chẳng giống gì cả. Và điều đó ổn: **không phải mình cần hiểu nó**, mà model cần dùng nó. Đây là biểu diễn **learnable**, sẽ được cập nhật dần qua train.
+
+---
 
 ### 🧱 Ta đang ở đâu trong Equation 1
 
@@ -51,6 +55,8 @@ Còn thiếu hai thứ nữa của Equation 1:
 * **Position embedding**.
 
 Sẽ làm ở các bài sau.
+
+---
 
 ### 🏋️ Thử thách
 

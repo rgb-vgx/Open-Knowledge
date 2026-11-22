@@ -20,9 +20,11 @@ Theo đúng khẩu hiệu "visualize, visualize, visualize", bài này mình so 
 
 Mở tài liệu `torchvision.transforms`, mục **transforming and augmenting images**, các bạn sẽ thấy rất nhiều transform, ghép được với nhau qua `Compose`. Đây là **extra curriculum** của bài: có cả bộ **illustration of transforms** để xem trực quan từng loại (resize, center crop, grayscale, đổi màu...). Nhưng trước hết, cứ viết code visualize cái transform của mình đã.
 
+---
+
 ### 🛠️ Viết hàm `plot_transformed_images`
 
-Hàm nhận vào danh sách đường dẫn ảnh, một `transform`, số ảnh muốn lấy và một `random_seed` tùy chọn:
+Hàm nhận vào danh sách đường dẫn ảnh, một `transform`, số ảnh muốn lấy và một `seed` tùy chọn:
 
 ```python
 def plot_transformed_images(image_paths, transform, n=3, seed=None):
@@ -50,6 +52,8 @@ def plot_transformed_images(image_paths, transform, n=3, seed=None):
 
 `random.sample(image_paths, k=n)` lấy ra **n** đường dẫn **không trùng** từ danh sách. `seed=None` mặc định để mỗi lần chạy có thể ra ảnh khác; truyền `42` thì kết quả cố định.
 
+---
+
 ### ⚠️ Cú lỗi "invalid shape" và phép `permute`
 
 Chạy lần đầu, Matplotlib báo **invalid shape**. Lý do: `transform(f)` (với `ToTensor()`) trả về tensor **channels-first** `(C, H, W)`, còn Matplotlib cần **channels-last** `(H, W, C)`. Cách sửa là hoán đổi thứ tự trục:
@@ -60,6 +64,8 @@ transformed_image = transformed_image.permute(1, 2, 0)
 
 `permute(1, 2, 0)` đưa trục `0` (channel) về cuối: từ `(C, H, W)` thành `(H, W, C)`. Dữ liệu bên trong **không đổi**, chỉ đổi thứ tự chiều.
 
+---
+
 ### 👀 Kết quả nhìn thấy gì?
 
 Sau khi sửa, ảnh gốc và ảnh transform hiện cạnh nhau. Ví dụ một ảnh pizza:
@@ -69,9 +75,13 @@ Sau khi sửa, ảnh gốc và ảnh transform hiện cạnh nhau. Ví dụ mộ
 
 Ảnh steak thì thấy rõ bị **lật ngang** — đúng hiệu ứng của `RandomHorizontalFlip`.
 
+---
+
 ### ⚖️ Đánh đổi của việc resize
 
 Vì sao resize về 64×64? Vì **ít thông tin hơn** thì model **tính toán nhanh hơn**. Cái giá là có thể **mất một phần performance** do không còn nhiều chi tiết như ảnh gốc. Kích thước ảnh là một **hyperparameter**: các bạn có thể thử nhiều size để xem cái nào tốt nhất. Mình chọn 64×64 để khớp với **CNN Explainer** — dấu hiệu cho thấy ta sắp tái tạo model đó.
+
+---
 
 ### ✅ Tạm kết
 

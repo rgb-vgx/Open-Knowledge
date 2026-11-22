@@ -29,6 +29,8 @@ Cell trong notebook làm những việc sau:
 
 Mục tiêu: tái hiện đúng các bước trên, nhưng **dùng các script đã tách**.
 
+---
+
 ### 📄 Tạo `train.py`
 
 Mình đặt tiểu mục **6.1 — train, evaluate and save the model**, tạo file:
@@ -54,6 +56,8 @@ import data_setup, engine, model_builder, utils
 
 chứ không phải `from going_modular import data_setup`. Đây là chi tiết dễ sai — nhớ kỹ.
 
+---
+
 ### 🔢 Hyperparameters và đường dẫn
 
 ```python
@@ -66,6 +70,8 @@ train_dir = "data/pizza_steak_sushi/train"
 test_dir = "data/pizza_steak_sushi/test"
 ```
 
+---
+
 ### 📱 Device-agnostic code
 
 ```python
@@ -73,6 +79,8 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 ```
 
 Cái hay: **mọi script khác đều đã dùng device-agnostic code**, nên chỉ cần đặt một lần ở đây là cả pipeline "rơi vào chỗ".
+
+---
 
 ### 🖼️ Transform
 
@@ -87,6 +95,8 @@ data_transform = transforms.Compose([
 
 Thực tế có thể tách thành `transforms.py` riêng, nhưng ở đây cho gọn.
 
+---
+
 ### 🧵 Gọi `data_setup.create_dataloaders`
 
 ```python
@@ -99,6 +109,8 @@ train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
 ```
 
 Không truyền `num_workers` vì `data_setup` đã tự đặt mặc định.
+
+---
 
 ### 🏗️ Tạo model, loss, optimizer
 
@@ -114,6 +126,8 @@ optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 ```
 
 `output_shape = len(class_names)` = 3, vì có ba class pizza/steak/sushi.
+
+---
 
 ### ⏱️ Train và lưu model
 
@@ -144,6 +158,8 @@ utils.save_model(
 
 Phần lớn công việc nặng nằm trong `engine.train` — ta chỉ "lắp ghép các mảnh puzzle".
 
+---
+
 ### 🎬 Chạy một dòng lệnh
 
 ```bash
@@ -151,6 +167,8 @@ python going_modular/train.py
 ```
 
 Kết quả: chạy 5 epoch, in ra từng epoch, rồi lưu model vào `models/05_going_modular_script_mode_tinyvgg_model.pth`. Refresh thư mục, `models/` xuất hiện.
+
+---
 
 ### 📁 Cấu trúc cuối cùng
 
@@ -171,6 +189,8 @@ going_modular/
 * **model_builder** — kiến trúc model (có thể thay bằng model khác, miễn hợp dữ liệu).
 * **utils** — tiện ích, hiện một hàm nhưng có thể mở rộng.
 * **models** — nơi lưu model.
+
+---
 
 ### 🎉 Chốt lại
 

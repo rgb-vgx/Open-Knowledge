@@ -22,6 +22,8 @@ Với sự bùng nổ của ML, paper mới ra gần như **mỗi ngày**, khôn
 
 Mình không muốn truyền đạt "công thức replicate paper" chung chung (mỗi paper một khác), mà là **cách làm một cái** để bạn áp dụng nguyên lý cho những cái khác.
 
+---
+
 ### 🧱 Chia nhỏ để bớt đáng sợ
 
 Paper chứa **hàng tháng nghiên cứu** của 12 tác giả Google Brain. Hiểu được ngay lần đầu là điều rất khó — mình đã đọc paper này **6-7 lần** và lần nào cũng học thêm điều mới. Cách chia nhỏ:
@@ -31,6 +33,8 @@ Paper chứa **hàng tháng nghiên cứu** của 12 tác giả Google Brain. Hi
 * **Model**: chồng nhiều block (ví dụ ViT = nhiều encoder block).
 
 Nắm được cấu trúc này, một paper đồ sộ trở nên dễ tiêu hóa.
+
+---
 
 ### 🎯 Mục tiêu cuối cùng của paper replicating
 
@@ -42,10 +46,14 @@ from vit import ViT
 
 Là có ngay model dùng lại được. Nhiều paper và nhóm nghiên cứu giờ công bố code kèm theo trên **Papers with Code** — nơi tuyệt vời để vừa đọc paper vừa tra code.
 
+---
+
 ### 💡 Hai bài học lớn
 
 1. **Model pre-trained có sẵn cho nhiều kiến trúc state-of-the-art.** Với **transfer learning**, chúng thường cho kết quả rất tốt chỉ với ít dữ liệu — đúng như ta vừa thấy khi lấy ViT pre-trained, chỉnh head và có kết quả tốt nhất dự án.
 2. **Model lớn hơn thường tốt hơn nhưng footprint lớn hơn.** ViT của ta có ~86 triệu tham số và file 327 MB. Khi deploy, hãy tự hỏi: phần hiệu năng tăng thêm có **xứng với use case** không? Với app Food Vision chạy trên trình duyệt, 327 MB có thể là quá lớn.
+
+---
 
 ### 🏋️ Bài tập và tài nguyên mở rộng
 
@@ -63,6 +71,8 @@ Tài nguyên để hiểu sâu hơn:
 * Bài viết chuyên sâu về **Layer Normalization**.
 * Paper gốc **"Attention Is All You Need"**.
 * Kênh YouTube **Yannic Kilcher** — các buổi walkthrough trực quan, có cả cho "Attention Is All You Need" và **"An Image is Worth 16x16 Words"** (paper ta vừa replicate).
+
+---
 
 ### 🎉 Chúc mừng!
 

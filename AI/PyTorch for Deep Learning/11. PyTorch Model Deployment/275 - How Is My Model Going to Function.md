@@ -24,6 +24,8 @@ Một ví dụ khác là **phát hiện giao dịch gian lận**. Không ai mu�
 
 Đặc điểm: dự đoán trả về **ngay khi request đến**.
 
+---
+
 ### 🌙 Offline — xử lý theo lô, có độ trễ
 
 **Batch** nghĩa là xử lý nhiều mẫu cùng lúc. Bạn upload nhiều ảnh, chờ mười phút, rồi nhận về pizza, steak, sushi.
@@ -31,6 +33,8 @@ Một ví dụ khác là **phát hiện giao dịch gian lận**. Không ai mu�
 Với app inference thì đây không lý tưởng. Nhưng với **training** thì hoàn toàn ổn: upload hàng nghìn, hàng chục nghìn ảnh, train chạy nền, chờ mười phút hay một giờ cũng được, miễn model tốt lên.
 
 Ví dụ hay nhất là **Apple Photos**: khi bạn cắm sạc iPhone và để đó hơn một giờ, iOS chạy model để phân loại ảnh trong nền (biển, gia đình, các khuôn mặt…). Nếu chạy lúc bạn đang dùng máy thì điện thoại vừa chậm vừa tụt pin — nên chọn lúc sạc là hợp lý.
+
+---
 
 ### 🗓️ Tần suất và mục tiêu tối ưu
 
@@ -43,6 +47,8 @@ Offline tối ưu cho **high throughput** — xử lý/train nhiều mẫu một
 |---|---|---|
 | Offline (batch/async) | Có độ trễ, throughput cao | Apple Photos, gợi ý của Netflix/YouTube, index video YouTube, training |
 | Online (real-time/sync) | Kết quả tức thì, latency thấp | Food Vision Mini, phát hiện gian lận, spam detection, translation, self-driving |
+
+---
 
 ### 🚦 Khi nào bắt buộc phải online?
 

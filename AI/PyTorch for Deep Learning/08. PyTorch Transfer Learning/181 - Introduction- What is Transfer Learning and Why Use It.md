@@ -25,6 +25,8 @@ Chào các bạn, chào mừng tới **Transfer Learning** với PyTorch. Đây 
 
 Notebook của section này là `06_pytorch_transfer_learning`. Lúc quay có hai phiên bản (`V2` do dùng PyTorch bản mới), nhưng khi bạn xem có thể chỉ còn một bản.
 
+---
+
 ### 🤔 Vậy transfer learning là gì?
 
 Ta đã tự xây vài model. Nhưng chắc bạn cũng nghĩ: *chẳng lẽ chưa ai dành thời gian thiết kế sẵn một model phù hợp cho công việc này?* — Và đúng là có. **Transfer learning là tận dụng chính điều đó.**
@@ -37,6 +39,8 @@ Ví dụ với computer vision:
 
 Đó chính là transfer learning: **lấy thứ một model đã học trên dataset lớn, rồi tinh chỉnh cho use case riêng**.
 
+---
+
 ### 📝 Ví dụ bên NLP
 
 Với xử lý ngôn ngữ tự nhiên:
@@ -44,6 +48,8 @@ Với xử lý ngôn ngữ tự nhiên:
 * Có một model đã **train trên toàn bộ Wikipedia** để học cấu trúc ngôn ngữ.
 * Nó biết, chẳng hạn, trong câu *"The something jumped over the fence"*, chỗ `something` nhiều khả năng là "dog" hơn là "car".
 * Ta có thể **customize** model đó thành một **spam filter**: email này có phải spam không?
+
+---
 
 ### 🧠 Bản chất
 
@@ -54,12 +60,16 @@ Tóm gọn:
 3. Model học ra **pattern / weight / parameter** từ một không gian bài toán tương tự bài của ta.
 4. Ta **tune** những pattern đó cho bài toán riêng.
 
+---
+
 ### 🚀 Vì sao nên dùng transfer learning?
 
 * **Tận dụng kiến trúc đã được chứng minh.** Khi xây TinyVGG, ta tự ghép từng layer. Với transfer learning, các nhà nghiên cứu giỏi đã thiết kế sẵn kiến trúc chạy tốt trên bài toán tương tự.
 * **Tận dụng pattern đã học.** Nhờ vậy thường đạt **kết quả tốt với ít dữ liệu hơn**.
 
 Hình dung: một model như **EfficientNet** (kiến trúc computer vision) đã hiểu cấu trúc chung của ảnh. Ta rút pattern từ nó và tune cho Food Vision Mini. Kết quả thường **tốt hơn model train from scratch** như TinyVGG.
+
+---
 
 ### 📄 Trích dẫn đáng nhớ
 
@@ -75,6 +85,8 @@ Ngay cả khi dữ liệu riêng của bạn chỉ **liên quan lỏng lẻo** t
 
 Còn Jeremy Howard (fast.ai) thì nói: *"If we can do better at transfer learning, it's this world-changing thing. Suddenly, lots more people like us can do world-class work with less resources and less data."*
 
+---
+
 ### 🔧 Nhắc lại "các cách cải thiện model"
 
 Ở slide "improving our model" mấy section trước, để **giảm overfitting** ta có thể:
@@ -83,6 +95,8 @@ Còn Jeremy Howard (fast.ai) thì nói: *"If we can do better at transfer learni
 * dùng **data augmentation**,
 * dùng dữ liệu tốt hơn,
 * hoặc **transfer learning** — lấy pattern đã học từ bài toán khác và tinh chỉnh.
+
+---
 
 ### ✅ Chốt lại
 

@@ -28,6 +28,8 @@ Nhưng với PyTorch 1.10, `torch.range` **đã bị deprecated** và sẽ bị 
 
 Cách thay thế đúng là dùng **`torch.arange`**.
 
+---
+
 ### 📏 `torch.arange`: tạo dải số
 
 ```python
@@ -56,6 +58,8 @@ Ba tham số cần nhớ của `arange`:
 2. **`end`** — kết thúc (không tính).
 3. **`step`** — bước nhảy (mặc định là 1).
 
+---
+
 ### 🪞 Tạo tensor "like": cùng shape, không cần khai báo lại
 
 Giả sử bạn có `one_to_ten` với shape `(10,)`. Bạn muốn tạo một tensor toàn 0 **cùng shape** mà không phải gõ lại `10`.
@@ -71,6 +75,8 @@ Kết quả là tensor toàn 0 với đúng shape của `one_to_ten` — tức 1
 
 Nguyên tắc chung: các method có hậu tố **`_like`** nhận vào một tensor khác và tạo ra tensor mới **cùng shape** (và thường cùng `dtype`/`device`). Ví dụ `torch.ones_like`, `torch.rand_like`.
 
+---
+
 ### 🛠️ Khi Colab "đơ"
 
 Trong video, có lúc cell chạy mãi không xong. Vài mẹo xử lý:
@@ -79,6 +85,8 @@ Trong video, có lúc cell chạy mãi không xong. Vài mẹo xử lý:
 * Vào **Runtime → Restart runtime** để khởi động lại máy tính phía sau notebook, rồi chạy lại các cell (`Runtime → Restart and run all`).
 
 Không có công thức cố định để sửa lỗi — chủ yếu là **đoán và kiểm tra** (guess and check).
+
+---
 
 ### 🎯 Chốt lại
 

@@ -23,11 +23,15 @@ Mình vào `colab.research.google.com`, bấm **New Notebook**, đổi tên thà
 * Bản **sách online** của tài liệu khóa học.
 * Bản **ground truth notebook** — notebook tham chiếu cho cả section.
 
+---
+
 ### 🧭 Vì sao lại là custom dataset?
 
 Toàn bộ ý tưởng của section: trước giờ ta dùng dataset có sẵn của PyTorch, còn giờ làm sao đưa **dữ liệu của chính mình** vào PyTorch? Một cách là dùng **custom dataset**. Và nhắc lại: tùy domain — vision, text, audio, recommendation — mà tìm tới **domain library** tương ứng (`torchvision`, `torchtext`, `torchaudio`, `torchrec`) để lấy hàm nạp dữ liệu có sẵn hoặc hàm nạp dữ liệu tùy biến.
 
 Với bài toán vision của mình, ta dùng `torchvision`. Bộ bước sẽ tương tự cho bài toán text khi các bạn làm sau này: có một dataset nằm ở đâu đó, việc của ta là đưa nó vào PyTorch để build model.
+
+---
 
 ### 🔥 Import thư viện
 
@@ -40,6 +44,8 @@ torch.__version__
 
 Transcript lưu ý: khóa học yêu cầu **PyTorch 1.10.0+**. Nếu chạy Colab về sau này, các bạn có thể có bản PyTorch mới hơn — cứ kiểm tra `torch.__version__` để chắc chắn.
 
+---
+
 ### 💻 Thiết lập device-agnostic code
 
 Đây là đoạn mình muốn làm ngay từ đầu vì nó là best practice:
@@ -50,6 +56,8 @@ device
 ```
 
 Với cách này, nếu có **CUDA device** thì model sẽ dùng GPU và dữ liệu cũng được đưa lên GPU; không thì chạy CPU.
+
+---
 
 ### 🖥️ Bật GPU trên Colab
 
@@ -62,6 +70,8 @@ Sau khi bật GPU, kiểm tra bằng `torch.cuda.is_available()` và xem loại 
 ```
 
 Máy mình lúc quay là **Tesla P100, 16GB memory** — quá đủ cho bài toán trong section này.
+
+---
 
 ### ✅ Tạm kết
 

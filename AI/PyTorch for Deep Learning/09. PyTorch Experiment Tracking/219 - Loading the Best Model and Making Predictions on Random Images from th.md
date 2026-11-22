@@ -26,6 +26,8 @@ best_model_path = "models/07_effnetb2_pizza_steak_sushi_20_percent_10_epochs.pth
 
 Tên hơi dài nhưng đó là best model của ta.
 
+---
+
 ### 🔄 Load state dict vào model mới
 
 Vì hàm `save_model` lưu **state dictionary**, ta cần tạo một instance EffNetB2 mới rồi load:
@@ -36,6 +38,8 @@ best_model.load_state_dict(torch.load(best_model_path))
 ```
 
 Chạy xong, các key khớp hết — thành công. Giờ trong tay đã có best model.
+
+---
 
 ### 📏 Kiểm tra kích thước model
 
@@ -49,6 +53,8 @@ print(f"EffNetB2 feature extractor model size: {effnetb2_model_size} MB")
 ```
 
 `stat().st_size` trả về số byte, chia cho `1024 * 1024` để đổi sang **MB**. Kết quả: khoảng **29 MB** — một con số hợp lý. Không muốn model cỡ **gigabyte**, cũng không muốn quá nhỏ đến mức mất hiệu năng.
+
+---
 
 ### 🖼️ Dự đoán trên ảnh test ngẫu nhiên
 
@@ -72,9 +78,13 @@ for image_path in test_image_path_sample:
 
 Hàm nhận `model`, đường dẫn ảnh, `class_names` và `image_size` (mặc định 224). `random.sample` lấy ngẫu nhiên 3 ảnh.
 
+---
+
 ### 🍕 Kết quả
 
 Ba... hai... một... chạy! Có một ảnh bị đoán sai (pizza thay vì steak), còn lại đúng. Chạy thêm vài lần với ảnh khác: steak/steak/sushi đúng, pizza/steak/sushi đúng... Trong khoảng **12 ảnh chỉ sai 1** — khá ấn tượng với ~95% accuracy. Model làm rất tốt!
+
+---
 
 ### ✅ Tạm kết
 

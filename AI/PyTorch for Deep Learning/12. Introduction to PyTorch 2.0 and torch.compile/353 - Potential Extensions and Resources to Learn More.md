@@ -22,6 +22,8 @@ Một trong những cách tốt nhất để cải thiện deep learning là **t
 
 Colab từng mặc định **2 CPU**; lên Colab Pro hoặc tier cao hơn có thể được nhiều hơn (như ta thấy, 12 CPU). Điều này phụ thuộc máy và loại CPU, nhưng nguyên tắc giữ nguyên: đưa càng nhiều data lên GPU càng tốt thì tốc độ train tương đối càng tăng.
 
+---
+
 ### 2️⃣ Automatic Mixed Precision (AMP)
 
 Đây là kỹ thuật ta mới nhắc mà chưa làm. **AMP** trộn `float32` và `float16` trong training:
@@ -32,6 +34,8 @@ Colab từng mặc định **2 CPU**; lên Colab Pro hoặc tier cao hơn có th
 Tài liệu PyTorch có hướng dẫn **"Use mixed precision training"**. Cơ chế chính là **`torch.cuda.amp.GradScaler`** giúp **gradient scaling** — cải thiện hội tụ cho mạng có gradient `float16`.
 
 > Theo kinh nghiệm của mình, **AMP có lẽ là mức tăng tốc lớn nhất** mà các bạn sẽ thấy.
+
+---
 
 ### 3️⃣ Transformer có thể hưởng lợi nhiều hơn CNN
 
@@ -47,9 +51,13 @@ PyTorch 2.0 **tự chọn kernel nhanh nhất** sau hậu trường — **flash 
 
 Nếu model của các bạn dùng transformer và tận dụng scaled dot-product attention, sẽ thấy tăng tốc tương đối.
 
+---
+
 ### 4️⃣ Train lâu hơn
 
 Trong thực nghiệm, ta chỉ train **5 epoch** — đã thấy cải thiện với 3×5 epoch. Tưởng tượng train **600 epoch** như series state-of-the-art computer vision của PyTorch: tăng tốc tương đối sẽ **lớn hơn nhiều** so với lần chạy ngắn.
+
+---
 
 ### 📚 Tài nguyên mình thích nhất
 
@@ -60,6 +68,8 @@ Trong thực nghiệm, ta chỉ train **5 epoch** — đã thấy cải thiện 
 * Bài của **Sebastian Raschka** về tăng tốc model từ **8.4 xuống 5.6 phút** với `torch.compile`.
 
 Tất cả có trong **ebook PyTorch 2.0 tutorial**, mục **Section 5: Possible improvements and extensions**.
+
+---
 
 ### 🤝 Góp ý và hỏi đáp
 

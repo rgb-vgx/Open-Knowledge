@@ -21,6 +21,8 @@ Hàm `pred_and_store()` đã sẵn sàng. Giờ chạy nó trên toàn bộ 150 
 1. **Chạy trên CPU** — khi deploy lên mobile hoặc Internet, không phải lúc nào cũng có GPU CUDA. Thiết bị có GPU thường to và đắt hơn; không phải cấm dùng GPU, chỉ cần biết rõ môi trường đích.
 2. **Dùng đúng transforms** — EffNetB2 phải đi với **`effnetb2_transforms`**, ViT với **`vit_transforms`**. Dùng lẫn sẽ cho kết quả lệch.
 
+---
+
 ### 🏃 Chạy dự đoán
 
 ```python
@@ -35,6 +37,8 @@ effnetb2_test_preds = pred_and_store(
 
 Progress bar cho thấy tốc độ khoảng **887 instances/second**, không lỗi. Mỗi phần tử là một dictionary đầy đủ: `image_path`, `class_name`, `pred_prob`, `pred_class`, `time_for_pred`, `correct`.
 
+---
+
 ### 📋 Đưa vào DataFrame để phân tích
 
 Đây là lý do chọn "list of dictionaries" — chuyển sang pandas rất gọn:
@@ -47,6 +51,8 @@ effnetb2_test_pred_df = pd.DataFrame(effnetb2_test_preds)
 
 Cũng chính vì pandas chạy trên CPU mà trong hàm ta phải `.cpu()` các tensor trước khi lưu — nếu không sẽ lỗi khi dùng pandas, numpy, matplotlib.
 
+---
+
 ### ✅ Kiểm tra độ chính xác
 
 ```python
@@ -54,6 +60,8 @@ effnetb2_test_pred_df.correct.value_counts()
 ```
 
 Kết quả: **145/150 đúng**, tức 5 ảnh sai — khớp với **~97% test accuracy** đã đo khi train.
+
+---
 
 ### ⏱️ Latency trung bình
 

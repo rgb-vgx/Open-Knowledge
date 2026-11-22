@@ -54,7 +54,7 @@ Hai tham số cần truyền:
 * `params` — những tham số nào cần tối ưu.
 * `lr` — **learning rate** (tốc độ học).
 
-`lr` là tham số **bắt buộc** với `SGD` — không có giá trị mặc định, phải tự truyền.
+`lr` là tham số **bắt buộc, phải tự truyền** với `SGD` trong phiên bản PyTorch của khóa học (1.10) — lúc đó nó không có giá trị mặc định.
 
 ---
 

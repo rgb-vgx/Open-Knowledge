@@ -26,11 +26,15 @@ Equation 2 là **MSA block** (Multi-Head Self Attention). Nhìn công thức có
 
 Transformer encoder chính là sự xen kẽ giữa các block MSA (Equation 2) và block MLP (Equation 3), với layer norm đứng trước và residual cộng sau mỗi block.
 
+---
+
 ### 📚 Attention đến từ đâu?
 
 MSA được giới thiệu lần đầu trong paper **"Attention Is All You Need"** (Vaswani và cộng sự, 2017, Google Brain). Nếu muốn hiểu sâu, tra cứu "what is multi-head self attention" sẽ ra rất nhiều tài liệu.
 
 Điều thú vị: paper ViT không tự nghĩ ra attention — nó dựa trên một chùm nghiên cứu của khoảng **30-40 paper khác**. Vì vậy paper replicating là một thử thách thật sự: bạn không chỉ đọc một paper, mà cả hệ sinh thái phía sau nó.
+
+---
 
 ### ⚙️ Attention nhìn từ góc độ code
 
@@ -45,17 +49,23 @@ Nghe rất hàn lâm, nhưng bên dưới compatibility function chỉ là **ph�
 
 Đó là **scaled dot-product attention**. Với **multi-head attention**, ta làm y hệt nhưng lặp trên **nhiều head** (thêm một chiều "depth"), rồi ghép kết quả lại.
 
+---
+
 ### 🖼️ Từ text sang ảnh
 
 Attention sinh ra cho **text**. Ví dụ câu "The animal didn't cross the street because it was too tired" — self attention cho biết từ "it" nên gắn với "the animal" mạnh nhất. Ý tưởng cốt lõi: **trong cùng một chuỗi, phần tử nào nên chú ý tới phần tử nào?**
 
 Với ảnh, ta coi chuỗi patch embeddings như một chuỗi "từ". Ta không định nghĩa bằng tay patch nào liên quan patch nào — ta muốn **attention tự học** mối quan hệ đó trong quá trình train.
 
+---
+
 ### 🧩 "Self" trong self attention nghĩa là gì?
 
 Đây là chỗ mình từng vướng. Trong **self attention**, **query, key và value đều là các instance của cùng một vector** — tức là cùng xuất phát từ chính chuỗi input. Vì thế nó mới gọi là "self": chuỗi tự hỏi "tôi nên chú ý tới chính tôi thế nào".
 
 Với ta, chuỗi đó là các patch ảnh: mỗi patch tự hỏi nên chú ý nhất tới patch nào khác trong cùng ảnh.
+
+---
 
 ### ✅ PyTorch đã có sẵn
 

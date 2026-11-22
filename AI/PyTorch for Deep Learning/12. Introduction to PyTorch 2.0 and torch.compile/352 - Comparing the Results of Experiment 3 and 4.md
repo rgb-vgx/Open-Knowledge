@@ -27,6 +27,8 @@ Như mọi "cooking show" machine learning, mình lấy lại code vẽ ở mụ
 
 Hàm `plot_mean_epoch_times` vẫn lo phần còn lại.
 
+---
+
 ### 🥇 Kết quả: train nhanh hơn ~5.3%
 
 * **Mean train epoch time**: model compile **nhanh hơn trung bình ~5.2–5.3%**. Đây là nơi phần lớn thời gian huấn luyện nằm, nên đây là con số quan trọng nhất.
@@ -34,9 +36,13 @@ Hàm `plot_mean_epoch_times` vẫn lo phần còn lại.
 
 Mình trực giác rằng con số 5.3% sẽ **tăng lên** nếu dataset lớn hơn hoặc train lâu hơn: trung bình bị kéo bởi epoch đầu chậm, còn các epoch sau thì nhanh hơn.
 
+---
+
 ### 🤔 Vì sao test epoch không nhanh hơn?
 
 Mình chưa giải thích chắc chắn được. Có thể còn chỗ tối ưu phía sau; có thể **inference mode** sẽ giúp test nhanh hơn. Nhưng vì thời gian test **ít hơn hẳn** thời gian train (dù cùng đơn vị đo), ta quan tâm tiết kiệm thời gian train hơn là test.
+
+---
 
 ### 💾 Lưu kết quả multi-run
 
@@ -60,6 +66,8 @@ compiled_results_multiple_runs_df.to_csv(
 
 Tên file ghi rõ GPU/dataset/image size — vì kết quả phụ thuộc vào từng cấu hình.
 
+---
+
 ### ✅ Chốt lại cả chương thực nghiệm
 
 Ta đã có đủ 4 thực nghiệm:
@@ -70,6 +78,8 @@ Ta đã có đủ 4 thực nghiệm:
 | **Có compile** | Experiment 2 | Experiment 4 |
 
 **Kết luận chính**: `torch.compile` **có** tăng tốc epoch, **miễn là** các bạn train đủ lâu để bù lại thời gian tối ưu ở epoch đầu. Với model state-of-the-art của torchvision train tới **600 epoch**, lợi ích sẽ rất đáng kể theo thời gian.
+
+---
 
 ### 🔜 Gợi ý mở rộng
 

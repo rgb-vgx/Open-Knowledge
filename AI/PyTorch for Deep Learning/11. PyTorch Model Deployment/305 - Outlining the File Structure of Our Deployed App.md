@@ -22,6 +22,8 @@ Theo tài liệu Spaces: *"Under the hood, Spaces stores your code inside a git 
 
 Git LFS thay các file lớn (âm thanh, video, dataset, model) bằng một **text pointer** trong Git, còn nội dung thật được lưu riêng. Với app của mình, model EffNetB2 nặng khoảng **29 MB**, vượt ngưỡng ~10 MB, nên sẽ cần Git LFS.
 
+---
+
 ### 📁 Cấu trúc đích
 
 Mình gom mọi thứ vào một thư mục duy nhất:
@@ -45,9 +47,13 @@ demos/
 * **`*.pth`** — state dict của model đã train, lưu bằng Git LFS.
 * **`requirements.txt`** — khai báo dependency để Spaces cài khi build.
 
+---
+
 ### ⚙️ Vì sao `app.py`?
 
 `app.py` là tên file mặc định Hugging Face Spaces dùng để khởi chạy app. Có thể đổi trong README, nhưng mình giữ mặc định cho đơn giản. Trên Space thật của mình, bấm **Files and versions** sẽ thấy đúng cấu trúc này: thư mục `examples`, file model lưu bằng Git LFS, `README`, `app.py`, `model.py`, `requirements.txt`.
+
+---
 
 ### 🔁 Từ Colab đến thư mục
 

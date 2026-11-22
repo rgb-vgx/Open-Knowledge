@@ -29,9 +29,13 @@ Ta đã gặp đủ loại lỗi này: shape error, dtype error, device error.
 
 Mấy điều này không bắt buộc tuyệt đối, nhưng để **tránh lỗi và giữ hiệu năng**, nên làm đủ.
 
+---
+
 ### 🎯 Ý tưởng: gói tất cả vào một hàm
 
 Ta sẽ viết hàm **`pred_and_plot_image`**, tự động làm hết các bước trên. Ta đã từng viết hàm tương tự ở section 04 (mục "putting custom image prediction together"). Lần này làm lại với vài điều chỉnh để luyện tập.
+
+---
 
 ### 📝 Mười bước của hàm
 
@@ -46,17 +50,25 @@ Ta sẽ viết hàm **`pred_and_plot_image`**, tự động làm hết các bư�
 9. **Lấy nhãn dự đoán** bằng **`torch.argmax`** trên xác suất.
 10. **Vẽ ảnh bằng matplotlib**, tiêu đề là nhãn dự đoán (bước 9) và xác suất (bước 8).
 
+---
+
 ### 💡 Vì sao `torch.softmax` rồi `torch.argmax`?
 
 Model xuất ra **logit** — số thô, chưa phải xác suất. `softmax` biến chúng thành phân phối xác suất (tổng bằng 1). `argmax` lấy **index có xác suất cao nhất** — chính là class dự đoán.
+
+---
 
 ### 🎨 Vì sao phải vẽ ảnh gốc, không phải ảnh đã transform?
 
 Matplotlib sẽ lỗi nếu bạn đưa ảnh đã qua transform (shape/kiểu khác). Hãy vẽ **ảnh PIL gốc** đã mở ở bước 2.
 
+---
+
 ### 🧩 Bài tập
 
 Trước khi xem lời giải ở video sau, các bạn thử **tự viết hàm** theo mười bước trên. Nếu cần tham khảo, xem hàm tương tự ở section 04, mục 11.3.
+
+---
 
 ### ✅ Chốt lại
 

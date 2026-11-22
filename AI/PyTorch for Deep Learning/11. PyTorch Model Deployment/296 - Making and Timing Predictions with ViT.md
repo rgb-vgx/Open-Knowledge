@@ -32,6 +32,8 @@ Vẫn hard-code **CPU** vì không chắc môi trường deploy có GPU. (Một 
 
 Chỉ nhìn progress bar đã thấy ViT **chậm hơn khá rõ** so với EffNetB2. Câu hỏi đặt ra: vì sao? Hãy suy nghĩ trước khi xem bảng so sánh ở bài sau.
 
+---
+
 ### 📋 DataFrame và độ chính xác
 
 ```python
@@ -45,6 +47,8 @@ Kết quả: **148/150 đúng** → **~98.5% accuracy**, nhỉnh hơn 145/150 c�
 
 Đáng chú ý: xác suất dự đoán của ViT nhìn chung **cao hơn** (model tự tin hơn) — nhưng đổi bằng **thời gian**.
 
+---
+
 ### ⏱️ Latency trung bình
 
 ```python
@@ -53,6 +57,8 @@ print(f"ViT average time per prediction: {vit_avg_time_per_pred}")
 ```
 
 Kết quả vẫn **dưới 1 giây/ảnh** nhưng **cao hơn hẳn** EffNetB2 (~0.1396s trên cùng Colab CPU). Transcript không nêu con số chính xác, chỉ nhận định "cao hơn nhiều".
+
+---
 
 ### 📊 Ghi vào stats dictionary
 

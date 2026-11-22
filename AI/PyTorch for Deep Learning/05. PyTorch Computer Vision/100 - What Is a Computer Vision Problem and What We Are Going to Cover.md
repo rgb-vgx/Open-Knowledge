@@ -25,11 +25,17 @@ Câu thần chú của khóa học là **if in doubt, run the code** — chạy 
 3. Search lỗi — sẽ gặp StackOverflow hoặc tài liệu PyTorch.
 4. Vẫn tắc thì mở **Discussions** của repo `pytorch-deep-learning`, tạo discussion mới, ghi rõ section, dán code đã format trong cặp backtick ba, chọn category **Q&A** rồi bấm *Start discussion*. Như vậy câu hỏi sẽ search được và mọi người trả lời được.
 
+---
+
 ### 📚 Tài liệu đi kèm section
 
 Mọi code trong section này nằm trong **reference notebook** "PyTorch computer vision" — notebook có chú thích kèm hình, dùng làm phao khi bí. Bản sách online tương ứng ở mục *Section 3: PyTorch Computer Vision*. Các bạn cứ mở song song khi xem video.
 
+Và nếu lạc, cứ quay lại bốn bước tìm help ở trên — thứ tự đó luôn cứu được.
+
 Nếu muốn tìm cảm hứng, search cụm *"what can computer vision be used for"* sẽ ra những danh sách dài như "27 most popular computer vision applications in 2022" — đủ để thấy lĩnh vực này rộng đến mức nào. Nhưng đừng để bị cuốn: section này chỉ tập trung vào **một** bài toán phân loại ảnh nhiều lớp, làm cho thật chắc.
+
+---
 
 ### 🖼️ Computer vision rộng đến mức nào?
 
@@ -43,6 +49,8 @@ Nếu bạn **nhìn thấy** được thứ gì đó, gần như đều có th�
 
 Điểm thú vị: ở Tesla AI Day, chỗ device-agnostic code mà Tesla dùng chính là PyTorch. Cùng loại code chúng ta sắp viết.
 
+---
+
 ### 🎯 Chúng ta sẽ làm gì trong section này
 
 * Lấy một **vision dataset** có sẵn qua `torchvision` (thư viện domain của PyTorch cho computer vision).
@@ -52,8 +60,10 @@ Nếu bạn **nhìn thấy** được thứ gì đó, gần như đều có th�
 
 Đúng như slide mình chiếu: ta sẽ đi qua **tất cả** các phần của một bài toán vision, nhưng trọng tâm là **dựng CNN để tìm pattern trong ảnh** — vì không phải lúc nào pattern cũng dễ tìm, và đó mới là phần thú vị.
 
+---
+
 ### ✅ Tạm kết
 
-Nửa art, nửa science — như một show nấu ăn của machine learning, mình sẽ "nấu" thật nhiều code. Bài sau chúng ta sẽ soi kỹ **input và output shape** của một bài toán computer vision, vì đây là thứ ám ảnh mọi kỹ sư ML.
+Nửa art, nửa science — như một show nấu ăn của machine learning, mình sẽ "nấu" thật nhiều code. Bài sau chúng ta sẽ soi kỹ **input và output shape** của một bài toán computer vision, vì đây là thứ ám ảnh mọi kỹ sư ML. Hiểu shape trước thì mọi bước phía sau — model, loss, training loop — đều dễ thở hơn.
 
 Và nhớ: nếu bạn nhìn thấy được thứ gì đó, gần như bạn đã có một bài toán computer vision để thử. Hẹn các bạn ở bài sau.

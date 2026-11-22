@@ -25,6 +25,8 @@ image_batch.shape, label_batch.shape
 
 Batch có shape kiểu `[32, 3, 64, 64]`, label `[32]`.
 
+---
+
 ### ⚠️ Lỗi 1: device mismatch
 
 ```python
@@ -36,6 +38,8 @@ Báo lỗi kiểu **"Input type torch.FloatTensor and weight type torch.cuda.Flo
 ```python
 model_0(image_batch.to(device))
 ```
+
+---
 
 ### ⚠️ Lỗi 2: shape mismatch ở lớp Linear
 
@@ -49,6 +53,8 @@ nn.Linear(in_features=2560, out_features=output_shape)
 ```
 
 Chạy lại: model không còn lỗi, output shape `[32, 3]` — 32 mẫu, mỗi mẫu **3 điểm số** khớp 3 lớp. Vì chưa train nên các con số chỉ là **ngẫu nhiên**.
+
+---
 
 ### 🎯 Khớp đúng với CNN Explainer
 
@@ -66,9 +72,13 @@ nn.Linear(in_features=10 * 13 * 13,  # = 1690
 
 Chạy lại là chạy được. Vậy ta đã **chính thức tái tạo** TinyVGG của CNN Explainer.
 
+---
+
 ### 💡 Bài học về shape
 
 Có thể tính shape bằng công thức conv/pool, nhưng mình thích **để lỗi tự chỉ đường** — cứ để `in_features` sai, đọc shape ở output các block, nhân lại rồi sửa. Shape error xuất hiện **liên tục** khi làm model, kể cả người có kinh nghiệm.
+
+---
 
 ### ✅ Tạm kết
 

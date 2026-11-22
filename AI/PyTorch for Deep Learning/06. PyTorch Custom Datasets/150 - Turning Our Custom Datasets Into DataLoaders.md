@@ -22,7 +22,7 @@ Bước cuối để custom dataset dùng được với model: bọc nó trong 
 from torch.utils.data import DataLoader
 
 BATCH_SIZE = 32
-NUM_WORKERS = os.cpu_count()  # hoặc 0, hoặc 1
+NUM_WORKERS = 0  # hoặc 1, hoặc os.cpu_count()
 
 train_dataloader_custom = DataLoader(
     train_data_custom,
@@ -39,7 +39,9 @@ test_dataloader_custom = DataLoader(
 )
 ```
 
-Lưu ý về `num_workers`: có thể để `0`, `1`, hoặc `os.cpu_count()` — tùy phần cứng. Mình bắt đầu với `0` cho đồng bộ với ví dụ trước, rồi đổi sang `os.cpu_count()`. `shuffle=True` cho train, `False` cho test, đúng nguyên tắc.
+Lưu ý về `num_workers`: có thể để `0`, `1`, hoặc `os.cpu_count()` — tùy phần cứng. Mình thử `os.cpu_count()` rồi đưa về `0` cho đồng bộ với ví dụ trước. `shuffle=True` cho train, `False` cho test, đúng nguyên tắc.
+
+---
 
 ### 📏 Kiểm tra shape một batch
 
@@ -51,13 +53,19 @@ print(f"Label shape: {label_custom.shape}")
 
 Kết quả: image shape `[32, 3, 64, 64]`, label shape `[32]` — khớp `BATCH_SIZE = 32`, 3 channel, ảnh 64×64 như transform đã đặt. Đổi `BATCH_SIZE` thành `64` hay `1` thì chiều đầu thay đổi tương ứng.
 
+---
+
 ### 💡 Ghi chú về batch size
 
 Mình nhắc một mẹo: batch size đẹp thường là **bội số của 8** vì có lợi cho tính toán trên phần cứng. Kích thước ảnh thì tùy model — ảnh lớn hơn mã hóa nhiều thông tin hơn.
 
+---
+
 ### 🧰 Đóng gói để tái sử dụng
 
 `ImageFolderCustom` khá dài, nhưng viết **một lần** rồi dùng lại nhiều lần nếu dữ liệu vẫn đúng format. Mình gợi ý đặt nó vào một file helper (ví dụ `dataset.py`) rồi import khi cần — chính là cách PyTorch làm với `torchvision.datasets.ImageFolder`.
+
+---
 
 ### ✅ Tạm kết
 

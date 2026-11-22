@@ -34,6 +34,8 @@ Vì sao quan tâm? Số tham số **góp phần vào kích thước model**, và
 
 Lưu ý: đây là **tổng** tham số (gồm cả base layers đã đóng băng), khác với **4,227 trainable parameters** ở classifier head.
 
+---
+
 ### 🗂️ Gom vào dictionary
 
 Vì chỉ có hai thực nghiệm, ta có thể theo dõi thủ công. Nếu nhiều hơn, nên dùng **TensorBoard** hoặc **Weights & Biases**.
@@ -55,6 +57,8 @@ Các key trong `results` được `engine.train()` trả về:
 * `test_acc`
 
 `[-1]` lấy giá trị của epoch cuối cùng.
+
+---
 
 ### 📋 Bộ thống kê hoàn chỉnh
 

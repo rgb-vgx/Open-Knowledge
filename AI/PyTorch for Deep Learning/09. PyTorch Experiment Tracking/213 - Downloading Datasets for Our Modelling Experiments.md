@@ -22,6 +22,8 @@ Mục tiêu cuối là một model **chạy tốt nhưng đủ nhỏ** để ch�
 
 Một ghi chú triết lý — nếu bạn có **vô hạn compute và thời gian**, về cơ bản nên luôn chọn model **to nhất** và dataset **lớn nhất** có thể. Đó là tinh thần của **"The Bitter Lesson"** (một bài viết nổi tiếng) — bạn xem như extra curriculum.
 
+---
+
 ### ⬇️ Tải hai bộ dữ liệu
 
 Ta đã có bộ 10%, nhưng vì đầy đủ quy trình nên tải lại. Nếu muốn, có thể tải **toàn bộ Food 101** bằng `torchvision.datasets.Food101`, nhưng mình vẫn khuyên **tách ngẫu nhiên một phần nhỏ** để bắt đầu — vì Food 101 có **101.000 ảnh**, chờ train sẽ rất lâu. Khi đã tìm ra cái chạy tốt, lúc đó hãy để model train cả ngày rồi đi gym hay đi dạo.
@@ -45,6 +47,8 @@ data_20_percent_path = download_data(
 Chạy xong: bộ 10% bị **skip** vì thư mục đã có, bộ 20% được tải và giải nén. Giờ ta có cả hai thư mục `pizza_steak_sushi` và `pizza_steak_sushi_20_percent`.
 
 > Lưu ý: cẩn thận gõ đúng chữ "percent" trong tên thư mục — mình suýt gõ sai.
+
+---
 
 ### ✅ Tạm kết và thử thách
 

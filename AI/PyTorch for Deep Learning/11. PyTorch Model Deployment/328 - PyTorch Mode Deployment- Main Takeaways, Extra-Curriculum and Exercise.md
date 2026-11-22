@@ -22,6 +22,8 @@ Khi có một model chạy tốt, câu hỏi tiếp theo nên là: *"Làm sao de
 
 Và trước khi train, hãy luôn hỏi: *"Có model pretrained cho bài toán này chưa?"* Hugging Face, torchvision và các thư viện domain của PyTorch là nơi tìm.
 
+---
+
 ### 🧭 Ba câu hỏi lớn của model deployment
 
 1. **Use case lý tưởng** của model là gì? Nghĩ từ đó rồi làm ngược lại.
@@ -34,12 +36,16 @@ Với Food Vision, use case là chạy trên **mobile**, cần nhanh và dự đ
 * **Cloud** — chạy trên máy khác, không phải thiết bị của người dùng.
 * Kết hợp với **online prediction (real-time)** hoặc **offline prediction (batch)**.
 
+---
+
 ### 🛠️ Công cụ đã dùng
 
 * **Hugging Face Spaces** — cách dễ nhất để bắt đầu, đồng thời là nơi tuyệt vời để dựng **portfolio ML**.
 * **Gradio** — dựng giao diện demo nhanh.
 
 Mình đã có Food Vision Mini và Food Vision Big trên Hugging Face. Các bạn có thể tiếp tục xây portfolio theo hướng này.
+
+---
 
 ### 🔬 Không ngừng thí nghiệm
 
@@ -49,6 +55,8 @@ Ngay trong Milestone này, mình đã thử:
 * Dùng **20%** Food101 thay vì toàn bộ.
 
 Hướng mở rộng tự nhiên: dùng **100% dữ liệu** Food101 (chú ý thời gian train sẽ tăng khoảng 5 lần). Kết quả hiện tại khoảng **57–58%** accuracy.
+
+---
 
 ### 🧩 Bài học cuối: ML Ops
 
@@ -60,6 +68,8 @@ Model deployment là một phần của **MLOps** (Machine Learning Operations) 
 * Monitoring, versioning...
 
 Khóa này chưa đi hết các mảng đó, nhưng các bạn đã **thực hành deploy một model ra thế giới thật** — điều quan trọng nhất để bắt đầu.
+
+---
 
 ### 📚 Tài nguyên và bài tập
 

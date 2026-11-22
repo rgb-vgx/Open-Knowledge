@@ -26,9 +26,13 @@ Mình tạo notebook mới, đặt tên `06_pytorch_transfer_learning`, thêm gh
 >
 > **Pre-trained model** còn được gọi là **foundation model** — hai thuật ngữ dùng thay nhau.
 
+---
+
 ### 🖥️ Chọn GPU
 
 Vào **Runtime → Change runtime type**, chọn GPU.
+
+---
 
 ### 🔢 Kiểm tra phiên bản
 
@@ -44,6 +48,8 @@ Mục tiêu:
 * `torchvision` **0.13+**
 
 Nếu đã đủ thì bỏ qua bước cài bên dưới. Lúc quay, Colab chưa có nên phải nâng cấp.
+
+---
 
 ### 🌙 Cài bản nightly
 
@@ -66,7 +72,9 @@ print(f"torch version: {torch.__version__}")
 print(f"torchvision version: {torchvision.__version__}")
 ```
 
-Chạy đoạn trên sẽ ném `AssertionError` và in ra thông báo *"torchvision versions not as required, installing nightly versions"*. Sau đó nó cài bằng `pip`.
+Nếu phiên bản chưa đạt, cell in ra thông báo *"torchvision versions not as required, installing nightly versions"* rồi cài bản nightly bằng `pip`.
+
+---
 
 ### ⏳ Quá trình cài
 
@@ -76,17 +84,23 @@ Có thể mất **4–5 phút** tùy tốc độ mạng của Colab. Nó sẽ:
 * Tải và cài bản nightly của `torch` và `torchvision`.
 * (Không cần `torchaudio` cho section này.)
 
+---
+
 ### 🔁 Restart runtime
 
 Sau khi cài package mới trong Colab, **phải restart runtime**. Restart xong, chạy lại hai cell kiểm tra phiên bản. Lúc này ta thấy bản `dev` kèm ngày build, ví dụ torch **1.13**, torchvision **0.14** — thỏa yêu cầu.
 
 Chạy lại phần `assert`, lần này pass.
 
+---
+
 ### 💡 Lưu ý thực tế
 
 * Nếu Colab của bạn đã có sẵn phiên bản phù hợp, **không cần** chạy block cài đặt.
 * Nhưng nếu mở lại notebook sau này mà thiếu phiên bản, phải chạy lại — nếu không API mới sẽ lỗi.
 * Dần dần Colab sẽ có sẵn các phiên bản này mặc định.
+
+---
 
 ### ✅ Chốt lại
 

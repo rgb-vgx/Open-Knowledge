@@ -24,6 +24,8 @@ Chào các bạn. Lần này mình deploy bằng **giao diện web** thay vì Gi
 
 Space mới chỉ có `README.md`. Mình đổi emoji trong README cho vui (ví dụ 🌮) rồi commit.
 
+---
+
 ### 📤 Upload từng file
 
 Mở file zip đã tải ở bài trước, rồi dùng **Add file → Upload file**, kéo các file vào:
@@ -38,6 +40,8 @@ Có thể upload `app.py` trước, Space sẽ bắt đầu build và **báo l�
 
 File model khoảng **31.8 MB**, sẽ upload chậm hơn vì Hugging Face dùng **Git LFS** phía sau. Sau khi xong, file hiện nhãn "stored with Git LFS".
 
+---
+
 ### 📁 Mẹo tạo thư mục `examples/` trên UI
 
 UI chưa cho upload cả thư mục. Cách xử lý:
@@ -48,13 +52,19 @@ UI chưa cho upload cả thư mục. Cách xử lý:
 
 Đúng là một mẹo hơi "hack", nhưng hoạt động. Với Food Vision Mini mình làm hoàn toàn bằng Git nên không gặp vấn đề này.
 
+---
+
 ### 🔧 Khởi động lại khi cần
 
 Sau khi đủ file, app có thể vẫn báo lỗi dù mọi thứ đã đúng. Vào **Settings → Factory reboot this space** để khởi động lại. Trên máy mình, chỉ cần restart là app chạy.
 
+---
+
 ### 🟢 Thành quả
 
 Food Vision Big chạy với trạng thái **Running**. Thử ảnh pizza → `pizza`. Thử ảnh **beignets** do Stable Diffusion tạo → model nhận đúng. Một món mình còn chưa biết tên trước khi làm project này.
+
+---
 
 ### 🧪 Khám phá giới hạn của model
 

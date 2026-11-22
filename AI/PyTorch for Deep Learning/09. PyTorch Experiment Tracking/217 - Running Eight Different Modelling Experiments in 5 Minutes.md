@@ -30,6 +30,8 @@ Bấm chạy, và... **không lỗi nào cả**. Output:
 
 Nó tạo model mới, tạo SummaryWriter và lưu vào `.../10_percent/effnetb0/5_epochs`. Ta thấy "live commentary" của một lần train — và ngày trên máy đã sang **28/6** (hôm trước là 27/6).
 
+---
+
 ### 🔁 Chạy hết cả loạt
 
 Rồi lần lượt:
@@ -39,6 +41,8 @@ Rồi lần lượt:
 * Cứ thế chạy tiếp.
 
 Mình nhắc lại lý do muốn experiment chạy **thật nhanh**: để sớm biết cái nào hiệu quả. Lần này mình đoán các model sẽ khá giống nhau, vì đều là model tốt mà dữ liệu lại ít.
+
+---
 
 ### ⏱️ Tất cả xong sau khoảng 5 phút
 
@@ -50,9 +54,13 @@ Ta vừa:
 * Lưu **toàn bộ** model đã train ra file.
 * Tất cả trong khoảng **5 phút**, trên GPU **Nvidia Tesla P100** của mình.
 
+---
+
 ### ⚡ Bài học về tốc độ
 
 Thời gian có thể khác tùy phần cứng và lượng dữ liệu. Nhưng thông điệp: **loạt experiment đầu tiên chỉ nên mất vài phút**. Nếu bắt đầu mà chờ hơn **10 phút** một experiment là đang chờ quá lâu. Trong thực tế nên nhắm **dưới 3 phút** để xoay model nhanh.
+
+---
 
 ### 👀 Đừng nhìn số, hãy nhìn hình
 

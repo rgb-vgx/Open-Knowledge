@@ -34,6 +34,8 @@ Và nhắc lại để nhớ:
 | Matrix | 2 |
 | Tensor | tùy ý |
 
+---
+
 ### 🎲 Vì sao cần random tensor?
 
 Đây là ý tưởng lớn của neural network:
@@ -43,6 +45,8 @@ Và nhắc lại để nhớ:
 Lặp đi lặp lại: **bắt đầu với số random → nhìn dữ liệu → cập nhật số → nhìn dữ liệu → cập nhật số...** Đó chính là cốt lõi của neural network.
 
 Nên random tensor không phải trò chơi — nó là điểm khởi đầu của quá trình học.
+
+---
 
 ### 🛠️ Tạo random tensor với `torch.rand`
 
@@ -70,6 +74,8 @@ torch.rand(10, 10, 10).ndim    # 3 chiều, 10 * 10 * 10 = 1000 phần tử
 
 Khi tensor lên tới hàng trăm nghìn hay hàng triệu phần tử, PyTorch sẽ lo phần tạo ra chúng phía sau.
 
+---
+
 ### 🖼️ Random tensor giống một ảnh
 
 Một ứng dụng rất hay: tạo tensor có **cùng shape với tensor ảnh**.
@@ -91,6 +97,8 @@ Kết quả: `torch.Size([224, 224, 3])`, `ndim = 3` — một chiều cho heigh
 Ba channel là **red, green, blue (RGB)** — chỉ với ba màu này có thể tạo ra gần như mọi màu. Một cách rất phổ biến để biểu diễn ảnh là tách ảnh thành các color channel rồi biểu diễn dưới dạng tensor.
 
 Có lúc các bạn sẽ thấy color channels đứng **đầu** (`[3, 224, 224]`), có lúc đứng **cuối** (`[224, 224, 3]`). Trong code có thể đổi qua lại dễ dàng — phần này sẽ học sau.
+
+---
 
 ### 🎯 Chốt lại
 

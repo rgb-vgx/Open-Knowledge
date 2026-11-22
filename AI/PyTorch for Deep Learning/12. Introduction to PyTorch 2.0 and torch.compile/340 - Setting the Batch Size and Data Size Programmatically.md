@@ -20,6 +20,8 @@ Video trước ta bàn rằng tăng tốc tương đối rõ nhất khi dùng nh
 
 Trước khi vào code, một lưu ý: ý tưởng "dùng càng nhiều GPU càng tốt" **không chỉ đúng với PyTorch 2.0**. Nó đúng với **mọi phiên bản PyTorch** và gần như **mọi model train trên GPU**. Khi dataset và model lớn dần, chúng thậm chí có thể **không vừa một chiếc A100**, lúc đó các bạn sẽ phải nghĩ đến nhiều GPU.
 
+---
+
 ### 📏 Đọc tổng và số VRAM còn trống
 
 PyTorch có sẵn hàm `torch.cuda.mem_getinfo()` trong nhóm `torch.cuda`:
@@ -44,6 +46,8 @@ print(f"Total free GPU memory: {total_free:.2f} GB")
 ```
 
 Trên A100, số ra khoảng **41GB** — hợp lý. GPU khác sẽ cho số khác.
+
+---
 
 ### 🎚️ Logic chọn batch size và image size
 
@@ -70,6 +74,8 @@ print(f"Memory available: {total_free:.1f}GB — using batch size {batch_size}, 
 ```
 
 Trên A100: `41GB — batch size 128, image size 224`.
+
+---
 
 ### 🖼️ Nhớ cập nhật transforms
 

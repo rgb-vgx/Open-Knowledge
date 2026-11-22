@@ -23,6 +23,8 @@ Trước đây, muốn đưa tensor hay model lên GPU, ta phải gọi `.to(dev
 * **Context manager** — chỉ trong một khối code.
 * **Global device** — set một lần cho toàn bộ script.
 
+---
+
 ### 🧭 Cách 1: context manager
 
 Vẫn kiểm tra device như cũ:
@@ -51,6 +53,8 @@ Kết quả mình nhận được: cả layer weights lẫn data đều ở `cud
 
 > Các bạn có thể đã quen chuyện này nếu từng dùng TensorFlow (framework thường tự xử lý device). Tự động và thủ công đều có ưu điểm riêng, tùy trường hợp.
 
+---
+
 ### 🌍 Cách 2: global default device
 
 Muốn set một lần ở đầu script/notebook:
@@ -63,6 +67,8 @@ Cũng là API mới, cần PyTorch 2.0 trở lên. Sau dòng này, mọi đối 
 
 Chạy lại đoạn code tạo layer và tensor phía trên, các bạn sẽ thấy chúng vẫn ở `cuda:0` dù không hề gọi `.to`.
 
+---
+
 ### 🔄 Đổi ngược về CPU
 
 Muốn quay lại CPU thì đơn giản:
@@ -72,6 +78,8 @@ torch.set_default_device("cpu")
 ```
 
 Chạy lại là mọi thứ về CPU bình thường. Muốn quay lại GPU thì set `"cuda"` tương tự. Trong phần còn lại mình sẽ giữ device mặc định và tiếp tục dùng `.to`, nhưng các bạn đã biết tính năng mới này.
+
+---
 
 ### 📖 Tài nguyên đáng đọc
 

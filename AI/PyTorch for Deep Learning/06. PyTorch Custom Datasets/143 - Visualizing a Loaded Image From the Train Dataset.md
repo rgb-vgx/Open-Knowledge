@@ -33,6 +33,8 @@ print(class_names[label])   # pizza
 
 Vì `class_names` sắp theo `class_to_idx`, `class_names[0]` chính là `"pizza"`.
 
+---
+
 ### 🔍 In shape và dtype
 
 ```python
@@ -51,9 +53,13 @@ Kết quả:
 
 Mình nhấn mạnh: ba lỗi lớn hay gặp là **shape mismatch**, **device mismatch**, **dtype mismatch**. In sẵn shape và dtype từ đầu là cách phòng lỗi về sau.
 
+---
+
 ### 📉 Vì sao ảnh bị vỡ hạt?
 
 Ảnh gốc khoảng **512×512**, qua transform còn **64×64** nên trông rất **pixelated**. Đây là cái giá của việc giảm kích thước — đổi lấy tốc độ tính toán.
+
+---
 
 ### 🎨 Vẽ ảnh: lại `permute`
 
@@ -72,6 +78,8 @@ plt.title(class_names[label], fontsize=14)
 ```
 
 `permute(1, 2, 0)` đưa trục channel (0) về cuối: `(C, H, W)` → `(H, W, C)`. Mình cố tình **in cả shape trước và sau** để thấy rõ sự thay đổi — đó chính là giá trị của Jupyter Notebook.
+
+---
 
 ### ✅ Thử thách của bài
 

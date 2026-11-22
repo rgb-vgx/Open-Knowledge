@@ -1,5 +1,5 @@
 ---
-title: 'Tạo model multiclass bằng PyTorch với tham số linh hoạt'
+title: 'Bài 93 — Tạo model multiclass bằng PyTorch với tham số linh hoạt'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 93
@@ -36,6 +36,8 @@ torch.unique(y_blob_train)
 ```
 
 Bốn giá trị → `out_features=4`.
+
+---
 
 ### 🏗️ `BlobModel`: nhận hyperparameter qua constructor
 
@@ -74,6 +76,8 @@ Mình dùng `nn.Sequential` ở đây vì chỉ cần bước tuần tự qua c�
 
 **Docstring** theo *Google Python Style Guide* (một quy ước phổ biến): câu mô tả, rồi `Args:`, `Returns:`, `Errors:`. Người dùng class sau này sẽ biết mỗi tham số là gì.
 
+---
+
 ### 🚀 Khởi tạo
 
 ```python
@@ -82,8 +86,10 @@ model_4 = BlobModel(input_features=2,
                     hidden_units=8).to(device)
 ```
 
+---
+
 ### 🐛 Một lỗi gõ tên đáng nhớ
 
-Lần đầu mình gọi `BlobModel(input_features=2, output_features=4, ...)` và Python báo **`unexpected keyword argument 'output_features'`**. Lý do: tên tham số của `nn.Linear` là **`out_features`**, không phải `output_features` — mình nhầm giữa tham số của *model* (`output_features`) và tham số của *layer* (`out_features`). Cẩn thận chỗ này.
+Lúc viết `nn.Linear` bên trong class, mình lỡ đặt `output_features=...` thay vì `out_features=...` và Python báo **`unexpected keyword argument 'output_features'`**. Lý do: tên tham số của `nn.Linear` là **`out_features`**, không phải `output_features` — mình nhầm giữa tham số của *model* (`output_features`) và tham số của *layer* (`out_features`). Cẩn thận chỗ này.
 
 Shape đã khớp dữ liệu. Bài sau mình dựng **loss function + optimizer** cho model multiclass, rồi tiến tới training loop.

@@ -31,6 +31,8 @@ loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(effnetb2.parameters(), lr=1e-3)
 ```
 
+---
+
 ### 🏋️ Cấu hình và chạy
 
 ```python
@@ -51,6 +53,8 @@ Chọn **10 epochs** vì đó là cấu hình của model tốt nhất ở secti
 
 Đừng quá bận tâm nếu số của bạn lệch chút — hãy nhìn **xu hướng**: test accuracy tăng, test loss giảm.
 
+---
+
 ### 📈 Đọc loss curves
 
 Dùng `plot_loss_curves` trong `helper_functions.py`:
@@ -67,6 +71,8 @@ Nếu muốn đẩy xa hơn, hai hướng mình sẽ thử:
 
 1. **Train lâu hơn** (nhiều epoch hơn).
 2. **Thêm data augmentation** — ví dụ **TrivialAugmentWide**, kiểu augmentation mà "state of the art recipe" của PyTorch dùng.
+
+---
 
 ### ✅ Đối chiếu mục tiêu
 

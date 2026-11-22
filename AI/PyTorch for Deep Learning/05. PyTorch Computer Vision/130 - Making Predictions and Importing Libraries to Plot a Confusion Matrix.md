@@ -24,6 +24,8 @@ Muốn vẽ confusion matrix thì cần dự đoán trên **toàn bộ** 10.000 
 
 `torchmetrics` là thư viện metric "chuẩn PyTorch": accuracy, precision, recall, F1, confusion matrix… hơn 25 metric cho classification. `mlxtend` là thư viện tiện ích, có sẵn hàm vẽ confusion matrix rất đẹp.
 
+---
+
 ### 🔁 Dự đoán toàn bộ test set
 
 ```python
@@ -55,9 +57,11 @@ Kết quả `len(y_pred_tensor) == 10000` — đúng một dự đoán mỗi ả
 
 Nếu `softmax` chỉ để lấy nhãn thì có thể bỏ qua và lấy thẳng `argmax` trên logit — kết quả nhãn y hệt. Làm cả softmax cho đủ bước, và để có **xác suất** dùng cho việc khác.
 
+---
+
 ### 📦 Cài `torchmetrics` và `mlxtend`
 
-Colab thời điểm đó chưa có `torchmetrics`, và `mlxtend` mặc định là bản cũ (0.14), trong khi `plot_confusion_matrix` cần **0.19.0+**.
+Colab thời điểm đó chưa có `torchmetrics`, và `mlxtend` mặc định là bản cũ hơn, trong khi `plot_confusion_matrix` cần **0.19.0+**.
 
 ```python
 try:
@@ -75,6 +79,8 @@ Giải thích ý tưởng:
 * `assert` — kiểm tra "minor version" của `mlxtend` (phần giữa hai dấu chấm) phải ≥ 19.
 * `except` — nếu thiếu/sai version thì `pip install -q torchmetrics -U mlxtend` (`-q` im lặng, `-U` nâng cấp).
 
+---
+
 ### 🔄 Restart runtime cho chắc
 
 Sau khi nâng cấp `mlxtend`, Colab thường yêu cầu **restart runtime** để nạp đúng version. Sau restart:
@@ -85,9 +91,13 @@ Sau khi nâng cấp `mlxtend`, Colab thường yêu cầu **restart runtime** đ
 
 Kiểm tra lại: `print(mlxtend.__version__)` phải ra `0.19.0` hoặc cao hơn.
 
+---
+
 ### 💡 Bài học thực chiến
 
 Cài/nâng cấp package trong Colab là kỹ năng sẽ dùng suốt sự nghiệp. Quy trình chuẩn: thử import → kiểm tra version → cài nếu thiếu → restart nếu cần → chạy lại.
+
+---
 
 ### ✅ Tạm kết
 

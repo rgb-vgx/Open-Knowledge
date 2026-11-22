@@ -36,6 +36,8 @@ Chỉ một vòng lặp, toàn bộ "xương sống" bị đóng băng. Những 
 
 Mình có in thử `param` trước khi tắt: hàng loạt weight/bias, chính là **5 triệu tham số** đã học sẵn. Chúng là thứ "vận hành" backbone của EfficientNet.
 
+---
+
 ### 🔍 Kiểm tra sau khi freeze
 
 Chạy lại `torchinfo.summary(...)`:
@@ -45,6 +47,8 @@ Chạy lại `torchinfo.summary(...)`:
 * Chỉ **classifier head** còn trainable.
 
 Nếu đẩy model qua training loop, base layer sẽ **đứng yên**, không cập nhật.
+
+---
 
 ### 🎯 Thay classifier head
 
@@ -73,6 +77,8 @@ model.classifier = nn.Sequential(
 * **`out_features=len(class_names)`** = 3.
 * `torch.manual_seed(42)` trước khi tạo layer mới để tái lập kết quả.
 
+---
+
 ### 💧 Dropout là gì?
 
 Lớp `nn.Dropout(p=0.2, inplace=True)`:
@@ -85,6 +91,8 @@ Có thể đọc thêm về regularization và dropout trong tài liệu PyTorch
 
 Tương tự, muốn hiểu layer nào khác (ví dụ `SiLU` — còn gọi là swish activation, áp dụng sigmoid linear unit theo từng phần tử), cứ tra tài liệu.
 
+---
+
 ### 📊 Kết quả
 
 Chạy summary lần cuối:
@@ -94,6 +102,8 @@ Chạy summary lần cuối:
 * **Trainable params chỉ còn vài nghìn** — chính là head. Toàn bộ phần còn lại là weight ImageNet đóng băng.
 
 Ta đã có một **feature extractor model** sẵn sàng train.
+
+---
 
 ### ✅ Chốt lại
 

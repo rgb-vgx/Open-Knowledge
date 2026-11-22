@@ -18,9 +18,11 @@ tags: []
 
 ### 🧠 Vì sao phải batch?
 
-Nhớ lại dataset Food 101 có tới **100.000 ảnh**. Nếu nạp hết một lượt vào bộ nhớ, khả năng cao **hết RAM/VRAM**. GPU mình đang dùng (Tesla T4, khoảng 15GB) không kham nổi 100.000 ảnh cùng lúc với một model nặng. Vì vậy ta **batchify**: cho model xem **32 ảnh một lần**, tận dụng bộ nhớ vừa phải mà không bị tràn.
+Nhớ lại dataset Food 101 có tới **100.000 ảnh**. Nếu nạp hết một lượt vào bộ nhớ, khả năng cao **hết RAM/VRAM**. GPU mình đang dùng (Tesla T4, 16GB) không kham nổi 100.000 ảnh cùng lúc với một model nặng. Vì vậy ta **batchify**: cho model xem **32 ảnh một lần**, tận dụng bộ nhớ vừa phải mà không bị tràn.
 
 Điều này áp dụng cho **mọi loại dữ liệu** trong PyTorch — ảnh, text, audio — không riêng gì ảnh.
+
+---
 
 ### 🔥 Tạo DataLoader
 
@@ -33,7 +35,7 @@ BATCH_SIZE = 32
 train_dataloader = DataLoader(
     train_data,
     batch_size=BATCH_SIZE,
-    num_workers=os.cpu_count(),  # hoặc 1
+    num_workers=1,  # hoặc os.cpu_count()
     shuffle=True,
 )
 
@@ -52,6 +54,8 @@ Vài điểm cần nắm:
 * **`shuffle=True`** cho train — để model không học thuộc **thứ tự** dữ liệu.
 * **`shuffle=False`** cho test — để khi đánh giá, dữ liệu luôn cùng một thứ tự.
 
+---
+
 ### 📏 Độ dài DataLoader thay đổi theo batch
 
 Với `batch_size=1`, `len(train_dataloader)` bằng số mẫu dataset. Với `batch_size=32`:
@@ -60,6 +64,8 @@ Với `batch_size=1`, `len(train_dataloader)` bằng số mẫu dataset. Với `
 * Test: khoảng **3 batch**.
 
 Các con số được làm tròn khi có batch lẻ.
+
+---
 
 ### 🔍 Shape sau khi qua DataLoader
 
@@ -73,6 +79,8 @@ for image, label in train_dataloader:
 ```
 
 Với `batch_size=1`: image shape `[1, 3, 64, 64]`, label shape `[1]`. Với `batch_size=32`: image shape `[32, 3, 64, 64]`, label shape `[32]` — tức mỗi batch có **32 ảnh** đi kèm **32 nhãn**.
+
+---
 
 ### ✅ Tạm kết
 

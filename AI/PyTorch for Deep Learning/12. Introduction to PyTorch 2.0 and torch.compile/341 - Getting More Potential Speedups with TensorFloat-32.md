@@ -24,6 +24,8 @@ Trong máy tính, `float32` biểu diễn một số bằng **32 bit**, còn `fl
 
 Điều ta quan tâm trong machine learning chỉ có hai: **model train nhanh bao lâu** và **hiệu năng tốt đến đâu**. Lý tưởng là có cả hai — train nhanh mà vẫn chính xác, vì train nhanh mà model sai thì vô nghĩa.
 
+---
+
 ### 🌟 TensorFloat-32 là gì?
 
 **TF32** (TensorFloat-32) là một **kiểu dữ liệu của NVIDIA**, kết hợp `float32` và `float16`: lấy **độ chính xác của `float32`** và **tốc độ của `float16`**.
@@ -32,6 +34,8 @@ Cụ thể hơn, nó lấy **dải biểu diễn (range)** của `float32` và *
 
 TF32 có trên GPU NVIDIA kiến trúc **Ampere** trở lên (A100 là ví dụ). Đây lại đúng chủ đề xuyên suốt: phần lớn tăng tốc đến từ việc **phần mềm tận dụng phần cứng mới**.
 
+---
+
 ### ⚠️ Mặc định đã đổi từ PyTorch 1.12
 
 Khi TF32 mới được đưa vào PyTorch, nó **mặc định bật**. Nhưng **từ PyTorch 1.12**, nó **mặc định tắt**.
@@ -39,6 +43,8 @@ Khi TF32 mới được đưa vào PyTorch, nó **mặc định bật**. Nhưng 
 Lý do: người dùng gặp kết quả khác nhau trên phần cứng khác nhau. Họ muốn API PyTorch **nhất quán**, thay vì phải lo GPU cũ có chạy được TF32 hay không. Vì thế nó bị tắt mặc định.
 
 Lưu ý: nếu kết quả lạ, có thể do GPU không tương thích đủ tốt. Hãy thử cả bật và tắt để so sánh.
+
+---
 
 ### 🐍 Bật TF32 trong code
 

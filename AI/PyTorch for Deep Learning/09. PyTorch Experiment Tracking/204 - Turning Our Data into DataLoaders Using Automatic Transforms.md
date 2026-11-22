@@ -22,6 +22,8 @@ Mình mở tài liệu torchvision phiên bản **0.13+** (lúc ghi hình là b�
 
 Ví dụ với `ResNet50`: lấy `weights` (mặc định `DEFAULT` = best available), rồi gọi `weights.transforms()` để lấy transform dùng lúc train model đó. Extra curriculum của bạn: đọc kỹ phần *models and pre-trained weights*, cực kỳ hữu ích cho transfer learning.
 
+---
+
 ### 🎯 Chọn EfficientNet-B0
 
 Ta dùng **EfficientNet-B0** vì đã thấy nó chạy tốt, và nó cân bằng giữa độ chính xác và số tham số. Trong mục *classification* của tài liệu, mình tìm tới `torchvision.models.EfficientNet_B0_Weights` và copy cho đúng chữ hoa chữ thường (sai là lỗi ngay).
@@ -36,6 +38,8 @@ weights = torchvision.models.EfficientNet_B0_Weights.DEFAULT
 model = torchvision.models.efficientnet_b0(weights=weights).to(device)
 ```
 
+---
+
 ### 🔄 Lấy transform từ weights
 
 ```python
@@ -43,6 +47,8 @@ auto_transforms = weights.transforms()
 ```
 
 Điểm hay của API mới: nếu PyTorch cập nhật recipe train EfficientNet-B0 (hoặc bất kỳ model nào trong torchvision), ta dùng luôn weights mới cải tiến. Và transform đi kèm chính là transform đã dùng để tạo bộ weights ấy — nên chắc chắn dữ liệu của ta được xử lý y như lúc model được train.
+
+---
 
 ### 🧺 Tạo DataLoader với transform tự động
 
@@ -56,12 +62,16 @@ train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
 
 Tốc độ nhanh hơn vì ta đã làm việc này nhiều lần, nhưng vẫn nên luyện tay. Kết quả in ra train/test DataLoader, `class_names`, và ta thấy **transform tự động gần như giống hệt transform thủ công** ở bài trước.
 
+---
+
 ### ⚖️ Thủ công vs tự động
 
 * **Thủ công** — linh hoạt hơn, có thể thêm bớt bước (ví dụ augmentation), nhưng phải tự đảm bảo không lệch quá xa so với model pretrained, nếu không hiệu năng giảm.
 * **Tự động** — chắc chắn đúng format vì đây là transform đi kèm weights của model bạn muốn dùng.
 
 > Lưu ý nhỏ mình gặp: một cell bị thiếu `f` trong f-string nên in ra chữ thay vì giá trị — sửa lại là xong. Bạn để ý được lỗi này không?
+
+---
 
 ### ✅ Tạm kết
 

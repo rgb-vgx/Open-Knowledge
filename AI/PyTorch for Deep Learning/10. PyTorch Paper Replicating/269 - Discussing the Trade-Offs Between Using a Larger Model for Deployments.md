@@ -26,6 +26,8 @@ Dù vậy, nhìn kết quả:
 * **Test accuracy gần như tương đương** (khoảng **93,84%** ở bản tốt nhất).
 * Khác biệt thực sự chỉ là ViT có **test loss thấp hơn một chút**.
 
+---
+
 ### 🤔 Câu hỏi lớn: có đáng không?
 
 Đây là bài toán bạn sẽ luôn phải cân nhắc khi deploy:
@@ -35,11 +37,15 @@ Dù vậy, nhìn kết quả:
 
 Nếu một model **nhỏ hơn 11 lần** mà vẫn cho kết quả tốt gần như vậy, rất có thể nên deploy model nhỏ hơn. Kỹ năng này chỉ đến từ **thực hành nhiều**.
 
+---
+
 ### 🌐 Ví dụ thực tế: ứng dụng chạy trên trình duyệt
 
 Mình đang làm một app tên **Nutrafol** dùng kỹ thuật tương tự Food Vision Mini. Tải ảnh pizza lên trình duyệt — **không có GPU** nào chạy phía sau — model vẫn dự đoán "pizza" và hiện thông tin dinh dưỡng khá nhanh.
 
 Vậy câu hỏi: model **327 MB** sẽ mất bao lâu để tính toán và liệu trải nghiệm người dùng có tốt bằng một model nhỏ hơn **gần như tức thì** mà cho kết quả tương đương? Đây là điều cần nghĩ khi xây ứng dụng có AI.
+
+---
 
 ### ✅ Tiếp theo
 

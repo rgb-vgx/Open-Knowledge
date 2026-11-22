@@ -18,7 +18,9 @@ Ta đã đi hết section Custom Datasets — từ tải dữ liệu, làm quen,
 
 ### 🖼️ Bài học lớn nhất: tiền xử lý cho đúng format
 
-Khi dự đoán ảnh "Pizza Dad" (dù khá vỡ hạt), model **định lượng** chưa tốt nhưng **định tính** lại đoán đúng. Bài học cốt lõi: phải **tiền xử lý** dữ liệu mới cho **giống hệt** format lúc train. Đây cũng chính là việc mà app NutriFact của mình làm phía sau: ảnh upload được xử lý tương tự rồi đưa qua model phân loại.
+Khi dự đoán ảnh "Pizza Dad" (dù khá vỡ hạt), model **định lượng** chưa tốt nhưng **định tính** lại đoán đúng. Bài học cốt lõi: phải **tiền xử lý** dữ liệu mới cho **giống hệt** format lúc train. Đây cũng chính là việc mà app Nutrify của mình làm phía sau: ảnh upload được xử lý tương tự rồi đưa qua model phân loại.
+
+---
 
 ### ⚠️ Ba điều phải nhớ khi predict custom data
 
@@ -30,12 +32,16 @@ Bất kể ảnh, text hay audio:
 
 Sai dtype, sai shape, sai device — ba lỗi này sẽ **theo bạn suốt** quá trình làm deep learning.
 
+---
+
 ### 🧠 Các ý chính của section
 
 * **PyTorch có nhiều hàm dựng sẵn** cho mọi domain: `torchvision`, `torchaudio`, `torchtext`, `torchrec`, và `torchdata` (đang beta). Hãy quen dần với chúng.
 * **Tự viết được custom dataset**: nếu hàm dựng sẵn không đủ đáp ứng, kế thừa `torch.utils.data.Dataset` và override `__len__`/`__getitem__`.
 * **Cân bằng overfitting / underfitting**: đây là "lằn ranh mong manh" và là phần lớn nghiên cứu ML. Xem lại phần loss curve, cách xử lý overfit và underfit.
 * **Ba lỗi lớn** khi predict: dtype, shape, device.
+
+---
 
 ### 🏋️ Bài tập để tự luyện
 
@@ -45,9 +51,13 @@ Sai dtype, sai shape, sai device — ba lỗi này sẽ **theo bạn suốt** qu
 * Kẹt thì xem **example solutions** — chỉ là *một cách* làm tham khảo, không nhất thiết là tốt nhất.
 * Có cả **walkthrough trên YouTube**: Daniel live-stream giải toàn bộ, kể cả các lỗi gặp phải.
 
+---
+
 ### 📚 Tài liệu mở rộng
 
 Nhiều chủ đề nhắc trong khóa được gom vào mục **extra curriculum** — đáng xem khi có thời gian. Xong phần này, các bạn đã nắm trọn quy trình đưa dữ liệu của riêng mình vào PyTorch.
+
+---
 
 ### ✅ Tạm kết
 

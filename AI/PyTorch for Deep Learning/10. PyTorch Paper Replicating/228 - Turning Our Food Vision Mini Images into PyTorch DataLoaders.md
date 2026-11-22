@@ -33,11 +33,15 @@ Nhưng `IMAGE_SIZE` là bao nhiêu? Nếu replicate cho đúng thì phải xem p
 
 Đây là lý do vì sao replicating là quá trình nhảy qua nhảy lại giữa paper và code.
 
+---
+
 ### 🧮 Batch size: paper vs. máy của mình
 
 Cũng trong chỗ đó có **batch size 4096** — một con số khổng lồ. Chia cho 32 (batch size mình hay dùng) thì lớn hơn **128 lần**. Colab với một GPU không đủ bộ nhớ cho batch 4096 (máy mình là Colab Pro, 16GB, vẫn không đủ so với compute của Google).
 
 Nên phương châm là: **start small, scale up when necessary**. Giữ resolution **224**, nhưng hạ batch size xuống **32** để bắt đầu.
+
+---
 
 ### 🔁 Tạo DataLoader
 
@@ -58,6 +62,8 @@ train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
 * `class_names` — `['pizza', 'steak', 'sushi']`.
 
 Một chi tiết nữa: ba biến thể ViT trong **Table 1** có số tham số khác nhau; mình sẽ dựng **bản nhỏ nhất** trước, vì dựng nhỏ rồi mới scale up được.
+
+---
 
 ### 👀 Visualize, visualize, visualize
 

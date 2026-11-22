@@ -29,6 +29,8 @@ Chào các bạn! Ta tiếp tục phần setup. Để khỏi viết lại toàn 
 
 Giờ ta cần các script này **có mặt trong notebook**.
 
+---
+
 ### ⚙️ Lấy script vào Colab
 
 Cách làm: **clone GitHub repo** của khóa, rồi tách đúng thư mục `going_modular` ra.
@@ -46,6 +48,8 @@ Logic tải:
 3. Xóa các file không cần.
 4. `from going_modular.going_modular import data_setup, engine`.
 
+---
+
 ### 🔍 Chạy thử
 
 Chạy cell:
@@ -56,6 +60,8 @@ Chạy cell:
 
 Refresh thư mục: ta có `going_modular/going_modular/` chứa `data_setup.py` và `engine.py`. Tuyệt!
 
+---
+
 ### 🔌 Kiểm tra autocomplete
 
 ```python
@@ -64,6 +70,8 @@ engine.train                    # có autocomplete
 ```
 
 Mở `engine.py` ra, thấy đúng hàm `train` đã viết ở section trước. Đó chính là lý do ta going modular: **không phải viết lại**.
+
+---
 
 ### 💻 Bật GPU
 
@@ -82,9 +90,13 @@ Kiểm tra GPU đang dùng:
 
 Ví dụ máy mình là **Tesla P100 16GB**. Mình dùng Colab Pro để có GPU mạnh hơn — bản free không phải lúc nào cũng được GPU nhanh nhất. Điều này hợp lý vì compute không miễn phí.
 
+---
+
 ### ⚠️ Lưu ý
 
 Nếu bạn nghỉ giữa chừng rồi quay lại notebook, **phải chạy lại các cell import và setup**. Colab không giữ trạng thái mãi.
+
+---
 
 ### ✅ Chốt lại
 

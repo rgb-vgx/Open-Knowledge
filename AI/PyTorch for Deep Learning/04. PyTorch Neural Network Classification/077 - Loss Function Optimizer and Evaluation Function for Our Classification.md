@@ -1,5 +1,5 @@
 ---
-title: 'Chọn loss function, optimizer và viết hàm đánh giá accuracy'
+title: 'Bài 77 — Chọn loss function, optimizer và viết hàm đánh giá accuracy'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 77
@@ -26,9 +26,13 @@ Model đã xong, giờ tới bước chọn **loss function** và **optimizer**.
 
 Với classification, phổ biến là **binary cross entropy** (gọi tắt BCE) hoặc **categorical cross entropy** (thường gọi ngắn là cross entropy). Nhắc lại vai trò: **loss function đo model dự đoán sai bao nhiêu** so với ground truth. Optimizer phổ biến nhất vẫn là **SGD** và **Adam** — không phải lúc nào cũng tốt nhất, nhưng đưa các bạn đi khá xa. `torch.optim` có hàng chục lựa chọn khác, còn `torch.nn` có cả bộ loss function.
 
+---
+
 ### 🤯 "Logit" là cái gì?
 
 Mình dùng `nn.BCEWithLogitsLoss`, và chữ **logits** làm mình bối rối hồi mới học. Trong thống kê, logit là **log odds** — công thức toán học rắc rối. Nhưng trong **deep learning** nó mang nghĩa khác, đại loại: **lớp đưa vào softmax** — tức lớp cuối cùng, trước khi ra xác suất. Đầu ra của softmax là xác suất cho bài classification, còn đầu vào của nó là logits.
+
+---
 
 ### 🎛️ Loss function: `BCEWithLogitsLoss`
 
@@ -48,6 +52,8 @@ Vì sao không dùng `nn.BCELoss`? Vì `nn.BCELoss` **yêu cầu input đã đi 
 
 Còn `BCEWithLogitsLoss` thì **ổn định số học hơn** — theo tài liệu chính thức, nó kết hợp sigmoid và BCE trong một lớp, tận dụng **log-sum-exp trick** để tăng độ ổn định. Vì vậy mình chọn bản "with logits".
 
+---
+
 ### 🚀 Optimizer: SGD
 
 ```python
@@ -57,6 +63,8 @@ optimizer = torch.optim.SGD(params=model_0.parameters(),
 ```
 
 `params=model_0.parameters()` nói với SGD: "hãy cập nhật các parameter này của model". `lr=0.1` là **learning rate**. Loss function và optimizer sẽ phối hợp trong training loop: SGD cập nhật parameter theo hướng làm loss giảm. Nguyên lý giữ nguyên dù model có 100 layer và hàng triệu parameter.
+
+---
 
 ### 📏 Thêm một evaluation metric: accuracy
 

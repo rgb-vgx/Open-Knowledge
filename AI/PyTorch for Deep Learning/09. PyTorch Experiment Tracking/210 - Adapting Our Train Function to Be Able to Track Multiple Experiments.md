@@ -29,6 +29,8 @@ def train(model, train_dataloader, test_dataloader,
 
 Mỗi lần gọi `train`, ta truyền vào một writer — có thể là writer được tạo programmatic từ `create_writer`.
 
+---
+
 ### 🔀 Bọc phần tracking trong `if writer`
 
 Phần ghi scalar và graph chỉ nên chạy **khi có writer**:
@@ -50,9 +52,13 @@ else:
 
 Nhớ thụt lề cho đúng (mình phải tab lại cho thẳng hàng). Nếu có writer thì track rồi đóng; nếu không thì bỏ qua, training vẫn chạy bình thường.
 
+---
+
 ### 🎯 Ta đã "prime" cho loạt experiment
 
 Giờ ta có thể truyền vào tham số `writer` một kết quả từ `create_writer` — tức đã sẵn sàng dựng một **series of modelling experiments**. Mỗi experiment một writer riêng.
+
+---
 
 ### 🧪 Thử thách nhỏ
 

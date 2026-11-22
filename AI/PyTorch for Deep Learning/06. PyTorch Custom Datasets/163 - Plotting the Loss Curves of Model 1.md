@@ -24,6 +24,8 @@ plot_loss_curves(model_1_results)
 
 Dùng lại đúng hàm `plot_loss_curves` đã viết ở bài 159.
 
+---
+
 ### 👀 Đọc kết quả
 
 Đường cong lần này khá **bất thường**:
@@ -38,6 +40,8 @@ Vậy có thể kết luận gì? Theo mình, model **vừa underfit vừa overf
 
 Chỉ 5 epoch có thể chưa đủ để thấy xu hướng rõ — nên thử train lâu hơn.
 
+---
+
 ### 🔧 Hướng thử tiếp
 
 Nhớ lại phần xử lý overfit/underfit:
@@ -46,6 +50,8 @@ Nhớ lại phần xử lý overfit/underfit:
 * Nếu **overfit**: thêm dữ liệu, đơn giản hóa model, transfer learning, early stopping.
 
 Việc **dễ thử nhất** với hàm `train` hiện có: tăng `num_epochs` lên 20.
+
+---
 
 ### ✅ Tạm kết
 

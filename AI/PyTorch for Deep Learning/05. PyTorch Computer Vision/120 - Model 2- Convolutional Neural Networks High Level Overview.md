@@ -28,6 +28,8 @@ Một CNN gồm:
 
 Giá trị cụ thể của từng layer phụ thuộc bài toán. Code nhìn chung vẫn giống các model trước; khác biệt nằm ở **loại layer** được dùng.
 
+---
+
 ### 🧱 Convolutional block
 
 Đây là khái niệm hay gây lẫn:
@@ -38,11 +40,15 @@ Giá trị cụ thể của từng layer phụ thuộc bài toán. Code nhìn ch
 
 Càng "deep" thì càng nhiều block, và mỗi block có thể chứa nhiều layer — giống xếp Lego.
 
+---
+
 ### 🔗 Vì sao thêm layer lại giúp?
 
 Mỗi layer thực hiện một phép toán trên dữ liệu, layer sau nhận input từ layer trước. Càng nhiều layer, model càng có nhiều cơ hội tìm ra pattern. Đó cũng là nguồn gốc chữ **deep** trong *deep learning*.
 
 Có những mạng tiên tiến dùng input từ layer rất xa (residual connections), nhưng nằm ngoài phạm vi bài này.
+
+---
 
 ### 🌐 CNN Explainer — website nên xem
 
@@ -64,10 +70,14 @@ Và điều kỳ diệu lẫn đáng sợ của deep learning: **mình không ki
 
 Kích thước output thay đổi qua từng layer — đó là xu hướng xuyên suốt, và là lý do phải tính shape cẩn thận.
 
+---
+
 ### 🎯 Bài tập mở rộng
 
 Dành **20 phút** click qua toàn bộ CNN Explainer, đặc biệt phần **"Understanding hyperparameters"**: kéo kernel size, stride, padding và xem output thay đổi. Bài sau mình sẽ code đúng kiến trúc "Tiny VGG" mà website này mô phỏng.
 
+---
+
 ### ✅ Tạm kết
 
-CNN = input → nhiều block (conv + relu + pooling) → output linear. Hiểu được kernel trượt và nén dần dữ liệu là hiểu được 80% ý tưởng. Giờ thì code thôi — bài sau mình dựng nguyên một CNN bằng PyTorch.
+CNN = input → nhiều block (conv + relu + pooling) → output linear. Hiểu được kernel trượt và nén dần dữ liệu là nắm được ý tưởng cốt lõi. Giờ thì code thôi — bài sau mình dựng nguyên một CNN bằng PyTorch.

@@ -48,11 +48,15 @@ for i, sample in enumerate(test_samples):
 * **`c="g"` / `c="r"`** — tô tiêu đề xanh/đỏ tùy dự đoán đúng/sai.
 * **`plt.axis(False)`** — tắt trục cho gọn.
 
+---
+
 ### ✅ Lần đầu: đúng hết
 
 Với seed 42, kết quả khá đẹp: sandal/true sandal, trouser/true trouser… cả 9 ảnh đều đúng. Nhìn ảnh cùng dự đoán trực quan dễ chịu hơn hẳn bảng số.
 
 Nhưng thế chưa đủ hay — cái đáng xem là **khi model sai**.
+
+---
 
 ### ❌ Bỏ seed, tìm ca sai
 
@@ -64,15 +68,21 @@ Thêm vài lần nữa:
 * Dự đoán **pullover**, thật là **coat** — có thể chính nhãn trong dataset cũng có vấn đề.
 * Dự đoán **T-shirt/top**, thật là **shirt** — đúng cặp lớp dễ nhầm nhất.
 
+---
+
 ### 🔍 Dataset cũng có lỗi
 
 Đây là insight lớn: dataset rất lớn thường có **nhãn sai** vì "luật số lớn". Vì vậy khi nhìn dự đoán, đôi khi model sai mà thực ra **nhãn mới sai**. Muốn biết model thực sự tốt hay tệ hơn con số accuracy, phải xem ảnh.
 
 Có khi accuracy báo 88% nhưng nhìn ảnh thấy tệ hơn — và ngược lại. Visualization giúp phát hiện chênh lệch đó.
 
+---
+
 ### 🧠 Model dạy ta về dữ liệu
 
 Cặp `T-shirt/top` và `Shirt` làm cả người lẫn máy lúng túng. Đây là gợi ý: **nhãn có thể cần gộp hoặc định nghĩa lại**. Model không chỉ dự đoán — nó còn phơi ra vấn đề của chính dữ liệu.
+
+---
 
 ### ✅ Tạm kết
 

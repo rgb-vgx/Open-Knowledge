@@ -1,5 +1,5 @@
 ---
-title: 'Code mạng neural nhỏ để xử lý dữ liệu phân loại'
+title: 'Bài 74 — Code mạng neural nhỏ để xử lý dữ liệu phân loại'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 74
@@ -23,6 +23,8 @@ Device-agnostic code đã có. Giờ tới bước hai: **construct a model** b�
 3. **Định nghĩa `forward()`** — mô tả forward computation (forward pass) của model.
 4. **Khởi tạo instance** của class và gửi nó lên **target device**.
 
+---
+
 ### 📐 Bước 2: chọn `in_features` và `out_features`
 
 ```python
@@ -37,6 +39,8 @@ Muốn output một số như `y` (scalar), có thể để `out_features=1` v�
 * Lớp 1: `in_features=2` → `out_features=5`.
 * Lớp 2: `in_features=5` (phải khớp `out_features` lớp trước, nếu không sẽ **shape mismatch**) → `out_features=1`.
 
+---
+
 ### 🧮 Vì sao nâng 2 feature lên 5?
 
 Vì **nhiều hidden neuron hơn thì model có nhiều cơ hội học pattern hơn**. Ban đầu model chỉ có 2 con số để bám vào; nâng lên 5 thì có 5 con số. Các bạn thắc mắc sao không phang luôn 10.000? Vì lợi ích tăng dần rồi chững lại — có ngưỡng trên. Mình dùng **5** cho đơn giản.
@@ -44,6 +48,8 @@ Vì **nhiều hidden neuron hơn thì model có nhiều cơ hội học pattern 
 `5` là con số tùy chọn, có thể là 128, 256… Thông thường người ta dùng **bội số của 8** (5 → 8) vì hiệu quả tính toán trên phần cứng — đây chỉ là rule of thumb, mình không rành phần cứng để giải thích cặn kẽ.
 
 Mỗi lớp `nn.Linear` thực hiện một phép biến đổi tuyến tính trên input rồi nhân với ma trận trọng số để ra `out_features`.
+
+---
 
 ### ⌨️ Viết class
 
@@ -62,6 +68,8 @@ class CircleModelV0(nn.Module):
 ```
 
 Đường đi rất rõ: `x` vào `layer_1` (phép tính tuyến tính), kết quả đổ vào `layer_2`, rồi ra output. Output 1 feature chính là shape ta muốn, khớp với `y`.
+
+---
 
 ### 🚀 Bước 4: khởi tạo và gửi lên device
 

@@ -43,9 +43,13 @@ results_vit = engine.train(
 
 `torch.optim` có rất nhiều optimizer (trong package `torch.optim`), nhưng Adam vẫn là lựa chọn ổn định. Optimizer chỉ cập nhật **~2,300 tham số trainable** — phần còn lại đã pretrained trên ImageNet.
 
+---
+
 ### ⏱️ Thời gian
 
 Khoảng **5–6 giây/epoch**, tức chừng một phút cho 10 epoch — tương đương EffNetB2. Mình dùng Colab Pro với GPU Tesla P100 (16 GB VRAM); bản miễn phí vẫn train được, chỉ chậm hơn.
+
+---
 
 ### 📈 Loss curves
 
@@ -61,6 +65,8 @@ Kết quả:
 * **Train loss hơi cao hơn test loss** — gợi ý rằng train lâu hơn có thể giảm test loss và tăng test accuracy nữa.
 
 Hướng mở rộng đáng thử: train **20 epochs**, hoặc thêm **data augmentation**.
+
+---
 
 ### 📊 So sánh nhanh hai candidate
 

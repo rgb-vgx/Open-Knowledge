@@ -1,5 +1,5 @@
 ---
-title: 'Dự đoán và đánh giá model multiclass bằng decision boundary'
+title: 'Bài 97 — Dự đoán và đánh giá model multiclass bằng decision boundary'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 97
@@ -30,6 +30,8 @@ Dùng `torch.argmax` lẫn `y_pred_probs.argmax(dim=1)` đều cho cùng kết q
 
 Sau ba bước, `y_preds` **cùng format** với test labels — đủ "apples to apples" để so sánh.
 
+---
+
 ### 🗺️ Vẽ decision boundary
 
 ```python
@@ -44,11 +46,15 @@ plot_decision_boundary(model_4, X_blob_test, y_blob_test)
 
 Kết quả rất đẹp: bốn vùng màu được tách gần như hoàn hảo. Chỉ vài điểm nằm sâu trong vùng lớp khác là bị đoán sai — không tránh được vì các cụm chồng lấn (nhớ `cluster_std=1.5`).
 
+---
+
 ### ❓ Thử bỏ non-linearity ra
 
 Mình comment toàn bộ `nn.ReLU()` trong `BlobModel` rồi **retrain**. Kết quả bất ngờ: model **vẫn chạy tốt**! Lý do: **dataset blobs này linearly separable** — các cụm có thể tách bằng đường thẳng, nên không *bắt buộc* phải có non-linearity.
 
 Nhìn kỹ, ranh giới lúc này là các **đường thẳng** hơn (ít uốn). Độ chính xác có thể lệch chút, nhưng không đáng kể vì bản chất dữ liệu tuyến tính.
+
+---
 
 ### 🍕 Vì sao vẫn nên để non-linearity?
 

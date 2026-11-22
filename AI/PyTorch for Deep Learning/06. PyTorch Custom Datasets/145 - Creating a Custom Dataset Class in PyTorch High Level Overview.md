@@ -26,6 +26,8 @@ Ta muốn class của mình làm được:
 
 Đủ ba thứ đó thì class dùng được với `DataLoader` y như `ImageFolder` — vốn cũng cung cấp `.classes` và `.class_to_idx`.
 
+---
+
 ### 🧬 Class nền: `torch.utils.data.Dataset`
 
 Tầng gốc của mọi thứ là **`torch.utils.data.Dataset`** — một **abstract class** đại diện cho dataset, và nhiều dataset dựng sẵn của PyTorch đều kế thừa nó. Docstring của nó nói rõ:
@@ -34,6 +36,8 @@ Tầng gốc của mọi thứ là **`torch.utils.data.Dataset`** — một **ab
 * **Tùy chọn override `__len__`**.
 
 Đây chính là hai phương thức mà custom dataset của ta sẽ cài đặt ở các bài sau.
+
+---
 
 ### 📦 Import những gì cần
 
@@ -53,6 +57,8 @@ from typing import Tuple, Dict, List
 * `transforms` — biến ảnh thành tensor.
 * `Tuple`, `Dict`, `List` từ `typing` — viết type hints khi định nghĩa class/hàm.
 
+---
+
 ### ⚖️ Ưu và nhược của custom dataset
 
 **Ưu điểm:**
@@ -67,6 +73,8 @@ from typing import Tuple, Dict, List
 
 Mình nhấn mạnh: thứ gì đã nằm trong thư viện chuẩn/domain library của PyTorch thì thường đã được test **rất nhiều lần** và đáng tin hơn code tự viết. Nhưng hiểu cách tự dựng vẫn rất quan trọng.
 
+---
+
 ### 🗺️ Kế hoạch cho các bài tiếp theo
 
 Ta sẽ dựng custom dataset theo từng bước:
@@ -74,6 +82,8 @@ Ta sẽ dựng custom dataset theo từng bước:
 * Một **helper function** nhận vào đường dẫn thư mục (như `pizza_steak_sushi`) và trả về **class names dạng list** cùng **dict tên → index**.
 * Một **custom `Dataset` subclass** cài `__getitem__`/`__len__`, dùng helper trên, để nạp ảnh từ file thành tensor.
 * Ghép với `DataLoader` y như với `ImageFolder`.
+
+---
 
 ### ✅ Tạm kết
 

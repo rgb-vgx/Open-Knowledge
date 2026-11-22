@@ -23,6 +23,8 @@ Ta đã đi qua Figure 1 và bốn phương trình. Mảnh ghép cuối trước
 * Transformer encoder gồm các layer xen kẽ **MSA** và **MLP**, mỗi block có **layer norm** phía trước và **residual connection**.
 * Nomenclature: `z_{ℓ-1}` là layer trước, `z_L` là layer cuối (chữ `L` hoa).
 
+---
+
 ### 🔢 Ba biến thể
 
 Table 1 có ba dòng: **ViT-Base**, **ViT-Large**, **ViT-Huge**. Số tham số tăng dần:
@@ -35,11 +37,15 @@ Table 1 có ba dòng: **ViT-Base**, **ViT-Large**, **ViT-Huge**. Số tham số 
 
 Paper ghi: "We base ViT configurations on those used for BERT... The Base and Large models are directly adopted from BERT and we add the larger Huge model." Đây là lý do các con số trông quen thuộc với dân NLP.
 
+---
+
 ### 🔤 Đọc tên model: ViT-L/16
 
 Paper dùng ký hiệu gọn: `ViT-L/16` = **Large** variant với **patch size 16×16**. Vậy khi cắt ảnh thành patch, mỗi patch là **16 × 16 pixel**.
 
 Một điểm lý thuyết đáng nhớ: "the Transformer sequence length is inversely proportional to the square of the patch size. Thus models with smaller patch size are computationally more expensive." Vì `N = H·W / P²` — `P` càng nhỏ thì số patch càng nhiều, sequence càng dài, tính toán càng nặng.
+
+---
 
 ### ⚙️ Các hyperparameter sẽ đưa vào code
 

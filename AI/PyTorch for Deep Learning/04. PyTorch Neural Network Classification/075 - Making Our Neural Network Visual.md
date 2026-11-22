@@ -1,5 +1,5 @@
 ---
-title: 'Nhìn cho rõ bên trong mạng neural bằng hình ảnh'
+title: 'Bài 75 — Nhìn cho rõ bên trong mạng neural bằng hình ảnh'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 75
@@ -29,11 +29,15 @@ Mình chọn dataset dạng vòng tròn (gần giống dữ liệu của mình),
 
 Tương ứng từng lớp một.
 
+---
+
 ### 🤔 Vì sao loss đứng ở 0.5?
 
 Mình để **learning rate 0.01**, chạy cỡ 3000 epoch với activation **linear** (vì mình đang giữ tuyến tính). Test loss đứng quanh **0.5** — tức khoảng **50% loss**.
 
 Nếu loss hoàn hảo là **0** và tệ nhất là **1**, thì 50% nghĩa là gì? Với **binary classification** có số mẫu mỗi lớp bằng nhau, một model **đoán bừa** — như tung đồng xu — cũng ra khoảng 50%. Fit 3000 epoch mà loss không giảm chút nào là dấu hiệu rất đáng nghi. Liệu mạng của mình có bị y vậy không? Mình sẽ kiểm ở các bài sau.
+
+---
 
 ### ✏️ Vẽ tay bằng FigJam
 
@@ -45,11 +49,15 @@ Nếu loss hoàn hảo là **0** và tệ nhất là **1**, thì 50% nghĩa là 
 
 Khi nhìn code dễ tưởng chỉ có input → một hidden layer → output. Nhưng thực chất đây đúng là hình dạng đó — mọi input nối tới mọi hidden unit, rồi tất cả đổ về output.
 
+---
+
 ### 📌 Quy tắc xuyên suốt
 
 Dù dataset gì, các bạn luôn phải "chế" ra input layer khớp với dữ liệu: 10 feature thì 10 input, 4 feature thì 4 input. Muốn mạng mạnh hơn thì tăng **số hidden unit** (tức `out_features` của layer). Ràng buộc duy nhất: **layer sau phải nhận đúng số feature mà layer trước xuất ra** — nếu không sẽ có lỗi shape.
 
 Mình có một output vì `y` chỉ là một giá trị.
+
+---
 
 ### 🎯 Thử thách nhỏ
 

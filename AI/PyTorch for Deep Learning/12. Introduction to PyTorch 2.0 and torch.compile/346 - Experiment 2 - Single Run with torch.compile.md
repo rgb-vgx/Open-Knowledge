@@ -20,6 +20,8 @@ Video trước là baseline chưa compile. Giờ ta chạy **Experiment 2** — 
 
 Tạo model bằng `create_model`, đưa lên device, dùng **CrossEntropyLoss** và **Adam** như cũ. Mọi thứ giữ nguyên để so sánh công bằng — đây là nguyên tắc vàng của thực nghiệm.
 
+---
+
 ### ⏱️ Đo thời gian compile
 
 Mình bấm giờ luôn cú compile, chỉ vì tò mò:
@@ -38,11 +40,15 @@ Kết quả: **0.002 giây**. Nghe như chớp mắt — nhưng đó là vì dò
 
 > Lưu ý: lần đầu compile một model, **epoch đầu có thể lâu hơn** do tối ưu chạy sau hậu trường.
 
+---
+
 ### 🐞 Lỗi 1: "Found two different devices"
 
 Lần chạy đầu, mình nhận lỗi **"Found two different devices"**. Nguyên nhân: `compiled_model` không nằm trên đúng device.
 
 Cách sửa: đảm bảo compiled model ở đúng device (ví dụ gán lại `compiled_model = compiled_model.to(device)`, hoặc compile sau khi đã `.to`). Đây là lỗi debug trực tiếp trong video — và đúng kiểu bạn sẽ gặp khi code thật.
+
+---
 
 ### 🐞 Lỗi 2: accuracy đứng ở 0
 
@@ -58,6 +64,8 @@ Mình đã lỡ train biến **`model`** (bản chưa compile) thay vì **`compi
 
 > Bài học: **luôn kiểm tra kỹ code**. Colab không cảnh báo; dùng IDE có lẽ đã bắt được lỗi này ngay. Sửa lại biến, mình lấy lại hiệu năng bình thường.
 
+---
+
 ### 📊 Kết quả
 
 Sau khi sửa:
@@ -67,6 +75,8 @@ Sau khi sửa:
 * **Test epoch** cũng nhanh hơn một chút.
 
 Với lần train ngắn 5 epoch, mức tăng ~10% nghe nhỏ; nhưng với **train dài hơn**, lợi ích sẽ rõ hơn nhiều.
+
+---
 
 ### 🔍 Chốt lại
 

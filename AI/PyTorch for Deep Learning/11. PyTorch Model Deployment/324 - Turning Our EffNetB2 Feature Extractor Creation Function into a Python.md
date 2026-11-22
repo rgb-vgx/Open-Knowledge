@@ -45,6 +45,8 @@ def create_effnetb2_model(num_classes: int = 3, seed: int = 42):
 
 Chỉ dòng `%%writefile` thay đổi. Thân file giữ nguyên vì hàm đã được viết linh hoạt với tham số `num_classes` — đây chính là lợi ích của việc tham số hoá ngay từ đầu.
 
+---
+
 ### 🔍 Kiểm tra file
 
 ```bash
@@ -52,6 +54,8 @@ ls demos/food_vision_big/
 ```
 
 Phải thấy `model.py` bên cạnh `class_names.txt`, `examples/`, file `.pth`.
+
+---
 
 ### 🎯 Bước tiếp theo: `app.py`
 

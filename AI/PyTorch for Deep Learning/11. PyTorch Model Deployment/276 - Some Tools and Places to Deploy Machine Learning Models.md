@@ -21,6 +21,8 @@ Có rất nhiều nơi để đặt model và nhiều công cụ để đưa nó
 * **ML Kit** của Google — cho thiết bị di động nói chung.
 * **Core ML** của Apple — cho thiết bị Apple. Có package Python **coremltools** để **chuyển model** từ thư viện train bên thứ ba (TensorFlow, PyTorch) sang **ML package** dùng được trên thiết bị Apple.
 
+---
+
 ### ☁️ Cloud
 
 * **Google Cloud Vertex AI**
@@ -28,6 +30,8 @@ Có rất nhiều nơi để đặt model và nhiều công cụ để đưa nó
 * **Hugging Face**
 * **Azure Machine Learning**
 * **Gradient** — điểm cộng rất hợp với Hugging Face, và bật mí luôn: đây là thứ chúng ta sẽ dùng trong phần còn lại của section.
+
+---
 
 ### 🔌 Giải pháp tổng quát dạng API
 
@@ -39,6 +43,8 @@ Có rất nhiều nơi để đặt model và nhiều công cụ để đưa nó
 
 > ⚠️ Cần kiểm chứng: transcript không nêu rõ chi tiết cú pháp/tên lệnh của `torch.jit.script` hay `torch.jit.trace`; phần này chỉ ở mức khái niệm.
 
+---
+
 ### 🌐 Muốn chạy mọi nơi: ONNX
 
 **ONNX** (Open Neural Network Exchange) là **chuẩn mở cho khả năng tương tác của machine learning**. Một trong những ứng dụng hay nhất là **onnxruntime web runtime** để chạy model ngay trong **browser**.
@@ -49,6 +55,8 @@ Có rất nhiều nơi để đặt model và nhiều công cụ để đưa nó
 | Cloud | Vertex AI, SageMaker, Hugging Face, Azure ML, Gradient |
 | API serving | FastAPI, TorchServe |
 | Interoperability | ONNX / onnxruntime (web runtime) |
+
+---
 
 ### 🧭 Chọn cái nào?
 

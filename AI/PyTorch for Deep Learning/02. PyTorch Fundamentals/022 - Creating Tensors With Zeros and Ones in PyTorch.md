@@ -27,6 +27,8 @@ torch.rand(3, 3)
 
 Kết quả tương đương — shape bạn đưa vào quyết định kết quả.
 
+---
+
 ### ⬜ Tensor toàn số 0: `torch.zeros`
 
 ```python
@@ -46,6 +48,8 @@ zeros * random_tensor
 
 Toàn bộ kết quả thành 0. Nghĩa là nếu bạn muốn "tắt" một cột số nào đó trong tensor mục tiêu, bạn tạo một tensor 0 ở cột đó rồi nhân vào. Kết quả là bảo model: "Bỏ qua đám số này đi, tôi đã zero hóa chúng rồi."
 
+---
+
 ### ⬛ Tensor toàn số 1: `torch.ones`
 
 ```python
@@ -54,6 +58,8 @@ ones
 ```
 
 Tạo tensor `3 × 4` toàn số 1.
+
+---
 
 ### 🏷️ Một tham số quan trọng: `dtype`
 
@@ -66,6 +72,8 @@ ones.dtype
 Kết quả: `torch.float32`.
 
 Vì mặc định mọi tensor tạo bằng method của PyTorch đều là **`torch.float32`**, trừ khi bạn chỉ định rõ `dtype`. Đây là kiểu số thực 32-bit — chúng ta sẽ nói kỹ về data type ở bài sau.
+
+---
 
 ### 🎯 Chốt lại
 

@@ -36,6 +36,8 @@ train_dataloader_effnetb2, test_dataloader_effnetb2, class_names = data_setup.cr
 )
 ```
 
+---
+
 ### ✅ Kiểm tra nhanh
 
 * `len(train_dataloader_effnetb2)` → khoảng **15 batch** (32 mẫu/batch).
@@ -43,6 +45,8 @@ train_dataloader_effnetb2, test_dataloader_effnetb2, class_names = data_setup.cr
 * `class_names` → `['pizza', 'steak', 'sushi']`.
 
 Khớp là ổn. Nếu sai tên tham số, Python sẽ báo ngay — cứ "if in doubt, try it out".
+
+---
 
 ### 🎯 Chuyện gì tiếp theo?
 

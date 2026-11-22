@@ -20,6 +20,8 @@ Model 2 đã dựng xong và chạy được với dummy tensor. Còn một câu
 
 Ta đã có data, đã dựng architecture. Bước tiếp theo: chọn **loss function**, **evaluation metrics** và **optimizer**.
 
+---
+
 ### 🎯 Chọn ba thứ
 
 ```python
@@ -35,6 +37,8 @@ optimizer = torch.optim.SGD(params=model_2.parameters(), lr=0.1)
 
 Việc giữ loss/optimizer y hệt các model trước là có chủ đích: thí nghiệm chỉ đổi **kiến trúc**, nhờ vậy kết quả khác biệt đến từ CNN chứ không phải từ loss hay learning rate.
 
+---
+
 ### 🔍 Model 2 có gì để học?
 
 ```python
@@ -43,11 +47,15 @@ model_2.state_dict()
 
 In ra sẽ thấy cực nhiều **weight** và **bias** — vì model này có nhiều layer hơn hẳn. Tất cả đang là số ngẫu nhiên, và toàn bộ việc train là chỉnh chúng để dự đoán đúng ảnh quần áo.
 
-Vì không có convolution layer nào là "đã biết trước phải học gì", chính các weight này sẽ dần mã hóa feature — cạnh, góc, texture — mà model tự khám phá.
+Vì không có convolution layer nào là "đã biết trước phải học gì", chính các weight này sẽ dần mã hóa các feature mà model tự khám phá.
+
+---
 
 ### 💡 Không chắc thì cứ chạy
 
 Điểm mình muốn nhấn: có những thứ **không thể biết trước** bằng suy luận, chỉ biết bằng thí nghiệm. Loss thấp, accuracy cao hay không — phải chạy mới biết. Đó là lý do ta xây dựng quy trình đo đạc cẩn thận từ đầu section: loss, accuracy, thời gian, dictionary kết quả.
+
+---
 
 ### 🎯 Thử thách
 
@@ -65,6 +73,8 @@ for epoch in tqdm(range(epochs)):
 ```
 
 Nếu chạy được, bạn đã tự tay train CNN đầu tiên — phần thưởng xứng đáng cho mấy bài mổ xẻ layer vừa rồi.
+
+---
 
 ### ✅ Tạm kết
 

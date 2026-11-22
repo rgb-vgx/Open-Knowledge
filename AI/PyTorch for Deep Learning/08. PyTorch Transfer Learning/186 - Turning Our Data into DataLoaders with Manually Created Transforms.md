@@ -26,11 +26,15 @@ Ta dùng hàm `create_dataloaders` trong `data_setup.py` — tạo ở section g
 
 Vậy thứ ta cần bàn là **transform**.
 
+---
+
 ### ⚠️ Nguyên tắc quan trọng nhất
 
 Khi dùng pretrained model, **dữ liệu của bạn — kể cả dữ liệu custom — phải được transform giống hệt cách dữ liệu mà model được train đã được transform**.
 
 Nếu không, hiệu năng có thể bị giảm sút.
+
+---
 
 ### 🛠️ Hai cách tạo transform (torchvision 0.13+)
 
@@ -38,6 +42,8 @@ Nếu không, hiệu năng có thể bị giảm sút.
 2. **Automatic** — transform được định nghĩa bởi chính model bạn chọn.
 
 Đây là lý do ta cài torchvision 0.13+. Video này làm cách **manual**.
+
+---
 
 ### 📖 Đọc yêu cầu từ tài liệu
 
@@ -57,6 +63,8 @@ std  = [0.229, 0.224, 0.225]
 
 Chúng được **học ra từ dataset ImageNet**, không phải số ngẫu nhiên.
 
+---
+
 ### 🧱 Tạo `manual_transforms`
 
 ```python
@@ -71,10 +79,14 @@ manual_transforms = transforms.Compose([
 
 Có thể đổi `224x224` thành kích thước khác nếu model của bạn yêu cầu (ví dụ 300x300).
 
+---
+
 ### ⚖️ Ưu và nhược điểm của manual transform
 
 * **Ưu**: linh hoạt vô cùng — bạn thêm gì cũng được: data augmentation, các bước tiền xử lý tùy ý.
 * **Nhược**: nếu bạn transform **sai** so với cách model được train, hiệu năng sẽ giảm.
+
+---
 
 ### 🧵 Tạo dataloader
 
@@ -88,6 +100,8 @@ train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
 ```
 
 Chạy xong, ta có dataloader và `class_names`. Bản thân transform diễn ra **ngầm** — không nhìn thấy trực tiếp, nhưng nó đã áp lên từng ảnh.
+
+---
 
 ### ✅ Chốt lại
 

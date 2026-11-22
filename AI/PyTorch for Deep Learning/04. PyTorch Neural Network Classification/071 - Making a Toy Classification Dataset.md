@@ -1,5 +1,5 @@
 ---
-title: 'Tạo toy dataset hình hai vòng tròn để luyện classification'
+title: 'Bài 71 — Tạo toy dataset hình hai vòng tròn để luyện classification'
 date: '2026-11-23'
 course: 'pytorch-deep-learning'
 lesson: 71
@@ -28,13 +28,15 @@ n_samples = 1000
 
 # Create circles
 X, y = make_circles(n_samples,
-                    noise=0.3,
+                    noise=0.03,
                     random_state=42)
 ```
 
 * Chữ **X** hoa thường để chỉ **matrix of features**, **y** là **labels**.
-* `noise=0.3` thêm chút ngẫu nhiên — mình thấy mức này khá ổn.
+* `noise=0.03` thêm chút ngẫu nhiên — mình thấy mức này khá ổn.
 * `random_state=42` giống như đặt **random seed**, để lần sau chạy ra đúng kết quả đó.
+
+---
 
 ### 🔍 Khám phá dữ liệu: visualize, visualize, visualize
 
@@ -59,6 +61,8 @@ circle_data.head(10)
 
 Cột `X1`, `X2` là hai feature (nhớ zero-indexing: `X[:, 0]` là feature 1, `X[:, 1]` là feature 2), cột `label` là `y`. Nhìn bảng số thì… mình chịu, không thấy pattern gì cả. Đã đến lúc vẽ.
 
+---
+
 ### 📊 Scatter plot: pattern lộ ra
 
 ```python
@@ -71,6 +75,8 @@ plt.scatter(x=X[:, 0],
 ```
 
 Kết quả là hai vòng tròn lồng nhau rõ ràng: một vòng xanh, một vòng đỏ. Bài toán của mình: cho một cặp tọa độ `(x1, x2)`, dự đoán điểm đó là **chấm xanh** hay **chấm đỏ**. Đây chính là lý do chọn `make_circles` — pattern nhìn bằng mắt được, nhưng không thể tách bằng một đường thẳng.
+
+---
 
 ### 🧸 "Toy dataset" là gì?
 

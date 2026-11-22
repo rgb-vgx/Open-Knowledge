@@ -30,6 +30,8 @@ model_1 = TinyVGG(
 
 Lợi thế của việc đã tự viết TinyVGG: giờ chỉ cần gọi class với tham số mới, không phải dựng lại từ đầu.
 
+---
+
 ### 🔥 Train với hàm `train`
 
 ```python
@@ -59,13 +61,19 @@ print(f"Total training time for model_1: {end_time - start_time:.3f} seconds")
 
 Cùng optimizer (`Adam`, `lr=0.001`), cùng loss (`CrossEntropyLoss`), cùng 5 epoch — chỉ đổi dataloader train sang bản **augmented**.
 
+---
+
 ### 📉 Kết quả: augmentation không giúp lần này
 
 Train xong (khoảng **7 giây** trên GPU của mình), kết quả cho thấy **Model 1 kém hơn Model 0** về accuracy trên cả train lẫn test. Điều này có thể đoán trước: loss của Model 0 vốn đã **giảm**, tức chưa overfit — mà augmentation chủ yếu để chống **overfitting**. Khi model đang underfit, thêm augmentation (làm dữ liệu khó hơn) có thể phản tác dụng.
 
+---
+
 ### 💡 Bài học
 
 Không phải cứ thêm kỹ thuật "xịn" là tốt hơn. Phải **chẩn đoán đúng** vấn đề (underfit hay overfit) rồi mới chọn cách xử lý tương ứng.
+
+---
 
 ### ✅ Tạm kết
 

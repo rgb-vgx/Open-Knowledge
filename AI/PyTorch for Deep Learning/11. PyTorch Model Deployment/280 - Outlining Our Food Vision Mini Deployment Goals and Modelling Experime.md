@@ -33,6 +33,8 @@ Mục tiêu chốt lại:
 * **Accuracy ≥ 95%**
 * **≥ 30 FPS**, tức latency khoảng 30 ms
 
+---
+
 ### 🧪 Hai thực nghiệm sẽ chạy
 
 Hai model tốt nhất từ trước đến giờ:
@@ -41,6 +43,8 @@ Hai model tốt nhất từ trước đến giờ:
 2. **ViT (Vision Transformer) feature extractor** — như ở section 08 (PyTorch Paper Replicating).
 
 Cả hai train trên **cùng bộ 20% pizza/steak/sushi**, lấy metrics rồi so sánh, sau đó **deploy model sát mục tiêu nhất**.
+
+---
 
 ### ⚖️ Ưu tiên tốc độ
 
@@ -54,6 +58,8 @@ Và khi phải chọn, mình nghiêng về **speed** vì "a slow app is boring".
 | B | 98% | 2 |
 
 Thì có thể vẫn chọn **A** — chậm quá thì app chán, dù chính xác hơn.
+
+---
 
 ### 🔁 Quy trình
 

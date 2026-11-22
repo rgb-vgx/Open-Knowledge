@@ -25,6 +25,8 @@ Chào các bạn! Video trước ta đã bàn **transfer learning là gì, vì s
 
 Có thể còn vài nơi nữa mình quên, nhưng chừng này là quá đủ để bắt đầu. Section này ta tập trung vào **PyTorch domain libraries**.
 
+---
+
 ### 📦 PyTorch domain libraries gồm gì?
 
 Trong tài liệu PyTorch có các nhánh:
@@ -36,13 +38,17 @@ Trong tài liệu PyTorch có các nhánh:
 
 Ta quan tâm torchvision. Vào mục **Models and pre-trained weights**.
 
-Lúc quay video (tháng 6/2022), bản stable là **0.12**, nhưng khóa dùng bản mới hơn (**0.13+**) vì có API mới. Có thể khi bạn học, nó đã ra khỏi beta.
+Lúc quay video (tháng 6/2022), bản stable là **0.12**, nhưng khóa dùng một bản mới hơn (bản *unstable*) vì có API mới. Có thể khi bạn học, nó đã ra khỏi beta.
+
+---
 
 ### 🏷️ Danh sách model phân loại
 
 Dưới mục **Classification** có rất nhiều kiến trúc: AlexNet, ConvNeXt, DenseNet, EfficientNet (B0, V2...), MobileNet (V3), Swin Transformer, Vision Transformer...
 
 Đừng lo về tên các kiến trúc — chúng chỉ là tên. Điều quan trọng: **tất cả đều truy cập được bằng code PyTorch**.
+
+---
 
 ### 🌐 Các nơi khác
 
@@ -53,6 +59,8 @@ Dưới mục **Classification** có rất nhiều kiến trúc: AlexNet, ConvNe
 
 Mình khuyên: khi **bắt đầu một bài toán ML mới**, hãy ghé một trong những nơi này xem **cái gì đã chạy tốt** — bạn sẽ có một khởi đầu thuận lợi thay vì bắt đầu từ số 0.
 
+---
+
 ### 🎯 Những gì sẽ học trong section
 
 Vì tập trung PyTorch thuần, ta dùng **PyTorch domain libraries**. Nội dung:
@@ -62,6 +70,8 @@ Vì tập trung PyTorch thuần, ta dùng **PyTorch domain libraries**. Nội du
 3. **Customize một pretrained model** cho Food Vision Mini — mục tiêu xuyên suốt khóa: làm model phân loại ảnh tốt nhất có thể, khởi đầu với pizza/steak/sushi.
 4. **Đánh giá** model transfer learning.
 5. **Dự đoán trên dữ liệu custom** của chính bạn.
+
+---
 
 ### ✅ Chốt lại
 

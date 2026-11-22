@@ -34,6 +34,8 @@ train_data = datasets.Food101(
 
 Theo tài liệu torchvision, mỗi lớp có **750 ảnh train**, nhân với 101 lớp cho **75.750** ảnh. Transform ở đây là bản có augmentation vì đang là tập train.
 
+---
+
 ### 📥 Tải tập test
 
 ```python
@@ -49,9 +51,13 @@ Mỗi lớp có **250 ảnh test**, tức **25.250** ảnh. Transform dùng bả
 
 Tổng cộng: **75.750 + 25.250 = 101.000 ảnh**.
 
+---
+
 ### ⏳ Thời gian tải
 
 Với 101.000 ảnh, Colab báo giới hạn khoảng 5 phút cho request tải. Thực tế trên máy mình mất gần **6 phút** để tải, và cell chạy tổng cộng khoảng **7 phút** gồm cả giải nén. `Food101` tự tải file nén rồi giải nén sẵn, không phải làm tay.
+
+---
 
 ### 🏷️ Lấy danh sách tên lớp
 
@@ -68,6 +74,8 @@ Kết quả:
 ```
 
 Trong đó `beignets` là bánh rán kiểu Pháp (bột chiên giòn) — mình phải tra mới biết. Danh sách này sẽ được lưu lại và dùng làm nhãn cho app sau.
+
+---
 
 ### 🧪 Muốn luyện thêm?
 

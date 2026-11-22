@@ -37,6 +37,8 @@ def pred_and_plot_image(
 
 Đây là **bước 1** — nhận đủ: model, đường dẫn ảnh, danh sách class, image size (mặc định 224×224), transform (mặc định `None`), device (mặc định `device` toàn cục).
 
+---
+
 ### 🖼️ Bước 2 — mở ảnh
 
 ```python
@@ -44,6 +46,8 @@ def pred_and_plot_image(
 ```
 
 Dùng **PIL**. Ảnh gốc này sẽ dùng để vẽ ở bước cuối.
+
+---
 
 ### 🎛️ Bước 3 — tạo transform nếu chưa có
 
@@ -63,6 +67,8 @@ Dùng **PIL**. Ảnh gốc này sẽ dùng để vẽ ở bước cuối.
 
 Tham số `transform` cho phép dùng **manual hoặc automatic transform** tùy ý. Nếu không truyền, ta tự tạo một cái theo chuẩn ImageNet.
 
+---
+
 ### 📱 Bước 4 — đưa model lên device
 
 ```python
@@ -70,6 +76,8 @@ Tham số `transform` cho phép dùng **manual hoặc automatic transform** tùy
 ```
 
 Tránh lỗi device mismatch.
+
+---
 
 ### 🧪 Bước 5 — inference mode và eval
 
@@ -81,6 +89,8 @@ Tránh lỗi device mismatch.
 * **`model.eval()`** tắt dropout và các hành vi chỉ dùng khi train.
 * **`torch.inference_mode()`** tắt gradient tracking và các thứ không cần khi inference — giúp chạy nhanh hơn.
 
+---
+
 ### 🔄 Bước 6 — transform và thêm batch dimension
 
 ```python
@@ -88,6 +98,8 @@ Tránh lỗi device mismatch.
 ```
 
 `unsqueeze(dim=0)` **thêm một chiều ở vị trí 0**, biến ảnh `[3, 224, 224]` thành `[1, 3, 224, 224]` — batch size 1. Model luôn cần chiều batch.
+
+---
 
 ### 🔮 Bước 7 — forward pass
 
@@ -97,6 +109,8 @@ Tránh lỗi device mismatch.
 
 Đưa ảnh lên **cùng device** với model trước khi gọi — xử lý luôn vấn đề device ở đây.
 
+---
+
 ### 📊 Bước 8 — logit → xác suất
 
 ```python
@@ -105,6 +119,8 @@ Tránh lỗi device mismatch.
 
 `dim=1` vì chiều class là chiều thứ 1.
 
+---
+
 ### 🏷️ Bước 9 — xác suất → nhãn
 
 ```python
@@ -112,6 +128,8 @@ Tránh lỗi device mismatch.
 ```
 
 Lấy index có xác suất cao nhất — chính là class dự đoán.
+
+---
 
 ### 🎨 Bước 10 — vẽ ảnh
 
@@ -130,9 +148,13 @@ Chú ý:
 * `target_image_pred_probs.max()` lấy **xác suất cao nhất**.
 * `:.3f` làm tròn 3 chữ số thập phân.
 
+---
+
 ### 🐛 Chắc chắn có lỗi...
 
 Mình đoán hàm này sẽ vướng ít nhất một lỗi — và đó là bình thường. Video sau ta chạy thử, tìm và sửa.
+
+---
 
 ### ✅ Chốt lại
 

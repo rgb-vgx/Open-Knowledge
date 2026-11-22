@@ -28,6 +28,8 @@ Neural network gồm rất nhiều **hàm toán học** mà PyTorch chạy ngầ
 
 Để tìm pattern trong dữ liệu, mạng neural lấy một tensor chứa số ngẫu nhiên, thực hiện một **tổ hợp bất kỳ** các phép trên, rồi điều chỉnh số để biểu diễn dữ liệu tốt hơn. Không nhất thiết phải dùng hết — chỉ cần một tổ hợp phù hợp.
 
+---
+
 ### ➕ Cộng và trừ
 
 ```python
@@ -39,6 +41,8 @@ torch.add(tensor, 10)
 ```
 
 Dùng operator `+`/`-` quen thuộc như trong Python. PyTorch cũng có hàm có sẵn như **`torch.add`**.
+
+---
 
 ### ✖️ Nhân
 
@@ -56,11 +60,15 @@ tensor            # tensor([10, 20, 30])
 
 `torch.mul` là tên đầy đủ của `mul` — viết tắt của multiply.
 
+---
+
 ### 🧭 Nên dùng operator hay hàm?
 
 Lời khuyên của mình: với phép cộng, trừ, nhân, chia cơ bản, **cứ dùng operator của Python** (`+`, `-`, `*`, `/`) vì dễ đọc hơn.
 
 Nhưng khi bạn thấy code người khác dùng `torch.mul` hay `torch.add`, cũng đừng ngạc nhiên — chúng tương đương. Và với các phép phức tạp hơn như **matrix multiplication**, thì nên dùng hàm của PyTorch thay vì viết vòng lặp — lý do sẽ rõ ở bài sau.
+
+---
 
 ### 🎯 Chốt lại
 

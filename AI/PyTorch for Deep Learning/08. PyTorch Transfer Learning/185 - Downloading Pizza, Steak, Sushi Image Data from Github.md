@@ -26,6 +26,8 @@ Chào các bạn! Giờ ta lấy dữ liệu. Mình nhận ra lúc clone repo Py
 1. Viết hàm `download_data()` nhận URL và tự làm hết các bước.
 2. Sửa đoạn clone để giữ lại cả `data/` lẫn `going_modular/`.
 
+---
+
 ### 🧱 Setup đường dẫn
 
 ```python
@@ -39,6 +41,8 @@ image_path = data_path / "pizza_steak_sushi"
 ```
 
 Dữ liệu là **một tập con** các class của **Food 101**. Ta khởi đầu nhỏ — đó là lý do có "Food Vision Mini".
+
+---
 
 ### 📥 Tải nếu chưa có
 
@@ -71,6 +75,8 @@ Giải thích các điểm:
 * `zipfile.ZipFile(..., "r")` mở file zip để đọc; `extractall(image_path)` giải nén.
 * Xóa file `.zip` sau khi xong.
 
+---
+
 ### 🖼️ Kiểm tra kết quả
 
 Chạy cell:
@@ -83,6 +89,8 @@ Unzipping pizza, steak, sushi data...
 
 Mở `data/pizza_steak_sushi/` ta thấy ảnh pizza, steak, sushi — có cả một ảnh pizza trông không được ngon mắt lắm, nhưng vẫn là pizza. Làm việc với food vision đúng là thử thách vì... đói.
 
+---
+
 ### 📁 Đường dẫn train/test
 
 ```python
@@ -91,6 +99,8 @@ test_dir = image_path / "test"
 ```
 
 In ra để chắc chắn đúng.
+
+---
 
 ### ✅ Chốt lại
 

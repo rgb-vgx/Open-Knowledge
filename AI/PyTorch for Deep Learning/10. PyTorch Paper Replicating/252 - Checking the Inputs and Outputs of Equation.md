@@ -32,6 +32,8 @@ patched_image_through_msa_block = multihead_self_attention_block(
 
 Ta giữ cấu hình **ViT-Base** với `num_heads=12` và dropout bằng 0. Đây chính là lúc đưa chuỗi patch và position embedding qua hai layer norm và attention.
 
+---
+
 ### 🐛 Lỗi kinh điển: quên `super().__init__()`
 
 Lần chạy đầu, mình gặp ngay:
@@ -41,6 +43,8 @@ AttributeError: cannot assign module before Module.__init__() call
 ```
 
 Nguyên nhân: trong `__init__` của class mình **quên gọi `super().__init__()`**. Khi kế thừa `nn.Module`, phải gọi `super().__init__()` trước khi gán các submodule như `self.layer_norm`. Mình hay quên cái này — nhưng đó chính là chuyện thường ngày của việc code. Thêm vào là chạy ngay.
+
+---
 
 ### 📐 Input và output shape
 
@@ -60,11 +64,15 @@ Output shape of MSA block: torch.Size([1, 197, 768])
 
 Shape **không đổi** `(1, 197, 768)` — điều này hợp lý vì MSA block ánh xạ một chuỗi thành một chuỗi cùng kích thước. Nhưng shape giữ nguyên **không có nghĩa giá trị giữ nguyên**.
 
+---
+
 ### 🔢 Giá trị đã thay đổi
 
 Quan sát tensor output, mọi con số đều bị điều chỉnh so với input. Với mắt người thì đống số này gần như vô nghĩa — nhưng đó **không phải việc của ta** giải mã. Việc của mạng nơ-ron là học một biểu diễn tốt của ảnh.
 
 Và vì các layer vừa khởi tạo với **giá trị ngẫu nhiên**, mô hình chưa học gì cả. Hy vọng là sau khi ảnh đi qua nhiều MSA block và nhiều transformer encoder, nhìn trên nhiều mẫu ảnh, biểu diễn `patched_image_through_msa_block` sẽ trở thành biểu diễn chất lượng cao.
+
+---
 
 ### ✅ Sẵn sàng cho Equation 3
 

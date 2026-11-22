@@ -36,11 +36,15 @@ for i in tqdm(range(num_runs), desc="Non-compiled runs"):
 
 `tqdm` là thư viện thanh tiến trình — một trong những thư viện Python mình thích nhất.
 
+---
+
 ### 🔇 Vì sao tắt progress bar?
 
 Progress bar nằm ở **ba tầng**: trong train step, test step, và hàm `train` tổng. Khi chạy 3 run × 5 epoch, để nguyên sẽ rối màn hình. `disable_progress_bar=True` tắt bar ở **train step** và **test step**, nhưng **giữ** bar tổng ở cấp epoch — mỗi epoch in ra một dòng thay vì ba progress bar chồng nhau.
 
 > Đây là tùy chọn, các bạn có thể để `False` nếu thích xem. Mình thì thích thấy số nhảy lên xuống trên màn hình lắm.
+
+---
 
 ### ⌛ Thời gian chạy
 
@@ -49,6 +53,8 @@ Progress bar nằm ở **ba tầng**: trong train step, test step, và hàm `tra
 Đây cũng là một trong những điều vừa đẹp vừa đau của machine learning: **model train rất lâu**. Đây là model lớn nhất ta train gần như suốt khóa. Thời gian đó đủ để đi dạo một vòng quanh khu nhà — mình đúng là làm vậy.
 
 Kết quả từng epoch trong run đầu: train **~70 giây**, test **~7.5 giây**.
+
+---
 
 ### 🧮 Gộp 3 run thành một DataFrame
 
@@ -67,6 +73,8 @@ non_compile_results_multiple_runs_df = pd.concat(non_compile_results_dfs)
 
 Bảng có **15 hàng** (3 run × 5 epoch). Train epoch time khá ổn định **~70.5 giây**, test **~7.5 giây**.
 
+---
+
 ### 📐 Lấy trung bình
 
 Để có con số đại diện, ta **gom theo index** (số thứ tự epoch) rồi lấy mean:
@@ -80,6 +88,8 @@ non_compile_results_multiple_runs_df = (
 ```
 
 > Lúc đầu mình quên `.mean()` và tự trách "Daniel ơi, làm tốt hơn đi chứ" — thêm vào là có ngay trung bình qua nhiều run cho model không compile.
+
+---
 
 ### 🔜 Thử thách: Experiment 4
 

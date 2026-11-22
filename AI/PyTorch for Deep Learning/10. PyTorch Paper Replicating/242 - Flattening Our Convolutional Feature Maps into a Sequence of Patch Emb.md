@@ -23,6 +23,8 @@ Ta đang có 768 feature map 14×14 — đó chính là **patch embeddings**. Nh
 
 Với số cụ thể: `(1, 768, 14, 14)` → `(1, 196, 768)`.
 
+---
+
 ### 🔧 `nn.Flatten` với start_dim và end_dim
 
 Trước đây mình dùng `Flatten` mà không truyền tham số. Lần này chỉ định rõ hai chiều cần gộp:
@@ -43,6 +45,8 @@ flattened.shape
 
 Kết quả: `(1, 768, 196)`.
 
+---
+
 ### 🔄 Đảo chiều bằng `permute`
 
 Shape đã đúng các con số nhưng **sai thứ tự**: transformer cần `(batch, num_patches, embedding_dim)`. Ta đã dùng `permute` để đổi thứ tự chiều ảnh cho Matplotlib, hoàn toàn có thể làm tương tự:
@@ -52,6 +56,8 @@ flattened.permute(0, 2, 1).shape
 ```
 
 Kết quả: `(1, 196, 768)` — chính là input của transformer encoder.
+
+---
 
 ### 🔗 Ghép toàn bộ luồng
 
@@ -73,6 +79,8 @@ print(f"Sequence shape: {sequence.shape}")               # (1, 196, 768)
 ```
 
 Vậy là từ một ảnh 2D đã ra một **chuỗi 1D của patch embeddings**.
+
+---
 
 ### 🏋️ Thử thách
 

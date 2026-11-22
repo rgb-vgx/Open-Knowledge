@@ -30,6 +30,8 @@ Báo **"Input type ... uint8"** trong khi model cần `float32`. Sửa bằng c�
 custom_image = torchvision.io.read_image(str(custom_image_path)).type(torch.float32)
 ```
 
+---
+
 ### ⚠️ Lỗi 2: shape quá lớn
 
 Ảnh gốc shape khoảng **4032×3024** — quá lớn. Ta resize về 64×64 bằng transform pipeline:
@@ -45,9 +47,13 @@ custom_image_transformed = custom_image_transform(custom_image)
 
 Cũng lưu ý: giá trị pixel ban đầu là **0–255**; model train trên ảnh **0–1** (do `ToTensor()`). Nếu cần, chia cho **255** để đưa về [0, 1] — 255 là giá trị tối đa của kênh màu RGB.
 
+---
+
 ### 👀 Hệ quả của resize
 
 Từ ảnh nét cao (hàng nghìn pixel) xuống 64×64, ảnh trông **rất vỡ hạt**. Mình vẫn nhận ra là pizza (vì mình biết nó là pizza), nhưng model thì khó hơn. Đây là gợi ý cải thiện: có thể tăng kích thước ảnh train (ví dụ **224×224**) — nhìn 224×224 rõ hơn hẳn 64×64.
+
+---
 
 ### ⚠️ Lỗi 3: device mismatch
 
@@ -56,6 +62,8 @@ custom_image_pred = model_1(custom_image_transformed)  # lỗi device
 ```
 
 Báo **"Expected all tensors on the same device"**. Ảnh ở CPU, model ở CUDA — đưa ảnh lên device.
+
+---
 
 ### ⚠️ Lỗi 4: thiếu batch dimension
 
@@ -69,6 +77,8 @@ print(custom_image_transformed_with_batch_size.shape)  # [1, 3, 64, 64]
 
 Khi dự đoán một ảnh đơn, ta luôn phải thêm chiều batch = 1.
 
+---
+
 ### ✅ Ra được kết quả
 
 ```python
@@ -81,6 +91,8 @@ print(custom_image_pred)  # logits cho pizza, steak, sushi
 
 Đây là các **logit** — chưa phải nhãn, chưa phải xác suất. Ta vẫn còn một bước chuyển thành tên lớp, nhưng đã đi được phần khó nhất.
 
+---
+
 ### 💡 Ba lỗi sẽ theo bạn suốt
 
 Bất kể ảnh, audio hay text, ba lỗi luôn rình rập:
@@ -88,6 +100,8 @@ Bất kể ảnh, audio hay text, ba lỗi luôn rình rập:
 1. **Sai dtype** (uint8 vs float32).
 2. **Sai shape** (thiếu chiều batch, sai kích thước).
 3. **Sai device** (CPU vs CUDA).
+
+---
 
 ### ✅ Tạm kết
 

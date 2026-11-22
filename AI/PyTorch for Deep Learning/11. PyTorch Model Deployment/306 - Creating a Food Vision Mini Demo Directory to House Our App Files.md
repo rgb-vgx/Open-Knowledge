@@ -20,6 +20,8 @@ Chào các bạn. Mình đã có bản thiết kế thư mục, giờ dựng nó
 
 Không có lý do gì cao siêu — đây là một trong những cấu trúc **đơn giản nhất** để bắt đầu. Khi demo, app, model phức tạp hơn, các bạn hoàn toàn có thể mở rộng. Nguyên tắc ở giai đoạn này là giữ mọi thứ gọn để **experiment, experiment, experiment**, cái gì chưa ổn thì sửa dần.
 
+---
+
 ### 🧰 Hai thư viện cần dùng
 
 ```python
@@ -29,6 +31,8 @@ from pathlib import Path
 
 * **`shutil`** — thao tác file/directory cấp cao: copy, move, xoá cây thư mục.
 * **`pathlib.Path`** — biểu diễn đường dẫn theo hướng object, ghép path bằng dấu `/`.
+
+---
 
 ### 🧱 Tạo thư mục, có dọn cũ trước
 
@@ -50,6 +54,8 @@ Giải thích tham số của `mkdir`:
 * `exist_ok=True` — không báo lỗi nếu thư mục đã tồn tại.
 
 Lưu ý là `shutil.rmtree` sẽ xoá **toàn bộ** nội dung bên trong, nên chỉ dùng với thư mục do chính notebook này tạo ra. Đây là thói quen tốt khi làm việc lặp đi lặp lại: chạy lại cell là có môi trường mới tinh.
+
+---
 
 ### ✅ Kiểm tra kết quả
 

@@ -20,6 +20,8 @@ Chúc mừng các bạn! Chúng ta đã đi hết một chặng đường dài c
 
 Mở **learnpytorch.io**, vào đúng section đang học → notebook **PyTorch Fundamentals** → kéo xuống **table of contents** ở cuối. Ở đó luôn có mục **Exercises và Extra Curriculum**. Điều này đúng cho **mọi module** trong khóa.
 
+---
+
 ### ✏️ Vài bài tập tiêu biểu
 
 * **Bài 1 — Đọc tài liệu.** Dành khoảng 10 phút đọc tài liệu `torch.Tensor`. Các bạn đã thấy mình tham chiếu docs liên tục; làm quen với nó là kỹ năng bắt buộc.
@@ -33,12 +35,16 @@ torch.rand(7, 7, 3)
 
 Các bài tập đều dựa trên những gì đã học; càng về sau sẽ càng sâu.
 
+---
+
 ### 🗂️ Cách làm bài tập
 
 1. Mở một notebook mới trong Colab (**File → New notebook**).
 2. Đặt tên kiểu `00_pytorch_exercises`.
 3. `import torch` rồi bắt đầu.
 4. Mẹo: để notebook bài tập một bên màn hình, notebook bài giảng một bên — vừa đọc đề vừa code.
+
+---
 
 ### 📋 Template và lời giải
 
@@ -54,12 +60,16 @@ Và trong **extras → solutions** có **lời giải mẫu**.
 
 Lời khuyên của mình: **tự làm trước**, bí lắm mới xem lời giải. Bài tập là "open book" — được dùng lại notebook đã code cùng mình — nhưng hãy thử sức độc lập trước.
 
+---
+
 ### 🎓 Extra curriculum
 
 Cuối mỗi module, ngoài bài tập code còn có **extra curriculum** — thường là **đọc/tài liệu**:
 
 * Dành một giờ đi qua **PyTorch Basics tutorial** — mình khuyên phần **Quickstart**.
 * Xem video **"What's a tensor"** để hiểu sâu hơn cách tensor biểu diễn dữ liệu — tài liệu này đã được nhắc xuyên suốt phần trước.
+
+---
 
 ### 🎯 Chốt lại
 

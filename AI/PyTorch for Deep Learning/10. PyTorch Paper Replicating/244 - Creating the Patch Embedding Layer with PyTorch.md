@@ -25,6 +25,8 @@ Code hiện tại đang rải rác nhiều cell. Giờ gom lại thành **một 
 5. Định nghĩa `forward` — mọi class kế thừa `nn.Module` đều cần.
 6. Đảm bảo output shape đúng thứ tự: `(batch, num_patches, embedding_dim)`.
 
+---
+
 ### 🧩 Code hoàn chỉnh
 
 ```python
@@ -67,12 +69,16 @@ class PatchEmbedding(nn.Module):
         return x_flattened.permute(0, 2, 1)
 ```
 
+---
+
 ### 🔍 Giải thích từng phần
 
 * **`self.patcher`** — Conv2d với `kernel_size = stride = patch_size`, `out_channels = embedding_dim`. Dùng lại đúng những gì đã làm tay.
 * **`self.flatten`** — `start_dim=2, end_dim=3` gộp hai chiều feature map.
 * **Assertion** — kiểm tra ảnh chia hết cho patch size, báo lỗi rõ ràng nếu không. Mismatched shape là lỗi phổ biến nhất, nên chặn sớm.
 * **`permute(0, 2, 1)`** — đưa `(batch, embedding_dim, num_patches)` về `(batch, num_patches, embedding_dim)`.
+
+---
 
 ### ✅ Test module
 
@@ -94,6 +100,8 @@ Output patch embedding sequence shape: torch.Size([1, 196, 768])
 ```
 
 Đúng shape mong muốn. Một layer duy nhất giờ biến ảnh thành sequence patch embedding.
+
+---
 
 ### 🧠 Trích dẫn vui
 

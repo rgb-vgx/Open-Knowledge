@@ -22,6 +22,8 @@ Như đã thấy ở single run: phần lớn thời gian của model compile n�
 
 Nếu compile lại cho mỗi run, ta trả lại cái phí đó mỗi lần. Thực hành tốt: **compile một lần ở đầu**, dùng lại cho nhiều lần train — và cả khi deploy (compile trước, chạy vài mẫu để model "warm up").
 
+---
+
 ### 1️⃣ `create_and_train_non_compiled_model`
 
 Gói trọn Experiment 1 vào một hàm. Nó:
@@ -54,6 +56,8 @@ def create_and_train_non_compiled_model(epochs=num_epochs, disable_progress_bar=
 
 `disable_progress_bar` mặc định `False`, nhưng ta sẽ bật khi chạy multi-run để khỏi quá rối màn hình.
 
+---
+
 ### 2️⃣ `create_compiled_model`
 
 Chỉ tạo và compile model, **không train** — để tái dùng cho nhiều run:
@@ -75,6 +79,8 @@ def create_compiled_model():
 ```
 
 > Lần này nhất định viết đúng `compiled_model` — bài học một chữ cái vẫn còn đó.
+
+---
 
 ### 3️⃣ `train_compiled_model`
 
@@ -100,10 +106,14 @@ def train_compiled_model(model, epochs=num_epochs, disable_progress_bar=False):
 
 **Lưu ý lớn**: hàm này **không** tạo compiled model. Model đã được compile từ trước — ta chỉ train. Mỗi giây PyTorch dành cho việc tối ưu, nếu chỉ phải trả **một lần** thay vì nhiều lần, là đã "lời" rồi.
 
+---
+
 ### 🍲 Vài chuyện bên lề
 
 * "Gravy" chỉ là tiếng lóng kiểu Úc của mình, nghĩa là "tốt, ngon".
 * "If in doubt, write the code. If in doubt, run the code" — câu cửa miệng của mình.
+
+---
 
 ### 🔜 Ghép vào vòng lặp
 

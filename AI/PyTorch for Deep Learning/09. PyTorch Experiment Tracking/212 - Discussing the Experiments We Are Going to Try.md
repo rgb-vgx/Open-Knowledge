@@ -24,6 +24,8 @@ Ta đã bàn nên chạy loại experiment nào. Giờ hãy vạch ra đúng nh�
 
 Dĩ nhiên không giới hạn ở đây, nhưng theo kinh nghiệm của mình, ba yếu tố này thường ảnh hưởng lớn nhất tới kết quả.
 
+---
+
 ### 📈 "To hơn thường tốt hơn" — nhưng có giới hạn
 
 * **Model size** — tính theo số tham số.
@@ -32,9 +34,13 @@ Dĩ nhiên không giới hạn ở đây, nhưng theo kinh nghiệm của mình,
 
 Cái caveat quan trọng: bạn thắc mắc sao không train 10.000 epoch? Ví dụ train 10 epoch được kết quả, 20 epoch có thể tốt hơn, nhưng 100 epoch có thể bắt đầu **giảm**. Chỉ tốt "tới một điểm" thôi. Và để bắt đầu, ta vẫn giữ mọi thứ nhỏ để **chạy nhanh** — không ai muốn ngồi chờ cả ngày. Nhanh để biết cái gì không hiệu quả còn kịp xoay.
 
+---
+
 ### 🧐 Vì sao chọn B0 vs B2?
 
 Trong tài liệu torchvision có rất nhiều model để so. Mình chọn nằm trong họ EfficientNet, và chọn **B0 vs B2** vì B2 có kích thước **xấp xỉ gấp đôi** B0 (không đúng gấp đôi nhưng gần). Có thể chọn B3, B4, B5... nhưng nhớ mục tiêu **Food Vision Mini**: model không quá lớn để chạy được trên **website hoặc mobile**. Người ta chụp ảnh đồ ăn bằng điện thoại, nên model không được có số tham số "khủng". Ví dụ một model lớn cỡ 600 triệu tham số sẽ khó nhét vừa điện thoại, so với **~5 triệu** của B0 và **~9 triệu** của B2.
+
+---
 
 ### 📋 Bảng tám experiment
 
@@ -52,6 +58,8 @@ Trong tài liệu torchvision có rất nhiều model để so. Mình chọn n�
 | 8 | EffNetB2 | 20% | 10 |
 
 Ta bắt đầu từ experiment đã chạy (B0, 10%, 5 epoch), rồi tăng dần: đổi model, đổi số epoch, rồi tới experiment 8 là **gấp đôi dữ liệu, gấp đôi model size, gấp đôi epoch** so với experiment 1. Cứ thế scale lên từng bước.
+
+---
 
 ### 🤔 Bạn đoán cái nào thắng?
 

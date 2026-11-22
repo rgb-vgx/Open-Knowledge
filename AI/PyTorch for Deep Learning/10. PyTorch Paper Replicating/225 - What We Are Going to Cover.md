@@ -30,6 +30,8 @@ Mạng neural rất tùy biến, nên mình sẽ thay kiến trúc gốc bằng 
 
 Gặp từ lạ như "GELU non-linearity" thì cứ tra tiếp — kiểu lần theo dấu vết. Không cần hiểu hết ngay, cứ tách nhỏ từng bước là hiểu được.
 
+---
+
 ### 🛠️ Các bước của section
 
 1. **Setup** — không viết lại code cũ. Mình đã có cả đống code tái sử dụng ở các section trước, chỉ cần import và chạy.
@@ -37,6 +39,8 @@ Gặp từ lạ như "GELU non-linearity" thì cứ tra tiếp — kiểu lần 
 3. **Replicate ViT** cho bài toán Food Vision Mini — tự tay dựng lại kiến trúc state of the art.
 4. **Train ViT tự dựng** trên data của mình.
 5. **So sánh**: ViT train from scratch bằng data riêng liệu có tốt bằng **feature extraction** với một ViT **pretrained** không? Đây chính là **transfer learning** đã học ở section 6.
+
+---
 
 ### 👨‍🍳 Tinh thần của section
 

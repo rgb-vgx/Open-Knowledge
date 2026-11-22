@@ -26,6 +26,8 @@ Ví dụ rõ hơn là **Tesla autopilot**: xe đang chạy và model phát hiệ
 
 Các ví dụ khác: tính năng nhận diện văn bản, chọn chủ thể trong ảnh trên thiết bị Apple và nhiều điện thoại khác — chờ ảnh lên cloud rồi về sẽ mất vài giây, trải nghiệm không chấp nhận được.
 
+---
+
 ### ☁️ Vì sao vẫn cần cloud?
 
 Cloud cho bạn **tài nguyên nhiều hơn hẳn** thiết bị: Google Cloud, AWS, Hugging Face, Azure Machine Learning… gần như **compute vô hạn**. Model lớn không vừa thiết bị có thể xử lý trên cloud rồi trả dự đoán về.
@@ -41,6 +43,8 @@ Cloud cho bạn **tài nguyên nhiều hơn hẳn** thiết bị: Google Cloud, 
 
 Tesla là ví dụ kinh điển: **inference** chạy on-device để đảm bảo an toàn và tốc độ; còn **training** chạy trên cloud để có model lớn hơn, nhiều compute và storage hơn. Hai bên mix-and-match tùy mục đích.
 
+---
+
 ### ⚖️ Ưu và nhược điểm của từng lựa chọn
 
 **On-device / edge**
@@ -52,6 +56,8 @@ Tesla là ví dụ kinh điển: **inference** chạy on-device để đảm b�
 
 * **Pro:** gần như vô hạn compute, co giãn khi cần; **deploy một model dùng khắp nơi qua API**; dễ tích hợp vào **cloud ecosystem** sẵn có của công ty/app.
 * **Con:** **chi phí có thể vượt kiểm soát** nếu không đặt giới hạn scaling (app viral chạy 1000 máy, mỗi máy $10/giờ thì rất tốn); dự đoán **chậm hơn do network latency**; dữ liệu phải rời thiết bị nên có thể **lo ngại quyền riêng tư**.
+
+---
 
 ### 🔌 API — cách cloud phục vụ nhiều nơi
 

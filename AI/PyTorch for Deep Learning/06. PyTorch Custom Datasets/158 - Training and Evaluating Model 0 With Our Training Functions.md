@@ -25,6 +25,8 @@ torch.cuda.manual_seed(42)
 
 Mình lưu ý một điều: seed ở đây để **mang tính giáo dục** — giúp số liệu trên máy mình và máy các bạn gần giống nhau. Trong thực tế người ta **thường không** cố định seed, vì mong model hoạt động ổn định **bất kể** seed.
 
+---
+
 ### 🏗️ Tạo model, loss, optimizer
 
 ```python
@@ -40,6 +42,8 @@ optimizer = torch.optim.Adam(params=model_0.parameters(), lr=0.001)
 
 * **`CrossEntropyLoss`** — loss chuẩn cho **multiclass classification**.
 * **`Adam`** với `lr=0.001` — chính là **learning rate mặc định** của Adam (`10^-3`). Nhiều optimizer trong PyTorch có default tốt, dùng được cho nhiều bài toán.
+
+---
 
 ### ⏱️ Train có bấm giờ
 
@@ -63,6 +67,8 @@ print(f"Total training time: {end_time - start_time:.3f} seconds")
 
 Lúc chạy, mình gõ nhầm thành `train_data` thay vì `train_dataloader_simple` và bị lỗi — sửa lại là chạy được, progress bar hiện lên. `epochs=5` để thí nghiệm **nhanh**; sau này có thể tăng lên 10, 20.
 
+---
+
 ### 📉 Đọc kết quả — con số chưa nói lên nhiều
 
 Sau 5 epoch:
@@ -71,6 +77,8 @@ Sau 5 epoch:
 * **Test accuracy**: khoảng **50%**.
 
 Nghe có vẻ thấp — nhưng với **3 lớp**, đoán mò ngẫu nhiên đã đạt ~**33%** (ví dụ luôn đoán pizza). Vậy model chỉ **hơn mức đoán mò không đáng kể**. Con số này có thể cao hơn nếu train lâu hơn, nhưng rõ ràng còn nhiều dư địa để cải thiện.
+
+---
 
 ### 🔧 Hướng cải thiện (từ section "improving a model")
 
@@ -81,6 +89,8 @@ Nghe có vẻ thấp — nhưng với **3 lớp**, đoán mò ngẫu nhiên đã
 * **Đổi learning rate**, **đổi loss function** (cross entropy đã khá tốt cho multiclass).
 
 Ba hướng đầu dễ thử nhanh nhất.
+
+---
 
 ### ✅ Tạm kết
 
