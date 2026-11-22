@@ -95,7 +95,7 @@ Thay vì `4 x 2`, `stack` cho `2 x 2 x 2` — một chiều mới bao lấy cả
 chunks = torch.chunk(original_tensor, 3, dim=0)   # 3 phần, mỗi phần 4 phần tử
 ```
 
-Nếu truyền số không chia hết như `5`, `chunk` tự tìm kích thước tối ưu — với 12 phần tử nó chọn `4`.
+Nếu truyền số không chia hết như `5`, `chunk` tự chọn kích thước phần — với 12 phần tử và `chunks=5`, nó trả **4 phần**, mỗi phần **3 phần tử** (có thể trả ít hơn số chunk yêu cầu).
 
 **`torch.split`** cho phép chia **không đều**:
 

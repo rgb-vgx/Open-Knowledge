@@ -49,25 +49,27 @@ Hàm loss:
 loss = -Σ_j y_ij * log(y_hat_ij)
 ```
 
-Với `y_hat` tính bằng **softmax** ở output layer (chính là softmax đã học). Kết quả là **xác suất từng lớp** (cộng lại bằng `1`), ví dụ `20% / 30% / 50%`. CCE cho biết **xác suất của cả các lớp còn lại** — điểm khác biệt cốt lõi với bản sparse.
+Với `y_hat` tính bằng **softmax** ở output layer (chính là softmax đã học). Kết quả là **xác suất từng lớp** (cộng lại bằng `1`), ví dụ `20% / 30% / 50%`. Vector xác suất này là output chung của cả CCE lẫn sparse CCE; hai bản chỉ khác định dạng nhãn.
 
 ### 3️⃣ Sparse Categorical Cross Entropy
 
-Cũng cho **multi-class**, công thức giống hệt CCE, nhưng khác ở cách biểu diễn nhãn: **không cần one-hot**. Nhãn là **chỉ số lớp** (index). Output cuối cùng chỉ trả **index của lớp có xác suất cao nhất**, không liệt kê xác suất các lớp khác.
+Cũng cho **multi-class**, công thức loss giống hệt CCE, nhưng khác ở cách biểu diễn nhãn: **không cần one-hot**. Nhãn là **chỉ số lớp** (index `0, 1, 2, ...`). Output của model vẫn là **vector xác suất** như CCE — sparse chỉ đổi định dạng nhãn, không đổi output.
 
 ```text
 CCE    : nhãn one-hot, output đầy đủ xác suất các lớp
-Sparse : nhãn là index, output chỉ lớp thắng
+Sparse : nhãn là index, output vẫn đầy đủ xác suất các lớp
 ```
 
-**Nhược điểm của sparse:** mất thông tin về **xác suất các lớp khác**. Bù lại nó gọn hơn khi số lớp nhiều.
+**Ưu điểm của sparse:** nhãn gọn hơn, tiết kiệm bộ nhớ khi số lớp nhiều. Nhược điểm: không dùng được khi nhãn đã ở dạng one-hot.
 
 ---
 
 ### 🧭 Chọn loại nào
 
 * **Binary classification** → **binary cross entropy**.
-* **Multi-class, cần xác suất mọi lớp** → **categorical cross entropy**.
-* **Multi-class, chỉ cần một nhãn** → **sparse categorical cross entropy**.
+* **Multi-class, nhãn đã one-hot** → **categorical cross entropy**.
+* **Multi-class, nhãn là index** → **sparse categorical cross entropy**.
 
 Ba loại này sẽ xuất hiện lại khi vào phần thực hành. Bài sau mình sẽ ghép **activation function ở output** với **loss function** cho từng loại bài toán. Hẹn gặp lại!
+
+> ⚠️ Cần kiểm chứng: transcript gốc mô tả sparse CCE chỉ trả về index và "mất xác suất các lớp khác"; theo tài liệu TensorFlow, `SparseCategoricalCrossentropy` dùng cùng output xác suất như CCE, chỉ nhận nhãn là số nguyên thay vì one-hot.

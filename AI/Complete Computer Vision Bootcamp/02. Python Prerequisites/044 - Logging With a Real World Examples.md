@@ -1,5 +1,5 @@
 ---
-title: 'Bài 44 — Logging trong ứng dụng thực tế: máy tính bốn phép'
+title: 'Bài 044 — Logging trong ứng dụng thực tế: máy tính bốn phép'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 44
@@ -40,6 +40,8 @@ logging.basicConfig(
 
 Cách này tương đương dùng `filename=` nhưng linh hoạt hơn: muốn thêm nơi nhận (ví dụ gửi lên server log) chỉ cần thêm handler vào list.
 
+---
+
 ### 🎯 Logger theo tên module
 
 ```python
@@ -47,6 +49,8 @@ logger = logging.getLogger("arithmetic_app")
 ```
 
 Toàn bộ log của module này sẽ mang nhãn `arithmetic_app`, giúp lọc khi đọc file.
+
+---
 
 ### ➕ Các hàm tính toán có log
 
@@ -71,6 +75,8 @@ def multiply(a, b):
 
 Mỗi hàm ghi lại phép tính vừa thực hiện. Khi có bug số học, mở log là thấy ngay input và output.
 
+---
+
 ### ➗ Hàm chia có xử lý lỗi
 
 ```python
@@ -85,6 +91,8 @@ def divide(a, b):
 ```
 
 Khi `b = 0`, `logger.error` ghi lỗi vào file thay vì để chương trình sập với traceback khó hiểu. Đây là chỗ logging và exception handling gặp nhau.
+
+---
 
 ### ▶️ Chạy thử
 
@@ -108,6 +116,8 @@ File `app1.log` sẽ có dạng:
 
 Nhìn là biết module nào, phép gì, kết quả bao nhiêu, lỗi ở đâu.
 
+---
+
 ### 🐞 Bài học debug từ chính video
 
 Trong lúc viết, giảng viên gặp hai lỗi — đều đáng nhớ:
@@ -116,6 +126,8 @@ Trong lúc viết, giảng viên gặp hai lỗi — đều đáng nhớ:
 2. **Thiếu `return result`** trong hàm `add` → hàm trả `None` dù đã log đúng.
 
 Giảng viên nhấn mạnh: gặp lỗi cứ bình tĩnh đọc thông báo và sửa; **debug là kỹ năng quan trọng**, không có gì phải ngại.
+
+---
 
 ### 🧭 Tổng kết
 

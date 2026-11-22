@@ -1,5 +1,5 @@
 ---
-title: 'Bài 33 — Nạp chồng toán tử (operator overloading) trong Python'
+title: 'Bài 033 — Nạp chồng toán tử (operator overloading) trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 33
@@ -30,6 +30,8 @@ tags: []
 
 Mỗi method nhận `self` và `other` (object bên phải toán tử), rồi trả về kết quả theo cách bạn muốn.
 
+---
+
 ### 🧮 Class `Vector` với `__init__`
 
 ```python
@@ -41,6 +43,8 @@ class Vector:
 
 Mỗi vector có hai toạ độ `x`, `y`. Python mặc định không biết "cộng hai vector" là gì — ta phải tự định nghĩa.
 
+---
+
 ### ➕ `__add__` — cộng hai vector theo từng toạ độ
 
 ```python
@@ -49,6 +53,8 @@ Mỗi vector có hai toạ độ `x`, `y`. Python mặc định không biết "c
 ```
 
 `other` chính là vector bên phải. Kết quả là vector mới với `x` cộng `x`, `y` cộng `y`.
+
+---
 
 ### ➖ `__sub__` và ✖️ `__mul__`
 
@@ -68,6 +74,8 @@ Nhân với một số vô hướng:
 
 Ở đây `other` là một **số** (scalar), nên nhân thẳng vào từng toạ độ.
 
+---
+
 ### ⚖️ `__eq__` — so sánh hai object
 
 Mặc định `==` giữa hai object chỉ so sánh danh tính. Muốn so sánh theo giá trị:
@@ -79,12 +87,16 @@ Mặc định `==` giữa hai object chỉ so sánh danh tính. Muốn so sánh 
 
 Kết quả là `True`/`False` dựa trên việc cả hai toạ độ có bằng nhau không.
 
+---
+
 ### 🖨️ `__repr__` để in cho dễ đọc
 
 ```python
     def __repr__(self):
         return f"Vector({self.x}, {self.y})"
 ```
+
+---
 
 ### 🧪 Chạy thử toàn bộ
 
@@ -104,11 +116,15 @@ print(v1 == v2)    # False
 
 Đây chính là ý nghĩa của operator overloading: bạn tự định nghĩa phép toán cho kiểu dữ liệu **không có sẵn** trong Python, theo đúng logic của bài toán.
 
+---
+
 ### 🧭 Vì sao nên dùng
 
 * Code đọc tự nhiên như toán học: `v1 + v2` thay vì `v1.add(v2)`.
 * Toàn quyền quyết định ngữ nghĩa toán tử theo nhu cầu ứng dụng.
 * Kết hợp ăn ý với `__repr__` để debug dễ dàng.
+
+---
 
 ### 🏋️ Bài tập giảng viên gợi ý
 

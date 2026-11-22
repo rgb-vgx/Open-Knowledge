@@ -1,5 +1,5 @@
 ---
-title: 'Bài 35 — Iterator trong Python'
+title: 'Bài 035 — Iterator trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 35
@@ -29,6 +29,8 @@ for i in my_list:
 
 Kết quả in ra 1 tới 6. `type(my_list)` cho `list`, và `print(my_list)` hiện toàn bộ phần tử — vì list là collection lưu sẵn mọi thứ.
 
+---
+
 ### 🔁 Tạo iterator bằng `iter()`
 
 ```python
@@ -40,6 +42,8 @@ print(iterator)         # <list_iterator object at 0x...>
 ```
 
 Khác biệt rõ rệt: `print(iterator)` **không** hiện các phần tử. Iterator chỉ là "con trỏ" tới vị trí hiện tại trong collection, không phải bản sao dữ liệu.
+
+---
 
 ### ⏳ Lazy loading và `next()`
 
@@ -61,6 +65,8 @@ StopIteration
 
 `StopIteration` là exception báo hiệu **đã hết phần tử**.
 
+---
+
 ### 🛡️ Bắt `StopIteration` bằng try/except
 
 Để duyệt an toàn đến hết, bọc `next()` trong `try`/`except`:
@@ -73,6 +79,8 @@ except StopIteration:
 ```
 
 Khi iterator cạn, chương trình in thông báo thay vì sập. Đây chính là cơ chế bên dưới của vòng `for`: nó gọi `next()` liên tục và tự dừng khi gặp `StopIteration`.
+
+---
 
 ### 🔤 Iterator trên string
 
@@ -88,11 +96,15 @@ print(next(string_iterator))   # e
 
 Mỗi lần `next()` nhả ra một ký tự.
 
+---
+
 ### 🧠 Lợi ích: vòng lặp hiệu quả và quản lý bộ nhớ
 
 * **Không nạp sẵn toàn bộ** dữ liệu: iterator chỉ giữ vị trí hiện tại, nên tiết kiệm bộ nhớ với collection lớn.
 * **Không phơi cấu trúc** bên trong: người dùng chỉ cần gọi `next()`, không cần biết list hay cấu trúc phức tạp.
 * **Duyệt tuần tự một chiều**: mỗi phần tử đi qua đúng một lần — đúng với tư duy xử lý dữ liệu kiểu pipeline.
+
+---
 
 ### 📊 Tóm tắt nhanh
 

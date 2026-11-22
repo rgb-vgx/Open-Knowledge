@@ -75,7 +75,7 @@ class DoubleConv(nn.Module):
 **U-Net** ghép các khối theo mẫu channel:
 
 ```text
-encoder: 1→64 → 64→128 → 128→256 → 256→512
+encoder: 3→64 → 64→128 → 128→256 → 256→512
 bottleneck: 512→1024
 decoder: 1024→512 → 512→256 → 256→128 → 128→64
 out: Conv2d(64, num_classes, kernel_size=1)

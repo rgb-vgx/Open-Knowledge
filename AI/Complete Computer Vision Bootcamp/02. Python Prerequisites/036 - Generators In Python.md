@@ -1,5 +1,5 @@
 ---
-title: 'Bài 36 — Generator trong Python'
+title: 'Bài 036 — Generator trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 36
@@ -28,6 +28,8 @@ def square(n):
 
 Gọi `square(3)` chỉ trả về **0** — vì `return` thoát khỏi hàm ngay lần lặp đầu tiên, không bao giờ chạm tới các phần tử sau. Muốn trả về cả dãy, phải đổi `return` thành `yield`.
 
+---
+
 ### ✨ `yield` biến hàm thành generator
 
 ```python
@@ -43,6 +45,8 @@ print(square(3))   # <generator object square at 0x...>
 ```
 
 `yield` đóng vai trò như một "điểm dừng": mỗi lần generator được hỏi giá trị, nó chạy tới `yield`, trả giá trị đó ra, **lưu lại trạng thái** (biến cục bộ, vị trí vòng lặp) rồi tạm dừng. Lần sau gọi tiếp, nó chạy tiếp từ đúng chỗ đã dừng.
+
+---
 
 ### 🔁 Duyệt generator bằng `for`
 
@@ -61,6 +65,8 @@ Kết quả:
 
 Đúng như mong đợi: 0², 1², 2². Mỗi giá trị được sinh ra khi vòng `for` cần, không sinh sẵn cả loạt.
 
+---
+
 ### ➡️ Duyệt generator bằng `next()`
 
 Generator cũng là iterator, nên `next()` dùng được:
@@ -75,6 +81,8 @@ print(next(a))   # StopIteration
 ```
 
 Gọi quá số phần tử sẽ nhận `StopIteration` — đúng hành vi chuẩn của iterator.
+
+---
 
 ### 📚 Nhiều `yield` trong một hàm
 
@@ -98,6 +106,8 @@ print(next(gen))   # StopIteration
 
 Hoặc gọn hơn bằng vòng `for val in my_generator(): print(val)` → in ra 1, 2, 3.
 
+---
+
 ### 📂 Ứng dụng thực tế: đọc file lớn
 
 Generator đặc biệt hữu ích khi đọc file lớn — xử lý **từng dòng một** mà không nạp cả file vào bộ nhớ:
@@ -119,6 +129,8 @@ for line in read_large_file(file_path):
 ```
 
 Với file hàng trăm MB, cách này chỉ giữ một dòng trong bộ nhớ tại mỗi thời điểm. Toàn bộ file không bao giờ bị nạp một lần.
+
+---
 
 ### ⚖️ Iterator và generator khác nhau thế nào?
 

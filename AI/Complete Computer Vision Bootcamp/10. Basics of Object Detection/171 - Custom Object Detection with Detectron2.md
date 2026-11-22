@@ -23,7 +23,7 @@ Chạy trên Colab với **GPU** (cần cho training). Cài Detectron2, kiểm t
 
 Mình dùng bộ **hard hat workers** trên Roboflow, gồm **3 class**: `person`, `head`, `helmet`. Dataset đã gán nhãn sẵn; mình tải định dạng **COCO** (file JSON annotation), upload ZIP lên Google Drive, mount Drive và giải nén.
 
-Annotation JSON chứa các trường như **image ID**, **category ID** và **bounding box** cho từng object.
+Annotation JSON chứa các trường như **image ID**, **category ID** và **bounding box** cho từng object. Metadata có **4 category**, nhưng chỉ **3 class** có mẫu (`person`, `head`, `helmet`); category `workers` không có instance nào.
 
 ### 🗂️ Đăng ký dataset
 

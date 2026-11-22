@@ -80,7 +80,7 @@ Duyệt list thì vẫn dùng `for`: `for number in numbers` in lần lượt t�
 
 Đặt vấn đề: mình muốn bình phương mọi số trong `range(10)`. Cách thường là tạo list rỗng, chạy `for x in range(10)`, rồi `append(x * x)` — mất 3-4 dòng. Kết quả được `0, 1, 4, 9, 16, 25, 36, 49, 64, 81`.
 
-**List comprehension** gói gọn tất cả trong **một dòng**, ngay bên trong cặp ngoặc vuông, không cần tạo list phụ nên cũng đỡ tốn bộ nhớ.
+**List comprehension** gói gọn tất cả trong **một dòng**, ngay bên trong cặp ngoặc vuông, không cần tạo list rỗng rồi `append` từng phần tử. Theo lời giảng viên, cách này cũng đỡ tốn bộ nhớ và chạy nhanh hơn.
 
 Cú pháp cơ bản:
 

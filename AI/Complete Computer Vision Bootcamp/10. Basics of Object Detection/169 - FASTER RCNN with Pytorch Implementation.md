@@ -43,7 +43,7 @@ model.eval()
 
 * `box_score_thresh=0.7` — chỉ giữ detection có confidence **≥ 0.7**.
 * `model.eval()` — bắt buộc khi inference (tắt dropout/batchnorm ở chế độ train).
-* `weights.meta["categories"]` trả về **tên class** của COCO. COCO có **90 class** cộng **1 background** = **91** mục.
+* `weights.meta["categories"]` trả về **tên class** của COCO: list có **91** phần tử, index 0 là background, các index 1–90 theo COCO category id (trong đó có một số mục `N/A`). COCO detection thực tế có **80 class** object.
 
 Lưu ý: ResNet-50 nghĩa là 50 layer, nên **load model khá lâu**.
 

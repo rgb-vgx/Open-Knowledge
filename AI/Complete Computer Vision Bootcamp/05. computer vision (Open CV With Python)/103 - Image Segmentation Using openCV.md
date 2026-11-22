@@ -27,6 +27,8 @@ Có nhiều biến thể:
 * **Semantic segmentation** — phân loại **từng pixel** vào một lớp (ví dụ não, vùng giữa, nền trong ảnh MRI; hay đường, vỉa hè, cây cối, bầu trời trong ảnh lái xe tự hành). Mỗi lớp có một class ID riêng, nhờ đó xe có thể được lệnh "chỉ chạy trên vùng đường màu cam".
 * Segmentation cũng xuất hiện trong thuật toán **selective search** của họ **R-CNN** — nó tìm các vùng có khả năng chứa vật thể rồi đưa cho CNN phân loại.
 
+---
+
 ### 📊 Kỹ thuật 1 — Thresholding
 
 **Simple thresholding** áp một ngưỡng toàn cục, ví dụ **127**, lên toàn ảnh. Pixel nào trên ngưỡng thành 255 (hoặc ngược lại tùy kiểu), dưới ngưỡng thành 0. Đây là cách segmentation đơn giản nhất.
@@ -56,6 +58,8 @@ adaptive_gaussian = cv2.adaptiveThreshold(
 
 Hai tham số cuối là **blockSize = 11** và **C = 9**. C dùng để tinh chỉnh ngưỡng: cộng thêm hoặc bớt đi để đổi kết quả mà không cần đổi blockSize. Khi so sánh trên ảnh nét chữ viết tay, threshold đơn giản để lọt nhiễu (vết mực của trang phía sau), adaptive mean còn thấy vết mờ, còn adaptive Gaussian sạch nhất; tăng **C** lên **15** cho kết quả còn sạch hơn nữa.
 
+---
+
 ### 🎨 Kỹ thuật 2 — K-means clustering
 
 **K-means** là thuật toán học máy dạng clustering. Với ảnh xám, mình coi mỗi pixel là một điểm dữ liệu có cường độ; với ảnh màu, mỗi pixel là một vector **RGB** ba chiều. K-means khởi tạo ngẫu nhiên **K** tâm cụm, gán mỗi pixel vào cụm gần nhất, rồi lặp lại tới khi hội tụ.
@@ -79,6 +83,8 @@ Giải thích các tham số:
 
 Sau khi có `labels` và `centers`, mình ép `centers` về `np.uint8`, dùng `centers[labels.flatten()]` để tạo lại ảnh đã gán màu theo cụm, rồi `reshape` về kích thước ảnh gốc. Với `K = 3`, ảnh được gom thành ba nhóm màu — trong đó một nhóm chính là nền trắng bao quanh các hình.
 
+---
+
 ### 🌊 Kỹ thuật 3 — Watershed algorithm
 
 **Watershed** coi ảnh xám như một **bề mặt địa hình (topographical surface)**: pixel sáng là đỉnh núi, pixel tối là thung lũng, gradient là sườn dốc. Thuật toán tách các vật thể chồng lấn bằng cách tìm **watershed line** — đường ranh giới giữa các vùng.
@@ -86,6 +92,8 @@ Sau khi có `labels` và `centers`, mình ép `centers` về `np.uint8`, dùng `
 Cách hình dung: mỗi **local minima** (điểm thấp nhất của thung lũng) là một **seed point**. Mình "xả nước" đồng thời từ các seed này vào các **catchment basin**. Khi nước từ hai vùng gặp nhau, chỗ gặp tạo thành **watershed line** — và đó chính là biên giữa hai vật thể.
 
 Điều hay là watershed gán **nhãn (label)** cho từng vùng: mỗi catchment basin nhận một giá trị nguyên riêng, còn các pixel trên watershed line được gán **-1**. Nhờ vậy mình đếm được số vật thể và tách được từng instance — điều mà thresholding không làm được, và K-means cũng không tự gán nhãn.
+
+---
 
 ### 🪙 Cài đặt watershed trên ảnh đồng xu
 

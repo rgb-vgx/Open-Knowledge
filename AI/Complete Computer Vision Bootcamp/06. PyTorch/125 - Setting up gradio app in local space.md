@@ -27,6 +27,8 @@ conda activate gradio_app_temp1
 
 Tác giả chọn **Python 3.11** vì thấy đây là bản ổn định nhất; bạn có thể dùng 3.10 hoặc 3.12 tùy nhu cầu.
 
+---
+
 ### 📄 Cài Gradio qua requirements.txt
 
 Tạo thư mục dự án `gradio_app_one`, bên trong tạo `requirements.txt`:
@@ -48,6 +50,8 @@ python -c "import gradio"
 ```
 
 Không lỗi là môi trường ổn.
+
+---
 
 ### 📝 Hàm predict và gr.Interface
 
@@ -77,6 +81,8 @@ if __name__ == "__main__":
 ```
 
 `gr.Interface` nhận **hàm xử lý** (`fn`), **input component** và **output component**. Ở đây cả hai đều là **text box**. Hàm nhận chuỗi từ textbox nên mình `int(class_index)` để so sánh với số.
+
+---
 
 ### ▶️ Chạy và thử trên trình duyệt
 

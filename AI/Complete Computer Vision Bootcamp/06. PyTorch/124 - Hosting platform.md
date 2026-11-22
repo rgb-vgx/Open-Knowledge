@@ -20,11 +20,15 @@ Chào các bạn! Có model và có UI rồi, câu hỏi tiếp theo là **host 
 
 Hosting platform dùng để **đưa model machine learning lên online** cho người khác truy cập. Nhưng "online" chưa đủ — tùy quy mô và yêu cầu mà chọn nền tảng khác nhau.
 
+---
+
 ### 🎈 Streamlit Cloud và Hugging Face Spaces
 
 **Streamlit Cloud** miễn phí, phù hợp **data app**, nhưng chỉ deploy được **ứng dụng viết bằng Streamlit**.
 
 **Hugging Face Spaces** cũng miễn phí, và linh hoạt hơn: chạy được cả ứng dụng **Gradio lẫn Streamlit**. Vì vậy giữa hai lựa chọn này, Spaces có lợi thế rõ ràng hơn.
+
+---
 
 ### ☁️ Google Cloud Run, AWS SageMaker, Lambda, EC2
 
@@ -37,6 +41,8 @@ Hosting platform dùng để **đưa model machine learning lên online** cho ng
 * **AWS SageMaker** — dùng khi cần **end-to-end ML pipeline**: có GPU để train, có nơi để infer, hỗ trợ auto scaling cho real-time inference. Phù hợp ứng dụng **production** quy mô lớn (ví dụ train/fine-tune ResNet cho phân loại ảnh y tế).
 * **AWS Lambda** — **serverless inference**, event-driven. Model chỉ chạy khi có người gọi (ví dụ upload ảnh), xong thì tự tắt, tiết kiệm chi phí. Hợp với model nhỏ, không cần chạy thường trực. Lambda **tự scale và tự shutdown sau khi thực thi**, nên khi hệ thống "ngủ" bạn gần như không tốn chi phí; chỉ trả tiền cho lúc được gọi.
 * **AWS EC2** — một **máy ảo** đầy đủ trên cloud (RAM, CPU, GPU như máy local). Phù hợp khi bạn muốn **toàn quyền kiểm soát** training và inference, tự viết API, tự viết mọi thứ.
+
+---
 
 ### 🧮 Chọn theo loại ứng dụng
 

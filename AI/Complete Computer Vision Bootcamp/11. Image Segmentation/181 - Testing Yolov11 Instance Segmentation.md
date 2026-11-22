@@ -17,7 +17,7 @@ Chào các bạn! Model crack detection đã train xong; giờ ta **test/inferen
 
 ### 📚 `Results` trả về gì?
 
-Theo docs phần **predict**, `model(...)` trả về một **iterator** các `Results`. Mỗi `Results` có:
+Theo docs phần **predict**, `model(...)` trả về một **list** (danh sách) các `Results`. Mỗi `Results` có:
 
 * `result.boxes` — bounding box,
 * `result.masks` — mask của object (segmentation),

@@ -20,12 +20,16 @@ Chào các bạn! Bài này mình học cách **cân bằng độ sáng và đ�
 
 **Histogram equalization** là kỹ thuật tăng **độ tương phản** của ảnh bằng cách **phân bố lại các giá trị cường độ** trên toàn bộ dải giá trị có thể. Nếu ảnh đang có cả giá trị cường độ cao lẫn thấp nhưng dồn cục, ta "trải đều" chúng ra để có ảnh tương phản tốt hơn.
 
+---
+
 ### 🪜 Bốn bước thực hiện
 
 1. **Tính histogram** — tần suất của từng giá trị cường độ (độ sáng).
 2. **Tính CDF** (cumulative distribution function) — cộng dồn tần suất, cho biết các giá trị phân bố ra sao.
 3. **Ánh xạ giá trị cũ sang giá trị mới** dùng CDF, để phân bố trải khắp toàn dải cường độ.
 4. **Thay thế** các giá trị pixel cũ bằng giá trị mới đã ánh xạ.
+
+---
 
 ### 🧮 Ví dụ tính tay
 
@@ -39,6 +43,8 @@ Giả sử ta flatten ảnh và có các pixel: `52, 55, 59, 52, 59, 55, 63, 52`
 | 63 | 1 | 8 | 8/8 × 255 = **255** |
 
 Tổng số pixel là 8, nên mỗi giá trị cộng dồn chia cho 8 rồi nhân 255 để **chuẩn hóa**. Kết quả: pixel tối nhất `52` (vốn rất tối) thành `95` (sáng hơn hẳn); pixel sáng nhất `63` thành `255`. Ta ánh xạ `52→95`, `55→159`, `59→223`, `63→255` rồi tạo ảnh mới. Đó chính là histogram equalization.
+
+---
 
 ### ⚙️ Làm bằng OpenCV
 
@@ -64,6 +70,8 @@ hist_equalized, bins = np.histogram(equalized.flatten(), bins=256, range=(0, 256
 ```
 
 Ở đây mình dùng `np.histogram` của NumPy trên ảnh đã flatten, trả về hai thứ: mảng histogram và các bin. Còn `cv2.equalizeHist` nhận **ảnh grayscale** và trả về ảnh đã cân bằng — bên trong nó tự tính CDF và ánh xạ giá trị như ví dụ trên.
+
+---
 
 ### 📈 Vẽ so sánh kết quả
 
@@ -96,6 +104,8 @@ Một lỗi rất dễ mắc: khi tính histogram cho ảnh đã cân bằng, ph
 
 Kết quả: histogram gốc dồn trong khoảng `150–200`, còn histogram sau cân bằng được trải rộng hơn hẳn. Ảnh mới có vùng tối sáng lên, vùng sáng dịu lại, độ tương phản tăng rõ rệt.
 
+---
+
 ### 🌈 Cân bằng ảnh màu qua không gian YUV
 
 Không nên equalize trực tiếp ảnh RGB: chỉ cần đổi một chút ở kênh đỏ là cả ba kênh giá trị đều lệch theo. Cách đúng là tách **kênh độ sáng** ra, cân bằng riêng nó, giữ nguyên kênh màu rồi gộp lại.
@@ -112,9 +122,11 @@ equalized_bgr = cv2.cvtColor(image_yuv, cv2.COLOR_YUV2BGR)
 equalized_rgb = cv2.cvtColor(equalized_bgr, cv2.COLOR_BGR2RGB)
 ```
 
-Dòng `image_yuv[:, :, 0] = cv2.equalizeHist(image_yuv[:, :, 0])` là numpy slicing: giữ nguyên mọi hàng, mọi cột, chỉ thay **kênh 0 (Y)**, còn U và V để y nguyên. Vì OpenCV không có `YUV → RGB` trực tiếp, ta đi vòng `YUV → BGR → RGB`.
+Dòng `image_yuv[:, :, 0] = cv2.equalizeHist(image_yuv[:, :, 0])` là numpy slicing: giữ nguyên mọi hàng, mọi cột, chỉ thay **kênh 0 (Y)**, còn U và V để y nguyên. OpenCV có sẵn `cv2.COLOR_YUV2RGB`, nhưng ở đây mình đi vòng `YUV → BGR → RGB` cho quen với luồng BGR.
 
 Kết quả: ảnh cân bằng có nhiều nhiễu hơn, nhưng những chi tiết trước đây mờ nhạt — như đám mây ở hậu cảnh — giờ hiện rõ; các đốm trên mình hươu cũng nổi bật và tương phản hơn.
+
+---
 
 ### 🚀 Ứng dụng
 

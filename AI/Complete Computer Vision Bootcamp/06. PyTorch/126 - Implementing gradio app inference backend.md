@@ -44,6 +44,8 @@ opencv-python
 pillow
 ```
 
+---
+
 ### 🧱 Class ImageClassifier: phần __init__
 
 `__init__` lo những việc nặng, chạy **một lần** khi tạo object: chọn device, dựng kiến trúc, load trọng số, giữ class map và transform.
@@ -85,6 +87,8 @@ Ba điểm cần chú ý:
 
 `class_names` cho phép truyền dictionary khác nếu bạn train bộ nhãn khác; mặc định dùng mapping của mình.
 
+---
+
 ### 🔮 Hàm predict: từ ảnh tới nhãn
 
 ```python
@@ -110,6 +114,8 @@ Ba điểm cần chú ý:
 Quy trình: mở ảnh bằng PIL (PyTorch mong đợi PIL/numpy), `.convert("RGB")` cho chắc. Áp `transform`, rồi **`.unsqueeze(0)`** thêm chiều batch vì model luôn nhận input theo batch — ảnh đơn là batch size 1. Đưa lên device, chạy trong `torch.no_grad()`, lấy `torch.max(output, 1)` để chọn lớp xác suất cao nhất.
 
 Chỉ số dự đoán (`predicted.item()`) được tra qua `self.class_names` để ra chữ. Sau đó OpenCV đọc lại ảnh, ghi text lên góc trên trái tại tọa độ `(10, 30)` (gốc tọa độ OpenCV ở góc trên trái), font `FONT_HERSHEY_SIMPLEX`, màu `(255, 0, 0)`, độ dày 2. Lưu thành `labeled_image.jpg` và trả về cả **label** lẫn **đường dẫn ảnh đã ghi chữ**.
+
+---
 
 ### 🖼️ Nối vào Gradio với input ảnh
 
@@ -144,6 +150,8 @@ if __name__ == "__main__":
 ```
 
 Lưu ý: `gr.Image(type="pil")` cho Gradio nhận **ảnh PIL** — cần vậy vì `image.save()` yêu cầu đối tượng PIL. Output là một list gồm **Textbox** (nhãn) và **Image** (ảnh đã ghi chữ).
+
+---
 
 ### ▶️ Chạy thử và gỡ lỗi
 

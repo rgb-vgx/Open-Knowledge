@@ -17,7 +17,7 @@ Chào các bạn! Bài này mình train **YOLO11** cho **instance segmentation**
 
 ### 🚀 Vì sao chọn YOLO11?
 
-YOLO11 là phiên bản mới trong dòng YOLO của **Ultralytics**. Key features:
+YOLO11 là một phiên bản ổn định trong dòng YOLO của **Ultralytics**. Key features:
 
 * **Feature extraction tốt hơn** so với YOLOv8, v10.
 * **Tối ưu hiệu quả và tốc độ** (train, inference).
@@ -125,3 +125,5 @@ Confusion matrix cho thấy model dự đoán `crack` khá tốt nhưng còn nh�
 ### ✅ Tóm lại
 
 Quy trình: dataset Roboflow (polygon mask) → `data.yaml` → `YOLO("yolo11n-seg.pt").train(...)` → đọc plots/weights. `patience` giúp early stopping, `plots` giúp đánh giá. Bài sau ta **test/inference** model đã train. Hẹn gặp!
+
+> ⚠️ Cần kiểm chứng: Nhận định YOLO11 nhanh và chính xác hơn YOLO12 là quan điểm trong bài giảng. Docs Ultralytics hiện ghi YOLO12m có mAP cao hơn YOLO11m khoảng 1.0% nhưng chậm hơn, và khuyến nghị YOLO11 hoặc YOLO26 cho phần lớn workload production.

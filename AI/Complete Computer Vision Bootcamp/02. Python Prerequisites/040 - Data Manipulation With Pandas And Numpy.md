@@ -1,5 +1,5 @@
 ---
-title: 'Bài 40 — Thao tác dữ liệu với pandas và NumPy'
+title: 'Bài 040 — Thao tác dữ liệu với pandas và NumPy'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 40
@@ -36,6 +36,8 @@ print(df.dtypes)     # kiểu dữ liệu từng cột
 * `object` = chuỗi (cột `date`, `category`, `product`, `region`)
 * `float64` = số thực (cột `value`, `sales`)
 
+---
+
 ### ❓ Phát hiện giá trị thiếu
 
 ```python
@@ -46,6 +48,8 @@ print(df.isnull().sum())        # đếm số giá trị thiếu mỗi cột
 `isnull()` trả về DataFrame boolean kích thước bằng dữ liệu gốc — nhìn bằng mắt rất khó. Kết hợp `.sum()` để có **số lượng missing value trên từng cột**: ví dụ `value` có 3, `sales` có 4.
 
 Có thể dùng `.any(axis=1)` để biết các **hàng** nào có ít nhất một giá trị thiếu.
+
+---
 
 ### 🩹 Xử lý giá trị thiếu bằng `fillna`
 
@@ -63,6 +67,8 @@ df["sales_fill"] = df["sales"].fillna(df["sales"].mean())
 
 Kết quả: cột `sales_fill` giữ nguyên giá trị cũ ở các hàng có dữ liệu, còn các vị trí `NaN` được lấp bằng mean của `sales`. `NaN` nghĩa là "Not a Number".
 
+---
+
 ### ✏️ Đổi tên cột
 
 `rename` nhận một dictionary dạng `{tên_cũ: tên_mới}`:
@@ -73,6 +79,8 @@ df.rename(columns={"date": "sales_date"}, inplace=True)
 
 Phải dùng dạng key–value vì tham số `columns` là dictionary. Gán lại vài lần có thể đổi tiếp `sales_date` thành `sales_data`.
 
+---
+
 ### 🔢 Đổi kiểu dữ liệu bằng `astype`
 
 ```python
@@ -81,6 +89,8 @@ df["value_new"] = df["value"].fillna(df["value"].mean()).astype(int)
 
 Cột `value` đang là `float64`, nhưng có `NaN` nên **không thể** ép thẳng sang `int`. Phải `fillna(mean)` trước đã, rồi mới `.astype(int)`.
 
+---
+
 ### 🧮 Áp hàm với `apply` và lambda
 
 ```python
@@ -88,6 +98,8 @@ df["double_value"] = df["value"].apply(lambda x: x * 2)
 ```
 
 Ví dụ `value` = 28 sẽ thành 56. `apply` nhận cả hàm có sẵn lẫn hàm tự định nghĩa (khi đó truyền đúng tham số theo chữ ký hàm).
+
+---
 
 ### 📊 Group by và aggregate
 
@@ -114,6 +126,8 @@ grouped_agg = df.groupby("region")["value"].agg(["mean", "sum", "count"])
 ```
 
 Kết quả là bảng nhiều cột — mỗi vùng một dòng, gồm mean, sum, count.
+
+---
 
 ### 🔗 Merge và join DataFrame
 
@@ -147,3 +161,5 @@ Các phép này tương đương với `JOIN` trong SQL — gần như mọi tha
 ---
 
 Bộ kỹ năng ở bài này là "đồ nghề" EDA: đọc dữ liệu, dọn missing value, biến đổi cột, gộp nhóm, nối bảng. Càng làm nhiều bài toán thật, bạn càng thuần tay. Bài sau mình xem cách đọc dữ liệu từ **nhiều nguồn khác nhau** bằng pandas.
+
+> ⚠️ Cần kiểm chứng: transcript (pandas thời điểm quay bài) hiển thị cột chuỗi là `object`. Từ pandas 3.0, cột chuỗi mặc định dùng **`StringDtype`** (hiển thị `str`) thay vì `object`; cách xử lý dữ liệu trong bài không đổi, nhưng kết quả `df.dtypes` trên máy bạn có thể khác.

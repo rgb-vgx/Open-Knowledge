@@ -28,6 +28,8 @@ Bên trong, đây là các **boosted ML algorithm** — cụ thể là một **b
 * **Hệ thống an ninh thông minh** — phát hiện người và xe, vẽ bounding box.
 * **Robot tương tác** — thấy người thì tự động chào, theo dõi người, hoặc phát hiện tường để tránh va chạm.
 
+---
+
 ### 🔲 Haar-like features — những ô chữ nhật so sánh độ sáng
 
 **Haar-like features** là các **mẫu hình chữ nhật** dùng để so sánh cường độ sáng giữa các vùng kề nhau. Chúng giúp phát hiện **contrast** trong cường độ pixel, từ đó nhận ra cạnh, đường và kết cấu. Có sáu mẫu cơ bản (và có thể có nhiều hơn):
@@ -40,6 +42,8 @@ Cách tính rất trực quan: **cộng cường độ các pixel vùng trắng 
 
 Vậy ảnh nào "khớp" với Haar feature hơn? Giá trị **1.9** gần với mẫu hơn hẳn **-1.9**. Cơ chế này được lặp trên một **sliding window**: trượt cửa sổ qua toàn ảnh, mỗi lần so một nhóm pixel với feature, chỗ nào cho giá trị đủ gần thì coi như tìm thấy mẫu.
 
+---
+
 ### 🪜 Cascade of classifiers — loại dần theo từng tầng
 
 Thuật toán áp **nhiều tầng classifier tuần tự** — gọi là **cascade**. Nếu một vùng ảnh **trượt** ở bất kỳ tầng nào, nó bị **loại ngay** và không được đưa sang các tầng sau. Nhờ vậy Haar Cascade rất hiệu quả về tính toán: phần lớn vùng "không phải mặt" bị loại từ tầng đầu.
@@ -51,6 +55,8 @@ Ví dụ với khuôn mặt:
 * **Stage 3** kiểm tra chi tiết hơn nữa, ví dụ mắt và môi.
 
 Nếu tất cả các tầng đều qua, kết luận **face detected** và trả về bounding box `x, y, w, h`. Ngược lại chỉ cần một tầng fail (ví dụ stage 3 nếu mắt nhắm) là dừng và báo không có mặt. Số tầng và loại kiểm tra là do người huấn luyện quyết định; với khuôn mặt, OpenCV đã huấn luyện sẵn.
+
+---
 
 ### 📷 Cài đặt face detection với webcam
 
@@ -90,6 +96,8 @@ Hai tham số của `detectMultiScale` cần hiểu:
 
 * **`scaleFactor = 1.3`** — cho phép dò mặt ở nhiều kích thước khác nhau, nên mặt gần hay xa camera đều bắt được.
 * **`minNeighbors = 5`** — giảm **false positive**. Tăng giá trị này làm detection "nghiêm khắc" hơn nhưng tốn tính toán và có thể bỏ sót mặt.
+
+---
 
 ### 👀 Mở rộng: face + eyes + mouth
 

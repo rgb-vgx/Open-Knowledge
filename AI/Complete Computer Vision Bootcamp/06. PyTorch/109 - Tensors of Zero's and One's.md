@@ -62,7 +62,7 @@ plt.axis('off')
 plt.show()
 ```
 
-Có một điểm rất quan trọng mình cần nhớ: mặc định matplotlib sẽ **tự chuẩn hóa** dữ liệu về khoảng `0..1`. Nếu không khai báo gì, ảnh toàn số 0 sẽ vẫn hiển thị được, nhưng để **kiểm soát** cách hiển thị mình nên chỉ định rõ `vmin` và `vmax` — tức giá trị nhỏ nhất và lớn nhất mình mong đợi từ tensor.
+Có một điểm rất quan trọng mình cần nhớ: mặc định matplotlib sẽ **tự lấy min/max** của dữ liệu để chuẩn hóa (với tensor toàn 0/1 thì thành `0..1`). Nếu không khai báo gì, ảnh toàn số 0 sẽ vẫn hiển thị được, nhưng để **kiểm soát** cách hiển thị mình nên chỉ định rõ `vmin` và `vmax` — tức giá trị nhỏ nhất và lớn nhất mình mong đợi từ tensor.
 
 Với `vmin=0, vmax=1` thì **0 là đen**, còn **1 là trắng**. Vì vậy tensor toàn 0 cho ra một ảnh đen hoàn toàn — đúng như tên "Dark Image".
 

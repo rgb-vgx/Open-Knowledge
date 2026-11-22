@@ -1,5 +1,5 @@
 ---
-title: 'Bài 31 — Trừu tượng hóa (abstraction) trong Python'
+title: 'Bài 031 — Trừu tượng hóa (abstraction) trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 31
@@ -24,6 +24,8 @@ Chiếc máy giặt có nút **Start**, chỗ đặt quần áo, bộ hẹn gi�
 
 Đó chính là abstraction: **giao diện đơn giản ở ngoài, cỗ máy phức tạp ở trong**.
 
+---
+
 ### 🏗️ Abstract base class với `ABC`
 
 Để tạo abstract class, class phải kế thừa `ABC`:
@@ -45,6 +47,8 @@ class Vehicle(ABC):
 * **Method thường** (`drive`) — đã có triển khai sẵn, class con dùng lại được.
 * **Abstract method** (`start_engine`) — thân hàm **rỗng**, chỉ là "hợp đồng" buộc class con phải tự cài đặt.
 
+---
+
 ### 🚗 Class con bắt buộc triển khai abstract method
 
 ```python
@@ -56,6 +60,8 @@ class Car(Vehicle):
 `Car` kế thừa `Vehicle`; nó phải viết lại `start_engine` theo cách riêng. Nếu không, Python không cho tạo object từ `Car` (báo lỗi vì còn abstract method chưa triển khai).
 
 Điều đáng chú ý: `Car` vẫn dùng được method thường `drive` mà không cần viết lại gì.
+
+---
 
 ### 🔌 Dùng qua giao diện chung
 
@@ -76,6 +82,8 @@ car.drive()   # The vehicle is used for driving
 ```
 
 Đây chính là chỗ abstraction phát huy tác dụng: `operate_vehicle` chỉ thấy **một tính năng** (`start_engine`), còn cách xe khởi động máy ra sao là chuyện của từng class con.
+
+---
 
 ### 🧠 Abstraction khác Encapsulation ở đâu?
 

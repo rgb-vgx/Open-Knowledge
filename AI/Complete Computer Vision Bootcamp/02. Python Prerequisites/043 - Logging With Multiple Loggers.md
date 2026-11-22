@@ -1,5 +1,5 @@
 ---
-title: 'Bài 43 — Logging với nhiều logger'
+title: 'Bài 043 — Logging với nhiều logger'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 43
@@ -33,6 +33,8 @@ logger2.setLevel(logging.WARNING)
 
 Nhớ viết chữ hoa cho hằng số: `logging.DEBUG`, `logging.WARNING` — viết thường sẽ lỗi vì đó là tên hàm chứ không phải level.
 
+---
+
 ### ⚙️ Vẫn cần `basicConfig` cho format
 
 ```python
@@ -43,7 +45,9 @@ logging.basicConfig(
 )
 ```
 
-`basicConfig` lo **format và handler** chung; `setLevel` trên từng logger quyết định **mức nào được phát**. Thiếu `basicConfig` thì log vẫn ra nhưng format mặc định, không có timestamp đẹp.
+`basicConfig` lo **format và handler** chung; `setLevel` trên từng logger quyết định **mức nào được phát**. Thiếu `basicConfig` (và chưa gắn handler nào) thì Python chỉ còn **last-resort handler**: các bản ghi từ `WARNING` trở lên vẫn ra stderr với format mặc định, còn `DEBUG`/`INFO` có thể không hiện — nên trong thực tế cứ cấu hình `basicConfig` tử tế.
+
+---
 
 ### 📝 Phát log qua từng logger
 
@@ -63,26 +67,13 @@ Output:
 
 Khác với bài trước, cột tên logger không còn là `root` mà là **`module1`**, **`module2`** — đúng tên bạn đặt trong `getLogger`.
 
+---
+
 ### 🎯 Lợi ích thực tế
 
 1. **Truy vết theo module**: đọc log biết ngay thành phần nào phát ra.
 2. **Điều chỉnh mức riêng**: module ồn ào (ví dụ parse dữ liệu) có thể để `WARNING`, module quan trọng để `DEBUG`.
 3. **Mở rộng dễ**: thêm module mới chỉ cần `getLogger("module3")`, không đụng tới cấu hình cũ.
-
-### 🧩 Mẫu dùng trong dự án nhiều file
-
-Trong mỗi module, lấy logger theo `__name__` — Python tự đặt tên theo package/module:
-
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-logger.info("Module started")
-```
-
-`__name__` cho ra tên đầy đủ của module (ví dụ `app.services.payment`), nên nhìn tên logger là biết vị trí file. Đây là cách phổ biến nhất khi làm việc với dự án lớn.
 
 ---
 

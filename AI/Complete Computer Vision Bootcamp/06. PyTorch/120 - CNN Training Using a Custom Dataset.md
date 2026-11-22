@@ -30,6 +30,8 @@ transform = transforms.Compose([
 
 `ToTensor()` đưa pixel về **[0, 1]**; `Normalize` với mean=std=0.5 đưa về **[-1, 1]**. Công thức là `(x - mean) / std`. Không normalize model vẫn học được, nhưng normalize giúp **hội tụ nhanh và chính xác hơn**. Các model ImageNet như **ResNet**, **VGG** dùng mean `[0.485, 0.456, 0.406]` và std `[0.229, 0.224, 0.225]` — mình không dùng vì không train trên ImageNet.
 
+---
+
 ### 🏗️ Thiết kế kiến trúc CNN
 
 Một khối convolution cơ bản gồm **convolution → batch normalization → ReLU → max pooling**. Mình xếp **4 khối** liên tiếp, số kênh tăng dần: **3 → 32 → 64 → 128 → 256**. Kernel `3×3`, stride 1, padding 1; max pooling `kernel_size=2, stride=2` (giảm một nửa kích thước). Sau đó **flatten** và nối vào các lớp fully connected.
@@ -72,6 +74,8 @@ class CustomCNNModel(nn.Module):
 
 Mấu chốt là **không biết trước số neuron sau flatten**. Mình truyền một tensor giả `torch.zeros(1, 3, 128, 128)` qua `conv_layers`, rồi `view(1, -1)` và đọc `size(1)` để lấy số đặc trưng — với cấu hình trên ra **16384** neuron. Đây là lý do phải cố định đầu vào `128×128` và dùng batch size (model luôn nhận ảnh theo batch, kể cả batch 1).
 
+---
+
 ### ⚙️ Cấu hình device, loss, optimizer
 
 Trước khi train, mình chọn thiết bị:
@@ -84,6 +88,8 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 ```
 
 `CrossEntropyLoss` đã tự gắn softmax nên mình không thêm softmax ở output. Dùng **Adam** với `lr=0.001`.
+
+---
 
 ### 🔁 Vòng train với running loss
 
@@ -107,6 +113,8 @@ for epoch in range(num_epochs):
 
 Với 2 epoch trên **Tesla T4**, loss giảm từ khoảng **0.54** xuống **0.47**, mất hơn một phút. Model train 40 epoch được lưu lại sẵn trong resource.
 
+---
+
 ### ✅ Đánh giá và lưu model
 
 Đánh giá trên tập test: `model.eval()`, bọc `torch.no_grad()`, lấy `torch.max(outputs, 1)` để chọn lớp xác suất cao nhất, cộng số dự đoán đúng. Accuracy = `100 * correct / total`.
@@ -125,6 +133,8 @@ print(f"Test accuracy: {100 * correct / total:.2f}%")
 ```
 
 Chỉ 2 epoch đã đạt **74.50%**. Muốn lưu lại thì dùng `torch.save(model.state_dict(), "cnn_model.pt")`.
+
+---
 
 ### 🚀 Script inference cho một ảnh
 

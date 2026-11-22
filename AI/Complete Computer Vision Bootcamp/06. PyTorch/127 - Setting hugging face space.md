@@ -20,9 +20,13 @@ Chào các bạn! App Gradio đã chạy ngon ở local. Giờ mình đưa nó l
 
 Mở trình duyệt, vào **huggingface.co/spaces**. Bạn sẽ thấy rất nhiều demo cộng đồng đã đóng góp: image generation, video generation, text generation, dịch ngôn ngữ, text-to-speech, 3D modeling, object detection, image editing… Mục tiêu của mình là tạo một Space tương tự, chứa ứng dụng phân loại ảnh của riêng mình.
 
+---
+
 ### 👤 Đăng ký và xác minh tài khoản
 
 Bấm **Sign up**, nhập email và mật khẩu, rồi đặt **username** và **full name** cho Hugging Face (điền các trường bắt buộc). Đọc **Terms of Service** và **Code of Conduct**, tick đồng ý rồi tạo tài khoản. Hệ thống có thể yêu cầu **xác minh người dùng** (chọn các hình theo yêu cầu). Sau đó mở email, bấm link xác nhận; khi đã xác minh, thông báo nhắc xác nhận sẽ biến mất sau khi reload.
+
+---
 
 ### 🧱 Tạo Space mới
 
@@ -38,6 +42,8 @@ Vào mục **Spaces**, bấm **Create new space**:
 
 Không bật **dev mode**, bấm **Create Space**.
 
+---
+
 ### 📦 Space là một git repository
 
 Sau khi tạo, Hugging Face cấp cho bạn một **git repository** (host trên Hugging Face, không phải GitHub). Bạn sẽ **clone** repo này về máy, chép code Gradio vào, rồi **push** lên. Space có sẵn một file `app.py` mẫu — và lưu ý quan trọng: **file chính phải tên là `app.py`**, vì Gradio SDK tìm đúng file này để chạy.
@@ -50,6 +56,8 @@ Quy trình tổng quát khi đã có repo:
 
 Ngay sau khi push thành công, Space sẽ tự build và load ứng dụng mà không cần thao tác gì thêm.
 
+---
+
 ### 🔑 Tạo access token
 
 Trước khi push, cần **access token**. Vào phần **Access Tokens**, bấm tạo token mới, đặt tên (ví dụ `test-one-demo`). Cấp quyền:
@@ -60,6 +68,8 @@ Trước khi push, cần **access token**. Vào phần **Access Tokens**, bấm 
 Các quyền khác không cần. Bấm tạo, rồi **copy token và lưu lại** (notepad, hoặc file trên desktop) — vì khi push git sẽ hỏi username và token.
 
 Lưu ý bảo mật: token này dùng xong nên **xoá/invalidate**. Trong dashboard token có menu ba chấm cho phép refresh hoặc delete; tác giả xoá sau khi demo để người khác không dùng được Space của mình.
+
+---
 
 ### ✅ Chuẩn bị xong
 

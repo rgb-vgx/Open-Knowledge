@@ -1,5 +1,5 @@
 ---
-title: 'Bài 34 — Tự tạo custom exception trong Python'
+title: 'Bài 034 — Tự tạo custom exception trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 34
@@ -34,6 +34,8 @@ class DOBException(Error):
 
 Vì sao cần class gốc `Error` trung gian? Để mọi custom exception của dự án cùng nằm dưới một gốc chung — sau này có thể bắt `except Error` để xử lý toàn bộ lỗi do ứng dụng tự sinh ra, tách biệt với lỗi hệ thống.
 
+---
+
 ### 📝 Nghiệp vụ: form thi giới hạn tuổi 20–30
 
 ```python
@@ -59,6 +61,8 @@ except DOBException:
 
 Vì sao phải đặt trong `try`? Vì khi **tự raise** exception thì cũng cần **tự catch** nó. Nếu để `raise` trong khối if/else trần, exception sẽ nổi lên và làm sập chương trình kèm traceback khó hiểu.
 
+---
+
 ### 🧪 Chạy thử
 
 Nhập năm sinh `1987` → tuổi 37, nằm ngoài khoảng → hiện:
@@ -68,6 +72,8 @@ Your age should be between 20 and 30 for this competitive exam.
 ```
 
 Nhập năm sinh hợp lệ (ví dụ 2000) → tuổi 24 → thông báo hợp lệ và được đăng ký thi.
+
+---
 
 ### 💡 Vì sao custom exception quan trọng trong dự án thật
 

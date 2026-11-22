@@ -20,6 +20,8 @@ Chào các bạn! Cách biểu diễn màu của từng pixel ảnh hưởng tr�
 
 Hãy tưởng tượng một camera xuất ảnh theo **RGB**, nhưng chiếc TV lại chờ tín hiệu **BGR**. Hai bên không khớp nhau, nên cần chuyển đổi từ RGB sang BGR. Đây chính là chỗ OpenCV phát huy tác dụng: nó cung cấp nhiều cách chuyển giữa các không gian màu, giúp các hệ thống khác nhau "nói chuyện" được với nhau.
 
+---
+
 ### 🔴 RGB — mô hình cộng màu
 
 **RGB** = Red, Green, Blue — ba màu gốc để biểu diễn ảnh màu. Đây là **mô hình cộng (additive)**: kênh 1 luôn là đỏ, kênh 2 là xanh lá, kênh 3 là xanh dương, mỗi kênh chạy từ **0 đến 255**.
@@ -31,6 +33,8 @@ Hãy tưởng tượng một camera xuất ảnh theo **RGB**, nhưng chiếc TV
 
 RGB gần với cách con người cảm nhận màu và là mô hình mà màn hình, thiết bị số dùng để hiển thị ảnh màu.
 
+---
+
 ### ⚫ Grayscale — một kênh, nhẹ và nhanh
 
 **Grayscale** biểu diễn màu bằng các sắc xám, chỉ **một kênh** giá trị **0–255**: `0` là đen tuyền, `255` là trắng tuyền, ở giữa là các mức xám.
@@ -40,6 +44,8 @@ Vì sao cần grayscale?
 * **Hiệu quả tính toán**: một kênh thay vì ba, nhẹ hơn về bộ nhớ và xử lý.
 * **Đơn giản hóa**: khi không cần thông tin màu — ví dụ chỉ tìm ô tô bất kể màu gì — grayscale là đủ.
 * **Tiết kiệm dung lượng**: ảnh RGB 3 MB thì bản grayscale có thể chỉ khoảng 1 MB nhưng vẫn giữ chi tiết.
+
+---
 
 ### 🌈 HSV — tách màu khỏi độ sáng
 
@@ -51,6 +57,8 @@ Vì sao cần grayscale?
 
 HSV rất tiện cho **phân đoạn theo màu (color segmentation)** hay theo dõi vật thể, vì nó tách màu khỏi cường độ sáng, giúp định nghĩa dải màu dễ hơn. Ví dụ muốn tách phông xanh (green screen) để thay nền: chọn hue quanh 120 độ, chỉnh saturation và hạ value xuống khoảng 30–40% để bắt đúng sắc xanh, rồi bảo OpenCV loại bỏ vùng màu đó.
 
+---
+
 ### 🟣 Lab — gần với cách người nhìn
 
 **Lab** gồm ba kênh:
@@ -61,11 +69,15 @@ HSV rất tiện cho **phân đoạn theo màu (color segmentation)** hay theo d
 
 Khác với HSV chỉ có phần trên của hình nón mang màu, Lab là một **khối cầu 3D**, mỗi pixel là tổ hợp của cả ba trục. Lab được thiết kế bám sát cách con người cảm nhận màu, hữu ích cho **chỉnh màu (color correction)** và tinh chỉnh. Cá nhân mình thấy với HSV dễ kiểm soát hơn khi muốn nhắm một màu cụ thể, vì Lab khó tách riêng một sắc mà chỉ có trục sáng và hai trục màu đối lập.
 
+---
+
 ### 🅱️ BGR — mặc định "kỳ lạ" của OpenCV
 
 **BGR** giống hệt RGB nhưng **đảo kênh đỏ và xanh dương**: mỗi pixel là `(Blue, Green, Red)`. Nghe lạ, nhưng đây là **không gian màu mặc định của OpenCV**. Lý do là lịch sử: OpenCV ra đời rất lâu, thời đó các nhà sản xuất và phần mềm dùng BGR, nên OpenCV giữ BGR để tương thích.
 
 Hệ quả quan trọng: khi đọc ảnh, OpenCV **tự chuyển sang BGR**; các hàm như `cv2.imshow` và `cv2.imwrite` cũng **mặc định nhận BGR** rồi hiển thị/ghi ra RGB.
+
+---
 
 ### 🧪 Thực hành chuyển đổi
 
@@ -86,6 +98,8 @@ cv2.imwrite('lab_image.jpg', lab_image)
 ```
 
 Mở kết quả: ảnh grayscale trông bình thường; còn ảnh HSV và Lab trông **rất lạ** (mảng màu hồng, xanh lộn xộn). Đó là bình thường — HSV và Lab **không dành để hiển thị** mà dùng cho tính toán, threshold màu. Ta chỉ vẽ ra để quan sát cho vui.
+
+---
 
 ### ⚠️ Cái bẫy BGR ↔ RGB
 

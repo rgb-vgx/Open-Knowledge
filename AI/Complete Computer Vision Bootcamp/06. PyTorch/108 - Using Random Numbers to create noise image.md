@@ -37,6 +37,8 @@ print(random_tensor.shape)   # torch.Size([2, 5, 3])
 
 Kết quả là hai khối `5x3` — đúng như shape đã truyền.
 
+---
+
 ### 🌱 Seed và khả năng tái lập
 
 Mỗi lần chạy, `torch.rand` cho giá trị khác nhau. Muốn tái lập đúng kết quả, đặt seed:
@@ -47,6 +49,8 @@ print(torch.rand(5))
 ```
 
 Chạy lại nhiều lần với cùng seed sẽ ra cùng một dãy số; bỏ dòng `manual_seed` thì giá trị đổi. Đây là cách để nhiều người, nhiều repo làm việc cùng nhau và tái tạo đúng kết quả của nhau.
+
+---
 
 ### 🔢 Số nguyên ngẫu nhiên với torch.randint
 
@@ -64,6 +68,8 @@ print(torch.randint(0, 10, (5, 5)).shape)   # torch.Size([5, 5])
 print(torch.randint(-10, 10, (5,)))         # giá trị từ -10 đến 9
 ```
 
+---
+
 ### 📈 Sinh số theo phân phối chuẩn
 
 Không chỉ phân phối đều, PyTorch còn sinh theo **normal distribution** bằng `torch.normal(mean, std, size)`:
@@ -74,6 +80,8 @@ print(random_numbers_normal)
 ```
 
 Các giá trị này có **mean = 0.5** và **standard deviation = 2** — khác với `torch.rand` vốn lấy mẫu đều trong `[0, 1)`.
+
+---
 
 ### 🖼️ Tạo ảnh nhiễu đen trắng
 
@@ -92,6 +100,8 @@ plt.show()
 ```
 
 Một ảnh thực chất chỉ là **matrix** (tensor). Với ảnh xám một kênh, phải truyền `cmap="gray"`. Kết quả là ảnh nhiễu đen trắng y như nhiễu trên tivi ngày xưa. Mỗi lần chạy lại, `torch.rand` sinh nhiễu mới — nếu lưu nhiều frame như vậy, các bạn có thể ghép thành video nhiễu "đang chuyển động".
+
+---
 
 ### 🌈 Ảnh nhiễu RGB và kiểm tra thuộc tính
 

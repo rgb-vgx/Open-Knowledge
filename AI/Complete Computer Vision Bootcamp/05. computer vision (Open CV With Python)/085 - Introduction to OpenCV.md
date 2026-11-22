@@ -27,11 +27,15 @@ Nhưng một robot "nhìn" khác con người ra sao? Con người thấy màu s
 * Đếm xem có bao nhiêu con chó và chúng nằm ở đâu.
 * **Segmentation** — tách từng vùng, sẽ học ở các bài sau.
 
+---
+
 ### ⚽ Từ ảnh tĩnh tới video và hiệu ứng
 
 Nâng lên một mức, khi phân tích một trận bóng, computer vision có thể phát hiện cầu thủ và theo dõi chuyển động của họ. Chưa hết — nó còn theo dõi được cả quả bóng: chiếc hộp đỏ bám theo bóng vì thuật toán dựa vào **vận tốc** và **quỹ đạo trước đó** để dự đoán bóng sẽ ở đâu trong khung hình **t + 1**. Nhờ vậy mới xử lý được các pha tranh cãi kiểu việt vị: tất cả nằm trong dữ liệu.
 
 Với ảnh chân dung, các thuật toán phức tạp như **segmentation** cho phép làm mờ hậu cảnh kiểu **portrait mode** ngay trên ảnh thường, tăng độ mờ cho kịch tính hơn, thay hẳn hậu cảnh (ví dụ "ngồi chơi ở Paris"), hoặc đơn giản là chuyển ảnh màu sang **đen trắng**. Từ detection, segmentation, tracking cho tới filter grayscale — computer vision làm được hết.
+
+---
 
 ### 🧰 Ba tầng công cụ của computer vision
 
@@ -44,6 +48,8 @@ Ma thuật cần công cụ. Mình hình dung computer vision ở giữa, xung q
 | **3 — Bài toán cụ thể** | **Hugging Face**, **Detectron2**, **YOLO**, **fast.ai** | Lớp bọc trên PyTorch/TensorFlow cho detection, classification, segmentation... |
 
 Tầng 1 lo phần nền tảng của chính bức ảnh, tầng 2 lo framework deep learning, tầng 3 giải các bài toán như object detection, classification, segmentation.
+
+---
 
 ### 🎯 Vì sao chọn OpenCV?
 
@@ -59,6 +65,8 @@ Về độ mạnh, tốc độ và cộng đồng, **OpenCV** nổi bật so v�
 * Phát hiện khuôn mặt và các **key point** trên mặt.
 * **Color filtering** — loại bỏ một vùng màu và thay bằng đối tượng khác.
 * **Object detection** — như phát hiện cầu thủ trên sân.
+
+---
 
 ### ✅ Ranh giới: OpenCV không làm được tất cả
 

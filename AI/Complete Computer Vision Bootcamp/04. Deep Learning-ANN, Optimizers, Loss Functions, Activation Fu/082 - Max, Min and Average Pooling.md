@@ -14,13 +14,13 @@ tags: []
 
 > Nguồn: `082 - Max, Min and Average Pooling.md` · [Udemy](https://viettel.udemy.com/course/complete-computer-vision-bootcamp-with-pytoch-tensorflow/learn/lecture/47979415)
 
-Chào các bạn! Trước khi vào pooling, mình bổ sung một điểm đã bỏ sót: **một convolution layer** gồm **convolution + ReLU** gộp lại. Sau lớp đó, ta thường thêm **pooling** — và đó là chủ đề bài này: **max pooling**, **min (mean) pooling**, **average pooling**.
+Chào các bạn! Trước khi vào pooling, mình bổ sung một điểm đã bỏ sót: **một convolution layer** gồm **convolution + ReLU** gộp lại. Sau lớp đó, ta thường thêm **pooling** — và đó là chủ đề bài này: **max pooling**, **min pooling**, **average pooling**.
 
 ### 🧱 Định nghĩa lại một convolution layer
 
 Một **convolution layer** = **phép convolution** (ảnh × filter) **+ ReLU** trên output. Bạn có thể xếp **bao nhiêu convolution layer tùy ý**, mỗi lớp với filter khác nhau, kích thước khác nhau.
 
-Ví dụ: ảnh `4×4`, padding `1`, stride `1`, filter `2×2` → output `3×3`, rồi áp ReLU. Toàn bộ thao tác đó là **một convolution layer**. ReLU cần thiết để **lấy được đạo hàm** khi backpropagate và cập nhật giá trị filter.
+Ví dụ: ảnh `4×4`, không padding, stride `1`, filter `2×2` → output `3×3` (`4 - 2 + 1 = 3`), rồi áp ReLU. Toàn bộ thao tác đó là **một convolution layer**. ReLU cần thiết để **lấy được đạo hàm** khi backpropagate và cập nhật giá trị filter.
 
 ### 🎯 Max pooling làm gì
 
@@ -57,7 +57,7 @@ Nó "cô đọng" những thông tin quan trọng nhất từ output của mỗi
 ### 🔀 Các loại pooling khác
 
 * **Max pooling** — lấy **lớn nhất** (đặc trưng mạnh nhất).
-* **Min (mean) pooling** — lấy **nhỏ nhất**; dùng khi muốn tập trung vào **pixel cường độ thấp** thay vì nổi bật.
+* **Min pooling** — lấy **nhỏ nhất**; dùng khi muốn tập trung vào **pixel cường độ thấp** thay vì nổi bật.
 * **Average pooling** — lấy **trung bình** các giá trị trong ô.
 
 ```text
@@ -71,3 +71,5 @@ Chọn loại nào **tùy use case**. Trong phần lớn kiến trúc, ta thấy
 ### 🔜 Tiếp theo
 
 Sau nhiều cặp **conv + pooling**, ta cần "trải phẳng" dữ liệu để đưa vào **fully connected layer** — chính là **flattening**, bài sau. Hẹn gặp lại!
+
+> ⚠️ Cần kiểm chứng: transcript gốc ghi ví dụ `4×4` + padding `1` + filter `2×2` cho output `3×3`; theo công thức `(n + 2p - f)/s + 1`, cấu hình đó cho `5×5`, nên bài đã sửa thành không padding để giữ ví dụ `3×3`.

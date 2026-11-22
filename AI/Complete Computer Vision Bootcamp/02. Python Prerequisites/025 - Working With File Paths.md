@@ -1,5 +1,5 @@
 ---
-title: 'Bài 25 — Làm việc với đường dẫn file trong Python'
+title: 'Bài 025 — Làm việc với đường dẫn file trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 25
@@ -31,6 +31,8 @@ print(f"Directory {new_directory} created")
 
 Chạy xong, thư mục `package` xuất hiện ngay trong thư mục hiện tại và câu thông báo in ra: **"Directory package created"**. Đây là cách nhanh nhất để tạo một thư mục bằng code.
 
+---
+
 ### 📋 Liệt kê file và thư mục bằng `os.listdir`
 
 Muốn biết trong thư mục hiện tại có những gì, mình dùng:
@@ -43,6 +45,8 @@ print(items)
 ```
 
 Dấu `.` nghĩa là đang trỏ vào **thư mục làm việc hiện tại**. Kết quả trả về gồm cả file lẫn thư mục — ví dụ `example.txt`, `destination.txt`, thư mục `bin`, `package`… Thao tác này rất hữu ích khi dự án cần đọc toàn bộ file trong một thư mục để xử lý hàng loạt.
+
+---
 
 ### 🔗 Ghép đường dẫn với `os.path.join`
 
@@ -68,6 +72,8 @@ print(full_path)
 ```
 
 `os.getcwd()` trả về **current working directory**. Còn nếu chỉ cần đường dẫn tương đối thì dùng hai biến ban đầu là đủ.
+
+---
 
 ### ✅ Kiểm tra tồn tại, là file hay là thư mục
 
@@ -102,6 +108,8 @@ else:
 ```
 
 Với `example.txt` đang tồn tại, kết quả là **"This path is a file"**.
+
+---
 
 ### 🧭 Relative path và absolute path
 

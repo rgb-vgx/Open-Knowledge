@@ -1,5 +1,5 @@
 ---
-title: 'Bài 26 — Xử lý ngoại lệ trong Python'
+title: 'Bài 026 — Xử lý ngoại lệ trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 26
@@ -40,6 +40,8 @@ a = b
 
 Python báo **"name 'b' is not defined"** — một `NameError`. Với lập trình viên, thông báo này đủ hiểu; nhưng với người dùng cuối thì không. Vì vậy mới cần bắt nó lại và thay bằng thông điệp dễ hiểu.
 
+---
+
 ### 🛡️ Khối `try` / `except` cơ bản
 
 Ý tưởng giống `try`/`catch` ở ngôn ngữ khác: đặt code có khả năng lỗi trong `try`, xử lý ở `except`.
@@ -63,6 +65,8 @@ except NameError as x:
 ```
 
 Ở đây `NameError` là một **class** đại diện cho loại ngoại lệ đó, `x` chỉ là tên tạm để tham chiếu.
+
+---
 
 ### 🎯 Bắt nhiều loại ngoại lệ
 
@@ -92,7 +96,9 @@ except Exception as x:
 
 Thử nhập `0` → rơi vào `ZeroDivisionError`; nhập một chuỗi như `"abc"` → rơi vào `ValueError`; nhập `34` → chạy trơn tru.
 
-Điểm quan trọng: mọi ngoại lệ đều kế thừa từ class cha **`Exception`**. Vì vậy `except Exception` bắt được tất cả — nhưng phải đặt **cuối cùng**. Nếu đặt nó trước `ZeroDivisionError` hay `NameError`, các nhánh cụ thể phía sau sẽ không bao giờ được chạm tới.
+Điểm quan trọng: gốc của cây ngoại lệ là **`BaseException`**; **`Exception`** là lớp con của nó và là cha của hầu hết lỗi thường gặp (`ZeroDivisionError`, `ValueError`, `NameError`...). Vì vậy `except Exception` bắt được các lỗi thông thường — nhưng **không** bắt `KeyboardInterrupt` hay `SystemExit` (hai lớp này kế thừa trực tiếp `BaseException`). Và dù bắt lớp nào, `except` cụ thể phải đặt **trước** `except Exception`. Nếu đặt `except Exception` trước `ZeroDivisionError` hay `NameError`, các nhánh cụ thể phía sau sẽ không bao giờ được chạm tới.
+
+---
 
 ### ✅ Khối `else` — chỉ chạy khi không có lỗi
 
@@ -111,6 +117,8 @@ else:
 ```
 
 Nhập `23` → in kết quả. Nhập `0` → `except` xử lý và `else` bị bỏ qua hoàn toàn.
+
+---
 
 ### 🔒 Khối `finally` — luôn luôn chạy
 
@@ -133,6 +141,8 @@ finally:
 Nhập `12` → thấy cả kết quả lẫn "Execution complete". Nhập `0` → thấy lỗi chia 0 **và vẫn** thấy "Execution complete", còn `else` thì không chạy.
 
 Trong thực tế, `finally` dùng cho việc **dọn dẹp**: ví dụ mở kết nối database trong `try`, dù thao tác thành công hay gặp exception thì cuối cùng vẫn phải đóng kết nối — đặt đoạn đóng trong `finally`.
+
+---
 
 ### 📂 Áp dụng vào file handling
 

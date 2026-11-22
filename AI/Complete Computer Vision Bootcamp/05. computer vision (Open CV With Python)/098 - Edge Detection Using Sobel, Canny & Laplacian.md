@@ -22,11 +22,15 @@ Một **cạnh** đại diện cho sự **thay đổi đột ngột về cườn
 
 Hãy tưởng tượng ảnh có ba vùng màu: trắng → xám → xám đậm. Có hai chỗ chuyển màu rõ rệt, tức hai cạnh. Chỗ nào màu "nhảy" mạnh thì đó là cạnh.
 
+---
+
 ### 🎯 Vì sao phải phát hiện cạnh?
 
 Ta dùng edge detection cho **feature extraction**, **shape analysis** và **pre-processing**.
 
 Ví dụ một người đứng trước hậu cảnh phức tạp nhiều màu. Nếu muốn huấn luyện CNN hay mô hình AI, ta không quan tâm màu sắc và gradient — ta quan tâm **cấu trúc** của người đó. Tương tự, nếu vẽ lại ngôi nhà gỗ với nhiều sắc nâu, các bạn sẽ không tô màu mà chỉ **phác đường viền**. Edge detection chính là việc "dùng bút chì tô lại đường viền" của ảnh: bỏ đi các mảng đổ bóng thừa, chỉ giữ cấu trúc.
+
+---
 
 ### 📐 Sobel filter
 
@@ -46,6 +50,8 @@ sobel_combined = cv2.magnitude(sobel_x, sobel_y)
 
 `cv2.Sobel` nhận ảnh, **độ sâu đầu ra** (`cv2.CV_64F` cho số thực), rồi `dx`, `dy` (1 nếu lấy đạo hàm theo hướng đó), và `ksize`. Ngưỡng là thứ ta phải "vọc" để có cạnh đẹp nhất.
 
+---
+
 ### 🌀 Laplacian filter
 
 **Laplacian** phát hiện cạnh bằng cách tìm vùng **thay đổi cường độ nhanh**, nhưng khác Sobel, nó **gộp đạo hàm theo x và y vào một phép toán duy nhất**. Đây cũng là đạo hàm đã được mô phỏng sẵn trong kernel (đạo hàm bậc hai), không phải tính tay.
@@ -56,6 +62,8 @@ laplacian_abs = np.absolute(laplacian)
 ```
 
 Vì cạnh chỉ là thay đổi cường độ, **dấu âm hay dương không quan trọng**. Laplacian cho cả giá trị âm lẫn dương, nên ta lấy trị tuyệt đối (`np.absolute`) để hiển thị. Chính việc biến số âm thành dương này tạo ra khá nhiều nhiễu trong kết quả.
+
+---
 
 ### 🧠 Canny edge detector
 
@@ -73,6 +81,8 @@ canny_edges = cv2.Canny(image, 100, 200)
 ```
 
 Canny là phương pháp tốn tính toán nhất trong ba, nhưng đổi lại cho cạnh sạch và ít nhiễu nhất.
+
+---
 
 ### 🧪 Chạy thử và so sánh
 

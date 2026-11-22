@@ -20,6 +20,8 @@ Chào các bạn! Ở các bài trước ta mới xoay, lật ảnh ở mức c�
 
 Khi xoay ảnh portrait sang landscape đơn thuần, một điểm ở góc có thể bị đẩy ra ngoài khung và biến mất; phần bị xoay ra ngoài cũng để lại vùng trống. Ta không kiểm soát được điểm nào đi đâu, mất bao nhiêu thông tin. Affine và perspective giải quyết đúng chỗ đó: chúng **ánh xạ từng điểm** từ ảnh gốc sang vị trí mới dựa trên một **ma trận biến đổi**.
 
+---
+
 ### 🧮 Ma trận biến đổi
 
 Cả hai đều dựa trên ma trận **M**. Với điểm gốc `(x, y)`, nhân với M cho ra điểm mới `(x', y')`.

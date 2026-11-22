@@ -53,8 +53,8 @@ Không bình phương mà dùng **trị tuyệt đối**, nên giá trị âm c�
 Lai giữa MSE và MAE, dùng một **threshold** (hyperparameter):
 
 ```text
-nếu |y - y_hat| <= δ :  dùng (y - y_hat)²         (không có outlier → như MSE)
-ngược lại            :  dùng |y - y_hat| - δ²/2    (có outlier → như MAE)
+nếu |y - y_hat| <= δ :  (1/2) * (y - y_hat)²          (không có outlier → như MSE)
+ngược lại            :  δ * |y - y_hat| - (1/2) * δ²   (có outlier → như MAE)
 ```
 
 Nếu sai số nhỏ hơn ngưỡng (không phải outlier) thì hành xử như **MSE**; nếu lớn hơn (outlier) thì chuyển sang dạng **MAE**. Nhờ vậy vừa trơn vừa bền với outlier.

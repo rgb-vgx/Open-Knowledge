@@ -28,6 +28,8 @@ Hãy nhìn cách làm thông thường: bạn có một **GitHub repo** chứa c
 
 Và kể cả khi làm xong ba bước đó, ứng dụng vẫn chỉ chạy **local** trên máy họ. Nếu bạn chạy nó trong một **container** trên máy mình, người khác ở nơi khác hoàn toàn không truy cập được.
 
+---
+
 ### ☁️ Đưa app lên cloud để lấy một URL
 
 Thay vì vậy, bạn **deploy một lần** lên một nền tảng cloud. Các lựa chọn quen thuộc:
@@ -43,6 +45,8 @@ Sau khi deploy, nền tảng trả cho bạn một **URL**, ví dụ `https://my
 Từ đó, bạn chỉ cần **chia sẻ URL** này cho bất kỳ ai trên thế giới. Họ mở bằng trình duyệt và dùng được ứng dụng — không cài dependency, không setup gì cả, chỉ cần có internet. Cloud lo phần chạy app, còn người dùng chỉ cần một cái link.
 
 Hãy so sánh: trước đây mỗi người dùng (user 1, user 2, …, user n) đều phải tự clone, cài đặt và chạy — và kết quả vẫn chỉ nằm trên máy họ. Sau khi deploy, không ai cần làm gì ngoài mở link. Với một demo phân loại ảnh, đây chính là bước biến "code chạy được trên máy tôi" thành "sản phẩm ai cũng chạm tới được".
+
+---
 
 ### 🪜 Ba bước của deployment
 

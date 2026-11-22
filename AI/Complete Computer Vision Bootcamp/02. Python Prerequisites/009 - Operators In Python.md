@@ -41,7 +41,7 @@ Ba phép chia này rất dễ lẫn, nên mình tách riêng ra.
 
 **Chia thường `/`** trả về số thực. Ví dụ `21 / 5` cho `4.2`.
 
-**Chia lấy phần nguyên `//`** (floor division) bỏ phần thập phân và chỉ giữ phần nguyên. Cùng ví dụ `21 // 5` cho `4`. Giảng viên giải thích: với floor division, phần thập phân bị bỏ đi, chỉ lấy giá trị nguyên.
+**Chia lấy phần nguyên `//`** (floor division) với số dương thì bỏ phần thập phân và chỉ giữ phần nguyên. Cùng ví dụ `21 // 5` cho `4`. Giảng viên giải thích: với floor division, phần thập phân bị bỏ đi, chỉ lấy giá trị nguyên. Chính xác hơn về mặt tài liệu: `//` **làm tròn xuống** (floor), nên với số âm kết quả khác phép cắt phần lẻ — ví dụ `-21 // 5` cho `-5`.
 
 **Modulus `%`** trả về **số dư**. Trong buổi demo, `10` chia `5` không dư nên modulus cho `0` — đúng như kết quả đã thấy ở trên.
 

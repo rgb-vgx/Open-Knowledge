@@ -30,10 +30,9 @@ Sau khi giải nén, thư mục có các folder `train`/`valid`/`test` (bên tro
 Mình đổi các đường dẫn sang **absolute path**, trỏ vào thư mục `images` của từng split:
 
 ```yaml
-path: /content/drive/MyDrive/YOLO_datasets
-train: train/images
-val: valid/images
-test: test/images
+train: /content/drive/MyDrive/YOLO_datasets/train/images
+val: /content/drive/MyDrive/YOLO_datasets/valid/images
+test: /content/drive/MyDrive/YOLO_datasets/test/images
 nc: 3
 names: [rock, paper, scissors]
 ```

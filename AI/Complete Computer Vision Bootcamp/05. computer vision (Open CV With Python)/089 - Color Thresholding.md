@@ -91,7 +91,7 @@ upper_white = np.array([30, 80, 255])
 mask = cv2.inRange(image_hsv, lower_white, upper_white)
 ```
 
-Vì màu trắng không tinh khiết mà ngả nâu cam, mình chọn hue **0–30 độ** (khoảng 0–60 theo thang gốc), saturation tới **80**, và quan trọng nhất là **brightness từ 190 đến 255**.
+Vì màu trắng không tinh khiết mà ngả nâu cam, mình chọn hue **0–30** theo thang OpenCV (tương đương **0–60 độ** gốc), saturation tới **80**, và quan trọng nhất là **brightness từ 190 đến 255**.
 
 Tiếp theo tạo màu thay thế (đen) và áp mask:
 
@@ -115,4 +115,4 @@ Trên plot, mask hiện rõ họa tiết trắng của hươu (dù còn chút nh
 
 Mẹo thực hành: nếu muốn target màu khác, cứ thử nhiều tổ hợp lower/upper cho tới khi mask khớp ý. Bài sau mình sẽ chuyển sang các phép biến đổi hình học trên ảnh.
 
-> ⚠️ Cần kiểm chứng: transcript gốc gọi hàm là "cv2 dot in range" — đây là `cv2.inRange`; và "size" khi tạo `np.uint8` thực chất là vấn đề **dtype/depth**, đã diễn giải lại cho đúng.
+> Ghi chú: transcript gốc gọi hàm là "cv2 dot in range" — đây là `cv2.inRange`; và "size" khi tạo `np.uint8` thực chất là vấn đề **dtype/depth**, đã diễn giải lại cho đúng.

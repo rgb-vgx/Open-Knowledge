@@ -132,4 +132,4 @@ Cuối cùng, hai lỗi thường gặp giúp phân biệt syntax và semantics:
 
 Vậy là mình đã đi qua comment, case sensitivity, indentation, line continuation và semantics. Bài sau chúng ta bắt tay vào **biến**, rồi tới **data types** và **operators** — hẹn gặp các bạn ở đó!
 
-> ⚠️ Cần kiểm chứng: tài liệu Python chính thức định nghĩa comment chỉ bằng dấu `#`; cú pháp ba dấu nháy là string literal nhiều dòng, thường được dùng như comment. Cách giảng viên mô tả hành vi trong Jupyter Notebook nên được kiểm tra lại trên phiên bản notebook các bạn dùng.
+> ⚠️ Cần kiểm chứng: tài liệu Python chính thức định nghĩa comment chỉ bằng dấu `#`; cú pháp ba dấu nháy là string literal nhiều dòng, thường được dùng như comment. Cách giảng viên mô tả hành vi trong Jupyter Notebook nên được kiểm tra lại trên phiên bản notebook các bạn dùng. Ngoài ra, dùng một biến chưa gán không phải *syntax error* mà là **`NameError`** (lỗi lúc chạy); bài giữ cách gọi của giảng viên ở phần đầu nhưng nên hiểu đúng bản chất.

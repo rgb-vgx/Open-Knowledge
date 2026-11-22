@@ -1,5 +1,5 @@
 ---
-title: 'Bài 28 — Kế thừa (inheritance) trong Python'
+title: 'Bài 028 — Kế thừa (inheritance) trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 28
@@ -40,6 +40,8 @@ car1.drive()   # The person will drive the petrol car
 
 Lưu ý: bên trong method phải gọi `self.engine_type`, không dùng `engine_type` trần. Nếu viết `print(car1.drive())` thì kết quả in ra thêm `None` vì `drive` chỉ `print`, không `return`.
 
+---
+
 ### 🚘 Single inheritance với `super()`
 
 Tesla cũng là một chiếc xe: có windows, doors, engine type, nhưng thêm thuộc tính **self-driving**. Thay vì chép lại toàn bộ, kế thừa từ `Car`:
@@ -67,6 +69,8 @@ tesla1.drive()          # The person will drive the electric car
 ```
 
 Method `drive` không hề viết lại trong `Tesla` nhưng vẫn gọi được — đó chính là phần "thừa kế". Đây là **single inheritance** vì chỉ một class con kế thừa một class cha.
+
+---
 
 ### 🐾 Multiple inheritance: kế thừa nhiều base class
 
@@ -109,6 +113,8 @@ print(dog.owner)     # Krish
 ```
 
 `Dog` override `speak` của `Animal`; method của class con được ưu tiên hơn method cùng tên ở class cha.
+
+---
 
 ### 🧭 Tóm tắt luồng chạy
 

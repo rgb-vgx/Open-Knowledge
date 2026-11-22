@@ -29,7 +29,7 @@ Cần phân biệt: pooling **giảm spatial resolution**, không giảm số ch
 
 ### ❓ Vì sao phải downsampling?
 
-Lấy ảnh **640×640 RGB** — khoảng **1.2 triệu pixel**. Nếu đưa thẳng vào một mạng neural dày đặc, lớp ẩn đầu tiên cũng phải có cỡ 1.2 triệu neuron, và còn cần nhiều lớp hơn nữa. Hậu quả:
+Lấy ảnh **640×640 RGB** — khoảng **1.2 triệu giá trị** (640 × 640 × 3). Nếu đưa thẳng vào một mạng neural dày đặc, lớp ẩn đầu tiên cũng phải có cỡ 1.2 triệu neuron, và còn cần nhiều lớp hơn nữa. Hậu quả:
 
 * **Tính toán đắt** — độ phân giải cao khiến chi phí tăng vọt.
 * **Dễ overfit** — quá nhiều chi tiết, model học luôn cả nhiễu (background, vật không liên quan).
@@ -79,11 +79,11 @@ Hai lần `unsqueeze` thêm chiều **batch** và **channel**, biến tensor th�
 Ta cũng có thể downsampling bằng **strided convolution** — một phép conv học được:
 
 ```python
-conv = torch.nn.Conv2d(1, 1, kernel_size=3, stride=2)
+conv = torch.nn.Conv2d(1, 1, kernel_size=3, stride=1)
 conv_output = conv(image)
 ```
 
-Với kernel 3, stride 2, đầu ra cũng về 2×2. Khác biệt: **convolution có thể học** (trọng số train được), còn **max pooling** chỉ lấy max trong cửa sổ, không có tham số học.
+Với kernel 3, stride 1 trên đầu vào 4×4, đầu ra là 2×2. Khác biệt: **convolution có thể học** (trọng số train được), còn **max pooling** chỉ lấy max trong cửa sổ, không có tham số học.
 
 ### 🔧 Kernel và stride quyết định đầu ra
 

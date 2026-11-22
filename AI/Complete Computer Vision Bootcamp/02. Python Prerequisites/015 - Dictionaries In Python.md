@@ -19,7 +19,7 @@ Chào các bạn! Đây là một trong những bài quan trọng nhất của p
 
 ### 🧠 Dictionary là gì?
 
-**Dictionary** là một collection **có thứ tự tự do** (unordered) lưu dữ liệu theo cặp **key-value**. Ba điểm cốt lõi:
+**Dictionary** là một collection lưu dữ liệu theo cặp **key-value**. (Giảng viên gọi nó là *unordered*; trên thực tế từ Python 3.7, dict giữ **thứ tự chèn**.) Ba điểm cốt lõi:
 
 1. **Key phải là duy nhất** — mỗi key chỉ xuất hiện một lần.
 2. **Key phải immutable** (bất biến) — có thể là chuỗi, số hoặc tuple, nhưng không thể thay đổi sau khi định nghĩa.
@@ -58,11 +58,11 @@ Dictionary là **mutable**, nên có thể thêm, cập nhật và xóa phần t
 
 Ba method lấy dữ liệu rất hay dùng:
 
-* `student.keys()` — lấy toàn bộ key.
-* `student.values()` — lấy toàn bộ value.
-* `student.items()` — lấy toàn bộ cặp key-value, trả về dạng list các tuple `(key, value)`.
+* `student.keys()` — lấy toàn bộ key (trả về **view**, không phải list).
+* `student.values()` — lấy toàn bộ value (view).
+* `student.items()` — lấy toàn bộ cặp key-value dưới dạng các tuple `(key, value)` (view).
 
-Phần **shallow copy** là chỗ giảng viên dặn phải cực kỳ cẩn thận. Nếu làm `student_copy = student` rồi sửa `student["name"]`, thì `student_copy` **cũng bị đổi theo** — vì hai biến cùng trỏ tới một đối tượng. Muốn có bản sao độc lập, phải dùng `student.copy()`; hàm này cấp một vùng nhớ khác, nên sửa bản gốc sẽ **không** ảnh hưởng bản copy. Đây là lỗi nhỏ nhưng rất dễ gặp khi làm dự án.
+Phần **shallow copy** là chỗ giảng viên dặn phải cực kỳ cẩn thận. Nếu làm `student_copy = student` rồi sửa `student["name"]`, thì `student_copy` **cũng bị đổi theo** — vì phép gán này chỉ tạo thêm một **alias** cùng trỏ tới một đối tượng, không phải copy. Muốn có bản sao độc lập ở tầng ngoài, phải dùng `student.copy()` (một **shallow copy**: dict mới, nhưng value lồng bên trong vẫn dùng chung tham chiếu); sửa value trực tiếp trên bản gốc sẽ **không** ảnh hưởng bản copy. Đây là lỗi nhỏ nhưng rất dễ gặp khi làm dự án.
 
 ---
 
@@ -108,6 +108,6 @@ Hai ví dụ thực tế:
 
 Kết quả: `1` xuất hiện 1 lần, `2` hai lần, `3` ba lần, `4` bốn lần. Đây là bài tập giảng viên để các bạn tự làm trước khi xem lời giải.
 
-**2. Gộp hai dictionary.** Với `dict1 = {"a": 1, "b": 2}` và `dict2 = {"b": 3, "c": 4}`, mình gộp bằng cú pháp `{**dict1, **dict2}`. Hai dấu `**` nhận mọi cặp key-value (gọi là **keyword argument**) và trộn vào một dictionary mới. Giảng viên hẹn sẽ giải thích kỹ hơn về `*` và `**` khi học phần **function**.
+**2. Gộp hai dictionary.** Với `dict1 = {"a": 1, "b": 2}` và `dict2 = {"b": 3, "c": 4}`, mình gộp bằng cú pháp `{**dict1, **dict2}`. Hai dấu `**` **giải nén (unpack)** mọi cặp key-value của các mapping đó và trộn vào một dictionary mới; key trùng thì giá trị của dict đứng sau thắng (`b` thành `3`). Giảng viên hẹn sẽ giải thích kỹ hơn về `*` và `**` khi học phần **function**.
 
 Vậy là mình đã đi hết dictionary từ A đến Z: tạo, truy cập, sửa, xóa, method, duyệt, nested, comprehension và ứng dụng. Các bạn nhớ thực hành lại các ví dụ trong notebook nhé. Hẹn gặp ở bài tiếp theo!

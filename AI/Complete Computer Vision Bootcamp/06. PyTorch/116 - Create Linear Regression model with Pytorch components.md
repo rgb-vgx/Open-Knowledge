@@ -147,4 +147,3 @@ def predict_single(age, sex, bmi, children, smoker, region):
 ```
 
 Khi tăng dần tuổi, chi phí dự đoán tăng theo **xu hướng tuyến tính**; so người **hút thuốc** với **không hút thuốc**, mô hình cho thấy rõ chênh lệch chi phí. Các bạn vừa đi trọn một pipeline ML bằng PyTorch: gom dữ liệu → tiền xử lý (split trước, encode đúng cách, chuẩn hóa) → dựng mạng `nn.Sequential` → huấn luyện với `MSELoss` + `Adam` → đánh giá bằng MSE/RMSE/MAE/R². Điểm cốt lõi là **không để rò rỉ dữ liệu** khi encode/scale, và nhớ `model.eval()` + `detach().numpy()` khi dự đoán.
-> ⚠️ Cần kiểm chứng: slug dataset `mirichoi0218/insurance` bị auto-caption làm mờ trong transcript (chỉ đọc rõ "…218"); tên hiển thị của bộ dữ liệu là *Medical Cost Personal Datasets*.

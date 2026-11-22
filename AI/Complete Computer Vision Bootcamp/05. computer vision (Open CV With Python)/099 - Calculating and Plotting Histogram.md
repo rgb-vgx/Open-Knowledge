@@ -30,6 +30,8 @@ Từ histogram ta đọc được nhiều thứ:
 * **Dynamic range:** mức phân bố đều của các giá trị cường độ, không bị lệch hẳn về tối hay sáng.
 * **Equalization:** xem có thể cân bằng lại độ sáng để ảnh không bị thiên lệch về một cường độ nào không.
 
+---
+
 ### 🎨 Histogram cho ảnh RGB
 
 Đầu tiên mình đọc ảnh, chuyển sang RGB rồi tách kênh bằng `cv2.split`:
@@ -68,6 +70,8 @@ Các tham số của `cv2.calcHist(images, channels, mask, histSize, ranges)`:
 
 Nhìn kết quả với ảnh hươu cao cổ: kênh **blue** có đỉnh ở vùng sáng `230–240` (xanh nhạt); **green** đỉnh quanh `170–200`; **red** thấp hơn, dồn ở vùng tối `100–150`. Như vậy ta thấy được tông màu chủ đạo của ảnh.
 
+---
+
 ### 🔄 Chuyển sang HSV để hiểu sâu hơn
 
 Muốn hiểu rõ **độ sáng** của ảnh, ta chuyển từ RGB sang **HSV** (hue, saturation, value):
@@ -77,7 +81,7 @@ image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(image_hsv)
 ```
 
-Điểm khác biệt quan trọng: trong OpenCV, **hue chỉ chạy từ 0 đến 180 độ** (không phải 0–360), còn **saturation** và **value** chạy 0–255 như pixel thường. Vì vậy histogram của ba kênh có range khác nhau:
+Điểm khác biệt quan trọng: trong OpenCV, **hue chỉ chạy từ 0 đến 179** (không phải 0–360; dải bin vẫn tính là `[0, 180)`), còn **saturation** và **value** chạy 0–255 như pixel thường. Vì vậy histogram của ba kênh có range khác nhau:
 
 ```python
 hist_h = cv2.calcHist([h], [0], None, [180], [0, 180])
@@ -108,6 +112,8 @@ plt.show()
 ```
 
 Lưu ý khi dùng `subplots`: phải gọi `set_title`, `set_xlabel`, `set_ylabel` trên từng `axes`, không dùng `plt.title` như trước.
+
+---
 
 ### ✅ Đọc thông tin từ histogram
 

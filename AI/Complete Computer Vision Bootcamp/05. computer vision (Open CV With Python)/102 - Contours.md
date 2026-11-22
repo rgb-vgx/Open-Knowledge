@@ -22,11 +22,15 @@ Chào các bạn! Hôm nay mình học **contour** — cách OpenCV tìm đườ
 
 Vì vậy, nếu `findContours` trả về ba contour, nghĩa là ảnh có ba biên khép kín — tức ba vật thể. Hãy hình dung contour như những nét bút chì bạn vẽ vòng quanh từng đồ vật trong bức ảnh.
 
+---
+
 ### 🎯 Ba ứng dụng chính
 
 1. **Object detection** — tìm contour của vật thể để biết có bao nhiêu vật, và có thể vẽ bounding box quanh chúng.
 2. **Shape analysis** — dựa vào hình dạng contour để đoán đó là tam giác (3 cạnh), hình vuông/chữ nhật (4 cạnh, rộng và cao gần bằng nhau), hay hình tròn (dùng diện tích và chu vi).
 3. **Đo thuộc tính vật thể** — từ contour tính được **diện tích (area)** và **chu vi (perimeter)**, hoặc tỉ lệ diện tích vật thể so với toàn ảnh.
+
+---
 
 ### ⚙️ Thuật toán tìm contour
 
@@ -36,6 +40,8 @@ Quy trình gồm các bước:
 2. **Tạo mask nhị phân** bằng edge detection hoặc thresholding — contour cần ảnh nhị phân chỉ có đen và trắng.
 3. **Gọi `cv2.findContours`** để trích xuất contour.
 4. **Vẽ contour hoặc tạo bounding box**, rồi tính các thuộc tính như diện tích, chu vi.
+
+---
 
 ### 🧪 Mask bằng Canny
 
@@ -66,6 +72,8 @@ cv2.drawContours(contour_image, contours, -1, (0, 255, 0), 5)
 
 Kết quả: ảnh gốc, mask Canny và ảnh contour đặt cạnh nhau. Mask chỉ là các cạnh rời, còn ảnh contour cho thấy đường bao khép kín của **9 vật thể** rõ ràng.
 
+---
+
 ### 🔀 Mask bằng thresholding và bằng HSV
 
 Bài giảng thử thêm hai cách tạo mask. Thứ hai là **thresholding**: dùng `cv2.threshold` với ngưỡng **200** và kiểu `cv2.THRESH_BINARY`, biến mọi pixel trên 200 thành trắng, dưới 200 thành đen. Mask này tuy khác mask Canny nhưng vẫn cho ra cùng bộ contour.
@@ -73,6 +81,8 @@ Bài giảng thử thêm hai cách tạo mask. Thứ hai là **thresholding**: d
 Thứ ba là **`cv2.inRange`** trên ảnh **HSV** — chỉ nhắm một dải màu cụ thể (ví dụ màu xanh dương/tím). Mình khai báo `lower_bound` và `upper_bound` bằng `np.array(..., dtype=np.uint8)` rồi lọc. Cách này không dựa vào biên mà dựa hoàn toàn vào màu, rất hữu ích khi muốn tách một vật theo màu. Lưu ý: cần chỉnh lower/upper cho phù hợp từng ảnh; với ảnh xám thì chỉ cần một kênh, ví dụ lấy vùng **200–255**.
 
 Một mẹo hay: nếu truyền **độ dày `-1`** cho `drawContours`, nó sẽ **tô đầy** toàn bộ vùng contour thay vì chỉ vẽ viền.
+
+---
 
 ### 📦 Sắp xếp contour và vẽ bounding box
 

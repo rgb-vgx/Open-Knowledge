@@ -25,6 +25,8 @@ Blur đem lại hai lợi ích:
 * **Giảm nhiễu (noise):** nếu ảnh có những pixel nhảy loạn 0, 155, 255 ở các vị trí ngẫu nhiên, lấy trung bình sẽ kéo chúng về khoảng giữa, không còn gắt.
 * **Làm mượt ảnh:** các mảng màu chuyển tiếp mềm mại hơn.
 
+---
+
 ### 🧮 Average blur — trung bình đơn giản
 
 Với **average blur**, mỗi pixel ở ảnh đầu ra là **trung bình của các pixel xung quanh** trong cửa sổ kernel. Mình chọn một lưới, lấy trung bình toàn bộ giá trị trong lưới đó và gán cho pixel trung tâm.
@@ -46,6 +48,8 @@ average_blur = cv2.blur(image_gray, (kernel, kernel))
 
 `cv2.blur` nhận ảnh và **kernel size** dưới dạng tuple `(width, height)`. **Kernel càng lớn, độ mờ càng mạnh.**
 
+---
+
 ### 🌫️ Gaussian blur — trung bình có trọng số
 
 **Gaussian blur** dùng trung bình có trọng số: những pixel **càng gần tâm càng có ảnh hưởng lớn hơn**. Nhờ vậy blur trông tự nhiên và mượt hơn — giống kiểu ảnh chụp từ máy DSLR, hậu cảnh mờ dần theo độ sâu chứ không mờ đều một cục.
@@ -61,6 +65,8 @@ Các tham số:
 
 Mình thử `3`, rồi `15`, rồi `31` — càng tăng càng thấy rõ độ mờ.
 
+---
+
 ### 🧪 Median blur — khử nhiễu muối tiêu
 
 **Median blur** thay mỗi pixel bằng **trung vị (median)** của các pixel xung quanh. Nó đặc biệt hiệu quả với **salt and pepper noise** — loại nhiễu đốm hồng, đỏ, trắng, xanh lá xuất hiện ngẫu nhiên mà ảnh gốc không có.
@@ -70,6 +76,8 @@ median_blur = cv2.medianBlur(image_gray, 11)
 ```
 
 Khác với hai hàm trước, `cv2.medianBlur` chỉ nhận **một giá trị kernel duy nhất**, không phải tuple. Giá trị càng lớn, blur càng mạnh, nhưng khử nhiễu mạnh quá có thể làm biến dạng kết quả.
+
+---
 
 ### 📊 So sánh bốn ảnh trên một figure
 
@@ -102,6 +110,8 @@ plt.show()
 ```
 
 Lưu ý: với kernel trong OpenCV, ảnh nên được đưa về **grayscale** trước khi xử lý, và khi hiển thị bằng Matplotlib phải thêm `cmap="gray"`.
+
+---
 
 ### ✅ Chọn kiểu blur nào?
 

@@ -39,6 +39,8 @@ df = pd.DataFrame(iris.data, columns=iris.feature_names)
 df['target'] = iris.target
 ```
 
+---
+
 ### 🧹 Tiền xử lý: split, scale rồi chuyển thành tensor
 
 Mình chia train/test với `test_size=0.2`, `random_state=42` và `stratify=df['target']` để giữ tỉ lệ các lớp. Sau đó tách `X` là toàn bộ cột trừ `target`, còn `y` là cột `target`. Lưu ý phải ghi `columns` (số nhiều) khi drop.
@@ -49,6 +51,8 @@ Tiếp theo là scale bằng **StandardScaler**: `fit_transform` trên train, ch
 X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
 y_train_tensor = torch.tensor(y_train.values, dtype=torch.long)
 ```
+
+---
 
 ### 🧠 Tự dựng mạng neural ba lớp
 
@@ -74,13 +78,16 @@ class IrisClassifier(nn.Module):
 
 Lấy `input_dim = X_train.shape[1]` (=4), `hidden_dim = 16` (tùy chọn), `output_dim = 3`.
 
+---
+
 ### ⚙️ Loss, optimizer và vòng train
 
-Với phân loại nhiều lớp, mình dùng **`nn.CrossEntropyLoss`** — hàm này đã bao gồm softmax bên trong. Optimizer là **Adam** với `lr=0.01`, truyền `model.parameters()`.
+Với phân loại nhiều lớp, mình dùng **`nn.CrossEntropyLoss`** — hàm này đã bao gồm **LogSoftmax + NLLLoss** bên trong. Optimizer là **Adam** với `lr=0.01`, truyền `model.parameters()`.
 
 Vòng train 500 epoch gồm bốn bước quen thuộc: `model.train()`, `optimizer.zero_grad()`, forward để ra `predictions`, tính `loss`, rồi `loss.backward()` và `optimizer.step()`. Cứ mỗi 50 epoch in `loss.item()` với độ chính xác 4 chữ số.
 
 ```python
+model = IrisClassifier(input_dim=4, hidden_dim=16, output_dim=3)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.01)
 
@@ -95,7 +102,9 @@ for epoch in range(500):
         print(f"Epoch {epoch+1}/500 — loss {loss.item():.4f}")
 ```
 
-Loss giảm từ khoảng **0.5** xuống **0.0003** sau 500 epoch — mô hình học được pattern rất tốt.
+Loss giảm từ khoảng **0.5** xuống **0.0003** sau 500 epoch — mô hình học được pattern rất tốt. Trên tập test, độ chính xác đạt khoảng **96%**.
+
+---
 
 ### ✅ Đánh giá và dự đoán một bông hoa mới
 

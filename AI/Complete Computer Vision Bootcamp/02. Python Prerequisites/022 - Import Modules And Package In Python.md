@@ -69,7 +69,7 @@ Sau khi cài xong, package được cài vào môi trường ảo (virtual envir
 
 ### 🗂️ Tự tạo package đầu tiên với `__init__.py`
 
-Đây là phần quan trọng nhất: làm sao tạo **package của riêng mình** để gọi ở file khác. Mình tạo một thư mục, ví dụ `packages`, và đây sẽ là package.
+Đây là phần quan trọng nhất: làm sao tạo **package của riêng mình** để gọi ở file khác. Mình tạo một thư mục tên `package` (số ít, khớp với tên dùng trong lệnh import bên dưới), và đây sẽ là package.
 
 Bên trong thư mục đó, file bắt buộc phải có là `__init__.py`. Đây là **file đặc biệt** dùng để định nghĩa package và khởi tạo namespace. Nó có thể để trống, nhưng **phải tồn tại**, nếu không thư mục chỉ là thư mục thường chứ không thành package.
 
@@ -89,7 +89,7 @@ Lưu ý: file gọi và package phải nằm **cùng một vị trí thư mục*
 
 ### 🧩 Sub-package: package lồng trong package
 
-Giảng viên còn đi thêm một bước: tạo **sub-package** (package con) bên trong package. Mình tạo thư mục `sub_packages` nằm trong `packages`, và **cũng phải có `__init__.py`** thì thư mục đó mới được nhận diện là package.
+Giảng viên còn đi thêm một bước: tạo **sub-package** (package con) bên trong package. Mình tạo thư mục `sub_packages` nằm trong `package`, và **cũng phải có `__init__.py`** thì thư mục đó mới được nhận diện là package.
 
 Trong sub-package, mình tạo file `mult.py` với hàm `multiply(a, b)` trả về `a * b`.
 
@@ -105,7 +105,7 @@ Cách import lúc này đi từng tầng một:
 
 ### ✅ Chạy thử từ file `.py` và tổng kết
 
-Khi làm dự án thật, chúng ta thường gọi các module từ một file `.py` chứ không chỉ trong notebook. Mình tạo `test.py` cùng thư mục, viết `from package.maths import *`, rồi in kết quả:
+Khi làm dự án thật, chúng ta thường gọi các module từ một file `.py` chứ không chỉ trong notebook. Mình tạo `test.py` cùng thư mục, viết `from package.maths import *`, rồi thêm `from package.sub_packages.mult import multiply` để lấy hàm của sub-package, và in kết quả:
 
 * `addition(2, 3)` → `5`.
 * `subtraction(4, 3)` → `1`.
@@ -114,3 +114,5 @@ Khi làm dự án thật, chúng ta thường gọi các module từ một file 
 Để chạy, phải **đứng trong đúng thư mục chứa file** rồi gõ `python test.py`. Nếu không ở đúng chỗ, import sẽ lỗi.
 
 Tóm lại, bài này các bạn đã nắm hai việc: một là import **package dựng sẵn** (`math`, `numpy`) và cài thêm bằng `pip` khi thiếu; hai là tự tạo **package/module riêng** với `__init__.py`, kể cả sub-package lồng nhau. Hẹn các bạn ở bài tiếp theo, khi mình đi qua loạt thư viện chuẩn thường dùng trong Python.
+
+> ⚠️ Cần kiểm chứng: transcript khẳng định `__init__.py` là bắt buộc để thư mục thành package. Điều này đúng với **regular package**, nhưng từ Python 3.3 (PEP 420), thư mục không có `__init__.py` vẫn có thể được import như **namespace package**. Trong phạm vi khóa học, cứ tạo `__init__.py` như giảng viên hướng dẫn.

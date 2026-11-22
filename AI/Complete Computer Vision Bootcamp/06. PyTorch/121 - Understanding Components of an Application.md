@@ -25,6 +25,8 @@ Chào các bạn! Mình đã có model CNN phân loại cat/dog/person và đã 
 
 Hai việc này là "upload" và "see prediction" — front end chỉ lo giao diện, không chứa logic model.
 
+---
+
 ### ⚙️ Back end: nơi xử lý logic
 
 **Back end** chịu trách nhiệm **logic và xử lý**, gồm hai phần:
@@ -34,9 +36,13 @@ Hai việc này là "upload" và "see prediction" — front end chỉ lo giao di
 
 Back end cũng là nơi **load model**, quyết định chạy **CPU hay GPU**, và gọi inference bằng PyTorch. Toàn bộ phần "inference" gồm: pre-processing → model inference → post-processing. Input là ảnh, output là nhãn `dog`/`cat`/`person`.
 
+---
+
 ### 🧠 Model: trái tim của ứng dụng
 
 **Model** là thành phần thứ ba — ở đây là một **deep learning model** đã train để phân loại cat, dog, person, chính là **custom CNN** mình tự dựng bằng PyTorch ở bài trước. Back end gọi model bằng cách đưa tensor vào và nhận tensor xác suất ra.
+
+---
 
 ### ☁️ Deployment: đưa app lên internet
 
@@ -47,6 +53,8 @@ Back end cũng là nơi **load model**, quyết định chạy **CPU hay GPU**, 
 * **Streamlit Cloud** — miễn phí, có free tier.
 
 Trong dự án này mình chọn **Hugging Face Spaces**.
+
+---
 
 ### 🔗 Ghép các mảnh lại thành luồng chạy
 

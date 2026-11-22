@@ -35,9 +35,9 @@ Nhờ vậy nó không chỉ nói “đây là car/person” mà còn **tách t�
 
 ### 🔺 FPN — vì sao cần?
 
-**Feature pyramid** là component phát hiện object ở **nhiều scale**. Ảnh đi qua các tầng downsampling tạo `C3, C4, C5`. Từ `C5` áp **conv 1×1, 256 channel** → `P5`; rồi kết hợp `P5` với `C4` → `P4`, `P4` với `C3` → `P3`, tương tự `P2`. Các `P2–P5` gọi là **pyramid features**.
+**Feature pyramid** là component phát hiện object ở **nhiều scale**. Ảnh đi qua các tầng downsampling; feature ở tầng sâu mang thông tin trừu tượng, hợp với **object lớn**, còn feature ở tầng sớm giữ chi tiết, hợp với **object nhỏ**. FPN kết hợp các mức này (lấy feature mức sâu rồi gộp với mức nông hơn) để tạo ra các level feature dùng cho dự đoán.
 
-Lý do: tầng sâu có thông tin trừu tượng, hợp với **object lớn**; tầng sớm còn chi tiết, hợp với **object nhỏ**. Kết hợp nhiều mức → phát hiện được nhiều object hơn.
+Lý do: kết hợp nhiều mức → phát hiện được nhiều object hơn.
 
 ### 🔍 ROI Pooling vs ROI Align
 

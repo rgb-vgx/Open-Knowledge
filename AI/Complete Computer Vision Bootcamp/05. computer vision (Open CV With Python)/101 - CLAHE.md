@@ -20,6 +20,8 @@ Chào các bạn! Bài trước mình đã làm **histogram equalization** toàn
 
 **Histogram equalization** thường (global) chỉ tăng tương phản cho toàn bộ ảnh, không quan tâm vùng nào sáng vùng nào tối. **CLAHE** thì áp dụng histogram equalization trên từng vùng nhỏ (**tile**) của ảnh, nhờ vậy nó tập trung vào tương phản cục bộ và tránh được các artifact như **noise amplification**. Nó còn **giới hạn mức tăng tương phản** trong mỗi tile để không làm vùng nào bị quá sáng.
 
+---
+
 ### ⚙️ CLAHE hoạt động theo bốn bước
 
 1. **Chia ảnh thành các tile** — ví dụ chia ảnh thành lưới các ô nhỏ.
@@ -28,6 +30,8 @@ Chào các bạn! Bài trước mình đã làm **histogram equalization** toàn
 4. **Ghép các tile lại bằng bilinear interpolation** — mục đích là xóa các đường nối (seam) giữa các tile, vì nếu ghép thô sẽ thấy vệt lạ ở ranh giới.
 
 Ví dụ trong bài: ảnh xám có cường độ chỉ nằm trong khoảng **50–100**, tức là khá tối và thiếu chi tiết. CLAHE chia ảnh thành các block **8×8 pixel**, mỗi block được equalize để map giá trị về **0–255**, rồi bị **clip** ở một ngưỡng (ví dụ **180**) để không đẩy mọi thứ lên 255 và làm ảnh cháy.
+
+---
 
 ### 📷 Cài đặt trên ảnh xám
 
@@ -53,6 +57,8 @@ Hai tham số quan trọng:
 * **`clipLimit`** — ngưỡng giới hạn tương phản. Tăng lên thì tăng tương phản mạnh hơn; giảm xuống để tránh over-enhancement. Mình để **2.0**.
 * **`tileGridSize`** — số tile theo chiều rộng và cao. Tile nhỏ làm nổi tương phản cục bộ nhưng dễ sinh nhiễu; tile lớn cho kết quả mượt hơn nhưng có thể mất chi tiết.
 
+---
+
 ### 👁️ So sánh kết quả
 
 Khi plot ba ảnh cạnh nhau:
@@ -62,6 +68,8 @@ Khi plot ba ảnh cạnh nhau:
 * **Ảnh CLAHE** — tương phản được cải thiện nhưng cân bằng hơn: chi tiết như vân lông hươu cao cổ được làm nổi mà không khuếch đại nhiễu ở vùng trời.
 
 Đó chính là điểm mạnh: CLAHE làm việc trên từng vùng nhỏ, equalize cục bộ và chặn mức tăng bằng clip limit, nên kết quả "dễ nhìn" và ít nhiễu hơn.
+
+---
 
 ### 🎨 Áp dụng CLAHE cho ảnh màu qua không gian YUV
 

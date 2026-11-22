@@ -127,4 +127,4 @@ Rồi vẽ **2 hàng × 3 cột**: ô đầu là ảnh gốc, 5 ô còn lại l�
 
 Ta đã nắm **resize** (đổi kích thước tự do), **scale** (giữ aspect ratio), và 5 phương pháp **interpolation** cùng đánh đổi chất lượng/tốc độ của chúng. Một điểm đáng nhớ: khi **upscale**, thuật toán dễ "bịa" pixel hơn nên mất chi tiết rõ hơn so với downscale — đó cũng là lý do các mô hình generative như **GAN** ra đời để sinh pixel mới thay vì nội suy.
 
-> ⚠️ Cần kiểm chứng: transcript gốc đọc `INTER_LANCZOS4` thành "inter links four / lankos" — tên hàm chính thức là `cv2.INTER_LANCZOS4`.
+> Ghi chú: transcript gốc đọc `INTER_LANCZOS4` thành "inter links four / lankos"; tên hàm chính thức là `cv2.INTER_LANCZOS4`.

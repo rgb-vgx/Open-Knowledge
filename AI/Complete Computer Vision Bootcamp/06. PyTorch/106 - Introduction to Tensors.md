@@ -26,6 +26,8 @@ import torch
 
 Mình tạo một cell mới và bắt đầu với tensor đầu tiên.
 
+---
+
 ### 0️⃣ Tensor 0 chiều — scalar
 
 Mảng 0 chiều, hay tensor 0 chiều, trong PyTorch gọi là **scalar**. Nó giống như một biến Python bình thường, chỉ chứa một giá trị đơn.
@@ -40,6 +42,8 @@ print("Shape:", scalar.shape)
 
 Kết quả: giá trị là `tensor(42)`, **dimension bằng 0**, còn `shape` là `torch.Size([])` — rỗng, vì tensor 0 chiều không có shape.
 
+---
+
 ### ➡️ Tensor 1 chiều — vector
 
 Tensor 1 chiều gọi là **vector**. Cách tạo vẫn là `torch.tensor`, nhưng giá trị truyền vào đổi từ một số thành một **list**.
@@ -52,7 +56,9 @@ print("Dimension:", vector.dim())
 print("Shape:", vector.shape)
 ```
 
-Lần này dimension là `1`, và shape là `torch.Size([3])` — tổng số phần tử là 3. Shape thực chất dùng `torch.size` bên trong để trả về số phần tử.
+Lần này dimension là `1`, và shape là `torch.Size([3])` — tổng số phần tử là 3. Shape thực chất được `Tensor.size()` trả về dưới dạng `torch.Size`.
+
+---
 
 ### 🔲 Tensor 2 chiều — matrix
 
@@ -67,6 +73,8 @@ print("Shape:", matrix.shape)
 ```
 
 Kết quả dimension là `2`, shape là `torch.Size([2, 2])`. Mỗi list con là một chiều 1, bọc thêm một lớp ngoặc nữa thành 2 chiều.
+
+---
 
 ### 🧊 Tensor 3 chiều
 
@@ -84,6 +92,8 @@ print("Shape:", tensor_3d.shape)
 ```
 
 Dimension là `3`, shape là `torch.Size([2, 2, 2])` — tức hai khối 2x2.
+
+---
 
 ### ⚡ Đưa tensor lên GPU
 

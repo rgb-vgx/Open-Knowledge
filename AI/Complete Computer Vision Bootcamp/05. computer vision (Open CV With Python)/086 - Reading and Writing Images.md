@@ -39,6 +39,8 @@ conda activate myenv
 
 Nếu dấu nhắc chuyển sang `(myenv)` nghĩa là môi trường đã hoạt động. Tiếp theo cài extension **Jupyter** của Microsoft trong VSCode để mở được notebook, rồi tạo file `reading_and_writing.ipynb` (`.ipynb` là viết tắt của **interactive Python notebook**). Bấm **Select Kernel**, chọn **Python Environments** rồi chọn kernel `myenv`.
 
+---
+
 ### 🧪 Cài OpenCV và ipykernel
 
 Trong notebook, cài trực tiếp bằng dấu `!`:
@@ -49,6 +51,8 @@ Trong notebook, cài trực tiếp bằng dấu `!`:
 ```
 
 `ipykernel` giúp chạy các cell với kernel đã chọn. Nếu VSCode đã cài sẵn, pip sẽ báo `Requirement already satisfied`. Chạy xong, mình xoá log cho notebook gọn rồi bắt tay vào code.
+
+---
 
 ### 🖼️ Đọc ảnh và kiểm tra
 
@@ -75,6 +79,8 @@ else:
 
 Chạy cell, nếu in ra "Image loaded successfully" là ảnh đã nạp đúng.
 
+---
+
 ### 👁️ Hiển thị ảnh
 
 Để xem ảnh, dùng ba dòng:
@@ -90,6 +96,8 @@ cv2.destroyAllWindows()
 * `cv2.destroyAllWindows()` đóng mọi cửa sổ OpenCV và giải phóng bộ nhớ.
 
 Khi chạy, cửa sổ hiện ảnh; bấm phím bất kỳ (ví dụ `Q`) thì cửa sổ đóng và cell kết thúc.
+
+---
 
 ### 💾 Ghi ảnh sau khi xử lý
 

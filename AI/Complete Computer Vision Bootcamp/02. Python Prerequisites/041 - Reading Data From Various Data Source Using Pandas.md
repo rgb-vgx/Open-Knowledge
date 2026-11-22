@@ -1,5 +1,5 @@
 ---
-title: 'Bài 41 — Đọc dữ liệu từ nhiều nguồn với pandas'
+title: 'Bài 041 — Đọc dữ liệu từ nhiều nguồn với pandas'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 41
@@ -37,19 +37,24 @@ print(df)
 
 `pd.read_json` đọc được cả JSON dạng list các object lẫn key–value, và trả về DataFrame với cột theo key.
 
+---
+
 ### 🔁 Chuyển DataFrame ngược lại JSON bằng `to_json`
 
 ```python
-print(df.to_json())                    # orient mặc định = "index"
+print(df.to_json())                    # orient mặc định = "columns"
 print(df.to_json(orient="records"))    # mỗi hàng thành một object
 ```
 
 Tham số **`orient`** quyết định bố cục:
 
-* `orient="index"` (mặc định): key ngoài cùng là **tên cột**, value là dict `{index: giá_trị}`.
+* `orient="columns"` (mặc định với DataFrame): key ngoài cùng là **tên cột**, value là dict `{index: giá_trị}`.
+* `orient="index"`: key ngoài cùng là **index (nhãn hàng)**, value là dict `{tên_cột: giá_trị}`.
 * `orient="records"`: mỗi phần tử là một **bản ghi** — đúng dạng JSON ban đầu, dễ đọc và phổ biến khi trao đổi dữ liệu.
 
 pandas còn nhiều giá trị `orient` khác (`columns`, `values`, `split`...); xem thêm trong tài liệu `DataFrame.to_json`.
+
+---
 
 ### 🌐 Đọc CSV trực tiếp từ URL
 
@@ -69,6 +74,8 @@ df.to_csv("wine.csv")
 ```
 
 File `wine.csv` được tạo ngay trong thư mục hiện tại.
+
+---
 
 ### 🕸️ Đọc bảng HTML bằng `read_html`
 
@@ -93,6 +100,8 @@ pip install beautifulsoup4
 
 Giảng viên gặp đúng chuỗi lỗi này khi đọc trang danh sách ngân hàng thất bại (FDIC failed bank list) — cứ đọc thông báo lỗi và cài thư viện còn thiếu là được.
 
+---
+
 ### 📗 Đọc Excel
 
 ```python
@@ -101,6 +110,8 @@ df = pd.read_excel("data.xlsx", sheet_name=0)
 
 * `sheet_name=0` lấy sheet đầu tiên; có thể truyền tên sheet hoặc list tên sheet.
 * pandas cần engine đọc `.xlsx` (thường là **openpyxl**). Thiếu engine sẽ báo lỗi "No module named..." — cài bằng `pip install openpyxl`.
+
+---
 
 ### 🥒 Pickle — lưu DataFrame dạng nhị phân
 
@@ -114,6 +125,8 @@ df2 = pd.read_pickle("data.pkl")  # deserialize
 File `.pkl` là nhị phân, mở bằng editor thường sẽ ra ký tự lộn xộn — đó là bình thường. Pickle rất tiện khi lưu **model đã train** trong dự án machine learning để load lại sau.
 
 > ⚠️ Cần kiểm chứng: transcript đọc tên hàm không rõ ("two underscore pickle", "read underscore pickle file"). Theo tài liệu pandas, API chính xác là **`DataFrame.to_pickle(path)`** và **`pd.read_pickle(path)`**.
+
+---
 
 ### 🗺️ Bản đồ các hàm `read_*`
 

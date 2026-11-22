@@ -1,5 +1,5 @@
 ---
-title: 'Bài 32 — Magic methods (dunder methods) trong Python'
+title: 'Bài 032 — Magic methods (dunder methods) trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 32
@@ -37,6 +37,8 @@ Hai cái quan trọng nhất trong bài này:
 * **`__init__`** — khởi tạo instance mới (constructor).
 * **`__str__`** — trả về biểu diễn chuỗi của object.
 
+---
+
 ### 🖨️ `__str__` — thay đổi cách object hiện ra khi `print`
 
 Mặc định, in một object sẽ ra dạng thông báo kèm địa chỉ bộ nhớ:
@@ -71,6 +73,8 @@ print(person)   # Krish, 34 years old
 
 `print(person)` bây giờ gọi tới `__str__` của bạn thay vì biểu diễn mặc định. Đây là cách "dạy" object tự mô tả mình.
 
+---
+
 ### 🧾 `__repr__` — biểu diễn "chính thức"
 
 `__repr__` trả về **biểu diễn chính thức** (official string representation) của object, thường hướng tới lập trình viên và lý tưởng nhất là chuỗi có thể dùng để tái tạo object.
@@ -97,9 +101,11 @@ Khác biệt cần nhớ:
 | `__str__` | Người dùng cuối, dễ đọc | `print(obj)`, `str(obj)` |
 | `__repr__` | Lập trình viên, chính xác | `repr(obj)`, hiển thị trong console/debugger |
 
+---
+
 ### 🛠️ Tinh thần chung
 
-Mọi magic method đều có triển khai mặc định. Muốn object của mình hành xử khác, chỉ cần **định nghĩa lại method đó trong class** — đúng như cách `__str__` và `__repr__` được override ở trên. Ngoài ra còn rất nhiều dunder khác như `__eq__`, `__len__`, `__add__`... tùy nhu cầu.
+Nhiều magic method đã có hành vi mặc định (ví dụ `__str__` in ra địa chỉ object, `__eq__` so sánh danh tính). Muốn object của mình hành xử khác, chỉ cần **định nghĩa lại method đó trong class** — đúng như cách `__str__` và `__repr__` được override ở trên. Riêng vài dunder như `__len__`, `__add__` không có sẵn hành vi dùng được: không định nghĩa thì `len(obj)` hoặc `obj + other` sẽ báo `TypeError`. Ngoài ra còn rất nhiều dunder khác như `__eq__`, `__len__`, `__add__`... tùy nhu cầu.
 
 ---
 

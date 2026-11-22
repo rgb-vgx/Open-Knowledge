@@ -1,5 +1,5 @@
 ---
-title: 'Bài 39 — pandas: Series và DataFrame'
+title: 'Bài 039 — pandas: Series và DataFrame'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 39
@@ -36,6 +36,8 @@ Sau đó import:
 import pandas as pd
 ```
 
+---
+
 ### 📏 Series từ list
 
 ```python
@@ -48,6 +50,8 @@ print(type(series))   # <class 'pandas.core.series.Series'>
 
 Kết quả kèm cột index mặc định `0..4` bên trái và giá trị bên phải. Có thể hình dung Series như **một cột duy nhất** của bảng.
 
+---
+
 ### 📚 Series từ dictionary
 
 ```python
@@ -57,6 +61,8 @@ series_dict = pd.Series(data)
 
 Điểm khác biệt: **key của dictionary trở thành index**, value thành giá trị của Series.
 
+---
+
 ### 🏷️ Chỉ định index riêng
 
 ```python
@@ -65,6 +71,8 @@ series_custom = pd.Series(data, index=["a", "b", "c"])
 ```
 
 Khi đó index là `a, b, c` thay vì `0, 1, 2`. Số index phải khớp số phần tử.
+
+---
 
 ### 🗂️ DataFrame từ dictionary of lists
 
@@ -81,7 +89,9 @@ df = pd.DataFrame(data)
 print(df)
 ```
 
-Kết quả giống một bảng Excel: ba cột `name`, `age`, `city`, ba hàng, index mặc định 0–2. Có thể chuyển ngược về NumPy bằng `np.array(df)` — mất nhãn cột, chỉ còn dữ liệu.
+Kết quả giống một bảng Excel: ba cột `name`, `age`, `city`, ba hàng, index mặc định 0–2. Giảng viên cũng nhắc quan hệ với NumPy: mảng NumPy **1 chiều** có thể chuyển thành **Series**, còn mảng **2 chiều** chuyển thành **DataFrame**.
+
+---
 
 ### 📋 DataFrame từ list of dictionaries
 
@@ -99,6 +109,8 @@ df = pd.DataFrame(data)
 
 Cách này tiện khi dữ liệu đến dưới dạng bản ghi JSON.
 
+---
+
 ### 📥 Đọc CSV và xem nhanh
 
 ```python
@@ -109,6 +121,8 @@ print(df.tail())    # 5 dòng cuối
 ```
 
 `pd.read_csv` là cửa vào phổ biến nhất với dữ liệu thật. Tương tự còn `pd.read_excel` cho file Excel.
+
+---
 
 ### 🎯 Truy cập dữ liệu trong DataFrame
 
@@ -129,6 +143,8 @@ print(df.iat[2, 2])      # phần tử hàng 2, cột 2 (vị trí)
 | `.at[...]` / `.iat[...]` | Truy cập **một phần tử** duy nhất (nhãn / vị trí) |
 
 Lưu ý quan trọng: khi lấy một cột bằng `df["name"]`, kết quả là **Series**, không phải DataFrame.
+
+---
 
 ### 🛠️ Thêm, sửa, xóa cột
 
@@ -158,6 +174,8 @@ Xóa theo hàng cũng dùng `drop` với index:
 ```python
 df.drop(0, inplace=True)   # xóa hàng index 0
 ```
+
+---
 
 ### 📊 Thống kê mô tả
 

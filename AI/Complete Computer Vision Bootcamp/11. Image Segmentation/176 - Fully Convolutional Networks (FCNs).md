@@ -29,7 +29,7 @@ Thay vì FC, phần cuối dùng một **convolution block 1×1** với **số o
 
 ### 📄 Các thành phần trong paper
 
-Paper *Fully Convolutional Networks for Semantic Segmentation* (2016) định nghĩa: biến FC layer thành conv layer, cho phép mạng classification **xuất ra spatial map**; kèm **interpolation layer khả vi** và **spatial loss** (kiểu dice loss) để tối ưu pixel-level.
+Paper *Fully Convolutional Networks for Semantic Segmentation* (CVPR 2015) định nghĩa: biến FC layer thành conv layer, cho phép mạng classification **xuất ra spatial map**; kèm **interpolation layer khả vi** và **spatial loss** (kiểu dice loss) để tối ưu pixel-level.
 
 Kiến trúc: `conv1-pool1 … conv5-pool5`, rồi thêm `conv6`, `conv7`. Sau **5 lần pooling**, độ phân giải giảm **32 lần** → dự đoán **32× upsample** là **FCN-32**. Nhưng có ba biến thể:
 

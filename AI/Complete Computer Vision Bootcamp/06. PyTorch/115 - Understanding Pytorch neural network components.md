@@ -123,6 +123,7 @@ y = torch.randint(0, 3, (10,))
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.01)
+epochs = 10
 
 for epoch in range(epochs):
     optimizer.zero_grad()
@@ -132,7 +133,7 @@ for epoch in range(epochs):
     optimizer.step()
 ```
 
-Một điểm đáng chú ý: khi dùng **`nn.CrossEntropyLoss`**, PyTorch **tự động** áp dụng bước activation ở đầu ra (một dạng softmax nâng cao), nên bạn **không cần** thêm softmax thủ công. Đó là lý do `criterion` là biến quen thuộc trong hầu hết repo PyTorch.
+Một điểm đáng chú ý: khi dùng **`nn.CrossEntropyLoss`**, PyTorch **tự động** áp dụng **LogSoftmax + NLLLoss** ở đầu ra, nên bạn **không cần** thêm softmax thủ công. Đó là lý do `criterion` là biến quen thuộc trong hầu hết repo PyTorch.
 
 ---
 

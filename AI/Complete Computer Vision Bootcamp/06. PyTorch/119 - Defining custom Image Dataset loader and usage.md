@@ -35,11 +35,15 @@ classification_dataset_v3/
 
 Dataset được mình ghép từ hai nguồn Kaggle: **cat vs dog** và **human images** (gộp man + woman thành lớp **person**), sau đó làm sạch và giữ lại ba lớp **cat, dog, person**.
 
+---
+
 ### 🧠 Vì sao ảnh cần xử lý riêng
 
 Với dữ liệu số, `x1..x6` chính là feature và cột `target` là nhãn — rõ ràng ngay khi đọc DataFrame. Với ảnh thì folder chỉ cho biết **feature là ảnh**, nhưng nhãn phải suy ra từ **tên thư mục cha**. Model không hiểu "cat/dog/person", nó chỉ hiểu **index 0, 1, 2**. Vì vậy trước khi train, mình phải tự tạo cấu trúc `(image_path, label)` từ folder.
 
 Ảnh được nạp qua **PIL** hoặc OpenCV thành numpy array (grayscale hoặc RGB). Model sẽ nhận numpy/tensor và trả về index lớp.
+
+---
 
 ### 🏗️ ImageDataset với ba phương thức
 
@@ -75,7 +79,9 @@ class ImageDataset(Dataset):
         return image, label
 ```
 
-Điểm quan trọng: `enumerate(os.listdir(image_dir))` gán nhãn **theo thứ tự alphabet** của tên thư mục (person → 0, cat → 1, dog → 2 trong lần chạy của mình). Mình lưu mapping này vào `self.class_name` để lúc dự đoán dịch ngược index ra tên lớp.
+Điểm quan trọng: `enumerate(os.listdir(image_dir))` gán nhãn **theo thứ tự mà `os.listdir` trả về** — thứ tự này không được đảm bảo là alphabet (trong lần chạy của mình: person → 0, cat → 1, dog → 2). Mình lưu mapping này vào `self.class_name` để lúc dự đoán dịch ngược index ra tên lớp.
+
+---
 
 ### 🔄 Transform: resize và chuyển sang tensor
 
@@ -96,6 +102,8 @@ test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
 `Resize((128, 128))` đưa mọi ảnh về cùng kích thước; `ToTensor()` đổi PIL Image thành tensor và scale pixel về **[0, 1]**. Transform được truyền vào `__init__` với mặc định `None`: nếu có thì áp dụng, nếu không thì bỏ qua.
 
+---
+
 ### ✅ Kiểm tra batch và vẽ ảnh xác thực
 
 Duyệt `train_loader` cho ra `images.shape = torch.Size([32, 3, 128, 128])` và `labels.shape = torch.Size([32])` — đúng 32 ảnh, 3 kênh, 128×128. Batch cuối có thể lẻ (ví dụ 10 ảnh) nếu không chia hết.
@@ -109,7 +117,7 @@ import matplotlib.pyplot as plt
 for images, labels in train_loader:
     img = images[0].numpy().transpose(1, 2, 0)
     label = labels[0].item()
-    plt.imshow(img, vmin=0, vmax=255)
+    plt.imshow(img, vmin=0, vmax=1)   # ToTensor() đã scale pixel về [0, 1]
     print(train_dataset.class_name[label])
     break
 ```

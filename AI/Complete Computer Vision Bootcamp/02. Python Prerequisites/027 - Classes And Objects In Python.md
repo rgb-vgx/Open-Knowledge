@@ -1,5 +1,5 @@
 ---
-title: 'Bài 27 — Class và object trong Python'
+title: 'Bài 027 — Class và object trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 27
@@ -37,6 +37,8 @@ print(audi)         # <__main__.Car object at 0x...>
 
 `audi` và `bmw` đều là **object** — chúng được *instantiate* từ class `Car`, nằm ở những vùng nhớ khác nhau. Cùng một class `Car`, nhưng mỗi object đại diện một chiếc xe cụ thể.
 
+---
+
 ### ⚠️ Vì sao không nên gán attribute tùy tiện
 
 Có thể gán thẳng thuộc tính cho từng object:
@@ -51,6 +53,8 @@ print(tata.windows)   # AttributeError!
 ```
 
 `audi` có `windows` nhưng `tata` thì không — mỗi object tự mọc thuộc tính riêng, không nhất quán. Đây **không phải cách làm chuẩn**. Muốn mọi object đều có đủ thuộc tính ngay từ đầu, phải khai báo trong **constructor**.
+
+---
 
 ### 🔧 `__init__` — constructor khởi tạo thuộc tính
 
@@ -82,6 +86,8 @@ print(dog2.name)   # Lucy
 
 Nếu gọi `Dog()` mà thiếu tham số, Python báo thiếu **positional argument** `name` và `age`.
 
+---
+
 ### 🐕 Instance method — hành vi của object
 
 **Instance method** là hàm định nghĩa trong class, nhận `self` làm tham số đầu để truy cập instance variable:
@@ -107,6 +113,8 @@ dog2.bark()   # Lucy says woof
 ```
 
 Cùng một method, nhưng kết quả khác nhau vì `self` trỏ tới object khác nhau. Đây chính là sức mạnh của blueprint: mỗi object dùng chung attributes và methods nhưng với dữ liệu riêng.
+
+---
 
 ### 🏦 Ví dụ trọn vẹn: tài khoản ngân hàng
 
@@ -145,6 +153,8 @@ print(account.get_balance())   # 4800
 ```
 
 `withdraw` kiểm tra `amount > self.balance` trước khi trừ tiền — đây là ví dụ nhỏ cho việc đóng gói logic nghiệp vụ vào bên trong class. Tham số `balance=0` có giá trị mặc định, khớp với ý tưởng tài khoản mới mở có số dư bằng 0.
+
+---
 
 ### 💡 Vài lưu ý thực hành
 

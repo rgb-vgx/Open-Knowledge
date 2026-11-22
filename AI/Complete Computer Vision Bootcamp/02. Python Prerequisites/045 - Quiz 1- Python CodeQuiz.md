@@ -1,5 +1,5 @@
 ---
-title: 'Bài 45 — Quiz 1: ôn tập Python qua bài logging'
+title: 'Bài 045 — Quiz 1: ôn tập Python qua bài logging'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 45
@@ -40,6 +40,8 @@ logging.basicConfig(
 
 Tự hỏi: nếu bỏ `StreamHandler` thì log còn hiện ra màn hình không? (Không.)
 
+---
+
 ### 🏷️ Câu hỏi 2: Logger đặt tên thế nào?
 
 ```python
@@ -47,6 +49,8 @@ logger = logging.getLogger("arithmetic_app")
 ```
 
 Tên `arithmetic_app` xuất hiện ở cột tên logger trong mỗi dòng log. Khác với `root` mặc định, tên riêng giúp lọc log theo module.
+
+---
 
 ### 🔢 Câu hỏi 3: Viết hàm có log
 
@@ -71,6 +75,8 @@ def multiply(a, b):
 
 Điểm cần nhớ: log **trước khi** `return`, và nhớ `return` — thiếu `return` là lỗi kinh điển (giảng viên từng mắc đúng lỗi này trong video).
 
+---
+
 ### 🚨 Câu hỏi 4: Bắt lỗi chia cho 0 và ghi log
 
 ```python
@@ -89,6 +95,8 @@ def divide(a, b):
 
 Đây là sự kết hợp của hai chủ đề lớn trong phần này: **exception handling** và **logging**.
 
+---
+
 ### ▶️ Câu hỏi 5: Kết quả khi chạy
 
 ```python
@@ -105,16 +113,20 @@ File `app1.log` ghi lại từng phép tính kèm kết quả, và dòng cuối 
 ... arithmetic_app ERROR Division by zero attempted: 20 / 0
 ```
 
+---
+
 ### 🐞 Câu hỏi 6: Vì sao gặp lỗi "not all arguments converted during string formatting"?
 
 Lỗi này xuất hiện khi chuỗi log và tham số không khớp — thường do **thiếu dấu ngoặc đóng** trong f-string hoặc truyền sai tham số. Giảng viên gặp lỗi ngay trong video và sửa bằng cách kiểm tra lại cặp ngoặc của `f"..."`.
 
 Bài học: **đọc kỹ thông báo lỗi, sửa từng chỗ**; lỗi cú pháp nhỏ là chuyện bình thường khi viết code.
 
+---
+
 ### ✅ Checklist tự đánh giá
 
 1. Giải thích được 5 mức log và thứ tự nghiêm trọng.
-2. Biết `basicConfig` chỉ có hiệu lực **một lần** (Jupyter cần restart kernel).
+2. Biết `basicConfig` không làm gì khi root logger đã có handler (thực tế là chỉ cấu hình được một lần; Jupyter cần restart kernel).
 3. Biết phân biệt `FileHandler` và `StreamHandler`.
 4. Viết được logger riêng theo tên module.
 5. Kết hợp được `try/except` với `logger.error`.

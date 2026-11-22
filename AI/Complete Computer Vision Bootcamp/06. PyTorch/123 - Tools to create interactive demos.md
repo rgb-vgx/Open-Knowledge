@@ -23,11 +23,15 @@ Mình chia các công cụ thành **hai loại**:
 * **Loại tự tạo UI và lo backend luôn** — gồm **Dash** (của Plotly), **Streamlit** và **Gradio**. Chúng tự sinh giao diện từ một hàm Python, không cần viết HTML/CSS.
 * **Loại chỉ cung cấp API** — gồm **Flask** và **FastAPI**. Chúng cho bạn toàn quyền kiểm soát API và backend, nhưng **không có UI**; bạn phải tự viết front end bằng HTML, CSS, JavaScript hoặc React.
 
+---
+
 ### 🖱️ Loại tự sinh UI: nhanh, gọn, hợp prototype
 
 Dash, Streamlit, Gradio cho phép **tạo UI nhanh**, **tự sinh interface từ hàm Python**. Bạn định nghĩa một hàm Python, gắn input/output là công cụ lo giao diện. Hạn chế: chỉ sinh UI từ **Python**, không sinh từ ngôn ngữ khác.
 
 Nếu bạn muốn làm một **prototype nhỏ** để xem model chạy ra sao và cho người khác dùng thử, đây là lựa chọn hợp lý.
+
+---
 
 ### 🔌 Loại thuần API: linh hoạt nhưng phải tự làm front end
 
@@ -37,17 +41,23 @@ Ví dụ, nút "hello" gọi API một, API này gọi một hàm NLP để dự
 
 Nếu làm một website lớn kiểu Amazon với database, nhiều người dùng, hệ gợi ý sản phẩm, bạn sẽ dùng front end chuyên nghiệp + backend Python qua Flask/FastAPI. Còn để **prototype nhanh**, dùng Dash/Streamlit/Gradio.
 
+---
+
 ### 📊 Dash: mạnh cho ứng dụng dữ liệu
 
 **Dash** (Plotly) phù hợp với ứng dụng **data-intensive**: xem phân bố dữ liệu, vẽ đồ thị số, đồ thị phân loại. App Dash tối giản gồm: cài `dash`, import `dash`, `html`, `dcc`, `callback`, `plotly`, `pandas`; tạo `app`, gán `app.layout` với header, dropdown và graph; dùng callback để vẽ lại graph khi đổi lựa chọn. Chạy bằng `python app.py` — Dash chạy server **Flask** bên dưới.
 
 Mình đánh giá Dash tốt cho dashboard dữ liệu, nhưng với **model inference** thì nên chọn Streamlit hoặc Gradio.
 
+---
+
 ### 🎈 Streamlit: nhiều component sẵn
 
 **Streamlit** mạnh hơn Dash về component. Chỉ cần `st.write`, `st.line_chart`, `st.slider`, `st.file_uploader`, `st.radio`, `st.date_input`, `st.color_picker`… là có ngay UI tương ứng. Có cả component cho chat (như ChatGPT, Gemini). Deploy lên **Streamlit Cloud** rất đơn giản: kết nối GitHub, trỏ vào file `app.py`, nó tự cài và chạy.
 
 Một lưu ý thực tế: tác giả gặp lỗi khi import `torch` trong Streamlit ở phiên bản hiện tại — có thể là vấn đề tạm thời, nhưng đáng để ý.
+
+---
 
 ### 🎛️ Gradio: chọn cho dự án này
 

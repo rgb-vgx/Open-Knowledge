@@ -52,7 +52,7 @@ Thay vì trên toàn ma trận, mình có thể chỉ định `dim`. Quy ước 
 * `dim=1` → thao tác **dọc theo cột** (gộp các cột lại, cho kết quả theo từng hàng).
 
 ```python
-print(matrix.max(dim=0))     # mỗi cột: [7, 8, 9]
+print(matrix.max(dim=0))     # values theo cột: [7, 8, 9] (kèm indices)
 print(matrix.sum(dim=0))     # mỗi cột: [12, 15, 18]
 print(matrix.sum(dim=1))     # mỗi hàng: [6, 15, 24]
 ```

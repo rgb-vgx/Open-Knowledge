@@ -23,7 +23,7 @@ Mình dùng môi trường **CPU only** vì bài này chỉ inference, không tr
 pip install ultralytics
 ```
 
-Sau đó import và kiểm tra để chắc mọi thứ chạy ổn. Trong lúc chờ cài, mình ghé trang docs chính thức của **Ultralytics YOLO** — hiện là **YOLO11**, phiên bản mới nhất trong dòng YOLO real-time detector của Ultralytics, với độ chính xác, tốc độ và hiệu quả được cải thiện.
+Sau đó import và kiểm tra để chắc mọi thứ chạy ổn. Trong lúc chờ cài, mình ghé trang docs chính thức của **Ultralytics YOLO** — tại thời điểm quay bài giảng, docs giới thiệu **YOLO11**, phiên bản mới nhất khi đó trong dòng YOLO real-time detector của Ultralytics, với độ chính xác, tốc độ và hiệu quả được cải thiện.
 
 ### 🧩 Các mode và kích thước model
 
@@ -53,7 +53,7 @@ Mình chạy lần lượt trên **cùng một ảnh** để dễ đối chiếu
 * **l (large)** — số potted plant tăng, thêm person, dining table; lại tốt hơn nữa.
 * **x (extra-large)** — model mạnh nhất; bắt được nhiều object nhất, kể cả chiếc bàn (tuy gọi là "table" thay vì "dining table").
 
-Model càng lớn càng nhiều tham số và càng nhiều layer, nên kết quả tốt hơn — đúng như mAP cao hơn mà docs ghi. Dù vậy, X vẫn bỏ sót một người chỉ lộ phần đầu, cho thấy không model nào hoàn hảo.
+Model càng lớn càng nhiều tham số (và thường nhiều layer hơn), nên kết quả tốt hơn — đúng như mAP cao hơn mà docs ghi. Dù vậy, X vẫn bỏ sót một người chỉ lộ phần đầu, cho thấy không model nào hoàn hảo.
 
 ### 🧠 Nhận xét về YOLO
 

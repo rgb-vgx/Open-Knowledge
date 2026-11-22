@@ -35,6 +35,8 @@ print(tensor.shape)    # torch.Size([3, 3])
 
 Tensor có **3 hàng, 3 cột**. Cú pháp truy cập một phần tử là `tensor[row, column]`.
 
+---
+
 ### 🎯 Truy cập một phần tử
 
 Muốn lấy phần tử ở hàng 0, cột 1:
@@ -44,6 +46,8 @@ print(tensor[0, 1])   # 20
 ```
 
 `tensor[0, 1]` trả về giá trị `20` — một **scalar**, vì nó trỏ đúng vào một ô.
+
+---
 
 ### 📏 Lấy nguyên hàng hoặc nguyên cột
 
@@ -60,6 +64,8 @@ print(tensor[:, 0])   # tensor([10, 40, 70])
 ```
 
 Nghĩa là: lấy mọi hàng, nhưng chỉ cột 0.
+
+---
 
 ### ✂️ Slicing
 
@@ -88,6 +94,8 @@ print(tensor[1, 1:3])   # tensor([50, 60])
 
 `3` bị loại trừ nên chỉ nhận cột 1 và 2. Nếu cố truy cập `tensor[1, 3]` sẽ báo lỗi **out of bounds**, vì index chỉ chạy từ 0 đến 2.
 
+---
+
 ### 🎲 Fancy indexing — chọn phần tử không liền nhau
 
 Giả sử mình cần lấy hai giá trị `20` và `90` — không nằm liền nhau. Cách làm là truyền hai list chỉ số tương ứng:
@@ -98,6 +106,8 @@ print(tensor[[0, 2], [1, 2]])   # tensor([20, 90])
 ```
 
 List thứ nhất chọn hàng, list thứ hai chọn cột theo từng cặp tương ứng. Cách này hơi "lạ mắt" nên giảng viên gọi vui là **fancy indexing**.
+
+---
 
 ### 🔦 Boolean indexing
 
@@ -116,6 +126,8 @@ Các phần tử lớn hơn `50` là `True`, nhỏ hơn hoặc bằng `50` là `
 ```python
 print(tensor[mask])   # tensor([60, 70, 80, 90])
 ```
+
+---
 
 ### ✏️ Cập nhật giá trị, index_select và bước nhảy
 
@@ -145,6 +157,8 @@ selected = torch.index_select(tensor, dim=0, index=indices)
 ```python
 print(tensor[:, ::2])   # lấy cột 0 và 2
 ```
+
+---
 
 ### 🔄 Đảo tensor bằng torch.flip
 

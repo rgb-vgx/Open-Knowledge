@@ -1,5 +1,5 @@
 ---
-title: 'Bài 29 — Đa hình (polymorphism) trong Python'
+title: 'Bài 029 — Đa hình (polymorphism) trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 29
@@ -48,6 +48,8 @@ print(cat.speak())   # Meow
 
 Cùng tên method `speak`, nhưng hành vi khác nhau tùy object. Đó là bản chất của overriding.
 
+---
+
 ### 🔁 Hàm ngoài class cũng thể hiện polymorphism
 
 Không chỉ method — một hàm thường nhận object và gọi method của nó cũng minh họa polymorphism:
@@ -60,6 +62,8 @@ animal_speak(dog)   # Woof
 ```
 
 Hàm `animal_speak` không cần biết `animal` là `Dog` hay `Cat`; nó chỉ cần object có method `speak`. Đây là lợi ích cốt lõi: một hàm xử lý được nhiều loại object khác nhau.
+
+---
 
 ### 📐 Ví dụ thực tế: tính diện tích các hình
 
@@ -106,6 +110,8 @@ print_area(circle)      # The area is 28.26
 
 `Rectangle(4, 5)` cho diện tích 20 (4 × 5). `Circle(3)` theo công thức πr² với π = 3.14 cho 28.26 — trong video giảng viên đọc thành 28.25, đó chỉ là cách đọc số.
 
+---
+
 ### 🧩 Abstract base class — bắt buộc class con phải triển khai
 
 Interface trong ngôn ngữ khác tương ứng với **abstract base class (ABC)** trong Python. ABC định nghĩa bộ method chung cho một nhóm object liên quan, và buộc class con phải triển khai các method đó — đảm bảo tính nhất quán.
@@ -142,6 +148,8 @@ Chạy thử:
 for v in (Car(), MotorCycle()):
     print(v.start_engine())
 ```
+
+---
 
 ### 🧭 Vì sao polymorphism quan trọng?
 

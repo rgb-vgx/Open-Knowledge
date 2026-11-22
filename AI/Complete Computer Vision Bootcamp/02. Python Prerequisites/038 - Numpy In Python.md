@@ -1,5 +1,5 @@
 ---
-title: 'Bài 38 — NumPy: mảng, vector hóa và thao tác dữ liệu'
+title: 'Bài 038 — NumPy: mảng, vector hóa và thao tác dữ liệu'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 38
@@ -31,6 +31,8 @@ import numpy as np
 
 `np` là alias, để khỏi phải viết `numpy.` ở mọi chỗ.
 
+---
+
 ### 🧱 Tạo mảng 1 chiều
 
 ```python
@@ -43,6 +45,8 @@ print(r1.shape)   # (5,)
 `np.array` nhận list hoặc tuple. Kết quả không phải `list` mà là **`numpy.ndarray`** — mảng n chiều.
 
 `shape` trả về tuple `(5,)`: chỉ một con số, nghĩa là mảng 1 chiều gồm 5 phần tử. Đừng hiểu nhầm thành "1 hàng 5 cột" — mảng 1 chiều không có khái niệm hàng/cột.
+
+---
 
 ### 🔄 `reshape` sang 2 chiều
 
@@ -64,6 +68,8 @@ r2 = np.array([[1, 2, 3, 4, 5],
 print(r2.shape)   # (2, 5) — 2 hàng, 5 cột
 ```
 
+---
+
 ### 🏭 Hàm tạo mảng có sẵn
 
 ```python
@@ -79,6 +85,8 @@ print(np.eye(3))               # ma trận đơn vị 3x3
 
 > ⚠️ Cần kiểm chứng: transcript đọc là "NP dot I" cho ma trận đơn vị. Theo tài liệu NumPy, hàm tương ứng là **`np.eye`** (và `np.identity`); không có `np.I` dạng hàm tạo ma trận đơn vị.
 
+---
+
 ### 📏 Thuộc tính của mảng
 
 ```python
@@ -92,6 +100,8 @@ print(r.itemsize)   # số byte mỗi phần tử
 ```
 
 `dtype` phụ thuộc nền tảng (32-bit hay 64-bit), nên giá trị có thể khác giữa các máy.
+
+---
 
 ### ⚡ Vectorized operations
 
@@ -109,6 +119,8 @@ print(r1 / r2)
 
 Mỗi phép toán áp lên từng cặp phần tử **cùng index**. Kết quả luôn là mảng mới.
 
+---
+
 ### 🧮 Universal functions (ufunc)
 
 Các hàm áp dụng cho toàn bộ mảng, từng phần tử:
@@ -121,6 +133,8 @@ print(np.exp(arr))    # e mũ
 print(np.sign(arr))   # dấu của từng phần tử
 print(np.log(arr))    # log tự nhiên
 ```
+
+---
 
 ### ✂️ Indexing và slicing
 
@@ -150,6 +164,8 @@ arr[1:, :] = 100
 
 Dòng thứ hai gán 100 cho toàn bộ các hàng từ hàng 1 trở đi.
 
+---
+
 ### 📊 Ứng dụng thống kê
 
 **Normalization** (chuẩn hóa) đưa dữ liệu về phân phối chuẩn có mean = 0, std = 1:
@@ -170,6 +186,8 @@ print(np.median(data))    # trung vị
 print(np.std(data))       # độ lệch chuẩn
 print(np.var(data))       # phương sai
 ```
+
+---
 
 ### 🎯 Logical operations
 

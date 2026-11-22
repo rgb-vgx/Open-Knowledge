@@ -30,7 +30,7 @@ Notebook cài đặt theo các bước:
 3. **Clone** repo GitHub chính thức của Detectron2.
 4. Chạy `setup.py` trong thư mục repo để cài đặt.
 
-Xong xuống thì kiểm tra bằng một dòng `import` — nếu không lỗi là ổn. Tiếp theo mình setup **logger** mặc định của Detectron2 cùng **numpy**, **json**, **cv2** để hiển thị kết quả.
+Xong xuôi thì kiểm tra bằng một dòng `import` — nếu không lỗi là ổn. Tiếp theo mình setup **logger** mặc định của Detectron2 cùng **numpy**, **json**, **cv2** để hiển thị kết quả.
 
 ### 🧰 Các utility quan trọng
 
@@ -73,6 +73,9 @@ Trong `outputs`, hai thứ quan trọng là **class** (`pred_classes`) và **box
 
 ```python
 from detectron2.utils.visualizer import Visualizer
+from detectron2.data import MetadataCatalog
+
+metadata = MetadataCatalog.get(cfg.DATASETS.TEST[0])
 v = Visualizer(image[:, :, ::-1], metadata=metadata)
 out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
 ```

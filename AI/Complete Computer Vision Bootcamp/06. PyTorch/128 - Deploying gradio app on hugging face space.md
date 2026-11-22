@@ -26,6 +26,8 @@ git clone https://huggingface.co/spaces/<username>/classification-gradio-cv
 
 Mình clone ra một thư mục Survey/ngoài project để tách bạch code deploy.
 
+---
+
 ### 📋 Chép đúng các file cần thiết
 
 Từ project `gradio_app_one`, chép sang repo vừa clone:
@@ -36,6 +38,8 @@ Từ project `gradio_app_one`, chép sang repo vừa clone:
 * File **`requirements.txt`**.
 
 Không cần chép `README.md` vì Gradio Space đã có sẵn. Nhắc lại điều kiện tiên quyết: **file chính phải tên `app.py`** — đúng như tài liệu Gradio yêu cầu.
+
+---
 
 ### 🔧 Push code lên Space
 
@@ -48,22 +52,28 @@ git push
 
 Khi push, git sẽ hỏi **username** và **access token** (đã tạo ở bài trước).
 
+---
+
 ### 🔐 Gỡ lỗi xác thực
 
 Lần push đầu mình gặp lỗi **authorization error / failed to push**. Nguyên nhân: hệ thống đã lưu token của một tài khoản khác, nên tài khoản hiện tại không khớp. Cách xử lý là đăng nhập lại bằng **Hugging Face CLI**:
 
 ```bash
 pip install -U huggingface_hub
-huggingface-cli login
+huggingface-cli login   # bản mới: hf auth login
 ```
 
 `huggingface-cli login` sẽ hỏi **access token** (khi nhập sẽ không hiển thị ký tự). Dán token vào, xác nhận tài khoản đã liên kết đúng. Sau đó `git push` lại — lần này thành công.
+
+---
 
 ### 🏗️ Space tự build và chạy
 
 Sau khi push, trang Space **tự refresh** và bắt đầu build: nó đọc `requirements.txt`, cài các thư viện, tìm `app.py` và các module `core/`, `model/`. Theo dõi được ở **build logs** và **container logs**. Khi trạng thái chuyển **Running** (màu xanh), app đã live.
 
 Giao diện trông y hệt bản local: ô **drop image**, **textbox prediction**, và vùng **ảnh đã ghi nhãn**. Thử kéo ảnh một người vào, bấm Submit → dự đoán "person" và ảnh hiện chữ "person". Thử ảnh con mèo → kết quả "cat". Mở rộng ảnh sẽ thấy chữ "cat" vẽ trên ảnh.
+
+---
 
 ### 🎉 Chia sẻ thành quả
 

@@ -48,7 +48,7 @@ Ví dụ với bộ số `125, 105, 150, 150`:
 * tâm box = `(125, 105)`,
 * `width = 150`, `height = 150`.
 
-Từ tâm và kích thước, các bạn cũng dựng lại được hình chữ nhật y hệt. Đây chính là kiểu biểu diễn mà định dạng YOLO dùng (dù YOLO còn chuẩn hoá các giá trị về khoảng 0–1).
+Từ tâm và kích thước, các bạn cũng dựng lại được hình chữ nhật y hệt.
 
 ### ⚖️ Định dạng nào đang được dùng?
 

@@ -43,7 +43,7 @@ canvas_rgb = cv2.cvtColor(canvas, cv2.COLOR_BGR2RGB)
 plt.imshow(canvas_rgb)
 ```
 
-Nếu bỏ dòng `cvtColor` và chỉ gọi `plt.imshow(canvas)`, các kênh bị hoán đổi nên bạn sẽ thấy màu cam thay vì xanh dương.
+Nếu bỏ dòng `cvtColor` và chỉ gọi `plt.imshow(canvas)`, các kênh bị hoán đổi nên bạn sẽ thấy màu đỏ thay vì xanh dương.
 
 ---
 
@@ -109,7 +109,7 @@ Hàm `cv2.polylines` nhận danh sách các đường (vì vậy phải bọc `[
 
 Cờ `isClosed` quyết định hình có được khép kín hay không:
 
-* `False` (mặc định): OpenCV nối điểm 1 → 2 → 3 rồi dừng, không nối điểm cuối về điểm đầu. Với ba điểm bạn chỉ được hai đoạn thẳng.
+* `False`: OpenCV nối điểm 1 → 2 → 3 rồi dừng, không nối điểm cuối về điểm đầu. Với ba điểm bạn chỉ được hai đoạn thẳng. Trong Python, `isClosed` là tham số bắt buộc, phải truyền rõ.
 * `True`: OpenCV nối thêm điểm cuối với điểm đầu, tạo thành tam giác khép kín.
 
 ---

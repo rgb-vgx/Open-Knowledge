@@ -1,5 +1,5 @@
 ---
-title: 'Bài 37 — Function copy, closure và decorator'
+title: 'Bài 037 — Function copy, closure và decorator'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 37
@@ -44,6 +44,8 @@ print(greet())   # Welcome to the Advanced Python course
 
 Vì `del welcome` chỉ xóa *tên*, còn object hàm vẫn được `greet` giữ tham chiếu. Đây là bằng chứng cho thấy hàm trong Python là object hạng nhất.
 
+---
+
 ### 🧺 Closure — hàm lồng trong hàm
 
 **Closure** là hàm được định nghĩa bên trong hàm khác, có thể truy cập biến cục bộ của hàm ngoài:
@@ -64,12 +66,13 @@ def main_welcome():
 * `main_welcome` **trả về chính hàm** `sub_welcome` (không gọi).
 
 ```python
-main_welcome()
+result = main_welcome()   # trả về hàm sub_welcome
+result()                  # gọi hàm đó mới thấy output
 # Welcome to the Advanced Python course
 # Please learn these concepts properly
 ```
 
-Khi gọi `main_welcome()`, hàm ngoài chạy, tạo `sub_welcome`, rồi `return` nó — và vì kết quả trả về là hàm, Python sẽ... không tự gọi. Trong demo của giảng viên, các dòng `print` hiện ra ngay trong lúc dựng closure; điểm cốt lõi là `sub_welcome` vẫn "nhớ" `message` sau khi hàm ngoài kết thúc.
+Khi gọi `main_welcome()`, hàm ngoài chạy, tạo `sub_welcome`, rồi `return` nó — và vì kết quả trả về là hàm, Python **không tự gọi** hàm đó. Phải gọi thêm một lần (`result()` hoặc `main_welcome()()`) mới thấy output. Điểm cốt lõi là `sub_welcome` vẫn "nhớ" `message` sau khi hàm ngoài kết thúc.
 
 Closure còn cho phép truyền **hàm như tham số**:
 
@@ -82,7 +85,7 @@ def main_welcome(func):
 
     return sub_welcome
 
-main_welcome(print)
+main_welcome(print)()
 # Welcome to the Advanced Python course
 # Welcome everyone to this tutorial
 # Please learn these concepts properly
@@ -104,6 +107,8 @@ main_welcome(len)([1, 2, 3, 4, 5])
 # 5
 # Please learn these concepts properly
 ```
+
+---
 
 ### ✨ Decorator — closure dùng để bọc hàm khác
 
@@ -137,6 +142,8 @@ Please learn these concepts properly
 
 Cú pháp `@main_welcome` tương đương `course_introduction = main_welcome(course_introduction)`. Hàm `course_introduction` được truyền vào decorator, bọc trong `sub_welcome`, và **không dòng code nào của nó bị sửa** — đúng định nghĩa: thêm chức năng mà không đụng code gốc.
 
+---
+
 ### 🧱 Decorator chuẩn với wrapper
 
 Mẫu kinh điển dùng `wrapper` — thường gặp khi làm việc với Flask, Django:
@@ -160,6 +167,8 @@ say_hello()
 ```
 
 `say_hello` chạy, và tự động có thêm hai dòng log trước/sau — thêm hành vi mà không chạm vào hàm.
+
+---
 
 ### 🔁 Decorator có tham số
 
@@ -191,6 +200,8 @@ say_hello()
 * `wrapper(*args, **kwargs)` nhận **positional** và **keyword** argument của hàm gốc, để decorator dùng được với mọi chữ ký hàm.
 
 Gọi `@repeat(3)` tương đương `say_hello = repeat(3)(say_hello)`.
+
+---
 
 ### 🧭 Tổng kết
 

@@ -32,6 +32,8 @@ Hãy hình dung một người bước đi: ở **1 FPS** bạn chỉ thấy v�
 * **60 FPS** — thể thao, gaming; còn có **120**, **144 FPS**...
 * **300 / 600 / 1200 FPS** — quay **slow motion**: chia 1200 frame trong một giây ra nhiều giây (ví dụ chia 6 → mỗi giây 200 frame) để có video quay chậm, nhưng cần máy rất mạnh.
 
+---
+
 ### 🗜️ Codec và fourcc
 
 **Codec** là **thuật toán nén và giải nén** file media. Ta không thể cứ lưu mãi các frame thô tới hàng trăm GB, nên cần cách lưu hiệu quả: giảm cường độ pixel, bớt đặc trưng... Mỗi codec dùng một thuật toán nén/giải nén riêng, gắn với các định dạng file như **MP4**, **AVI**, **MKV**.
@@ -45,6 +47,8 @@ Trong OpenCV, codec được chỉ định bằng **fourcc** (four character cod
 | **`H264`** | Hiệu quả cao, mất chất lượng ít; bản cũ hơn H265 | `.mp4`, `.mkv` |
 
 Khi làm bài toán thực tế với IP camera hay network camera, bạn có thể gặp video đầu vào là **H264** hoặc **H265**.
+
+---
 
 ### ▶️ Đọc và hiển thị video
 
@@ -71,11 +75,13 @@ video.release()
 cv2.destroyAllWindows()
 ```
 
-`video.read()` trả về hai giá trị: `frame` (mảng NumPy) và `ret` (True/False). Khi hết frame hoặc video lỗi, `ret` là `False` và vòng lặp dừng. Vì frame cũng là ảnh, ta hiển thị bằng chính `cv2.imshow`.
+`video.read()` trả về hai giá trị: `ret` (True/False) và `frame` (mảng NumPy). Khi hết frame hoặc video lỗi, `ret` là `False` và vòng lặp dừng. Vì frame cũng là ảnh, ta hiển thị bằng chính `cv2.imshow`.
 
 Còn `cv2.waitKey(1)` nghĩa là **chờ 1 mili-giây** trước khi hiện frame kế tiếp để video phát đúng nhịp. Nó trả về `-1` nếu không có phím nào được nhấn, ngược lại trả về mã phím; `& 0xFF` cắt giá trị xuống 8 bit để so sánh với `ord('q')`. Nhấn `q` sẽ thoát vòng lặp.
 
 > Luôn nhớ gọi `video.release()` và `cv2.destroyAllWindows()` sau khi xong, nếu không kernel có thể treo và bạn phải khởi động lại.
+
+---
 
 ### 💾 Ghi video ra đĩa
 
@@ -108,6 +114,8 @@ out.release()
 ```
 
 Nếu quên `fps`, OpenCV sẽ báo lỗi kích thước frame. Lưu ý VSCode có thể không phát được một số codec — cứ mở file bằng trình xem video bên ngoài để kiểm tra.
+
+---
 
 ### 🧪 Thử biến đổi frame
 

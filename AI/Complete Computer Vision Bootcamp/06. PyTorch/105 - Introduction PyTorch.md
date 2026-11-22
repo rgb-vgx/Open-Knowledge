@@ -28,11 +28,15 @@ print(torch.cuda.is_available())
 
 Nếu máy tìm thấy GPU thì lệnh in ra `True`, nghĩa là PyTorch truy cập được GPU trong hệ thống. Nếu đang chạy trên CPU thì không cần chạy dòng này — PyTorch vẫn chạy bình thường, không lỗi gì. Chỉ cần đoạn code trên thực thi trơn tru là việc cài đặt đã ổn.
 
+---
+
 ### ☁️ Chuyển sang Google Colab
 
 Nếu không muốn làm việc trên máy local, các bạn lên **Google Colab**: tìm "Google Colab", vào link đầu tiên và đăng ký. Sau khi đăng nhập, giao diện sẽ hiện các notebook gần đây và hướng dẫn tạo notebook. Mình chỉ cần bấm **New notebook** để mở một notebook mới.
 
 Việc đầu tiên trong notebook là bấm **Connect** — giống như kết nối tới kernel. Lưu ý phải đăng ký tài khoản thì trang mới mở, vì nó gắn với tài khoản Google của các bạn. Khi các chấm cam chuyển hết sang xanh là đã kết nối thành công.
+
+---
 
 ### 🚀 Bật GPU trên Colab
 
@@ -48,6 +52,8 @@ print(torch.cuda.is_available())
 Torch có sẵn mặc định trong Colab, nên `import torch` chạy được ngay mà không cần cài. Nhưng `torch.cuda.is_available()` in ra `False` vì đang ở môi trường CPU.
 
 Khi đổi runtime sang **Tesla T4 GPU**, mọi thứ sẽ được khởi tạo lại: code không mất, nhưng phiên máy bị refresh. Sau khi kết nối lại, RAM vẫn khoảng **12.7 GB**, nhưng giờ có thêm **15 GB VRAM** trên GPU Tesla T4, disk khoảng **112 GB**.
+
+---
 
 ### ✅ Kiểm tra lại sau khi bật GPU
 

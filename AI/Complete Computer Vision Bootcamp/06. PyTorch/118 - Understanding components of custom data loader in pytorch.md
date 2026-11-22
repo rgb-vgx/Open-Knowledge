@@ -24,11 +24,15 @@ Vấn đề thứ hai là tốc độ học. Nếu chỉ một lần cập nhậ
 
 Chia nhỏ ra thì sao? 1000 trang, cứ **10 trang** lấy feedback một lần → 100 lần feedback cho một "epoch" đọc hết sách. Với 100 epoch, tổng cộng **100 × 100 = 10.000 iteration**. Đó chính là tinh thần của mini-batch: đỡ tốn bộ nhớ mà cập nhật trọng số dày hơn.
 
+---
+
 ### 🧩 Hai thành phần cốt lõi: Dataset và DataLoader
 
 **Dataset** — import từ `torch.utils.data.Dataset` — chịu trách nhiệm **nạp và xử lý** dữ liệu: đọc CSV, transform, chuẩn hóa, encode và chuyển sang tensor. Nó mô tả dữ liệu được lưu/thứ tự truy cập, cách biến đổi (preprocessing), và cách lấy **một mẫu** duy nhất.
 
 **DataLoader** — import từ `torch.utils.data.DataLoader` — **bọc** Dataset thành một iterable và **nạp theo batch**. Muốn 32 dòng một lần? DataLoader sẽ yêu cầu Dataset trả 32 dòng. Nó cũng lo **shuffle** và **parallel processing** qua nhiều worker.
+
+---
 
 ### 🏗️ Ba phương thức bắt buộc của custom Dataset
 
@@ -57,6 +61,8 @@ class InsuranceDataset(Dataset):
 
 Lưu ý: mình truyền thẳng `X_train`/`y_train` (đã scale, encode) vào Dataset thay vì đọc lại CSV trong `__init__` — vì preprocessing đã làm trước đó rồi. Mục tiêu của bài là học cách nạp theo batch.
 
+---
+
 ### 📦 Bọc bằng DataLoader và kiểm tra batch
 
 ```python
@@ -71,6 +77,8 @@ for batch_idx, (features, targets) in enumerate(loader):
 Đặt `batch_size=32` thì mỗi batch trả về `torch.Size([32, 6])` — 32 dòng, 6 cột. Với 1070 dòng sẽ có **34 batch**; batch cuối chỉ còn lẻ vài dòng. Đổi `batch_size=1000` thì batch 1 đủ 1000, batch 2 chỉ còn 70 — cho thấy ta **kiểm soát được bộ nhớ** đưa vào model.
 
 Công thức tính iteration: `số_dòng / batch_size = số batch mỗi epoch`. Ví dụ 1000 dòng, batch 100 → 10 iteration/epoch; nhân 100 epoch → 1000 iteration tổng.
+
+---
 
 ### ⚡ num_workers và lợi ích của mini-batch
 

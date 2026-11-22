@@ -23,9 +23,9 @@ Input layer có **3 feature độc lập** (independent): **IQ**, **study hours*
 * **Hidden layer** có **2 neuron**, mỗi neuron có **bias**.
 * Mọi input nối tới mọi hidden neuron: weights `W1..W6`.
 * Từ hidden layer tới output layer: weights `W7`, `W8`.
-* **Output layer** chỉ cần **1 neuron** vì đây là bài toán nhị phân (ra `0` hoặc `1`). Với bài toán **multi-class**, cần nhiều neuron output hơn — ví dụ bài toán 3 lớp thì dùng 2–3 neuron.
+* **Output layer** chỉ cần **1 neuron** vì đây là bài toán nhị phân (ra `0` hoặc `1`). Với bài toán **multi-class**, cần nhiều neuron output hơn — ví dụ bài toán 3 lớp có thể dùng **2 neuron** để mã hóa các output `0, 1, 2`.
 
-Vì có 3 input và 2 hidden neuron, phép nhân ma trận `X · W` cho ra ma trận dạng **3×2**.
+Vì có 3 input và 2 hidden neuron, **ma trận weights `W`** có dạng **3×2** (3 input × 2 hidden neuron); nhân `X` (1×3) với `W` (3×2) cho ra 2 giá trị `Z` ứng với hai hidden neuron.
 
 ### ➡️ Forward rồi tính loss
 

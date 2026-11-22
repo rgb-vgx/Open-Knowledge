@@ -48,7 +48,7 @@ W2_new = W2_old - lr * (∂loss/∂W2_old)   (toàn bộ số hạng đạo hàm
 → W2_new ≈ W2_old
 ```
 
-Toàn bộ đạo hàm bằng `0` kéo theo learning rate cũng nhân với `0`, nên weight **không cập nhật**. Neuron đó **chết** — không xử lý gì, chỉ chuyển tiếp dữ liệu sang lớp sau. Đó là **dead neuron**.
+Toàn bộ đạo hàm bằng `0` kéo theo learning rate cũng nhân với `0`, nên weight **không cập nhật**. Neuron đó **chết** — mất chức năng, output luôn bằng `0` và không còn được cập nhật. Đó là **dead neuron**.
 
 Điều kiện gây chết: `Z = O2*W3 + B3` **âm** → đạo hàm `= 0` → neuron chết. Nếu `Z` dương → đạo hàm `= 1` → hoạt động bình thường.
 

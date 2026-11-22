@@ -66,7 +66,7 @@ Quy trình gồm ba bước:
 cropped_image = image_rgb[y_start:y_end, x_start:x_end]
 ```
 
-Nếu nhầm thứ tự (đưa x vào vị trí của y), bạn sẽ gặp lỗi kiểu *index out of bounds* vì chiều rộng và chiều cao khác nhau.
+Nếu nhầm thứ tự (đưa x vào vị trí của y), vùng cắt sẽ sai — có thể ra ảnh rỗng hoặc cắt nhầm phần ảnh, vì chiều rộng và chiều cao khác nhau.
 
 ---
 

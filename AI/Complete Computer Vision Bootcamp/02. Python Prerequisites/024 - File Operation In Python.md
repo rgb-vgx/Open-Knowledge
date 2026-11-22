@@ -43,7 +43,7 @@ Muốn đọc **từng dòng**, mình lặp qua file vì file là một iterable
 
 `for line in file: print(line)`
 
-Kết quả in ra có kèm ký tự xuống dòng nên trông như có khoảng trắng thừa. Muốn bỏ ký tự đó, gọi `line.strip()`. Vậy `strip()` dùng để **loại bỏ ký tự newline**.
+Kết quả in ra có kèm ký tự xuống dòng nên trông như có khoảng trắng thừa. Muốn bỏ ký tự đó, gọi `line.strip()`. Vậy `strip()` dùng để **loại bỏ khoảng trắng ở hai đầu**, bao gồm cả ký tự newline (và tab, dấu cách).
 
 ---
 

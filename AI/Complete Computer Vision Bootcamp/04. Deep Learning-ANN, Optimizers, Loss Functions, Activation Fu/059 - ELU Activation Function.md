@@ -27,7 +27,7 @@ ELU cũng là một biến thể để sửa các vấn đề của ReLU, nhưng
 * Với `x > 0`: dùng `x`.
 * Với `x <= 0`: dùng một hàm mũ (thay vì đường thẳng), nên đồ thị **mềm** chứ không gãy khúc như ReLU.
 
-Vì vậy forward propagation không còn là đường thẳng gấp khúc; sang backward propagation, đạo hàm có dạng cong — với `x > 0` giá trị là `1`, với `x < 0` là những giá trị âm nhỏ khác 0.
+Vì vậy forward propagation không còn là đường thẳng gấp khúc; sang backward propagation, đạo hàm có dạng cong — với `x > 0` giá trị là `1`, với `x < 0` là `α·e^x` (α là hệ số của nhánh âm): **dương** và nhỏ dần về `0` (không phải giá trị âm).
 
 ### ✅ Ưu điểm
 

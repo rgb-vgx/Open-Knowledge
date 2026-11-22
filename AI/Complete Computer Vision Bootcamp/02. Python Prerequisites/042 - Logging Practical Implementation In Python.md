@@ -1,5 +1,5 @@
 ---
-title: 'Bài 42 — Logging trong Python: cấu hình và ghi log ra file'
+title: 'Bài 042 — Logging trong Python: cấu hình và ghi log ra file'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 42
@@ -25,6 +25,8 @@ logging.basicConfig(level=logging.DEBUG)
 ```
 
 `level` là **ngưỡng thấp nhất** được ghi. Ở đây là `logging.DEBUG`, tức là mọi mức từ debug trở lên đều được in. Lưu ý viết **chữ hoa** `logging.DEBUG` — nếu viết `logging.debug` (tên hàm, không phải hằng số) sẽ lỗi.
+
+---
 
 ### 📶 Năm mức log
 
@@ -58,6 +60,8 @@ CRITICAL:root:This is a critical message
 
 Gồm **level**, **tên logger** (`root`), và **message**.
 
+---
+
 ### 🎨 Tùy biến format và thời gian
 
 ```python
@@ -72,6 +76,8 @@ logging.basicConfig(
 * `datefmt` định dạng thời gian theo `strftime`: `%Y` năm, `%m` tháng, `%d` ngày, `%H` giờ, `%M` phút, `%S` giây.
 
 Kết quả mỗi dòng log có timestamp đầy đủ, dễ đọc và dễ lọc sau này.
+
+---
 
 ### 💾 Ghi log ra file
 
@@ -92,7 +98,9 @@ logging.basicConfig(
 
 Sau khi chạy, file `app.log` chứa toàn bộ các dòng debug/info/warning/error/critical.
 
-> ⚠️ Lưu ý quan trọng: `basicConfig` **chỉ có tác dụng lần đầu**. Nếu đã cấu hình rồi mà gọi lại, thay đổi sẽ bị bỏ qua. Trong Jupyter notebook, phải **restart kernel** trước khi chạy cấu hình mới; ngoài script thì mỗi lần chạy là một process mới nên không vướng.
+> ⚠️ Lưu ý quan trọng: `basicConfig` **không làm gì nếu root logger đã có handler** — thực tế là chỉ cấu hình được ở lần đầu. Nếu đã cấu hình rồi mà gọi lại, thay đổi sẽ bị bỏ qua. Trong Jupyter notebook, phải **restart kernel** trước khi chạy cấu hình mới; ngoài script thì mỗi lần chạy là một process mới nên không vướng.
+
+---
 
 ### 📦 Tách cấu hình logging thành module riêng
 
@@ -136,12 +144,14 @@ Chạy `python test.py` từ đúng thư mục, file `logs/app.log` sẽ chứa 
 
 Không có gì in ra console vì log đã chuyển vào file — nhưng khi cần debug, mở file là thấy toàn bộ lịch sử thực thi.
 
+---
+
 ### 🧭 Kết luận
 
-* `basicConfig` đặt level, format, file đầu ra — **chỉ một lần**.
+* `basicConfig` đặt level, format, file đầu ra — nhưng **không làm gì nếu root logger đã có handler** (thực tế là chỉ cấu hình được một lần).
 * Năm mức `DEBUG < INFO < WARNING < ERROR < CRITICAL` quyết định mức độ nghiêm trọng.
 * Ghi ra file để giữ lại vết chạy; tách `logger.py` để dùng chung toàn dự án.
-* Đặt `level=logging.DEBUG` khi phát triển, cân nhắc `INFO` hoặc cao hơn khi production.
+* Giảng viên đặt `level=logging.DEBUG` vì đang phát triển ứng dụng, muốn thấy mọi thông tin chẩn đoán.
 
 ---
 

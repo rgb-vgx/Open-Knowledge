@@ -1,5 +1,5 @@
 ---
-title: 'Bài 30 — Đóng gói (encapsulation) trong Python'
+title: 'Bài 030 — Đóng gói (encapsulation) trong Python'
 date: '2026-11-23'
 course: 'complete-computer-vision'
 lesson: 30
@@ -23,8 +23,8 @@ Trong Python có ba kiểu "access modifier" dựa trên quy ước đặt tên:
 | Kiểu | Cách viết | Truy cập từ ngoài class | Truy cập từ class con |
 |---|---|---|---|
 | Public | `self.name` | ✅ Có | ✅ Có |
-| Protected | `self._name` | ❌ Không (theo quy ước) | ✅ Có |
-| Private | `self.__name` | ❌ Không | ❌ Không |
+| Protected | `self._name` | ⚠️ Có, nhưng theo quy ước là không nên | ✅ Có |
+| Private | `self.__name` | ❌ Không (bị name mangling) | ❌ Không |
 
 Ví dụ class có cả biến public và private:
 
@@ -45,6 +45,8 @@ print(dir(person))
 
 Kết quả không có `__name` hay `__age`, mà thay vào đó là **`_Person__name`**, **`_Person__age`**. Đây là **name mangling**: Python tự đổi tên private attribute bằng cách thêm tiền tố `_TênClass`. Cố truy cập `person.__name` sẽ báo lỗi *không có attribute đó*.
 
+---
+
 ### 🚫 Vì sao private "không truy cập được" từ ngoài
 
 ```python
@@ -56,6 +58,8 @@ Private attribute **không truy cập được từ ngoài class** và cả **t�
 Giảng viên so sánh với chiếc máy giặt: bạn thấy nút bấm, chỗ cho quần áo, cách khởi động — nhưng cơ cấu bên trong hoàn toàn bị che. Encapsulation làm đúng như vậy: chỉ mở ra những gì cần dùng.
 
 Một lưu ý của giảng viên: Python không có ràng buộc tuyệt đối. Vì `dir()` vẫn hiện `_Person__age`, lập trình viên vẫn "moi" được private attribute bằng tên đã mangled — nhưng đó là **không phải best practice**, làm vậy là phá vỡ ý đồ thiết kế.
+
+---
 
 ### 🔓 Getter và setter — cửa chính thức để đọc/ghi
 
@@ -99,6 +103,8 @@ person.set_age(-5)         # Age cannot be negative
 
 `set_age` chính là chỗ đặt logic nghiệp vụ: chỉ chấp nhận tuổi dương. Nếu để `__age` public, ai cũng có thể gán `-5` mà không ai kiểm soát.
 
+---
+
 ### 🧱 Protected — mở cho class con
 
 Protected dùng **một dấu gạch dưới**:
@@ -124,6 +130,8 @@ print(employee._name)   # Krish
 ```
 
 Nhưng từ bên ngoài, `_name` không nên dùng — đây là quy ước giữa các lập trình viên, không phải rào chắn cứng của Python.
+
+---
 
 ### 📌 Tóm tắt thực hành
 
