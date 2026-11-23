@@ -114,4 +114,4 @@ Tên file cũng có thể Tab để tự động hoàn thành.
 
 Các bạn đã cài **Anaconda**, tạo và kích hoạt **virtual environment** `python_cvcourse` từ file `.yml`, mở **Jupyter Lab**, và biết chạy cả notebook lẫn script `.py`. Đó là toàn bộ công cụ cần cho khóa học. Bài tiếp theo chúng ta bắt đầu phần kỹ thuật đầu tiên: **NumPy** và array.
 
-> ⚠️ Cần kiểm chứng: transcript gắn lỗi `SpecNotFound: Can't process without a name` với việc file `.yml` không tồn tại hoặc gõ sai tên; hành vi lỗi có thể khác nhau giữa các phiên bản conda, nên cần thử lại trên môi trường thực tế.
+> ⚠️ Cần kiểm chứng: tại thời điểm quay khóa, transcript gắn lỗi `SpecNotFound: Can't process without a name` với việc file `.yml` không tồn tại hoặc gõ sai tên; hành vi lỗi có thể khác nhau giữa các phiên bản conda, nên cần thử lại trên môi trường thực tế.

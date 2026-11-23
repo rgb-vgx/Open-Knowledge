@@ -121,7 +121,7 @@ Compile cần ba thứ: **loss**, **optimizer** và **metrics** cần theo dõi.
 ### 🔮 Dự đoán và đánh giá
 
 ```python
-predictions = model.predict_classes(scaled_X_test)
+predictions = (model.predict(scaled_X_test) > 0.5).astype("int32")
 
 from sklearn.metrics import confusion_matrix, classification_report
 print(confusion_matrix(y_test, predictions))
@@ -132,7 +132,7 @@ Test set đóng vai trò dữ liệu hoàn toàn mới. Trước đó ta có th�
 
 Confusion matrix cho thấy mô hình chỉ đoán nhầm **7 tờ tiền**; classification report cho precision, recall và F1 đều khoảng **98%**.
 
-> ⚠️ Cần kiểm chứng: `model.predict_classes()` đã bị loại bỏ khỏi Keras/TensorFlow từ bản 2.6. Với Keras hiện tại, dùng `np.argmax(model.predict(scaled_X_test), axis=-1)` cho bài nhiều lớp, hoặc so ngưỡng `0.5` với output của `model.predict()` cho bài hai lớp.
+> Ghi chú: Tại thời điểm quay khóa, code dùng `model.predict_classes()`, bị loại bỏ khỏi Keras/TensorFlow từ bản 2.6. Với Keras hiện tại, bài hai lớp dùng ngưỡng `(model.predict(...) > 0.5).astype("int32")` như code trên; bài nhiều lớp dùng `np.argmax(model.predict(...), axis=-1)`.
 
 ---
 

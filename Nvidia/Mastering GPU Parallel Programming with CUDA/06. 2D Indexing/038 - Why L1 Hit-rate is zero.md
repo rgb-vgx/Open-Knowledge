@@ -86,4 +86,4 @@ Vì write luôn bị tính là hit, **tổng hit rate của L2 không phản án
 
 L1 hit 0 % vì mỗi phần tử chỉ được đọc một lần — không có cơ hội trúng cache. L2 hiện 33 % chỉ vì Nsight Compute tính mọi store là hit, không phải vì dữ liệu thực sự nằm trong L2. Muốn đánh giá đúng, hãy đo **read hit rate**. Hiểu điều này tránh việc "tối ưu" nhầm vào một chỉ số bị thổi phồng.
 
-> ⚠️ Cần kiểm chứng: con số **192 kB** cho L1/shared là của A100 (GA100) theo whitepaper Ampere; trên RTX 3090 (GA102) dung lượng gộp L1/shared chỉ là **128 kB** theo whitepaper GA102. Quy ước "store được tính là hit" trong L2 là quan sát của giảng viên trên Nsight Compute; tài liệu Nsight Compute không nêu rõ quy ước này, nên đối chiếu lại với phiên bản đang dùng.
+> ⚠️ Cần kiểm chứng: số liệu L1/shared lấy theo whitepaper A100 (GA100) và RTX 3090 (GA102) tại thời điểm quay khóa — **192 kB** gộp trên A100 (GA100), **128 kB** trên RTX 3090 (GA102). Quy ước "store được tính là hit" trong L2 là quan sát của giảng viên trên Nsight Compute; tài liệu Nsight Compute không nêu rõ quy ước này, và metric Nsight Compute phụ thuộc phiên bản, nên đối chiếu lại với bản đang dùng.

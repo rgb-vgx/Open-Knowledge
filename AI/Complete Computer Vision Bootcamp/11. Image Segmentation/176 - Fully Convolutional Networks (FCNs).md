@@ -103,4 +103,4 @@ Kết quả với dummy input `(1, 3, 224, 224)` và `num_classes=2`: output `(1
 
 FCN thay FC bằng conv, giữ spatial info, xuất mask cùng kích thước ảnh. Skip connection từ pool3/pool4 giúp FCN-8 khôi phục chi tiết tốt hơn. Đây là nền móng cho các kiến trúc sau. Bài tiếp theo: **U-Net**. Hẹn gặp!
 
-> ⚠️ Cần kiểm chứng: Tên lớp/kiến trúc `FCN-32/16/8` và công thức transposed conv đúng theo paper và PyTorch; nhưng chỉ số layer (17, 24) phụ thuộc phiên bản `torchvision`, nên các bạn nên kiểm tra lại bằng `summary` trước khi dùng.
+> ⚠️ Cần kiểm chứng: Tên lớp/kiến trúc `FCN-32/16/8` và công thức transposed conv đúng theo paper và PyTorch. Chỉ số layer (17, 24) là theo bài giảng tại thời điểm quay khóa và phụ thuộc phiên bản `torchvision`; hãy đối chiếu bằng `summary` trước khi dùng. Trên `torchvision` hiện hành, `vgg16().features` có `maxpool3`/`maxpool4` ở index **16** và **23** (`maxpool5` ở **30**).

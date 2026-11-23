@@ -22,7 +22,7 @@ Accuracy chỉ cho một con số. Confusion matrix cho thấy **model nhầm l�
 from torchmetrics import ConfusionMatrix
 from mlxtend.plotting import plot_confusion_matrix
 
-confmat = ConfusionMatrix(num_classes=len(class_names))
+confmat = ConfusionMatrix(task="multiclass", num_classes=len(class_names))
 confmat_tensor = confmat(
     preds=y_pred_tensor,
     target=test_data.targets,
@@ -31,11 +31,11 @@ confmat_tensor = confmat(
 print(confmat_tensor)
 ```
 
-* **`ConfusionMatrix(num_classes=...)`** — khởi tạo với số lớp bằng `len(class_names)`.
+* **`ConfusionMatrix(task="multiclass", num_classes=...)`** — khai báo bài toán multiclass và số lớp bằng `len(class_names)`.
 * **`confmat(preds=..., target=...)`** — truyền nhãn dự đoán và nhãn thật. `test_data.targets` là toàn bộ nhãn của test set (PyTorch gọi là "targets", mình hay gọi là "labels").
 * Kết quả là một tensor `10 x 10`.
 
-> ⚠️ Cần kiểm chứng: ở các bản `torchmetrics` mới, constructor **yêu cầu** tham số `task` (ví dụ `ConfusionMatrix(task="multiclass", num_classes=len(class_names))`). Code viết theo bản tại thời điểm quay video; nếu bạn dùng bản mới mà gặp lỗi, hãy thêm `task="multiclass"`.
+> Ghi chú: code gốc tại thời điểm quay khóa viết `ConfusionMatrix(num_classes=len(class_names))`. Các bản `torchmetrics` mới **yêu cầu** tham số `task`, nên ở đây đã thêm `task="multiclass"` để chạy được với bản hiện tại.
 
 Cách đọc: **hàng** là nhãn thật, **cột** là nhãn dự đoán. Ô `[i, j]` là số mẫu thật lớp `i` bị dự đoán thành lớp `j`.
 

@@ -106,13 +106,14 @@ Sau **10 epoch**, test set đạt khoảng **90%** accuracy.
 
 ```python
 from sklearn.metrics import classification_report
+import numpy as np
 
-predictions = model.predict_classes(X_test)
+predictions = np.argmax(model.predict(X_test), axis=-1)
 print(classification_report(y_test, predictions))
 ```
 
 Precision, recall và F1 đều quanh **90%** — khá tốt với 10 lớp. Trong đó có những lớp rất khó phân biệt: **sneaker** và **ankle boot** trông gần như giống nhau, nhất là khi chỉ có ảnh xám `28 × 28`. Nhiều khả năng cả người cũng khó nói chính xác chiếc nào là sneaker, chiếc nào là bốt cổ cao.
 
-> ⚠️ Cần kiểm chứng: `model.predict_classes()` đã bị loại bỏ từ Keras/TensorFlow 2.6; với Keras hiện tại dùng `np.argmax(model.predict(X_test), axis=-1)`.
+> Ghi chú: Tại thời điểm quay khóa, code dùng `model.predict_classes()`, bị loại bỏ từ Keras/TensorFlow 2.6. Với Keras hiện tại, bài nhiều lớp dùng `np.argmax(model.predict(X_test), axis=-1)` như code trên.
 
 Điều đáng nhớ từ bài này: khi đã nắm khuôn tiền xử lý (chuẩn hóa → reshape → one-hot), phần còn lại chỉ là chọn kiến trúc. Bài tiếp theo chuyển sang một họ mạng hoàn toàn khác: **YOLO v3** cho object detection.

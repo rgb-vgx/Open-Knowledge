@@ -106,7 +106,7 @@ Chỉ cần đổi hàm và cách vẽ, vì CamShift trả về một hình ch�
         ret, track_window = cv2.CamShift(dst, track_window, term_crit)
 
         pts = cv2.boxPoints(ret)
-        pts = np.int0(pts)
+        pts = pts.astype(np.int32)
         img2 = cv2.polylines(frame, [pts], True, (0, 0, 255), 5)
 ```
 
@@ -123,4 +123,4 @@ Chỉ cần đổi hàm và cách vẽ, vì CamShift trả về một hình ch�
 
 Giảng viên cũng nhấn mạnh đây không phải cách track mặt tốt nhất; bài sau ta sẽ dùng **tracking API** dựng sẵn của OpenCV, hoạt động ổn định hơn nhiều.
 
-> ⚠️ Cần kiểm chứng: `np.int0` đã bị loại bỏ khỏi NumPy 2.x; nếu chạy với NumPy mới, thay bằng `pts.astype(np.int32)`. Ngoài ra tên file cascade trong transcript bị auto-caption đọc sai (`frontalface_default.xml`), tên đúng là `haarcascade_frontalface_default.xml`.
+> Ghi chú: Tại thời điểm quay khóa, code dùng `np.int0(pts)` — alias kiểu số nguyên của NumPy 1.x. NumPy 2.x đã bỏ `np.int0`; code trên thay bằng `pts.astype(np.int32)`. Ngoài ra tên file cascade trong transcript bị auto-caption đọc sai (`frontalface_default.xml`), tên đúng là `haarcascade_frontalface_default.xml`.

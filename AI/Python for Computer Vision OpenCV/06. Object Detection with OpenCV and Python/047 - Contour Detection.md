@@ -34,15 +34,15 @@ print(image.shape)   # chỉ có x, y — ảnh xám
 ### 🔎 findContours
 
 ```python
-img, contours, hierarchy = cv2.findContours(image,
-                                            cv2.RETR_CCOMP,
-                                            cv2.CHAIN_APPROX_SIMPLE)
+contours, hierarchy = cv2.findContours(image,
+                                       cv2.RETR_CCOMP,
+                                       cv2.CHAIN_APPROX_SIMPLE)
 ```
 
 * **`cv2.RETR_CCOMP`** — lấy cả contour trong và ngoài, tổ chức thành **hierarchy hai tầng** để tra cứu. Nếu chỉ cần contour ngoài thì dùng `cv2.RETR_EXTERNAL`.
 * **`cv2.CHAIN_APPROX_SIMPLE`** — phương pháp xấp xỉ contour, giữ các điểm cần thiết.
 
-Hàm trả về ba thứ: ảnh, **danh sách contour**, và **hierarchy**. `contours` là list có **22 phần tử** đúng bằng số hình dạng (pepperoni + mắt + miệng + các hình ngoài). `hierarchy` là một NumPy array, mỗi dòng mô tả quan hệ của một contour; cột thứ tư (index 3) cho biết contour đó **nằm trong contour nào**.
+Hàm trả về hai thứ: **danh sách contour** và **hierarchy**. `contours` là list có **22 phần tử** đúng bằng số hình dạng (pepperoni + mắt + miệng + các hình ngoài). `hierarchy` là một NumPy array, mỗi dòng mô tả quan hệ của một contour; cột thứ tư (index 3) cho biết contour đó **nằm trong contour nào**.
 
 ---
 
@@ -98,4 +98,4 @@ Nhờ vậy có thể lọc rất mịn: chỉ vẽ contour trong có giá trị
 
 `cv2.findContours(ảnh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)` trả về `contours` và `hierarchy`. Duyệt `range(len(contours))`, xét `hierarchy[0][i][3]`: bằng `-1` là contour ngoài, khác `-1` là contour trong, và giá trị cụ thể nhóm các contour trong theo hình chứa. Vẽ bằng `cv2.drawContours()`. Bài sau ta chuyển sang feature matching — kỹ thuật nhận diện vật thể mạnh hơn hẳn.
 
-> ⚠️ Cần kiểm chứng: transcript dùng `img, contours, hierarchy = cv2.findContours(...)` (ba giá trị trả về). OpenCV 4.x chỉ trả về `(contours, hierarchy)`; code ba giá trị chỉ đúng với OpenCV 3.x. Docs OpenCV không truy cập được (403) để đối chiếu tại thời điểm review.
+> Ghi chú: Tại thời điểm quay khóa dùng OpenCV 3.x, `cv2.findContours()` trả về ba giá trị `img, contours, hierarchy` (ảnh đầu vào cũng bị sửa và trả lại). OpenCV 4.x chỉ trả về hai giá trị `contours, hierarchy`; code trên đã dùng API OpenCV 4.

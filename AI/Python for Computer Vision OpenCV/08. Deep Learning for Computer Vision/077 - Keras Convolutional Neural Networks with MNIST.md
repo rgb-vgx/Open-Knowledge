@@ -42,7 +42,7 @@ Phần lớn giá trị bằng `0` — hợp lý vì nền ảnh chiếm phần 
 Chuyển sang one-hot:
 
 ```python
-from keras.utils.np_utils import to_categorical
+from keras.utils import to_categorical
 
 y_cat_train = to_categorical(y_train, 10)
 y_cat_test = to_categorical(y_test, 10)
@@ -125,14 +125,16 @@ model.evaluate(x_test, y_cat_test)
 Test cũng đạt khoảng **98%** — thậm chí nhỉnh hơn train một chút. Điều cần chú ý là **train và test phải xấp xỉ nhau**: nếu train rất tốt mà test kém hẳn thì nhiều khả năng đã **overfit**.
 
 ```python
-predictions = model.predict_classes(x_test)
+import numpy as np
+
+predictions = np.argmax(model.predict(x_test), axis=-1)
 
 from sklearn.metrics import classification_report
 print(classification_report(y_test, predictions))
 ```
 
-Lưu ý phải so với `y_test` **gốc** chứ không phải `y_cat_test`: kết quả `predict_classes` trả về nhãn dạng số, không phải one-hot — và ta vẫn còn giữ `y_test` ban đầu nên dùng luôn. Precision, recall và F1 đều khoảng **99%**. Một bài toán nghe có vẻ phức tạp — nhận dạng chữ số viết tay — được CNN giải gọn như vậy.
+Lưu ý phải so với `y_test` **gốc** chứ không phải `y_cat_test`: kết quả `np.argmax(...)` trả về nhãn dạng số, không phải one-hot — và ta vẫn còn giữ `y_test` ban đầu nên dùng luôn. Precision, recall và F1 đều khoảng **99%**. Một bài toán nghe có vẻ phức tạp — nhận dạng chữ số viết tay — được CNN giải gọn như vậy.
 
-> ⚠️ Cần kiểm chứng: transcript dùng `from keras.utils.np_utils import to_categorical`, đường dẫn cũ; Keras hiện tại dùng `from keras.utils import to_categorical`. Tương tự, `model.predict_classes()` đã bị loại bỏ từ Keras/TensorFlow 2.6 — thay bằng `np.argmax(model.predict(x_test), axis=-1)`.
+> Ghi chú: Tại thời điểm quay khóa, code dùng `from keras.utils.np_utils import to_categorical` (đường dẫn cũ) và `model.predict_classes()`. Keras hiện tại dùng `from keras.utils import to_categorical`; `model.predict_classes()` bị loại bỏ từ Keras/TensorFlow 2.6, thay bằng `np.argmax(model.predict(x_test), axis=-1)` như code trên.
 
 Bài tiếp theo áp dụng đúng quy trình này cho một bộ dữ liệu ảnh khác: **CIFAR-10**.

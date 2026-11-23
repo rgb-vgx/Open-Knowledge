@@ -72,4 +72,4 @@ Cả hai đều sẽ gây lỗi khi đưa vào model nếu không xử lý.
 
 Thử tự **resize tensor về 64×64** bằng một transform của `torchvision`, và **đổi `uint8` sang `torch.float32`**. Đó chính là các bước chuẩn bị trước khi dự đoán — bài sau mình làm cùng. Hẹn các bạn ở đó.
 
-> ⚠️ Cần kiểm chứng: tài liệu torchvision hiện đánh dấu `torchvision.io.read_image` là deprecated (khuyến nghị `decode_image`/TorchCodec); code trong khóa dùng theo phiên bản cũ nên vẫn chạy được.
+> ⚠️ Cần kiểm chứng: code dùng `torchvision.io.read_image` tại thời điểm quay khóa; tài liệu torchvision hiện đánh dấu hàm này là deprecated (từ torchvision 0.29), khuyến nghị `decode_image` hoặc TorchCodec. Code trong khóa vẫn chạy được với bản cũ.

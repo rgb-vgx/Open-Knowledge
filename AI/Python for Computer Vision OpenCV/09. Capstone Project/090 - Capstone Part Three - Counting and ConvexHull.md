@@ -123,4 +123,4 @@ Pipeline: convex hull → 4 điểm cực trị → tâm → khoảng cách lớ
 
 Phần cuối sẽ ghép tất cả hàm này vào vòng lặp camera để chương trình chạy thật.
 
-> ⚠️ Cần kiểm chứng: transcript ghi ba giá trị trả về của `cv2.findContours` (API OpenCV 3); với OpenCV 4 hàm trả về hai giá trị như code trên. Ngoài ra `convexHull` trả về mảng có shape phức tạp, nên đoạn indexing 4 điểm cực trị cần đối chiếu lại với phiên bản OpenCV đang dùng — transcript cho biết đoạn này được giảng viên copy-paste từ notes chứ không đọc từng dòng, nên code trong bài là bản dựng lại theo mô tả.
+> ⚠️ Cần kiểm chứng: Tại thời điểm quay khóa dùng OpenCV 3.x, `cv2.findContours()` trả về ba giá trị; OpenCV 4.x trả về hai giá trị như code trên. Ngoài ra `convexHull` trả về mảng có shape phức tạp, nên đoạn indexing 4 điểm cực trị cần đối chiếu lại với phiên bản OpenCV đang dùng — transcript cho biết đoạn này được giảng viên copy-paste từ notes chứ không đọc từng dòng, nên code trong bài là bản dựng lại theo mô tả.

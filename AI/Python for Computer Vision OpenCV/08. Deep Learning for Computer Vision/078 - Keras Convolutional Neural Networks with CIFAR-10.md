@@ -109,7 +109,9 @@ Kết quả: khoảng **80%** accuracy trên tập train sau 10 epoch.
 ```python
 model.evaluate(x_test, y_cat_test)
 
-predictions = model.predict_classes(x_test)
+import numpy as np
+
+predictions = np.argmax(model.predict(x_test), axis=-1)
 from sklearn.metrics import classification_report
 print(classification_report(y_test, predictions))
 ```
@@ -120,6 +122,6 @@ Classification report cho thấy các lớp khá **đồng đều**: không lớ
 
 Notebook của bài có thêm một **mô hình lớn hơn** để thử: nhiều layer hơn và dense layer `512` neuron, lưu thành `larger_CIFAR_10_model.h5`. Mô hình này vẫn chưa thật tốt nhưng cải thiện nhẹ, accuracy quanh **70%**. Có thể thử tăng epoch (ví dụ chạy qua đêm) — nhưng nếu accuracy tăng rất chậm thì nghĩa là đã chạm giới hạn của kiến trúc hiện tại và cần thay đổi cách làm.
 
-> ⚠️ Cần kiểm chứng: `model.predict_classes()` đã bị loại bỏ từ Keras/TensorFlow 2.6; với Keras mới dùng `np.argmax(model.predict(x_test), axis=-1)`.
+> Ghi chú: Tại thời điểm quay khóa, code dùng `model.predict_classes()`, bị loại bỏ từ Keras/TensorFlow 2.6. Với Keras hiện tại, bài nhiều lớp dùng `np.argmax(model.predict(x_test), axis=-1)` như code trên.
 
 Bài tiếp theo rời khỏi dữ liệu có sẵn: ta sẽ tải một bộ ảnh bên ngoài và tự xử lý để đưa vào Keras.

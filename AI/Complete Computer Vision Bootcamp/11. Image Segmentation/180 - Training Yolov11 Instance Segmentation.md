@@ -136,4 +136,4 @@ Confusion matrix cho thấy model dự đoán `crack` khá tốt nhưng còn nh�
 
 Quy trình: dataset Roboflow (polygon mask) → `data.yaml` → `YOLO("yolo11n-seg.pt").train(...)` → đọc plots/weights. `patience` giúp early stopping, `plots` giúp đánh giá. Bài sau ta **test/inference** model đã train. Hẹn gặp!
 
-> ⚠️ Cần kiểm chứng: Nhận định YOLO11 nhanh và chính xác hơn YOLO12 là quan điểm trong bài giảng. Docs Ultralytics hiện ghi YOLO12m có mAP cao hơn YOLO11m khoảng 1.0% nhưng chậm hơn, và khuyến nghị YOLO11 hoặc YOLO26 cho phần lớn workload production.
+> ⚠️ Cần kiểm chứng: Nhận định YOLO11 nhanh và chính xác hơn YOLO12 là quan điểm trong bài giảng tại thời điểm quay khóa. Docs Ultralytics hiện ghi YOLO12m có mAP cao hơn YOLO11m khoảng 1.0% nhưng chậm hơn, và khuyến nghị YOLO11 hoặc YOLO26 cho phần lớn workload production.

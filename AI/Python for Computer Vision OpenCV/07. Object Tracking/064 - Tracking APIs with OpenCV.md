@@ -18,7 +18,7 @@ Phần này không có gì phải code tay: cú pháp tracking API rất ngắn.
 
 ### 🧩 Hàm chọn tracker
 
-Các tracker đều được tạo theo cùng một mẫu: `cv2.Tracker<Tên>_create()`. Notebook in ra menu và nhận lựa chọn 0–4:
+Các tracker đều được tạo theo cùng một mẫu: `cv2.legacy.Tracker<Tên>_create()`. Notebook in ra menu và nhận lựa chọn 0–4:
 
 ```python
 import cv2
@@ -28,15 +28,15 @@ def create_tracker():
     choice = input("Select your tracker: ")
 
     if choice == '0':
-        tracker = cv2.TrackerBoosting_create()
+        tracker = cv2.legacy.TrackerBoosting_create()
     elif choice == '1':
-        tracker = cv2.TrackerMIL_create()
+        tracker = cv2.legacy.TrackerMIL_create()
     elif choice == '2':
-        tracker = cv2.TrackerKCF_create()
+        tracker = cv2.legacy.TrackerKCF_create()
     elif choice == '3':
-        tracker = cv2.TrackerTLD_create()
+        tracker = cv2.legacy.TrackerTLD_create()
     else:
-        tracker = cv2.TrackerMedianFlow_create()
+        tracker = cv2.legacy.TrackerMedianFlow_create()
 
     return tracker
 ```
@@ -129,4 +129,4 @@ Với **MedianFlow**, giảng viên quay mặt nghiêng và di chuyển nhanh đ
 
 Chỉ vậy là đủ để đổi qua lại giữa các thuật toán tracking mạnh nhất của OpenCV.
 
-> ⚠️ Cần kiểm chứng: từ OpenCV 4.5.1, các tracker kiểu cũ (`cv2.TrackerKCF_create`, `cv2.TrackerTLD_create`...) đã chuyển sang namespace `cv2.legacy`. Với bản OpenCV mới, dùng `cv2.legacy.TrackerKCF_create()` hoặc cài `opencv-contrib-python` đúng phiên bản.
+> Ghi chú: Tại thời điểm quay khóa, code dùng các tracker cũ `cv2.TrackerKCF_create`, `cv2.TrackerTLD_create`... Từ OpenCV 4.5.1, chúng được chuyển vào namespace `cv2.legacy`, nên code trên dùng `cv2.legacy.TrackerKCF_create()` và tương tự. API này nằm trong gói `opencv-contrib-python` (không có trong `opencv-python` thuần).

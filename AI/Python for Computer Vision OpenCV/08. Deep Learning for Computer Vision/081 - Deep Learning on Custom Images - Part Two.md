@@ -100,7 +100,7 @@ test_image_gen = image_gen.flow_from_directory(
 ### 🏃 Train với steps_per_epoch
 
 ```python
-model.fit_generator(
+model.fit(
     train_image_gen,
     epochs=1,
     steps_per_epoch=150,
@@ -159,13 +159,13 @@ dog_image = dog_image / 255                                   # 4. chuẩn hóa
 Dự đoán:
 
 ```python
-new_model.predict_classes(dog_image)   # → 1 (dog)
+(new_model.predict(dog_image) > 0.5).astype("int32")   # → 1 (dog)
 new_model.predict(dog_image)           # → xác suất, khoảng 0.57
 ```
 
 `predict` trả về xác suất thuộc lớp "dog". Ngưỡng phân chia là **0.5**: nhỏ hơn thì mô hình cho là mèo. Ở ví dụ này mô hình đoán đúng là chó với độ tự tin khoảng **57%** — đúng, nhưng không quá chắc.
 
-> ⚠️ Cần kiểm chứng: `model.fit_generator()` đã bị deprecate và bị loại bỏ ở các bản Keras mới — dùng `model.fit(...)` với generator, các tham số `steps_per_epoch`/`validation_data`/`validation_steps` giữ nguyên. `model.predict_classes()` cũng đã bị bỏ từ Keras/TensorFlow 2.6; thay bằng ngưỡng `> 0.5` trên kết quả `model.predict()`.
+> Ghi chú: Tại thời điểm quay khóa (Keras 2.2), code dùng `model.fit_generator()` và `model.predict_classes()`. Keras hiện tại đã bỏ cả hai: thay bằng `model.fit(...)` với generator (giữ nguyên `steps_per_epoch`/`validation_data`/`validation_steps`), và thay `predict_classes` bằng ngưỡng `(model.predict(...) > 0.5).astype("int32")` cho bài hai lớp (hoặc `np.argmax(..., axis=-1)` cho bài nhiều lớp).
 
 > ⚠️ Cần kiểm chứng: transcript chỉ nêu rõ `Conv2D` đầu tiên dùng `filters=32` và gợi ý tăng lên `64`; giá trị `64` cho hai lớp Conv2D sau trong khối code là suy ra, chưa được đọc rõ trong transcript.
 

@@ -87,6 +87,6 @@ frame (gray) → absdiff(background) → threshold → findContours
 
 Hàm trả về cả ảnh nhị phân (để hiển thị/debug) và contour bàn tay (để đếm ngón ở bước sau).
 
-> ⚠️ Cần kiểm chứng: transcript ghi `image, contours, hierarchy = cv2.findContours(...)` theo API OpenCV 3. Với OpenCV 4, hàm chỉ trả về **hai** giá trị `contours, hierarchy` như code trên; nếu chạy đúng bản OpenCV 4 mà viết ba biến sẽ lỗi unpack.
+> Ghi chú: Tại thời điểm quay khóa dùng OpenCV 3.x, `cv2.findContours()` trả về ba giá trị `image, contours, hierarchy`. OpenCV 4.x chỉ trả về hai giá trị `contours, hierarchy` như code trên; viết ba biến sẽ lỗi unpack.
 
 Phần 3 sẽ dùng convex hull để đếm số ngón từ `hand_segment`.

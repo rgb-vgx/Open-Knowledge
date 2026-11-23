@@ -162,4 +162,4 @@ Các phép này tương đương với `JOIN` trong SQL — gần như mọi tha
 
 Bộ kỹ năng ở bài này là "đồ nghề" EDA: đọc dữ liệu, dọn missing value, biến đổi cột, gộp nhóm, nối bảng. Càng làm nhiều bài toán thật, bạn càng thuần tay. Bài sau mình xem cách đọc dữ liệu từ **nhiều nguồn khác nhau** bằng pandas.
 
-> ⚠️ Cần kiểm chứng: transcript (pandas thời điểm quay bài) hiển thị cột chuỗi là `object`. Từ pandas 3.0, cột chuỗi mặc định dùng **`StringDtype`** (hiển thị `str`) thay vì `object`; cách xử lý dữ liệu trong bài không đổi, nhưng kết quả `df.dtypes` trên máy bạn có thể khác.
+> ⚠️ Cần kiểm chứng: transcript tại thời điểm quay khóa (pandas 1.x) hiển thị cột chuỗi là `object`. Từ pandas 3.0 (phát hành 01/2026), cột chuỗi mặc định dùng **`StringDtype`** (hiển thị `str`) thay vì `object` theo PDEP-14; cách xử lý dữ liệu trong bài không đổi, nhưng kết quả `df.dtypes` trên máy bạn có thể khác.

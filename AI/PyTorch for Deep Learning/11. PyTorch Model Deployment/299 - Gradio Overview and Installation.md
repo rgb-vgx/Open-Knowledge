@@ -38,9 +38,9 @@ Với Food Vision Mini: ảnh món ăn → model → nhãn pizza/steak/sushi.
 pip install gradio
 ```
 
-Trong Colab, chỉ cần chạy cell này. Transcript ghi nhận phiên bản **3.1.7** tại thời điểm quay — phiên bản hiện tại đã mới hơn nhiều, nhưng cú pháp cơ bản `gr.Interface` vẫn giữ nguyên.
+Trong Colab, chỉ cần chạy cell này. Transcript ghi nhận phiên bản **3.1.7** (Gradio 3.x) tại thời điểm quay khóa — phiên bản hiện tại đã mới hơn nhiều (4.x/5.x, nay là 6.x), nhưng cú pháp cơ bản `gr.Interface` vẫn giữ nguyên.
 
-> ⚠️ Cần kiểm chứng: các API cụ thể của Gradio có thể đổi giữa các major version (đặc biệt từ 3.x lên 4.x/5.x). Khi chạy, hãy đối chiếu với docs của bản đang cài.
+> ⚠️ Cần kiểm chứng: API Gradio có thể khác ở 4.x/5.x (và 6.x hiện nay) so với 3.x tại thời điểm quay khóa. Khi chạy, hãy đối chiếu với docs của bản đang cài.
 
 ---
 
