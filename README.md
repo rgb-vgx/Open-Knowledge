@@ -1,166 +1,120 @@
 # Open-Knowledge
 
-A comprehensive collection of tutorials, notes, and code examples covering various computer science topics, organized by subject area.
+A comprehensive collection of tutorials, notes, and code examples covering computer science topics, organized by subject area — plus a React web app that renders the whole library in the browser.
 
-## Directory Structure
+## What's inside
 
-### 🤖 AI/
+| Topic | Series / courses |
+| --- | --- |
+| AI | Claude Code (23), LangChain & Agentic AI (173), LangGraph (70), PyTorch for Deep Learning (345), Complete Computer Vision Bootcamp (180), Python for Computer Vision with OpenCV (79), Self-driving Car with Jetson Nano (69) |
+| BackEnd | Fundamentals of Backend Engineering (59) |
+| C++ | C++ Multithreading (78), Modern C++ (10) |
+| Cloud | AWS Certified Cloud Practitioner (276) |
+| DevOps | Docker & Kubernetes (259) |
+| Distributed Systems | Apache Kafka (129) |
+| Golang | Learn Go for Beginners (100), Concurrency in Go (86) |
+| Nvidia | CUDA Programming (2), NVIDIA NeMo Agent Toolkit (1), Mastering GPU Parallel Programming with CUDA (57) |
+| System Design | Mastering System Design (128), Microservices & Event-Driven Architecture (27) |
 
-Artificial Intelligence concepts and implementations
-- **Claude Code/** - Guides and tutorials for using Claude Code AI assistant
-  - Prompt engineering techniques
-  - Custom commands development
-  - Context engineering and MCP (Model Context Protocol)
-  - Multi-agent workflows and orchestration
-  - GitHub integration and automation
-  - Advanced features like checkpointing and rewind
-- **Tensorflow/** - Beginner-friendly TensorFlow tutorials
-  - Introduction to deep learning concepts
-  - Neural networks fundamentals
-  - Tensor operations and manipulation
-  - Creating and working with tensors
-  - Building simple deep learning models
+About 2,150 articles in total. Every course is a series of numbered lessons that can be read independently.
 
-### 📊 Algorithm/
-Data structures and algorithms with focus on complexity analysis
-- Big O notation explanation series (11 parts)
-  - Understanding asymptotic analysis
-  - Linear, quadratic, logarithmic time complexities
-  - Optimization techniques and simplification rules
-  - Real-world application performance comparisons
+## Repository layout
 
-### ⚡ Asynchronous Programming/
+```text
+.
+├── AI/                    Claude Code, LangChain, LangGraph, PyTorch, Computer Vision, Self-driving Car
+├── BackEnd/               Fundamentals of Backend Engineering
+├── C++/                   C++ Multithreading, Modern C++
+├── Cloud/                 AWS Certified Cloud Practitioner
+├── DevOps/                Docker & Kubernetes
+├── Distributed Systems/   Apache Kafka
+├── Golang/                Learn Go, Concurrency in Go
+├── Nvidia/                CUDA Programming, NeMo Agent Toolkit, Mastering GPU Parallel Programming
+├── System Design/         Mastering System Design, Microservices & Event-Driven Architecture
+├── website/               React + Vite app that reads the markdown library
+├── _RUNBOOK ... .md       Workflow for turning course transcripts into blog lessons
+├── _PROMPT ... .md        Prompt template used to write each lesson
+└── vercel.json            Vercel deployment configuration
+```
 
-Async/await, promises, and concurrency patterns
+Each course folder contains:
 
-- Foundations of asynchronous vs synchronous programming
-- Communication patterns in async systems
-- Practical examples and real-world use cases
+- numbered section folders such as `01. Introduction/`
+- lesson files such as `001 - What Is PyTorch.md`
+- `_STYLE - Blog style guide.md` — voice and formatting rules for that course
+- `MUC_LUC.md` — clickable table of contents, including skipped lessons
 
-### 🖥️ Back End/
-Server-side development concepts and architectures
-- Backend fundamentals and principles
-- Request-response modeling
-- Communication protocols (HTTP, WebSocket, SSE)
-- Architectural patterns (Pub/Sub, Sidecar, Multiplexing)
-- State management (Stateful vs Stateless)
-- Networking basics (OSI model, TCP/IP, IP protocols)
-- Performance optimization techniques
+Most lessons are in Vietnamese, keep English technical terms, and start with YAML frontmatter:
 
-### 💻 C++
-C++ language examples and best practices
-#### C++ Multithreading/
-Comprehensive guide to concurrent programming in C++
-- Thread creation and management (std::thread)
-- Synchronization primitives (mutex, locks, condition variables)
-- Atomic operations and memory ordering
-- Thread-local storage
-- Deadlock prevention and detection
-- Future/promise and async patterns
-- Parallel algorithms (C++17)
-- Performance optimization techniques
-- Producer-consumer patterns
-- Reader-writer locks
-- Monitor pattern implementations
+```yaml
+---
+title: 'Bài NNN — chủ đề'
+date: '2026-11-23'
+course: 'pytorch-deep-learning'
+lesson: 123
+status: edited
+source: 'original transcript file'
+categories:
+- AI
+tags: []
+---
+```
 
-#### Modern C++/
-Modern C++ features and best practices (C++11/14/17)
-- Safety, expressiveness, and performance improvements
-- Value vs reference semantics
-- Move semantics and perfect forwarding
-- Smart pointers and resource management
-- Container deep dive (std::vector)
-- Multidimensional arrays optimization
-- Classic algorithms implementation (Game of Life)
+The site still renders lessons without frontmatter, so older courses that use only a `# Heading` and a `> Nguồn:` blockquote continue to work.
 
-### 🔬 Concept/
-Fundamental computer science concepts
-- **publish/** - Published articles and tutorials
-  - Network programming series (10 parts)
-    - Socket programming with C language
-    - OSI model and TCP/IP stack deep dive
-    - Data encapsulation and decapsulation
-    - IP addressing and subnetting
-    - Practical network implementation with Cisco Modeling Labs
+## Web app
 
-### 🔒 Cyber Security/
-Security principles and practices
-- **publish/** - Published security guides
-  - Network security fundamentals for beginners
-  - Essential security principles and best practices
+The reader is a plain React 19 + Vite 6 + TypeScript app in `website/`. It fetches a generated index once, then loads each lesson's markdown at runtime and renders it with `react-markdown` (GFM, raw HTML, syntax highlighting). Mermaid diagrams are rendered client-side.
 
-### 🚀 DevOps/
-Deployment, CI/CD, and infrastructure automation
-- **Docker K8s/** - Container orchestration tutorials
-  - Docker basics and containerization
-  - Kubernetes fundamentals
-  - Practical deployment examples
-- **publish/** - Published DevOps articles
+### Development
 
-### 💬 IPC/
-Inter-Process Communication mechanisms
-*(Content to be added)*
+```bash
+cd website
+npm install
+npm run dev        # http://localhost:3000
+```
 
-### 🍃 MongoDB/
-NoSQL database with MongoDB
-*(Content to be added)*
+From the repository root you can also use the wrappers:
 
-### 🌐 Network/
-Computer networking fundamentals
-*(Content to be added)*
+```bash
+npm run dev        # start the dev server
+npm run build      # type-check, build the site, and regenerate the index
+npm run sync       # only regenerate public/docs + public/docs-index.json
+npm run typecheck  # tsc --noEmit
+```
 
-### 🎮 Nvidia/
-GPU programming and Nvidia technologies
-*(Content to be added)*
+### Content pipeline
 
-### 🖼️ QML/
-Qt Modeling Language for UI development
-*(Content to be added)*
+`website/scripts/build-index.mjs` runs automatically before `dev` and `build`:
 
-### 🏗️ Software Architecture/
-Design patterns and architectural styles
-*(Content to be added)*
+1. walks every `*.md` file outside `website/`, `.git`, `node_modules`, `build`
+2. parses frontmatter and derives series, section, chapter, topic, reading time, excerpt, and `article | meta` kind
+3. copies each lesson to `website/public/docs/<hash>.md` under a URL-safe name
+4. writes `website/public/docs-index.json`, which the app loads on startup
 
-### 💻 System Programming/
-Operating systems and low-level programming
-*(Content to be added)*
+Series and topic metadata live in the `SERIES` and `TOPIC_META` registries at the top of that script. Adding a new course folder means adding one `SERIES` entry (plus a `_STYLE` guide and `MUC_LUC.md`).
 
-### 📦 Uncategorized/
-Miscellaneous topics
-*(Content to be added)*
+### Deployment
 
-### 🖥️ Virtualization/
-Virtual machines and containerization
-*(Content to be added)*
+`vercel.json` builds with Vite and serves `website/build`. The app uses a hash router, so no server-side rewrites are required.
 
-## How to Use
+## How to read
 
-Each directory contains self-contained markdown files (.md) with tutorials, explanations, and code examples related to its topic. 
-
-To get started:
-1. Browse the directory structure above to find topics of interest
-2. Navigate to the relevant folder
-3. Read the markdown files in sequential order (they're often numbered)
-4. Follow along with code examples and exercises
-5. Explore subdirectories for more specialized topics
-
-All materials are designed to be beginner-friendly while providing valuable insights for experienced developers.
+1. Browse a topic folder or open the site.
+2. Pick a series and read its lessons in chapter order.
+3. Use the in-page table of contents, the series lesson navigation, previous/next chapter links, and full-text search (diacritic-insensitive).
 
 ## Contributing
 
-We welcome contributions to expand and improve this knowledge base! Feel to:
-- Add new topics or subject areas
-- Improve existing tutorials with better explanations or examples
-- Fix errors or outdated information
-- Add code samples or exercises
-- Suggest new organizational structures
+Contributions are welcome:
 
-Please submit your changes via pull requests following standard GitHub workflow.
+- add new topics or courses
+- improve explanations, examples, or fix outdated information
+- add exercises or code samples
+- propose better organization
+
+Please open a pull request following the normal GitHub workflow. When adding a course, include its `_STYLE` guide and `MUC_LUC.md`, and register it in `website/scripts/build-index.mjs`.
 
 ## License
 
-This repository is open-source and available under the MIT License. Feel free to use, modify, and distribute the contents for educational and professional purposes.
-
-## Last Updated
-
-May 20, 2026
+This repository is open source under the MIT License. Content is provided for educational and professional use.
